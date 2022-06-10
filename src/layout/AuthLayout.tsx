@@ -3,7 +3,7 @@ import { Outlet } from 'react-router';
 
 const AuthLayout: React.FC = () => {
   return (
-    <div className='bg-yellow-300'>
+    <div >
       <Outlet />
     </div>
   );
