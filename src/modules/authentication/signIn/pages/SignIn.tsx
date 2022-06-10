@@ -13,8 +13,10 @@ import bgSiginImage from "../../../../assets/images/bg-sign.svg";
 import eyeIcon from "../../../../assets/images/eye.svg";
 
 import "./SignIn.css";
-import Header from 'common/header';
-import Footer from 'common/footer';
+import Header from "common/header";
+import Footer from "common/footer";
+
+import { Link } from "react-router-dom";
 
 const SignIn = () => {
   //   const dispatch = useAppDispatch();
@@ -31,7 +33,6 @@ const SignIn = () => {
 
   return (
     <div className="w-full flex flex-col justify-between h-screen relative overflow-y-auto no-scroll-bar">
-      <Header />
       <div className="flex w-full container mx-auto ">
         <div className="w-full md:w-2/5  mt-5.2 flex flex-col pl-10 ">
           {" "}
@@ -41,7 +42,10 @@ const SignIn = () => {
           <p className="text-lightGray font-Inter  max-w-sm font-normal not-italic mt-0.78 text-desc">
             Welcome back to Comunify. Let's get you know your communities better{" "}
           </p>
-          <form className="flex flex-col pb-10 mt-1.8 w-25.9 " autoComplete="off">
+          <form
+            className="flex flex-col pb-10 mt-1.8 w-25.9 "
+            autoComplete="off"
+          >
             <div className="username">
               <Input
                 type="text"
@@ -81,27 +85,26 @@ const SignIn = () => {
               <img src={socialLogo} alt="" className="pr-0.781" />
               Continue with Google
             </div>
-            <div className="font-Inter text-secondaryGray text-center text-base font-normal mt-1.8 leading-2.8 text-signLink">
-              <a href=""> Forgot your password?</a>
-            </div>
+              <div className="font-Inter text-secondaryGray text-center text-base font-normal mt-1.8 leading-2.8 text-signLink">
+                <Link to="forgot-password"><h3>Forgot your password?</h3></Link>
+              </div>
             <div className="font-Inter text-secondaryGray text-center text-base font-normal mt-5  text-signLink">
               Don’t have an account yet?{" "}
-              <a href="" className="text-blue-500 underline">
+              <Link to="signup" className="text-blue-500 underline">
                 {" "}
                 Let’s Sign Up
-              </a>
+              </Link>
             </div>
           </form>
         </div>
       </div>
-      <div className="container mx-auto fixed right-0 flex items-center justify-center">
+      <div className="container mx-auto fixed right-0 flex items-center justify-center top-0 bg-no-repeat">
         <div className="pb-80 w-full md:w-3/5 login-cover-bg bg-no-repeat bg-right rounded-lg  bg-thinBlue flex items-center justify-center absolute top-20 right-0 mt-5 py-20 ">
           <img src={bgSiginImage} alt="" />
         </div>
       </div>
       <div className="py-1.9"></div>
       <div className="footer">
-        <Footer />
       </div>
     </div>
   );

@@ -9,7 +9,6 @@ import bgForgotImage from "../../../../assets/images/bg-sign.svg";
 const ForgotPassword = () => {
   return (
     <div className="w-full flex flex-col  h-screen ">
-      <Header />
       <div className="flex w-full relative">
         <div className="w-1/2 password-cover-bg bg-no-repeat bg-left rounded-lg  bg-thinBlue flex items-center justify-center py-20 fixed">
           <img src={bgForgotImage} alt="" />
@@ -47,7 +46,6 @@ const ForgotPassword = () => {
       </div>
       <div className="py-1.9"></div>
       <div className="footer">
-        <Footer />
       </div>
     </div>
   );

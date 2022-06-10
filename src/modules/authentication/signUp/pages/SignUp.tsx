@@ -5,12 +5,12 @@ import Footer from 'common/footer';
 import eyeIcon from "../../../../assets/images/eye.svg";
 import socialLogo from "../../../../assets/images/Social.svg";
 import bgSigupImage from "../../../../assets/images/bg-sign.svg";
+import { Link } from 'react-router-dom';
 
 
 const SignUp = () => {
   return (
     <div className="w-full flex flex-col  h-screen ">
-      <Header />
       <div className="flex w-full relative">
         <div className="w-full md:w-1/2 signup-cover-bg bg-no-repeat pt-20 bg-left rounded-lg  bg-thinBlue flex items-center justify-center fixed pb-80">
           <img src={bgSigupImage} alt="" />
@@ -95,17 +95,16 @@ const SignUp = () => {
             </div>
             <div className="font-Inter text-secondaryGray text-center text-base font-normal mt-1.8  text-signLink">
               Already have an account?{" "}
-              <a href="" className="text-blue-500 underline">
+              <Link to="/" className="text-blue-500 underline">
                 {" "}
                 Let’s Sign In
-              </a>
+              </Link>
             </div>
           </form>
         </div>
       </div>
       <div className="py-1.9"></div>
       <div className="footer">
-        <Footer />
       </div>
     </div>
   );

@@ -13,7 +13,6 @@ import Footer from "common/footer";
 const CreateNewPassword = () => {
   return (
     <div className="w-full flex flex-col  h-screen ">
-      <Header />
       <div className="flex w-full relative">
         <div className="w-1/2 password-cover-bg bg-no-repeat bg-left rounded-lg  bg-thinBlue flex items-center justify-center py-20 fixed">
           <img src={bgSiginImage} alt="" />
@@ -64,7 +63,6 @@ const CreateNewPassword = () => {
       </div>
       <div className="py-1.9"></div>
       <div className="footer">
-        <Footer />
       </div>
     </div>
   );
