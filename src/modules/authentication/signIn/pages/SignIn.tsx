@@ -32,7 +32,7 @@ const SignIn = () => {
   //   };
 
   return (
-    <div className="w-full flex flex-col justify-between h-screen relative overflow-y-auto no-scroll-bar">
+    <div className="w-full flex flex-col justify-between  relative overflow-y-auto no-scroll-bar">
       <div className="flex w-full container mx-auto ">
         <div className="w-full md:w-2/5  mt-5.2 flex flex-col pl-10 ">
           {" "}
@@ -43,7 +43,7 @@ const SignIn = () => {
             Welcome back to Comunify. Let's get you know your communities better{" "}
           </p>
           <form
-            className="flex flex-col pb-10 mt-1.8 w-25.9 "
+            className="flex flex-col  mt-1.8 w-25.9 "
             autoComplete="off"
           >
             <div className="username">
@@ -88,7 +88,7 @@ const SignIn = () => {
               <div className="font-Inter text-secondaryGray text-center text-base font-normal mt-1.8 leading-2.8 text-signLink">
                 <Link to="forgot-password"><h3>Forgot your password?</h3></Link>
               </div>
-            <div className="font-Inter text-secondaryGray text-center text-base font-normal mt-5  text-signLink">
+            <div className="font-Inter text-secondaryGray text-center text-base font-normal mt-5  text-signLink ">
               Don’t have an account yet?{" "}
               <Link to="signup" className="text-blue-500 underline">
                 {" "}

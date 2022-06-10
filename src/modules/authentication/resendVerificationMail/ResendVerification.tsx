@@ -11,12 +11,12 @@ import  "./ResendVerification.css";
 
 const ResendVerificationMail = () => {
   return (
-    <div className="w-full flex flex-col h-screen ">
+    <div className="w-full flex flex-col ">
       <div className="flex w-full relative">
         <div className="w-1/2 password-cover-bg bg-no-repeat bg-left rounded-lg  bg-thinBlue flex items-center justify-center py-20 fixed">
           <img src={bgSendMailImage} alt="" />
         </div>
-        <div className="w-1/2 flex pl-7.40 mt-13.9 flex-col min-h-[500px]  overflow-y-auto no-scroll-bar absolute right-0">
+        <div className="w-1/2 flex pl-7.40 mt-13.9 flex-col overflow-y-auto no-scroll-bar absolute right-0">
           <div className="w-25.9">
             <p className="font-Inter font-normal leading-1.8 text-lightGray text-desc">
               A verification link has been sent to the entered email address.
