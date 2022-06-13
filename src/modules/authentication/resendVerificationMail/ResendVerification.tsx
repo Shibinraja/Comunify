@@ -1,7 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 import Button from 'common/button';
 import bgSendMailImage from '../../../assets/images/bg-sign.svg';
-import './ResendVerification.css';
 
 const ResendVerificationMail = () => {
   return (
