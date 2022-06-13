@@ -11,7 +11,7 @@ const ForgotPassword = () => {
         <div className='w-1/2 password-cover-bg bg-no-repeat bg-left rounded-lg  bg-thinBlue flex items-center justify-center py-20 fixed'>
           <img src={bgForgotImage} alt='' />
         </div>
-        <div className='w-1/2 flex pl-7.5 mt-13.1 flex-col overflow-y-auto no-scroll-bar absolute right-0'>
+        <div className='w-1/2 flex pl-7.5 mt-13.1 flex-col overflow-y-auto no-scroll-bar absolute right-0 pb-[100px]'>
           <h1 className='font-Inter font-bold text-signIn text-neutralBlack leading-2.8'>
             Forgot Password
           </h1>

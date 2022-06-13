@@ -16,6 +16,8 @@ export interface Props {
   placeholder?: string;
   value?: string;
   id?: string;
+  handleSubmit?: any;
+  username?:string;
 }
 
 export interface ButtonProps
