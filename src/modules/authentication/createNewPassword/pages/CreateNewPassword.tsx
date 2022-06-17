@@ -46,6 +46,7 @@ const CreateNewPassword = () => {
                 label="New Password"
                 id="password1"
                 name="password1"
+                className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
               />
               <div onClick={togglePassword1} className="m-0 p-0">
                 {passwordType1 === "password" ? (
@@ -70,6 +71,7 @@ const CreateNewPassword = () => {
                 label="Confirm Password"
                 id="password2"
                 name="password2"
+                className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
               />
               <div onClick={togglePassword2} className="m-0 p-0">
                 {passwordType2 === "password" ? (

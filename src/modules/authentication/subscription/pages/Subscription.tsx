@@ -26,6 +26,7 @@ const Subscription = () => {
                   label="Card Holder Name"
                   id="card-holder"
                   name="card-holder"
+                  className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
                 />
               </div>
               <div className="card  relative mt-1.258">
@@ -35,6 +36,7 @@ const Subscription = () => {
                   label="Card Number"
                   id="cardnumber"
                   name="cardnumber"
+                  className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
                 />
                 <img
                   className="absolute icon-holder left-96 cursor-pointer"
@@ -50,6 +52,7 @@ const Subscription = () => {
                     label="Expiration Date"
                     id="expire"
                     name="expire"
+                    className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
                   />
                 </div>
                 <div className="w-1/2 pl-5">
@@ -59,6 +62,7 @@ const Subscription = () => {
                     label="CVV"
                     id="cvv"
                     name="cvv"
+                    className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
                   />
                 </div>
               </div>
@@ -69,6 +73,7 @@ const Subscription = () => {
                   label="Country"
                   id="country"
                   name="country"
+                  className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
                 />
               </div>
               <div className="pb-10">

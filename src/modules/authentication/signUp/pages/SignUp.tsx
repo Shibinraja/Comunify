@@ -43,6 +43,7 @@ const SignUp = () => {
                 label="Username"
                 id="username"
                 name="username"
+                className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
               />
             </div>
             <div className="email mt-1.258">
@@ -52,6 +53,7 @@ const SignUp = () => {
                 label="Email"
                 id="email"
                 name="email"
+                className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
               />
               <p className="text-lightRed font-normal text-error font-Inter mt-0.287 hidden">
                 Invalid email id
@@ -64,6 +66,7 @@ const SignUp = () => {
                 label="Password"
                 id="password"
                 name="password"
+                className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
               />
               <div onClick={togglePassword} className="m-0 p-0">
                 {passwordType === "password" ? (
@@ -88,6 +91,7 @@ const SignUp = () => {
                 label="Company Name"
                 id="cname"
                 name="companyName"
+                className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
               />
             </div>
             <div className="domain mt-1.258">
@@ -97,6 +101,7 @@ const SignUp = () => {
                 label="Domain"
                 id="domain"
                 name="domain"
+                className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
               />
             </div>
             <Button

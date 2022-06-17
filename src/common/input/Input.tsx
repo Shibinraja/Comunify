@@ -8,6 +8,7 @@ const Input = ({
   type,
   value,
   handleSubmit,
+  className,
   ...rest
 }: Props) => {
   const passDataToParent = (e: any) => {
@@ -22,7 +23,7 @@ const Input = ({
     <div className='flex flex-col'>
       <input
         type={type}
-        className='h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border'
+        className={className}
         placeholder={placeholder}
         disabled={disabled}
         {...rest}

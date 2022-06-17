@@ -87,6 +87,7 @@ const SignIn = () => {
                     label="Username"
                     id="username"
                     name="username"
+                    className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
                   />
                 </div>
                 <div className="password mt-1.13 relative ">
@@ -96,6 +97,7 @@ const SignIn = () => {
                     label="Password"
                     id="password"
                     name="password"
+                    className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
                   />
                   <div onClick={togglePassword} className="m-0 p-0">
                     {passwordType === "password" ? (

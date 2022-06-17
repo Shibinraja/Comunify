@@ -18,6 +18,7 @@ export interface Props {
   id?: string;
   handleSubmit?: any;
   username?:string;
+  className?: string;
 }
 
 export interface ButtonProps
