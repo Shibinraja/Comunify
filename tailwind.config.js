@@ -30,12 +30,17 @@ module.exports = {
         member2: '#DFF3FF',
         member3: '#FFECD9',
         member4: '#FFF6D8',
-        integray: '#5D4E7B;',
-        subIntegrey: '#f3f5fa',
+        integrationGray: '#5D4E7B;',
+        subIntegrationGray: '#f3f5fa',
         skipGray: 'rgba(0, 0, 0, 0.5);',
+        connectButton:'linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%)',
+        subscriptionMonth:'#8a8b9f'
       },
       boxShadow: {
         buttonShadowHover: '0px 13.64px 27.2727px rgba(0, 0, 0, 0.15);',
+        connectButtonShadow:'0px 4px 30px rgba(0, 0, 0, 0.1)',
+        integrationCardShadow:'0px 100px 80px rgba(41, 72, 152, 0.05),0px 64.8148px 46.8519px rgba(41, 72, 152, 0.037963),0px 38.5185px 25.4815px rgba(41, 72, 152, 0.0303704),0px 20px 13px rgba(41, 72, 152, 0.025),0px 8.14815px 6.51852px rgba(41, 72, 152, 0.0196296), 0px 1.85185px 3.14815px rgba(41, 72, 152, 0.012037)',
+        trialButtonShadow:'8px 8px 24px rgba(2, 2, 70, 0.05)'
       },
       margin: {
         2.6: '43px',
@@ -131,6 +136,7 @@ module.exports = {
         member: '10.8309px',
         search: '15px',
         card: '12px',
+        price:'32px'
       },
       fontFamily: {
         Inter: ['Inter', 'sans-serif'],
@@ -149,6 +155,8 @@ module.exports = {
         2.18: '2.188rem',
         3.18: '3.188rem',
         1.12: '1.125rem',
+        3.1:'3rem',
+        0.93:'0.938rem',
       },
       borderRadius: {
         0.9: '15px',
