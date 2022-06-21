@@ -61,13 +61,13 @@ const Welcome = () => {
                 <Button
                   text="Choose the plan"
                   type="submit"
-                  className="font-Poppins rounded-lg text-base text-white hover:shadow-buttonShadowHover transition ease-in duration-300 w-full mt-1.8  h-3.6"
+                  className="font-Poppins rounded-lg text-base text-white hover:shadow-buttonShadowHover transition ease-in duration-300 w-full mt-1.8  h-3.6 btn-gradient"
                 />
               </div>
             </div>
           </div>
           <div className="mt-5 pb-48">
-            <button className="free-trial-btn font-Inter text-desc w-25.9 font-normal leading-1.8 text-lightBlue box-border rounded-lg bg-white py-2.5 px-4 shadow-trialButtonShadow">
+            <button className="free-trial-btn font-Inter text-desc w-25.9 font-normal leading-1.8 text-lightBlue box-border rounded-lg bg-white py-2.5 px-4 shadow-trialButtonShadow ">
               Continue with 14 Days Free Trial
             </button>
           </div>
