@@ -3,7 +3,7 @@ import type { InitialState } from '../types/auth.types';
 import type { signInInput } from '../../signIn/interface/signIn.interface';
 
 const initialState: InitialState = {
-  isAuthenticated: false,
+  isAuthenticated: true,
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

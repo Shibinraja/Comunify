@@ -1,41 +1,36 @@
-import { InputHTMLAttributes } from 'react';
-import type { FieldErrors, Path, UseFormRegister } from 'react-hook-form';
+import { Props } from '../../interface/interface';
+import { useField, ErrorMessage } from 'formik';
 
-export interface Props<T = unknown>
-  extends InputHTMLAttributes<HTMLInputElement> {
-  name: string;
-  label?: string;
-  disabled?: boolean;
-  errors?: FieldErrors;
-  register: UseFormRegister<T>;
-}
-
-const Input = <T,>({
+const Input = ({
   disabled = false,
   placeholder,
-  errors,
-  label,
   name,
+  type,
   value,
-  register,
+  handleSubmit,
+  className,
   ...rest
-}: Props<T>) => {
+}: Props) => {
+  const passDataToParent = (e: any) => {
+    e.preventDefault();
+    console.log(e.target.value);
+    
+  };
+
+  const errorClassName='';
+
   return (
-    <div className="flex flex-col">
-      <label className="flex" htmlFor={name}>
-        {label ?? ''}
-      </label>
+    <div className='flex flex-col'>
       <input
-        className="border rounded-lg p-2 w-full mb-2"
+        type={type}
+        className={className}
         placeholder={placeholder}
         disabled={disabled}
-        value={value}
-        {...register(name as Path<T>)}
         {...rest}
+        autoComplete='off'
+        value={value}
+        onChange={(e) => passDataToParent(e)}
       />
-      {errors && errors[name] && (
-        <span className="">{errors[name].message}</span>
-      )}
     </div>
   );
 };
