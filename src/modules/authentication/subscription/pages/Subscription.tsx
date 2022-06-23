@@ -80,7 +80,7 @@ const Subscription = () => {
                 <Button
                   text="Submit"
                   type="submit"
-                  className="font-Poppins rounded-lg text-base text-white mt-1.8 h-3.6 w-full hover:shadow-buttonShadowHover transition ease-in duration-300"
+                  className="font-Poppins rounded-lg text-base text-white mt-1.8 h-3.6 w-full hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient"
                 />
               </div>
             </form>

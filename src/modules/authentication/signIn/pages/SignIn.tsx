@@ -118,7 +118,7 @@ const SignIn = () => {
                 <Button
                   text="Sign In"
                   type="button"
-                  className="font-Poppins rounded-lg text-base text-white mt-1.8 h-3.6 transition ease-in duration-300 hover:shadow-buttonShadowHover"
+                  className="font-Poppins rounded-lg text-base text-white mt-1.8 h-3.6 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient"
                 />
                 <div className="relative flex items-center pt-2.4">
                   <div className="borders flex-grow border-t"></div>

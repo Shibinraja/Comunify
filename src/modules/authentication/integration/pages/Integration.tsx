@@ -5,6 +5,7 @@ import nextIcon from '../../../../assets/images/next.svg';
 import bgIntegrationImage from '../../../../assets/images/bg-sign.svg';
 
 import './Integration.css';
+import Button from 'common/button';
 
 const Integration = () => {
   return (
@@ -28,9 +29,9 @@ const Integration = () => {
               <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">
                 Khoros
               </div>
-              <button className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300">
+              <Button type="button" text="connect" className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient">
                 CONNECT
-              </button>
+              </Button>
             </div>
             <div className="integration shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center">
               <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
@@ -39,9 +40,9 @@ const Integration = () => {
               <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">
                 Khoros
               </div>
-              <button className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300">
+              <Button type="button" text="connect" className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient">
                 CONNECT
-              </button>
+              </Button>
             </div>
             <div className="integration shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center">
               <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
@@ -50,9 +51,9 @@ const Integration = () => {
               <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">
                 Khoros
               </div>
-              <button className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300">
+              <Button type="button" text="connect" className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient">
                 CONNECT
-              </button>
+              </Button>
             </div>
           </div>
           <div className="flex gap-0.93">
@@ -63,9 +64,9 @@ const Integration = () => {
               <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">
                 Khoros
               </div>
-              <button className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300">
+              <Button type="button" text="connect" className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient">
                 CONNECT
-              </button>
+              </Button>
             </div>
             <div className="integration shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center">
               <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
@@ -74,9 +75,9 @@ const Integration = () => {
               <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">
                 Khoros
               </div>
-              <button className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300">
+              <Button type="button" text="connect" className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient">
                 CONNECT
-              </button>
+              </Button>
             </div>
             <div className="integration shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center">
               <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
@@ -85,9 +86,9 @@ const Integration = () => {
               <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">
                 Khoros
               </div>
-              <button className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300">
+              <Button type="button" text="connect"  className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient">
                 CONNECT
-              </button>
+              </Button>
             </div>
           </div>
           <div className="flex gap-0.93">
@@ -98,9 +99,9 @@ const Integration = () => {
               <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">
                 Khoros
               </div>
-              <button className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300">
+              <Button type="button" text="connect" className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient">
                 CONNECT
-              </button>
+              </Button>
             </div>
             <div className="integration shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center">
               <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
@@ -109,9 +110,9 @@ const Integration = () => {
               <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">
                 Khoros
               </div>
-              <button className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300">
+              <Button type="button" text="connect" className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient">
                 CONNECT
-              </button>
+              </Button>
             </div>
             <div className="integration shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center">
               <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
@@ -120,9 +121,9 @@ const Integration = () => {
               <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">
                 Khoros
               </div>
-              <button className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300">
+              <Button type="button" text="connect" className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient">
                 CONNECT
-              </button>
+              </Button>
             </div>
           </div>
         </div>

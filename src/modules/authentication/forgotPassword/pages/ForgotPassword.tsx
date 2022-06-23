@@ -35,7 +35,7 @@ const ForgotPassword = () => {
             <Button
               text='Submit'
               type='submit'
-              className='font-Poppins rounded-lg text-base text-white transition ease-in duration-300 w-full mt-1.84 h-3.6 hover:shadow-buttonShadowHover'
+              className='font-Poppins rounded-lg text-base text-white transition ease-in duration-300 w-full mt-1.84 h-3.6 hover:shadow-buttonShadowHover btn-gradient'
             />
             <div className='underline text-center text-thinGray font-Poppins font-normal mt-1.86 text-reset'>
               <a href=''> Resend Link</a>
