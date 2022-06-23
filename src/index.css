@@ -23,3 +23,9 @@ input {
 .no-scroll-bar::-webkit-scrollbar {
   display: none;
 }
+.app-input-card-border{
+  border: 1px solid #dbd8fc;
+}
+.app-result-card-border{
+  border:2px solid #eff0f7;
+}
