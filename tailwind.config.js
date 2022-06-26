@@ -100,7 +100,8 @@ module.exports = {
         2.55:'40px',
         1.43: '23px',
         2.625:'42px',
-        4.68:'75px'
+        4.68:'75px',
+        7.59:'121.57px'
 
       },
       padding: {
@@ -237,7 +238,8 @@ module.exports = {
         contact: '22px',
         email: '10px',
         profileEmail: '8px',
-        noReports:'28px'
+        noReports:'28px',
+        renewalPrice:'32px'
       },
       fontFamily: {
         Inter: ['Inter', 'sans-serif'],
@@ -279,7 +281,11 @@ module.exports = {
           '0px 0px 2px rgba(0, 0, 0, 0.12), 0px 20px 20px rgba(0, 0, 0, 0.08)',
         profileCard:
           '0px 100px 80px rgba(41, 72, 152, 0.05),0px 64.8148px 46.8519px rgba(41, 72, 152, 0.037963),0px 38.5185px 25.4815px rgba(41, 72, 152, 0.0303704),0px 20px 13px rgba(41, 72, 152, 0.025),0px 8.14815px 6.51852px rgba(41, 72, 152, 0.0196296),0px 1.85185px 3.14815px rgba(41, 72, 152, 0.012037)',
-        reportInput:'8.32785px 8.32785px 24.9835px rgba(2, 2, 70, 0.05)'
+        reportInput:'8.32785px 8.32785px 24.9835px rgba(2, 2, 70, 0.05)',
+        subscription:'0px 100px 80px rgba(110, 181, 217, 0.1);'
+
+
+        
         
       },
       gap: {
