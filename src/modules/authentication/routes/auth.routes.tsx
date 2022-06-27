@@ -6,6 +6,7 @@ import ResendVerificationMail from '../resendVerificationMail/ResendVerification
 import Subscription from '../subscription/pages/Subscription';
 import Welcome from '../welcome/pages/Welcome';
 import Integration from '../integration/pages/Integration';
+import SubscriptionExpired from '../subscriptionExpired/pages/SubscriptionExpired';
 
 const SignIn = React.lazy(() => import('../signIn/pages/SignIn'));
 const SignUp = React.lazy(() => import('../signUp/pages/SignUp'));
@@ -82,6 +83,14 @@ let authRoutes: RoutesArray[] = [
           </PublicRoute>
         ),
         path: '/subscription',
+      },
+      {
+        element: (
+          <PublicRoute>
+            <SubscriptionExpired/>
+          </PublicRoute>
+        ),
+        path: '/subscription/expired/:id',
       },
     ],
   },

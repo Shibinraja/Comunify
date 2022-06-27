@@ -1,7 +1,10 @@
+import QuickInfo from 'common/quickInfo/QuickInfo';
 import React from 'react';
 
 const Dashboard = () => {
-  return <div className='bg-green-500 text-3xl'>Dashboard</div>;
+  return <div className='flex flex-col'>
+    <QuickInfo/>
+  </div>;
 };
 
 export default Dashboard;

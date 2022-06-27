@@ -29,3 +29,26 @@ input {
 .app-result-card-border{
   border:2px solid #eff0f7;
 }
+
+.border-gradient-rounded{
+  position: relative;
+  box-sizing: border-box;
+  background: #fff;
+  border-radius: 15px;
+}
+.border-gradient-rounded:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  margin: -5px;
+  border-radius: inherit;
+  background:  linear-gradient(277.31deg, #69B5E5 1.11%, #ABCF6B 100%);
+  border: double 1px transparent;
+  background-image: linear-gradient(white, white), linear-gradient(277.31deg, #69B5E5 1.11%, #ABCF6B 100%);
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+}

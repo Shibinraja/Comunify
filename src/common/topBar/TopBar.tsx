@@ -9,8 +9,8 @@ import ellipseIcon from '../../assets/images/Ellipse 39.svg';
 
 function TopBar() {
   return (
-    <div className='container mt-20 mx-auto w-[50%]'>
-      <div className='flex justify-between items-center'>
+    <div className='container mt-6 mx-auto '>
+      <div className='flex justify-between items-center '>
         <div className='relative'>
           <input
             type='text'

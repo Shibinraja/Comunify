@@ -1,15 +1,17 @@
-import React from 'react';
-import { Outlet } from 'react-router';
-import SideNav from '../common/sideNav/SideNav';
-import TopBar from '../common/topBar/TopBar';
+import React from "react";
+import { Outlet } from "react-router";
+import SideNav from "../common/sideNav/SideNav";
+import TopBar from "../common/topBar/TopBar";
 
 const MainLayout: React.FC = () => {
   return (
-    <div className='w-full flex'>
+    <div className="flex w-full">
       <SideNav />
-      <div className='w-full'>
+      <div className="w-[83%] px-16">
         <TopBar />
-        <Outlet />
+        <div className="mt-10">
+          <Outlet />
+        </div>
       </div>
     </div>
   );
