@@ -24,7 +24,7 @@ const SignUp = () => {
         <div className="w-full md:w-1/2 signup-cover-bg bg-no-repeat pt-20 bg-left rounded-lg  bg-thinBlue flex items-center justify-center fixed pb-80">
           <img src={bgSignUpImage} alt="signup-image" />
         </div>
-        <div className="w-full md:w-1/2  mt-5.2 flex flex-col lg:pl-48  overflow-y-auto no-scroll-bar absolute right-0 pb-20">
+        <div className="w-full md:w-1/2 flex flex-col lg:pl-48  overflow-y-auto no-scroll-bar absolute right-0 pb-20">
           {" "}
           <h3 className="font-Inter text-neutralBlack font-bold not-italic text-signIn leading-2.8">
             Sign up{" "}
