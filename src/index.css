@@ -8,34 +8,40 @@ input {
   box-shadow: 8px 8px 24px rgba(2, 2, 70, 0.05);
 }
 
-.btn-gradient{
+.btn-gradient {
   background: linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
   box-shadow: 0px 3.63636px 27.2727px rgba(0, 0, 0, 0.1);
 }
+
 .google-signin {
   border: 1.92127px solid #eff0f7;
   box-shadow: 8px 8px 24px rgba(2, 2, 70, 0.05);
 }
+
 .icon-holder {
   top: 50%;
   transform: translateY(-50%);
 }
+
 .no-scroll-bar::-webkit-scrollbar {
   display: none;
 }
-.app-input-card-border{
+
+.app-input-card-border {
   border: 1px solid #dbd8fc;
 }
-.app-result-card-border{
-  border:2px solid #eff0f7;
+
+.app-result-card-border {
+  border: 2px solid #eff0f7;
 }
 
-.border-gradient-rounded{
+.border-gradient-rounded {
   position: relative;
   box-sizing: border-box;
   background: #fff;
   border-radius: 15px;
 }
+
 .border-gradient-rounded:before {
   content: "";
   position: absolute;
@@ -46,9 +52,23 @@ input {
   z-index: -1;
   margin: -5px;
   border-radius: inherit;
-  background:  linear-gradient(277.31deg, #69B5E5 1.11%, #ABCF6B 100%);
+  background: linear-gradient(277.31deg, #69B5E5 1.11%, #ABCF6B 100%);
   border: double 1px transparent;
   background-image: linear-gradient(white, white), linear-gradient(277.31deg, #69B5E5 1.11%, #ABCF6B 100%);
   background-origin: border-box;
   background-clip: content-box, border-box;
+}
+
+.section::-webkit-scrollbar {
+  width: 4.18px;
+}
+
+
+/* .section::-webkit-scrollbar-track {
+  background-color: darkgrey;
+} */
+
+.section::-webkit-scrollbar-thumb {
+  background: #EEEEEE;
+  border-radius: 60px;
 }
