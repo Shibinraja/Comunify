@@ -639,10 +639,6 @@ video {
   top: 5rem;
 }
 
-.top-7{
-  top: 1.75rem;
-}
-
 .z-50{
   z-index: 50;
 }
@@ -889,12 +885,12 @@ video {
   height: 2.75rem;
 }
 
-.h-3\.3{
-  height: 52.82px;
+.h-2\.31{
+  height: 37px;
 }
 
-.min-h-\[500px\]{
-  min-height: 500px;
+.h-3\.3{
+  height: 52.82px;
 }
 
 .w-full{
@@ -1341,10 +1337,6 @@ video {
   padding-right: 0px;
 }
 
-.pb-48{
-  padding-bottom: 12rem;
-}
-
 .text-center{
   text-align: center;
 }
@@ -1657,6 +1649,10 @@ input {
   box-shadow: 0px 3.63636px 27.2727px rgba(0, 0, 0, 0.1);
 }
 
+.btn-disconnect-gradient{
+  background: linear-gradient(8.33deg, #EE9934 24.35%, #F9C837 94.6%);
+}
+
 .google-signin {
   border: 1.92127px solid #eff0f7;
   box-shadow: 8px 8px 24px rgba(2, 2, 70, 0.05);
@@ -1677,6 +1673,10 @@ input {
 
 .app-result-card-border{
   border:2px solid #eff0f7;
+}
+
+.border-bottom-card{
+  border-bottom: 1px solid #E6E6E6;
 }
 
 .border-gradient-rounded{

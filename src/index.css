@@ -12,6 +12,9 @@ input {
   background: linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
   box-shadow: 0px 3.63636px 27.2727px rgba(0, 0, 0, 0.1);
 }
+.btn-disconnect-gradient{
+  background: linear-gradient(8.33deg, #EE9934 24.35%, #F9C837 94.6%);
+}
 .google-signin {
   border: 1.92127px solid #eff0f7;
   box-shadow: 8px 8px 24px rgba(2, 2, 70, 0.05);
@@ -28,6 +31,10 @@ input {
 }
 .app-result-card-border{
   border:2px solid #eff0f7;
+}
+
+.border-bottom-card{
+  border-bottom: 1px solid #E6E6E6;
 }
 
 .border-gradient-rounded{
