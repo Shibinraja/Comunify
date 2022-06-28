@@ -1,47 +1,41 @@
+# Pull Request Template
+
 ## Description
 
-Should include a concise description of the changes (bug or feature), it's impact, along with a summary of the solution
+Please include a summary of the change and which issue is fixed. Please also include relevant motivation and context. List any dependencies that are required for this change.
 
-## Steps to Reproduce Bug and Validate Solution
+Fixes # (issue)
 
-**Only applicable if the work is to address a bug.** Please remove this section if the work is for a feature or story Provide details on the environment the bug is found, and detailed steps to recreate the bug. This should be detailed enough for a team member to confirm that the bug no longer occurs
+## Type of change
 
-## PR Checklist
+Please delete options that are not relevant.
 
-Use the check-list below to ensure your branch is ready for PR. If the item is not applicable, leave it blank.
-- [ ] I have updated the documentation accordingly.
-- [ ]  have added tests to cover my changes.
-- [ ] All new and existing tests passed.
-- [ ] My code follows the code style of this project.
-- [ ] I ran the lint checks which produced no new errors nor warnings for my changes.
-- [ ] I have checked to ensure there aren't other open Pull Requests for the same update/change.
+- [ ] Bug fix (non-breaking change which fixes an issue)
+- [ ] New feature (non-breaking change which adds functionality)
+- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] This change requires a documentation update
 
+## How Has This Been Tested?
 
-## Does this introduce a breaking change?
-
-- [ ] Yes
-- [ ] No
-
-If this introduces a breaking change, please describe the impact and migration path for existing applications below.
-
-## Testing
-
-* Instructions for testing and validation of your code.
-* Which test sets were used.
-* Description of test scenarios that you have tried.
+Please describe the tests that you ran to verify your changes. Provide instructions so we can reproduce. Please also list any relevant details for your test configuration
 
 - [ ] Test A
 - [ ] Test B
 
+**Test Configuration**:
+* Firmware version:
+* Hardware:
+* Toolchain:
+* SDK:
 
-## Any relevant logs or outputs
+## Checklist:
 
-* Use this section to attach pictures that demonstrates your changes working / healthy
-* If you are printing something show a screenshot
-
-## Other information or known dependencies
-
-* Any other information or known dependencies that is important to this PR.
-* TODO that are to be done after this PR.
-
-
+- [ ] My code follows the style guidelines of this project
+- [ ] I have performed a self-review of my own code
+- [ ] I have commented my code, particularly in hard-to-understand areas
+- [ ] I have made corresponding changes to the documentation
+- [ ] My changes generate no new warnings
+- [ ] I have added tests that prove my fix is effective or that my feature works
+- [ ] New and existing unit tests pass locally with my changes
+- [ ] Any dependent changes have been merged and published in downstream modules
+- [ ] I have checked my code and corrected any misspellings
