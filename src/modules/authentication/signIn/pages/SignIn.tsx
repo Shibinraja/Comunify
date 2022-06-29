@@ -11,14 +11,14 @@ import { loginSchema } from "@/lib/validation";
 import socialLogo from "../../../../assets/images/Social.svg";
 import bgSignInImage from "../../../../assets/images/bg-sign.svg";
 import eyeIcon from "../../../../assets/images/eye.svg";
-import closeeye from '../../../../assets/images/closeeye.png';
+import closeEyeIcon from "../../../../assets/images/closeeye.png";
 import { Link } from "react-router-dom";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import "./SignIn.css";
 import { useState } from "react";
 
-const SignIn = () => {
+const SignIn: React.FC = () => {
   //   const dispatch = useAppDispatch();
   //   const isLoading = useLoading(LOGIN);
   //   const {
@@ -109,7 +109,7 @@ const SignIn = () => {
                     ) : (
                       <img
                         className="absolute icon-holder left-96 cursor-pointer "
-                        src={closeeye}
+                        src={closeEyeIcon}
                         alt=""
                       />
                     )}

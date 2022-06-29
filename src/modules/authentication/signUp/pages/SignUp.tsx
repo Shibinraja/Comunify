@@ -1,15 +1,13 @@
 import Input from "common/input/Input";
 import Button from "common/button/Button";
 import eyeIcon from "../../../../assets/images/eye.svg";
-import closeeye from '../../../../assets/images/closeeye.png';
-
-
+import closeEyeIcon from "../../../../assets/images/closeeye.png";
 import socialLogo from "../../../../assets/images/Social.svg";
 import bgSignUpImage from "../../../../assets/images/bg-sign.svg";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
-const SignUp = () => {
+const SignUp: React.FC = () => {
   const [passwordType, setPasswordType] = useState("password");
   const togglePassword = () => {
     if (passwordType === "password") {
@@ -78,7 +76,7 @@ const SignUp = () => {
                 ) : (
                   <img
                     className="absolute icon-holder left-96 cursor-pointer "
-                    src={closeeye}
+                    src={closeEyeIcon}
                     alt=""
                   />
                 )}

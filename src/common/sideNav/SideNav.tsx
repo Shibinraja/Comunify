@@ -7,7 +7,7 @@ import chartIcon from '../../assets/images/pie_chart.svg';
 import dropdownIcon from '../../assets/images/dropdown.svg';
 import Button from 'common/button';
 
-const SideNav = () => {
+const SideNav: React.FC = () => {
   return (
     <nav className='h-screen bg-brightGray w-2/12'>
       <div className='flex flex-col pl-2.58 mt-3.01'>

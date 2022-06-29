@@ -1,9 +1,9 @@
-import Button from 'common/button';
+import Button from "common/button";
 import SubscriptionCard from "common/subscriptionCard/SubscriptionCard";
 import bgWelcomeImage from "../../../../assets/images/bg-sign.svg";
 import "./Welcome.css";
 
-const Welcome = () => {
+const Welcome: React.FC = () => {
   return (
     <div className="w-full flex flex-col">
       <div className="flex w-full relative">
@@ -23,7 +23,10 @@ const Welcome = () => {
               <SubscriptionCard />
             </div>
             <div className="mt-5 ">
-              <Button text="freeTrial" className="free-trial-btn font-Inter text-desc w-25.9 font-normal leading-1.8 text-lightBlue box-border rounded-lg bg-white py-2.5 px-4 shadow-trialButtonShadow ">
+              <Button
+                text="freeTrial"
+                className="free-trial-btn font-Inter text-desc w-25.9 font-normal leading-1.8 text-lightBlue box-border rounded-lg bg-white py-2.5 px-4 shadow-trialButtonShadow "
+              >
                 Continue with 14 Days Free Trial
               </Button>
             </div>

@@ -1,14 +1,13 @@
-/* eslint-disable react/no-unescaped-entities */
 import React, { useState } from "react";
 import bgSignInImage from "../../../../assets/images/bg-sign.svg";
 import eyeIcon from "../../../../assets/images/eye.svg";
-import closeeye from '../../../../assets/images/closeeye.png';
+import closeEyeIcon from "../../../../assets/images/closeeye.png";
 
 import Input from "common/input";
 import Button from "common/button";
-const CreateNewPassword = () => {
-  const [passwordType1, setPasswordType1] = useState("password");
-  const [passwordType2, setPasswordType2] = useState("password");
+const CreateNewPassword: React.FC = () => {
+  const [passwordType1, setPasswordType1] = useState<string>("password");
+  const [passwordType2, setPasswordType2] = useState<string>("password");
 
   const togglePassword1 = () => {
     if (passwordType1 === "password") {
@@ -58,7 +57,7 @@ const CreateNewPassword = () => {
                 ) : (
                   <img
                     className="absolute icon-holder left-96 cursor-pointer "
-                    src={closeeye}
+                    src={closeEyeIcon}
                     alt=""
                   />
                 )}
@@ -83,7 +82,7 @@ const CreateNewPassword = () => {
                 ) : (
                   <img
                     className="absolute icon-holder left-96 cursor-pointer "
-                    src={closeeye}
+                    src={closeEyeIcon}
                     alt=""
                   />
                 )}

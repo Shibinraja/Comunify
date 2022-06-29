@@ -1,7 +1,7 @@
 import Button from 'common/button';
 import successIcon from '../../assets/images/tostr.png';
 
-const SubscriptionCard = () => {
+const SubscriptionCard: React.FC = () => {
   return (
     <div className="mt-1.87  flex flex-col ">
       <div className="border-gradient-rounded px-8 py-5 bg-white rounded-0.9 ">

@@ -1,4 +1,4 @@
-const QuickInfo = () => {
+const QuickInfo: React.FC = () => {
   return (
     <div className="container mx-auto mt-5 info ">
       <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18">Quick Info</h3>

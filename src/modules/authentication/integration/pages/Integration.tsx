@@ -6,9 +6,9 @@ import bgIntegrationImage from "../../../../assets/images/bg-sign.svg";
 import "./Integration.css";
 import Button from "common/button";
 
-const Integration = () => {
+const Integration: React.FC = () => {
   return (
-      <div className="w-full flex flex-col pb-10">
+    <div className="w-full flex flex-col pb-10">
       <div className="flex w-full relative">
         <div className="w-full md:w-1/2 signup-cover-bg bg-no-repeat pt-20 bg-left rounded-lg  bg-thinBlue flex items-center justify-center fixed pb-80">
           <img src={bgIntegrationImage} alt="" />
@@ -23,69 +23,46 @@ const Integration = () => {
             <div className="flex gap-0.93">
               <div className="integration shadow-integrationCardShadow border-integrationBorder w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center">
                 <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                  <img src={unsplashIcon} alt="" className="h-2.31"/>
+                  <img src={unsplashIcon} alt="" className="h-2.31" />
                 </div>
                 <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">
                   Khoros
                 </div>
-                <Button type="button" text="connect" className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient">
+                <Button
+                  type="button"
+                  text="connect"
+                  className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient"
+                >
                   CONNECT
                 </Button>
               </div>
               <div className="integration shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center">
                 <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                  <img src={slackIcon} alt="" className="h-2.31"/>
+                  <img src={slackIcon} alt="" className="h-2.31" />
                 </div>
                 <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">
                   Khoros
                 </div>
-                <Button type="button" text="connect" className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient">
+                <Button
+                  type="button"
+                  text="connect"
+                  className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient"
+                >
                   CONNECT
                 </Button>
               </div>
               <div className="integration shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center">
                 <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                  <img src={unsplashIcon} alt="" className="h-2.31"/>
+                  <img src={unsplashIcon} alt="" className="h-2.31" />
                 </div>
                 <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">
                   Khoros
                 </div>
-                <Button type="button" text="connect" className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient">
-                  CONNECT
-                </Button>
-              </div>
-            </div>
-            <div className="flex gap-0.93">
-              <div className="integration shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center">
-                <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                  <img src={unsplashIcon} alt="" className="h-2.31"/>
-                </div>
-                <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">
-                  Khoros
-                </div>
-                <Button type="button" text="connect" className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient">
-                  CONNECT
-                </Button>
-              </div>
-              <div className="integration shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center">
-                <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                  <img src={slackIcon} alt="" className="h-2.31"/>
-                </div>
-                <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">
-                  Khoros
-                </div>
-                <Button type="button" text="connect" className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient">
-                  CONNECT
-                </Button>
-              </div>
-              <div className="integration shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center">
-                <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                  <img src={unsplashIcon} alt="" className="h-2.31"/>
-                </div>
-                <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">
-                  Khoros
-                </div>
-                <Button type="button" text="connect"  className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient">
+                <Button
+                  type="button"
+                  text="connect"
+                  className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient"
+                >
                   CONNECT
                 </Button>
               </div>
@@ -93,34 +70,93 @@ const Integration = () => {
             <div className="flex gap-0.93">
               <div className="integration shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center">
                 <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                  <img src={unsplashIcon} alt="" className="h-2.31"/>
+                  <img src={unsplashIcon} alt="" className="h-2.31" />
                 </div>
                 <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">
                   Khoros
                 </div>
-                <Button type="button" text="connect" className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient">
+                <Button
+                  type="button"
+                  text="connect"
+                  className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient"
+                >
                   CONNECT
                 </Button>
               </div>
               <div className="integration shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center">
                 <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                  <img src={slackIcon} alt="" className="h-2.31"/>
+                  <img src={slackIcon} alt="" className="h-2.31" />
                 </div>
                 <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">
                   Khoros
                 </div>
-                <Button type="button" text="connect" className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient">
+                <Button
+                  type="button"
+                  text="connect"
+                  className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient"
+                >
                   CONNECT
                 </Button>
               </div>
               <div className="integration shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center">
                 <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                  <img src={unsplashIcon} alt="" className="h-2.31"/>
+                  <img src={unsplashIcon} alt="" className="h-2.31" />
                 </div>
                 <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">
                   Khoros
                 </div>
-                <Button type="button" text="connect" className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient">
+                <Button
+                  type="button"
+                  text="connect"
+                  className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient"
+                >
+                  CONNECT
+                </Button>
+              </div>
+            </div>
+            <div className="flex gap-0.93">
+              <div className="integration shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center">
+                <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
+                  <img src={unsplashIcon} alt="" className="h-2.31" />
+                </div>
+                <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">
+                  Khoros
+                </div>
+                <Button
+                  type="button"
+                  text="connect"
+                  className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient"
+                >
+                  CONNECT
+                </Button>
+              </div>
+              <div className="integration shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center">
+                <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
+                  <img src={slackIcon} alt="" className="h-2.31" />
+                </div>
+                <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">
+                  Khoros
+                </div>
+                <Button
+                  type="button"
+                  text="connect"
+                  className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient"
+                >
+                  CONNECT
+                </Button>
+              </div>
+              <div className="integration shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center">
+                <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
+                  <img src={unsplashIcon} alt="" className="h-2.31" />
+                </div>
+                <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">
+                  Khoros
+                </div>
+                <Button
+                  type="button"
+                  text="connect"
+                  className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient"
+                >
                   CONNECT
                 </Button>
               </div>

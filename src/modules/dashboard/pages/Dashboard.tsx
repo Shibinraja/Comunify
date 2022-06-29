@@ -1,10 +1,12 @@
-import QuickInfo from 'common/quickInfo/QuickInfo';
-import React from 'react';
+import QuickInfo from "common/quickInfo/QuickInfo";
+import React from "react";
 
-const Dashboard = () => {
-  return <div className='flex flex-col'>
-    <QuickInfo/>
-  </div>;
+const Dashboard: React.FC = () => {
+  return (
+    <div className="flex flex-col">
+      <QuickInfo />
+    </div>
+  );
 };
 
 export default Dashboard;

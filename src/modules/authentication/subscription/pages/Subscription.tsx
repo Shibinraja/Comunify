@@ -3,7 +3,7 @@ import Input from "common/input";
 import bgSubscriptionImage from "../../../../assets/images/bg-sign.svg";
 import cardNumberIcon from "../../../../assets/images/card.svg";
 
-const Subscription = () => {
+const Subscription: React.FC = () => {
   return (
     <div className="w-full flex flex-col">
       <div className="flex w-full relative">
