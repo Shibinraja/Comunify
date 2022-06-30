@@ -15,18 +15,6 @@
         "lint-staged": "lint-staged --config lint-staged.js",
         "husky-install": "husky install"
     },
-    "husky": {
-        "hooks": {
-            "pre-commit": "lint-staged"
-        }
-    },
-    "lint-staged": {
-        "*.{ts,tsx,js,jsx}": [
-            "eslint --max-warnings=0",
-            "prettier --single-quote --write",
-            "git add"
-        ]
-    },
     "dependencies": {
         "@hookform/resolvers": "^2.9.0",
         "axios": "^0.27.2",
