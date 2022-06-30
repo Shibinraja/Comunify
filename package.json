@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^2.9.0",
+    "@types/react-modal": "^3.13.1",
+    "@uiball/loaders": "^1.2.6",
     "axios": "^0.27.2",
     "concurrently": "^7.2.1",
     "formik": "^2.2.9",
@@ -21,6 +23,7 @@
     "react-dom": "^18.1.0",
     "react-hook-form": "^7.31.3",
     "react-loader-spinner": "^5.1.5",
+    "react-modal": "^3.15.1",
     "react-redux": "^8.0.2",
     "react-router": "^6.3.0",
     "react-router-dom": "^6.3.0",

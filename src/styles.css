@@ -627,6 +627,14 @@ video {
   left: 24rem;
 }
 
+.right-\[400px\]{
+  right: 400px;
+}
+
+.top-72{
+  top: 18rem;
+}
+
 .left-\[500px\]{
   left: 500px;
 }
@@ -777,6 +785,14 @@ video {
   margin-top: 13px;
 }
 
+.mt-24{
+  margin-top: 6rem;
+}
+
+.mt-4{
+  margin-top: 1rem;
+}
+
 .mt-5\.2{
   margin-top: 84.57px;
 }
@@ -889,6 +905,18 @@ video {
   height: 37px;
 }
 
+.h-14\.56{
+  height: 233px;
+}
+
+.h-14{
+  height: 3.5rem;
+}
+
+.h-2\.68{
+  height: 43px;
+}
+
 .h-3\.3{
   height: 52.82px;
 }
@@ -957,8 +985,16 @@ video {
   width: 1.5rem;
 }
 
-.w-\[20\%\]{
-  width: 20%;
+.w-22\.31{
+  width: 357px;
+}
+
+.w-2\.68{
+  width: 43px;
+}
+
+.w-2{
+  width: 0.5rem;
 }
 
 .max-w-sm{
@@ -1097,6 +1133,10 @@ video {
 
 .bg-cover{
   background-size: cover;
+}
+
+.bg-contain{
+  background-size: contain;
 }
 
 .bg-center{
@@ -1621,6 +1661,12 @@ video {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
+.shadow-modal{
+  --tw-shadow: 0px 0px 2px rgba(0, 0, 0, 0.12), 0px 20px 20px rgba(0, 0, 0, 0.08);
+  --tw-shadow-colored: 0px 0px 2px var(--tw-shadow-color), 0px 20px 20px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
 .shadow-trialButtonShadow{
   --tw-shadow: 8px 8px 24px rgba(2, 2, 70, 0.05);
   --tw-shadow-colored: 8px 8px 24px var(--tw-shadow-color);
@@ -1681,6 +1727,10 @@ input {
 
 .border-bottom-card{
   border-bottom: 1px solid #E6E6E6;
+}
+
+.border-fetching-card{
+  border: 1px solid #dee2e6;
 }
 
 .border-gradient-rounded{

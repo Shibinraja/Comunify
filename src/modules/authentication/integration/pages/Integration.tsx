@@ -5,8 +5,14 @@ import bgIntegrationImage from "../../../../assets/images/bg-sign.svg";
 
 import "./Integration.css";
 import Button from "common/button";
+import Modal from "react-modal";
+import { DotPulse } from "@uiball/loaders";
+import { useState } from "react";
+Modal.setAppElement("#root");
 
 const Integration: React.FC = () => {
+  const [isModalOpen, setisModalOpen] = useState(false);
+
   return (
     <div className="w-full flex flex-col pb-10">
       <div className="flex w-full relative">
@@ -160,6 +166,26 @@ const Integration: React.FC = () => {
                   CONNECT
                 </Button>
               </div>
+              <Modal
+                isOpen={isModalOpen}
+                shouldCloseOnOverlayClick={true}
+                onRequestClose={() => setisModalOpen(false)}
+                className="right-[400px] top-72 absolute  mt-24 rounded-lg modals-tag bg-white shadow-modal"
+              >
+                <div className="flex flex-col items-center justify-center  h-14.56 w-22.31 shadow-modal rounded-lg border-fetching-card">
+                  <div className=" bg-no-repeat bg-center bg-contain ">
+                    <img src={slackIcon} alt="" className="rounded-full w-2.68 h-2.68" />
+                  </div>
+                  <div className="mt-4 text-integray font-Poppins fomt-normal text-desc leadind-1.68">
+                    Fetching data from <span className="text-black font-normal">Slack</span> 
+                  </div>
+                  <div className="mt-1.8">
+                    <div className="dot-pulse">
+                      <div className="dot-pulse__dot"></div>
+                    </div>
+                  </div>
+                </div>
+              </Modal>
             </div>
           </div>
           <div className="absolute left-[500px] bottom-5">
