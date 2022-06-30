@@ -761,6 +761,10 @@ video {
   margin-top: 20.13px;
 }
 
+.mt-6\.84{
+  margin-top: 109.57px;
+}
+
 .mt-0\.287{
   margin-top: 4.59px;
 }
@@ -1321,6 +1325,10 @@ video {
   padding-bottom: 20rem;
 }
 
+.pl-7\.53{
+  padding-left: 120.5px;
+}
+
 .pb-20{
   padding-bottom: 5rem;
 }
@@ -1613,6 +1621,12 @@ video {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
+.shadow-trialButtonShadow{
+  --tw-shadow: 8px 8px 24px rgba(2, 2, 70, 0.05);
+  --tw-shadow-colored: 8px 8px 24px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
 .shadow-integrationCardShadow{
   --tw-shadow: 0px 100px 80px rgba(41, 72, 152, 0.05),0px 64.8148px 46.8519px rgba(41, 72, 152, 0.037963),0px 38.5185px 25.4815px rgba(41, 72, 152, 0.0303704),0px 20px 13px rgba(41, 72, 152, 0.025),0px 8.14815px 6.51852px rgba(41, 72, 152, 0.0196296), 0px 1.85185px 3.14815px rgba(41, 72, 152, 0.012037);
   --tw-shadow-colored: 0px 100px 80px var(--tw-shadow-color), 0px 64.8148px 46.8519px var(--tw-shadow-color), 0px 38.5185px 25.4815px var(--tw-shadow-color), 0px 20px 13px var(--tw-shadow-color), 0px 8.14815px 6.51852px var(--tw-shadow-color), 0px 1.85185px 3.14815px var(--tw-shadow-color);
@@ -1622,12 +1636,6 @@ video {
 .shadow-connectButtonShadow{
   --tw-shadow: 0px 4px 30px rgba(0, 0, 0, 0.1);
   --tw-shadow-colored: 0px 4px 30px var(--tw-shadow-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-}
-
-.shadow-trialButtonShadow{
-  --tw-shadow: 8px 8px 24px rgba(2, 2, 70, 0.05);
-  --tw-shadow-colored: 8px 8px 24px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
@@ -1713,6 +1721,18 @@ input {
 
 .placeholder\:font-Poppins::placeholder{
   font-family: Poppins, sans-serif;
+}
+
+.placeholder\:font-Inter::-moz-placeholder{
+  font-family: Inter, sans-serif;
+}
+
+.placeholder\:font-Inter:-ms-input-placeholder{
+  font-family: Inter, sans-serif;
+}
+
+.placeholder\:font-Inter::placeholder{
+  font-family: Inter, sans-serif;
 }
 
 .placeholder\:text-search::-moz-placeholder{
