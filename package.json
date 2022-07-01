@@ -12,7 +12,6 @@
         "release": "standard-version",
         "prettier-check": "prettier src --check",
         "prettier": "prettier src --list-different",
-        "lint-staged": "lint-staged --config lint-staged.js",
         "husky-install": "husky install"
     },
     "dependencies": {
@@ -52,8 +51,6 @@
         "eslint-plugin-import": "^2.26.0",
         "eslint-plugin-react": "^7.30.0",
         "eslint-plugin-react-hooks": "^4.6.0",
-        "husky": "^8.0.1",
-        "lint-staged": "^13.0.3",
         "prettier": "^2.6.2",
         "sass": "^1.52.2",
         "standard-version": "^9.5.0",
