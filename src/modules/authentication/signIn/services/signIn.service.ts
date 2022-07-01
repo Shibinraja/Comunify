@@ -1,13 +1,8 @@
-import { signInInput } from '../interface/signIn.interface';
+import { signInInput, signInResponse } from '../interface/signIn.interface';
+import { GeneratorResponse } from '@/lib/api';
+import { request } from '@/lib/request';
 
-// Dummy login request that will resolve in 2 seconds
-export function* login(body: signInInput) {
-  const res: Promise<boolean> = yield new Promise((resolve, reject) => {
-    if (body.username === 'user' && body.password === 'user') {
-      setTimeout(() => resolve(true), 2000);
-    } else {
-      reject('Invalid username or password');
-    }
-  });
-  return res;
+export function* _signIn(body: signInInput): GeneratorResponse<signInResponse> {
+  const { data } = yield request.post('/login', body);
+  return data;
 }

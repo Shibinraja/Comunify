@@ -1,4 +1,11 @@
 export interface signInInput {
-  username: string;
+  userName: string;
   password: string;
 }
+
+export type signInResponse = {
+  error: boolean;
+  data: { token: string };
+  message: string;
+  version: string;
+};
