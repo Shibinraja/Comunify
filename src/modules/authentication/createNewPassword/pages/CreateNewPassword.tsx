@@ -38,53 +38,37 @@ const CreateNewPassword: React.FC = () => {
             Enter your new password.
           </p>
           <form className="w-25.9 mt-1.9 " autoComplete="off">
-            <div className="password  relative">
+            <div className="flex items-center relative password mt-1.258 w-25.9">
               <Input
                 type={passwordType1}
                 placeholder="New Password"
                 label="New Password"
                 id="password1"
                 name="password1"
-                className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
+                className="h-4.5 w-25.9 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
               />
-              <div onClick={togglePassword1} className="m-0 p-0">
+              <div className="absolute  right-5" onClick={togglePassword1}>
                 {passwordType1 === "password" ? (
-                  <img
-                    className="absolute icon-holder left-96 cursor-pointer "
-                    src={eyeIcon}
-                    alt=""
-                  />
+                  <img className="cursor-pointer " src={eyeIcon} alt="" />
                 ) : (
-                  <img
-                    className="absolute icon-holder left-96 cursor-pointer "
-                    src={closeEyeIcon}
-                    alt=""
-                  />
+                  <img className="cursor-pointer " src={closeEyeIcon} alt="" />
                 )}
               </div>
             </div>
-            <div className="password relative mt-1.258">
+            <div className="flex items-center relative password mt-1.258 w-25.9">
               <Input
                 type={passwordType2}
                 placeholder="Confirm Password"
                 label="Confirm Password"
                 id="password2"
                 name="password2"
-                className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
+                className="h-4.5 w-25.9 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
               />
-              <div onClick={togglePassword2} className="m-0 p-0">
+              <div className="absolute  right-5" onClick={togglePassword2}>
                 {passwordType2 === "password" ? (
-                  <img
-                    className="absolute icon-holder left-96 cursor-pointer "
-                    src={eyeIcon}
-                    alt=""
-                  />
+                  <img className="cursor-pointer " src={eyeIcon} alt="" />
                 ) : (
-                  <img
-                    className="absolute icon-holder left-96 cursor-pointer "
-                    src={closeEyeIcon}
-                    alt=""
-                  />
+                  <img className="cursor-pointer " src={closeEyeIcon} alt="" />
                 )}
               </div>
             </div>

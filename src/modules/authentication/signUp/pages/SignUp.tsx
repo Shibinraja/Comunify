@@ -57,25 +57,25 @@ const SignUp: React.FC = () => {
                 Invalid email id
               </p>
             </div>
-            <div className="password mt-1.258 relative">
+            <div className="flex items-center relative password mt-1.258 w-25.9">
               <Input
                 type={passwordType}
                 placeholder="Create Password"
                 label="Password"
                 id="password"
                 name="password"
-                className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
+                className="h-4.5 w-25.9   rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
               />
-              <div onClick={togglePassword} className="m-0 p-0">
-                {passwordType === "password" ? (
+              <div className="absolute  right-5" onClick={togglePassword}>
+              {passwordType === "password" ? (
                   <img
-                    className="absolute icon-holder left-96 cursor-pointer "
+                    className="cursor-pointer "
                     src={eyeIcon}
                     alt=""
                   />
                 ) : (
                   <img
-                    className="absolute icon-holder left-96 cursor-pointer "
+                    className="cursor-pointer "
                     src={closeEyeIcon}
                     alt=""
                   />

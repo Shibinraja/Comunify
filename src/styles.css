@@ -623,8 +623,8 @@ video {
   right: 0px;
 }
 
-.left-96{
-  left: 24rem;
+.right-5{
+  right: 1.25rem;
 }
 
 .right-\[400px\]{
@@ -647,12 +647,12 @@ video {
   top: 5rem;
 }
 
-.z-50{
-  z-index: 50;
+.left-96{
+  left: 24rem;
 }
 
-.m-0{
-  margin: 0px;
+.z-50{
+  z-index: 50;
 }
 
 .mx-auto{
@@ -1161,10 +1161,6 @@ video {
 
 .p-2{
   padding: 0.5rem;
-}
-
-.p-0{
-  padding: 0px;
 }
 
 .px-16{
