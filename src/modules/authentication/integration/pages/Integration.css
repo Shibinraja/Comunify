@@ -52,3 +52,21 @@
     transform: scale(1.5);
   }
 }
+
+@media (min-width: 1200px) {
+  .integration-wrapper {
+    padding-bottom: 800px;
+  }
+}
+
+@media (min-width: 1500px) {
+  .integration-wrapper {
+    padding-bottom: 790px;
+  }
+}
+
+@media (min-width: 1700px) {
+  .integration-wrapper {
+    padding-bottom: 0px;
+  }
+}

@@ -5,10 +5,10 @@ import "./Welcome.css";
 
 const Welcome: React.FC = () => {
   return (
-    <div className="w-full flex flex-col">
+    <div className="w-full flex flex-col welcome-wrapper">
       <div className="flex w-full relative">
-        <div className="w-full md:w-1/2 signup-cover-bg bg-no-repeat pt-20 bg-left rounded-lg  bg-thinBlue flex items-center justify-center fixed pb-80">
-          <img src={bgWelcomeImage} alt="welcome-image" />
+        <div className="w-full md:w-1/2 signup-cover-bg  bg-no-repeat pt-20 bg-left rounded-lg  bg-thinBlue flex items-center justify-center fixed pb-80">
+          <img src={bgWelcomeImage} alt="welcome-image" className="image-welcome"/>
         </div>
         <div className="w-full md:w-1/2 flex flex-col pl-7.40 mt-16  overflow-y-auto no-scroll-bar absolute right-0 ">
           <div className="w-25.9">

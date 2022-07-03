@@ -921,6 +921,10 @@ video {
   height: 52.82px;
 }
 
+.h-full{
+  height: 100%;
+}
+
 .w-full{
   width: 100%;
 }
@@ -1878,6 +1882,18 @@ input {
 }
 
 @media (min-width: 1024px){
+  .lg\:w-10{
+    width: 2.5rem;
+  }
+
+  .lg\:w-full{
+    width: 100%;
+  }
+
+  .lg\:w-1\/2{
+    width: 50%;
+  }
+
   .lg\:pl-7\.53{
     padding-left: 120.5px;
   }

@@ -14,7 +14,7 @@ const Integration: React.FC = () => {
   const [isModalOpen, setisModalOpen] = useState(false);
 
   return (
-    <div className="w-full flex flex-col pb-10">
+    <div className="w-full flex flex-col pb-10 integration-wrapper">
       <div className="flex w-full relative">
         <div className="w-full md:w-1/2 signup-cover-bg bg-no-repeat pt-20 bg-left rounded-lg  bg-thinBlue flex items-center justify-center fixed pb-80">
           <img src={bgIntegrationImage} alt="" />

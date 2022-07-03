@@ -6,12 +6,12 @@ import bgForgotImage from "../../../../assets/images/bg-sign.svg";
 
 const ForgotPassword: React.FC = () => {
   return (
-    <div className="w-full flex flex-col">
+    <div className="w-full flex flex-col forgot-password-wrapper">
       <div className="flex w-full relative">
         <div className="w-1/2 password-cover-bg bg-no-repeat bg-left rounded-lg  bg-thinBlue flex items-center justify-center py-20 fixed">
           <img src={bgForgotImage} alt="" />
         </div>
-        <div className="w-1/2 flex pl-7.5 mt-13.1 flex-col overflow-y-auto no-scroll-bar absolute right-0 pb-[100px]">
+        <div className="w-1/2 flex pl-7.5 mt-13.1 flex-col overflow-y-auto no-scroll-bar absolute right-0 ">
           <h1 className="font-Inter font-bold text-signIn text-neutralBlack leading-2.8">
             Forgot Password
           </h1>

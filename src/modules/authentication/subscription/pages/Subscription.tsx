@@ -2,12 +2,14 @@ import Button from "common/button";
 import Input from "common/input";
 import bgSubscriptionImage from "../../../../assets/images/bg-sign.svg";
 import cardNumberIcon from "../../../../assets/images/card.svg";
+import "./Subscription.css";
+
 
 const Subscription: React.FC = () => {
   return (
-    <div className="w-full flex flex-col">
+    <div className="w-full flex flex-col subscription-wrapper">
       <div className="flex w-full relative">
-        <div className="w-1/2 password-cover-bg bg-no-repeat bg-left rounded-lg  bg-thinBlue flex items-center justify-center py-20 fixed">
+        <div className="w-1/2 subscription-cover-bg bg-no-repeat bg-left rounded-lg  bg-thinBlue flex items-center justify-center py-20 fixed">
           <img src={bgSubscriptionImage} alt="" />
         </div>
         <div className="w-1/2 flex  flex-col pl-7.5 mt-2.53   overflow-y-auto no-scroll-bar absolute right-0 pb-[60px]">
