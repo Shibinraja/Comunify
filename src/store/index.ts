@@ -1,6 +1,7 @@
 import { applyMiddleware, compose, createStore, StoreEnhancer } from 'redux';
+import { configureStore, Store } from '@reduxjs/toolkit';
 import type { Middleware } from 'redux';
-import createSagaMiddleware from 'redux-saga';
+import createSagaMiddleware, { SagaMiddleware } from 'redux-saga';
 import logger from 'redux-logger';
 import rootReducer from './rootReducer';
 import rootSaga from './rootSaga';
@@ -11,32 +12,44 @@ declare global {
   }
 }
 
-const configureStore = (preloadedState: RootState = {} as RootState) => {
-  const sagaMiddleware = createSagaMiddleware();
-  const middlewares: Middleware[] = [sagaMiddleware];
-
-  if (import.meta.env.MODE === 'development') {
-    middlewares.push(logger);
+declare module 'redux' {
+  export interface Store {
+    sagaTask: unknown;
   }
+}
 
-  const composeEnhancers =
-    window?.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-  const middlewareEnhancer = applyMiddleware(...middlewares);
-  // Add enhancers here
-  const enhancers = [middlewareEnhancer];
-  const composedEnhancers: StoreEnhancer = composeEnhancers(...enhancers);
+// const makeStore = (preloadedState: RootState = {} as RootState) => {
+const sagaMiddleware = createSagaMiddleware();
+const middleware: Middleware[] = [sagaMiddleware];
 
-  const store = createStore(rootReducer, preloadedState, composedEnhancers);
+if (import.meta.env.MODE === 'development') {
+  middleware.push(logger as SagaMiddleware);
+}
 
-  sagaMiddleware.run(rootSaga);
+const composeEnhancers =
+  window?.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const middlewareEnhancer = applyMiddleware(...middleware);
+// Add enhancers here
+const enhancers = [middlewareEnhancer];
+// const composedEnhancers: StoreEnhancer = composeEnhancers(...enhancers);
 
-  return store;
-};
+// const store:Store = createStore(rootReducer, preloadedState, composedEnhancers);
+
+const store: Store = configureStore({
+  reducer: rootReducer,
+  middleware,
+  devTools: import.meta.env.MODE === 'development',
+});
+
+store.sagaTask = sagaMiddleware.run(rootSaga);
+
+// return store;
+// };
 
 // Preloaded state is used to initialize the store with data possibly from localStorage
-const preloadedState = {} as RootState;
-const store = configureStore(preloadedState);
-
-export type RootState = ReturnType<typeof rootReducer>;
+// const preloadedState = {} as RootState;
+// const store = configureStore(preloadedState);
 export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof rootReducer>;
+
 export default store;

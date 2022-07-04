@@ -10,31 +10,31 @@ const CreateNewPassword: React.FC = () => {
   const [passwordType2, setPasswordType2] = useState<string>("password");
 
   const togglePassword1 = () => {
-    if (passwordType1 === "password") {
-      setPasswordType1("text");
+    if (passwordType1 === 'password') {
+      setPasswordType1('text');
       return;
     }
-    setPasswordType1("password");
+    setPasswordType1('password');
   };
 
   const togglePassword2 = () => {
-    if (passwordType2 === "password") {
-      setPasswordType2("text");
+    if (passwordType2 === 'password') {
+      setPasswordType2('text');
       return;
     }
-    setPasswordType2("password");
+    setPasswordType2('password');
   };
   return (
-    <div className="w-full flex flex-col  ">
-      <div className="flex w-full relative">
-        <div className="w-1/2 password-cover-bg bg-no-repeat bg-left rounded-lg  bg-thinBlue flex items-center justify-center py-20 fixed">
-          <img src={bgSignInImage} alt="" />
+    <div className='w-full flex flex-col  '>
+      <div className='flex w-full relative'>
+        <div className='w-1/2 password-cover-bg bg-no-repeat bg-left rounded-lg  bg-thinBlue flex items-center justify-center py-20 fixed'>
+          <img src={bgSignInImage} alt='' />
         </div>
-        <div className="w-1/2 flex pl-7.5 mt-13.1 flex-col  overflow-y-auto no-scroll-bar absolute right-0 pb-[60px]">
-          <h1 className="font-Inter font-bold text-signIn text-neutralBlack leading-2.8">
+        <div className='w-1/2 flex pl-7.5 mt-13.1 flex-col  overflow-y-auto no-scroll-bar absolute right-0 pb-[60px]'>
+          <h1 className='font-Inter font-bold text-signIn text-neutralBlack leading-2.8'>
             Forgot Password
           </h1>
-          <p className="mt-0.78 text-desc font-normal leading-1.8 font-Inter text-lightGray max-w-sm">
+          <p className='mt-0.78 text-desc font-normal leading-1.8 font-Inter text-lightGray max-w-sm'>
             Enter your new password.
           </p>
           <form className="w-25.9 mt-1.9 " autoComplete="off">
@@ -72,18 +72,18 @@ const CreateNewPassword: React.FC = () => {
                 )}
               </div>
             </div>
-            <div className="pb-10">
+            <div className='pb-10'>
               <Button
-                text="Submit"
-                type="submit"
-                className="font-Poppins rounded-lg text-base text-white mt-1.8 h-3.6  w-full hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient"
+                text='Submit'
+                type='submit'
+                className='font-Poppins rounded-lg text-base text-white mt-1.8 h-3.6  w-full hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient'
               />
             </div>
           </form>
         </div>
       </div>
-      <div className="py-1.9"></div>
-      <div className="footer"></div>
+      <div className='py-1.9'></div>
+      <div className='footer'></div>
     </div>
   );
 };
