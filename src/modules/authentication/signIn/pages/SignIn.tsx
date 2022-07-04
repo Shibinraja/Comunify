@@ -6,51 +6,35 @@ import { useAppDispatch } from "@/hooks/useRedux";
 import useLoading from "@/hooks/useLoading";
 import { LOGIN } from "../../store/actions/auth.actions";
 import authSlice from "../../store/slices/auth.slice";
-import { signInInput } from "../interface/signIn.interface";
+import { FormValues, signInInput } from "../interface/signIn.interface";
 import { loginSchema } from "@/lib/validation";
 import socialLogo from "../../../../assets/images/Social.svg";
 import bgSignInImage from "../../../../assets/images/bg-sign.svg";
 import eyeIcon from "../../../../assets/images/eye.svg";
 import closeeye from '../../../../assets/images/closeeye.png';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import "./SignIn.css";
 import { useState } from "react";
+import { Password_regex } from "../../../../constants/constants";
+
 
 const SignIn = () => {
-  //   const dispatch = useAppDispatch();
-  //   const isLoading = useLoading(LOGIN);
-  //   const {
-  //     register,
-  //     handleSubmit,
-  //     formState: { errors },
-  //   } = useForm<LoginBody>({ resolver: yupResolver(loginSchema) });
-
-  //   const onSubmit: SubmitHandler<LoginBody> = (data) => {
-  //     dispatch(authSlice.actions.login(data));
-  //   };
-  interface FormValues {
-    username: string;
-  }
+    const dispatch = useAppDispatch();
 
   const initialValues: FormValues = {
-    username: "",
+    email: "",
+    password: "",
   };
+
+  const [passwordType, setPasswordType] = useState("password");
 
   const handleSubmit = (values: FormValues): void => {
     console.log(JSON.stringify(values));
+    dispatch(authSlice.actions.login(values))
   };
 
-  const signInSchema = Yup.object().shape({
-    username: Yup.string()
-      .required("Username is required")
-      .min(5, "Username should be more than 5 character long")
-      .max(30, "Username should not exceed 30 characters")
-      .trim(),
-  });
-
-  const [passwordType, setPasswordType] = useState("password");
   const togglePassword = () => {
     if (passwordType === "password") {
       setPasswordType("text");
@@ -75,7 +59,15 @@ const SignIn = () => {
             onSubmit={handleSubmit}
             validationSchema={signInSchema}
           >
-            {(formik) => (
+             {({
+              errors,
+              handleBlur,
+              handleChange,
+              handleSubmit,
+              isSubmitting,
+              touched,
+              values,
+            }): JSX.Element => (
               <Form
                 className="flex flex-col  mt-1.8 w-25.9 "
                 autoComplete="off"
@@ -83,11 +75,16 @@ const SignIn = () => {
                 <div className="username">
                   <Input
                     type="text"
-                    placeholder="User Name/Email"
-                    label="Username"
+                    placeholder="Email"
+                    label="Email"
                     id="username"
-                    name="username"
+                    name="email"
                     className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.email}
+                    errors={Boolean(touched.email && errors.email)}
+                    helperText={touched.email && errors.email}
                   />
                 </div>
                 <div className="password mt-1.13 relative ">
@@ -98,6 +95,11 @@ const SignIn = () => {
                     id="password"
                     name="password"
                     className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.password}
+                    errors={Boolean(touched.password && errors.password)}
+                    helperText={touched.password && errors.password}
                   />
                   <div onClick={togglePassword} className="m-0 p-0">
                     {passwordType === "password" ? (
@@ -117,7 +119,7 @@ const SignIn = () => {
                 </div>
                 <Button
                   text="Sign In"
-                  type="button"
+                  type="submit"
                   className="font-Poppins rounded-lg text-base text-white mt-1.8 h-3.6 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient"
                 />
                 <div className="relative flex items-center pt-2.4">
@@ -158,5 +160,24 @@ const SignIn = () => {
     </div>
   );
 };
+
+const signInSchema = Yup.object().shape({
+  // userName: Yup.string()
+  //   .required("Username is required")
+  //   .min(5, "Username should be more than 5 character long")
+  //   .max(30, "Username should not exceed 30 characters")
+  //   .trim(),
+  email: Yup.string()
+  .email("Must be a valid email")
+  .max(255)
+  .required("Email is required"),
+  password: Yup.string()
+    .required("Password is required")
+    .min(8, "Password must be atleast 8 characters")
+    .matches(
+      Password_regex,
+      "Password must have one uppercase , one lowercase , a digit and specialcharacters"
+    ),
+});
 
 export default SignIn;

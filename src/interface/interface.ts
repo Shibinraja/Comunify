@@ -12,13 +12,17 @@ export interface Props {
   name: string;
   label?: string;
   type?: string;
+  errors?:boolean
   disabled?: boolean;
   placeholder?: string;
   value?: string;
-  id?: string;
+  id: string;
+  helperText?:any;
   handleSubmit?: any;
   username?:string;
   className?: string;
+  onBlur?: (e: React.FocusEvent<any, Element> | undefined) => void;
+  onChange?: (e: React.ChangeEvent<any>) => void;
 }
 
 export interface ButtonProps

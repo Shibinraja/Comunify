@@ -7,9 +7,6 @@ import {
 } from '../../../common/toast/toastFunctions';
 
 const Dashboard = () => {
-  useEffect(() => {
-    showWarningToast('The login was a success!');
-  }, []);
 
   return (
     <div className='flex flex-col'>
