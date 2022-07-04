@@ -2,17 +2,22 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { InitialState } from '../types/auth.types';
 import type { signInInput } from '../../signIn/interface/signIn.interface';
 import { signUpInput } from 'modules/authentication/signUp/interface/signup.interface';
+import { resendVerificationMailInput, verifyEmailInput } from 'modules/authentication/resendVerificationMail/interface/verify.interface';
 
 const initialState: InitialState = {
-  isAuthenticated: true,
+  isAuthenticated: false,
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 const login = (state: InitialState, _action: PayloadAction<signInInput>) =>
   state;
 
-const signUp = (state: InitialState, action: PayloadAction<signUpInput>) =>
+const signup = (state: InitialState, _action: PayloadAction<signUpInput>) => 
   state;
+
+const verifyEmail = (state:InitialState , _action:PayloadAction<verifyEmailInput>) => state
+
+const resendVerificationMail = (state:InitialState , _action:PayloadAction<resendVerificationMailInput>) => state
 
 const setIsAuthenticated = (
   state: InitialState,
@@ -28,7 +33,9 @@ const authSlice = createSlice({
   reducers: {
     login,
     setIsAuthenticated,
-    signUp,
+    signup,
+    verifyEmail,
+    resendVerificationMail
   },
 });
 

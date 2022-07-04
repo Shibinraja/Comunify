@@ -1,7 +1,16 @@
+
 import Button from 'common/button';
 import successIcon from '../../assets/images/tostr.png';
+import { Formik, Form } from "formik";
+import { useNavigate } from "react-router-dom";
 
 const SubscriptionCard = () => {
+  const navigate = useNavigate();
+
+  const _navigateToSubscription = () => {
+    navigate("/subscription");
+  };
+
   return (
     <div className="mt-1.87  flex flex-col ">
       <div className="border-gradient-rounded px-8 py-5 bg-white rounded-0.9 ">
@@ -53,6 +62,7 @@ const SubscriptionCard = () => {
         </div>
         <Button
           text="Choose the plan"
+          onClick={_navigateToSubscription}
           type="submit"
           className="font-Poppins rounded-lg text-base text-white hover:shadow-buttonShadowHover transition ease-in duration-300 w-full mt-1.8  h-3.6 btn-gradient "
         />

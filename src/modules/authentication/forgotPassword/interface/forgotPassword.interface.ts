@@ -3,3 +3,7 @@ export interface ForgotPasswordInputBody {
   newPassword?: string;
   confirmPassword?: string;
 }
+
+export type emailFormValues = {
+  email: string;
+};

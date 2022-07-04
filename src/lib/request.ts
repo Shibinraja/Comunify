@@ -1,6 +1,6 @@
 import Axios from 'axios';
 
-function getLocalRefreshToken() {
+export function getLocalRefreshToken() {
   const refreshToken = localStorage.getItem('accessToken');
   return refreshToken;
 }

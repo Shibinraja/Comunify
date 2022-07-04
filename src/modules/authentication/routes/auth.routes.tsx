@@ -72,33 +72,33 @@ let authRoutes: RoutesArray[] = [
       },
       {
         element: (
-          <PublicRoute>
-            <Welcome />
-          </PublicRoute>
+          <PrivateRoute>
+            <Welcome/>
+          </PrivateRoute>
         ),
         path: "/welcome",
       },
       {
         element: (
-          <PublicRoute>
-            <Integration />
-          </PublicRoute>
+          <PrivateRoute>
+            <Integration/>
+          </PrivateRoute>
         ),
         path: "/integration",
       },
       {
         element: (
-          <PublicRoute>
-            <Subscription />
-          </PublicRoute>
+          <PrivateRoute>
+            <Subscription/>
+          </PrivateRoute>
         ),
         path: "/subscription",
       },
       {
         element: (
-          <PublicRoute>
-            <SubscriptionExpired />
-          </PublicRoute>
+          <PrivateRoute>
+            <SubscriptionExpired/>
+          </PrivateRoute>
         ),
         path: "/subscription/expired/:id",
       },

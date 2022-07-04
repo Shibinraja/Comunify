@@ -14,18 +14,21 @@ export interface signUpResponseBody {
   companyName?: string;
   domainSector?: string;
   isVerified: boolean;
-  isAdmin: boolean;
-  profilePhotoUrl: string | null;
-  subscribtionPackageId: string | null;
-  googleId: string | null;
-  comunifyUserId: string;
-  planExpiry: string | null;
-  createdAt: string;
-  updatedAt: string;
+  isAdmin?: boolean;
 }
 
 export type signUpResponse = {
+  version:string
   error: boolean;
   data: signUpResponseBody;
   message: string;
+};
+
+
+export type signUpFormValues = {
+  userName: string;
+  email: string;
+  password: string;
+  companyName: string;
+  domainSector: string;
 };

@@ -1,6 +1,7 @@
 export interface signInInput {
-  userName: string;
+  userName?: string;
   password: string;
+  email:string
 }
 
 export type signInResponse = {
@@ -8,4 +9,9 @@ export type signInResponse = {
   data: { token: string };
   message: string;
   version: string;
+};
+
+export type FormValues = {
+  email: string;
+  password: string;
 };
