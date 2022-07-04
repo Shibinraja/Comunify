@@ -12,7 +12,7 @@ let routes: RoutesArray[] = [
   {
     element: <MainLayout />,
     path: '/',
-    children: [{ ...dashboardRoutes }, { ...membersRoutes }],
+    children: [dashboardRoutes, membersRoutes],
   },
   //to redirect invalid routes back to the index route
   {

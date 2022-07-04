@@ -6,6 +6,7 @@ import Router from './routes/routes';
 import store from '@/store/index';
 import './App.css';
 import { BrowserRouter } from 'react-router-dom';
+import toastCloseButton from './assets/images/svg/toastCloseButton.svg';
 // import Spinner from './components/common/spinner/Spinner';
 
 function App() {
@@ -18,7 +19,13 @@ function App() {
           </BrowserRouter>
         </React.Suspense>
       </div>
-      <ToastContainer />
+      <ToastContainer
+        hideProgressBar={true}
+        pauseOnHover={true}
+        autoClose={3000}
+        newestOnTop={true}
+        closeButton={<img src={toastCloseButton} className='w-3 pb-4' />}
+      />
     </Provider>
   );
 }
