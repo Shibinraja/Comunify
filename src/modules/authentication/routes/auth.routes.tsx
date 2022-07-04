@@ -8,6 +8,7 @@ import Welcome from "../welcome/pages/Welcome";
 import Integration from "../integration/pages/Integration";
 import SubscriptionExpired from "../subscriptionExpired/pages/SubscriptionExpired";
 import CreateWorkSpace from '../createWorkSpace/pages/CreateWorkSpace';
+import PrivateRoute from 'routes/PrivateRoute';
 
 const SignIn = React.lazy(() => import("../signIn/pages/SignIn"));
 const SignUp = React.lazy(() => import("../signUp/pages/SignUp"));
@@ -40,9 +41,9 @@ let authRoutes: RoutesArray[] = [
       {
         path: "/createWorkSpace",
         element: (
-          <PublicRoute>
+          <PrivateRoute>
             <CreateWorkSpace />
-          </PublicRoute>
+          </PrivateRoute>
         ),
       },
       {
