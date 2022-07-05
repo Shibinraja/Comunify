@@ -6,8 +6,10 @@ import bgIntegrationImage from '../../../../assets/images/bg-sign.svg';
 
 import './Integration.css';
 import Button from 'common/button';
+import { useNavigate } from 'react-router-dom';
 
 const Integration = () => {
+  const navigate = useNavigate();
   return (
     <div className="w-full flex flex-col  h-screen ">
     <div className="flex w-full relative">
@@ -128,7 +130,7 @@ const Integration = () => {
           </div>
         </div>
         <div className="absolute left-[500px] bottom-5">
-          <div className="flex items-center pb-5">
+          <div className="flex items-center pb-5" onClick={()=> navigate('/dashboard')}>
             <div className="p-2 leading-1.56 text-skipGray font-Inter font-normal text-reset cursor-pointer">
               Skip
             </div>

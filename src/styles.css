@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=Poppins:ital,wght@0,500;1,400;1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=Outfit:wght@100;200;300;400;500;600;700&family=Poppins:ital,wght@0,500;1,400;1,500&display=swap');
 
 /*
 ! tailwindcss v3.1.4 | MIT License | https://tailwindcss.com
@@ -688,6 +688,14 @@ video {
   margin-left: 1rem;
 }
 
+.mt-0\.287{
+  margin-top: 4.59px;
+}
+
+.mt-0{
+  margin-top: 0px;
+}
+
 .mt-5{
   margin-top: 1.25rem;
 }
@@ -702,10 +710,6 @@ video {
 
 .mt-0\.15{
   margin-top: 2.45px;
-}
-
-.mt-0{
-  margin-top: 0px;
 }
 
 .mt-3\.01{
@@ -788,8 +792,8 @@ video {
   margin-top: 30.46px;
 }
 
-.mt-0\.287{
-  margin-top: 4.59px;
+.mt-6\.84{
+  margin-top: 109.57px;
 }
 
 .mt-1\.84{
@@ -986,6 +990,10 @@ video {
 
 .min-h-\[500px\]{
   min-height: 500px;
+}
+
+.w-3{
+  width: 0.75rem;
 }
 
 .w-full{
@@ -1343,6 +1351,10 @@ video {
   padding-bottom: 0.5rem;
 }
 
+.pb-4{
+  padding-bottom: 1rem;
+}
+
 .pt-8{
   padding-top: 2rem;
 }
@@ -1487,6 +1499,10 @@ video {
   padding-bottom: 20rem;
 }
 
+.pl-7\.53{
+  padding-left: 120.5px;
+}
+
 .pb-20{
   padding-bottom: 5rem;
 }
@@ -1523,6 +1539,10 @@ video {
   font-family: Outfit, sans-serif;
 }
 
+.font-Inter{
+  font-family: Inter, sans-serif;
+}
+
 .font-Poppins{
   font-family: Poppins, sans-serif;
 }
@@ -1531,16 +1551,16 @@ video {
   font-family: Manrope, sans-serif;
 }
 
-.font-Inter{
-  font-family: Inter, sans-serif;
-}
-
 .text-desc{
   font-size: 18px;
 }
 
 .text-logo{
   font-size: 21.35px;
+}
+
+.text-error{
+  font-size: 13px;
 }
 
 .text-infoData{
@@ -1581,10 +1601,6 @@ video {
   font-size: 12px;
 }
 
-.text-error{
-  font-size: 13px;
-}
-
 .text-reset{
   font-size: 15.6147px;
 }
@@ -1620,6 +1636,18 @@ video {
 
 .font-medium{
   font-weight: 500;
+}
+
+.font-thin{
+  font-weight: 100;
+}
+
+.uppercase{
+  text-transform: uppercase;
+}
+
+.lowercase{
+  text-transform: lowercase;
 }
 
 .not-italic{
@@ -1703,6 +1731,11 @@ video {
   color: rgb(5 6 10 / var(--tw-text-opacity));
 }
 
+.text-lightRed{
+  --tw-text-opacity: 1;
+  color: rgb(255 95 95 / var(--tw-text-opacity));
+}
+
 .text-infoBlack{
   color: #08080D;;
 }
@@ -1769,11 +1802,6 @@ video {
   color: rgb(23 15 73 / var(--tw-text-opacity));
 }
 
-.text-lightRed{
-  --tw-text-opacity: 1;
-  color: rgb(255 95 95 / var(--tw-text-opacity));
-}
-
 .text-thinGray{
   color: #808080;;
 }
@@ -1827,6 +1855,12 @@ video {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
+.shadow-trialButtonShadow{
+  --tw-shadow: 8px 8px 24px rgba(2, 2, 70, 0.05);
+  --tw-shadow-colored: 8px 8px 24px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
 .shadow-integrationCardShadow{
   --tw-shadow: 0px 100px 80px rgba(41, 72, 152, 0.05),0px 64.8148px 46.8519px rgba(41, 72, 152, 0.037963),0px 38.5185px 25.4815px rgba(41, 72, 152, 0.0303704),0px 20px 13px rgba(41, 72, 152, 0.025),0px 8.14815px 6.51852px rgba(41, 72, 152, 0.0196296), 0px 1.85185px 3.14815px rgba(41, 72, 152, 0.012037);
   --tw-shadow-colored: 0px 100px 80px var(--tw-shadow-color), 0px 64.8148px 46.8519px var(--tw-shadow-color), 0px 38.5185px 25.4815px var(--tw-shadow-color), 0px 20px 13px var(--tw-shadow-color), 0px 8.14815px 6.51852px var(--tw-shadow-color), 0px 1.85185px 3.14815px var(--tw-shadow-color);
@@ -1836,12 +1870,6 @@ video {
 .shadow-connectButtonShadow{
   --tw-shadow: 0px 4px 30px rgba(0, 0, 0, 0.1);
   --tw-shadow-colored: 0px 4px 30px var(--tw-shadow-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-}
-
-.shadow-trialButtonShadow{
-  --tw-shadow: 8px 8px 24px rgba(2, 2, 70, 0.05);
-  --tw-shadow-colored: 8px 8px 24px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
@@ -1901,7 +1929,7 @@ input {
 }
 
 .border-gradient-rounded:before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   right: 0;
@@ -1910,9 +1938,10 @@ input {
   z-index: -1;
   margin: -5px;
   border-radius: inherit;
-  background: linear-gradient(277.31deg, #69B5E5 1.11%, #ABCF6B 100%);
+  background: linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
   border: double 1px transparent;
-  background-image: linear-gradient(white, white), linear-gradient(277.31deg, #69B5E5 1.11%, #ABCF6B 100%);
+  background-image: linear-gradient(white, white),
+    linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
   background-origin: border-box;
   background-clip: content-box, border-box;
 }
@@ -1930,6 +1959,33 @@ input {
   border-radius: 60px;
 }
 
+.Toastify__toast--success {
+  border: 1px solid #6fcf97 !important;
+  background: #6fcf97 !important;
+  border-radius: 6px !important;
+  height: 68px !important;
+  padding-top: 3px !important;
+  padding-right: 13px !important;
+}
+
+.Toastify__toast--error {
+  border: 1px solid #eb5757 !important;
+  background: #eb5757 !important;
+  border-radius: 6px !important;
+  height: 68px !important;
+  padding-top: 3px !important;
+  padding-right: 13px !important;
+}
+
+.Toastify__toast--warning {
+  border: 1px solid #f2c94c !important;
+  background: #f2c94c !important;
+  border-radius: 6px !important;
+  height: 68px !important;
+  padding-top: 3px !important;
+  padding-right: 13px !important;
+}
+
 .placeholder\:font-Poppins::-moz-placeholder{
   font-family: Poppins, sans-serif;
 }
@@ -1940,6 +1996,18 @@ input {
 
 .placeholder\:font-Poppins::placeholder{
   font-family: Poppins, sans-serif;
+}
+
+.placeholder\:font-Inter::-moz-placeholder{
+  font-family: Inter, sans-serif;
+}
+
+.placeholder\:font-Inter:-ms-input-placeholder{
+  font-family: Inter, sans-serif;
+}
+
+.placeholder\:font-Inter::placeholder{
+  font-family: Inter, sans-serif;
 }
 
 .placeholder\:text-search::-moz-placeholder{

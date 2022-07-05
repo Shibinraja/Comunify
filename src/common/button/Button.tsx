@@ -6,6 +6,10 @@ const Button: React.FC<ButtonProps> = ({
   className,
   children,
   ...props
-}) => <button className={className}>{children ?? text}</button>;
+}) => (
+  <button {...props} className={className}>
+    {children ?? text}
+  </button>
+);
 
 export default Button;

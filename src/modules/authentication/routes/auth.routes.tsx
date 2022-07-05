@@ -1,27 +1,29 @@
-import React from 'react';
-import PublicRoute from '../../../routes/PublicRoute';
-import { RoutesArray } from '../../../interface/interface';
-import CreateNewPassword from '../createNewPassword/pages/CreateNewPassword';
-import ResendVerificationMail from '../resendVerificationMail/ResendVerification';
-import Subscription from '../subscription/pages/Subscription';
-import Welcome from '../welcome/pages/Welcome';
-import Integration from '../integration/pages/Integration';
-import SubscriptionExpired from '../subscriptionExpired/pages/SubscriptionExpired';
+import React from "react";
+import PublicRoute from "../../../routes/PublicRoute";
+import { RoutesArray } from "../../../interface/interface";
+import CreateNewPassword from "../createNewPassword/pages/CreateNewPassword";
+import ResendVerificationMail from "../resendVerificationMail/ResendVerification";
+import Subscription from "../subscription/pages/Subscription";
+import Welcome from "../welcome/pages/Welcome";
+import Integration from "../integration/pages/Integration";
+import SubscriptionExpired from "../subscriptionExpired/pages/SubscriptionExpired";
+import CreateWorkSpace from '../createWorkSpace/pages/CreateWorkSpace';
+import PrivateRoute from 'routes/PrivateRoute';
 
-const SignIn = React.lazy(() => import('../signIn/pages/SignIn'));
-const SignUp = React.lazy(() => import('../signUp/pages/SignUp'));
+const SignIn = React.lazy(() => import("../signIn/pages/SignIn"));
+const SignUp = React.lazy(() => import("../signUp/pages/SignUp"));
 const ForgotPassword = React.lazy(
-  () => import('../forgotPassword/pages/ForgotPassword'),
+  () => import("../forgotPassword/pages/ForgotPassword")
 );
-const AuthLayout = React.lazy(() => import('../../../layout/AuthLayout'));
+const AuthLayout = React.lazy(() => import("../../../layout/AuthLayout"));
 
 let authRoutes: RoutesArray[] = [
   {
     element: <AuthLayout />,
-    path: '/',
+    path: "/",
     children: [
       {
-        path: '/',
+        path: "/",
         element: (
           <PublicRoute>
             <SignIn />
@@ -29,11 +31,19 @@ let authRoutes: RoutesArray[] = [
         ),
       },
       {
-        path: '/signup',
+        path: "/signup",
         element: (
           <PublicRoute>
             <SignUp />
           </PublicRoute>
+        ),
+      },
+      {
+        path: "/createWorkSpace",
+        element: (
+          <PrivateRoute>
+            <CreateWorkSpace />
+          </PrivateRoute>
         ),
       },
       {
@@ -42,7 +52,7 @@ let authRoutes: RoutesArray[] = [
             <ForgotPassword />
           </PublicRoute>
         ),
-        path: '/forgot-password',
+        path: "/forgot-password",
       },
       {
         element: (
@@ -50,47 +60,47 @@ let authRoutes: RoutesArray[] = [
             <CreateNewPassword />
           </PublicRoute>
         ),
-        path: '/forgot-password/:id',
+        path: "/forgot-password/:id",
       },
       {
         element: (
           <PublicRoute>
-            <ResendVerificationMail/>
+            <ResendVerificationMail />
           </PublicRoute>
         ),
-        path: '/resend-mail',
+        path: "/resend-mail",
       },
       {
         element: (
-          <PublicRoute>
+          <PrivateRoute>
             <Welcome/>
-          </PublicRoute>
+          </PrivateRoute>
         ),
-        path: '/welcome',
+        path: "/welcome",
       },
       {
         element: (
-          <PublicRoute>
+          <PrivateRoute>
             <Integration/>
-          </PublicRoute>
+          </PrivateRoute>
         ),
-        path: '/integration',
+        path: "/integration",
       },
       {
         element: (
-          <PublicRoute>
+          <PrivateRoute>
             <Subscription/>
-          </PublicRoute>
+          </PrivateRoute>
         ),
-        path: '/subscription',
+        path: "/subscription",
       },
       {
         element: (
-          <PublicRoute>
+          <PrivateRoute>
             <SubscriptionExpired/>
-          </PublicRoute>
+          </PrivateRoute>
         ),
-        path: '/subscription/expired/:id',
+        path: "/subscription/expired/:id",
       },
     ],
   },

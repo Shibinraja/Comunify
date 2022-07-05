@@ -12,12 +12,8 @@ let routes: RoutesArray[] = [
   ...authRoutes,
   {
     element: <MainLayout />,
-    path: "/",
-    children: [
-      { ...dashboardRoutes },
-      { ...membersRoutes },
-      { ...settingsRoutes },
-    ],
+    path: '/',
+    children: [dashboardRoutes, membersRoutes , settingsRoutes],
   },
   //to redirect invalid routes back to the index route
   {
