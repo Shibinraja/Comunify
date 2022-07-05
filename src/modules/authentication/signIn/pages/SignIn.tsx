@@ -1,37 +1,31 @@
-import { useForm, SubmitHandler } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { useAppDispatch } from "@/hooks/useRedux";
 import Button from "common/button/Button";
 import Input from "common/input/Input";
-import { useAppDispatch } from "@/hooks/useRedux";
-import useLoading from "@/hooks/useLoading";
-import { LOGIN } from "../../store/actions/auth.actions";
-import authSlice from "../../store/slices/auth.slice";
-import { FormValues, signInInput } from "../interface/signIn.interface";
-import { loginSchema } from "@/lib/validation";
-import socialLogo from "../../../../assets/images/Social.svg";
-import bgSignInImage from "../../../../assets/images/bg-sign.svg";
-import eyeIcon from "../../../../assets/images/eye.svg";
-import closeeye from '../../../../assets/images/closeeye.png';
-import { Link, useNavigate } from "react-router-dom";
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
-import "./SignIn.css";
+import { Form, Formik } from "formik";
+import { FormValues } from 'modules/authentication/interface/authentication.interface';
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import * as Yup from "yup";
+import bgSignInImage from "../../../../assets/images/bg-sign.svg";
+import closeeye from '../../../../assets/images/closeeye.png';
+import eyeIcon from "../../../../assets/images/eye.svg";
+import socialLogo from "../../../../assets/images/Social.svg";
 import { Password_regex } from "../../../../constants/constants";
+import authSlice from "../../store/slices/auth.slice";
+import "./SignIn.css";
 
 
 const SignIn = () => {
     const dispatch = useAppDispatch();
 
   const initialValues: FormValues = {
-    email: "",
+    userName: "",
     password: "",
   };
 
   const [passwordType, setPasswordType] = useState("password");
 
   const handleSubmit = (values: FormValues): void => {
-    console.log(JSON.stringify(values));
     dispatch(authSlice.actions.login(values))
   };
 
@@ -75,16 +69,16 @@ const SignIn = () => {
                 <div className="username">
                   <Input
                     type="text"
-                    placeholder="Email"
-                    label="Email"
-                    id="username"
-                    name="email"
+                    placeholder="UserName / Email"
+                    label="UserName"
+                    id="userName"
+                    name="userName"
                     className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.email}
-                    errors={Boolean(touched.email && errors.email)}
-                    helperText={touched.email && errors.email}
+                    value={values.userName}
+                    errors={Boolean(touched.userName && errors.userName)}
+                    helperText={touched.userName && errors.userName}
                   />
                 </div>
                 <div className="password mt-1.13 relative ">
@@ -162,15 +156,20 @@ const SignIn = () => {
 };
 
 const signInSchema = Yup.object().shape({
-  // userName: Yup.string()
-  //   .required("Username is required")
-  //   .min(5, "Username should be more than 5 character long")
-  //   .max(30, "Username should not exceed 30 characters")
-  //   .trim(),
-  email: Yup.string()
-  .email("Must be a valid email")
-  .max(255)
-  .required("Email is required"),
+  userName: Yup.lazy((value):any=>{
+    if(value?.includes('@')) {
+      return Yup.string()
+        .email("Must be a valid email")
+        .max(255)
+        .required("Email is required")
+    }
+
+    return Yup.string()
+        .required("Username is required")
+        .min(5, "Username should be more than 5 character long")
+        .max(30, "Username should not exceed 30 characters")
+        .trim()
+  }),
   password: Yup.string()
     .required("Password is required")
     .min(8, "Password must be atleast 8 characters")

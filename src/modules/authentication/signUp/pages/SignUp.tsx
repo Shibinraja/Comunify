@@ -16,7 +16,7 @@ import {
 } from "../../../../constants/constants";
 import { useAppDispatch } from '@/hooks/useRedux';
 import authSlice from "../../store/slices/auth.slice";
-import { signUpFormValues } from '../interface/signup.interface';
+import { signUpFormValues } from 'modules/authentication/interface/authentication.interface';
 
 const SignUp = () => {
   const [passwordType, setPasswordType] = useState("password");

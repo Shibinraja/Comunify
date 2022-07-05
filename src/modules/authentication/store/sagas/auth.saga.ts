@@ -1,27 +1,16 @@
 import { call, put, takeEvery } from 'redux-saga/effects';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import type {
-  signInInput,
-  signInResponse,
-} from '../../signIn/interface/signIn.interface';
 import { LOGIN, RESEND_VERIFY_EMAIL, SIGNUP, VERIFY_EMAIL } from '../actions/auth.actions';
 import authSlice from '../slices/auth.slice';
 import loaderSlice from '../slices/loader.slice';
 import { SagaIterator } from 'redux-saga';
-import {
-  signUpInput,
-  signUpResponse,
-} from 'modules/authentication/signUp/interface/signup.interface';
-import { SuccessResponse } from '@/lib/api';
-import { _signUp } from 'modules/authentication/signUp/services/signUp.service';
-import { _signIn } from 'modules/authentication/signIn/services/signIn.service';
-import { resendVerificationMailInput, verifyEmailInput, verifyEmailResponse } from 'modules/authentication/resendVerificationMail/interface/verify.interface';
-import { _resendVerifyEmail, _verifyEmail } from 'modules/authentication/resendVerificationMail/services/verifyEmail.service';
 import history from '@/lib/history';
 import { showErrorToast, showSuccessToast } from 'common/toast/toastFunctions';
 import { AxiosError } from 'axios';
 import { setToken } from '@/lib/request';
+import { resendVerificationMailInput, signInInput, signInResponse, signUpInput, signUpResponse, verifyEmailInput, verifyEmailResponse } from 'modules/authentication/interface/authentication.interface';
+import { _resendVerifyEmail, _signIn, _signUp, _verifyEmail } from 'modules/authentication/services/authentication.service';
 
 
 const forwardTo = (location:string) => {
@@ -112,5 +101,4 @@ export default function* authSaga(): SagaIterator {
   yield takeEvery(SIGNUP, signUp);
   yield takeEvery(VERIFY_EMAIL , verifyEmail)
   yield takeEvery(RESEND_VERIFY_EMAIL , resendVerificationMail)
-
 }
