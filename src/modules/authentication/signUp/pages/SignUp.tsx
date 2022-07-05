@@ -6,7 +6,7 @@ import socialLogo from "../../../../assets/images/Social.svg";
 import bgSignUpImage from "../../../../assets/images/bg-sign.svg";
 import dropdownIcon from "../../../../assets/images/signup-domain-downArrow.svg";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import {
@@ -20,9 +20,11 @@ import authSlice from "../../store/slices/auth.slice";
 import { signUpFormValues } from '../interface/signup.interface';
 
 const SignUp = () => {
-  const [passwordType, setPasswordType] = useState("password");
-  const [isDropDownActive, setDropDownActive] = useState(false);
-  const [selected, setselected] = useState('Domain');
+  const [passwordType, setPasswordType] = useState<string>("password");
+  const [isDropDownActive, setDropDownActive] = useState<boolean>(false);
+  const [selectedDomainSector, setSelectedDomainSector] = useState<string>('');
+  const formikRef: any = useRef();
+
 
   const options=['Marketing','Sales','Customer Support','Customer Success','Others'];
 
@@ -35,6 +37,14 @@ const SignUp = () => {
     companyName: "",
     domainSector: "",
   };
+
+  const _handleDomainSectorChange = (option:string ):void => {
+    // Formik ref to enable to make the custom dropdown with field touch and set the value for the fields.
+      formikRef?.current?.setFieldTouched('domainSector')
+      formikRef?.current?.setFieldValue('domainSector', option ,true );
+      setSelectedDomainSector(option)
+  }
+
 
   const handleSubmit = (values: signUpFormValues): void => {
     dispatch(authSlice.actions.signup(values))
@@ -62,6 +72,7 @@ const SignUp = () => {
             Get Comunified with your communities. Create your account now.
           </p>
           <Formik
+            innerRef={formikRef}
             initialValues={initialValues}
             onSubmit={handleSubmit}
             validateOnChange={true}
@@ -172,16 +183,17 @@ const SignUp = () => {
                   /> */}
                   <div className="cursor-pointer relative" >
                     <div className="flex items-center w-full  justify-between app-result-card-border  box-border rounded-lg h-4.5  bg-white p-2.5 focus:outline-none font-normal text-secondaryGray text-base leading-6 font-Inter shadow-trialButtonShadow" onClick={(e) => setDropDownActive(!isDropDownActive)}>
-                      <div className={selected === 'Domain' ? 'text-secondaryGray' : 'text-black'}>{ selected ? selected : 'Domain' }</div>
+                      <div className={selectedDomainSector === 'Domain' ? 'text-secondaryGray' : 'text-black'}>{ selectedDomainSector ? selectedDomainSector : '' }</div>
                       <img src={dropdownIcon} alt="" className={ isDropDownActive ? 'rotate-180' : 'rotate-0'} />
                     </div>
-                    {/* options */}
+                  
                     {isDropDownActive && <div className="absolute w-full bg-white app-result-card-border box-border rounded-0.3 shadow-reportInput">
-                      {options.map((options)=><div className="flex flex-col justify-center" key={options.toString()} onClick={()=>{setselected(options);setDropDownActive(false)}} >
+                      {options.map((options:string)=><div id="domain" className="flex flex-col justify-center" key={options.toString()} onClick={()=>{_handleDomainSectorChange(options);setDropDownActive(false)}} >
                         <div className="h-3.06 font-Poppins font-normal text-searchBlack text-trial leading-1.31 flex items-center p-3 hover:bg-signUpDomain transition ease-in duration-100">{options}</div>
                       </div>)}
                     </div>}
                   </div>
+                  {Boolean(touched.domainSector && errors.domainSector) && <p className='text-lightRed font-normal text-error font-Inter mt-0.287 '>{errors?.domainSector}</p>}
                 </div>
                 <Button
                   text="Sign Up"
