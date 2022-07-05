@@ -42,7 +42,8 @@ module.exports = {
         tagChannel: '#4444F7;',
         tagSection: '#E9F0F8',
         activitySubCard: '#f3f4f6',
-        sidenavCard:'#eef0ec'
+        sidenavCard:'#eef0ec',
+        signUpDomain:'#EFF0F7;'
       },
       margin: {
         2.6: '43px',

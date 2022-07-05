@@ -4,6 +4,7 @@ import eyeIcon from "../../../../assets/images/eye.svg";
 import closeeye from '../../../../assets/images/closeeye.png';
 import socialLogo from "../../../../assets/images/Social.svg";
 import bgSignUpImage from "../../../../assets/images/bg-sign.svg";
+import dropdownIcon from "../../../../assets/images/signup-domain-downArrow.svg";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Formik, Form } from "formik";
@@ -20,6 +21,10 @@ import { signUpFormValues } from '../interface/signup.interface';
 
 const SignUp = () => {
   const [passwordType, setPasswordType] = useState("password");
+  const [isDropDownActive, setDropDownActive] = useState(false);
+  const [selected, setselected] = useState('Domain');
+
+  const options=['Marketing','Sales','Customer Support','Customer Success','Others'];
 
   const dispatch = useAppDispatch();
 
@@ -43,7 +48,7 @@ const SignUp = () => {
     setPasswordType("password");
   };
   return (
-    <div className="w-full flex flex-col  h-screen ">
+    <div className="w-full flex flex-col  h-screen">
       <div className="flex w-full relative">
         <div className="w-full md:w-1/2 signup-cover-bg bg-no-repeat pt-20 bg-left rounded-lg  bg-thinBlue flex items-center justify-center fixed pb-80">
           <img src={bgSignUpImage} alt="signup-image" />
@@ -51,7 +56,7 @@ const SignUp = () => {
         <div className="w-full md:w-1/2 flex flex-col lg:pl-48  overflow-y-auto no-scroll-bar absolute right-0 pb-20">
           {" "}
           <h3 className="font-Inter text-neutralBlack font-bold not-italic text-signIn leading-2.8">
-            Sign up{" "}
+            Sign Up{" "}
           </h3>{" "}
           <p className="text-lightGray font-Inter  max-w-sm font-normal not-italic mt-0.78 text-desc">
             Get Comunified with your communities. Create your account now.
@@ -151,8 +156,8 @@ const SignUp = () => {
                     helperText={touched.companyName && errors.companyName}
                   />
                 </div>
-                <div className="domain mt-1.258">
-                  <Input
+                <div className="domain mt-1.258" >
+                  {/* <Input
                     type="text"
                     placeholder="Domain"
                     label="Domain"
@@ -164,14 +169,26 @@ const SignUp = () => {
                     value={values.domainSector}
                     errors={Boolean(touched.domainSector && errors.domainSector)}
                     helperText={touched.domainSector && errors.domainSector}
-                  />
+                  /> */}
+                  <div className="cursor-pointer relative" >
+                    <div className="flex items-center w-full  justify-between app-result-card-border  box-border rounded-lg h-4.5  bg-white p-2.5 focus:outline-none font-normal text-secondaryGray text-base leading-6 font-Inter shadow-trialButtonShadow" onClick={(e) => setDropDownActive(!isDropDownActive)}>
+                      <div className={selected === 'Domain' ? 'text-secondaryGray' : 'text-black'}>{ selected ? selected : 'Domain' }</div>
+                      <img src={dropdownIcon} alt="" className={ isDropDownActive ? 'rotate-180' : 'rotate-0'} />
+                    </div>
+                    {/* options */}
+                    {isDropDownActive && <div className="absolute w-full bg-white app-result-card-border box-border rounded-0.3 shadow-reportInput">
+                      {options.map((options)=><div className="flex flex-col justify-center" key={options.toString()} onClick={()=>{setselected(options);setDropDownActive(false)}} >
+                        <div className="h-3.06 font-Poppins font-normal text-searchBlack text-trial leading-1.31 flex items-center p-3 hover:bg-signUpDomain transition ease-in duration-100">{options}</div>
+                      </div>)}
+                    </div>}
+                  </div>
                 </div>
                 <Button
                   text="Sign Up"
                   type="submit"
                   className="font-Poppins rounded-lg text-base text-white mt-1.8 h-3.6 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient"
                 />
-                <div className="relative flex items-center pt-2.4">
+                <div className="relative flex items-center pt-2.4 -z-40">
                   <div className="borders flex-grow border-t"></div>
                   <span className="font-Inter text-secondaryGray mx-6 flex-shrink">
                     or
