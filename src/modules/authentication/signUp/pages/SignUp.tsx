@@ -22,7 +22,7 @@ import { signUpFormValues } from '../interface/signup.interface';
 const SignUp = () => {
   const [passwordType, setPasswordType] = useState<string>("password");
   const [isDropDownActive, setDropDownActive] = useState<boolean>(false);
-  const [selectedDomainSector, setSelectedDomainSector] = useState<string>('');
+  const [selectedDomainSector, setSelectedDomainSector] = useState<string>('Domain');
   const formikRef: any = useRef();
 
 
@@ -168,22 +168,9 @@ const SignUp = () => {
                   />
                 </div>
                 <div className="domain mt-1.258" >
-                  {/* <Input
-                    type="text"
-                    placeholder="Domain"
-                    label="Domain"
-                    id="domain"
-                    name="domainSector"
-                    className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.domainSector}
-                    errors={Boolean(touched.domainSector && errors.domainSector)}
-                    helperText={touched.domainSector && errors.domainSector}
-                  /> */}
                   <div className="cursor-pointer relative" >
                     <div className="flex items-center w-full  justify-between app-result-card-border  box-border rounded-lg h-4.5  bg-white p-2.5 focus:outline-none font-normal text-secondaryGray text-base leading-6 font-Inter shadow-trialButtonShadow" onClick={(e) => setDropDownActive(!isDropDownActive)}>
-                      <div className={selectedDomainSector === 'Domain' ? 'text-secondaryGray' : 'text-black'}>{ selectedDomainSector ? selectedDomainSector : '' }</div>
+                      <div className={selectedDomainSector === 'Domain' ? 'text-secondaryGray' : 'text-black'}>{ selectedDomainSector ? selectedDomainSector : 'Domain' }</div>
                       <img src={dropdownIcon} alt="" className={ isDropDownActive ? 'rotate-180' : 'rotate-0'} />
                     </div>
                   

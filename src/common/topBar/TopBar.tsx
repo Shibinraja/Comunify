@@ -10,7 +10,7 @@ import { useState } from 'react';
 
 function TopBar() {
   
-  const [isDropdownActive, setisDropdownActive] = useState(false);
+  const [isDropdownActive, setisDropdownActive] = useState<Boolean>(false);
   const options=['Profile Settings','Sign Out']
 
   return (
