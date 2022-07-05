@@ -4,7 +4,8 @@ import bgSubscriptionImage from "../../../../assets/images/bg-sign.svg";
 import cardNumberIcon from "../../../../assets/images/card.svg";
 import { Formik, Form } from "formik";
 import { useNavigate } from "react-router-dom";
-import { SubscriptionValues } from '../interface/subscription.interface';
+import { SubscriptionValues } from 'modules/authentication/interface/authentication.interface';
+
 
 const Subscription = () => {
   const navigate = useNavigate();

@@ -5,7 +5,8 @@ import bgForgotImage from '../../../../assets/images/bg-sign.svg';
 
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { emailFormValues } from '../interface/forgotPassword.interface';
+import { emailFormValues } from 'modules/authentication/interface/authentication.interface';
+
 
 
 const ForgotPassword = () => {
