@@ -42,6 +42,7 @@ module.exports = {
         tagSection: "#E9F0F8",
         activitySubCard: "#f3f4f6",
         sidenavCard: "#eef0ec",
+        signUpDomain:'#EFF0F7',
         createdAtGrey: " #C4C4C4;",
         connectButton:
           "linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%)",
@@ -192,7 +193,8 @@ module.exports = {
         1.918: "30.68px",
         1.959: "31.35px",
         11.43:'183px',
-        34.37:'550px'
+        34.37:'550px',
+        9.62:'154px'
       },
       height: {
         4.5: "72.87px",
@@ -305,6 +307,7 @@ module.exports = {
           '0px 100px 80px rgba(41, 72, 152, 0.05),0px 64.8148px 46.8519px rgba(41, 72, 152, 0.037963),0px 38.5185px 25.4815px rgba(41, 72, 152, 0.0303704),0px 20px 13px rgba(41, 72, 152, 0.025),0px 8.14815px 6.51852px rgba(41, 72, 152, 0.0196296),0px 1.85185px 3.14815px rgba(41, 72, 152, 0.012037)',
         reportInput:'8.32785px 8.32785px 24.9835px rgba(2, 2, 70, 0.05)',
         subscription:'0px 100px 80px rgba(110, 181, 217, 0.1);'
+        
       },
       gap: {
         2.28: "36.56px",

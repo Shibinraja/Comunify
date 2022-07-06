@@ -58,7 +58,7 @@ const Subscription = () => {
                       label="Card Holder Name"
                       id="card-holder"
                       name="card_holder"
-                      className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
+                      className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
                       onBlur={handleBlur}
                       onChange={handleChange}
                       value={values.card_holder}
@@ -71,7 +71,7 @@ const Subscription = () => {
                       label="Card Number"
                       id="cardnumber"
                       name="cardnumber"
-                      className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
+                      className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
                       onBlur={handleBlur}
                       onChange={handleChange}
                       value={values.cardnumber}
@@ -90,7 +90,7 @@ const Subscription = () => {
                         label="Expiration Date"
                         id="expire"
                         name="expire"
-                        className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
+                        className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
                         onBlur={handleBlur}
                         onChange={handleChange}
                         value={values.username}
@@ -103,7 +103,7 @@ const Subscription = () => {
                         label="CVV"
                         id="cvv"
                         name="cvv"
-                        className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
+                        className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
                         onBlur={handleBlur}
                         onChange={handleChange}
                         value={values.cvv}
@@ -117,7 +117,7 @@ const Subscription = () => {
                       label="Country"
                       id="country"
                       name="country"
-                      className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
+                      className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
                       onBlur={handleBlur}
                       onChange={handleChange}
                       value={values.username}
@@ -127,7 +127,7 @@ const Subscription = () => {
                     <Button
                       text="Submit"
                       type="submit"
-                      className="font-Poppins rounded-lg text-base text-white mt-1.8 h-3.6 w-full hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient"
+                      className="font-Poppins rounded-lg text-base font-semibold text-white mt-1.8 h-3.6 w-full hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient"
                     />
                   </div>
                 </Form>

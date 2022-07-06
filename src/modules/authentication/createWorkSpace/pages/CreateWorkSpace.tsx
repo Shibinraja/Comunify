@@ -33,7 +33,7 @@ const CreateWorkSpace: React.FC = () => {
             <Button
               text="Confirm"
               type="submit"
-              className="font-Poppins rounded-lg text-base text-white mt-1.8 h-3.6 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient"
+              className="font-Poppins rounded-lg text-base font-semibold text-white mt-1.8 h-3.6 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient"
             />
           </form>
         </div>

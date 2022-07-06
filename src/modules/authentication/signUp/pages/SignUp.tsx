@@ -4,8 +4,9 @@ import eyeIcon from "../../../../assets/images/eye.svg";
 import closeeye from '../../../../assets/images/closeeye.png';
 import socialLogo from "../../../../assets/images/Social.svg";
 import bgSignUpImage from "../../../../assets/images/bg-sign.svg";
+import dropdownIcon from "../../../../assets/images/signup-domain-downArrow.svg";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import {
@@ -17,11 +18,18 @@ import {
 import { useAppDispatch } from '@/hooks/useRedux';
 import authSlice from "../../store/slices/auth.slice";
 import { signUpFormValues } from '../interface/signup.interface';
+import { AppDispatch } from '../../../../store/index';
 
 const SignUp = () => {
-  const [passwordType, setPasswordType] = useState("password");
+  const [passwordType, setPasswordType] = useState<string>("password");
+  const [isDropDownActive, setDropDownActive] = useState<boolean>(false);
+  const [selectedDomainSector, setSelectedDomainSector] = useState<string>('Domain');
+  const formikRef : any = useRef();
 
-  const dispatch = useAppDispatch();
+
+  const options=['Marketing','Sales','Customer Support','Customer Success','Others'];
+
+  const dispatch: AppDispatch = useAppDispatch();
 
   const initialValues: signUpFormValues = {
     userName: "",
@@ -30,6 +38,14 @@ const SignUp = () => {
     companyName: "",
     domainSector: "",
   };
+
+  const _handleDomainSectorChange = (option:string ):void => {
+    // Formik ref to enable to make the custom dropdown with field touch and set the value for the fields.
+      formikRef?.current?.setFieldTouched('domainSector')
+      formikRef?.current?.setFieldValue('domainSector', option ,true );
+      setSelectedDomainSector(option)
+  }
+
 
   const handleSubmit = (values: signUpFormValues): void => {
     dispatch(authSlice.actions.signup(values))
@@ -43,7 +59,7 @@ const SignUp = () => {
     setPasswordType("password");
   };
   return (
-    <div className="w-full flex flex-col  h-screen ">
+    <div className="w-full flex flex-col  h-screen">
       <div className="flex w-full relative">
         <div className="w-full md:w-1/2 signup-cover-bg bg-no-repeat pt-20 bg-left rounded-lg  bg-thinBlue flex items-center justify-center fixed pb-80">
           <img src={bgSignUpImage} alt="signup-image" />
@@ -51,12 +67,13 @@ const SignUp = () => {
         <div className="w-full md:w-1/2 flex flex-col lg:pl-48  overflow-y-auto no-scroll-bar absolute right-0 pb-20">
           {" "}
           <h3 className="font-Inter text-neutralBlack font-bold not-italic text-signIn leading-2.8">
-            Sign up{" "}
+            Sign Up{" "}
           </h3>{" "}
           <p className="text-lightGray font-Inter  max-w-sm font-normal not-italic mt-0.78 text-desc">
             Get Comunified with your communities. Create your account now.
           </p>
           <Formik
+            innerRef={formikRef}
             initialValues={initialValues}
             onSubmit={handleSubmit}
             validateOnChange={true}
@@ -151,27 +168,27 @@ const SignUp = () => {
                     helperText={touched.companyName && errors.companyName}
                   />
                 </div>
-                <div className="domain mt-1.258">
-                  <Input
-                    type="text"
-                    placeholder="Domain"
-                    label="Domain"
-                    id="domain"
-                    name="domainSector"
-                    className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.domainSector}
-                    errors={Boolean(touched.domainSector && errors.domainSector)}
-                    helperText={touched.domainSector && errors.domainSector}
-                  />
+                <div className="domain mt-1.258" >
+                  <div className="cursor-pointer relative" >
+                    <div className="flex items-center w-full  justify-between app-result-card-border  box-border rounded-lg h-4.5  bg-white p-2.5 focus:outline-none font-normal text-secondaryGray text-base leading-6 font-Inter shadow-trialButtonShadow" onClick={(e) => setDropDownActive(!isDropDownActive)}>
+                      <div className={selectedDomainSector === 'Domain' ? 'text-secondaryGray' : 'text-black'}>{ selectedDomainSector ? selectedDomainSector : 'Domain' }</div>
+                      <img src={dropdownIcon} alt="" className={ isDropDownActive ? 'rotate-180' : 'rotate-0'} />
+                    </div>
+                  
+                    {isDropDownActive && <div className="absolute w-full bg-white app-result-card-border box-border rounded-0.3 shadow-reportInput">
+                      {options.map((options:string)=><div id="domain" className="flex flex-col justify-center" key={options.toString()} onClick={()=>{_handleDomainSectorChange(options);setDropDownActive(false)}} >
+                        <div className="h-3.06 font-Poppins font-normal text-searchBlack text-trial leading-1.31 flex items-center p-3 hover:bg-signUpDomain transition ease-in duration-100">{options}</div>
+                      </div>)}
+                    </div>}
+                  </div>
+                  {Boolean(touched.domainSector && errors.domainSector) && <p className='text-lightRed font-normal text-error font-Inter mt-0.287 '>{errors?.domainSector}</p>}
                 </div>
                 <Button
                   text="Sign Up"
                   type="submit"
-                  className="font-Poppins rounded-lg text-base text-white mt-1.8 h-3.6 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient"
+                  className="font-Poppins rounded-lg text-base font-semibold text-white mt-1.8 h-3.6 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient"
                 />
-                <div className="relative flex items-center pt-2.4">
+                <div className="relative flex items-center pt-2.4 -z-40">
                   <div className="borders flex-grow border-t"></div>
                   <span className="font-Inter text-secondaryGray mx-6 flex-shrink">
                     or
@@ -182,7 +199,7 @@ const SignUp = () => {
                   <img src={socialLogo} alt="" className="pr-0.781" />
                   Continue with Google
                 </div>
-                <div className="font-Inter text-secondaryGray text-center text-base font-normal mt-1.8  text-signLink">
+                <div className="font-Poppins text-secondaryGray text-center text-base font-normal mt-1.8  text-signLink">
                   Already have an account?{" "}
                   <Link to="/" className="text-blue-500 underline">
                     {" "}
