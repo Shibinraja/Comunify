@@ -1,61 +1,54 @@
-React · GitHub license npm version CircleCI Status PRs Welcome
-React is a JavaScript library for building user interfaces.
+# Comunify
 
-Declarative: React makes it painless to create interactive UIs. Design simple views for each state in your application, and React will efficiently update and render just the right components when your data changes. Declarative views make your code more predictable, simpler to understand, and easier to debug.
-Component-Based: Build encapsulated components that manage their state, then compose them to make complex UIs. Since component logic is written in JavaScript instead of templates, you can easily pass rich data through your app and keep the state out of the DOM.
-Learn Once, Write Anywhere: We don't make assumptions about the rest of your technology stack, so you can develop new features in React without rewriting existing code. React can also render on the server using Node and power mobile apps using React Native.
-Learn how to use React in your project.
+Comunify is an online Community Management software that helps community managers better understand their community and deliver relevant reporting.
 
-# Installation
-React has been designed for gradual adoption from the start, and you can use as little or as much React as you need:
+### Purpose
 
-Use Online Playgrounds to get a taste of React.
-Add React to a Website as a <script> tag in one minute.
-Create a New React App if you're looking for a powerful JavaScript toolchain.
-You can use React as a <script> tag from a CDN, or as a react package on npm.
+-   The Community Managers have to take hours to develop periodical reports that are relevant or useful.
+-   They have to visit each community platforms manually and generate relevant reports from each of them.
+-   We will automate this process by integrating various community platforms (like Vanilla, Khoros, Higher Logic, etc) to our application.
 
-# Documentation
-You can find the React documentation on the website.
+### Targeted Users
 
-Check out the Getting Started page for a quick overview.
+-   B2B tech companies - Community Managers, Community directors, Community moderators, Customer Success Managers, etc.
+-   Age group: From 20s to early 40s
+-   Mostly female audience
 
-The documentation is divided into several sections:
+### User Modules
 
-# Tutorial
-  
-Main Concepts
-Advanced Guides
-API Reference
-Where to Get Support
-Contributing Guide
-You can improve it by sending pull requests to this repository.
+-   Super Admin : This user represents client who can have an overview of the platform and manage the user subscriptions.
+-   Community Manager (User) : The end user who builds, grows and manages communities
 
-# Examples
-We have several examples on the website. Here is the first one to get you started:
+## Features
 
-import { createRoot } from 'react-dom/client';
+-   Sign Up and Login
+-   Subscription
+-   Dashboard
+-   Members
+-   Active Steam
+-   Reports
+-   Settings
 
-function HelloMessage({ name }) {
-  return <div>Hello {name}</div>;
-}
+## Installation
 
-const root = createRoot(document.getElementById('container'));
-root.render(<HelloMessage name="Taylor" />);
-This example will render "Hello Taylor" into a container on the page.
+Run `npm install` to install the dependencies and packages included in the application
 
-You'll notice that we used an HTML-like syntax; we call it JSX. JSX is not required to use React, but it makes code more readable and writing it feels like writing HTML. If you're using React as a <script> tag, read this section on integrating JSX; otherwise, the recommended JavaScript toolchains handle it automatically.
+## Documentation
 
-# Contributing
-The main purpose of this repository is to continue evolving React core, making it faster and easier to use. Development of React happens in the open on GitHub, and we are grateful to the community for contributing bugfixes and improvements. Read below to learn how you can take part in improving React.
+You can find more info about comunify on its website.
 
-# Code of Conduct
-Facebook has adopted a Code of Conduct that we expect project participants to adhere to. Please read the full text so that you can understand what actions will and will not be tolerated.
+https://comunifyllc.com/
 
-# Contributing Guide
-Read our contributing guide to learn about our development process, how to propose bugfixes and improvements, and how to build and test your changes to React.
+## Basic git commands and standards followed:
 
-# Good First Issues
-To help you get your feet wet and get you familiar with our contribution process, we have a list of good first issues that contain bugs that have a relatively limited scope. This is a great place to get started.
+-   Branching:
+    -   Checkout to `develop` branch
+    -   Naming Convention: `<name of developer>/<feature/fix/hotfix>/<JIRA Ticket Name>-<Brief name of the ticket>`
+        eg: `james/feature/COMA-14-add-sign-up`
+-   Commit messages:
+    -   Naming Convention: `git commit -m "<feat/fix/hotfix>: <commit message>"`
+        eg: `git commit -m "feature: Implemented the functionality for user signup and signin"`
 
-# License
-React is MIT licensed.
+## License
+
+This Application is Comunify Licensed
