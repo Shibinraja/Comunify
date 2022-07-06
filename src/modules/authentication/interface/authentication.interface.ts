@@ -3,30 +3,13 @@ export type passwordFormValues = {
   password2: string;
 };
 
-export interface ForgotPasswordInputBody {
-  username?: string;
-  newPassword?: string;
-  confirmPassword?: string;
-}
-
 export type emailFormValues = {
   email: string;
 };
 
-export interface verifyEmailInput {
-  id:string
-}
-
-export interface resendVerificationMailInput {
-  email:string
-}
-
-
-export type verifyEmailResponse = {
-  error: boolean;
-  data: { token: string };
-  message: string;
-  version: string;
+export type FormValues = {
+  userName: string;
+  password: string;
 };
 
 export type decodeToken = {
@@ -36,22 +19,29 @@ export type decodeToken = {
   id: string
 }
 
+export type signUpFormValues = {
+  userName: string;
+  email: string;
+  password: string;
+  companyName: string;
+  domainSector: string;
+};
+
+export type SubscriptionValues = {
+  username: string;
+  password: string;
+  card_holder: string;
+  cardnumber: string;
+  cvv: string;
+};
+
+
+// Input Body
+
 export interface signInInput {
   userName: string;
   password: string;
 }
-
-export type signInResponse = {
-  error: boolean;
-  data: { token: string };
-  message: string;
-  version: string;
-};
-
-export type FormValues = {
-  userName: string;
-  password: string;
-};
 
 export interface signUpInput {
   email: string;
@@ -60,6 +50,32 @@ export interface signUpInput {
   companyName: string;
   domainSector: string;
 }
+export interface verifyEmailInput {
+  id:string
+}
+
+export type forgotPasswordInput = {
+  email:string
+}
+
+export type resetPasswordInput = {
+  password:string;
+  confirmPassword:string
+}
+
+export interface resendVerificationMailInput {
+  email:string
+}
+
+
+//  Response Body
+
+export type verifyEmailResponse = {
+  error: boolean;
+  data: { token: string };
+  message: string;
+  version: string;
+};
 
 export interface signUpResponseBody {
   id: string;
@@ -79,21 +95,11 @@ export type signUpResponse = {
   message: string;
 };
 
-
-export type signUpFormValues = {
-  userName: string;
-  email: string;
-  password: string;
-  companyName: string;
-  domainSector: string;
-};
-
-export type SubscriptionValues = {
-  username: string;
-  password: string;
-  card_holder: string;
-  cardnumber: string;
-  cvv: string;
+export type signInResponse = {
+  error: boolean;
+  data: { token: string };
+  message: string;
+  version: string;
 };
 
   
