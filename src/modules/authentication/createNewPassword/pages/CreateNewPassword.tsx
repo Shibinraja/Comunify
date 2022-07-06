@@ -8,12 +8,13 @@ import Button from 'common/button';
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { Password_regex } from "../../../../constants/constants";
-import { passwordFormValues } from './interface/createNewPassword.interface';
+import { passwordFormValues } from 'modules/authentication/interface/authentication.interface';
+
 
 
 const CreateNewPassword = () => {
-  const [passwordType1, setPasswordType1] = useState('password');
-  const [passwordType2, setPasswordType2] = useState('password');
+  const [passwordType1, setPasswordType1] = useState<string>('password');
+  const [passwordType2, setPasswordType2] = useState<string>('password');
 
   const initialValues: passwordFormValues = {
     password1: "",
@@ -75,7 +76,7 @@ const CreateNewPassword = () => {
                     label="New Password"
                     id="password1"
                     name="password1"
-                    className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
+                    className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.password1}
@@ -105,7 +106,7 @@ const CreateNewPassword = () => {
                     label="Confirm Password"
                     id="password2"
                     name="password2"
-                    className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
+                    className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.password2}
@@ -132,7 +133,7 @@ const CreateNewPassword = () => {
                   <Button
                     text="Submit"
                     type="submit"
-                    className="font-Poppins rounded-lg text-base text-white mt-1.8 h-3.6  w-full hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient"
+                    className="font-Poppins rounded-lg text-base font-semibold text-white mt-1.8 h-3.6  w-full hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient"
                   />
                 </div>
               </Form>

@@ -12,14 +12,17 @@ input {
   background: linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
   box-shadow: 0px 3.63636px 27.2727px rgba(0, 0, 0, 0.1);
 }
+
 .google-signin {
   border: 1.92127px solid #eff0f7;
   box-shadow: 8px 8px 24px rgba(2, 2, 70, 0.05);
 }
+
 .icon-holder {
   top: 50%;
   transform: translateY(-50%);
 }
+
 .no-scroll-bar::-webkit-scrollbar {
   display: none;
 }
@@ -36,6 +39,7 @@ input {
   background: #fff;
   border-radius: 15px;
 }
+
 .border-gradient-rounded:before {
   content: '';
   position: absolute;
@@ -52,6 +56,20 @@ input {
     linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
   background-origin: border-box;
   background-clip: content-box, border-box;
+}
+
+.section::-webkit-scrollbar {
+  width: 4.18px;
+}
+
+
+/* .section::-webkit-scrollbar-track {
+  background-color: darkgrey;
+} */
+
+.section::-webkit-scrollbar-thumb {
+  background: #EEEEEE;
+  border-radius: 60px;
 }
 
 .Toastify__toast--success {

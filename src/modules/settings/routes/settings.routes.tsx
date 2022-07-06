@@ -2,15 +2,15 @@ import React from "react";
 import { RoutesArray } from "../../../interface/interface";
 import PrivateRoute from "../../../routes/PrivateRoute";
 
-const Dashboard = React.lazy(() => import("../pages/Dashboard"));
+const Settings = React.lazy(() => import("../pages/Settings"));
 
-const dashboardRoutes: RoutesArray = {
+const membersRoutes: RoutesArray = {
   element: (
     <PrivateRoute>
-      <Dashboard />
+      <Settings />
     </PrivateRoute>
   ),
-  path: "/dashboard",
+  path: "/dashboard/settings",
 };
 
-export default dashboardRoutes;
+export default membersRoutes;

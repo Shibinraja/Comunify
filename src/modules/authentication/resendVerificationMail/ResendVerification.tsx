@@ -8,10 +8,10 @@ import { useEffect } from 'react';
 import authSlice from '../store/slices/auth.slice';
 import jwt_decode from "jwt-decode";
 import { decodeToken } from '../interface/authentication.interface';
-
+import { AppDispatch } from '../../../store/index';
 
 const ResendVerificationMail = () => {
-  const dispatch = useAppDispatch();
+  const dispatch: AppDispatch = useAppDispatch();
 
   const [searchParams] = useSearchParams();
   const token: string | any = searchParams.get('confirm')
@@ -43,7 +43,7 @@ const ResendVerificationMail = () => {
               text='Resend Verification Mail'
               onClick={_resendVerifyEmail}
               type='submit'
-              className='font-Poppins rounded-lg text-base text-white mt-1.8 h-3.6  w-full hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient'
+              className='font-Poppins rounded-lg text-base font-semibold text-white mt-1.8 h-3.6  w-full hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient'
             />
             </div>
           </div>

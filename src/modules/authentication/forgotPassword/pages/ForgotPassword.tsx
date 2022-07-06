@@ -58,7 +58,7 @@ const ForgotPassword = () => {
                     label="Email"
                     id="email"
                     name="email"
-                    className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
+                    className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.email}
@@ -69,7 +69,7 @@ const ForgotPassword = () => {
                 <Button
                   text="Submit"
                   type="submit"
-                  className="font-Poppins rounded-lg text-base text-white transition ease-in duration-300 w-full mt-1.84 h-3.6 hover:shadow-buttonShadowHover btn-gradient"
+                  className="font-Poppins rounded-lg text-base font-semibold text-white transition ease-in duration-300 w-full mt-1.84 h-3.6 hover:shadow-buttonShadowHover btn-gradient"
                 />
                 <div className="underline text-center text-thinGray font-Poppins font-normal mt-1.86 text-reset">
                   <a href=""> Resend Link</a>
