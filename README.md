@@ -35,7 +35,7 @@ Run `npm install` to install the dependencies and packages included in the appli
 
 ## Documentation
 
-You can find more info about comunify on the website.
+You can find more info about comunify on its website.
 
 https://comunifyllc.com/
 
@@ -51,4 +51,4 @@ https://comunifyllc.com/
 
 ## License
 
-React is MIT licensed.
+This application Comunify Licensed
