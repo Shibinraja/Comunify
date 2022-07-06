@@ -7,7 +7,7 @@ import bgSignUpImage from "../../../../assets/images/bg-sign.svg";
 import dropdownIcon from "../../../../assets/images/signup-domain-downArrow.svg";
 import { Link } from "react-router-dom";
 import { useRef, useState } from "react";
-import { Formik, Form, FormikProps } from "formik";
+import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import {
   Password_regex,
