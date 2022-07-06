@@ -32,7 +32,6 @@ const SignIn = () => {
   const [passwordType, setPasswordType] = useState("password");
 
   const handleSubmit = (values: FormValues): void => {
-    console.log(JSON.stringify(values));
     dispatch(authSlice.actions.login(values))
   };
 
