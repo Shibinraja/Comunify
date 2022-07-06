@@ -7,7 +7,7 @@ import bgSignUpImage from "../../../../assets/images/bg-sign.svg";
 import dropdownIcon from "../../../../assets/images/signup-domain-downArrow.svg";
 import { Link } from "react-router-dom";
 import { useRef, useState } from "react";
-import { Formik, Form } from "formik";
+import { Formik, Form, FormikProps } from "formik";
 import * as Yup from "yup";
 import {
   Password_regex,
@@ -18,17 +18,18 @@ import {
 import { useAppDispatch } from '@/hooks/useRedux';
 import authSlice from "../../store/slices/auth.slice";
 import { signUpFormValues } from '../interface/signup.interface';
+import { AppDispatch } from '../../../../store/index';
 
 const SignUp = () => {
   const [passwordType, setPasswordType] = useState<string>("password");
   const [isDropDownActive, setDropDownActive] = useState<boolean>(false);
   const [selectedDomainSector, setSelectedDomainSector] = useState<string>('Domain');
-  const formikRef: any = useRef();
+  const formikRef : any = useRef();
 
 
   const options=['Marketing','Sales','Customer Support','Customer Success','Others'];
 
-  const dispatch = useAppDispatch();
+  const dispatch: AppDispatch = useAppDispatch();
 
   const initialValues: signUpFormValues = {
     userName: "",

@@ -10,8 +10,12 @@ import { useState } from 'react';
 
 function TopBar() {
   
-  const [isDropdownActive, setisDropdownActive] = useState<Boolean>(false);
-  const options=['Profile Settings','Sign Out']
+  const [isDropdownActive, setisDropdownActive] = useState<boolean>(false);
+  const options: string[]=['Profile Settings','Sign Out']
+
+  const handleDropDownActive=():void=>{
+     setisDropdownActive((prev)=>!prev)
+  }
 
   return (
     <div className='container mt-6 mx-auto '>
@@ -39,11 +43,11 @@ function TopBar() {
               src={profilePic}
               alt=''
               className='rounded-full bg-cover bg-center relative cursor-pointer'
-              onClick={()=>setisDropdownActive(true)}
+              onClick={handleDropDownActive}
             />
              {isDropdownActive && <div className="absolute border-box w-9.62 rounded-0.3 app-result-card-border bg-white cursor-pointer top-10 right-0 shadow-trialButtonShadow">
-               {options.map((options)=>
-                  <div className="flex flex-col" onClick={()=>setisDropdownActive(false)} key={options.toString()}>
+               {options.map((options,i)=>
+                  <div className="flex flex-col" onClick={handleDropDownActive} key={options}>
                       <div className="h-3.06 p-2 flex items-center text-searchBlack font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300">{options}</div>
                   </div>
                 )}

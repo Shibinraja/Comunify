@@ -18,10 +18,11 @@ import * as Yup from "yup";
 import "./SignIn.css";
 import { useState } from "react";
 import { Password_regex } from "../../../../constants/constants";
+import { AppDispatch } from '../../../../store/index';
 
 
 const SignIn = () => {
-    const dispatch = useAppDispatch();
+  const dispatch: AppDispatch = useAppDispatch();
 
   const initialValues: FormValues = {
     email: "",
