@@ -8,9 +8,10 @@ import { useEffect } from 'react';
 import authSlice from '../store/slices/auth.slice';
 import jwt_decode from "jwt-decode";
 import { decodeToken } from './interface/verify.interface';
+import { AppDispatch } from '../../../store/index';
 
 const ResendVerificationMail = () => {
-  const dispatch = useAppDispatch();
+  const dispatch: AppDispatch = useAppDispatch();
 
   const [searchParams] = useSearchParams();
   const token: string | any = searchParams.get('confirm')
