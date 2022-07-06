@@ -169,7 +169,7 @@ const SignUp = () => {
                 <Button
                   text="Sign Up"
                   type="submit"
-                  className="font-Poppins rounded-lg text-base text-white mt-1.8 h-3.6 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient"
+                  className="font-Poppins rounded-lg text-base font-semibold text-white mt-1.8 h-3.6 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient"
                 />
                 <div className="relative flex items-center pt-2.4">
                   <div className="borders flex-grow border-t"></div>
@@ -182,7 +182,7 @@ const SignUp = () => {
                   <img src={socialLogo} alt="" className="pr-0.781" />
                   Continue with Google
                 </div>
-                <div className="font-Inter text-secondaryGray text-center text-base font-normal mt-1.8  text-signLink">
+                <div className="font-Poppins text-secondaryGray text-center text-base font-normal mt-1.8  text-signLink">
                   Already have an account?{" "}
                   <Link to="/" className="text-blue-500 underline">
                     {" "}

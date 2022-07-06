@@ -42,7 +42,7 @@ const ResendVerificationMail = () => {
               text='Resend Verification Mail'
               onClick={_resendVerifyEmail}
               type='submit'
-              className='font-Poppins rounded-lg text-base text-white mt-1.8 h-3.6  w-full hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient'
+              className='font-Poppins rounded-lg text-base font-semibold text-white mt-1.8 h-3.6  w-full hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient'
             />
             </div>
           </div>

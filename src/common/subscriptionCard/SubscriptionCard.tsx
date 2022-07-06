@@ -64,7 +64,7 @@ const SubscriptionCard = () => {
           text="Choose the plan"
           onClick={_navigateToSubscription}
           type="submit"
-          className="font-Poppins rounded-lg text-base text-white hover:shadow-buttonShadowHover transition ease-in duration-300 w-full mt-1.8  h-3.6 btn-gradient "
+          className="font-Poppins rounded-lg text-base font-semibold text-white hover:shadow-buttonShadowHover transition ease-in duration-300 w-full mt-1.8  h-3.6 btn-gradient "
         />
       </div>
     </div>
