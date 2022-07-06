@@ -1,13 +1,28 @@
-import React, { useState } from "react";
-import bgSignInImage from "../../../../assets/images/bg-sign.svg";
-import eyeIcon from "../../../../assets/images/eye.svg";
-import closeEyeIcon from "../../../../assets/images/closeeye.png";
+/* eslint-disable react/no-unescaped-entities */
+import React, { useState } from 'react';
+import bgSignInImage from '../../../../assets/images/bg-sign.svg';
+import openEyeIcon from '../../../../assets/images/eye.svg';
+import closeEyeIcon from '../../../../assets/images/closeeye.png';
+import Input from 'common/input';
+import Button from 'common/button';
+import { Formik, Form } from "formik";
+import * as Yup from "yup";
+import { Password_regex } from "../../../../constants/constants";
+import { passwordFormValues } from './interface/createNewPassword.interface';
 
-import Input from "common/input";
-import Button from "common/button";
+
 const CreateNewPassword: React.FC = () => {
-  const [passwordType1, setPasswordType1] = useState<string>("password");
-  const [passwordType2, setPasswordType2] = useState<string>("password");
+  const [passwordType1, setPasswordType1] = useState('password');
+  const [passwordType2, setPasswordType2] = useState('password');
+
+  const initialValues: passwordFormValues = {
+    password1: "",
+    password2: "",
+  };
+
+  const handleSubmit = (values: passwordFormValues): void => {
+    console.log(JSON.stringify(values));
+  };
 
   const togglePassword1 = () => {
     if (passwordType1 === 'password') {
@@ -37,49 +52,92 @@ const CreateNewPassword: React.FC = () => {
           <p className='mt-0.78 text-desc font-normal leading-1.8 font-Inter text-lightGray max-w-sm'>
             Enter your new password.
           </p>
-          <form className="w-25.9 mt-1.9 " autoComplete="off">
-            <div className="flex items-center relative password mt-1.258 w-25.9">
-              <Input
-                type={passwordType1}
-                placeholder="New Password"
-                label="New Password"
-                id="password1"
-                name="password1"
-                className="h-4.5 w-25.9 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
-              />
-              <div className="absolute  right-5" onClick={togglePassword1}>
-                {passwordType1 === "password" ? (
-                  <img className="cursor-pointer " src={eyeIcon} alt="" />
-                ) : (
-                  <img className="cursor-pointer " src={closeEyeIcon} alt="" />
-                )}
-              </div>
-            </div>
-            <div className="flex items-center relative password mt-1.258 w-25.9">
-              <Input
-                type={passwordType2}
-                placeholder="Confirm Password"
-                label="Confirm Password"
-                id="password2"
-                name="password2"
-                className="h-4.5 w-25.9 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
-              />
-              <div className="absolute  right-5" onClick={togglePassword2}>
-                {passwordType2 === "password" ? (
-                  <img className="cursor-pointer " src={eyeIcon} alt="" />
-                ) : (
-                  <img className="cursor-pointer " src={closeEyeIcon} alt="" />
-                )}
-              </div>
-            </div>
-            <div className='pb-10'>
-              <Button
-                text='Submit'
-                type='submit'
-                className='font-Poppins rounded-lg text-base text-white mt-1.8 h-3.6  w-full hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient'
-              />
-            </div>
-          </form>
+          <Formik
+            initialValues={initialValues}
+            onSubmit={handleSubmit}
+            validateOnChange={true}
+            validationSchema={confirmPasswordSchema}
+          >
+            {({
+              errors,
+              handleBlur,
+              handleChange,
+              handleSubmit,
+              isSubmitting,
+              touched,
+              values,
+            }): JSX.Element => (
+              <Form className="w-25.9 mt-1.9 " autoComplete="off">
+                <div className="password relative">
+                  <Input
+                    type={passwordType1}
+                    placeholder="New Password"
+                    label="New Password"
+                    id="password1"
+                    name="password1"
+                    className=" h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border "
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.password1}
+                    errors={Boolean(touched.password1 && errors.password1)}
+                    helperText={touched.password1 && errors.password1}
+                  />
+                  <div onClick={togglePassword1} className="absolute top-7 right-5">
+                    {passwordType1 === "password" ? (
+                      <img
+                        className="cursor-pointer "
+                        src={openEyeIcon}
+                        alt=""
+                      />
+                    ) : (
+                      <img
+                        className="cursor-pointer "
+                        src={closeEyeIcon}
+                        alt=""
+                      />
+                    )}
+                  </div>       
+                </div>
+                <div className="password relative mt-1.258">
+                  <Input
+                    type={passwordType2}
+                    placeholder="Confirm Password"
+                    label="Confirm Password"
+                    id="password2"
+                    name="password2"
+                    className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.password2}
+                    errors={Boolean(touched.password2 && errors.password2)}
+                    helperText={touched.password2 && errors.password2}
+                  />
+                  <div onClick={togglePassword2} className="absolute top-7 right-5">
+                    {passwordType2 === "password" ? (
+                      <img
+                        className="cursor-pointer "
+                        src={openEyeIcon}
+                        alt=""
+                      />
+                    ) : (
+                      <img
+                        className="cursor-pointer "
+                        src={closeEyeIcon}
+                        alt=""
+                      />
+                    )}
+                  </div>
+                </div>
+                <div className="pb-10">
+                  <Button
+                    text="Submit"
+                    type="submit"
+                    className="font-Poppins rounded-lg text-base font-semibold text-white mt-1.8 h-3.6  w-full hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient"
+                  />
+                </div>
+              </Form>
+            )}
+          </Formik>
         </div>
       </div>
       <div className='py-1.9'></div>
@@ -87,4 +145,22 @@ const CreateNewPassword: React.FC = () => {
     </div>
   );
 };
+
+const confirmPasswordSchema = Yup.object().shape({
+  password1: Yup.string()
+    .required("Password is required")
+    .min(8, "Password must be atleast 8 characters")
+    .matches(
+      Password_regex,
+      "Password must have one uppercase , one lowercase , a digit and specialcharacters"
+    ),
+  password2: Yup.string()
+    .min(8, "Password must be atleast 8 characters")
+    .oneOf([Yup.ref("password1"), null], "Passwords must match")
+    .matches(
+      Password_regex,
+      "Password must have one uppercase , one lowercase , a digit and specialcharacters"
+    )
+    .required("Confirm Password is required"),
+});
 export default CreateNewPassword;

@@ -1,6 +1,6 @@
 const QuickInfo: React.FC = () => {
   return (
-    <div className="container mx-auto mt-5 info ">
+    <div className="container mx-auto mt-5 ">
       <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18">Quick Info</h3>
       <div className="grid grid-cols-4 info-data h-8.37 box-border bg-white  rounded-0.6 mt-1.868 app-input-card-border shadow-profileCard">
         <div className="flex flex-col justify-center items-center">

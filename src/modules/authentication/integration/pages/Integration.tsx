@@ -8,11 +8,12 @@ import Button from "common/button";
 import Modal from "react-modal";
 import { DotPulse } from "@uiball/loaders";
 import { useState } from "react";
+import { useNavigate } from 'react-router';
 Modal.setAppElement("#root");
 
 const Integration: React.FC = () => {
   const [isModalOpen, setisModalOpen] = useState(false);
-
+  const navigate = useNavigate();
   return (
     <div className="w-full flex flex-col pb-10 integration-wrapper">
       <div className="flex w-full relative">

@@ -5,18 +5,21 @@ import 'react-toastify/dist/ReactToastify.css';
 import Router from './routes/routes';
 import store from '@/store/index';
 import './App.css';
-import { BrowserRouter } from 'react-router-dom';
+import {  } from 'react-router-dom';
 import toastCloseButton from './assets/images/svg/toastCloseButton.svg';
-// import Spinner from './components/common/spinner/Spinner';
+import { unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
+import history from './lib/history';
 
 function App() {
   return (
     <Provider store={store}>
       <div className=''>
         <React.Suspense>
-          <BrowserRouter>
-            <Router />
-          </BrowserRouter>
+          {/* <BrowserRouter> */}
+          <HistoryRouter history={history}> 
+          <Router />
+          </HistoryRouter>
+          {/* </BrowserRouter> */}
         </React.Suspense>
       </div>
       <ToastContainer
