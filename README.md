@@ -51,4 +51,4 @@ https://comunifyllc.com/
 
 ## License
 
-This application Comunify Licensed
+This Application is Comunify Licensed
