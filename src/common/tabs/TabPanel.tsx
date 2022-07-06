@@ -18,7 +18,7 @@ export function TabPanel({
         unmount?: "always" | "idle" | "never";
       }
   )) {
-  const [shouldRender, setShouldRender] = useState(
+  const [shouldRender, setShouldRender] = useState<boolean>(
     !props.hidden || render === "always"
   );
 

@@ -1,8 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { resendVerificationMailInput, signInInput, signUpInput, verifyEmailInput } from 'modules/authentication/interface/authentication.interface';
 import type { InitialState } from '../types/auth.types';
-import type { signInInput } from '../../signIn/interface/signIn.interface';
-import { signUpInput } from 'modules/authentication/signUp/interface/signup.interface';
-import { resendVerificationMailInput, verifyEmailInput } from 'modules/authentication/resendVerificationMail/interface/verify.interface';
 
 const initialState: InitialState = {
   isAuthenticated: false,

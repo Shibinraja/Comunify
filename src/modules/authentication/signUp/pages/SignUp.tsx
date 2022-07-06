@@ -16,9 +16,9 @@ import {
   companyName_regex,
 } from "../../../../constants/constants";
 import { useAppDispatch } from '@/hooks/useRedux';
+import { AppDispatch } from '../../../../store/index'
 import authSlice from "../../store/slices/auth.slice";
-import { signUpFormValues } from '../interface/signup.interface';
-import { AppDispatch } from '../../../../store/index';
+import { signUpFormValues } from 'modules/authentication/interface/authentication.interface';
 
 const SignUp = () => {
   const [passwordType, setPasswordType] = useState<string>("password");
