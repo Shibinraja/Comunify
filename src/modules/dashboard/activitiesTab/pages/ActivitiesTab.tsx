@@ -4,6 +4,7 @@ import NewActivitesList from "./NewActivitesList";
 
 export default function ActivitiesTab() {
   const [selectedTab, setSelectedTab] = useTabs(["activites", "highlights"]);
+
   return (
     <div className="w-29.9375 h-full   box-border bg-white  rounded-0.6 mt-1.868 app-input-card-border shadow-profileCard ">
       <div className="w-full mt-7 flex flex-col ">
@@ -25,7 +26,6 @@ export default function ActivitiesTab() {
         </nav>
         <div className="h-14.375 items-center relative overflow-y-auto block section ">
           <NewActivitesList hidden={selectedTab !== "activites"} />
-          {/* <TabPanel hidden={selectedTab !== "highlights"}>Highights</TabPanel> */}
         </div>
       </div>
     </div>
