@@ -1,16 +1,15 @@
 import { call, put, takeEvery } from 'redux-saga/effects';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import { LOGIN, RESEND_VERIFY_EMAIL, SIGNUP, VERIFY_EMAIL } from '../actions/auth.actions';
+import { FORGOT_PASSWORD, LOGIN, RESEND_VERIFY_EMAIL, RESET_PASSWORD, SIGNUP, VERIFY_EMAIL } from '../actions/auth.actions';
 import authSlice from '../slices/auth.slice';
 import loaderSlice from '../slices/loader.slice';
 import { SagaIterator } from 'redux-saga';
 import history from '@/lib/history';
 import { showErrorToast, showSuccessToast } from 'common/toast/toastFunctions';
-import { AxiosError } from 'axios';
 import { setToken } from '@/lib/request';
-import { resendVerificationMailInput, signInInput, signInResponse, signUpInput, signUpResponse, verifyEmailInput, verifyEmailResponse } from 'modules/authentication/interface/authentication.interface';
-import { _resendVerifyEmail, _signIn, _signUp, _verifyEmail } from 'modules/authentication/services/authentication.service';
+import {  resendVerificationMailInput,  signInInput, signInResponse, signUpInput, signUpResponse, verifyEmailInput, verifyEmailResponse } from 'modules/authentication/interface/authentication.interface';
+import {  resendVerifyEmailService , signInService, signUpService, verifyEmailService } from 'modules/authentication/services/authentication.service';
 
 
 const forwardTo = (location:string) => {
@@ -21,7 +20,7 @@ function* loginSaga(action: PayloadAction<signInInput>) {
   try {
     yield put(loaderSlice.actions.startLoadingAction(LOGIN));
 
-    const res: signInResponse = yield call(_signIn, action.payload);
+    const res: signInResponse = yield call(signInService, action.payload);
     if (res?.data) {
       localStorage.setItem('accessToken', res?.data?.token);
       setToken(res?.data?.token);
@@ -39,7 +38,7 @@ function* signUp(action: PayloadAction<signUpInput>) {
   try {
     yield put(loaderSlice.actions.startLoadingAction(SIGNUP));
     const res: signUpResponse = yield call(
-      _signUp,
+      signUpService,
       action.payload
     );
 
@@ -56,9 +55,9 @@ function* signUp(action: PayloadAction<signUpInput>) {
 
 function* verifyEmail(action: PayloadAction<verifyEmailInput>) {
   try {
-    yield put(loaderSlice.actions.startLoadingAction(SIGNUP));
+    yield put(loaderSlice.actions.startLoadingAction(VERIFY_EMAIL));
     const res: verifyEmailResponse = yield call(
-      _verifyEmail,
+      verifyEmailService,
       action.payload
     );
     if (res?.data) {
@@ -72,15 +71,15 @@ function* verifyEmail(action: PayloadAction<verifyEmailInput>) {
     // toast.error(e as string, { theme: 'colored' });
     showErrorToast(e?.response?.data?.message)
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction(SIGNUP));
+    yield put(loaderSlice.actions.stopLoadingAction(VERIFY_EMAIL));
   }
 }
 
 function* resendVerificationMail(action: PayloadAction<resendVerificationMailInput>) {
   try {
-    yield put(loaderSlice.actions.startLoadingAction(SIGNUP));
+    yield put(loaderSlice.actions.startLoadingAction(RESEND_VERIFY_EMAIL));
     const res: verifyEmailResponse = yield call(
-      _resendVerifyEmail,
+      resendVerifyEmailService,
       action.payload
     );
     if (res?.message) {
@@ -91,7 +90,7 @@ function* resendVerificationMail(action: PayloadAction<resendVerificationMailInp
     // toast.error(e as string, { theme: 'colored' });
     showErrorToast(e?.response?.data?.message)
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction(SIGNUP));
+    yield put(loaderSlice.actions.stopLoadingAction(RESEND_VERIFY_EMAIL));
   }
 }
 

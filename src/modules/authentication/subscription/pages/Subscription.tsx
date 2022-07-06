@@ -19,7 +19,6 @@ const Subscription = () => {
   };
 
   const handleSubmit = (values: SubscriptionValues): void => {
-    console.log(JSON.stringify(values));
     navigate("/dashboard");
   };
 
