@@ -8,12 +8,13 @@ import Button from 'common/button';
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { Password_regex } from "../../../../constants/constants";
-import { passwordFormValues } from './interface/createNewPassword.interface';
+import { passwordFormValues } from 'modules/authentication/interface/authentication.interface';
 
 
-const CreateNewPassword: React.FC = () => {
-  const [passwordType1, setPasswordType1] = useState('password');
-  const [passwordType2, setPasswordType2] = useState('password');
+
+const CreateNewPassword = () => {
+  const [passwordType1, setPasswordType1] = useState<string>('password');
+  const [passwordType2, setPasswordType2] = useState<string>('password');
 
   const initialValues: passwordFormValues = {
     password1: "",
