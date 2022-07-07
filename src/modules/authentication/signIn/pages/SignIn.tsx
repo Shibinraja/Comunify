@@ -11,7 +11,7 @@ import bgSignInImage from "../../../../assets/images/bg-sign.svg";
 import closeeye from '../../../../assets/images/closeeye.png';
 import eyeIcon from "../../../../assets/images/eye.svg";
 import socialLogo from "../../../../assets/images/Social.svg";
-import { Password_regex } from "../../../../constants/constants";
+import { password_regex } from "../../../../constants/constants";
 import authSlice from "../../store/slices/auth.slice";
 import "./SignIn.css";
 
@@ -175,7 +175,7 @@ const signInSchema = Yup.object().shape({
     .required("Password is required")
     .min(8, "Password must be atleast 8 characters")
     .matches(
-      Password_regex,
+      password_regex,
       "Password must have one uppercase , one lowercase , a digit and specialcharacters"
     ),
 });

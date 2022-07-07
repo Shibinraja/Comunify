@@ -7,7 +7,7 @@ import Input from 'common/input';
 import Button from 'common/button';
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { Password_regex } from "../../../../constants/constants";
+import { password_regex } from "../../../../constants/constants";
 import { passwordFormValues } from 'modules/authentication/interface/authentication.interface';
 
 
@@ -152,14 +152,14 @@ const confirmPasswordSchema = Yup.object().shape({
     .required("Password is required")
     .min(8, "Password must be atleast 8 characters")
     .matches(
-      Password_regex,
+      password_regex,
       "Password must have one uppercase , one lowercase , a digit and specialcharacters"
     ),
   password2: Yup.string()
     .min(8, "Password must be atleast 8 characters")
     .oneOf([Yup.ref("password1"), null], "Passwords must match")
     .matches(
-      Password_regex,
+      password_regex,
       "Password must have one uppercase , one lowercase , a digit and specialcharacters"
     )
     .required("Confirm Password is required"),

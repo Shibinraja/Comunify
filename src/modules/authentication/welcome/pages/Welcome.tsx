@@ -6,8 +6,8 @@ import { useNavigate } from "react-router-dom";
 const Welcome = () => {
   const navigate = useNavigate();
 
-  const _navigateToIntegration = () => {
-    navigate("/integration");
+  const navigateToCreateWorkspace = () => {
+    navigate("/createWorkspace");
   };
 
   return (
@@ -32,7 +32,7 @@ const Welcome = () => {
           <div className="mt-5 pb-48">
           <button
               className="free-trial-btn font-Inter text-desc w-25.9 font-normal leading-1.8 text-lightBlue box-border rounded-lg bg-white py-2.5 px-4 shadow-trialButtonShadow "
-              onClick={_navigateToIntegration}
+              onClick={navigateToCreateWorkspace}
             >
               Continue with 14 Days Free Trial
             </button>

@@ -67,6 +67,10 @@ export interface resendVerificationMailInput {
   email:string
 }
 
+export type createWorkspaceNameInput = {
+  workspaceName:string
+}
+
 
 //  Response Body
 
@@ -97,7 +101,14 @@ export type signUpResponse = {
 
 export type signInResponse = {
   error: boolean;
-  data: { token: string };
+  data: any;
+  message: string;
+  version: string;
+};
+
+export type workspaceResponse = {
+  error: boolean;
+  data: any;
   message: string;
   version: string;
 };

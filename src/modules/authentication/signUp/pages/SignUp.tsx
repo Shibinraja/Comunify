@@ -10,7 +10,7 @@ import { useRef, useState } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import {
-  Password_regex,
+  password_regex,
   WhiteSpace_regex,
   username_regex,
   companyName_regex,
@@ -229,7 +229,7 @@ const signUpSchema = Yup.object().shape({
     .required("Password is required")
     .min(8, "Password must be atleast 8 characters")
     .matches(
-      Password_regex,
+      password_regex,
       "Password must have one uppercase , one lowercase , a digit and specialcharacters"
     ),
   email: Yup.string()

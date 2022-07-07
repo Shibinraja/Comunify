@@ -1,4 +1,5 @@
 import Axios from 'axios';
+import { API_ENDPOINT } from './config';
 
 export function getLocalRefreshToken() {
   const refreshToken = localStorage.getItem('accessToken');
@@ -6,7 +7,10 @@ export function getLocalRefreshToken() {
 }
 
 const request = Axios.create({
-  baseURL: 'http://localhost:3001/auth/v1/',
+  baseURL: API_ENDPOINT,
+  headers:{
+    'Content-Type':'application/json',
+  }
 });
 
 // For Request
@@ -15,7 +19,7 @@ request.interceptors.request.use(
     const token = getLocalRefreshToken();
     if (token) {
       config.headers = {
-        Authorization: token,
+        Authorization: `Bearer ${token}`,
       };
     }
     return config;

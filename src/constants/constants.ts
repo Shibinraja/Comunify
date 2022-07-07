@@ -1,6 +1,6 @@
 // REGEX_PATTERN
 
-export const Password_regex =
+export const password_regex =
   /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
 
 export const WhiteSpace_regex = /^\S+$/;
