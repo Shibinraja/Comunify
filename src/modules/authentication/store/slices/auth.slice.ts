@@ -4,6 +4,7 @@ import type { InitialState } from '../types/auth.types';
 
 const initialState: InitialState = {
     isAuthenticated: false,
+    subscriptionData: undefined,
 };
 
 const login = (state: InitialState, _action: PayloadAction<signInInput>) => state;

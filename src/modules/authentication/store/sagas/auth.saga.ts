@@ -107,7 +107,7 @@ function* getSubscriptions() {
     try {
         yield put(loaderSlice.actions.startLoadingAction(authSlice.actions.getSubscriptions.type));
         const res: SubscriptionPackages = yield call(getSubscriptionPackagesService);
-        console.log('subscription is', res);
+        // console.log('subscription is', res);
     } catch (error) {
         console.log(error);
     } finally {

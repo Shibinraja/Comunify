@@ -1,11 +1,12 @@
 import Button from 'common/button';
 import successIcon from '../../assets/images/tostr.png';
-import { Formik, Form } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useAppDispatch } from '../../hooks/useRedux';
 import authSlice from '../../modules/authentication/store/slices/auth.slice';
-import { AppDispatch } from '../../store';
+import { AppDispatch, RootState } from '../../store';
+import { InitialState } from '../../modules/authentication/store/types/auth.types';
+import { useSelector } from 'react-redux/es/hooks/useSelector';
 
 const SubscriptionCard = () => {
     const navigate = useNavigate();
@@ -19,6 +20,9 @@ const SubscriptionCard = () => {
     useEffect(() => {
         dispatch(authSlice.actions.getSubscriptions());
     });
+
+    const subscriptionData: InitialState = useSelector((state: RootState) => state.auth);
+    console.log('subscription data is', subscriptionData);
 
     return (
         <div className="mt-1.87  flex flex-col ">
