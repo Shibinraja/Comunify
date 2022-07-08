@@ -8,7 +8,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import bgSignInImage from "../../../../assets/images/bg-sign.svg";
-import closeeye from '../../../../assets/images/closeeye.png';
+import closeEyeIcon from '../../../../assets/images/closeEyeIcon.svg';
 import eyeIcon from "../../../../assets/images/eye.svg";
 import socialLogo from "../../../../assets/images/Social.svg";
 import { Password_regex } from "../../../../constants/constants";
@@ -106,7 +106,7 @@ const SignIn: React.FC = () => {
                     ) : (
                       <img
                         className="cursor-pointer "
-                        src={closeeye}
+                        src={closeEyeIcon}
                         alt=""
                       />
                     )}

@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import bgSignInImage from '../../../../assets/images/bg-sign.svg';
 import openEyeIcon from '../../../../assets/images/eye.svg';
-import closeEyeIcon from '../../../../assets/images/closeeye.png';
+import closeEyeIcon from '../../../../assets/images/closeEyeIcon.svg';
+
 import Input from 'common/input';
 import Button from 'common/button';
 import { Formik, Form } from "formik";
