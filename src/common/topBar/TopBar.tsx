@@ -6,11 +6,20 @@ import unplashmj from '../../assets/images/unsplash_mj.svg';
 import unionIcon from '../../assets/images/Union.svg';
 import sunIcon from '../../assets/images/sun.svg';
 import ellipseIcon from '../../assets/images/Ellipse 39.svg';
+import { useState } from 'react';
 
 function TopBar() {
+  
+  const [isDropdownActive, setisDropdownActive] = useState<boolean>(false);
+  const options: string[]=['Profile Settings','Sign Out']
+
+  const handleDropDownActive=():void=>{
+     setisDropdownActive((prev)=>!prev)
+  }
+
   return (
-    <div className='container mt-20 mx-auto w-[50%]'>
-      <div className='flex justify-between items-center'>
+    <div className='container mt-6 mx-auto '>
+      <div className='flex justify-between items-center '>
         <div className='relative'>
           <input
             type='text'
@@ -20,21 +29,29 @@ function TopBar() {
         </div>
         <img src={searchIcon} alt='' className='absolute pl-7' />
         <div className='flex items-center'>
-          <div>
+          <div className="cursor-pointer">
             <img src={sunIcon} alt='' />
           </div>
-          <div className='pl-1.68 relative'>
+          <div className='pl-1.68 relative cursor-pointer'>
             <img src={unionIcon} alt='' />
             <div className='absolute top-0 right-0 overflow-hidden'>
               <img src={ellipseIcon} alt='' />
             </div>
           </div>
-          <div className='pl-2.56'>
+          <div className='pl-2.56 relative'>
             <img
               src={profilePic}
               alt=''
-              className='rounded-full bg-cover bg-center'
+              className='rounded-full bg-cover bg-center relative cursor-pointer'
+              onClick={handleDropDownActive}
             />
+             {isDropdownActive && <div className="absolute border-box w-9.62 rounded-0.3 app-result-card-border bg-white cursor-pointer top-10 right-0 shadow-trialButtonShadow">
+               {options.map((options,i)=>
+                  <div className="flex flex-col" onClick={handleDropDownActive} key={options}>
+                      <div className="h-3.06 p-2 flex items-center text-searchBlack font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300">{options}</div>
+                  </div>
+                )}
+            </div>}
           </div>
         </div>
       </div>
