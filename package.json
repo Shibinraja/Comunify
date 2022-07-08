@@ -9,7 +9,10 @@
     "preview": "vite preview",
     "lint": "eslint --ignore-path .eslintignore --ext .ts,.tsx .",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(ts|tsx|json)\"",
-    "release": "standard-version"
+    "release": "standard-version",
+    "prettier-check": "prettier src --check",
+    "prettier": "prettier src --list-different",
+    "husky-install": "husky install"
   },
   "dependencies": {
     "@hookform/resolvers": "^2.9.0",
