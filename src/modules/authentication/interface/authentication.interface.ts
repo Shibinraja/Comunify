@@ -112,7 +112,3 @@ export type workspaceResponse = {
   message: string;
   version: string;
 };
-
-  
-
-

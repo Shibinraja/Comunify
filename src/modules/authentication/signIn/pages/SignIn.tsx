@@ -4,7 +4,7 @@ import Button from "common/button/Button";
 import Input from "common/input/Input";
 import { Form, Formik } from "formik";
 import { FormValues } from 'modules/authentication/interface/authentication.interface';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import bgSignInImage from "../../../../assets/images/bg-sign.svg";
@@ -14,6 +14,7 @@ import socialLogo from "../../../../assets/images/Social.svg";
 import { password_regex } from "../../../../constants/constants";
 import authSlice from "../../store/slices/auth.slice";
 import "./SignIn.css";
+import cookie from 'react-cookies';
 
 
 const SignIn = () => {
@@ -26,9 +27,17 @@ const SignIn = () => {
 
   const [passwordType, setPasswordType] = useState<string>("password");
 
+  const access_token = cookie.load('x-auth-cookie');
+
+  console.log('err' , access_token)
+
   const handleSubmit = (values: FormValues): void => {
     dispatch(authSlice.actions.login(values))
   };
+
+  // useEffect(()=>{
+  //   if
+  // },[access_token])
 
   const togglePassword = () => {
     if (passwordType === "password") {
@@ -36,6 +45,10 @@ const SignIn = () => {
       return;
     }
     setPasswordType("password");
+  };
+
+  const navigateToGoogleSignIn = () => {
+    window.open(`http://localhost:3001/auth/v1/google`, "_self");
   };
 
   return (
@@ -124,7 +137,7 @@ const SignIn = () => {
                   </span>
                   <div className="borders flex-grow border-t"></div>
                 </div>
-                <div className="google-signin h-3.3 mt-2.47 font-Inter text-lightBlue box-border flex text-desc  cursor-pointer items-center justify-center rounded-lg font-normal leading-2.8">
+                <div className="google-signin h-3.3 mt-2.47 font-Inter text-lightBlue box-border flex text-desc  cursor-pointer items-center justify-center rounded-lg font-normal leading-2.8" onClick={navigateToGoogleSignIn}>
                   <img src={socialLogo} alt="" className="pr-0.781" />
                   Continue with Google
                 </div>
