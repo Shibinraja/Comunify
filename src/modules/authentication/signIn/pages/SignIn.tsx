@@ -70,7 +70,7 @@ const SignIn: React.FC = () => {
                 <div className="username">
                   <Input
                     type="text"
-                    placeholder="UserName / Email"
+                    placeholder="Username / Email"
                     label="UserName"
                     id="userName"
                     name="userName"
@@ -96,7 +96,7 @@ const SignIn: React.FC = () => {
                     errors={Boolean(touched.password && errors.password)}
                     helperText={touched.password && errors.password}
                   />
-                  <div onClick={togglePassword} className="absolute top-7 right-5">
+                  <div onClick={togglePassword} className="absolute top-7 right-[28.87px]">
                     {passwordType === "password" ? (
                       <img
                         className="cursor-pointer "
@@ -135,7 +135,7 @@ const SignIn: React.FC = () => {
                 </div>
                 <div className="font-Poppins text-secondaryGray text-center text-base font-normal mt-5  text-signLink ">
                   Don’t have an account yet?{" "}
-                  <Link to="signup" className="text-blue-500 underline">
+                  <Link to="signup" className="text-letsSignInSignUp underline">
                     {" "}
                     Let’s Sign Up
                   </Link>

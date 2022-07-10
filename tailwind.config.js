@@ -49,6 +49,7 @@ module.exports = {
         subscriptionMonth: "#8a8b9f",
         settingsTabBorder: "#E7E7E7",
         settingsTabActive: "#69B5E5",
+        letsSignInSignUp:'#0091DF'
       },
       margin: {
         2.6: "43px",

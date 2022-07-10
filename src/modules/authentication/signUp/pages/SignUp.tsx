@@ -75,7 +75,7 @@ const SignUp = () => {
                                 <div className="username">
                                     <Input
                                         type="text"
-                                        placeholder="User Name"
+                                        placeholder="Username"
                                         label="Username"
                                         id="username"
                                         name="userName"
@@ -116,7 +116,7 @@ const SignUp = () => {
                                         errors={Boolean(touched.password && errors.password)}
                                         helperText={touched.password && errors.password}
                                     />
-                                    <div onClick={togglePassword} className="absolute top-7 right-5">
+                                    <div onClick={togglePassword} className="absolute top-7 right-[26.87px]">
                                         {passwordType === 'password' ? (
                                             <img className="cursor-pointer " src={eyeIcon} alt="" />
                                         ) : (
@@ -191,7 +191,7 @@ const SignUp = () => {
                                 </div>
                                 <div className="font-Poppins text-secondaryGray text-center text-base font-normal mt-1.8  text-signLink">
                                     Already have an account?{' '}
-                                    <Link to="/" className="text-blue-500 underline">
+                                    <Link to="/" className="text-letsSignInSignUp underline">
                                         {' '}
                                         Let’s Sign In
                                     </Link>
