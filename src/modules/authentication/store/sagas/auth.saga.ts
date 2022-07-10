@@ -8,7 +8,7 @@ import { SagaIterator } from 'redux-saga';
 import history from '@/lib/history';
 import { showErrorToast, showSuccessToast } from 'common/toast/toastFunctions';
 import { setToken } from '@/lib/request';
-import {  , resendVerificationMailInput,  signInInput, signInResponse, signUpInput, signUpResponse, verifyEmailInput, verifyEmailResponse } from 'modules/authentication/interface/authentication.interface';
+import {createWorkspaceNameInput, resendVerificationMailInput,  signInInput, signInResponse, signUpInput, signUpResponse, verifyEmailInput, verifyEmailResponse } from 'modules/authentication/interface/authentication.interface';
 import {  createWorkspaceService, getWorkspaceService, resendVerifyEmailService , signInService, signUpService, verifyEmailService } from 'modules/authentication/services/authentication.service';
 
 const forwardTo = (location: string) => {

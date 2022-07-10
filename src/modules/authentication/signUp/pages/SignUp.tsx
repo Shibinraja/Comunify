@@ -6,7 +6,7 @@ import socialLogo from "../../../../assets/images/Social.svg";
 import bgSignUpImage from "../../../../assets/images/bg-sign.svg";
 import dropdownIcon from "../../../../assets/images/signup-domain-downArrow.svg";
 import { Link } from "react-router-dom";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import {
@@ -15,6 +15,7 @@ import {
   username_regex,
   companyName_regex,
 } from "../../../../constants/constants";
+import cookie from 'react-cookies';
 import { useAppDispatch } from '@/hooks/useRedux';
 import { AppDispatch } from '../../../../store/index';
 import authSlice from '../../store/slices/auth.slice';
@@ -38,6 +39,14 @@ const SignUp = () => {
         domainSector: '',
     };
 
+    const access_token = cookie.load('x-auth-cookie');
+
+    useEffect(()=>{
+        if(access_token){
+          localStorage.setItem('accessToken', access_token)
+        }
+      },[access_token])
+
     const _handleDomainSectorChange = (option: string): void => {
         // Formik ref to enable to make the custom dropdown with field touch and set the value for the fields.
         formikRef?.current?.setFieldTouched('domainSector');
@@ -56,6 +65,11 @@ const SignUp = () => {
         }
         setPasswordType('password');
     };
+
+    const navigateToGoogleSignIn = () => {
+        window.open(`http://localhost:3001/auth/v1/google`, "_self");
+      };
+
     return (
         <div className="w-full flex flex-col  h-screen">
             <div className="flex w-full relative">
@@ -190,7 +204,7 @@ const SignUp = () => {
                                     <span className="font-Inter text-secondaryGray mx-6 flex-shrink">or</span>
                                     <div className="borders flex-grow border-t"></div>
                                 </div>
-                                <div className="google-signin h-3.3 mt-2.47 font-Inter text-lightBlue box-border flex text-desc  cursor-pointer items-center justify-center rounded-lg font-normal leading-2.8">
+                                <div className="google-signin h-3.3 mt-2.47 font-Inter text-lightBlue box-border flex text-desc  cursor-pointer items-center justify-center rounded-lg font-normal leading-2.8" onClick={navigateToGoogleSignIn}>
                                     <img src={socialLogo} alt="" className="pr-0.781" />
                                     Continue with Google
                                 </div>
