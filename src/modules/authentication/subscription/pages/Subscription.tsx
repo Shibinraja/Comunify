@@ -1,34 +1,32 @@
-import Button from "common/button";
-import Input from "common/input";
-import bgSubscriptionImage from "../../../../assets/images/bg-sign.svg";
-import cardNumberIcon from "../../../../assets/images/card.svg";
-import { Formik, Form } from "formik";
-import { useNavigate } from "react-router-dom";
+import Button from 'common/button';
+import Input from 'common/input';
+import bgSubscriptionImage from '../../../../assets/images/bg-sign.svg';
+import cardNumberIcon from '../../../../assets/images/card.svg';
+import { Formik, Form } from 'formik';
+import { useNavigate } from 'react-router-dom';
 import { SubscriptionValues } from 'modules/authentication/interface/authentication.interface';
 
-
-const Subscription : React.FC  = () => {
+const Subscription: React.FC = () => {
   const navigate = useNavigate();
 
   const initialValues: SubscriptionValues = {
-    username: "",
-    password: "",
-    card_holder: "",
-    cardnumber: "",
-    cvv: "",
-  };
+    username: '',
+    password: '',
+    card_holder: '',
+    cardnumber: '',
+    cvv: '',  };
 
   const handleSubmit = (values: SubscriptionValues): void => {
-    navigate("/create-workspace");
+   navigate('/create-workspace');
   };
 
   return (
-    <div className="w-full flex flex-col subscription-wrapper">
-      <div className="flex w-full relative">
-        <div className="w-1/2 subscription-cover-bg bg-no-repeat bg-left rounded-lg  bg-thinBlue flex items-center justify-center py-20 fixed">
-          <img src={bgSubscriptionImage} alt="" />
+    <div className="subscription">
+      <div className="flex w-full height-calc">
+        <div className="w-1/2 rounded-r-lg  bg-thinBlue flex items-center justify-center p-28 signup-cover-bg bg-no-repeat bg-left overflow-hidden">
+          <img src={bgSubscriptionImage} alt="" className="object-cover" />
         </div>
-        <div className="w-1/2 flex  flex-col pl-7.5 mt-2.53   overflow-y-auto no-scroll-bar absolute right-0 pb-3.75">
+        <div className="flex flex-col w-1/2 pl-7.5 mt-2.53 overflow-scroll">
           <h1 className="font-Inter font-bold text-neutralBlack text-signIn leading-2.8">
             Subscription
           </h1>
@@ -133,10 +131,9 @@ const Subscription : React.FC  = () => {
                 </Form>
               )}
             </Formik>
-          </div>
         </div>
-      </div>
-      <div className="py-1.9"></div>
+        </div>
+    </div>
     </div>
   );
 };

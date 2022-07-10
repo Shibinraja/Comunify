@@ -119,6 +119,33 @@ input {
   padding-right: 13px !important;
 }
 
+
+@media only screen and (min-width: 768px) {
+  .image-cover {
+      height: 100px;
+  }
+}
+@media only screen and (min-width: 992px) {
+  .image-cover {
+      height: 200px;
+  }
+}
+@media only screen and (min-width: 1200px) {
+  .image-cover {
+      height: 300px;
+  }
+}
+@media only screen and (min-width: 1380px) {
+  .image-cover {
+      height: 450px;
+  }
+}
+
+@media only screen and (min-width: 1500px) {
+  .image-cover {
+      height: 619.02px;
+  }
+}
 .resolution-warning {
   display: none;
   text-align: center;
@@ -139,7 +166,9 @@ input {
       display: block;
   }
 }
-
 .border-cancel{
   border:1px solid #9b9b9b;
+}
+.height-calc{
+  height: calc(100vh - 190px);
 }

@@ -1,34 +1,32 @@
-import Input from "common/input/Input";
-import Button from "common/button/Button";
-import bgWorkSpaceImage from "../../../../assets/images/bg-sign.svg";
-import "./CreateWorkSpace.css";
-import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
+import Input from 'common/input/Input';
+import Button from 'common/button/Button';
+import bgWorkSpaceImage from '../../../../assets/images/bg-sign.svg';
+import './CreateWorkSpace.css';
+import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import { AppDispatch } from '../../../../store/index';
 import React, { useEffect, useState } from 'react';
 import authSlice from 'modules/authentication/store/slices/auth.slice';
-import * as Yup from "yup";
-
+import * as Yup from 'yup';
 
 const CreateWorkSpace: React.FC = () => {
   const dispatch: AppDispatch = useAppDispatch();
-  const { workspaceData } = useAppSelector((state) => state.auth);
+  const { workspaceData } = useAppSelector(state => state.auth);
 
-  const [workspaceName, setWorkspaceName] = useState<string>("");
-  const [errorMessage , setErrorMessage] = useState<string | unknown>("")
+  const [workspaceName, setWorkspaceName] = useState<string>('');
+  const [errorMessage, setErrorMessage] = useState<string | unknown>('');
 
   const workspaceNameValidation = Yup.string().min(4,'Workspace Name must be atleast 4 characters')
 
+    useEffect(() => {
+        dispatch(authSlice.actions.getWorkspace());
+    }, []);
 
-  useEffect(()=>{
-    dispatch(authSlice.actions.getWorkspace())
-  },[])
-
-  const handleWorkspaceName = (e:React.ChangeEvent<HTMLInputElement>):void => {
+    const handleWorkspaceName = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const workspace_name = e.target.value;
     setWorkspaceName(workspace_name)
     try{
-      workspaceNameValidation.validateSync(workspace_name)
-      setErrorMessage("")
+      workspaceNameValidation.validateSync(workspace_name);
+      setErrorMessage('')
     }
     catch({message}){
       setErrorMessage(message)
@@ -39,14 +37,14 @@ const CreateWorkSpace: React.FC = () => {
     e.preventDefault();
     dispatch(authSlice.actions.createWorkspace({workspaceName}))
   }
-  
+
   return (
-    <div className="w-full flex flex-col">
-      <div className="flex w-full relative">
-        <div className="w-full md:w-1/2 workspace-cover-bg bg-no-repeat pt-20 bg-left rounded-lg  bg-thinBlue flex items-center justify-center fixed pb-80">
-          <img src={bgWorkSpaceImage} alt="signup-image" />
+    <div className="create-workspace">
+      <div className="flex w-full height-calc">
+        <div className="w-1/2 rounded-r-lg  bg-thinBlue flex items-center justify-center p-28 signup-cover-bg bg-no-repeat bg-left overflow-hidden">
+          <img src={bgWorkSpaceImage} alt="" className="object-cover" />
         </div>
-        <div className="w-full md:w-1/2 flex flex-col pl-7.53 mt-6.84  overflow-y-auto no-scroll-bar absolute right-0">
+        <div className="flex flex-col w-1/2 pl-7.53 pt-6.84 overflow-scroll">
           {" "}
           <h3 className="font-Inter text-neutralBlack font-bold not-italic text-signIn leading-2.8">
             Create Workspace{" "}
@@ -79,8 +77,6 @@ const CreateWorkSpace: React.FC = () => {
           </form>
         </div>
       </div>
-      <div className="py-1.9"></div>
-      <div className="footer"></div>
     </div>
   );
 };

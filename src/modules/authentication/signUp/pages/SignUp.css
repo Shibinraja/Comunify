@@ -1,3 +1,6 @@
 .signup-cover-bg {
   background-image: url('../../../../assets/images/signup-line.svg');
 }
+::-webkit-scrollbar {
+  width: 0px;
+}
