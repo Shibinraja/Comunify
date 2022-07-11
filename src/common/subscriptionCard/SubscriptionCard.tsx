@@ -1,10 +1,10 @@
 
 import Button from 'common/button';
 import successIcon from '../../assets/images/tostr.png';
-import { Formik, Form } from "formik";
-import { useNavigate } from "react-router-dom";
+import { Formik, Form } from 'formik';
+import { useNavigate } from 'react-router-dom';
 
-const SubscriptionCard = () => {
+const SubscriptionCard : React.FC  = () => {
   const navigate = useNavigate();
 
   const _navigateToSubscription = () => {

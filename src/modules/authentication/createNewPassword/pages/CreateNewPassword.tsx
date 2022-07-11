@@ -3,8 +3,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { AppDispatch } from '../../../../store/index';
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import bgSignInImage from '../../../../assets/images/bg-sign.svg';
-import eyeIcon from '../../../../assets/images/eye.svg';
-import closeeye from '../../../../assets/images/closeeye.png';
+import openEyeIcon from '../../../../assets/images/eye.svg';
+import closeEyeIcon from '../../../../assets/images/closeEyeIcon.svg';
+
 import Input from 'common/input';
 import Button from 'common/button';
 import { Formik, Form } from "formik";
@@ -61,7 +62,7 @@ const CreateNewPassword = () => {
         <div className='w-1/2 password-cover-bg bg-no-repeat bg-left rounded-lg  bg-thinBlue flex items-center justify-center py-20 fixed'>
           <img src={bgSignInImage} alt='' />
         </div>
-        <div className='w-1/2 flex pl-7.5 mt-13.1 flex-col  overflow-y-auto no-scroll-bar absolute right-0 pb-[60px]'>
+        <div className='w-1/2 flex pl-7.5 mt-13.1 flex-col  overflow-y-auto no-scroll-bar absolute right-0 pb-3.75'>
           <h1 className='font-Inter font-bold text-signIn text-neutralBlack leading-2.8'>
             Forgot Password
           </h1>
@@ -84,7 +85,7 @@ const CreateNewPassword = () => {
               values,
             }): JSX.Element => (
               <Form className="w-25.9 mt-1.9 " autoComplete="off">
-                <div className="password  relative">
+                <div className="password relative">
                   <Input
                     type={password}
                     placeholder="New Password"
@@ -101,18 +102,18 @@ const CreateNewPassword = () => {
                   <div onClick={togglePassword1} className="m-0 p-0">
                     {password === "password" ? (
                       <img
-                        className="absolute icon-holder left-96 cursor-pointer "
-                        src={eyeIcon}
+                        className="cursor-pointer "
+                        src={openEyeIcon}
                         alt=""
                       />
                     ) : (
                       <img
-                        className="absolute icon-holder left-96 cursor-pointer "
-                        src={closeeye}
+                        className="cursor-pointer "
+                        src={closeEyeIcon}
                         alt=""
                       />
                     )}
-                  </div>
+                  </div>       
                 </div>
                 <div className="password relative mt-1.258">
                   <Input
@@ -131,14 +132,14 @@ const CreateNewPassword = () => {
                   <div onClick={togglePassword2} className="m-0 p-0">
                     {confirmPassword === "password" ? (
                       <img
-                        className="absolute icon-holder left-96 cursor-pointer "
-                        src={eyeIcon}
+                        className="cursor-pointer "
+                        src={openEyeIcon}
                         alt=""
                       />
                     ) : (
                       <img
-                        className="absolute icon-holder left-96 cursor-pointer "
-                        src={closeeye}
+                        className="cursor-pointer "
+                        src={closeEyeIcon}
                         alt=""
                       />
                     )}

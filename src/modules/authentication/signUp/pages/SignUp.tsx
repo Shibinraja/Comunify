@@ -1,7 +1,7 @@
 import Input from 'common/input/Input';
 import Button from 'common/button/Button';
 import eyeIcon from '../../../../assets/images/eye.svg';
-import closeeye from '../../../../assets/images/closeeye.png';
+import closeEyeIcon from '../../../../assets/images/closeeye.png';
 import socialLogo from "../../../../assets/images/Social.svg";
 import bgSignUpImage from "../../../../assets/images/bg-sign.svg";
 import dropdownIcon from "../../../../assets/images/signup-domain-downArrow.svg";
@@ -20,7 +20,7 @@ import { AppDispatch } from '../../../../store/index';
 import authSlice from '../../store/slices/auth.slice';
 import { signUpFormValues } from 'modules/authentication/interface/authentication.interface';
 
-const SignUp = () => {
+const SignUp : React.FC = () => {
     const [passwordType, setPasswordType] = useState<string>('password');
     const [isDropDownActive, setDropDownActive] = useState<boolean>(false);
     const [selectedDomainSector, setSelectedDomainSector] = useState<string>('Domain');
@@ -85,7 +85,7 @@ const SignUp = () => {
                                 <div className="username">
                                     <Input
                                         type="text"
-                                        placeholder="User Name"
+                                        placeholder="Username"
                                         label="Username"
                                         id="username"
                                         name="userName"
@@ -126,11 +126,11 @@ const SignUp = () => {
                                         errors={Boolean(touched.password && errors.password)}
                                         helperText={touched.password && errors.password}
                                     />
-                                    <div onClick={togglePassword} className="m-0 p-0">
+                                    <div onClick={togglePassword} className="absolute top-7 right-[26.87px]">
                                         {passwordType === 'password' ? (
-                                            <img className="absolute icon-holder left-96 cursor-pointer " src={eyeIcon} alt="" />
+                                            <img className="cursor-pointer " src={eyeIcon} alt="" />
                                         ) : (
-                                            <img className="absolute icon-holder left-96 cursor-pointer " src={closeeye} alt="" />
+                                            <img className="cursor-pointer " src={closeEyeIcon} alt="" />
                                         )}
                                     </div>
                                 </div>
@@ -200,11 +200,7 @@ const SignUp = () => {
                                     Continue with Google
                                 </div>
                                 <div className="font-Poppins text-secondaryGray text-center text-base font-normal mt-1.8  text-signLink">
-                                    Already have an account?{' '}
-                                    <Link to="/" className="text-blue-500 underline">
-                                        {' '}
-                                        Let’s Sign In
-                                    </Link>
+                                    <h3>Already have an account? <Link to="/"> <span className="text-letsSignInSignUp underline">Let’s Sign In</span></Link> </h3>
                                 </div>
                             </Form>
                         )}

@@ -11,7 +11,7 @@ import authSlice from 'modules/authentication/store/slices/auth.slice';
 import { useEffect, useRef } from 'react';
 
 
-const ForgotPassword = () => {
+const ForgotPassword: React.FC = () => {
   const dispatch: AppDispatch = useAppDispatch();
   const resetValue = useAppSelector((state) => state.auth.clearFormikValue);
   const formikRef: any = useRef();
@@ -30,16 +30,16 @@ const ForgotPassword = () => {
   
 
   return (
-    <div className='w-full flex flex-col'>
-      <div className='flex w-full relative'>
-        <div className='w-1/2 password-cover-bg bg-no-repeat bg-left rounded-lg  bg-thinBlue flex items-center justify-center py-20 fixed'>
-          <img src={bgForgotImage} alt='' />
+    <div className="w-full flex flex-col forgot-password-wrapper">
+      <div className="flex w-full relative">
+        <div className="w-1/2 password-cover-bg bg-no-repeat bg-left rounded-lg  bg-thinBlue flex items-center justify-center py-20 fixed">
+          <img src={bgForgotImage} alt="" />
         </div>
-        <div className='w-1/2 flex pl-7.5 mt-13.1 flex-col overflow-y-auto no-scroll-bar absolute right-0 pb-[100px]'>
-          <h1 className='font-Inter font-bold text-signIn text-neutralBlack leading-2.8'>
+        <div className="w-1/2 flex pl-7.5 mt-13.1 flex-col overflow-y-auto no-scroll-bar absolute right-0 ">
+          <h1 className="font-Inter font-bold text-signIn text-neutralBlack leading-2.8">
             Forgot Password
           </h1>
-          <p className='mt-0.78 text-desc font-normal leading-1.8 font-Inter text-lightGray max-w-sm'>
+          <p className="mt-0.78 text-desc font-normal leading-1.8 font-Inter text-lightGray max-w-sm">
             Enter your email address to reset your password.
           </p>
           <Formik
@@ -91,8 +91,8 @@ const ForgotPassword = () => {
           </Formik>
         </div>
       </div>
-      <div className='py-1.9'></div>
-      <div className='footer'></div>
+      <div className="py-1.9"></div>
+      <div className="footer"></div>
     </div>
   );
 };
