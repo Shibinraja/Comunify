@@ -4,16 +4,17 @@ import Button from 'common/button/Button';
 import Input from 'common/input/Input';
 import { Form, Formik } from 'formik';
 import { FormValues } from 'modules/authentication/interface/authentication.interface';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import * as Yup from 'yup';
-import bgSignInImage from '../../../../assets/images/bg-sign.svg';
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import * as Yup from "yup";
+import bgSignInImage from "../../../../assets/images/bg-sign.svg";
 import closeEyeIcon from '../../../../assets/images/closeEyeIcon.svg';
 import eyeIcon from "../../../../assets/images/eye.svg";
-import socialLogo from '../../../../assets/images/Social.svg';
-import { Password_regex } from '../../../../constants/constants';
-import authSlice from '../../store/slices/auth.slice';
-import './SignIn.css';
+import socialLogo from "../../../../assets/images/Social.svg";
+import { password_regex } from "../../../../constants/constants";
+import authSlice from "../../store/slices/auth.slice";
+import "./SignIn.css";
+import cookie from 'react-cookies';
 
 
 const SignIn: React.FC = () => {
@@ -26,6 +27,8 @@ const SignIn: React.FC = () => {
 
   const [passwordType, setPasswordType] = useState<string>('password');
 
+  const access_token = cookie.load('x-auth-cookie');
+
   const handleSubmit = (values: FormValues): void => {
     dispatch(authSlice.actions.login(values))
   };
@@ -36,6 +39,10 @@ const SignIn: React.FC = () => {
       return;
     }
     setPasswordType('password');
+  };
+
+  const navigateToGoogleSignIn = () => {
+    window.open(`http://localhost:3001/auth/v1/google`, "_self");
   };
 
   return (
@@ -124,7 +131,7 @@ const SignIn: React.FC = () => {
                   </span>
                   <div className="borders flex-grow border-t"></div>
                 </div>
-                <div className="google-signin h-3.3 mt-2.47 font-Inter text-lightBlue box-border flex text-desc  cursor-pointer items-center justify-center rounded-lg font-normal leading-2.8">
+                <div className="google-signin h-3.3 mt-2.47 font-Inter text-lightBlue box-border flex text-desc  cursor-pointer items-center justify-center rounded-lg font-normal leading-2.8" onClick={navigateToGoogleSignIn}>
                   <img src={socialLogo} alt="" className="pr-0.781" />
                   Continue with Google
                 </div>
@@ -171,7 +178,7 @@ const signInSchema = Yup.object().shape({
     .required("Password is required")
     .min(8, "Password must be atleast 8 characters")
     .matches(
-      Password_regex,
+      password_regex,
       "Password must have one uppercase , one lowercase , a digit and specialcharacters"
     ),
 });

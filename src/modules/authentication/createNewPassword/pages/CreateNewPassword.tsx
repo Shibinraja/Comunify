@@ -1,33 +1,41 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { AppDispatch } from '../../../../store/index';
+import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import bgSignInImage from '../../../../assets/images/bg-sign.svg';
 import openEyeIcon from '../../../../assets/images/eye.svg';
 import closeEyeIcon from '../../../../assets/images/closeEyeIcon.svg';
 
 import Input from 'common/input';
 import Button from 'common/button';
-import { Formik, Form } from 'formik';
-import * as Yup from 'yup';
-import { Password_regex } from '../../../../constants/constants';
+import { Formik, Form } from "formik";
+import * as Yup from "yup";
+import { password_regex } from "../../../../constants/constants";
 import { passwordFormValues } from 'modules/authentication/interface/authentication.interface';
+import authSlice from 'modules/authentication/store/slices/auth.slice';
+import { useSearchParams } from 'react-router-dom';
 
 
 
 const CreateNewPassword = () => {
-  const [passwordType1, setPasswordType1] = useState<string>('password');
-  const [passwordType2, setPasswordType2] = useState<string>('password');
+  const dispatch: AppDispatch = useAppDispatch();
+  const [searchParams] = useSearchParams();
+  const token: string | any = searchParams.get('reset')
+
+  const [password, setPasswordType1] = useState<string>('password');
+  const [confirmPassword, setPasswordType2] = useState<string>('password');
 
   const initialValues: passwordFormValues = {
-    password1: '',
-    password2: '',
+    password: "",
+    confirmPassword: "",
   };
 
-  const handleSubmit = (values: passwordFormValues): void => {
-    console.log(JSON.stringify(values));
-  };
+  useEffect(()=>{
+    if(token) dispatch(authSlice.actions.verifyForgotEmail({id:token}))
+  },[token])
 
   const togglePassword1 = () => {
-    if (passwordType1 === 'password') {
+    if (password === 'password') {
       setPasswordType1('text');
       return;
     }
@@ -35,12 +43,19 @@ const CreateNewPassword = () => {
   };
 
   const togglePassword2 = () => {
-    if (passwordType2 === 'password') {
+    if (confirmPassword === 'password') {
       setPasswordType2('text');
       return;
     }
     setPasswordType2('password');
   };
+
+  const handleSubmit = (values: passwordFormValues): void => {
+    const newValues = {...values};
+        newValues['token'] = token;
+    dispatch(authSlice.actions.resetPassword(newValues));
+  };
+
   return (
     <div className='w-full flex flex-col  '>
       <div className='flex w-full relative'>
@@ -72,20 +87,20 @@ const CreateNewPassword = () => {
               <Form className="w-25.9 mt-1.9 " autoComplete="off">
                 <div className="password relative">
                   <Input
-                    type={passwordType1}
+                    type={password}
                     placeholder="New Password"
                     label="New Password"
-                    id="password1"
-                    name="password1"
-                    className=" h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border "
+                    id="password"
+                    name="password"
+                    className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.password1}
-                    errors={Boolean(touched.password1 && errors.password1)}
-                    helperText={touched.password1 && errors.password1}
+                    value={values.password}
+                    errors={Boolean(touched.password && errors.password)}
+                    helperText={touched.password && errors.password}
                   />
-                  <div onClick={togglePassword1} className="absolute top-7 right-5">
-                    {passwordType1 === "password" ? (
+                  <div onClick={togglePassword1} className="m-0 p-0">
+                    {password === "password" ? (
                       <img
                         className="cursor-pointer "
                         src={openEyeIcon}
@@ -102,20 +117,20 @@ const CreateNewPassword = () => {
                 </div>
                 <div className="password relative mt-1.258">
                   <Input
-                    type={passwordType2}
+                    type={confirmPassword}
                     placeholder="Confirm Password"
                     label="Confirm Password"
-                    id="password2"
-                    name="password2"
+                    id="confirmPassword"
+                    name="confirmPassword"
                     className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.password2}
-                    errors={Boolean(touched.password2 && errors.password2)}
-                    helperText={touched.password2 && errors.password2}
+                    value={values.confirmPassword}
+                    errors={Boolean(touched.confirmPassword && errors.confirmPassword)}
+                    helperText={touched.confirmPassword && errors.confirmPassword}
                   />
-                  <div onClick={togglePassword2} className="absolute top-7 right-5">
-                    {passwordType2 === "password" ? (
+                  <div onClick={togglePassword2} className="m-0 p-0">
+                    {confirmPassword === "password" ? (
                       <img
                         className="cursor-pointer "
                         src={openEyeIcon}
@@ -149,18 +164,18 @@ const CreateNewPassword = () => {
 };
 
 const confirmPasswordSchema = Yup.object().shape({
-  password1: Yup.string()
+  password: Yup.string()
     .required("Password is required")
     .min(8, "Password must be atleast 8 characters")
     .matches(
-      Password_regex,
+      password_regex,
       "Password must have one uppercase , one lowercase , a digit and specialcharacters"
     ),
-  password2: Yup.string()
+  confirmPassword: Yup.string()
     .min(8, "Password must be atleast 8 characters")
-    .oneOf([Yup.ref("password1"), null], "Passwords must match")
+    .oneOf([Yup.ref("password"), null], "Passwords must match")
     .matches(
-      Password_regex,
+      password_regex,
       "Password must have one uppercase , one lowercase , a digit and specialcharacters"
     )
     .required("Confirm Password is required"),

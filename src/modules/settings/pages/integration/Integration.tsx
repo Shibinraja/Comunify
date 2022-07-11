@@ -2,11 +2,9 @@ import Button from 'common/button';
 import React, { useState } from 'react';
 import unsplashIcon from '../../../../assets/images/unsplash.svg';
 import slackIcon from '../../../../assets/images/slack.svg';
-type Props = {
-    hidden: boolean;
-};
 
-const Integration: React.FC<Props> = ({ hidden }) => {
+const Integration: React.FC<{hidden:boolean}> = ({ hidden }) => {
+    
     const [isButtonConnect, setisButtonConnect] = useState<boolean>(true);
     const connectedBtnClassName="bg-connectButton shadow-contactCard font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient";
     const disConnectedBtnClassName="btn-disconnect-gradient shadow-contactCard font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300";

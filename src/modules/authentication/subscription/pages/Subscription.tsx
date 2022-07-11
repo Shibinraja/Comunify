@@ -19,7 +19,7 @@ const Subscription : React.FC  = () => {
   };
 
   const handleSubmit = (values: SubscriptionValues): void => {
-    navigate("/dashboard");
+    navigate("/create-workspace");
   };
 
   return (

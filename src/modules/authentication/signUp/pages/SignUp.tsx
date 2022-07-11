@@ -2,20 +2,25 @@ import Input from 'common/input/Input';
 import Button from 'common/button/Button';
 import eyeIcon from '../../../../assets/images/eye.svg';
 import closeEyeIcon from '../../../../assets/images/closeeye.png';
-import socialLogo from '../../../../assets/images/Social.svg';
-import bgSignUpImage from '../../../../assets/images/bg-sign.svg';
-import dropdownIcon from '../../../../assets/images/signup-domain-downArrow.svg';
-import { Link } from 'react-router-dom';
-import { useRef, useState } from 'react';
-import { Formik, Form } from 'formik';
-import * as Yup from 'yup';
-import { Password_regex, WhiteSpace_regex, username_regex, companyName_regex } from '../../../../constants/constants';
-import { useAppDispatch } from '@/hooks/useRedux';
+import socialLogo from "../../../../assets/images/Social.svg";
+import bgSignUpImage from "../../../../assets/images/bg-sign.svg";
+import dropdownIcon from "../../../../assets/images/signup-domain-downArrow.svg";
+import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Formik, Form } from "formik";
+import * as Yup from "yup";
+import {
+  password_regex,
+  WhiteSpace_regex,
+  username_regex,
+  companyName_regex,
+} from "../../../../constants/constants";
+import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import { AppDispatch } from '../../../../store/index';
 import authSlice from '../../store/slices/auth.slice';
 import { signUpFormValues } from 'modules/authentication/interface/authentication.interface';
 
-const SignUp = () => {
+const SignUp : React.FC = () => {
     const [passwordType, setPasswordType] = useState<string>('password');
     const [isDropDownActive, setDropDownActive] = useState<boolean>(false);
     const [selectedDomainSector, setSelectedDomainSector] = useState<string>('Domain');
@@ -24,6 +29,7 @@ const SignUp = () => {
     const options = ['Marketing', 'Sales', 'Customer Support', 'Customer Success', 'Others'];
 
     const dispatch: AppDispatch = useAppDispatch();
+    const resetValue = useAppSelector((state) => state.auth.clearFormikValue);
 
     const initialValues: signUpFormValues = {
         userName: '',
@@ -32,6 +38,10 @@ const SignUp = () => {
         companyName: '',
         domainSector: '',
     };
+
+    useEffect(()=>{
+        if(resetValue) formikRef?.current?.resetForm({values:initialValues})
+      },[resetValue])
 
     const _handleDomainSectorChange = (option: string): void => {
         // Formik ref to enable to make the custom dropdown with field touch and set the value for the fields.
@@ -204,20 +214,28 @@ const SignUp = () => {
 };
 
 const signUpSchema = Yup.object().shape({
-    userName: Yup.string()
-        .required('Username is required')
-        .min(5, 'Username should be more than 5 character long')
-        .max(25, 'Username should not exceed 25 characters')
-        .matches(WhiteSpace_regex, 'Whitespaces are not allowed')
-        .matches(username_regex, 'UserName is not valid')
-        .trim(),
-    password: Yup.string()
-        .required('Password is required')
-        .min(8, 'Password must be atleast 8 characters')
-        .matches(Password_regex, 'Password must have one uppercase , one lowercase , a digit and specialcharacters'),
-    email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-    domainSector: Yup.string().required('Domain is required'),
-    companyName: Yup.string().max(25, 'CompanyName should not exceed 25 characters').matches(companyName_regex, 'CompanyName is not valid'),
+  userName: Yup.string()
+    .required("Username is required")
+    .min(5, "Username should be more than 5 character long")
+    .max(25, "Username should not exceed 25 characters")
+    .matches(WhiteSpace_regex, "Whitespaces are not allowed")
+    .matches(username_regex, "UserName is not valid")
+    .trim(),
+  password: Yup.string()
+    .required("Password is required")
+    .min(8, "Password must be atleast 8 characters")
+    .matches(
+      password_regex,
+      "Password must have one uppercase , one lowercase , a digit and specialcharacters"
+    ),
+  email: Yup.string()
+    .email("Must be a valid email")
+    .max(255)
+    .required("Email is required"),
+  domainSector: Yup.string().required("Domain is required"),
+  companyName: Yup.string()
+    .max(25, "CompanyName should not exceed 25 characters")
+    .matches(companyName_regex, "CompanyName is not valid"),
 });
 
 export default SignUp;

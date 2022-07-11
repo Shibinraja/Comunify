@@ -1,4 +1,3 @@
-import Button from 'common/button';
 import SubscriptionCard from 'common/subscriptionCard/SubscriptionCard';
 import bgWelcomeImage from '../../../../assets/images/bg-sign.svg';
 import './Welcome.css';
@@ -7,8 +6,8 @@ import { useNavigate } from 'react-router-dom';
 const Welcome: React.FC = () => {
   const navigate = useNavigate();
 
-  const _navigateToIntegration = () => {
-    navigate('/integration');
+  const navigateToCreateWorkspace = () => {
+    navigate("/create-workspace");
   };
 
   return (
@@ -33,7 +32,7 @@ const Welcome: React.FC = () => {
           <div className="mt-5">
           <button
               className="free-trial-btn font-Inter text-desc w-25.9 font-normal leading-1.8 text-lightBlue box-border rounded-lg bg-white py-2.5 px-4 shadow-trialButtonShadow "
-              onClick={_navigateToIntegration}
+              onClick={navigateToCreateWorkspace}
             >
               Continue with 14 Days Free Trial
             </button>

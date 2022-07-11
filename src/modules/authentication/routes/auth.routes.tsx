@@ -39,7 +39,7 @@ let authRoutes: RoutesArray[] = [
         ),
       },
       {
-        path: "/createWorkSpace",
+        path: "/create-workspace",
         element: (
           <PrivateRoute>
             <CreateWorkSpace />
@@ -60,7 +60,7 @@ let authRoutes: RoutesArray[] = [
             <CreateNewPassword />
           </PublicRoute>
         ),
-        path: "/forgot-password/:id",
+        path: "/create-password",
       },
       {
         element: (
