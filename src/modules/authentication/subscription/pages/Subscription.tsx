@@ -19,7 +19,7 @@ const Subscription = () => {
   };
 
   const handleSubmit = (values: SubscriptionValues): void => {
-    navigate("/createWorkspace");
+    navigate("/create-workspace");
   };
 
   return (

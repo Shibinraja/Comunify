@@ -39,7 +39,7 @@ let authRoutes: RoutesArray[] = [
         ),
       },
       {
-        path: "/createWorkSpace",
+        path: "/create-workspace",
         element: (
           <PrivateRoute>
             <CreateWorkSpace />

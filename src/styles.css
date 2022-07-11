@@ -684,10 +684,6 @@ video {
   margin-bottom: 23.58px;
 }
 
-.mt-10{
-  margin-top: 2.5rem;
-}
-
 .ml-4\.68{
   margin-left: 75px;
 }
@@ -766,6 +762,10 @@ video {
 
 .mt-1\.625{
   margin-top: 26px;
+}
+
+.mt-10{
+  margin-top: 2.5rem;
 }
 
 .mt-13\.9{
@@ -900,10 +900,6 @@ video {
   display: none;
 }
 
-.h-full{
-  height: 100%;
-}
-
 .h-7\.9{
   height: 126.43px;
 }
@@ -956,6 +952,10 @@ video {
   height: 49px;
 }
 
+.h-full{
+  height: 100%;
+}
+
 .h-2\.68{
   height: 43px;
 }
@@ -1004,16 +1004,8 @@ video {
   min-height: 500px;
 }
 
-.w-3{
-  width: 0.75rem;
-}
-
 .w-full{
   width: 100%;
-}
-
-.w-\[83\%\]{
-  width: 83%;
 }
 
 .w-2\/12{
@@ -1050,6 +1042,14 @@ video {
 
 .w-34\.37{
   width: 550px;
+}
+
+.w-3{
+  width: 0.75rem;
+}
+
+.w-\[83\%\]{
+  width: 83%;
 }
 
 .w-1\/2{
@@ -1330,11 +1330,6 @@ video {
   padding: 0.75rem;
 }
 
-.px-16{
-  padding-left: 4rem;
-  padding-right: 4rem;
-}
-
 .py-1\.9{
   padding-top: 31.5px;
   padding-bottom: 31.5px;
@@ -1360,6 +1355,11 @@ video {
   padding-bottom: 1.25rem;
 }
 
+.px-16{
+  padding-left: 4rem;
+  padding-right: 4rem;
+}
+
 .px-2{
   padding-left: 0.5rem;
   padding-right: 0.5rem;
@@ -1383,10 +1383,6 @@ video {
 .py-2{
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
-}
-
-.pb-4{
-  padding-bottom: 1rem;
 }
 
 .pt-8{
@@ -1503,6 +1499,10 @@ video {
 
 .pl-6{
   padding-left: 1.5rem;
+}
+
+.pb-4{
+  padding-bottom: 1rem;
 }
 
 .pl-7\.40{
@@ -1813,13 +1813,13 @@ video {
   color: rgb(107 114 128 / var(--tw-text-opacity));
 }
 
+.text-searchBlack{
+  color: #070707;;
+}
+
 .text-gray-500{
   --tw-text-opacity: 1;
   color: rgb(107 114 128 / var(--tw-text-opacity));
-}
-
-.text-searchBlack{
-  color: #070707;;
 }
 
 .text-lightGray{
@@ -1877,12 +1877,6 @@ video {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
-.shadow-none{
-  --tw-shadow: 0 0 #0000;
-  --tw-shadow-colored: 0 0 #0000;
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-}
-
 .shadow-trialButtonShadow{
   --tw-shadow: 8px 8px 24px rgba(2, 2, 70, 0.05);
   --tw-shadow-colored: 8px 8px 24px var(--tw-shadow-color);
@@ -1892,6 +1886,12 @@ video {
 .shadow-reportInput{
   --tw-shadow: 8.32785px 8.32785px 24.9835px rgba(2, 2, 70, 0.05);
   --tw-shadow-colored: 8.32785px 8.32785px 24.9835px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.shadow-none{
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
