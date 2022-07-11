@@ -7,8 +7,8 @@ import { useNavigate } from 'react-router-dom';
 const SubscriptionCard : React.FC  = () => {
   const navigate = useNavigate();
 
-  const _navigateToSubscription = () => {
-    navigate("/subscription");
+  const navigateToWorkSpace = () => {
+    navigate("/create-workspace");
   };
 
   return (
@@ -62,7 +62,7 @@ const SubscriptionCard : React.FC  = () => {
         </div>
         <Button
           text="Choose the plan"
-          onClick={_navigateToSubscription}
+          onClick={navigateToWorkSpace}
           type="submit"
           className="font-Poppins rounded-lg text-base font-semibold text-white hover:shadow-buttonShadowHover transition ease-in duration-300 w-full mt-1.8  h-3.6 btn-gradient "
         />
