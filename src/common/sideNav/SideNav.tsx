@@ -33,7 +33,8 @@ const SideNav = () => {
         </div>
         <div className="flex mt-2.18 items-center">
           <img src={memberIcon} alt="" />
-          <div className="pl-1.24 font-Poppins font-medium text-desc text-slimGray leading-1.68 cursor-pointer">
+          <div className="pl-1.24 font-Poppins font-medium text-desc text-slimGray leading-1.68 cursor-pointer"
+            onClick={() => {navigate("/dashboard/members")}}>
             Members
           </div>
         </div>
