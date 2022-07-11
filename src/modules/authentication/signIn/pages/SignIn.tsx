@@ -1,41 +1,41 @@
-import { useAppDispatch } from "@/hooks/useRedux";
+import { useAppDispatch } from '@/hooks/useRedux';
 import { AppDispatch } from '../../../../store/index';
-import Button from "common/button/Button";
-import Input from "common/input/Input";
-import { Form, Formik } from "formik";
+import Button from 'common/button/Button';
+import Input from 'common/input/Input';
+import { Form, Formik } from 'formik';
 import { FormValues } from 'modules/authentication/interface/authentication.interface';
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import * as Yup from "yup";
-import bgSignInImage from "../../../../assets/images/bg-sign.svg";
-import closeeye from '../../../../assets/images/closeeye.png';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import * as Yup from 'yup';
+import bgSignInImage from '../../../../assets/images/bg-sign.svg';
+import closeEyeIcon from '../../../../assets/images/closeEyeIcon.svg';
 import eyeIcon from "../../../../assets/images/eye.svg";
-import socialLogo from "../../../../assets/images/Social.svg";
-import { Password_regex } from "../../../../constants/constants";
-import authSlice from "../../store/slices/auth.slice";
-import "./SignIn.css";
+import socialLogo from '../../../../assets/images/Social.svg';
+import { Password_regex } from '../../../../constants/constants';
+import authSlice from '../../store/slices/auth.slice';
+import './SignIn.css';
 
 
-const SignIn = () => {
+const SignIn: React.FC = () => {
   const dispatch: AppDispatch = useAppDispatch();
 
   const initialValues: FormValues = {
-    userName: "",
-    password: "",
+    userName: '',
+    password: '',
   };
 
-  const [passwordType, setPasswordType] = useState<string>("password");
+  const [passwordType, setPasswordType] = useState<string>('password');
 
   const handleSubmit = (values: FormValues): void => {
     dispatch(authSlice.actions.login(values))
   };
 
   const togglePassword = () => {
-    if (passwordType === "password") {
-      setPasswordType("text");
+    if (passwordType === 'password') {
+      setPasswordType('text');
       return;
     }
-    setPasswordType("password");
+    setPasswordType('password');
   };
 
   return (
@@ -70,7 +70,7 @@ const SignIn = () => {
                 <div className="username">
                   <Input
                     type="text"
-                    placeholder="UserName / Email"
+                    placeholder="Username / Email"
                     label="UserName"
                     id="userName"
                     name="userName"
@@ -96,17 +96,17 @@ const SignIn = () => {
                     errors={Boolean(touched.password && errors.password)}
                     helperText={touched.password && errors.password}
                   />
-                  <div onClick={togglePassword} className="m-0 p-0">
+                  <div onClick={togglePassword} className="absolute top-7 right-[28.87px]">
                     {passwordType === "password" ? (
                       <img
-                        className="absolute icon-holder left-96 cursor-pointer "
+                        className="cursor-pointer "
                         src={eyeIcon}
                         alt=""
                       />
                     ) : (
                       <img
-                        className="absolute icon-holder left-96 cursor-pointer "
-                        src={closeeye}
+                        className="cursor-pointer "
+                        src={closeEyeIcon}
                         alt=""
                       />
                     )}
@@ -134,11 +134,7 @@ const SignIn = () => {
                   </Link>
                 </div>
                 <div className="font-Poppins text-secondaryGray text-center text-base font-normal mt-5  text-signLink ">
-                  Don’t have an account yet?{" "}
-                  <Link to="signup" className="text-blue-500 underline">
-                    {" "}
-                    Let’s Sign Up
-                  </Link>
+                  <h3>Don’t have an account yet? <Link to="signup"> <span className="text-letsSignInSignUp underline">Let’s Sign Up</span></Link> </h3>
                 </div>
               </Form>
             )}

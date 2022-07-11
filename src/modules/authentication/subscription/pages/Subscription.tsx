@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { SubscriptionValues } from 'modules/authentication/interface/authentication.interface';
 
 
-const Subscription = () => {
+const Subscription : React.FC  = () => {
   const navigate = useNavigate();
 
   const initialValues: SubscriptionValues = {
@@ -23,12 +23,12 @@ const Subscription = () => {
   };
 
   return (
-    <div className="w-full flex flex-col">
+    <div className="w-full flex flex-col subscription-wrapper">
       <div className="flex w-full relative">
-        <div className="w-1/2 password-cover-bg bg-no-repeat bg-left rounded-lg  bg-thinBlue flex items-center justify-center py-20 fixed">
+        <div className="w-1/2 subscription-cover-bg bg-no-repeat bg-left rounded-lg  bg-thinBlue flex items-center justify-center py-20 fixed">
           <img src={bgSubscriptionImage} alt="" />
         </div>
-        <div className="w-1/2 flex  flex-col pl-7.5 mt-2.53   overflow-y-auto no-scroll-bar absolute right-0 pb-[60px]">
+        <div className="w-1/2 flex  flex-col pl-7.5 mt-2.53   overflow-y-auto no-scroll-bar absolute right-0 pb-3.75">
           <h1 className="font-Inter font-bold text-neutralBlack text-signIn leading-2.8">
             Subscription
           </h1>
