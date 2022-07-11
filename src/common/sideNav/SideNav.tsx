@@ -1,12 +1,12 @@
-import comunifyLogo from "../../assets/images/Group 2 (1).svg";
-import dashboardIcon from "../../assets/images/dashboard.svg";
-import memberIcon from "../../assets/images/members.svg";
-import settingsIcon from "../../assets/images/settings.svg";
-import streamIcon from "../../assets/images/stream.svg";
-import chartIcon from "../../assets/images/pie_chart.svg";
-import dropdownIcon from "../../assets/images/dropdown.svg";
-import Button from "common/button";
-import { Link, useNavigate } from "react-router-dom";
+import comunifyLogo from '../../assets/images/Group 2 (1).svg';
+import dashboardIcon from '../../assets/images/dashboard.svg';
+import memberIcon from '../../assets/images/members.svg';
+import settingsIcon from '../../assets/images/settings.svg';
+import streamIcon from '../../assets/images/stream.svg';
+import chartIcon from '../../assets/images/pie_chart.svg';
+import dropdownIcon from '../../assets/images/dropdown.svg';
+import Button from 'common/button';
+import { Link, useNavigate } from 'react-router-dom';
 
 const SideNav: React.FC = () => {
   const navigate = useNavigate();

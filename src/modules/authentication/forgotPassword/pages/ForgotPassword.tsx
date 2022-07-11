@@ -3,8 +3,8 @@ import Input from 'common/input';
 import './ForgotPassword.css';
 import bgForgotImage from '../../../../assets/images/bg-sign.svg';
 
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
+import { Formik, Form } from 'formik';
+import * as Yup from 'yup';
 import { emailFormValues } from 'modules/authentication/interface/authentication.interface';
 
 

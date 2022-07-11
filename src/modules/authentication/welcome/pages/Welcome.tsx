@@ -1,14 +1,14 @@
-import Button from "common/button";
-import SubscriptionCard from "common/subscriptionCard/SubscriptionCard";
-import bgWelcomeImage from "../../../../assets/images/bg-sign.svg";
-import "./Welcome.css";
-import { useNavigate } from "react-router-dom";
+import Button from 'common/button';
+import SubscriptionCard from 'common/subscriptionCard/SubscriptionCard';
+import bgWelcomeImage from '../../../../assets/images/bg-sign.svg';
+import './Welcome.css';
+import { useNavigate } from 'react-router-dom';
 
 const Welcome: React.FC = () => {
   const navigate = useNavigate();
 
   const _navigateToIntegration = () => {
-    navigate("/integration");
+    navigate('/integration');
   };
 
   return (

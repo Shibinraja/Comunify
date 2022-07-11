@@ -1,7 +1,7 @@
-import QuickInfo from "common/quickInfo/QuickInfo";
-import React from "react";
-import ActivitiesTab from "../activitiesTab/pages/ActivitiesTab";
-import MembersTab from "../membersTab/pages/MembersTab";
+import QuickInfo from 'common/quickInfo/QuickInfo';
+import React from 'react';
+import ActivitiesTab from '../activitiesTab/pages/ActivitiesTab';
+import MembersTab from '../membersTab/pages/MembersTab';
 
 const Dashboard : React.FC  = () => {
   return (

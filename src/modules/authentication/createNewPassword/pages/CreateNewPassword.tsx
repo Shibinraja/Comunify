@@ -6,9 +6,9 @@ import closeEyeIcon from '../../../../assets/images/closeEyeIcon.svg';
 
 import Input from 'common/input';
 import Button from 'common/button';
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
-import { Password_regex } from "../../../../constants/constants";
+import { Formik, Form } from 'formik';
+import * as Yup from 'yup';
+import { Password_regex } from '../../../../constants/constants';
 import { passwordFormValues } from 'modules/authentication/interface/authentication.interface';
 
 
@@ -18,8 +18,8 @@ const CreateNewPassword = () => {
   const [passwordType2, setPasswordType2] = useState<string>('password');
 
   const initialValues: passwordFormValues = {
-    password1: "",
-    password2: "",
+    password1: '',
+    password2: '',
   };
 
   const handleSubmit = (values: passwordFormValues): void => {

@@ -6,7 +6,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useAppDispatch } from '@/hooks/useRedux';
 import { useEffect } from 'react';
 import authSlice from '../store/slices/auth.slice';
-import jwt_decode from "jwt-decode";
+import jwt_decode from 'jwt-decode';
 import { decodeToken } from '../interface/authentication.interface';
 import { AppDispatch } from '../../../store/index';
 

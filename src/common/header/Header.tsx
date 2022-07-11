@@ -1,4 +1,4 @@
-import comunifyLogo from "../../assets/images/Group 2 (1).svg";
+import comunifyLogo from '../../assets/images/Group 2 (1).svg';
 
 const Header: React.FC = () => {
   return (

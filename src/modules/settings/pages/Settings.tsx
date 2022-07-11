@@ -1,14 +1,13 @@
-import { useTabs } from "@/hooks/useTabs";
-import { TabSelector } from "common/tabs/TabSelector";
-import React from "react";
-import Integration from "./integration/Integration";
+import { useTabs } from '@/hooks/useTabs';
+import { TabSelector } from 'common/tabs/TabSelector';
+import Integration from './integration/Integration';
 
 const Settings = () => {
   const [selectedTab, setSelectedTab] = useTabs([
-    "integrations",
-    "subscription",
-    "billing_history",
-    "tags",
+    'integrations',
+    'subscription',
+    'billing_history',
+    'tags',
   ]);
 
   return (

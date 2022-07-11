@@ -1,41 +1,41 @@
-import { useAppDispatch } from "@/hooks/useRedux";
+import { useAppDispatch } from '@/hooks/useRedux';
 import { AppDispatch } from '../../../../store/index';
-import Button from "common/button/Button";
-import Input from "common/input/Input";
-import { Form, Formik } from "formik";
+import Button from 'common/button/Button';
+import Input from 'common/input/Input';
+import { Form, Formik } from 'formik';
 import { FormValues } from 'modules/authentication/interface/authentication.interface';
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import * as Yup from "yup";
-import bgSignInImage from "../../../../assets/images/bg-sign.svg";
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import * as Yup from 'yup';
+import bgSignInImage from '../../../../assets/images/bg-sign.svg';
 import closeEyeIcon from '../../../../assets/images/closeEyeIcon.svg';
 import eyeIcon from "../../../../assets/images/eye.svg";
-import socialLogo from "../../../../assets/images/Social.svg";
-import { Password_regex } from "../../../../constants/constants";
-import authSlice from "../../store/slices/auth.slice";
-import "./SignIn.css";
+import socialLogo from '../../../../assets/images/Social.svg';
+import { Password_regex } from '../../../../constants/constants';
+import authSlice from '../../store/slices/auth.slice';
+import './SignIn.css';
 
 
 const SignIn: React.FC = () => {
   const dispatch: AppDispatch = useAppDispatch();
 
   const initialValues: FormValues = {
-    userName: "",
-    password: "",
+    userName: '',
+    password: '',
   };
 
-  const [passwordType, setPasswordType] = useState<string>("password");
+  const [passwordType, setPasswordType] = useState<string>('password');
 
   const handleSubmit = (values: FormValues): void => {
     dispatch(authSlice.actions.login(values))
   };
 
   const togglePassword = () => {
-    if (passwordType === "password") {
-      setPasswordType("text");
+    if (passwordType === 'password') {
+      setPasswordType('text');
       return;
     }
-    setPasswordType("password");
+    setPasswordType('password');
   };
 
   return (
