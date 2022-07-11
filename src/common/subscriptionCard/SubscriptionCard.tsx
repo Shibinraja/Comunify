@@ -11,18 +11,18 @@ import { useSelector } from 'react-redux/es/hooks/useSelector';
 const SubscriptionCard = () => {
     const navigate = useNavigate();
 
-    const _navigateToSubscription = () => {
-        navigate('/subscription');
+    const navigateToWorkSpace = () => {
+        navigate('/create-workspace');
     };
 
     const dispatch: AppDispatch = useAppDispatch();
 
     useEffect(() => {
         dispatch(authSlice.actions.getSubscriptions());
-    });
+    }, []);
 
-    const subscriptionData: InitialState = useSelector((state: RootState) => state.auth);
-    console.log('subscription data is', subscriptionData);
+    const subscriptionData: any = useSelector((state: RootState) => state.auth);
+    console.log('subscription data is', subscriptionData.data);
 
     return (
         <div className="mt-1.87  flex flex-col ">
@@ -65,7 +65,7 @@ const SubscriptionCard = () => {
                 </div>
                 <Button
                     text="Choose the plan"
-                    onClick={_navigateToSubscription}
+                    onClick={navigateToWorkSpace}
                     type="submit"
                     className="font-Poppins rounded-lg text-base font-semibold text-white hover:shadow-buttonShadowHover transition ease-in duration-300 w-full mt-1.8  h-3.6 btn-gradient "
                 />

@@ -1,5 +1,5 @@
 import { GeneratorResponse } from '@/lib/api';
-import { auth_module, workspace_module } from '@/lib/config';
+import { auth_module, subscription_module, workspace_module } from '@/lib/config';
 import { request } from '@/lib/request';
 import {
     createWorkspaceNameInput,
@@ -15,6 +15,7 @@ import {
     verifyEmailInput,
     verifyEmailResponse,
     workspaceResponse,
+    SubscriptionPackages,
 } from '../interface/authentication.interface';
 
 //Auth Module
@@ -61,5 +62,10 @@ export function* getWorkspaceService(): GeneratorResponse<workspaceResponse> {
 
 export function* createWorkspaceService(body: createWorkspaceNameInput): GeneratorResponse<workspaceResponse> {
     const { data } = yield request.post(`${workspace_module}/create-workspace`, body);
+    return data;
+}
+//Subscription Module
+export function* getSubscriptionPackagesService(): GeneratorResponse<SubscriptionPackages> {
+    const { data } = yield request.get(`${subscription_module}/get-subscription`);
     return data;
 }

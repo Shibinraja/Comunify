@@ -70,6 +70,8 @@ const authSlice = createSlice({
         getWorkspace,
         getWorkspaceData,
         formikValueReset,
+        signOut,
+        getSubscriptions,
     },
 });
 

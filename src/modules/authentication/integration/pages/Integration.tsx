@@ -6,7 +6,6 @@ import bgIntegrationImage from "../../../../assets/images/bg-sign.svg";
 import "./Integration.css";
 import Button from "common/button";
 import Modal from "react-modal";
-import { DotPulse } from "@uiball/loaders";
 import { useState } from "react";
 import { useNavigate } from 'react-router';
 Modal.setAppElement("#root");
