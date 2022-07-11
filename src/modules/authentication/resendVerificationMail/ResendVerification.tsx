@@ -32,7 +32,7 @@ const ResendVerificationMail: React.FC = () => {
         <div className="w-1/2 resend-cover-bg bg-no-repeat bg-left rounded-lg  bg-thinBlue flex items-center justify-center py-20 fixed">
           <img src={bgSendMailImage} alt="" />
         </div>
-        <div className="w-1/2 flex pl-7.40 mt-13.9 flex-col overflow-y-auto no-scroll-bar absolute right-0 pb-[100px]">
+        <div className="w-1/2 flex pl-7.40 mt-13.9 flex-col overflow-y-auto no-scroll-bar absolute right-0 pb-6.25">
           <div className="w-25.9">
             <p className="font-Inter font-normal leading-1.8 text-lightGray text-desc">
               A verification link has been sent to the entered email address.

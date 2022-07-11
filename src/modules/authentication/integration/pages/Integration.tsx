@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router';
 Modal.setAppElement("#root");
 
 const Integration: React.FC = () => {
-  const [isModalOpen, setisModalOpen] = useState(false);
+  const [isModalOpen, setisModalOpen] = useState<boolean>(false);
   const navigate = useNavigate();
   return (
     <div className="w-full flex flex-col pb-10 integration-wrapper">
@@ -26,7 +26,7 @@ const Integration: React.FC = () => {
               Integrations
             </h3>
           </div>
-          <div className="flex flex-col gap-0.93 mt-1.87 relative">
+          <div className="flex flex-col gap-0.93 mt-1.87 relative w-fit">
             <div className="flex gap-0.93">
               <div className="integration shadow-integrationCardShadow border-integrationBorder w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center">
                 <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
@@ -37,11 +37,9 @@ const Integration: React.FC = () => {
                 </div>
                 <Button
                   type="button"
-                  text="connect"
+                  text="CONNECT"
                   className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient"
-                >
-                  CONNECT
-                </Button>
+                />
               </div>
               <div className="integration shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center">
                 <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
@@ -52,11 +50,9 @@ const Integration: React.FC = () => {
                 </div>
                 <Button
                   type="button"
-                  text="connect"
+                  text="CONNECT"
                   className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient"
-                >
-                  CONNECT
-                </Button>
+                />
               </div>
               <div className="integration shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center">
                 <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
@@ -67,11 +63,9 @@ const Integration: React.FC = () => {
                 </div>
                 <Button
                   type="button"
-                  text="connect"
+                  text="CONNECT"
                   className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient"
-                >
-                  CONNECT
-                </Button>
+                />
               </div>
             </div>
             <div className="flex gap-0.93">
@@ -84,11 +78,9 @@ const Integration: React.FC = () => {
                 </div>
                 <Button
                   type="button"
-                  text="connect"
+                  text="CONNECT"
                   className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient"
-                >
-                  CONNECT
-                </Button>
+                />
               </div>
               <div className="integration shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center">
                 <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
@@ -99,11 +91,9 @@ const Integration: React.FC = () => {
                 </div>
                 <Button
                   type="button"
-                  text="connect"
+                  text="CONNECT"
                   className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient"
-                >
-                  CONNECT
-                </Button>
+                />
               </div>
               <div className="integration shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center">
                 <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
@@ -114,11 +104,9 @@ const Integration: React.FC = () => {
                 </div>
                 <Button
                   type="button"
-                  text="connect"
+                  text="CONNECT"
                   className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient"
-                >
-                  CONNECT
-                </Button>
+                />
               </div>
             </div>
             <div className="flex gap-0.93">
@@ -131,11 +119,9 @@ const Integration: React.FC = () => {
                 </div>
                 <Button
                   type="button"
-                  text="connect"
+                  text="CONNECT"
                   className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient"
-                >
-                  CONNECT
-                </Button>
+                />
               </div>
               <div className="integration shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center">
                 <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
@@ -146,11 +132,9 @@ const Integration: React.FC = () => {
                 </div>
                 <Button
                   type="button"
-                  text="connect"
+                  text="CONNECT"
                   className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient"
-                >
-                  CONNECT
-                </Button>
+                />
               </div>
               <div className="integration shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center">
                 <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
@@ -161,11 +145,9 @@ const Integration: React.FC = () => {
                 </div>
                 <Button
                   type="button"
-                  text="connect"
+                  text="CONNECT"
                   className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient"
-                >
-                  CONNECT
-                </Button>
+                />
               </div>
               <Modal
                 isOpen={isModalOpen}
@@ -188,8 +170,7 @@ const Integration: React.FC = () => {
                 </div>
               </Modal>
             </div>
-          </div>
-          <div className="absolute left-[500px] bottom-5">
+          <div className="flex justify-end">
             <div className="flex items-center pb-5">
               <div className="p-2 leading-1.56 text-skipGray font-Inter font-normal text-reset cursor-pointer">
                 Skip
@@ -198,6 +179,7 @@ const Integration: React.FC = () => {
                 <img src={nextIcon} alt="" />
               </div>
             </div>
+          </div>
           </div>
         </div>
       </div>

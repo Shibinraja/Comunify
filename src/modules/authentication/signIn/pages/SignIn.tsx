@@ -134,11 +134,7 @@ const SignIn: React.FC = () => {
                   </Link>
                 </div>
                 <div className="font-Poppins text-secondaryGray text-center text-base font-normal mt-5  text-signLink ">
-                  Don’t have an account yet?{" "}
-                  <Link to="signup" className="text-letsSignInSignUp underline">
-                    {" "}
-                    Let’s Sign Up
-                  </Link>
+                  <h3>Don’t have an account yet? <Link to="signup"> <span className="text-letsSignInSignUp underline">Let’s Sign Up</span></Link> </h3>
                 </div>
               </Form>
             )}

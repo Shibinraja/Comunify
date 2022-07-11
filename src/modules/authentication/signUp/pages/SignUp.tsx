@@ -190,11 +190,7 @@ const SignUp = () => {
                                     Continue with Google
                                 </div>
                                 <div className="font-Poppins text-secondaryGray text-center text-base font-normal mt-1.8  text-signLink">
-                                    Already have an account?{' '}
-                                    <Link to="/" className="text-letsSignInSignUp underline">
-                                        {' '}
-                                        Let’s Sign In
-                                    </Link>
+                                    <h3>Already have an account? <Link to="/"> <span className="text-letsSignInSignUp underline">Let’s Sign In</span></Link> </h3>
                                 </div>
                             </Form>
                         )}
