@@ -6,7 +6,7 @@ import socialLogo from "../../../../assets/images/Social.svg";
 import bgSignUpImage from "../../../../assets/images/bg-sign.svg";
 import dropdownIcon from "../../../../assets/images/signup-domain-downArrow.svg";
 import { Link } from "react-router-dom";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import {
@@ -15,7 +15,7 @@ import {
   username_regex,
   companyName_regex,
 } from "../../../../constants/constants";
-import { useAppDispatch } from '@/hooks/useRedux';
+import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import { AppDispatch } from '../../../../store/index';
 import authSlice from '../../store/slices/auth.slice';
 import { signUpFormValues } from 'modules/authentication/interface/authentication.interface';
@@ -29,6 +29,7 @@ const SignUp = () => {
     const options = ['Marketing', 'Sales', 'Customer Support', 'Customer Success', 'Others'];
 
     const dispatch: AppDispatch = useAppDispatch();
+    const resetValue = useAppSelector((state) => state.auth.clearFormikValue);
 
     const initialValues: signUpFormValues = {
         userName: '',
@@ -37,6 +38,10 @@ const SignUp = () => {
         companyName: '',
         domainSector: '',
     };
+
+    useEffect(()=>{
+        if(resetValue) formikRef?.current?.resetForm({values:initialValues})
+      },[resetValue])
 
     const _handleDomainSectorChange = (option: string): void => {
         // Formik ref to enable to make the custom dropdown with field touch and set the value for the fields.

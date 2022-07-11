@@ -9,4 +9,5 @@ export type VoidGenerator<T = unknown, TNext = unknown> = Generator<
 export interface InitialState {
   isAuthenticated: boolean;
   workspaceData: Array<[]>;
+  clearFormikValue: boolean
 }

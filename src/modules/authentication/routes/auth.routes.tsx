@@ -60,7 +60,7 @@ let authRoutes: RoutesArray[] = [
             <CreateNewPassword />
           </PublicRoute>
         ),
-        path: "/forgot-password/:id",
+        path: "/create-password",
       },
       {
         element: (

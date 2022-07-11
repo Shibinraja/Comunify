@@ -1,6 +1,7 @@
 export type passwordFormValues = {
-  password1: string;
-  password2: string;
+  password: string;
+  confirmPassword: string;
+  token?:string
 };
 
 export type emailFormValues = {
@@ -109,6 +110,20 @@ export type signInResponse = {
 export type workspaceResponse = {
   error: boolean;
   data: any;
+  message: string;
+  version: string;
+};
+
+export type forgotPasswordResponse = {
+  error: boolean;
+  data: {};
+  message: string;
+  version: string;
+};
+
+export type resetPasswordResponse = {
+  error: boolean;
+  data: {};
   message: string;
   version: string;
 };

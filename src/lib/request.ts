@@ -32,7 +32,7 @@ request.interceptors.request.use(
 const setToken = (token: string | number | boolean): void => {
   request.interceptors.request.use((config) => {
     config.headers = {
-      Authorization: token,
+      Authorization: `Bearer ${token}`,
     };
   });
 };

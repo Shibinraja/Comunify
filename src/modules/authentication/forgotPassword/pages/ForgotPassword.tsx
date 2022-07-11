@@ -2,21 +2,32 @@ import Button from 'common/button';
 import Input from 'common/input';
 import './ForgotPassword.css';
 import bgForgotImage from '../../../../assets/images/bg-sign.svg';
-
+import { AppDispatch } from '../../../../store/index';
+import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { emailFormValues } from 'modules/authentication/interface/authentication.interface';
-
+import authSlice from 'modules/authentication/store/slices/auth.slice';
+import { useEffect, useRef } from 'react';
 
 
 const ForgotPassword = () => {
+  const dispatch: AppDispatch = useAppDispatch();
+  const resetValue = useAppSelector((state) => state.auth.clearFormikValue);
+  const formikRef: any = useRef();
+
   const initialValues: emailFormValues = {
     email: "",
   };
 
+  useEffect(()=>{
+    if(resetValue) formikRef?.current?.resetForm({values:initialValues})
+  },[resetValue])
+
   const handleSubmit = (values: emailFormValues): void => {
-    console.log(JSON.stringify(values));
+    dispatch(authSlice.actions.forgotPassword(values))
   };
+  
 
   return (
     <div className='w-full flex flex-col'>
@@ -32,6 +43,7 @@ const ForgotPassword = () => {
             Enter your email address to reset your password.
           </p>
           <Formik
+            innerRef={formikRef}
             initialValues={initialValues}
             onSubmit={handleSubmit}
             validateOnChange={true}
