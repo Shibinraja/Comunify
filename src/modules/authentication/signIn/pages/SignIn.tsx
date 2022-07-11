@@ -29,15 +29,9 @@ const SignIn = () => {
 
   const access_token = cookie.load('x-auth-cookie');
 
-  console.log('err' , access_token)
-
   const handleSubmit = (values: FormValues): void => {
     dispatch(authSlice.actions.login(values))
   };
-
-  // useEffect(()=>{
-  //   if
-  // },[access_token])
 
   const togglePassword = () => {
     if (passwordType === "password") {
