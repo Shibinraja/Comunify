@@ -18,6 +18,7 @@ import {
     verifyEmailResponse,
 } from 'modules/authentication/interface/authentication.interface';
 import { resendVerifyEmailService, signInService, signUpService, verifyEmailService } from 'modules/authentication/services/authentication.service';
+import { AxiosError } from '../types/auth.types';
 
 const forwardTo = (location: string) => {
     history.push(location);
@@ -33,9 +34,9 @@ function* loginSaga(action: PayloadAction<signInInput>) {
             setToken(res?.data?.token);
             yield put(authSlice.actions.setIsAuthenticated(true));
         }
-    } catch (e: any) {
-        // toast.error(e as string, { theme: 'colored' });
-        showErrorToast(e?.response?.data?.message);
+    } catch (e) {
+        const error = e as AxiosError<unknown>;
+        showErrorToast(error?.response?.data?.message);
     } finally {
         yield put(loaderSlice.actions.stopLoadingAction(LOGIN));
     }
@@ -49,9 +50,9 @@ function* signUp(action: PayloadAction<signUpInput>) {
         if (res?.data) {
             showSuccessToast('Please, verify your email');
         }
-    } catch (e: any) {
-        // toast.error(e as string, { theme: 'colored' });
-        showErrorToast(e?.response?.data?.message);
+    } catch (e) {
+        const error = e as AxiosError<unknown>;
+        showErrorToast(error?.response?.data?.message);
     } finally {
         yield put(loaderSlice.actions.stopLoadingAction(SIGNUP));
     }
@@ -68,9 +69,9 @@ function* verifyEmail(action: PayloadAction<verifyEmailInput>) {
             yield call(forwardTo, '/welcome');
             showSuccessToast(res.message);
         }
-    } catch (e: any) {
-        // toast.error(e as string, { theme: 'colored' });
-        showErrorToast(e?.response?.data?.message);
+    } catch (e) {
+        const error = e as AxiosError<unknown>;
+        showErrorToast(error?.response?.data?.message);
     } finally {
         yield put(loaderSlice.actions.stopLoadingAction(VERIFY_EMAIL));
     }
@@ -84,9 +85,9 @@ function* resendVerificationMail(action: PayloadAction<resendVerificationMailInp
             showSuccessToast(res.message);
             // yield put(authSlice.actions.setIsAuthenticated(true));
         }
-    } catch (e: any) {
-        // toast.error(e as string, { theme: 'colored' });
-        showErrorToast(e?.response?.data?.message);
+    } catch (e) {
+        const error = e as AxiosError<unknown>;
+        showErrorToast(error?.response?.data?.message);
     } finally {
         yield put(loaderSlice.actions.stopLoadingAction(RESEND_VERIFY_EMAIL));
     }

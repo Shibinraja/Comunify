@@ -106,3 +106,24 @@ input {
   padding-top: 3px !important;
   padding-right: 13px !important;
 }
+
+.resolution-warning {
+  display: none;
+  text-align: center;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #333;
+  color: #FFF;
+  font-size: 20px;
+  box-sizing: border-box;
+  padding: 30% 50px;
+}
+
+@media screen and (max-width: 1024px) {
+  .resolution-warning {
+      display: block;
+  }
+}
