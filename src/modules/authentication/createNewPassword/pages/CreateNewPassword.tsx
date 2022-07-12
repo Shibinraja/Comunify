@@ -99,7 +99,7 @@ const CreateNewPassword: React.FC = () => {
                     errors={Boolean(touched.password && errors.password)}
                     helperText={touched.password && errors.password}
                   />
-                  <div onClick={togglePassword1} className="m-0 p-0">
+                  <div onClick={togglePassword1} className="absolute top-7 right-[28.87px]">
                     {password === "password" ? (
                       <img
                         className="cursor-pointer "
@@ -129,7 +129,7 @@ const CreateNewPassword: React.FC = () => {
                     errors={Boolean(touched.confirmPassword && errors.confirmPassword)}
                     helperText={touched.confirmPassword && errors.confirmPassword}
                   />
-                  <div onClick={togglePassword2} className="m-0 p-0">
+                  <div onClick={togglePassword2} className="absolute top-7 right-[28.87px]">
                     {confirmPassword === "password" ? (
                       <img
                         className="cursor-pointer "
