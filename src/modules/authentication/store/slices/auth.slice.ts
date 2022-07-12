@@ -1,13 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
-    createWorkspaceNameInput,
-    forgotPasswordInput,
-    resendVerificationMailInput,
-    resetPasswordInput,
-    signInInput,
-    signUpInput,
+    CreateWorkspaceNameInput,
+    ForgotPasswordInput,
+    ResendVerificationMailInput,
+    ResetPasswordInput,
+    SignInInput,
+    SignUpInput,
     SubscriptionPackages,
-    verifyEmailInput,
+    VerifyEmailInput,
 } from 'modules/authentication/interface/authentication.interface';
 import type { InitialState } from '../types/auth.types';
 
@@ -18,21 +18,21 @@ const initialState: InitialState = {
     clearFormikValue: false,
 };
 
-const login = (state: InitialState, _action: PayloadAction<signInInput>) => state;
+const login = (state: InitialState, _action: PayloadAction<SignInInput>) => state;
 
-const signup = (state: InitialState, _action: PayloadAction<signUpInput>) => state;
+const signup = (state: InitialState, _action: PayloadAction<SignUpInput>) => state;
 
-const verifyEmail = (state: InitialState, _action: PayloadAction<verifyEmailInput>) => state;
+const verifyEmail = (state: InitialState, _action: PayloadAction<VerifyEmailInput>) => state;
 
-const resendVerificationMail = (state: InitialState, _action: PayloadAction<resendVerificationMailInput>) => state;
+const resendVerificationMail = (state: InitialState, _action: PayloadAction<ResendVerificationMailInput>) => state;
 
-const forgotPassword = (state: InitialState, _action: PayloadAction<forgotPasswordInput>) => state;
+const forgotPassword = (state: InitialState, _action: PayloadAction<ForgotPasswordInput>) => state;
 
-const verifyForgotEmail = (state: InitialState, _action: PayloadAction<verifyEmailInput>) => state;
+const verifyForgotEmail = (state: InitialState, _action: PayloadAction<VerifyEmailInput>) => state;
 
-const resetPassword = (state: InitialState, _action: PayloadAction<resetPasswordInput>) => state;
+const resetPassword = (state: InitialState, _action: PayloadAction<ResetPasswordInput>) => state;
 
-const createWorkspace = (state: InitialState, _action: PayloadAction<createWorkspaceNameInput>) => state;
+const createWorkspace = (state: InitialState, _action: PayloadAction<CreateWorkspaceNameInput>) => state;
 
 const getWorkspace = (state: InitialState) => state;
 

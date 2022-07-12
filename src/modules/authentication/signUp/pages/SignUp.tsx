@@ -48,9 +48,9 @@ const SignUp : React.FC = () => {
         }
       },[access_token])
       
-    useEffect(()=>{
-        if(resetValue) formikRef?.current?.resetForm({values:initialValues})
-      },[resetValue])
+    // useEffect(()=>{
+    //     if(resetValue) formikRef?.current?.resetForm({values:initialValues})
+    //   },[resetValue])
 
     const _handleDomainSectorChange = (option: string): void => {
         // Formik ref to enable to make the custom dropdown with field touch and set the value for the fields.

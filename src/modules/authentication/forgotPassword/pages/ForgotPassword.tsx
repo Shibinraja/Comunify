@@ -6,7 +6,7 @@ import { AppDispatch } from '../../../../store/index';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { emailFormValues } from 'modules/authentication/interface/authentication.interface';
+import { EmailFormValues } from 'modules/authentication/interface/authentication.interface';
 import authSlice from 'modules/authentication/store/slices/auth.slice';
 import { useEffect, useRef } from 'react';
 
@@ -15,7 +15,7 @@ const ForgotPassword: React.FC = () => {
     const resetValue = useAppSelector(state => state.auth.clearFormikValue);
     const formikRef: any = useRef();
 
-    const initialValues: emailFormValues = {
+    const initialValues: EmailFormValues = {
         email: '',
     };
 
@@ -23,7 +23,7 @@ const ForgotPassword: React.FC = () => {
         if (resetValue) formikRef?.current?.resetForm({ values: initialValues });
     }, [resetValue]);
 
-    const handleSubmit = (values: emailFormValues): void => {
+    const handleSubmit = (values: EmailFormValues): void => {
         dispatch(authSlice.actions.forgotPassword(values));
     };
 

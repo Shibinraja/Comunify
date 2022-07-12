@@ -11,13 +11,13 @@ import Button from 'common/button';
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { password_regex } from "../../../../constants/constants";
-import { passwordFormValues } from 'modules/authentication/interface/authentication.interface';
+import { PasswordFormValues } from 'modules/authentication/interface/authentication.interface';
 import authSlice from 'modules/authentication/store/slices/auth.slice';
 import { useSearchParams } from 'react-router-dom';
 
 
 
-const CreateNewPassword = () => {
+const CreateNewPassword: React.FC = () => {
   const dispatch: AppDispatch = useAppDispatch();
   const [searchParams] = useSearchParams();
   const token: string | any = searchParams.get('reset')
@@ -25,7 +25,7 @@ const CreateNewPassword = () => {
   const [password, setPasswordType1] = useState<string>('password');
   const [confirmPassword, setPasswordType2] = useState<string>('password');
 
-  const initialValues: passwordFormValues = {
+  const initialValues: PasswordFormValues = {
     password: "",
     confirmPassword: "",
   };
@@ -50,7 +50,7 @@ const CreateNewPassword = () => {
     setPasswordType2('password');
   };
 
-  const handleSubmit = (values: passwordFormValues): void => {
+  const handleSubmit = (values: PasswordFormValues): void => {
     const newValues = {...values};
         newValues['token'] = token;
     dispatch(authSlice.actions.resetPassword(newValues));

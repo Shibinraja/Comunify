@@ -7,7 +7,7 @@ import { useAppDispatch } from '@/hooks/useRedux';
 import { useEffect } from 'react';
 import authSlice from '../store/slices/auth.slice';
 import jwt_decode from 'jwt-decode';
-import { decodeToken } from '../interface/authentication.interface';
+import { DecodeToken } from '../interface/authentication.interface';
 import { AppDispatch } from '../../../store/index';
 
 const ResendVerificationMail: React.FC = () => {
@@ -16,7 +16,7 @@ const ResendVerificationMail: React.FC = () => {
   const [searchParams] = useSearchParams();
   const token: string | any = searchParams.get('confirm')
 
-  const verifyToken:decodeToken = jwt_decode(token);
+  const verifyToken:DecodeToken = jwt_decode(token);
 
   useEffect(()=>{
     if(token) dispatch(authSlice.actions.verifyEmail({id:token}))
