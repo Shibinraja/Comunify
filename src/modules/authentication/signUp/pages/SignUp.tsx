@@ -15,10 +15,11 @@ import {
   username_regex,
   companyName_regex,
 } from "../../../../constants/constants";
+import cookie from 'react-cookies';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import { AppDispatch } from '../../../../store/index';
 import authSlice from '../../store/slices/auth.slice';
-import { signUpFormValues } from 'modules/authentication/interface/authentication.interface';
+import { SignUpFormValues } from 'modules/authentication/interface/authentication.interface';
 
 const SignUp : React.FC = () => {
     const [passwordType, setPasswordType] = useState<string>('password');
@@ -31,7 +32,7 @@ const SignUp : React.FC = () => {
     const dispatch: AppDispatch = useAppDispatch();
     const resetValue = useAppSelector((state) => state.auth.clearFormikValue);
 
-    const initialValues: signUpFormValues = {
+    const initialValues: SignUpFormValues = {
         userName: '',
         email: '',
         password: '',
@@ -39,6 +40,14 @@ const SignUp : React.FC = () => {
         domainSector: '',
     };
 
+    const access_token = cookie.load('x-auth-cookie');
+
+    useEffect(()=>{
+        if(access_token){
+          localStorage.setItem('accessToken', access_token)
+        }
+      },[access_token])
+      
     useEffect(()=>{
         if(resetValue) formikRef?.current?.resetForm({values:initialValues})
       },[resetValue])
@@ -50,7 +59,7 @@ const SignUp : React.FC = () => {
         setSelectedDomainSector(option);
     };
 
-    const handleSubmit = (values: signUpFormValues): void => {
+    const handleSubmit = (values: SignUpFormValues): void => {
         dispatch(authSlice.actions.signup(values));
     };
 
@@ -61,6 +70,11 @@ const SignUp : React.FC = () => {
         }
         setPasswordType('password');
     };
+
+    const navigateToGoogleSignIn = () => {
+        window.open(`http://localhost:3001/auth/v1/google`, "_self");
+      };
+
     return (
         <div className="w-full flex flex-col  h-screen">
             <div className="flex w-full relative">
@@ -195,7 +209,7 @@ const SignUp : React.FC = () => {
                                     <span className="font-Inter text-secondaryGray mx-6 flex-shrink">or</span>
                                     <div className="borders flex-grow border-t"></div>
                                 </div>
-                                <div className="google-signin h-3.3 mt-2.47 font-Inter text-lightBlue box-border flex text-desc  cursor-pointer items-center justify-center rounded-lg font-normal leading-2.8">
+                                <div className="google-signin h-3.3 mt-2.47 font-Inter text-lightBlue box-border flex text-desc  cursor-pointer items-center justify-center rounded-lg font-normal leading-2.8" onClick={navigateToGoogleSignIn}>
                                     <img src={socialLogo} alt="" className="pr-0.781" />
                                     Continue with Google
                                 </div>

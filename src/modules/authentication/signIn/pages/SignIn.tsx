@@ -33,6 +33,12 @@ const SignIn: React.FC = () => {
     dispatch(authSlice.actions.login(values))
   };
 
+  useEffect(()=>{
+    if(access_token){
+      localStorage.setItem('accessToken', access_token)
+  }
+  },[access_token])
+
   const togglePassword = () => {
     if (passwordType === 'password') {
       setPasswordType('text');

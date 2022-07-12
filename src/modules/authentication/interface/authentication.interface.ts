@@ -1,10 +1,10 @@
-export type passwordFormValues = {
+export type PasswordFormValues = {
     password: string;
     confirmPassword: string;
     token?: string;
 };
 
-export type emailFormValues = {
+export type EmailFormValues = {
     email: string;
 };
 
@@ -13,14 +13,14 @@ export type FormValues = {
     password: string;
 };
 
-export type decodeToken = {
+export type DecodeToken = {
     email: string;
     exp: number;
     iat: number;
     id: string;
 };
 
-export type signUpFormValues = {
+export type SignUpFormValues = {
     userName: string;
     email: string;
     password: string;
@@ -38,49 +38,46 @@ export type SubscriptionValues = {
 
 // Input Body
 
-export interface signInInput {
+export interface SignInInput {
     userName: string;
     password: string;
 }
 
-export interface signUpInput {
+export interface SignUpInput {
     email: string;
     password: string;
     userName: string;
     companyName: string;
     domainSector: string;
 }
-export interface verifyEmailInput {
+export interface VerifyEmailInput {
     id: string;
 }
 
-export type forgotPasswordInput = {
+export type ForgotPasswordInput = {
     email: string;
 };
 
-export type resetPasswordInput = {
+export type ResetPasswordInput = {
     password: string;
     confirmPassword: string;
 };
 
-export interface resendVerificationMailInput {
+export interface ResendVerificationMailInput {
     email: string;
 }
 
-export type createWorkspaceNameInput = {
+export type CreateWorkspaceNameInput = {
     workspaceName: string;
 };
 
 //  Response Body
 
-export type verifyEmailResponse = {
-    error: boolean;
-    data: { token: string };
-    message: string;
-    version: string;
+export type TokenResponse = {
+    token: string ;
 };
 
-export interface signUpResponseBody {
+export interface SignUpResponse {
     id: string;
     email: string;
     password: string;
@@ -91,19 +88,6 @@ export interface signUpResponseBody {
     isAdmin?: boolean;
 }
 
-export type signUpResponse = {
-    version: string;
-    error: boolean;
-    data: signUpResponseBody;
-    message: string;
-};
-
-export type signInResponse = {
-    error: boolean;
-    data: { token: string };
-    message: string;
-    version: string;
-};
 
 enum Type {
     PRIMARY,
@@ -138,23 +122,10 @@ export interface SubscriptionToken {
     userName: string;
 }
 
-export type workspaceResponse = {
-    error: boolean;
-    data: any;
-    message: string;
-    version: string;
-};
-
-export type forgotPasswordResponse = {
-    error: boolean;
-    data: {};
-    message: string;
-    version: string;
-};
-
-export type resetPasswordResponse = {
-    error: boolean;
-    data: {};
-    message: string;
-    version: string;
-};
+export type WorkspaceResponse = {
+    id: string,
+    userId: string,
+    name: string,
+    createdAt: Date,
+    updatedAt: Date
+}

@@ -17,44 +17,21 @@ import { SagaIterator } from 'redux-saga';
 import history from '@/lib/history';
 import { showErrorToast, showSuccessToast } from 'common/toast/toastFunctions';
 import { setToken } from '@/lib/request';
-import {
-    createWorkspaceNameInput,
-    forgotPasswordInput,
-    forgotPasswordResponse,
-    resendVerificationMailInput,
-    resetPasswordInput,
-    resetPasswordResponse,
-    signInInput,
-    signInResponse,
-    signUpInput,
-    signUpResponse,
-    verifyEmailInput,
-    verifyEmailResponse,
-} from 'modules/authentication/interface/authentication.interface';
-import {
-    createWorkspaceService,
-    forgotPasswordService,
-    getWorkspaceService,
-    resendVerifyEmailService,
-    resetPasswordService,
-    signInService,
-    signUpService,
-    verifyEmailService,
-    verifyForgotEmailService,
-    getSubscriptionPackagesService,
-} from 'modules/authentication/services/authentication.service';
+import {CreateWorkspaceNameInput, ForgotPasswordInput, ResendVerificationMailInput,  ResetPasswordInput,  SignInInput, SignUpInput, SignUpResponse, TokenResponse, VerifyEmailInput, WorkspaceResponse } from 'modules/authentication/interface/authentication.interface';
+import {  createWorkspaceService, forgotPasswordService, getSubscriptionPackagesService, getWorkspaceService, resendVerifyEmailService , resetPasswordService, signInService, signUpService, verifyEmailService, verifyForgotEmailService } from 'modules/authentication/services/authentication.service';
 import { AxiosError } from '../types/auth.types';
 import { AxiosResponse } from 'axios';
+import { SuccessResponse } from '@/lib/api';
 
 const forwardTo = (location: string) => {
     history.push(location);
 };
 
-function* loginSaga(action: PayloadAction<signInInput>) {
+function* loginSaga(action: PayloadAction<SignInInput>) {
     try {
         yield put(loaderSlice.actions.startLoadingAction(LOGIN));
 
-        const res: signInResponse = yield call(signInService, action.payload);
+        const res: SuccessResponse<TokenResponse> = yield call(signInService, action.payload);
         if (res?.data) {
             localStorage.setItem('accessToken', res?.data?.token);
             setToken(res?.data?.token);
@@ -68,10 +45,10 @@ function* loginSaga(action: PayloadAction<signInInput>) {
     }
 }
 
-function* signUp(action: PayloadAction<signUpInput>) {
+function* signUp(action: PayloadAction<SignUpInput>) {
     try {
         yield put(loaderSlice.actions.startLoadingAction(SIGNUP));
-        const res: signUpResponse = yield call(signUpService, action.payload);
+        const res: SuccessResponse<SignUpResponse> = yield call(signUpService, action.payload);
 
         if (res?.data) {
             showSuccessToast('Please, verify your email');
@@ -85,10 +62,10 @@ function* signUp(action: PayloadAction<signUpInput>) {
     }
 }
 
-function* verifyEmail(action: PayloadAction<verifyEmailInput>) {
+function* verifyEmail(action: PayloadAction<VerifyEmailInput>) {
     try {
         yield put(loaderSlice.actions.startLoadingAction(VERIFY_EMAIL));
-        const res: verifyEmailResponse = yield call(verifyEmailService, action.payload);
+        const res: SuccessResponse<TokenResponse> = yield call(verifyEmailService, action.payload);
         if (res?.data) {
             setToken(res?.data?.token);
             localStorage.setItem('accessToken', res?.data?.token);
@@ -104,10 +81,10 @@ function* verifyEmail(action: PayloadAction<verifyEmailInput>) {
     }
 }
 
-function* resendVerificationMail(action: PayloadAction<resendVerificationMailInput>) {
+function* resendVerificationMail(action: PayloadAction<ResendVerificationMailInput>) {
     try {
         yield put(loaderSlice.actions.startLoadingAction(RESEND_VERIFY_EMAIL));
-        const res: verifyEmailResponse = yield call(resendVerifyEmailService, action.payload);
+        const res: SuccessResponse<TokenResponse> = yield call(resendVerifyEmailService, action.payload);
         if (res?.message) {
             showSuccessToast(res.message);
             // yield put(authSlice.actions.setIsAuthenticated(true));
@@ -120,10 +97,10 @@ function* resendVerificationMail(action: PayloadAction<resendVerificationMailInp
     }
 }
 
-function* forgotPassword(action: PayloadAction<forgotPasswordInput>) {
+function* forgotPassword(action: PayloadAction<ForgotPasswordInput>) {
     try {
         yield put(loaderSlice.actions.startLoadingAction(FORGOT_PASSWORD));
-        const res: forgotPasswordResponse = yield call(forgotPasswordService, action.payload);
+        const res: SuccessResponse<{}> = yield call(forgotPasswordService, action.payload);
         if (res?.message) {
             yield put(authSlice.actions.formikValueReset(true));
             showSuccessToast(res.message);
@@ -136,10 +113,10 @@ function* forgotPassword(action: PayloadAction<forgotPasswordInput>) {
     }
 }
 
-function* verifyForgotEmail(action: PayloadAction<verifyEmailInput>) {
+function* verifyForgotEmail(action: PayloadAction<VerifyEmailInput>) {
     try {
         yield put(loaderSlice.actions.startLoadingAction(VERIFY_FORGOT_EMAIL));
-        const res: verifyEmailResponse = yield call(verifyForgotEmailService, action.payload);
+        const res: SuccessResponse<TokenResponse> = yield call(verifyForgotEmailService, action.payload);
         if (res?.data) {
             // yield put(authSlice.actions.setIsAuthenticated(true));
             showSuccessToast(res.message);
@@ -152,10 +129,10 @@ function* verifyForgotEmail(action: PayloadAction<verifyEmailInput>) {
     }
 }
 
-function* resetPassword(action: PayloadAction<resetPasswordInput>) {
+function* resetPassword(action: PayloadAction<ResetPasswordInput>) {
     try {
         yield put(loaderSlice.actions.startLoadingAction(RESET_PASSWORD));
-        const res: resetPasswordResponse = yield call(resetPasswordService, action.payload);
+        const res: SuccessResponse<{}> = yield call(resetPasswordService, action.payload);
         if (res?.message) {
             yield put(authSlice.actions.formikValueReset(true));
             showSuccessToast(res.message);
@@ -172,7 +149,7 @@ function* resetPassword(action: PayloadAction<resetPasswordInput>) {
 function* getWorkspace() {
     try {
         yield put(loaderSlice.actions.startLoadingAction(GET_WORKSPACE));
-        const res: verifyEmailResponse = yield call(getWorkspaceService);
+        const res: SuccessResponse<WorkspaceResponse> = yield call(getWorkspaceService);
         yield put(authSlice.actions.getWorkspaceData(res?.data));
     } catch (e) {
         const error = e as AxiosError<unknown>;
@@ -182,10 +159,10 @@ function* getWorkspace() {
     }
 }
 
-function* createWorkspace(action: PayloadAction<createWorkspaceNameInput>) {
+function* createWorkspace(action: PayloadAction<CreateWorkspaceNameInput>) {
     try {
         yield put(loaderSlice.actions.startLoadingAction(CREATE_WORKSPACE));
-        const res: verifyEmailResponse = yield call(createWorkspaceService, action.payload);
+        const res: SuccessResponse<WorkspaceResponse> = yield call(createWorkspaceService, action.payload);
         if (res?.message) {
             showSuccessToast(res.message);
             yield call(forwardTo, '/integration');
