@@ -14,9 +14,10 @@ const ResendVerificationMail: React.FC = () => {
   const dispatch: AppDispatch = useAppDispatch();
 
   const [searchParams] = useSearchParams();
-  const token: string | any = searchParams.get('confirm')
+  const token: string | any = searchParams.get('confirm') || "";
 
-  const verifyToken:DecodeToken = jwt_decode(token);
+  const verifyToken:DecodeToken = token && jwt_decode(token);
+
 
   useEffect(()=>{
     if(token) dispatch(authSlice.actions.verifyEmail({id:token}))

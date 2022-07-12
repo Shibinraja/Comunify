@@ -64,9 +64,9 @@ let authRoutes: RoutesArray[] = [
       },
       {
         element: (
-          <PublicRoute>
+          <PrivateRoute>
             <ResendVerificationMail />
-          </PublicRoute>
+          </PrivateRoute>
         ),
         path: "/resend-mail",
       },
