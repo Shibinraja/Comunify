@@ -22,6 +22,7 @@ import {  createWorkspaceService, forgotPasswordService, getSubscriptionPackages
 import { AxiosError } from '../types/auth.types';
 import { AxiosResponse } from 'axios';
 import { SuccessResponse } from '@/lib/api';
+import cookie from 'react-cookies';
 
 const forwardTo = (location: string) => {
     history.push(location);
@@ -178,6 +179,7 @@ function* createWorkspace(action: PayloadAction<CreateWorkspaceNameInput>) {
 function* logout(): Generator<void> {
     try {
         window.localStorage.clear();
+        cookie.remove("x-auth-cookie")
         location.reload();
     } catch {}
 }
