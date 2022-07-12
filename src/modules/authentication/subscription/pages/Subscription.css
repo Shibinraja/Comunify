@@ -1,15 +1,16 @@
-.password-cover-bg {
+.subscription-cover-bg {
   background-image: url("../../../../assets/images/signup-line.svg");
 }
-
 @media (min-width: 1200px) {
-  .forgot-password-wrapper {
-    padding-bottom: 600px;
+  .subscription-wrapper {
+    padding-bottom: 850px;
   }
 }
 
 @media (min-width: 1500px) {
-  .forgot-password-wrapper {
+  .subscription-wrapper {
     padding-bottom: 0px;
   }
 }
+
+
