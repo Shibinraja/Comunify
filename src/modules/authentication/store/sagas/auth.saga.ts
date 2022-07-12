@@ -1,17 +1,50 @@
 import { call, put, takeEvery } from 'redux-saga/effects';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { toast } from 'react-toastify';
-import {  CREATE_WORKSPACE, FORGOT_PASSWORD, GET_WORKSPACE, LOGIN, RESEND_VERIFY_EMAIL,  RESET_PASSWORD,  SIGNUP, VERIFY_EMAIL, VERIFY_FORGOT_EMAIL } from '../actions/auth.actions';
+import {
+    CREATE_WORKSPACE,
+    FORGOT_PASSWORD,
+    GET_WORKSPACE,
+    LOGIN,
+    RESEND_VERIFY_EMAIL,
+    RESET_PASSWORD,
+    SIGNUP,
+    VERIFY_EMAIL,
+    VERIFY_FORGOT_EMAIL,
+} from '../actions/auth.actions';
 import authSlice from '../slices/auth.slice';
 import loaderSlice from '../slices/loader.slice';
 import { SagaIterator } from 'redux-saga';
 import history from '@/lib/history';
 import { showErrorToast, showSuccessToast } from 'common/toast/toastFunctions';
 import { setToken } from '@/lib/request';
-import { createWorkspaceNameInput, forgotPasswordInput, forgotPasswordResponse, resendVerificationMailInput,  resetPasswordInput,  resetPasswordResponse,  signInInput, signInResponse, signUpInput, signUpResponse, verifyEmailInput, verifyEmailResponse } from 'modules/authentication/interface/authentication.interface';
-import {  createWorkspaceService, forgotPasswordService, getWorkspaceService, resendVerifyEmailService , resetPasswordService, signInService, signUpService, verifyEmailService, verifyForgotEmailService } from 'modules/authentication/services/authentication.service';
+import {
+    createWorkspaceNameInput,
+    forgotPasswordInput,
+    forgotPasswordResponse,
+    resendVerificationMailInput,
+    resetPasswordInput,
+    resetPasswordResponse,
+    signInInput,
+    signInResponse,
+    signUpInput,
+    signUpResponse,
+    verifyEmailInput,
+    verifyEmailResponse,
+} from 'modules/authentication/interface/authentication.interface';
+import {
+    createWorkspaceService,
+    forgotPasswordService,
+    getWorkspaceService,
+    resendVerifyEmailService,
+    resetPasswordService,
+    signInService,
+    signUpService,
+    verifyEmailService,
+    verifyForgotEmailService,
+    getSubscriptionPackagesService,
+} from 'modules/authentication/services/authentication.service';
 import { AxiosError } from '../types/auth.types';
-
+import { AxiosResponse } from 'axios';
 
 const forwardTo = (location: string) => {
     history.push(location);
@@ -42,6 +75,7 @@ function* signUp(action: PayloadAction<signUpInput>) {
 
         if (res?.data) {
             showSuccessToast('Please, verify your email');
+            yield call(forwardTo, '/');
         }
     } catch (e) {
         const error = e as AxiosError<unknown>;
@@ -87,98 +121,113 @@ function* resendVerificationMail(action: PayloadAction<resendVerificationMailInp
 }
 
 function* forgotPassword(action: PayloadAction<forgotPasswordInput>) {
-  try {
-      yield put(loaderSlice.actions.startLoadingAction(FORGOT_PASSWORD));
-      const res: forgotPasswordResponse = yield call(forgotPasswordService, action.payload);
-      if (res?.message) {
-        yield put(authSlice.actions.formikValueReset(true))
-          showSuccessToast(res.message);
-      }
-  } catch (e: any) {
-      // toast.error(e as string, { theme: 'colored' });
-      showErrorToast(e?.response?.data?.message);
-  } finally {
-      yield put(loaderSlice.actions.stopLoadingAction(FORGOT_PASSWORD));
-  }
+    try {
+        yield put(loaderSlice.actions.startLoadingAction(FORGOT_PASSWORD));
+        const res: forgotPasswordResponse = yield call(forgotPasswordService, action.payload);
+        if (res?.message) {
+            yield put(authSlice.actions.formikValueReset(true));
+            showSuccessToast(res.message);
+        }
+    } catch (e) {
+        const error = e as AxiosError<unknown>;
+        showErrorToast(error?.response?.data?.message);
+    } finally {
+        yield put(loaderSlice.actions.stopLoadingAction(FORGOT_PASSWORD));
+    }
 }
 
 function* verifyForgotEmail(action: PayloadAction<verifyEmailInput>) {
-  try {
-      yield put(loaderSlice.actions.startLoadingAction(VERIFY_FORGOT_EMAIL));
-      const res: verifyEmailResponse = yield call(verifyForgotEmailService, action.payload);
-      if (res?.data) {
-          // yield put(authSlice.actions.setIsAuthenticated(true));
-          showSuccessToast(res.message);
-      }
-  } catch (e: any) {
-      // toast.error(e as string, { theme: 'colored' });
-      showErrorToast(e?.response?.data?.message);
-  } finally {
-      yield put(loaderSlice.actions.stopLoadingAction(VERIFY_FORGOT_EMAIL));
-  }
+    try {
+        yield put(loaderSlice.actions.startLoadingAction(VERIFY_FORGOT_EMAIL));
+        const res: verifyEmailResponse = yield call(verifyForgotEmailService, action.payload);
+        if (res?.data) {
+            // yield put(authSlice.actions.setIsAuthenticated(true));
+            showSuccessToast(res.message);
+        }
+    } catch (e) {
+        const error = e as AxiosError<unknown>;
+        showErrorToast(error?.response?.data?.message);
+    } finally {
+        yield put(loaderSlice.actions.stopLoadingAction(VERIFY_FORGOT_EMAIL));
+    }
 }
 
 function* resetPassword(action: PayloadAction<resetPasswordInput>) {
-  try {
-      yield put(loaderSlice.actions.startLoadingAction(RESET_PASSWORD));
-      const res: resetPasswordResponse = yield call(resetPasswordService, action.payload);
-      if (res?.message) {
-          yield put(authSlice.actions.formikValueReset(true))
-          showSuccessToast(res.message);
-          yield call(forwardTo, '/welcome');
-      }
-  } catch (e: any) {
-      // toast.error(e as string, { theme: 'colored' });
-      showErrorToast(e?.response?.data?.message);
-  } finally {
-      yield put(loaderSlice.actions.stopLoadingAction(RESET_PASSWORD));
-  }
+    try {
+        yield put(loaderSlice.actions.startLoadingAction(RESET_PASSWORD));
+        const res: resetPasswordResponse = yield call(resetPasswordService, action.payload);
+        if (res?.message) {
+            yield put(authSlice.actions.formikValueReset(true));
+            showSuccessToast(res.message);
+            yield call(forwardTo, '/welcome');
+        }
+    } catch (e) {
+        const error = e as AxiosError<unknown>;
+        showErrorToast(error?.response?.data?.message);
+    } finally {
+        yield put(loaderSlice.actions.stopLoadingAction(RESET_PASSWORD));
+    }
 }
 
 function* getWorkspace() {
-  try {
-    yield put(loaderSlice.actions.startLoadingAction(GET_WORKSPACE));
-    const res: verifyEmailResponse = yield call(
-      getWorkspaceService
-    );
-      yield put(authSlice.actions.getWorkspaceData(res?.data));
-
-  } catch (e:any) {
-    // toast.error(e as string, { theme: 'colored' });
-    showErrorToast(e?.response?.data?.message)
-  } finally {
-    yield put(loaderSlice.actions.stopLoadingAction(GET_WORKSPACE));
-  }
+    try {
+        yield put(loaderSlice.actions.startLoadingAction(GET_WORKSPACE));
+        const res: verifyEmailResponse = yield call(getWorkspaceService);
+        yield put(authSlice.actions.getWorkspaceData(res?.data));
+    } catch (e) {
+        const error = e as AxiosError<unknown>;
+        showErrorToast(error?.response?.data?.message);
+    } finally {
+        yield put(loaderSlice.actions.stopLoadingAction(GET_WORKSPACE));
+    }
 }
 
 function* createWorkspace(action: PayloadAction<createWorkspaceNameInput>) {
-  try {
-    yield put(loaderSlice.actions.startLoadingAction(CREATE_WORKSPACE));
-    const res: verifyEmailResponse = yield call(
-      createWorkspaceService,
-      action.payload
-    );
-    if (res?.message) {
-      showSuccessToast(res.message)
-      yield call(forwardTo, '/integration');
+    try {
+        yield put(loaderSlice.actions.startLoadingAction(CREATE_WORKSPACE));
+        const res: verifyEmailResponse = yield call(createWorkspaceService, action.payload);
+        if (res?.message) {
+            showSuccessToast(res.message);
+            yield call(forwardTo, '/integration');
+        }
+    } catch (e) {
+        const error = e as AxiosError<unknown>;
+        showErrorToast(error?.response?.data?.message);
+    } finally {
+        yield put(loaderSlice.actions.stopLoadingAction(CREATE_WORKSPACE));
     }
-  } catch (e:any) {
-    // toast.error(e as string, { theme: 'colored' });
-    showErrorToast(e?.response?.data?.message)
-  } finally {
-    yield put(loaderSlice.actions.stopLoadingAction(CREATE_WORKSPACE));
-  }
 }
 
+function* logout(): Generator<void> {
+    try {
+        window.localStorage.clear();
+        location.reload();
+    } catch {}
+}
+
+function* getSubscriptions() {
+    try {
+        yield put(loaderSlice.actions.startLoadingAction(authSlice.actions.getSubscriptions.type));
+        const res: AxiosResponse = yield call(getSubscriptionPackagesService);
+        yield put(authSlice.actions.setSubscriptions({ subscriptionData: res.data }));
+    } catch (e) {
+        const error = e as AxiosError<unknown>;
+        showErrorToast(error?.response?.data?.message);
+    } finally {
+        yield put(loaderSlice.actions.stopLoadingAction(authSlice.actions.getSubscriptions.type));
+    }
+}
 
 export default function* authSaga(): SagaIterator {
-  yield takeEvery(LOGIN, loginSaga);
-  yield takeEvery(SIGNUP, signUp);
-  yield takeEvery(VERIFY_EMAIL , verifyEmail)
-  yield takeEvery(RESEND_VERIFY_EMAIL , resendVerificationMail)
-  yield takeEvery(FORGOT_PASSWORD, forgotPassword)
-  yield takeEvery(VERIFY_FORGOT_EMAIL,verifyForgotEmail)
-  yield takeEvery(RESET_PASSWORD, resetPassword)
-  yield takeEvery(CREATE_WORKSPACE , createWorkspace)
-  yield takeEvery(GET_WORKSPACE, getWorkspace)
+    yield takeEvery(LOGIN, loginSaga);
+    yield takeEvery(SIGNUP, signUp);
+    yield takeEvery(VERIFY_EMAIL, verifyEmail);
+    yield takeEvery(RESEND_VERIFY_EMAIL, resendVerificationMail);
+    yield takeEvery(FORGOT_PASSWORD, forgotPassword);
+    yield takeEvery(VERIFY_FORGOT_EMAIL, verifyForgotEmail);
+    yield takeEvery(RESET_PASSWORD, resetPassword);
+    yield takeEvery(CREATE_WORKSPACE, createWorkspace);
+    yield takeEvery(GET_WORKSPACE, getWorkspace);
+    yield takeEvery(authSlice.actions.signOut.type, logout);
+    yield takeEvery(authSlice.actions.getSubscriptions.type, getSubscriptions);
 }

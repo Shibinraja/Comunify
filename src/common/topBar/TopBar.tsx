@@ -7,13 +7,24 @@ import unionIcon from '../../assets/images/Union.svg';
 import sunIcon from '../../assets/images/sun.svg';
 import ellipseIcon from '../../assets/images/Ellipse 39.svg';
 import { useState } from 'react';
+import { useAppDispatch } from '../../hooks/useRedux';
+import authSlice from '../../modules/authentication/store/slices/auth.slice';
+import { AppDispatch } from '../../store';
 
 const TopBar: React.FC = () => {
-    const [isDropdownActive, setisDropdownActive] = useState<boolean>(false);
+    const [isDropdownActive, setIsDropdownActive] = useState<boolean>(false);
     const options: string[] = ['Profile Settings', 'Sign Out'];
+    const dispatch: AppDispatch = useAppDispatch();
 
-    const handleDropDownActive = (): void => {
-        setisDropdownActive(prev => !prev);
+    const handleDropDownActive = async (data?: string): Promise<void> => {
+        switch (data) {
+            case 'Sign Out':
+                dispatch(authSlice.actions.signOut());
+                break;
+            default:
+                break;
+        }
+        setIsDropdownActive(prev => !prev);
     };
 
     return (
@@ -42,12 +53,12 @@ const TopBar: React.FC = () => {
                             src={profilePic}
                             alt=""
                             className="rounded-full bg-cover bg-center relative cursor-pointer"
-                            onClick={handleDropDownActive}
+                            onClick={() => handleDropDownActive()}
                         />
                         {isDropdownActive && (
                             <div className="absolute border-box w-9.62 rounded-0.3 app-result-card-border bg-white cursor-pointer top-10 right-0 shadow-trialButtonShadow">
                                 {options.map((options, i) => (
-                                    <div className="flex flex-col" onClick={handleDropDownActive} key={options}>
+                                    <div className="flex flex-col" onClick={() => handleDropDownActive(options)} key={options}>
                                         <div className="h-3.06 p-2 flex items-center text-searchBlack font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300">
                                             {options}
                                         </div>
