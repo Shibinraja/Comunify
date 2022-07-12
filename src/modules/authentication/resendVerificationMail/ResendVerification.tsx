@@ -9,6 +9,7 @@ import authSlice from '../store/slices/auth.slice';
 import jwt_decode from 'jwt-decode';
 import { DecodeToken } from '../interface/authentication.interface';
 import { AppDispatch } from '../../../store/index';
+import { showErrorToast } from 'common/toast/toastFunctions';
 
 const ResendVerificationMail: React.FC = () => {
   const dispatch: AppDispatch = useAppDispatch();
@@ -18,13 +19,13 @@ const ResendVerificationMail: React.FC = () => {
 
   const verifyToken:DecodeToken = token && jwt_decode(token);
 
-
   useEffect(()=>{
     if(token) dispatch(authSlice.actions.verifyEmail({id:token}))
   },[token])
 
   const _resendVerifyEmail = () => {
     if(verifyToken?.email) dispatch( authSlice.actions.resendVerificationMail({email:verifyToken.email}))
+    showErrorToast('No token provided');
   }
 
   return (
