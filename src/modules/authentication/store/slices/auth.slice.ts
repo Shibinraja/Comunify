@@ -6,12 +6,14 @@ import {
     resetPasswordInput,
     signInInput,
     signUpInput,
+    SubscriptionPackages,
     verifyEmailInput,
 } from 'modules/authentication/interface/authentication.interface';
 import type { InitialState } from '../types/auth.types';
 
 const initialState: InitialState = {
     isAuthenticated: false,
+    subscriptionData: [],
     workspaceData: [],
     clearFormikValue: false,
 };
@@ -50,9 +52,15 @@ const setIsAuthenticated = (state: InitialState, action: PayloadAction<InitialSt
     isAuthenticated: action.payload,
 });
 
-const signOut = (state: InitialState) => state;
+const signOut = (state: InitialState) => {
+    state.isAuthenticated = false;
+};
 
 const getSubscriptions = (state: InitialState) => state;
+
+const setSubscriptions = (state: InitialState, action: PayloadAction<{ subscriptionData: SubscriptionPackages[] }>) => {
+    state.subscriptionData = action.payload.subscriptionData;
+};
 
 const authSlice = createSlice({
     name: 'auth',
@@ -72,6 +80,7 @@ const authSlice = createSlice({
         formikValueReset,
         signOut,
         getSubscriptions,
+        setSubscriptions,
     },
 });
 

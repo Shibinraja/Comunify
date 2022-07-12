@@ -105,22 +105,38 @@ export type signInResponse = {
     version: string;
 };
 
-export type SubscriptionPackages = {
+enum Type {
+    PRIMARY,
+    ADDON,
+}
+
+enum Status {
+    ACTIVE,
+    DEACTIVE,
+    DISABLED,
+}
+export interface SubscriptionPackages {
     id: string;
     name: string;
-    viewName: string;
+    planName: string;
+    description: string;
+    features: string[];
     cost: number;
-    type: string;
-    status: string;
+    type: Type;
+    status: Status;
     subscriptionPeriod: number;
     createdDate: Date;
     updatedDate: Date;
     updatedAt: Date;
-    error: boolean;
-    data: any;
-    message: string;
-    version: string;
-};
+}
+export interface SubscriptionToken {
+    email: string;
+    exp: Date;
+    iat: Date;
+    id: string;
+    isAdmin: boolean;
+    userName: string;
+}
 
 export type workspaceResponse = {
     error: boolean;

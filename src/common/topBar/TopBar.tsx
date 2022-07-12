@@ -11,13 +11,12 @@ import { useAppDispatch } from '../../hooks/useRedux';
 import authSlice from '../../modules/authentication/store/slices/auth.slice';
 import { AppDispatch } from '../../store';
 
-function TopBar() {
+const TopBar: React.FC = () => {
     const [isDropdownActive, setIsDropdownActive] = useState<boolean>(false);
     const options: string[] = ['Profile Settings', 'Sign Out'];
     const dispatch: AppDispatch = useAppDispatch();
 
-    const handleDropDownActive = (data?: string): void => {
-        console.log(data);
+    const handleDropDownActive = async (data?: string): Promise<void> => {
         switch (data) {
             case 'Sign Out':
                 dispatch(authSlice.actions.signOut());
@@ -108,6 +107,6 @@ function TopBar() {
             </div>
         </div>
     );
-}
+};
 
 export default TopBar;

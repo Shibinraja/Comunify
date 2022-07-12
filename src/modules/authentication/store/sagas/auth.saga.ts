@@ -1,6 +1,5 @@
 import { call, put, takeEvery } from 'redux-saga/effects';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { toast } from 'react-toastify';
 import {
     CREATE_WORKSPACE,
     FORGOT_PASSWORD,
@@ -31,7 +30,6 @@ import {
     signUpResponse,
     verifyEmailInput,
     verifyEmailResponse,
-    SubscriptionPackages,
 } from 'modules/authentication/interface/authentication.interface';
 import {
     createWorkspaceService,
@@ -46,6 +44,7 @@ import {
     getSubscriptionPackagesService,
 } from 'modules/authentication/services/authentication.service';
 import { AxiosError } from '../types/auth.types';
+import { AxiosResponse } from 'axios';
 
 const forwardTo = (location: string) => {
     history.push(location);
@@ -128,9 +127,9 @@ function* forgotPassword(action: PayloadAction<forgotPasswordInput>) {
             yield put(authSlice.actions.formikValueReset(true));
             showSuccessToast(res.message);
         }
-    } catch (e: any) {
-        // toast.error(e as string, { theme: 'colored' });
-        showErrorToast(e?.response?.data?.message);
+    } catch (e) {
+        const error = e as AxiosError<unknown>;
+        showErrorToast(error?.response?.data?.message);
     } finally {
         yield put(loaderSlice.actions.stopLoadingAction(FORGOT_PASSWORD));
     }
@@ -144,9 +143,9 @@ function* verifyForgotEmail(action: PayloadAction<verifyEmailInput>) {
             // yield put(authSlice.actions.setIsAuthenticated(true));
             showSuccessToast(res.message);
         }
-    } catch (e: any) {
-        // toast.error(e as string, { theme: 'colored' });
-        showErrorToast(e?.response?.data?.message);
+    } catch (e) {
+        const error = e as AxiosError<unknown>;
+        showErrorToast(error?.response?.data?.message);
     } finally {
         yield put(loaderSlice.actions.stopLoadingAction(VERIFY_FORGOT_EMAIL));
     }
@@ -161,9 +160,9 @@ function* resetPassword(action: PayloadAction<resetPasswordInput>) {
             showSuccessToast(res.message);
             yield call(forwardTo, '/welcome');
         }
-    } catch (e: any) {
-        // toast.error(e as string, { theme: 'colored' });
-        showErrorToast(e?.response?.data?.message);
+    } catch (e) {
+        const error = e as AxiosError<unknown>;
+        showErrorToast(error?.response?.data?.message);
     } finally {
         yield put(loaderSlice.actions.stopLoadingAction(RESET_PASSWORD));
     }
@@ -174,9 +173,9 @@ function* getWorkspace() {
         yield put(loaderSlice.actions.startLoadingAction(GET_WORKSPACE));
         const res: verifyEmailResponse = yield call(getWorkspaceService);
         yield put(authSlice.actions.getWorkspaceData(res?.data));
-    } catch (e: any) {
-        // toast.error(e as string, { theme: 'colored' });
-        showErrorToast(e?.response?.data?.message);
+    } catch (e) {
+        const error = e as AxiosError<unknown>;
+        showErrorToast(error?.response?.data?.message);
     } finally {
         yield put(loaderSlice.actions.stopLoadingAction(GET_WORKSPACE));
     }
@@ -190,26 +189,29 @@ function* createWorkspace(action: PayloadAction<createWorkspaceNameInput>) {
             showSuccessToast(res.message);
             yield call(forwardTo, '/integration');
         }
-    } catch (e: any) {
-        // toast.error(e as string, { theme: 'colored' });
-        showErrorToast(e?.response?.data?.message);
+    } catch (e) {
+        const error = e as AxiosError<unknown>;
+        showErrorToast(error?.response?.data?.message);
     } finally {
         yield put(loaderSlice.actions.stopLoadingAction(CREATE_WORKSPACE));
     }
 }
 
-function* logout() {
-    localStorage.clear();
-    location.reload();
+function* logout(): Generator<void> {
+    try {
+        window.localStorage.clear();
+        location.reload();
+    } catch {}
 }
 
 function* getSubscriptions() {
     try {
         yield put(loaderSlice.actions.startLoadingAction(authSlice.actions.getSubscriptions.type));
-        const res: SubscriptionPackages = yield call(getSubscriptionPackagesService);
-        console.log('subscription is', res);
-    } catch (error) {
-        console.log(error);
+        const res: AxiosResponse = yield call(getSubscriptionPackagesService);
+        yield put(authSlice.actions.setSubscriptions({ subscriptionData: res.data }));
+    } catch (e) {
+        const error = e as AxiosError<unknown>;
+        showErrorToast(error?.response?.data?.message);
     } finally {
         yield put(loaderSlice.actions.stopLoadingAction(authSlice.actions.getSubscriptions.type));
     }
