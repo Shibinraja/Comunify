@@ -20,7 +20,6 @@ const PrivateRoute: React.FC<Props> = ({ children }) => {
 
     let refreshToken: string | null = getLocalRefreshToken();
     let decodedToken: SubscriptionToken = decodeJWTToken(subscriptionToken);
-
     let expiryDate: Date = new Date(decodedToken?.exp);
     let currentDate: Date = new Date();
 
