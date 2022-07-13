@@ -198,7 +198,8 @@ module.exports = {
         1.959: "31.35px",
         11.43:'183px',
         34.37:'550px',
-        9.62:'154px'
+        9.62:'154px',
+        3.375:'54px'
       },
       height: {
         4.5: "72.87px",
@@ -243,7 +244,9 @@ module.exports = {
         14.375: "230px",
         8.098:"129.57px",
         2.31:'37px',
-        9.62:'154px'
+        9.62:'154px',
+        3.375:'54px'
+
       },
       fontSize: {
         logo: "21.35px",
@@ -312,7 +315,8 @@ module.exports = {
         profileCard:
           '0px 100px 80px rgba(41, 72, 152, 0.05),0px 64.8148px 46.8519px rgba(41, 72, 152, 0.037963),0px 38.5185px 25.4815px rgba(41, 72, 152, 0.0303704),0px 20px 13px rgba(41, 72, 152, 0.025),0px 8.14815px 6.51852px rgba(41, 72, 152, 0.0196296),0px 1.85185px 3.14815px rgba(41, 72, 152, 0.012037)',
         reportInput:'8.32785px 8.32785px 24.9835px rgba(2, 2, 70, 0.05)',
-        subscription:'0px 100px 80px rgba(110, 181, 217, 0.1);'
+        subscription:'0px 100px 80px rgba(110, 181, 217, 0.1);',
+        dragButton:'0px 4.90909px 61.3636px rgba(0, 0, 0, 0.2)'
         
       },
       gap: {

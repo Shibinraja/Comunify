@@ -43,6 +43,10 @@ input {
   border: 1px solid #dee2e6;
 }
 
+.border-table{
+  border: 1px solid #e5e5e5
+}
+
 .border-gradient-rounded{
   position: relative;
   box-sizing: border-box;

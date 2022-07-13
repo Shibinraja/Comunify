@@ -9,6 +9,7 @@ import editIcon from '../../../assets/images/edit.svg';
 import dragIcon from '../../../assets/images/drag.svg';
 import slackIcon from '../../../assets/images/slack.svg';
 import { useState } from 'react';
+import Button from 'common/button';
 
 
 
@@ -493,7 +494,12 @@ const Members = () => {
     const items = reorder(list, result.source.index, result.destination.index);
     setList(items);
   };
-  return <div className="flex flex-col">
+
+  const handleModalClose=()=>{
+    setisModalOpen(false);
+  }
+  return (
+  <div className="container flex flex-col">
      <h3 className="font-Poppins font-semibold text-infoBlack text-infoData leading-9">
         Members
       </h3>
@@ -590,7 +596,7 @@ const Members = () => {
           </table>
           <div className="fixed bottom-10 right-32">
             <div
-              className="btn-drag flex items-center justify-center cursor-pointer"
+              className="btn-drag flex items-center justify-center cursor-pointer shadow-dragButton rounded-0.6 "
               onClick={() => setisModalOpen(true)}
             >
               <img src={editIcon} alt="" />
@@ -600,7 +606,7 @@ const Members = () => {
             isOpen={isModalOpen}
             shouldCloseOnOverlayClick={true}
             onRequestClose={() => setisModalOpen(false)}
-            className="w-24.31 mx-auto mt-[147px]  pb-20 bg-white customize-modal"
+            className="w-24.31 mx-auto mt-[147px]  pb-20 bg-white border-fetching-card rounded-lg shadow-modal"
           >
             <div className="flex flex-col px-1.68 relative">
               <h3 className="font-Inter font-semibold text-xl mt-1.8  leading-6">
@@ -647,24 +653,25 @@ const Members = () => {
                 </Droppable>
               </DragDropContext>
               <div className="felx buttons absolute -bottom-16 right-[27px]">
-                <input
-                  type="button"
-                  value="CANCEL"
-                  className="cancel mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border  h-2.81 w-5.25 rounded border-none"
-                  onClick={() => setisModalOpen(false)}
-                />
-                <input
-                  type="button"
-                  value="SAVE"
-                  className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-7.68 border-none h-2.81"
-                />
+                   <Button
+                      text="CANCEL"
+                      type="submit"
+                      className="cancel mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border  h-2.81 w-5.25 rounded border-none"
+                      onClick={handleModalClose}
+                   />
+                    <Button
+                      text="SAVE"
+                      type="submit"
+                      className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-7.68 border-none h-2.81"
+                   />
               </div>
             </div>
           </Modal>
         </div>
       </div>
     </div>
-  </div>;
+  </div>
+  );
 };
 
 export default Members;
