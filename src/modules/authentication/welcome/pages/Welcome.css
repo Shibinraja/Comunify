@@ -11,4 +11,20 @@
   text-shadow: 0px 4px 30px rgba(0, 0, 0, 0.1);
 }
 
+@media (min-width: 1200px) {
+  .welcome-wrapper {
+    padding-bottom: 800px;
+  }
+}
 
+@media (min-width: 1500px) {
+  .welcome-wrapper {
+    padding-bottom: 750px;
+  }
+}
+
+@media (min-width: 1700px) {
+  .welcome-wrapper {
+    padding-bottom: 700px;
+  }
+}

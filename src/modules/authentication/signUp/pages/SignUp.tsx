@@ -1,21 +1,27 @@
 import Input from 'common/input/Input';
 import Button from 'common/button/Button';
 import eyeIcon from '../../../../assets/images/eye.svg';
-import closeeye from '../../../../assets/images/closeeye.png';
-import socialLogo from '../../../../assets/images/Social.svg';
-import bgSignUpImage from '../../../../assets/images/bg-sign.svg';
-import dropdownIcon from '../../../../assets/images/signup-domain-downArrow.svg';
-import { Link } from 'react-router-dom';
-import { useRef, useState } from 'react';
-import { Formik, Form } from 'formik';
-import * as Yup from 'yup';
-import { Password_regex, WhiteSpace_regex, username_regex, companyName_regex } from '../../../../constants/constants';
-import { useAppDispatch } from '@/hooks/useRedux';
+import closeEyeIcon from '../../../../assets/images/closeEyeIcon.svg';
+import socialLogo from "../../../../assets/images/Social.svg";
+import bgSignUpImage from "../../../../assets/images/bg-sign.svg";
+import dropdownIcon from "../../../../assets/images/signup-domain-downArrow.svg";
+import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Formik, Form } from "formik";
+import * as Yup from "yup";
+import {
+  password_regex,
+  WhiteSpace_regex,
+  username_regex,
+  companyName_regex,
+} from "../../../../constants/constants";
+import cookie from 'react-cookies';
+import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import { AppDispatch } from '../../../../store/index';
 import authSlice from '../../store/slices/auth.slice';
-import { signUpFormValues } from 'modules/authentication/interface/authentication.interface';
+import { SignUpFormValues } from 'modules/authentication/interface/authentication.interface';
 
-const SignUp = () => {
+const SignUp : React.FC = () => {
     const [passwordType, setPasswordType] = useState<string>('password');
     const [isDropDownActive, setDropDownActive] = useState<boolean>(false);
     const [selectedDomainSector, setSelectedDomainSector] = useState<string>('Domain');
@@ -24,14 +30,27 @@ const SignUp = () => {
     const options = ['Marketing', 'Sales', 'Customer Support', 'Customer Success', 'Others'];
 
     const dispatch: AppDispatch = useAppDispatch();
+    const resetValue = useAppSelector((state) => state.auth.clearFormikValue);
 
-    const initialValues: signUpFormValues = {
+    const initialValues: SignUpFormValues = {
         userName: '',
         email: '',
         password: '',
         companyName: '',
         domainSector: '',
     };
+
+    const access_token = cookie.load('x-auth-cookie');
+
+    useEffect(()=>{
+        if(access_token){
+          localStorage.setItem('accessToken', access_token)
+        }
+      },[access_token])
+      
+    // useEffect(()=>{
+    //     if(resetValue) formikRef?.current?.resetForm({values:initialValues})
+    //   },[resetValue])
 
     const _handleDomainSectorChange = (option: string): void => {
         // Formik ref to enable to make the custom dropdown with field touch and set the value for the fields.
@@ -40,7 +59,7 @@ const SignUp = () => {
         setSelectedDomainSector(option);
     };
 
-    const handleSubmit = (values: signUpFormValues): void => {
+    const handleSubmit = (values: SignUpFormValues): void => {
         dispatch(authSlice.actions.signup(values));
     };
 
@@ -51,6 +70,11 @@ const SignUp = () => {
         }
         setPasswordType('password');
     };
+
+    const navigateToGoogleSignIn = () => {
+        window.open(`http://localhost:3001/auth/v1/google`, "_self");
+      };
+
     return (
         <div className="w-full flex flex-col  h-screen">
             <div className="flex w-full relative">
@@ -75,7 +99,7 @@ const SignUp = () => {
                                 <div className="username">
                                     <Input
                                         type="text"
-                                        placeholder="User Name"
+                                        placeholder="Username"
                                         label="Username"
                                         id="username"
                                         name="userName"
@@ -116,11 +140,11 @@ const SignUp = () => {
                                         errors={Boolean(touched.password && errors.password)}
                                         helperText={touched.password && errors.password}
                                     />
-                                    <div onClick={togglePassword} className="m-0 p-0">
+                                    <div onClick={togglePassword} className="absolute top-7 right-[26.87px]">
                                         {passwordType === 'password' ? (
-                                            <img className="absolute icon-holder left-96 cursor-pointer " src={eyeIcon} alt="" />
+                                            <img className="cursor-pointer " src={eyeIcon} alt="" />
                                         ) : (
-                                            <img className="absolute icon-holder left-96 cursor-pointer " src={closeeye} alt="" />
+                                            <img className="cursor-pointer " src={closeEyeIcon} alt="" />
                                         )}
                                     </div>
                                 </div>
@@ -185,16 +209,12 @@ const SignUp = () => {
                                     <span className="font-Inter text-secondaryGray mx-6 flex-shrink">or</span>
                                     <div className="borders flex-grow border-t"></div>
                                 </div>
-                                <div className="google-signin h-3.3 mt-2.47 font-Inter text-lightBlue box-border flex text-desc  cursor-pointer items-center justify-center rounded-lg font-normal leading-2.8">
+                                <div className="google-signin h-3.3 mt-2.47 font-Inter text-lightBlue box-border flex text-desc  cursor-pointer items-center justify-center rounded-lg font-normal leading-2.8" onClick={navigateToGoogleSignIn}>
                                     <img src={socialLogo} alt="" className="pr-0.781" />
                                     Continue with Google
                                 </div>
                                 <div className="font-Poppins text-secondaryGray text-center text-base font-normal mt-1.8  text-signLink">
-                                    Already have an account?{' '}
-                                    <Link to="/" className="text-blue-500 underline">
-                                        {' '}
-                                        Let’s Sign In
-                                    </Link>
+                                    <h3>Already have an account? <Link to="/"> <span className="text-letsSignInSignUp underline">Let’s Sign In</span></Link> </h3>
                                 </div>
                             </Form>
                         )}
@@ -208,20 +228,28 @@ const SignUp = () => {
 };
 
 const signUpSchema = Yup.object().shape({
-    userName: Yup.string()
-        .required('Username is required')
-        .min(5, 'Username should be more than 5 character long')
-        .max(25, 'Username should not exceed 25 characters')
-        .matches(WhiteSpace_regex, 'Whitespaces are not allowed')
-        .matches(username_regex, 'UserName is not valid')
-        .trim(),
-    password: Yup.string()
-        .required('Password is required')
-        .min(8, 'Password must be atleast 8 characters')
-        .matches(Password_regex, 'Password must have one uppercase , one lowercase , a digit and specialcharacters'),
-    email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-    domainSector: Yup.string().required('Domain is required'),
-    companyName: Yup.string().max(25, 'CompanyName should not exceed 25 characters').matches(companyName_regex, 'CompanyName is not valid'),
+  userName: Yup.string()
+    .required("Username is required")
+    .min(5, "Username should be more than 5 character long")
+    .max(25, "Username should not exceed 25 characters")
+    .matches(WhiteSpace_regex, "Whitespaces are not allowed")
+    .matches(username_regex, "UserName is not valid")
+    .trim(),
+  password: Yup.string()
+    .required("Password is required")
+    .min(8, "Password must be atleast 8 characters")
+    .matches(
+      password_regex,
+      "Password must have one uppercase , one lowercase , a digit and specialcharacters"
+    ),
+  email: Yup.string()
+    .email("Must be a valid email")
+    .max(255)
+    .required("Email is required"),
+  domainSector: Yup.string().required("Domain is required"),
+  companyName: Yup.string()
+    .max(25, "CompanyName should not exceed 25 characters")
+    .matches(companyName_regex, "CompanyName is not valid"),
 });
 
 export default SignUp;

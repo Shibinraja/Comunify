@@ -1,5 +1,5 @@
 {
-  "compilerOptions": {
+    "compilerOptions": {
     "target": "ESNext",
     "useDefineForClassFields": true,
     "lib": [
@@ -48,6 +48,6 @@
     }
   },
   "include": [
-    "./src"
+    "./src", "./types"
   ]
 }
