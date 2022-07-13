@@ -12,8 +12,9 @@ import * as Yup from "yup";
 import {
   password_regex,
   WhiteSpace_regex,
-  username_regex,
+  userName_regex,
   companyName_regex,
+  email_regex,
 } from "../../../../constants/constants";
 import cookie from 'react-cookies';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
@@ -52,7 +53,7 @@ const SignUp : React.FC = () => {
     //     if(resetValue) formikRef?.current?.resetForm({values:initialValues})
     //   },[resetValue])
 
-    const _handleDomainSectorChange = (option: string): void => {
+    const handleDomainSectorChange = (option: string): void => {
         // Formik ref to enable to make the custom dropdown with field touch and set the value for the fields.
         formikRef?.current?.setFieldTouched('domainSector');
         formikRef?.current?.setFieldValue('domainSector', option, true);
@@ -183,7 +184,7 @@ const SignUp : React.FC = () => {
                                                         className="flex flex-col justify-center"
                                                         key={options.toString()}
                                                         onClick={() => {
-                                                            _handleDomainSectorChange(options);
+                                                            handleDomainSectorChange(options);
                                                             setDropDownActive(false);
                                                         }}
                                                     >
@@ -233,7 +234,7 @@ const signUpSchema = Yup.object().shape({
     .min(5, "Username should be more than 5 character long")
     .max(25, "Username should not exceed 25 characters")
     .matches(WhiteSpace_regex, "Whitespaces are not allowed")
-    .matches(username_regex, "UserName is not valid")
+    .matches(userName_regex, "UserName is not valid")
     .trim(),
   password: Yup.string()
     .required("Password is required")
@@ -244,6 +245,7 @@ const signUpSchema = Yup.object().shape({
     ),
   email: Yup.string()
     .email("Must be a valid email")
+    .matches(email_regex, 'Must be a valid email')
     .max(255)
     .required("Email is required"),
   domainSector: Yup.string().required("Domain is required"),

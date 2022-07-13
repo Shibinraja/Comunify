@@ -5,9 +5,11 @@ export const password_regex =
 
 export const WhiteSpace_regex = /^\S+$/;
 
-export const username_regex = /^[a-zA-Z0-9._]+$/;
+export const userName_regex = /^[a-zA-Z0-9._]+$/;
 
 export const companyName_regex = /^[a-zA-Z0-9)(+=._-]+$/
+
+export const email_regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 
 // Window_Object
 
