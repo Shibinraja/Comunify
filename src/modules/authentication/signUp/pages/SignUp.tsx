@@ -11,7 +11,7 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import {
   password_regex,
-  WhiteSpace_regex,
+  whiteSpace_regex,
   username_regex,
   companyName_regex,
 } from "../../../../constants/constants";
@@ -232,7 +232,7 @@ const signUpSchema = Yup.object().shape({
     .required("Username is required")
     .min(5, "Username should be more than 5 character long")
     .max(25, "Username should not exceed 25 characters")
-    .matches(WhiteSpace_regex, "Whitespaces are not allowed")
+    .matches(whiteSpace_regex, "Whitespaces are not allowed")
     .matches(username_regex, "UserName is not valid")
     .trim(),
   password: Yup.string()
@@ -248,8 +248,10 @@ const signUpSchema = Yup.object().shape({
     .required("Email is required"),
   domainSector: Yup.string().required("Domain is required"),
   companyName: Yup.string()
-    .max(25, "CompanyName should not exceed 25 characters")
-    .matches(companyName_regex, "CompanyName is not valid"),
+  .max(25, "CompanyName should not exceed 25 characters")
+  .strict(true)
+  .matches(companyName_regex, "CompanyName is not valid")
+  .trim("Whitespaces are not allowed"),
 });
 
 export default SignUp;
