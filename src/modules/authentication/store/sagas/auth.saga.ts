@@ -53,7 +53,7 @@ function* signUp(action: PayloadAction<SignUpInput>) {
 
         if (res?.data) {
             showSuccessToast('Please, verify your email');
-            yield call(forwardTo, '/');
+            yield call(forwardTo, '/resend-mail');
         }
     } catch (e) {
         const error = e as AxiosError<unknown>;

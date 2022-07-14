@@ -20,7 +20,7 @@ import { useSearchParams } from 'react-router-dom';
 const CreateNewPassword: React.FC = () => {
   const dispatch: AppDispatch = useAppDispatch();
   const [searchParams] = useSearchParams();
-  const token: string | any = searchParams.get('reset')
+  const token: string | any = searchParams.get('reset') || ""
 
   const [password, setPasswordType1] = useState<string>('password');
   const [confirmPassword, setPasswordType2] = useState<string>('password');

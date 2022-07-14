@@ -3,6 +3,7 @@ import { Navigate } from 'react-router';
 import { getLocalRefreshToken } from '@/lib/request';
 import { SubscriptionToken } from '../modules/authentication/interface/authentication.interface';
 import jwt_decode from 'jwt-decode';
+import { decodeToken } from '@/lib/decodeToken';
 // import { useAppSelector } from '../hooks/useRedux';
 
 interface Props {
@@ -14,7 +15,7 @@ const PrivateRoute: React.FC<Props> = ({ children }) => {
     let subscriptionToken: string | null = localStorage.getItem('accessToken');
 
     const decodeJWTToken = (token: string | null): SubscriptionToken => {
-        let value: SubscriptionToken | any = Boolean(token) && jwt_decode(`${token}`);
+        let value: SubscriptionToken | any = Boolean(token) && decodeToken(`${token}`);
         return value;
     };
 
