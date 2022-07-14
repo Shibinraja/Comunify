@@ -2,7 +2,6 @@ import React from 'react';
 import SubscriptionCard from 'common/subscriptionCard/SubscriptionCard';
 import bgWelcomeImage from '../../../../assets/images/bg-sign.svg';
 import './Welcome.css';
-import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../../../store';
@@ -11,7 +10,6 @@ import authSlice from '../../store/slices/auth.slice';
 
 
 const Welcome:React.FC = () => {
-  const navigate = useNavigate();
 
   const dispatch: AppDispatch = useDispatch();
 
@@ -21,8 +19,10 @@ const Welcome:React.FC = () => {
 
   const subscriptionData: SubscriptionPackages[] = useSelector((state: RootState) => state.auth.subscriptionData);
 
-  const navigateToCreateWorkspace = ():void => {
-    navigate("/create-workspace");
+  const selectFreeTrialPlan = ():void => {
+        subscriptionData?.map((data:SubscriptionPackages) => data?.name === 'Free Trial' && (
+            dispatch(authSlice.actions.freeTrialSubscription(data?.id))
+        ))
   };
 
   return (
@@ -41,13 +41,15 @@ const Welcome:React.FC = () => {
               communities better.
             </p>
             <div className="subscriptionCard">
-              <SubscriptionCard subscriptionData={subscriptionData}/>
+                {subscriptionData?.map((data:SubscriptionPackages) => data?.name !== 'Free Trial' && (
+                    <SubscriptionCard subscriptionData={data}/>
+                ))}
             </div>
           </div>
           <div className="mt-5">
           <button
               className="free-trial-btn font-Inter text-desc w-25.9 font-normal leading-1.8 text-lightBlue box-border rounded-lg bg-white py-2.5 px-4 shadow-trialButtonShadow "
-              onClick={navigateToCreateWorkspace}
+              onClick={selectFreeTrialPlan}
             >
               Continue with 14 Days Free Trial
             </button>

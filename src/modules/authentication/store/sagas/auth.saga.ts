@@ -18,7 +18,7 @@ import history from '@/lib/history';
 import { showErrorToast, showSuccessToast } from 'common/toast/toastFunctions';
 import { setToken } from '@/lib/request';
 import {CreateWorkspaceNameInput, ForgotPasswordInput, ResendVerificationMailInput,  ResetPasswordInput,  SignInInput, SignUpInput, SignUpResponse, TokenResponse, VerifyEmailInput, WorkspaceResponse } from 'modules/authentication/interface/authentication.interface';
-import {  createWorkspaceService, forgotPasswordService, getSubscriptionPackagesService, getWorkspaceService, resendVerifyEmailService , resetPasswordService, signInService, signUpService, verifyEmailService, verifyForgotEmailService } from 'modules/authentication/services/authentication.service';
+import {  createWorkspaceService, forgotPasswordService, getSubscriptionPackagesService, getWorkspaceService, resendVerifyEmailService , resetPasswordService, signInService, signUpService, verifyEmailService, verifyForgotEmailService, sendSubscriptionPlan } from 'modules/authentication/services/authentication.service';
 import { AxiosError } from '../types/auth.types';
 import { AxiosResponse } from 'axios';
 import { SuccessResponse } from '@/lib/api';
@@ -197,6 +197,20 @@ function* getSubscriptions() {
     }
 }
 
+function* freeTrialSubscription(action: PayloadAction<string>) {
+    try {
+        yield put(loaderSlice.actions.startLoadingAction(authSlice.actions.getSubscriptions.type));
+        console.log("payload is",action.payload)
+        const res: AxiosResponse = yield call(sendSubscriptionPlan, action.payload);
+        console.log(res?.data)
+    } catch (e){
+        const error = e as AxiosError<unknown>;
+        showErrorToast(error?.response?.data?.message);
+    } finally {
+        yield put(loaderSlice.actions.stopLoadingAction(authSlice.actions.getSubscriptions.type));
+    }
+}
+
 export default function* authSaga(): SagaIterator {
     yield takeEvery(LOGIN, loginSaga);
     yield takeEvery(SIGNUP, signUp);
@@ -209,4 +223,5 @@ export default function* authSaga(): SagaIterator {
     yield takeEvery(CREATE_WORKSPACE, createWorkspace);
     yield takeEvery(GET_WORKSPACE, getWorkspace);
     yield takeEvery(authSlice.actions.signOut.type, logout);
+    yield takeEvery(authSlice.actions.freeTrialSubscription.type, freeTrialSubscription);
 }

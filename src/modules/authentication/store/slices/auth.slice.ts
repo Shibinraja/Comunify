@@ -62,6 +62,8 @@ const setSubscriptions = (state: InitialState, action: PayloadAction<{ subscript
     state.subscriptionData = action.payload.subscriptionData;
 };
 
+const freeTrialSubscription = (state: InitialState, action:PayloadAction<string>) => state
+
 const authSlice = createSlice({
     name: 'auth',
     initialState,
@@ -81,6 +83,7 @@ const authSlice = createSlice({
         signOut,
         getSubscriptions,
         setSubscriptions,
+        freeTrialSubscription,
     },
 });
 

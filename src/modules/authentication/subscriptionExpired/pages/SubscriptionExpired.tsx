@@ -20,7 +20,9 @@ const subscriptionData: SubscriptionPackages[] = useSelector((state: RootState) 
       <h3 className="text-neutralBlack font-bold font-Inter text-signIn leading-2.8">Subscription Expired!</h3>
       <p className="mt-2.5 text-lightGray font-Inter font-normal leading-1.43 text-desc">Choose a plan to continue.</p>
       <div className="subscriptionCard">
-        <SubscriptionCard subscriptionData={subscriptionData}/>
+        {subscriptionData?.map((data:SubscriptionPackages) => data?.name !== 'Free Trial' && (
+            <SubscriptionCard subscriptionData={data}/>
+        ) )}
       </div>
       <div className="py-1.9"></div>
     </div>
