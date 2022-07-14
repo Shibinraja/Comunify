@@ -9,6 +9,7 @@ import * as Yup from 'yup';
 import { EmailFormValues } from 'modules/authentication/interface/authentication.interface';
 import authSlice from 'modules/authentication/store/slices/auth.slice';
 import { useEffect, useRef } from 'react';
+import { email_regex } from 'constants/constants';
 
 const ForgotPassword: React.FC = () => {
     const dispatch: AppDispatch = useAppDispatch();
@@ -24,6 +25,8 @@ const ForgotPassword: React.FC = () => {
     }, [resetValue]);
 
     const handleSubmit = (values: EmailFormValues): void => {
+        const newValues = {...values};
+        newValues['email'] =  values.email.toLocaleLowerCase();
         dispatch(authSlice.actions.forgotPassword(values));
     };
 
@@ -67,9 +70,6 @@ const ForgotPassword: React.FC = () => {
                                     type="submit"
                                     className="font-Poppins rounded-lg text-base font-semibold text-white transition ease-in duration-300 w-full mt-1.84 h-3.6 hover:shadow-buttonShadowHover btn-gradient"
                                 />
-                                <div className="underline text-center text-thinGray font-Poppins font-normal mt-1.86 text-reset">
-                                    <a href=""> Resend Link</a>
-                                </div>
                             </Form>
                         )}
                     </Formik>
@@ -82,7 +82,7 @@ const ForgotPassword: React.FC = () => {
 };
 
 const forgotPasswordSchema = Yup.object().shape({
-    email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+    email: Yup.string().email('Must be a valid email') .matches(email_regex, 'Must be a valid email').max(255).required('Email is required'),
 });
 
 export default ForgotPassword;
