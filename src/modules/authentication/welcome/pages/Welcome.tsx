@@ -1,12 +1,27 @@
+import React from 'react';
 import SubscriptionCard from 'common/subscriptionCard/SubscriptionCard';
 import bgWelcomeImage from '../../../../assets/images/bg-sign.svg';
 import './Welcome.css';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../../../store';
+import { SubscriptionPackages } from '../../interface/authentication.interface';
+import authSlice from '../../store/slices/auth.slice';
 
-const Welcome: React.FC = () => {
+
+const Welcome:React.FC = () => {
   const navigate = useNavigate();
 
-  const navigateToCreateWorkspace = () => {
+  const dispatch: AppDispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(authSlice.actions.getSubscriptions())
+  },[])
+
+  const subscriptionData: SubscriptionPackages[] = useSelector((state: RootState) => state.auth.subscriptionData);
+
+  const navigateToCreateWorkspace = ():void => {
     navigate("/create-workspace");
   };
 
@@ -26,7 +41,7 @@ const Welcome: React.FC = () => {
               communities better.
             </p>
             <div className="subscriptionCard">
-              <SubscriptionCard />
+              <SubscriptionCard subscriptionData={subscriptionData}/>
             </div>
           </div>
           <div className="mt-5">
@@ -46,3 +61,5 @@ const Welcome: React.FC = () => {
 };
 
 export default Welcome;
+
+

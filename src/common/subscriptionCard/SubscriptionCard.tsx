@@ -1,27 +1,19 @@
 import Button from 'common/button';
 import successIcon from '../../assets/images/tostr.png';
 import { useNavigate } from 'react-router-dom';
-import { Fragment, useEffect } from 'react';
-import { useAppDispatch } from '../../hooks/useRedux';
-import authSlice from '../../modules/authentication/store/slices/auth.slice';
-import { AppDispatch, RootState } from '../../store';
-import { useSelector } from 'react-redux/es/hooks/useSelector';
+import { Fragment} from 'react';
 import { SubscriptionPackages } from '../../modules/authentication/interface/authentication.interface';
 
-const SubscriptionCard = () => {
+interface Props  {
+    subscriptionData:SubscriptionPackages[]
+}
+
+const SubscriptionCard:React.FC<Props> = ({subscriptionData}) => {
     const navigate = useNavigate();
 
-    const navigateToWorkSpace = () => {
+    const navigateToWorkSpace = ():void => {
         navigate('/create-workspace');
     };
-
-    const dispatch: AppDispatch = useAppDispatch();
-
-    const subscriptionData: SubscriptionPackages[] = useSelector((state: RootState) => state.auth.subscriptionData);
-
-    useEffect(() => {
-        dispatch(authSlice.actions.getSubscriptions());
-    }, []);
 
     return (
         <Fragment>

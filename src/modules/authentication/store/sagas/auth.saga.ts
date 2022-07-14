@@ -188,7 +188,7 @@ function* getSubscriptions() {
     try {
         yield put(loaderSlice.actions.startLoadingAction(authSlice.actions.getSubscriptions.type));
         const res: AxiosResponse = yield call(getSubscriptionPackagesService);
-        yield put(authSlice.actions.setSubscriptions({ subscriptionData: res.data }));
+        yield put(authSlice.actions.setSubscriptions({ subscriptionData: res?.data }));
     } catch (e) {
         const error = e as AxiosError<unknown>;
         showErrorToast(error?.response?.data?.message);
@@ -205,8 +205,8 @@ export default function* authSaga(): SagaIterator {
     yield takeEvery(FORGOT_PASSWORD, forgotPassword);
     yield takeEvery(VERIFY_FORGOT_EMAIL, verifyForgotEmail);
     yield takeEvery(RESET_PASSWORD, resetPassword);
+    yield takeEvery(authSlice.actions.getSubscriptions.type, getSubscriptions);
     yield takeEvery(CREATE_WORKSPACE, createWorkspace);
     yield takeEvery(GET_WORKSPACE, getWorkspace);
     yield takeEvery(authSlice.actions.signOut.type, logout);
-    yield takeEvery(authSlice.actions.getSubscriptions.type, getSubscriptions);
 }

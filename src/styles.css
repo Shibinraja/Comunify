@@ -627,20 +627,20 @@ video {
   top: 2.5rem;
 }
 
-.right-\[400px\]{
-  right: 400px;
-}
-
-.top-72{
-  top: 18rem;
-}
-
 .top-7{
   top: 1.75rem;
 }
 
 .right-\[28\.87px\]{
   right: 28.87px;
+}
+
+.right-\[400px\]{
+  right: 400px;
+}
+
+.top-72{
+  top: 18rem;
 }
 
 .top-20{
@@ -661,10 +661,6 @@ video {
 
 .-z-40{
   z-index: -40;
-}
-
-.m-0{
-  margin: 0px;
 }
 
 .mx-auto{
@@ -1395,10 +1391,6 @@ video {
 
 .p-2\.5{
   padding: 0.625rem;
-}
-
-.p-0{
-  padding: 0px;
 }
 
 .p-3{
