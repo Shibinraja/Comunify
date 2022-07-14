@@ -11,7 +11,7 @@ import bgSignInImage from '../../../../assets/images/bg-sign.svg';
 import closeEyeIcon from '../../../../assets/images/closeEyeIcon.svg';
 import eyeIcon from '../../../../assets/images/eye.svg';
 import socialLogo from '../../../../assets/images/Social.svg';
-import { password_regex } from '../../../../constants/constants';
+import { email_regex, password_regex } from '../../../../constants/constants';
 import authSlice from '../../store/slices/auth.slice';
 import './SignIn.css';
 import cookie from 'react-cookies';
@@ -29,7 +29,9 @@ const SignIn: React.FC = () => {
     const access_token = cookie.load('x-auth-cookie');
 
     const handleSubmit = (values: FormValues): void => {
-        dispatch(authSlice.actions.login(values));
+        const newValues = {...values};
+        newValues['userName'] =  values.userName.includes('@') ? values.userName.toLocaleLowerCase() : values.userName;
+        dispatch(authSlice.actions.login(newValues));
     };
 
     useEffect(() => {
@@ -150,7 +152,7 @@ const SignIn: React.FC = () => {
 const signInSchema = Yup.object().shape({
     userName: Yup.lazy((value): any => {
         if (value?.includes('@')) {
-            return Yup.string().email('Must be a valid email').max(255).required('Email is required');
+            return Yup.string().email('Must be a valid email').max(255).matches(email_regex, 'Must be a valid email').required('Email is required');
         }
 
         return Yup.string()
