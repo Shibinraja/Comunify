@@ -248,6 +248,7 @@ const signUpSchema = Yup.object().shape({
     .required("Email is required"),
   domainSector: Yup.string().required("Domain is required"),
   companyName: Yup.string()
+  .min(2, "CompanyName must be atleast 2 characters")
   .max(25, "CompanyName should not exceed 25 characters")
   .strict(true)
   .matches(companyName_regex, "CompanyName is not valid")
