@@ -29,7 +29,9 @@ const SignIn: React.FC = () => {
     const access_token = cookie.load('x-auth-cookie');
 
     const handleSubmit = (values: FormValues): void => {
-        dispatch(authSlice.actions.login(values));
+        const newValues = {...values};
+        newValues['userName'] =  values.userName.includes('@') ? values.userName.toLocaleLowerCase() : values.userName;
+        dispatch(authSlice.actions.login(newValues));
     };
 
     useEffect(() => {

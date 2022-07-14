@@ -61,7 +61,9 @@ const SignUp : React.FC = () => {
     };
 
     const handleSubmit = (values: SignUpFormValues): void => {
-        dispatch(authSlice.actions.signup(values));
+        const newValues = {...values};
+        newValues['email'] =  values.email.toLocaleLowerCase();
+        dispatch(authSlice.actions.signup(newValues));
     };
 
     const togglePassword = () => {
