@@ -18,7 +18,6 @@ const Input = ({
     ...rest
 }: Props) => {
   
-    const errorClassName = '';
 
     return (
         <Fragment>
