@@ -100,7 +100,7 @@ let authRoutes: RoutesArray[] = [
             <SubscriptionExpired/>
           </PrivateRoute>
         ),
-        path: "/subscription/expired/:id",
+        path: "/subscription/expired",
       },
     ],
   },

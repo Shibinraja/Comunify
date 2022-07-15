@@ -33,7 +33,7 @@ request.interceptors.response.use(
     response => response,
     error => {
       if (error.response.status === 410) {
-        window.location.href = '/';
+        window.location.href = '/subscription/expired';
       }
 });
 
