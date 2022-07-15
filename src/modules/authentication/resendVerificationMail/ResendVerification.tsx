@@ -29,7 +29,7 @@ const ResendVerificationMail: React.FC = () => {
     if(verifiedEmailSuccess) navigate('/welcome')
   },[verifiedEmailSuccess])
 
-  const _resendVerifyEmail = () => {
+  const resendVerifyEmail = () => {
     if(verifyToken?.email) dispatch( authSlice.actions.resendVerificationMail({email:verifyToken.email}))
     showErrorToast('No token provided');
   }
@@ -49,7 +49,7 @@ const ResendVerificationMail: React.FC = () => {
             <div className="pb-10">
             <Button
               text='Resend Verification Mail'
-              onClick={_resendVerifyEmail}
+              onClick={resendVerifyEmail}
               type='submit'
               className='font-Poppins rounded-lg text-base font-semibold text-white mt-1.8 h-3.6  w-full hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient'
             />

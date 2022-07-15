@@ -20,10 +20,10 @@ const Welcome:React.FC = () => {
 
   const subscriptionData = useAppSelector((state) => state.auth.subscriptionData);
 
-  const communifySubscriptionPlan:SubscriptionPackages[] = subscriptionData.length > 0 && subscriptionData.filter((plans:SubscriptionPackages)=> plans.planName.trim() !== 'Free Trial') || [];
+  const comunifySubscriptionPlan:SubscriptionPackages[] = subscriptionData.length > 0 && subscriptionData.filter((plans:SubscriptionPackages)=> plans.planName.trim() !== 'Free Trial') || [];
 
 
-  // Function to filter out free trial plan from the list of communify plans and subscribe to it.
+  // Function to filter out free trial plan from the list of comunify plans and subscribe to it.
   const selectFreeTrialPlan = ():void => {
   const freeTrialSubscriptionPlan:SubscriptionPackages[] = subscriptionData.length > 0 && subscriptionData.filter((plans:SubscriptionPackages)=> plans.planName.trim() === 'Free Trial') || [];
   dispatch(authSlice.actions.freeTrialSubscription(freeTrialSubscriptionPlan[0]?.id))
@@ -46,7 +46,7 @@ const Welcome:React.FC = () => {
               communities better.
             </p>
             <div className="subscriptionCard">
-                {communifySubscriptionPlan?.map((data:SubscriptionPackages) => (
+                {comunifySubscriptionPlan?.map((data:SubscriptionPackages) => (
                     <SubscriptionCard  key={data.id} subscriptionData={data}/>
                 ))}
             </div>
