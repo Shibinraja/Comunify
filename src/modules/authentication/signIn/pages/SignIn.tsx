@@ -1,20 +1,20 @@
 import { useAppDispatch } from '@/hooks/useRedux';
-import { AppDispatch } from '../../../../store/index';
+import { API_ENDPOINT, auth_module } from '@/lib/config';
 import Button from 'common/button/Button';
 import Input from 'common/input/Input';
 import { Form, Formik } from 'formik';
 import { FormValues } from 'modules/authentication/interface/authentication.interface';
-import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
 import bgSignInImage from '../../../../assets/images/bg-sign.svg';
 import closeEyeIcon from '../../../../assets/images/closeEyeIcon.svg';
 import eyeIcon from '../../../../assets/images/eye.svg';
 import socialLogo from '../../../../assets/images/Social.svg';
 import { email_regex, password_regex } from '../../../../constants/constants';
+import { AppDispatch } from '../../../../store/index';
 import authSlice from '../../store/slices/auth.slice';
 import './SignIn.css';
-import cookie from 'react-cookies';
 
 const SignIn: React.FC = () => {
     const dispatch: AppDispatch = useAppDispatch();
@@ -26,20 +26,11 @@ const SignIn: React.FC = () => {
 
     const [passwordType, setPasswordType] = useState<string>('password');
 
-    const access_token = cookie.load('x-auth-cookie');
-
     const handleSubmit = (values: FormValues): void => {
         const newValues = {...values};
         newValues['userName'] =  values.userName.includes('@') ? values.userName.toLocaleLowerCase() : values.userName;
         dispatch(authSlice.actions.login(newValues));
     };
-
-    useEffect(() => {
-        if (access_token) {
-            localStorage.setItem('accessToken', access_token);
-            dispatch(authSlice.actions.setIsAuthenticated(true));
-        }
-    }, [access_token]);
 
     const togglePassword = () => {
         if (passwordType === 'password') {
@@ -50,12 +41,12 @@ const SignIn: React.FC = () => {
     };
 
     const navigateToGoogleSignIn = () => {
-        window.open(`http://localhost:3001/auth/v1/google`, '_self');
+        window.open(`${API_ENDPOINT}${auth_module}/google`, '_self');
     };
 
     return (
         <div className="w-full flex flex-col justify-between  relative overflow-y-auto no-scroll-bar">
-            <div className="flex w-full container mx-auto ">
+            <div className="flex w-full container mwindow.open(`http://localhost:3001/auth/v1/google`, '_self');x-auto ">
                 <div className="w-full md:w-2/5  mt-5.2 flex flex-col pl-10 ">
                     {' '}
                     <h3 className="font-Inter text-neutralBlack font-bold not-italic text-signIn leading-2.8">Sign In </h3>{' '}

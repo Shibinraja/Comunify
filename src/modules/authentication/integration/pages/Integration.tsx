@@ -170,7 +170,7 @@ const Integration: React.FC = () => {
               </Modal>
             </div>
           <div className="flex justify-end">
-            <div className="flex items-center pb-5">
+            <div className="flex items-center pb-5" onClick={()=> navigate('/dashboard')}>
               <div className="p-2 leading-1.56 text-skipGray font-Inter font-normal text-reset cursor-pointer">
                 Skip
               </div>

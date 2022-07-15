@@ -16,35 +16,41 @@ const initialState: InitialState = {
     subscriptionData: [],
     workspaceData: [],
     clearFormikValue: false,
+    authorizedToken: ""
 };
 
-const login = (state: InitialState, _action: PayloadAction<SignInInput>) => state;
+const login = (state: InitialState, action: PayloadAction<SignInInput>) => state;
 
-const signup = (state: InitialState, _action: PayloadAction<SignUpInput>) => state;
+const loginData = (state:InitialState , action:PayloadAction<string>) => ({
+    ...state,
+    authorizedToken:action.payload
+});
 
-const verifyEmail = (state: InitialState, _action: PayloadAction<VerifyEmailInput>) => state;
+const signup = (state: InitialState, action: PayloadAction<SignUpInput>) => state;
 
-const resendVerificationMail = (state: InitialState, _action: PayloadAction<ResendVerificationMailInput>) => state;
+const verifyEmail = (state: InitialState, action: PayloadAction<VerifyEmailInput>) => state;
 
-const forgotPassword = (state: InitialState, _action: PayloadAction<ForgotPasswordInput>) => state;
+const resendVerificationMail = (state: InitialState, action: PayloadAction<ResendVerificationMailInput>) => state;
 
-const verifyForgotEmail = (state: InitialState, _action: PayloadAction<VerifyEmailInput>) => state;
+const forgotPassword = (state: InitialState, action: PayloadAction<ForgotPasswordInput>) => state;
 
-const resetPassword = (state: InitialState, _action: PayloadAction<ResetPasswordInput>) => state;
+const verifyForgotEmail = (state: InitialState, action: PayloadAction<VerifyEmailInput>) => state;
 
-const createWorkspace = (state: InitialState, _action: PayloadAction<CreateWorkspaceNameInput>) => state;
+const resetPassword = (state: InitialState, action: PayloadAction<ResetPasswordInput>) => state;
+
+const createWorkspace = (state: InitialState, action: PayloadAction<CreateWorkspaceNameInput>) => state;
 
 const getWorkspace = (state: InitialState) => state;
 
 // Data Props returned from saga_module
 
-const formikValueReset = (state: InitialState, _action: PayloadAction<boolean>) => ({
+const formikValueReset = (state: InitialState, action: PayloadAction<boolean>) => ({
     ...state,
-    clearFormikValue: _action.payload,
+    clearFormikValue: action.payload,
 });
-const getWorkspaceData = (state: InitialState, _action: PayloadAction<any>) => ({
+const getWorkspaceData = (state: InitialState, action: PayloadAction<any>) => ({
     ...state,
-    workspaceData: _action.payload,
+    workspaceData: action.payload,
 });
 
 const setIsAuthenticated = (state: InitialState, action: PayloadAction<InitialState['isAuthenticated']>) => ({
@@ -62,11 +68,14 @@ const setSubscriptions = (state: InitialState, action: PayloadAction<{ subscript
     state.subscriptionData = action.payload.subscriptionData;
 };
 
+const freeTrialSubscription = (state: InitialState, action:PayloadAction<string>) => state
+
 const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
         login,
+        loginData,
         setIsAuthenticated,
         signup,
         verifyEmail,
@@ -81,6 +90,7 @@ const authSlice = createSlice({
         signOut,
         getSubscriptions,
         setSubscriptions,
+        freeTrialSubscription,
     },
 });
 

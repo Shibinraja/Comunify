@@ -1,6 +1,8 @@
 import { GeneratorResponse } from '@/lib/api';
-import { auth_module, subscription_module, workspace_module } from '@/lib/config';
+import { API_ENDPOINT, auth_module, subscription_module, workspace_module } from '@/lib/config';
 import { request } from '@/lib/request';
+import axios from 'axios';
+
 import {
     CreateWorkspaceNameInput,
     ForgotPasswordInput,
@@ -64,5 +66,10 @@ export function* createWorkspaceService(body: CreateWorkspaceNameInput): Generat
 //Subscription Module
 export function* getSubscriptionPackagesService(): GeneratorResponse<SubscriptionPackages> {
     const { data } = yield request.get(`${subscription_module}/get-subscription`);
+    return data;
+}
+
+export function* sendSubscriptionPlan (id: string): GeneratorResponse<SubscriptionPackages> {
+    const { data } = yield request.post(`${subscription_module}/choose-plan/${id}`) 
     return data;
 }

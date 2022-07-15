@@ -1,13 +1,33 @@
+import React from 'react';
 import SubscriptionCard from 'common/subscriptionCard/SubscriptionCard';
 import bgWelcomeImage from '../../../../assets/images/bg-sign.svg';
 import './Welcome.css';
-import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../../../store';
+import { SubscriptionPackages } from '../../interface/authentication.interface';
+import authSlice from '../../store/slices/auth.slice';
+import { useAppSelector } from '@/hooks/useRedux';
 
-const Welcome: React.FC = () => {
-  const navigate = useNavigate();
 
-  const navigateToCreateWorkspace = () => {
-    navigate("/create-workspace");
+const Welcome:React.FC = () => {
+
+  const dispatch: AppDispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(authSlice.actions.getSubscriptions());
+  },[])
+
+  const subscriptionData = useAppSelector((state) => state.auth.subscriptionData);
+
+  const comunifySubscriptionPlan:SubscriptionPackages[] = subscriptionData.length > 0 && subscriptionData.filter((plans:SubscriptionPackages)=> plans.planName.trim() !== 'Free Trial') || [];
+
+
+  // Function to filter out free trial plan from the list of comunify plans and subscribe to it.
+  const selectFreeTrialPlan = ():void => {
+  const freeTrialSubscriptionPlan:SubscriptionPackages[] = subscriptionData.length > 0 && subscriptionData.filter((plans:SubscriptionPackages)=> plans.planName.trim() === 'Free Trial') || [];
+  dispatch(authSlice.actions.freeTrialSubscription(freeTrialSubscriptionPlan[0]?.id))
+
   };
 
   return (
@@ -26,13 +46,15 @@ const Welcome: React.FC = () => {
               communities better.
             </p>
             <div className="subscriptionCard">
-              <SubscriptionCard />
+                {comunifySubscriptionPlan?.map((data:SubscriptionPackages) => (
+                    <SubscriptionCard  key={data.id} subscriptionData={data}/>
+                ))}
             </div>
           </div>
           <div className="mt-5">
           <button
               className="free-trial-btn font-Inter text-desc w-25.9 font-normal leading-1.8 text-lightBlue box-border rounded-lg bg-white py-2.5 px-4 shadow-trialButtonShadow "
-              onClick={navigateToCreateWorkspace}
+              onClick={selectFreeTrialPlan}
             >
               Continue with 14 Days Free Trial
             </button>
@@ -46,3 +68,5 @@ const Welcome: React.FC = () => {
 };
 
 export default Welcome;
+
+

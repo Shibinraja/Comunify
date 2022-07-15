@@ -2,8 +2,8 @@
 import Button from 'common/button';
 import bgSendMailImage from '../../../assets/images/bg-sign.svg';
 import './resendVerification.css';
-import { useSearchParams } from 'react-router-dom';
-import { useAppDispatch } from '@/hooks/useRedux';
+import {  useNavigate, useSearchParams } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import { useEffect } from 'react';
 import authSlice from '../store/slices/auth.slice';
 import { DecodeToken } from '../interface/authentication.interface';
@@ -12,7 +12,9 @@ import { showErrorToast } from 'common/toast/toastFunctions';
 import { decodeToken } from '@/lib/decodeToken';
 
 const ResendVerificationMail: React.FC = () => {
+  const navigate = useNavigate()
   const dispatch: AppDispatch = useAppDispatch();
+  const verifiedEmailSuccess = useAppSelector((state) => state.auth.clearFormikValue);
 
   const [searchParams] = useSearchParams();
   const token: string | any = searchParams.get('confirm') || "";
@@ -23,7 +25,11 @@ const ResendVerificationMail: React.FC = () => {
     if(token) dispatch(authSlice.actions.verifyEmail({id:token}))
   },[token])
 
-  const _resendVerifyEmail = () => {
+  useEffect(()=>{
+    if(verifiedEmailSuccess) navigate('/welcome')
+  },[verifiedEmailSuccess])
+
+  const resendVerifyEmail = () => {
     if(verifyToken?.email) dispatch( authSlice.actions.resendVerificationMail({email:verifyToken.email}))
     showErrorToast('No token provided');
   }
@@ -43,7 +49,7 @@ const ResendVerificationMail: React.FC = () => {
             <div className="pb-10">
             <Button
               text='Resend Verification Mail'
-              onClick={_resendVerifyEmail}
+              onClick={resendVerifyEmail}
               type='submit'
               className='font-Poppins rounded-lg text-base font-semibold text-white mt-1.8 h-3.6  w-full hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient'
             />
