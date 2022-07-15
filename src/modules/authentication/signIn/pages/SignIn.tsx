@@ -41,12 +41,12 @@ const SignIn: React.FC = () => {
     };
 
     const navigateToGoogleSignIn = () => {
-        window.open(`${API_ENDPOINT}${auth_module}/google`, '_self');
+        window.open(`${API_ENDPOINT}${auth_module}/google/`, '_self');
     };
 
     return (
         <div className="w-full flex flex-col justify-between  relative overflow-y-auto no-scroll-bar">
-            <div className="flex w-full container mwindow.open(`http://localhost:3001/auth/v1/google`, '_self');x-auto ">
+            <div className="flex w-full container x-auto ">
                 <div className="w-full md:w-2/5  mt-5.2 flex flex-col pl-10 ">
                     {' '}
                     <h3 className="font-Inter text-neutralBlack font-bold not-italic text-signIn leading-2.8">Sign In </h3>{' '}
