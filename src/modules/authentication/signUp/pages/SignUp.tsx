@@ -68,7 +68,7 @@ const SignUp : React.FC = () => {
     };
 
     const navigateToGoogleSignIn = () => {
-        window.open(`${API_ENDPOINT}${auth_module}/google`, '_self');
+        window.open(`${API_ENDPOINT}${auth_module}/google/`, '_self');
       };
 
     return (
@@ -246,7 +246,7 @@ const signUpSchema = Yup.object().shape({
   domainSector: Yup.string().required("Domain is required"),
   companyName: Yup.string()
   .min(2, "CompanyName must be atleast 2 characters")
-  .max(25, "CompanyName should not exceed 25 characters")
+  .max(15, "CompanyName should not exceed 15 characters")
   .strict(true)
   .matches(companyName_regex, "CompanyName is not valid")
   .trim("Whitespaces are not allowed"),

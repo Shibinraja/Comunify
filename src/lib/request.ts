@@ -35,6 +35,7 @@ request.interceptors.response.use(
       if (error.response.status === 410) {
         window.location.href = '/subscription/expired';
       }
+      return Promise.reject(error);
 });
 
 const setToken = (token: string | number | boolean): void => {
