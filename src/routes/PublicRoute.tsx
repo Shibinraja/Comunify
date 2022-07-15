@@ -68,8 +68,6 @@ const PublicRoute: React.FC<Props> = ({ children }) => {
         }
     }
 
-    console.log('err' , decodedToken , state.route)
-
     return isAuthenticated ? <Navigate to= {state.route}/> : children;
 };
 
