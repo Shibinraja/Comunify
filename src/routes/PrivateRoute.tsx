@@ -4,11 +4,8 @@ import { getLocalRefreshToken } from '@/lib/request';
 import { SubscriptionToken } from '../modules/authentication/interface/authentication.interface';
 import jwt_decode from 'jwt-decode';
 import { decodeToken } from '@/lib/decodeToken';
-// import { useAppSelector } from '../hooks/useRedux';
+import { Props } from './routesTypes';
 
-interface Props {
-    children: ReactElement;
-}
 
 const PrivateRoute: React.FC<Props> = ({ children }) => {
     // const isAuthenticated = useAppSelector(state => state.auth.isAuthenticated);

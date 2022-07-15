@@ -18,6 +18,10 @@ export type DecodeToken = {
     exp: number;
     iat: number;
     id: string;
+    userName?: string,
+    isAdmin?: boolean,
+    isSubscribed?: string | null,
+    isworkSpaceCreated?: string | null,
 };
 
 export type SignUpFormValues = {
