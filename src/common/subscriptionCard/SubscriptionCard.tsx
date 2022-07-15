@@ -2,13 +2,10 @@ import Button from 'common/button';
 import successIcon from '../../assets/images/tostr.png';
 import { useNavigate } from 'react-router-dom';
 import { Fragment } from 'react';
-import { SubscriptionPackages } from '../../modules/authentication/interface/authentication.interface';
+import { SubscriptionProps } from 'interface/interface';
 
-interface Props {
-    subscriptionData: SubscriptionPackages;
-}
 
-const SubscriptionCard: React.FC<Props> = ({ subscriptionData }) => {
+const SubscriptionCard: React.FC<SubscriptionProps> = ({ subscriptionData }) => {
     const navigate = useNavigate();
 
     const navigateToWorkSpace = (): void => {

@@ -2,8 +2,8 @@
 import Button from 'common/button';
 import bgSendMailImage from '../../../assets/images/bg-sign.svg';
 import './resendVerification.css';
-import { useSearchParams } from 'react-router-dom';
-import { useAppDispatch } from '@/hooks/useRedux';
+import {  useNavigate, useSearchParams } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import { useEffect } from 'react';
 import authSlice from '../store/slices/auth.slice';
 import { DecodeToken } from '../interface/authentication.interface';
@@ -12,7 +12,9 @@ import { showErrorToast } from 'common/toast/toastFunctions';
 import { decodeToken } from '@/lib/decodeToken';
 
 const ResendVerificationMail: React.FC = () => {
+  const navigate = useNavigate()
   const dispatch: AppDispatch = useAppDispatch();
+  const verifiedEmailSuccess = useAppSelector((state) => state.auth.clearFormikValue);
 
   const [searchParams] = useSearchParams();
   const token: string | any = searchParams.get('confirm') || "";
@@ -22,6 +24,10 @@ const ResendVerificationMail: React.FC = () => {
   useEffect(()=>{
     if(token) dispatch(authSlice.actions.verifyEmail({id:token}))
   },[token])
+
+  useEffect(()=>{
+    if(verifiedEmailSuccess) navigate('/welcome')
+  },[verifiedEmailSuccess])
 
   const _resendVerifyEmail = () => {
     if(verifyToken?.email) dispatch( authSlice.actions.resendVerificationMail({email:verifyToken.email}))

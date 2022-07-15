@@ -16,12 +16,11 @@ import loaderSlice from '../slices/loader.slice';
 import { SagaIterator } from 'redux-saga';
 import history from '@/lib/history';
 import { showErrorToast, showSuccessToast } from 'common/toast/toastFunctions';
-import { setToken } from '@/lib/request';
-import {CreateWorkspaceNameInput, ForgotPasswordInput, ResendVerificationMailInput,  ResetPasswordInput,  SignInInput, SignUpInput, SignUpResponse, TokenResponse, VerifyEmailInput, WorkspaceResponse } from 'modules/authentication/interface/authentication.interface';
+import {CreateWorkspaceNameInput, ForgotPasswordInput, ResendVerificationMailInput,  ResetPasswordInput,  SignInInput, SignUpInput, SignUpResponse, SubscriptionPackages, TokenResponse, VerifyEmailInput, WorkspaceResponse } from 'modules/authentication/interface/authentication.interface';
 import {  createWorkspaceService, forgotPasswordService, getSubscriptionPackagesService, getWorkspaceService, resendVerifyEmailService , resetPasswordService, signInService, signUpService, verifyEmailService, verifyForgotEmailService, sendSubscriptionPlan } from 'modules/authentication/services/authentication.service';
 import { AxiosError } from '../types/auth.types';
 import { AxiosResponse } from 'axios';
-import { SuccessResponse } from '@/lib/api';
+import {  SuccessResponse } from '@/lib/api';
 import cookie from 'react-cookies';
 
 const forwardTo = (location: string) => {
@@ -34,9 +33,9 @@ function* loginSaga(action: PayloadAction<SignInInput>) {
 
         const res: SuccessResponse<TokenResponse> = yield call(signInService, action.payload);
         if (res?.data) {
-            localStorage.setItem('accessToken', res?.data?.token);
-            setToken(res?.data?.token);
+            localStorage.setItem('accessToken' , res?.data?.token)
             yield put(authSlice.actions.setIsAuthenticated(true));
+            // yield put(authSlice.actions.loginData(res?.data?.token));
         }
     } catch (e) {
         const error = e as AxiosError<unknown>;
@@ -68,10 +67,9 @@ function* verifyEmail(action: PayloadAction<VerifyEmailInput>) {
         yield put(loaderSlice.actions.startLoadingAction(VERIFY_EMAIL));
         const res: SuccessResponse<TokenResponse> = yield call(verifyEmailService, action.payload);
         if (res?.data) {
-            setToken(res?.data?.token);
             localStorage.setItem('accessToken', res?.data?.token);
-            // yield put(authSlice.actions.setIsAuthenticated(true));
-            yield call(forwardTo, '/welcome');
+            yield put(authSlice.actions.formikValueReset(true));
+            // yield call(forwardTo, '/welcome');
             showSuccessToast(res.message);
         }
     } catch (e) {
@@ -200,9 +198,11 @@ function* getSubscriptions() {
 function* freeTrialSubscription(action: PayloadAction<string>) {
     try {
         yield put(loaderSlice.actions.startLoadingAction(authSlice.actions.getSubscriptions.type));
-        console.log("payload is",action.payload)
-        const res: AxiosResponse = yield call(sendSubscriptionPlan, action.payload);
-        console.log(res?.data)
+        const res: SuccessResponse<SubscriptionPackages> = yield call(sendSubscriptionPlan, action.payload);
+        if (res?.message) {
+            showSuccessToast(res.message);
+            yield call(forwardTo, '/create-workspace');
+        }
     } catch (e){
         const error = e as AxiosError<unknown>;
         showErrorToast(error?.response?.data?.message);

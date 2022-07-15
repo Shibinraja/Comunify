@@ -3,10 +3,11 @@ import SubscriptionCard from 'common/subscriptionCard/SubscriptionCard';
 import bgWelcomeImage from '../../../../assets/images/bg-sign.svg';
 import './Welcome.css';
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../../../store';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../../../store';
 import { SubscriptionPackages } from '../../interface/authentication.interface';
 import authSlice from '../../store/slices/auth.slice';
+import { useAppSelector } from '@/hooks/useRedux';
 
 
 const Welcome:React.FC = () => {
@@ -14,15 +15,19 @@ const Welcome:React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(authSlice.actions.getSubscriptions())
+    dispatch(authSlice.actions.getSubscriptions());
   },[])
 
-  const subscriptionData: SubscriptionPackages[] = useSelector((state: RootState) => state.auth.subscriptionData);
+  const subscriptionData = useAppSelector((state) => state.auth.subscriptionData);
 
+  const communifySubscriptionPlan:SubscriptionPackages[] = subscriptionData.length > 0 && subscriptionData.filter((plans:SubscriptionPackages)=> plans.planName.trim() !== 'Free Trial') || [];
+
+
+  // Function to filter out free trial plan from the list of communify plans and subscribe to it.
   const selectFreeTrialPlan = ():void => {
-        subscriptionData?.map((data:SubscriptionPackages) => data?.name === 'Free Trial' && (
-            dispatch(authSlice.actions.freeTrialSubscription(data?.id))
-        ))
+  const freeTrialSubscriptionPlan:SubscriptionPackages[] = subscriptionData.length > 0 && subscriptionData.filter((plans:SubscriptionPackages)=> plans.planName.trim() === 'Free Trial') || [];
+  dispatch(authSlice.actions.freeTrialSubscription(freeTrialSubscriptionPlan[0]?.id))
+
   };
 
   return (
@@ -41,8 +46,8 @@ const Welcome:React.FC = () => {
               communities better.
             </p>
             <div className="subscriptionCard">
-                {subscriptionData?.map((data:SubscriptionPackages) => data?.name !== 'Free Trial' && (
-                    <SubscriptionCard subscriptionData={data}/>
+                {communifySubscriptionPlan?.map((data:SubscriptionPackages) => (
+                    <SubscriptionCard  key={data.id} subscriptionData={data}/>
                 ))}
             </div>
           </div>

@@ -65,7 +65,7 @@ export function* createWorkspaceService(body: CreateWorkspaceNameInput): Generat
 }
 //Subscription Module
 export function* getSubscriptionPackagesService(): GeneratorResponse<SubscriptionPackages> {
-    const { data } = yield axios.get(`${API_ENDPOINT}/subscription/v1/get-subscription`);
+    const { data } = yield request.get(`${subscription_module}/get-subscription`);
     return data;
 }
 
