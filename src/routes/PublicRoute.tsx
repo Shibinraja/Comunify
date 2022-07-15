@@ -9,7 +9,7 @@ import authSlice from 'modules/authentication/store/slices/auth.slice';
 import { getLocalRefreshToken } from '@/lib/request';
 import { Props, PublicRouteState, PublicRouteStateValues } from './routesTypes';
 
-const reducer: Reducer<PublicRouteState, PublicRouteStateValues> = (state, action): any => {
+const reducer: Reducer<PublicRouteState, PublicRouteStateValues> = (state, action): {route:string} => {
     switch (action.type) {
       case 'SET_WELCOME_ROUTE':
         return { ...state, route: action.payload };

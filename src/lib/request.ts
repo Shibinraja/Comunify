@@ -29,6 +29,14 @@ request.interceptors.request.use(
     },
 );
 
+request.interceptors.response.use(
+    response => response,
+    error => {
+      if (error.response.status === 410) {
+        window.location.href = '/subscription/expired';
+      }
+});
+
 const setToken = (token: string | number | boolean): void => {
     request.interceptors.request.use(config => {
         config.headers = {
