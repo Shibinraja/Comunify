@@ -8,6 +8,7 @@ import { AppDispatch } from '../store';
 import authSlice from 'modules/authentication/store/slices/auth.slice';
 import { getLocalRefreshToken } from '@/lib/request';
 import { Props, PublicRouteState, PublicRouteStateValues } from './routesTypes';
+import { useSearchParams } from 'react-router-dom';
 
 const reducer: Reducer<PublicRouteState, PublicRouteStateValues> = (state, action): {route:string} => {
     switch (action.type) {
@@ -31,8 +32,10 @@ const PublicRoute: React.FC<Props> = ({ children }) => {
     const isAuthenticated = useAppSelector(state => state.auth.isAuthenticated);
     const dispatch: AppDispatch = useAppDispatch();
     const tokenData = getLocalRefreshToken();
-    
-    const access_token = tokenData || cookie.load('x-auth-cookie');
+    const [searchParams] = useSearchParams();
+
+    const token: string | any = searchParams.get('success') || "";
+    const access_token = tokenData || token;
     const decodedToken:DecodeToken = access_token && decodeToken(access_token);
 
     const [state, dispatchReducer] = useReducer<Reducer<PublicRouteState, PublicRouteStateValues>>(
