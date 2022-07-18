@@ -46,4 +46,9 @@
       width: 0px;
       display: none;
     }
-  
+    .select-box{
+        border: 1px solid #DBD8FC;
+        }
+        .apply-btn {
+            background: linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
+          }

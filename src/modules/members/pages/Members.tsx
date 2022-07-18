@@ -10,8 +10,14 @@ import dragIcon from '../../../assets/images/drag.svg';
 import slackIcon from '../../../assets/images/slack.svg';
 import { useState } from 'react';
 import Button from 'common/button';
-
-
+import searchIcon from '../../../assets/images/search.svg';
+import calandarIcon from '../../../assets/images/calandar.svg';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import exportImage from '../../../assets/images/export.svg';
+import downArrow from '../../../assets/images/sub-down-arrow.svg';
+import dropdownIcon from '../../../assets/images/Vector.svg';
+import {useNavigate} from 'react-router-dom';
 
 const Members = () => {
   const data = [
@@ -478,8 +484,12 @@ const Members = () => {
       id: '4',
     },
   ];
+  const navigate=useNavigate();
   const [isModalOpen, setisModalOpen] = useState(false);
   const [list, setList] = useState(dummyData);
+  const [toDate, setToDate] = useState('');
+  const [isFilterDropdownActive, setisFilterDropdownActive] = useState<boolean>(false);
+
 
   const reorder = (list: any, startIndex: any, endIndex: any) => {
     const result = Array.from(dummyData);
@@ -495,15 +505,265 @@ const Members = () => {
     setList(items);
   };
 
+  const handleFilterDropdown = (): void => {
+    setisFilterDropdownActive((prev) => !prev);
+  };
+
   const handleModalClose=()=>{
     setisModalOpen(false);
+  }
+
+  const navigateToProfile=()=>{
+    navigate('/members/profile');
   }
   return (
   <div className="container flex flex-col">
      <h3 className="font-Poppins font-semibold text-infoBlack text-infoData leading-9">
         Members
       </h3>
-      <div className="member-card">
+      <div className="flex mt-1.8 items-center ">
+        <div className="flex relative items-center ">
+          <input
+            type="text"
+            className="focus:outline-none px-3 box-border w-19.06 h-3.06  rounded-0.6 shadow-profileCard placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray"
+            placeholder="Search By Name or Email"
+          />
+          <div className="absolute right-5 w-[12.53px] h-[12px] ">
+            <img src={searchIcon} alt="" />
+          </div>
+        </div>
+        <div className="day w-3.003 h-3.06 flex items-center justify-center ml-3.19 box-border rounded-0.6 app-input-card-border shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">
+          1D
+        </div>
+        <div className="day w-3.003 h-3.06 flex items-center justify-center ml-0.653 box-border rounded-0.6 app-input-card-border shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">
+          7D
+        </div>
+        <div className="day w-3.003 h-3.06 flex items-center justify-center ml-0.653 box-border rounded-0.6 app-input-card-border shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">
+          1M
+        </div>
+        <div>
+          <div className="relative flex items-center ml-0.653 ">
+            <DatePicker
+              selected={toDate}
+              onChange={(date: any) => setToDate(date)}
+              className="export w-9.92 h-3.06    shadow-contactCard rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
+              placeholderText="Custom Date"
+            />
+            <img
+              className="absolute icon-holder left-32 cursor-pointer"
+              src={calandarIcon}
+              alt=""
+            />
+          </div>
+        </div>
+        <div className="ml-[20.89px]">
+          {/* <NewSelectBox /> */}
+          <div className="select-box box-border cursor-pointer rounded-0.6 shadow-contactCard relative">
+            <div
+              className="flex w-9.59 h-3.06  items-center justify-between px-5 "
+              onClick={handleFilterDropdown}
+            >
+              <div className="box-border rounded-0.6 shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">
+                Filters
+              </div>
+              <div>
+                <img src={dropdownIcon} alt="" />
+              </div>
+            </div>
+            {isFilterDropdownActive && (
+              <div
+                className="absolute w-[265px] pb-0 bg-white border z-40 rounded-0.3"
+                onClick={handleFilterDropdown}
+              >
+                <div className="flex flex-col pb-5">
+                  <div className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06 mt-5 px-3 mx-auto  cursor-pointer">
+                    <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">
+                      Platform
+                    </div>
+                    <div>
+                      <img src={downArrow} alt="" />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-y-5 justify-center px-3 mt-[18px]">
+                    <div className="flex items-center">
+                      <div className="mr-2">
+                        <input type="checkbox" />
+                      </div>
+                      <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
+                        Slack
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="mr-2">
+                        <input type="checkbox" />
+                      </div>
+                      <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
+                        Higher Logic
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="mr-2">
+                        <input type="checkbox" />
+                      </div>
+                      <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
+                        Vanilla Forums
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06 mt-5 px-3 mx-auto  cursor-pointer">
+                    <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">
+                      Tags
+                    </div>
+                    <div>
+                      <img src={downArrow} alt="" />
+                    </div>
+                  </div>
+                  <div className="flex relative items-center mt-5">
+                    <input
+                      type="text"
+                      className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-profileCard rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
+                      placeholder="Search Tags"
+                    />
+                    <div className="absolute right-5 w-[12.53px] h-[12px] z-40">
+                      <img src={searchIcon} alt="" />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-y-5 justify-center px-3 mt-[18px]">
+                    <div className="flex items-center">
+                      <div className="mr-2">
+                        <input type="checkbox" />
+                      </div>
+                      <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
+                        Admin
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="mr-2">
+                        <input type="checkbox" />
+                      </div>
+                      <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
+                        Influencer
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="mr-2">
+                        <input type="checkbox" />
+                      </div>
+                      <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
+                        Influencer
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06 mt-5 px-3 mx-auto  cursor-pointer">
+                    <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">
+                      Location
+                    </div>
+                    <div>
+                      <img src={downArrow} alt="" />
+                    </div>
+                  </div>
+                  <div className="flex relative items-center mt-5">
+                    <input
+                      type="text"
+                      className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-profileCard rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
+                      placeholder="Report Name"
+                    />
+                    <div className="absolute right-5 w-[12.53px] h-[12px] z-40">
+                      <img src={searchIcon} alt="" />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-y-5 justify-center px-3 mt-[18px]">
+                    <div className="flex items-center">
+                      <div className="mr-2">
+                        <input type="checkbox" />
+                      </div>
+                      <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
+                        Texas
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="mr-2">
+                        <input type="checkbox" />
+                      </div>
+                      <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
+                        London
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="mr-2">
+                        <input type="checkbox" />
+                      </div>
+                      <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
+                        Texas
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06 mt-5 px-3 mx-auto  cursor-pointer">
+                    <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">
+                      Organization
+                    </div>
+                    <div>
+                      <img src={downArrow} alt="" />
+                    </div>
+                  </div>
+                  <div className="flex relative items-center mt-5">
+                    <input
+                      type="text"
+                      className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-profileCard rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
+                      placeholder="Report Name"
+                    />
+                    <div className="absolute right-5 w-[12.53px] h-[12px] z-40">
+                      <img src={searchIcon} alt="" />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-y-5 justify-center px-3 mt-[18px]">
+                    <div className="flex items-center">
+                      <div className="mr-2">
+                        <input type="checkbox" />
+                      </div>
+                      <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
+                        Microsoft
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="mr-2">
+                        <input type="checkbox" />
+                      </div>
+                      <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
+                        Hp
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="mr-2">
+                        <input type="checkbox" />
+                      </div>
+                      <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
+                        Lenovo
+                      </div>
+                    </div>
+                    <div className="buttons ">
+                      <Button
+                        type="button"
+                        text="Apply"
+                        className="border-none apply-btn rounded-0.31 h-2.063 w-full mt-[25px] cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="ml-[10.44px]">
+          <div className="export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex ml-0.63 cursor-pointer">
+            <h3 className="text-memberDay leading-1.12 font-Poppins font-semibold text-card">
+              Export
+            </h3>
+            <img src={exportImage} alt="" />
+          </div>
+        </div>
+      </div>
+      <div className="member-card pt-10">
         <MembersCard/>
       </div>
     <div className="memberTable mt-1.8">
@@ -540,7 +800,7 @@ const Members = () => {
                 <tr className="border-b" key={i}>
                   <td className="px-6 py-4">
                     <div className="flex ">
-                      <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                      <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer" onClick={navigateToProfile}>
                         {data.name}
                       </div>
                     </div>

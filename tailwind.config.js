@@ -49,7 +49,8 @@ module.exports = {
         subscriptionMonth: "#8a8b9f",
         settingsTabBorder: "#E7E7E7",
         settingsTabActive: "#69B5E5",
-        letsSignInSignUp:'#0091DF'
+        letsSignInSignUp:'#0091DF',
+        memberDay:' #55555C;',
       },
       margin: {
         2.6: "43px",
@@ -116,7 +117,9 @@ module.exports = {
         0.865: "13.84px",
         1.474: "23.58px",
         1.661: "26.58px",
-        2.62:'42px'
+        2.62:'42px',
+        0.653:'10.44px',
+        3.19:'51.18px',
       },
       padding: {
         14: "14.67px",
@@ -199,7 +202,11 @@ module.exports = {
         11.43:'183px',
         34.37:'550px',
         9.62:'154px',
-        3.375:'54px'
+        3.375:'54px',
+        3.003:'48.04px',
+        9.59:'153.53px',
+        15.06:'241px',
+
       },
       height: {
         4.5: "72.87px",

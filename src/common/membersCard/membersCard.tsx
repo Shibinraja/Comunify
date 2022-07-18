@@ -1,6 +1,6 @@
 const MembersCard = () => {
     return (
-        <div className="container mx-auto mt-20 ">
+        <div className="container mx-auto ">
         <div className="flex gap-2.28">
           <div className="flex  flex-col items-center justify-center bg-member1 rounded-0.9 w-13.7 h-8.34 cursor-pointer">
             <div className="text-infoBlack font-Poppins font-semibold text-signIn leading-3.18">
