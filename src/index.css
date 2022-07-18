@@ -90,7 +90,8 @@ input {
   border: 1px solid #6fcf97 !important;
   background: #6fcf97 !important;
   border-radius: 6px !important;
-  height: 68px !important;
+  min-height: 68px !important;
+  max-height: 200px !important;
   padding-top: 3px !important;
   padding-right: 13px !important;
 }
@@ -98,7 +99,8 @@ input {
   border: 1px solid #eb5757 !important;
   background: #eb5757 !important;
   border-radius: 6px !important;
-  height: 68px !important;
+  min-height: 68px !important;
+  max-height: 200px !important;
   padding-top: 3px !important;
   padding-right: 13px !important;
 }
@@ -106,7 +108,8 @@ input {
   border: 1px solid #f2c94c !important;
   background: #f2c94c !important;
   border-radius: 6px !important;
-  height: 68px !important;
+  min-height: 68px !important;
+  max-height: 200px !important;
   padding-top: 3px !important;
   padding-right: 13px !important;
 }
