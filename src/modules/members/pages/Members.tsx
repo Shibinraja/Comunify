@@ -17,7 +17,11 @@ import 'react-datepicker/dist/react-datepicker.css';
 import exportImage from '../../../assets/images/export.svg';
 import downArrow from '../../../assets/images/sub-down-arrow.svg';
 import dropdownIcon from '../../../assets/images/Vector.svg';
+import closeIcon from '../../../assets/images/tag-close.svg';
+import nextIcon from '../../../assets/images/next-page-icon.svg';
+import prevIcon from '../../../assets/images/previous-page-icon.svg';
 import {useNavigate} from 'react-router-dom';
+import Input from 'common/input';
 
 const Members = () => {
   const data = [
@@ -454,7 +458,7 @@ const Members = () => {
       email: 'randy123@mail.com',
     },
     {
-      name: 'Randy Dias',
+      name: 'Randy Diaso',
       platform: {
         img1: slackIcon,
         img2: slackIcon,
@@ -528,7 +532,7 @@ const Members = () => {
             className="focus:outline-none px-3 box-border w-19.06 h-3.06  rounded-0.6 shadow-profileCard placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray"
             placeholder="Search By Name or Email"
           />
-          <div className="absolute right-5 w-[12.53px] h-[12px] ">
+          <div className="absolute right-5 w-0.78 h-0.75 ">
             <img src={searchIcon} alt="" />
           </div>
         </div>
@@ -556,9 +560,8 @@ const Members = () => {
             />
           </div>
         </div>
-        <div className="ml-[20.89px]">
-          {/* <NewSelectBox /> */}
-          <div className="select-box box-border cursor-pointer rounded-0.6 shadow-contactCard relative">
+        <div className="ml-1.30">
+          <div className="box-border cursor-pointer rounded-0.6 shadow-contactCard app-input-card-border relative ">
             <div
               className="flex w-9.59 h-3.06  items-center justify-between px-5 "
               onClick={handleFilterDropdown}
@@ -572,7 +575,7 @@ const Members = () => {
             </div>
             {isFilterDropdownActive && (
               <div
-                className="absolute w-[265px] pb-0 bg-white border z-40 rounded-0.3"
+                className="absolute w-16.56 pb-0 bg-white border z-40 rounded-0.3"
                 onClick={handleFilterDropdown}
               >
                 <div className="flex flex-col pb-5">
@@ -584,7 +587,7 @@ const Members = () => {
                       <img src={downArrow} alt="" />
                     </div>
                   </div>
-                  <div className="flex flex-col gap-y-5 justify-center px-3 mt-[18px]">
+                  <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
                     <div className="flex items-center">
                       <div className="mr-2">
                         <input type="checkbox" />
@@ -624,11 +627,11 @@ const Members = () => {
                       className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-profileCard rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
                       placeholder="Search Tags"
                     />
-                    <div className="absolute right-5 w-[12.53px] h-[12px] z-40">
+                    <div className="absolute right-5 w-0.78 h-0.75  z-40">
                       <img src={searchIcon} alt="" />
                     </div>
                   </div>
-                  <div className="flex flex-col gap-y-5 justify-center px-3 mt-[18px]">
+                  <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
                     <div className="flex items-center">
                       <div className="mr-2">
                         <input type="checkbox" />
@@ -668,11 +671,11 @@ const Members = () => {
                       className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-profileCard rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
                       placeholder="Report Name"
                     />
-                    <div className="absolute right-5 w-[12.53px] h-[12px] z-40">
+                    <div className="absolute right-5 w-0.78 h-0.75  z-40">
                       <img src={searchIcon} alt="" />
                     </div>
                   </div>
-                  <div className="flex flex-col gap-y-5 justify-center px-3 mt-[18px]">
+                  <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
                     <div className="flex items-center">
                       <div className="mr-2">
                         <input type="checkbox" />
@@ -712,11 +715,11 @@ const Members = () => {
                       className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-profileCard rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
                       placeholder="Report Name"
                     />
-                    <div className="absolute right-5 w-[12.53px] h-[12px] z-40">
+                    <div className="absolute right-5 w-0.78 h-0.75  z-40">
                       <img src={searchIcon} alt="" />
                     </div>
                   </div>
-                  <div className="flex flex-col gap-y-5 justify-center px-3 mt-[18px]">
+                  <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
                     <div className="flex items-center">
                       <div className="mr-2">
                         <input type="checkbox" />
@@ -745,7 +748,7 @@ const Members = () => {
                       <Button
                         type="button"
                         text="Apply"
-                        className="border-none apply-btn rounded-0.31 h-2.063 w-full mt-[25px] cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white"
+                        className="border-none btn-save-modal rounded-0.31 h-2.063 w-full mt-1.56 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white transition ease-in duration-300 hover:shadow-buttonShadowHover"
                       />
                     </div>
                   </div>
@@ -754,7 +757,7 @@ const Members = () => {
             )}
           </div>
         </div>
-        <div className="ml-[10.44px]">
+        <div className="ml-0.652">
           <div className="export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex ml-0.63 cursor-pointer">
             <h3 className="text-memberDay leading-1.12 font-Poppins font-semibold text-card">
               Export
@@ -768,7 +771,7 @@ const Members = () => {
       </div>
     <div className="memberTable mt-1.8">
       <div className="py-2 overflow-x-auto mt-1.868">
-        <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-t-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto h-[100vh] sticky top-0 fixTableHead">
+        <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-t-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixTableHead max-h-34">
           <table className="min-w-full relative  rounded-t-0.6 ">
             <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
               <tr className="min-w-full">
@@ -817,8 +820,22 @@ const Members = () => {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex ">
-                      <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                        {data.tags}
+                      <div className="py-3 flex gap-2 items-center font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                        <div className="bg-tagSection rounded w-5.25 h-8 flex justify-between px-3 items-center">
+                          <div className="font-Poppins font-normal text-card text-profileBlack leading-5">Tag1</div>
+                          <div>
+                            <img src={closeIcon} alt="" />
+                          </div>
+                        </div>
+                        <div className="bg-tagSection rounded w-5.25 h-8 flex justify-between px-3 items-center">
+                          <div className="font-Poppins font-normal text-card text-profileBlack leading-5">Tag2</div>
+                          <div>
+                            <img src={closeIcon} alt="" />
+                          </div>
+                        </div>
+                        <div className="font-Poppins font-semibold leading-5 text-tag text-card underline">
+                          2 More
+                        </div>
                       </div>
                     </div>
                   </td>
@@ -854,9 +871,27 @@ const Members = () => {
               ))}
             </tbody>
           </table>
+                <div className="px-6 py-6 flex items-center gap-0.66 justify-center w-full rounded-b-lg ">
+                  <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
+                    <img src={prevIcon} alt="" />
+                  </div>
+                  <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">1</div>
+                  <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">2</div>
+                  <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">3</div>
+                  <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">4</div>
+                  <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">...</div>
+                  <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">10</div>
+                  <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
+                    <img src={nextIcon} alt="" />
+                  </div>
+                  <div className="font-Lato font-normal text-pageNumber leading-4 text-pagination cursor-pointer">Go to page:</div>
+                  <div>
+                    <Input name="pagination" id="page" type="text" className="page-input focus:outline-none px-0.5 rounded box-border w-1.47 h-1.51"/>
+                  </div>
+                </div>
           <div className="fixed bottom-10 right-32">
             <div
-              className="btn-drag flex items-center justify-center cursor-pointer shadow-dragButton rounded-0.6 "
+              className="btn-drag w-3.375 h-3.375 flex items-center justify-center cursor-pointer shadow-dragButton rounded-0.6 "
               onClick={() => setisModalOpen(true)}
             >
               <img src={editIcon} alt="" />
@@ -866,7 +901,7 @@ const Members = () => {
             isOpen={isModalOpen}
             shouldCloseOnOverlayClick={true}
             onRequestClose={() => setisModalOpen(false)}
-            className="w-24.31 mx-auto mt-[147px]  pb-20 bg-white border-fetching-card rounded-lg shadow-modal"
+            className="w-24.31 mx-auto mt-9.18  pb-20 bg-white border-fetching-card rounded-lg shadow-modal"
           >
             <div className="flex flex-col px-1.68 relative">
               <h3 className="font-Inter font-semibold text-xl mt-1.8  leading-6">
@@ -889,7 +924,7 @@ const Members = () => {
                               {...provided.dragHandleProps}
                             >
                               <div className="flex flex-col mt-6">
-                                <div className="flex drag-item  justify-between items-center px-2 cursor-pointer">
+                                <div className="flex justify-between items-center px-2 cursor-pointer rounded-0.3 h-2.81 bg-white box-border border-table shadow-inputShadow">
                                   <div className="flex items-center gap-1">
                                     <div>
                                       <input type="checkbox" name="" id="" />
@@ -916,13 +951,13 @@ const Members = () => {
                    <Button
                       text="CANCEL"
                       type="submit"
-                      className="cancel mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border  h-2.81 w-5.25 rounded border-none"
+                      className="cancel mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  h-2.81 w-5.25  rounded border-none"
                       onClick={handleModalClose}
                    />
                     <Button
                       text="SAVE"
                       type="submit"
-                      className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-7.68 border-none h-2.81"
+                      className="text-white font-Poppins text-error font-medium leading-5 btn-save-modal cursor-pointer rounded shadow-contactBtn w-5.25 border-none h-2.81"
                    />
               </div>
             </div>

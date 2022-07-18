@@ -18,8 +18,8 @@ const membersRoutes: RoutesArray = {
 const membersProfileRoutes: RoutesArray = {
   element:(
     <PrivateRoute>
-    <MembersProfileRoute />
-  </PrivateRoute>
+      <MembersProfileRoute />
+    </PrivateRoute>
   ),
   path:'/members/profile/:id'
 }

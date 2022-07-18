@@ -51,6 +51,7 @@ module.exports = {
         settingsTabActive: "#69B5E5",
         letsSignInSignUp:'#0091DF',
         memberDay:' #55555C;',
+        pagination:'#9A9BA6;'
       },
       margin: {
         2.6: "43px",
@@ -120,6 +121,11 @@ module.exports = {
         2.62:'42px',
         0.653:'10.44px',
         3.19:'51.18px',
+        1.30:'20.89px',
+        1.125:'18px',
+        0.652:'10.44px',
+        9.18:'147px',
+        "1.30":'20.8px'
       },
       padding: {
         14: "14.67px",
@@ -155,7 +161,9 @@ module.exports = {
         0.313: "5px",
         1.313: "21px",
         6.25:'100px',
-        3.75:'60px'
+        3.75:'60px',
+        1.30:'20.8px'
+
       },
       width: {
         25.9: "414.75px",
@@ -206,6 +214,10 @@ module.exports = {
         3.003:'48.04px',
         9.59:'153.53px',
         15.06:'241px',
+        1.51:'24.28px',
+        1.47:'23.53px',
+        0.78:'12.53px',
+        16.56:'265px'
 
       },
       height: {
@@ -252,7 +264,10 @@ module.exports = {
         8.098:"129.57px",
         2.31:'37px',
         9.62:'154px',
-        3.375:'54px'
+        3.375:'54px',
+        1.51:'24.28px',
+        0.75:'12px',
+        
 
       },
       fontSize: {
@@ -276,12 +291,14 @@ module.exports = {
         price: "32px",
         createdAt: "8px",
         membersCreatedAt: "6.41509px",
+        pageNumber:'9.86548px'
       },
       fontFamily: {
         Inter: ["Inter", "sans-serif"],
         Outfit: ["Outfit", "sans-serif"],
         Poppins: ["Poppins", "sans-serif"],
         Manrope: ["Manrope", "sans-serif"],
+        Lato:["Lato","sans-serif"]
       },
       lineHeight: {
         1.6: "1.688rem",
@@ -326,9 +343,13 @@ module.exports = {
         dragButton:'0px 4.90909px 61.3636px rgba(0, 0, 0, 0.2)'
         
       },
+      maxHeight:{
+        34:'544px'
+      },
       gap: {
         2.28: "36.56px",
         0.93: "15px",
+        0.66:'10.62px'
       },
     },
   },
