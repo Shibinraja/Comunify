@@ -21,6 +21,7 @@ import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import { AppDispatch } from '../../../../store/index';
 import authSlice from '../../store/slices/auth.slice';
 import { SignUpFormValues } from 'modules/authentication/interface/authentication.interface';
+import { API_ENDPOINT, auth_module } from '@/lib/config';
 
 const SignUp : React.FC = () => {
     const [passwordType, setPasswordType] = useState<string>('password');
@@ -40,14 +41,6 @@ const SignUp : React.FC = () => {
         companyName: '',
         domainSector: '',
     };
-
-    const access_token = cookie.load('x-auth-cookie');
-
-    useEffect(()=>{
-        if(access_token){
-          localStorage.setItem('accessToken', access_token)
-        }
-      },[access_token])
       
     // useEffect(()=>{
     //     if(resetValue) formikRef?.current?.resetForm({values:initialValues})
@@ -75,7 +68,7 @@ const SignUp : React.FC = () => {
     };
 
     const navigateToGoogleSignIn = () => {
-        window.open(`http://localhost:3001/auth/v1/google`, "_self");
+        window.open(`${API_ENDPOINT}${auth_module}/google/`, '_self');
       };
 
     return (
@@ -253,7 +246,7 @@ const signUpSchema = Yup.object().shape({
   domainSector: Yup.string().required("Domain is required"),
   companyName: Yup.string()
   .min(2, "CompanyName must be atleast 2 characters")
-  .max(25, "CompanyName should not exceed 25 characters")
+  .max(15, "CompanyName should not exceed 15 characters")
   .strict(true)
   .matches(companyName_regex, "CompanyName is not valid")
   .trim("Whitespaces are not allowed"),

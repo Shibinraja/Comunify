@@ -1,3 +1,5 @@
+import { SubscriptionPackages } from 'modules/authentication/interface/authentication.interface';
+
 export interface RoutesArray {
   element: JSX.Element;
   path?: string;
@@ -32,3 +34,8 @@ export interface ButtonProps
   className?: string;
   children?: React.ReactNode;
 }
+
+export type SubscriptionProps = {
+  subscriptionData: SubscriptionPackages;
+}
+
