@@ -100,8 +100,9 @@ function* forgotPassword(action: PayloadAction<ForgotPasswordInput>) {
     try {
         yield put(loaderSlice.actions.startLoadingAction(FORGOT_PASSWORD));
         const res: SuccessResponse<{}> = yield call(forgotPasswordService, action.payload);
-        if (res?.message) {
-            yield put(authSlice.actions.formikValueReset(true));
+        if (!res?.error) {
+            yield call(forwardTo, '/resend-mail');
+            // yield put(authSlice.actions.formikValueReset(true));
             showSuccessToast(res.message);
         }
     } catch (e) {
