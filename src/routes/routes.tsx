@@ -5,7 +5,7 @@ import dashboardRoutes from "../modules/dashboard/routes/dashboard.routes";
 import settingsRoutes from "../modules/settings/routes/settings.routes";
 import membersRoutes from "../modules/members/routes/members.routes";
 import { RoutesArray } from "../interface/interface";
-
+import membersProfileRoutes from '../modules/members/routes/members.routes';
 const MainLayout = React.lazy(() => import("../layout/MainLayout"));
 
 let routes: RoutesArray[] = [
@@ -13,7 +13,7 @@ let routes: RoutesArray[] = [
   {
     element: <MainLayout />,
     path: '/',
-    children: [dashboardRoutes, membersRoutes , settingsRoutes],
+    children: [dashboardRoutes, membersRoutes , membersProfileRoutes, settingsRoutes],
   },
   //to redirect invalid routes back to the index route
   {

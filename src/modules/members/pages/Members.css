@@ -1,0 +1,20 @@
+.btn-drag {
+  background: linear-gradient(299.41deg, #69b5e5 3.2%, #abcf6b 88.99%);
+}
+
+
+.cancel {
+  filter: drop-shadow(0px 4px 30px rgba(0, 0, 0, 0.1));
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.pagination {
+  border: 0.758883px solid #E4E7ED;
+}
+
+.page-input {
+  border: 0.758883px solid #337AB7;
+}
