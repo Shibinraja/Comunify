@@ -1,9 +1,8 @@
+import type { FC } from 'react';
 import MembersCard from 'common/membersCard/membersCard';
 import Modal from 'react-modal';
 import  './Members.css';
-Modal.setAppElement('#root');
 import editIcon from '../../../assets/images/edit.svg';
-import dragIcon from '../../../assets/images/drag.svg';
 import { useState } from 'react';
 import Button from 'common/button';
 import searchIcon from '../../../assets/images/search.svg';
@@ -18,10 +17,13 @@ import nextIcon from '../../../assets/images/next-page-icon.svg';
 import prevIcon from '../../../assets/images/previous-page-icon.svg';
 import {useNavigate} from 'react-router-dom';
 import Input from 'common/input';
-import { dummyDragData, membersTableData } from './MembersTableData';
+import {membersTableData } from './MembersTableData';
+import MembersDraggableColumn from './membersTableColumn/membersDraggableColumn';
+Modal.setAppElement('#root');
 
-const Members = () => {
-  const navigate=useNavigate();
+const Members:FC = () => {
+  
+  const navigate = useNavigate();
   const [isModalOpen, setisModalOpen] = useState(false);
   const [toDate, setToDate] = useState<Date>();
   const [isFilterDropdownActive, setisFilterDropdownActive] = useState<boolean>(false);
@@ -425,27 +427,9 @@ const Members = () => {
                 Customize Column
               </h3>
                   <div  className="pb-10">
-                      {dummyDragData.map((item: any, index: number) => (
-                            <div>
-                              <div className="flex flex-col mt-6">
-                                <div className="flex justify-between items-center px-2 cursor-pointer rounded-0.3 h-2.81 bg-white box-border border-table shadow-inputShadow">
-                                  <div className="flex items-center gap-1">
-                                    <div>
-                                      <input type="checkbox" name="" id="" />
-                                    </div>
-                                    <div className="font-Poppins font-normal text-infoBlack text-trial leading-1.31">
-                                      {item.name}
-                                    </div>
-                                  </div>
-                                  <div>
-                                    <img src={dragIcon} alt="" />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                      ))}            
+                    <MembersDraggableColumn/>          
                     </div>
-              <div className="felx buttons absolute -bottom-16 right-[27px]">
+              <div className="flex buttons absolute -bottom-16 right-[27px]">
                    <Button
                       text="CANCEL"
                       type="submit"
