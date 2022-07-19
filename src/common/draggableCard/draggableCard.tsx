@@ -5,7 +5,7 @@ import { DraggableCardProps } from './draggableCardTypes'
 export const Card: FC<DraggableCardProps> = ({ id, children, index, moveCard }) => {
 
   const ref = useRef<HTMLInputElement>(null);
-  
+
   const [{ handlerId }, drop] = useDrop({
     accept: 'card',
     collect(monitor) {
@@ -52,6 +52,7 @@ export const Card: FC<DraggableCardProps> = ({ id, children, index, moveCard }) 
       item.index = hoverIndex
     },
   })
+  
   const [{ isDragging }, drag] = useDrag({
     type: 'card',
     item: () => {
@@ -60,11 +61,12 @@ export const Card: FC<DraggableCardProps> = ({ id, children, index, moveCard }) 
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
-  })
-  const opacity = isDragging ? 0 : 1
-  drag(drop(ref))
+  });
+
+  drag(drop(ref));
+
   return (
-    <div ref={ref} style={{ opacity }} data-handler-id={handlerId}>
+    <div ref={ref} className = {isDragging ? 'opacity-0' : 'opacity-100'} data-handler-id={handlerId}>
         {children}
     </div>
   )
