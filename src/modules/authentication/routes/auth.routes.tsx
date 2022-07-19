@@ -2,19 +2,17 @@ import React from "react";
 import PublicRoute from "../../../routes/PublicRoute";
 import { RoutesArray } from "../../../interface/interface";
 import CreateNewPassword from "../createNewPassword/pages/CreateNewPassword";
-import ResendVerificationMail from "../resendVerificationMail/ResendVerification";
 import Subscription from "../subscription/pages/Subscription";
 import Welcome from "../welcome/pages/Welcome";
 import Integration from "../integration/pages/Integration";
 import SubscriptionExpired from "../subscriptionExpired/pages/SubscriptionExpired";
-import CreateWorkSpace from '../createWorkSpace/pages/CreateWorkSpace';
 import PrivateRoute from 'routes/PrivateRoute';
 
 const SignIn = React.lazy(() => import("../signIn/pages/SignIn"));
 const SignUp = React.lazy(() => import("../signUp/pages/SignUp"));
-const ForgotPassword = React.lazy(
-  () => import("../forgotPassword/pages/ForgotPassword")
-);
+const ForgotPassword = React.lazy(() => import("../forgotPassword/pages/ForgotPassword"));
+const CreateWorkSpace = React.lazy(()=> import("../createWorkSpace/pages/CreateWorkSpace"));
+const ResendVerificationMail = React.lazy(()=> import("../resendVerificationMail/ResendVerification"))
 const AuthLayout = React.lazy(() => import("../../../layout/AuthLayout"));
 
 let authRoutes: RoutesArray[] = [
@@ -47,28 +45,28 @@ let authRoutes: RoutesArray[] = [
         ),
       },
       {
+        path: "/forgot-password",
         element: (
           <PublicRoute>
             <ForgotPassword />
           </PublicRoute>
-        ),
-        path: "/forgot-password",
+        )
       },
       {
+        path: "/create-password",
         element: (
           <PublicRoute>
             <CreateNewPassword />
           </PublicRoute>
-        ),
-        path: "/create-password",
+        )
       },
       {
+        path: "/resend-mail",
         element: (
           <PublicRoute>
             <ResendVerificationMail />
           </PublicRoute>
-        ),
-        path: "/resend-mail",
+        )
       },
       {
         element: (
