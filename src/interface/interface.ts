@@ -1,13 +1,10 @@
 import { SubscriptionPackages } from 'modules/authentication/interface/authentication.interface';
 
 export interface RoutesArray {
-  element: JSX.Element;
+  index?:boolean;
+  element?: JSX.Element;
   path?: string;
-  children?: {
-    index?: boolean;
-    path?: string;
-    element?: JSX.Element;
-  }[];
+  children?: RoutesArray[];
 }
 
 export interface Props {
