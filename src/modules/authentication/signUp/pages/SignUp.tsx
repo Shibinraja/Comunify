@@ -16,13 +16,13 @@ import {
   companyName_regex,
   email_regex,
 } from "../../../../constants/constants";
-import cookie from 'react-cookies';
-import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
+import { useAppDispatch } from '@/hooks/useRedux';
 import { AppDispatch } from '../../../../store/index';
 import authSlice from '../../store/slices/auth.slice';
 import { SignUpFormValues } from 'modules/authentication/interface/authentication.interface';
 import { API_ENDPOINT, auth_module } from '@/lib/config';
 import './SignUp.css';
+
 const SignUp: React.FC = () => {
     const [passwordType, setPasswordType] = useState<string>('password');
     const [isDropDownActive, setDropDownActive] = useState<boolean>(false);
@@ -33,7 +33,6 @@ const SignUp: React.FC = () => {
     const options = ['Marketing', 'Sales', 'Customer Support', 'Customer Success', 'Others'];
 
     const dispatch: AppDispatch = useAppDispatch();
-    const resetValue = useAppSelector(state => state.auth.clearFormikValue);
 
     const initialValues: SignUpFormValues = {
         userName: '',
@@ -43,9 +42,8 @@ const SignUp: React.FC = () => {
         domainSector: '',
     };
 
-    const access_token = cookie.load('x-auth-cookie');
 
-    const handleOutsideClick=(event:any)=>{
+    const handleOutsideClick=(event:MouseEvent)=>{
         if(dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target)){
             setDropDownActive(true)
         }else{
@@ -59,12 +57,6 @@ const SignUp: React.FC = () => {
             document.removeEventListener('click',handleOutsideClick)
         }
     }, [])
-
-    useEffect(() => {
-        if (access_token) {
-            localStorage.setItem('accessToken', access_token);
-        }
-    }, [access_token]);
 
     // useEffect(()=>{
     //     if(resetValue) formikRef?.current?.resetForm({values:initialValues})
@@ -216,7 +208,7 @@ const SignUp: React.FC = () => {
                                         )}
                                     </div>
                                     {Boolean(touched.domainSector && errors.domainSector) && (
-                                        <p className="text-lightRed font-normal text-error absolute font-Inter mt-0.287  pl-1">{errors?.domainSector}</p>
+                                        <p className="text-lightRed font-normal text-email absolute font-Inter mt-0.287  pl-1">{errors?.domainSector}</p>
                                     )}
                                 </div>
                                 <Button
