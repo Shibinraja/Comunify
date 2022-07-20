@@ -1,24 +1,29 @@
+import settingRoutes from 'modules/settings/routes/settings.routes';
 import React from "react";
 import { Navigate, useRoutes } from "react-router-dom";
+import { RoutesArray } from "../interface/interface";
 import authRoutes from "../modules/authentication/routes/auth.routes";
 import dashboardRoutes from "../modules/dashboard/routes/dashboard.routes";
-import settingsRoutes from "../modules/settings/routes/settings.routes";
 import membersRoutes from "../modules/members/routes/members.routes";
-import { RoutesArray } from "../interface/interface";
-import membersProfileRoutes from '../modules/members/routes/members.routes';
+import PrivateRoute from './PrivateRoute';
+
 const MainLayout = React.lazy(() => import("../layout/MainLayout"));
 
-let routes: RoutesArray[] = [
+const routes: RoutesArray[] = [
   ...authRoutes,
   {
-    element: <MainLayout />,
-    path: '/',
-    children: [dashboardRoutes, membersRoutes , membersProfileRoutes, settingsRoutes],
+      element: (
+          <PrivateRoute>
+              <MainLayout />
+          </PrivateRoute>
+      ),
+      path: '/',
+      children:[dashboardRoutes,membersRoutes, settingRoutes]
   },
   //to redirect invalid routes back to the index route
   {
-    path: "*",
-    element: <Navigate to="/" />,
+      path: '*',
+      element: <Navigate to="/" />,
   },
 ];
 

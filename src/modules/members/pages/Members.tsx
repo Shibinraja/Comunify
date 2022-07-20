@@ -1,10 +1,9 @@
 import MembersCard from 'common/membersCard/membersCard';
 import Modal from 'react-modal';
 import  './Members.css';
-Modal.setAppElement('#root');
 import editIcon from '../../../assets/images/edit.svg';
 import dragIcon from '../../../assets/images/drag.svg';
-import { useState } from 'react';
+import { FC, useState } from 'react';
 import Button from 'common/button';
 import searchIcon from '../../../assets/images/search.svg';
 import calandarIcon from '../../../assets/images/calandar.svg';
@@ -20,8 +19,11 @@ import {useNavigate} from 'react-router-dom';
 import Input from 'common/input';
 import { dummyDragData, membersTableData } from './MembersTableData';
 
-const Members = () => {
-  const navigate=useNavigate();
+Modal.setAppElement('#root');
+
+const Members:FC = () => {
+
+  const navigate = useNavigate();
   const [isModalOpen, setisModalOpen] = useState(false);
   const [toDate, setToDate] = useState<Date>();
   const [isFilterDropdownActive, setisFilterDropdownActive] = useState<boolean>(false);
@@ -37,6 +39,7 @@ const Members = () => {
   const navigateToProfile=()=>{
     navigate('/members/profile');
   }
+
   return (
   <div className="container flex flex-col">
      <h3 className="font-Poppins font-semibold text-infoBlack text-infoData leading-9">
