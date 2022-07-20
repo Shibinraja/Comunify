@@ -447,21 +447,33 @@ export const membersTableData = [
     },
 ];
 
-export const dummyDragData = [
+export const ColumNames: Array<{name:string,id:number}> = [
     {
-        name: 'Hari',
-        id: '1',
+        name: 'Name',
+        id: 1,
     },
     {
-        name: 'Amal',
-        id: '2',
+        name: 'Platforms Connected',
+        id: 2,
     },
     {
-        name: 'Harik',
-        id: '3',
+        name: 'Tags',
+        id: 3,
     },
     {
-        name: 'Amalk',
-        id: '4',
+        name: 'Last Activity',
+        id: 4,
+    },
+    {
+        name: 'Organization',
+        id: 5,
+    },
+    {
+        name: 'Location',
+        id: 6,
+    },
+    {
+        name: 'Email',
+        id: 7,
     },
 ]
