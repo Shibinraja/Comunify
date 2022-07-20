@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=Outfit:wght@100;200;300;400;500;600;700&family=Poppins:ital,wght@0,500;1,400;1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=Outfit:wght@100;200;300;400;500;600;700&family=Poppins:ital,wght@0,500;1,400;1,500&family=Lato:wght@100;300;400;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -15,6 +15,11 @@ input {
 .btn-disconnect-gradient{
   background: linear-gradient(8.33deg, #EE9934 24.35%, #F9C837 94.6%);
 }
+
+.btn-save-modal{
+  background: linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
+}
+
 .google-signin {
   border: 1.92127px solid #eff0f7;
   box-shadow: 8px 8px 24px rgba(2, 2, 70, 0.05);
@@ -41,6 +46,10 @@ input {
 
 .border-fetching-card{
   border: 1px solid #dee2e6;
+}
+
+.border-table{
+  border: 1px solid #e5e5e5
 }
 
 .border-gradient-rounded{
@@ -129,4 +138,8 @@ input {
   .resolution-warning {
       display: block;
   }
+}
+
+.border-cancel{
+  border:1px solid #9b9b9b;
 }

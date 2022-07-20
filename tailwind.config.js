@@ -49,7 +49,9 @@ module.exports = {
         subscriptionMonth: "#8a8b9f",
         settingsTabBorder: "#E7E7E7",
         settingsTabActive: "#69B5E5",
-        letsSignInSignUp:'#0091DF'
+        letsSignInSignUp:'#0091DF',
+        memberDay:' #55555C;',
+        pagination:'#9A9BA6;'
       },
       margin: {
         2.6: "43px",
@@ -116,7 +118,14 @@ module.exports = {
         0.865: "13.84px",
         1.474: "23.58px",
         1.661: "26.58px",
-        2.62:'42px'
+        2.62:'42px',
+        0.653:'10.44px',
+        3.19:'51.18px',
+        1.30:'20.89px',
+        1.125:'18px',
+        0.652:'10.44px',
+        9.18:'147px',
+        "1.30":'20.8px'
       },
       padding: {
         14: "14.67px",
@@ -152,7 +161,9 @@ module.exports = {
         0.313: "5px",
         1.313: "21px",
         6.25:'100px',
-        3.75:'60px'
+        3.75:'60px',
+        1.30:'20.8px'
+
       },
       width: {
         25.9: "414.75px",
@@ -198,7 +209,16 @@ module.exports = {
         1.959: "31.35px",
         11.43:'183px',
         34.37:'550px',
-        9.62:'154px'
+        9.62:'154px',
+        3.375:'54px',
+        3.003:'48.04px',
+        9.59:'153.53px',
+        15.06:'241px',
+        1.51:'24.28px',
+        1.47:'23.53px',
+        0.78:'12.53px',
+        16.56:'265px'
+
       },
       height: {
         4.5: "72.87px",
@@ -243,7 +263,12 @@ module.exports = {
         14.375: "230px",
         8.098:"129.57px",
         2.31:'37px',
-        9.62:'154px'
+        9.62:'154px',
+        3.375:'54px',
+        1.51:'24.28px',
+        0.75:'12px',
+        
+
       },
       fontSize: {
         logo: "21.35px",
@@ -266,12 +291,14 @@ module.exports = {
         price: "32px",
         createdAt: "8px",
         membersCreatedAt: "6.41509px",
+        pageNumber:'9.86548px'
       },
       fontFamily: {
         Inter: ["Inter", "sans-serif"],
         Outfit: ["Outfit", "sans-serif"],
         Poppins: ["Poppins", "sans-serif"],
         Manrope: ["Manrope", "sans-serif"],
+        Lato:["Lato","sans-serif"]
       },
       lineHeight: {
         1.6: "1.688rem",
@@ -312,12 +339,17 @@ module.exports = {
         profileCard:
           '0px 100px 80px rgba(41, 72, 152, 0.05),0px 64.8148px 46.8519px rgba(41, 72, 152, 0.037963),0px 38.5185px 25.4815px rgba(41, 72, 152, 0.0303704),0px 20px 13px rgba(41, 72, 152, 0.025),0px 8.14815px 6.51852px rgba(41, 72, 152, 0.0196296),0px 1.85185px 3.14815px rgba(41, 72, 152, 0.012037)',
         reportInput:'8.32785px 8.32785px 24.9835px rgba(2, 2, 70, 0.05)',
-        subscription:'0px 100px 80px rgba(110, 181, 217, 0.1);'
+        subscription:'0px 100px 80px rgba(110, 181, 217, 0.1);',
+        dragButton:'0px 4.90909px 61.3636px rgba(0, 0, 0, 0.2)'
         
+      },
+      maxHeight:{
+        34:'544px'
       },
       gap: {
         2.28: "36.56px",
         0.93: "15px",
+        0.66:'10.62px'
       },
     },
   },

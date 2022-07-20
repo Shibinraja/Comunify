@@ -20,9 +20,10 @@ const ForgotPassword: React.FC = () => {
         email: '',
     };
 
-    useEffect(() => {
-        if (resetValue) formikRef?.current?.resetForm({ values: initialValues });
-    }, [resetValue]);
+    //-----Redundant code as of now-------
+    // useEffect(() => {
+    //     if (resetValue) formikRef?.current?.resetForm({ values: initialValues });
+    // }, [resetValue]);
 
     const handleSubmit = (values: EmailFormValues): void => {
         const newValues = {...values};

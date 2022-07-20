@@ -17,7 +17,7 @@ import { SagaIterator } from 'redux-saga';
 import history from '@/lib/history';
 import { showErrorToast, showSuccessToast } from 'common/toast/toastFunctions';
 import {CreateWorkspaceNameInput, ForgotPasswordInput, ResendVerificationMailInput,  ResetPasswordInput,  SignInInput, SignUpInput, SignUpResponse, SubscriptionPackages, TokenResponse, VerifyEmailInput, WorkspaceResponse } from 'modules/authentication/interface/authentication.interface';
-import {  createWorkspaceService, forgotPasswordService, getSubscriptionPackagesService, getWorkspaceService, resendVerifyEmailService , resetPasswordService, signInService, signUpService, verifyEmailService, verifyForgotEmailService, sendSubscriptionPlan } from 'modules/authentication/services/authentication.service';
+import {  createWorkspaceService, forgotPasswordService, getSubscriptionPackagesService, getWorkspaceService, resendVerifyEmailService , resetPasswordService, signInService, signUpService, verifyEmailService, verifyForgotEmailService, sendSubscriptionPlan, signOutService } from 'modules/authentication/services/authentication.service';
 import { AxiosError } from '../types/auth.types';
 import { AxiosResponse } from 'axios';
 import {  SuccessResponse } from '@/lib/api';
@@ -100,8 +100,9 @@ function* forgotPassword(action: PayloadAction<ForgotPasswordInput>) {
     try {
         yield put(loaderSlice.actions.startLoadingAction(FORGOT_PASSWORD));
         const res: SuccessResponse<{}> = yield call(forgotPasswordService, action.payload);
-        if (res?.message) {
-            yield put(authSlice.actions.formikValueReset(true));
+        if (!res?.error) {
+            yield call(forwardTo, '/resend-mail');
+            // yield put(authSlice.actions.formikValueReset(true));
             showSuccessToast(res.message);
         }
     } catch (e) {
@@ -174,12 +175,16 @@ function* createWorkspace(action: PayloadAction<CreateWorkspaceNameInput>) {
     }
 }
 
-function* logout(): Generator<void> {
+function* logout() {
     try {
+        const res: SuccessResponse<{}> = yield call(signOutService)
         window.localStorage.clear();
         cookie.remove("x-auth-cookie")
         location.reload();
-    } catch {}
+    } catch (e) {
+        const error = e as AxiosError<unknown>;
+        showErrorToast(error?.response?.data?.message);
+    }
 }
 
 function* getSubscriptions() {

@@ -32,10 +32,8 @@ const PublicRoute: React.FC<Props> = ({ children }) => {
     const isAuthenticated = useAppSelector(state => state.auth.isAuthenticated);
     const dispatch: AppDispatch = useAppDispatch();
     const tokenData = getLocalRefreshToken();
-    const [searchParams] = useSearchParams();
-
-    const token: string | any = searchParams.get('success') || "";
-    const access_token = tokenData || token;
+  
+    const access_token = tokenData || cookie.load('x-auth-cookie');
     const decodedToken:DecodeToken = access_token && decodeToken(access_token);
 
     const [state, dispatchReducer] = useReducer<Reducer<PublicRouteState, PublicRouteStateValues>>(

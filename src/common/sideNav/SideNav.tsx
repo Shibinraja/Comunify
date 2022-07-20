@@ -10,6 +10,11 @@ import { Link, useNavigate } from 'react-router-dom';
 
 const SideNav: React.FC = () => {
   const navigate = useNavigate();
+
+  const navigateRoute = (route:string):void => {
+        navigate(route)
+  };
+
   return (
     <nav className="h-screen bg-brightGray w-2/12">
       <div className="flex flex-col pl-2.58 mt-3.01">
@@ -26,13 +31,14 @@ const SideNav: React.FC = () => {
             <img src={dashboardIcon} alt="" />
           </div>
           <div className="pl-1.24 font-Poppins font-medium text-desc text-slimGray leading-1.68 cursor-pointer" 
-            onClick={() => {navigate("/dashboard")}}>
+            onClick={() => navigateRoute("/dashboard")}>
             Dashboard
           </div>
         </div>
         <div className="flex mt-2.18 items-center">
           <img src={memberIcon} alt="" />
-          <div className="pl-1.24 font-Poppins font-medium text-desc text-slimGray leading-1.68 cursor-pointer">
+          <div className="pl-1.24 font-Poppins font-medium text-desc text-slimGray leading-1.68 cursor-pointer"
+            onClick={() => navigateRoute("/members")}>
             Members
           </div>
         </div>
@@ -50,10 +56,7 @@ const SideNav: React.FC = () => {
         </div>
         <div
           className="flex mt-2.18 items-center"
-          onClick={() => {
-            navigate("/dashboard/settings");
-          }}
-        >
+          onClick={() => navigateRoute("/settings")} >
           <img src={settingsIcon} alt="" />
           <div className="pl-1.24 font-Poppins font-medium text-desc text-slimGray leading-1.68 cursor-pointer">
             Settings
