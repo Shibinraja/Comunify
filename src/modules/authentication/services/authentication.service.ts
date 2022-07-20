@@ -73,3 +73,9 @@ export function* sendSubscriptionPlan (id: string): GeneratorResponse<Subscripti
     const { data } = yield request.post(`${subscription_module}/choose-plan/${id}`) 
     return data;
 }
+
+//Logout
+export function* signOutService (): GeneratorResponse<{}> {
+    const {data} = yield request.post(`${auth_module}/logout`);
+    return data;
+} 
