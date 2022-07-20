@@ -229,7 +229,7 @@ const signUpSchema = Yup.object().shape({
     .min(5, "Username should be more than 5 character long")
     .max(25, "Username should not exceed 25 characters")
     .matches(whiteSpace_regex, "Whitespaces are not allowed")
-    .matches(userName_regex, "UserName is not valid")
+    .matches(userName_regex, "Username is not valid")
     .trim(),
   password: Yup.string()
     .required("Password is required")
@@ -245,10 +245,10 @@ const signUpSchema = Yup.object().shape({
     .required("Email is required"),
   domainSector: Yup.string().required("Domain is required"),
   companyName: Yup.string()
-  .min(2, "CompanyName must be atleast 2 characters")
-  .max(15, "CompanyName should not exceed 15 characters")
+  .min(2, "Company Name must be atleast 2 characters")
+  .max(15, "Company Name should not exceed 15 characters")
   .strict(true)
-  .matches(companyName_regex, "CompanyName is not valid")
+  .matches(companyName_regex, "Company Name is not valid")
   .trim("Whitespaces are not allowed"),
 });
 
