@@ -60,7 +60,7 @@ const SignIn: React.FC = () => {
                                     <Input
                                         type="text"
                                         placeholder="Username / Email"
-                                        label="UserName"
+                                        label="Username"
                                         id="userName"
                                         name="userName"
                                         className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
