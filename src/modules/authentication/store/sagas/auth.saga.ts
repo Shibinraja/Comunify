@@ -184,7 +184,6 @@ function* logout() {
     } catch (e) {
         const error = e as AxiosError<unknown>;
         showErrorToast(error?.response?.data?.message);
-        console.log(error)
     }
 }
 
