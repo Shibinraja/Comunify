@@ -5,7 +5,7 @@ import { Props } from './routesTypes';
 const GuestRoute: React.FC<Props> = ({ children }) => {
     const isAuthenticated = useAppSelector(state => state.auth.isAuthenticated);
 
-    return isAuthenticated ?  children : <Navigate to = '/'/> ;
+    return isAuthenticated ?  <Navigate to = '/'/> : children ;
 };
 
 export default GuestRoute;
