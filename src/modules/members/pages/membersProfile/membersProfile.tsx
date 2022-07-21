@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 
 import Button from 'common/button';
 import Modal from 'react-modal';
+import MembersProfileGraph from '../membersProfileGraph/MembersProfileGraph';
 Modal.setAppElement('#root');
 
 const MembersProfile: React.FC = () => {
@@ -29,103 +30,113 @@ const MembersProfile: React.FC = () => {
         setTagModalOpen(val);
     };
 
-
     const handleDropDownActive = (): void => {
         setSelectDropDownActive(prev => !prev);
     };
 
     const navigateToReviewMerge = () => {
         navigate('/members/members-review');
-    }
+    };
 
     const selectOptions = ['All', 'Slack', 'Higherlogic'];
     return (
         <div className="flex pt-3.93 w-full">
             <div className="flex flex-col">
-                <div className="p-5 flex flex-col box-border w-41.68 pb-20 rounded-0.6 shadow-contactCard app-input-card-border">
+                <div className="p-5 flex flex-col box-border w-41.68 rounded-0.6 shadow-contactCard app-input-card-border">
                     <div className="flex justify-between items-center relative">
                         <div className="font-Poppins font-semibold text-base leading-9 text-accountBlack">Member Activity by Source</div>
                         <div className="select relative">
-                            <div className="flex justify-around items-center cursor-pointer box-border w-9.59 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border" onClick={handleDropDownActive}>
-                                <div className='font-Poppins font-semibold text-card text-memberDay leading-4'>{selected ? selected : 'Select'}</div>
+                            <div
+                                className="flex justify-around items-center cursor-pointer box-border w-9.59 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border"
+                                onClick={handleDropDownActive}
+                            >
+                                <div className="font-Poppins font-semibold text-card text-memberDay leading-4">{selected ? selected : 'Select'}</div>
                                 <div>
                                     <img src={dropDownIcon} alt="" className={isSelectDropDownActive ? 'rotate-180' : 'rotate-0'} />
                                 </div>
                             </div>
-                            {isSelectDropDownActive &&
-                                <div className="absolute flex flex-col text-left px-5 pt-2  cursor-pointer box-border w-full rounded-0.6 shadow-contactCard pb-2 app-input-card-border" onClick={handleDropDownActive}>
+                            {isSelectDropDownActive && (
+                                <div
+                                    className="absolute flex flex-col text-left px-5 pt-2  cursor-pointer box-border w-full rounded-0.6 shadow-contactCard pb-2 app-input-card-border"
+                                    onClick={handleDropDownActive}
+                                >
                                     {selectOptions.map((options: string) => (
-                                        <div key={options} className="rounded-0.3 h-1.93 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack hover:bg-signUpDomain transition ease-in duration-100" onClick={() => setSelected(options)}>{options}</div>
+                                        <div
+                                            key={options}
+                                            className="rounded-0.3 h-1.93 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack hover:bg-signUpDomain transition ease-in duration-100"
+                                            onClick={() => setSelected(options)}
+                                        >
+                                            {options}
+                                        </div>
                                     ))}
                                 </div>
-                            }
+                            )}
                         </div>
                     </div>
-                    <div className="chart pt-5">Chart Here</div>
+                    <div className="chart pt-5">
+                        <MembersProfileGraph />
+                    </div>
                 </div>
                 <div className="flex pt-2.18 items-center">
-                    <div className='flex flex-col w-1/2'>
-                        <div className='font-Poppins font-normal text-card leading-4 text-renewalGray'>Last Active Date</div>
-                        <div className='font-Poppins font-semibold text-base leading-6 text-accountBlack'>22 May 2022</div>
+                    <div className="flex flex-col w-1/2">
+                        <div className="font-Poppins font-normal text-card leading-4 text-renewalGray">Last Active Date</div>
+                        <div className="font-Poppins font-semibold text-base leading-6 text-accountBlack">22 May 2022</div>
                     </div>
-                    <div className='flex justify-around items-center box-border w-10.81 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border'>
-                        <div className='text-memberDay font-Poppins font-semibold text-card leading-4'>All Integrations</div>
+                    <div className="flex justify-around items-center box-border w-10.81 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border">
+                        <div className="text-memberDay font-Poppins font-semibold text-card leading-4">All Integrations</div>
                         <div>
                             <img src={dropDownIcon} alt="" />
                         </div>
                     </div>
-                    <div className='ml-0.61 flex justify-around items-center w-9.59 h-3.06 box-border rounded-0.6 shadow-contactCard app-input-card-border' >
-                        <div className='text-memberDay font-Poppins font-semibold text-card leading-4'>Filters</div>
+                    <div className="ml-0.61 flex justify-around items-center w-9.59 h-3.06 box-border rounded-0.6 shadow-contactCard app-input-card-border">
+                        <div className="text-memberDay font-Poppins font-semibold text-card leading-4">Filters</div>
                         <div>
                             <img src={dropDownIcon} alt="" />
                         </div>
                     </div>
-
                 </div>
                 <div className="mt-1.56 pt-8 px-1.62 box-border w-41.62 pb-10 rounded-0.6 shadow-contactCard app-input-card-border">
                     <div className="flex justify-between">
-                        <div className='font-Poppins text-card leading-4 font-medium'>May 2022</div>
-                        <div className='font-Poppins font-normal leading-4 text-renewalGray text-preview cursor-pointer'>Preview All</div>
-
+                        <div className="font-Poppins text-card leading-4 font-medium">May 2022</div>
+                        <div className="font-Poppins font-normal leading-4 text-renewalGray text-preview cursor-pointer">Preview All</div>
                     </div>
                     <div className="flex flex-col pt-4 gap-0.83 justify-center">
                         <div className="flex items-center">
                             <div>
                                 <img src={yelloDottedIcon} alt="" />
                             </div>
-                            <div className='pl-0.68'>
+                            <div className="pl-0.68">
                                 <img src={slackIcon} alt="" />
                             </div>
-                            <div className='flex flex-col pl-0.89'>
-                                <div className='font-Poppins font-normal text-card leading-4'>Kamil Pavlicko sent 1 message to thread</div>
-                                <div className='font-Poppins left-4 font-normal text-profileEmail text-duration'>2 hours ago</div>
+                            <div className="flex flex-col pl-0.89">
+                                <div className="font-Poppins font-normal text-card leading-4">Kamil Pavlicko sent 1 message to thread</div>
+                                <div className="font-Poppins left-4 font-normal text-profileEmail text-duration">2 hours ago</div>
                             </div>
                         </div>
                         <div className="flex items-center">
                             <div>
                                 <img src={yelloDottedIcon} alt="" />
                             </div>
-                            <div className='pl-0.68'>
+                            <div className="pl-0.68">
                                 <img src={slackIcon} alt="" />
                             </div>
-                            <div className='flex flex-col pl-0.89'>
-                                <div className='font-Poppins font-normal text-card leading-4'>Kamil Pavlicko sent 1 message to thread</div>
-                                <div className='font-Poppins left-4 font-normal text-profileEmail text-duration'>2 hours ago</div>
+                            <div className="flex flex-col pl-0.89">
+                                <div className="font-Poppins font-normal text-card leading-4">Kamil Pavlicko sent 1 message to thread</div>
+                                <div className="font-Poppins left-4 font-normal text-profileEmail text-duration">2 hours ago</div>
                             </div>
                         </div>
                         <div className="flex items-center">
                             <div>
                                 <img src={yelloDottedIcon} alt="" />
                             </div>
-                            <div className='pl-0.68'>
+                            <div className="pl-0.68">
                                 <img src={slackIcon} alt="" />
                             </div>
-                            <div className='flex flex-col pl-0.89'>
-                                <div className='font-Poppins font-normal text-card leading-4'>Kamil Pavlicko sent 1 message to thread</div>
-                                <div className='font-Poppins left-4 font-normal text-profileEmail text-duration'>2 hours ago</div>
+                            <div className="flex flex-col pl-0.89">
+                                <div className="font-Poppins font-normal text-card leading-4">Kamil Pavlicko sent 1 message to thread</div>
+                                <div className="font-Poppins left-4 font-normal text-profileEmail text-duration">2 hours ago</div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -136,11 +147,11 @@ const MembersProfile: React.FC = () => {
                         <div className="-mt-24 ">
                             <img src={profileImage} alt="profileImage" className="bg-cover " />
                         </div>
-                        <div className="mt-0.688 text-profileBlack font-semibold font-Poppins leading-1.31 text-trial">
-                            Dmitry Kargaev
+                        <div className="mt-0.688 text-profileBlack font-semibold font-Poppins leading-1.31 text-trial">Dmitry Kargaev</div>
+                        <div className="text-center pt-0.125 font-Poppins text-profileBlack text-member">
+                            dmrity125@mail.com | neoito technologies
                         </div>
-                        <div className='text-center pt-0.125 font-Poppins text-profileBlack text-member'>dmrity125@mail.com | neoito technologies</div>
-                        <div className='flex gap-1 pt-1.12'>
+                        <div className="flex gap-1 pt-1.12">
                             <div>
                                 <img src={slackIcon} alt="" />
                             </div>
@@ -150,15 +161,19 @@ const MembersProfile: React.FC = () => {
                             <div>
                                 <img src={slackIcon} alt="" />
                             </div>
-
                         </div>
                     </div>
                 </div>
                 <div className="mt-1.37 box-border w-18.125 rounded-0.6 shadow-profileCard app-input-card-border">
                     <div className="flex flex-col p-5">
                         <div className="flex items-center justify-between border-b pb-2">
-                            <div className='font-Poppins font-medium text-error leading-5 text-profileBlack'>Tags</div>
-                            <div className='font-Poppins font-medium text-error leading-5 text-addTag cursor-pointer' onClick={() => handleTagModal(true)}>ADD TAG</div>
+                            <div className="font-Poppins font-medium text-error leading-5 text-profileBlack">Tags</div>
+                            <div
+                                className="font-Poppins font-medium text-error leading-5 text-addTag cursor-pointer"
+                                onClick={() => handleTagModal(true)}
+                            >
+                                ADD TAG
+                            </div>
                             <Modal
                                 isOpen={isTagModalOpen}
                                 shouldCloseOnOverlayClick={false}
@@ -166,14 +181,9 @@ const MembersProfile: React.FC = () => {
                                 className="w-24.31 h-18.125 mx-auto  mt-32 rounded-lg modals-tag bg-white shadow-modal"
                             >
                                 <div className="flex flex-col">
-                                    <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">
-                                        Tags
-                                    </h3>
+                                    <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Tags</h3>
                                     <form className="flex flex-col relative px-1.93 mt-9">
-                                        <label
-                                            htmlFor="billingName "
-                                            className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack "
-                                        >
+                                        <label htmlFor="billingName " className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack ">
                                             Enter Tag Name
                                         </label>
                                         <input
@@ -197,45 +207,48 @@ const MembersProfile: React.FC = () => {
                                     </form>
                                 </div>
                             </Modal>
-
                         </div>
-                        <div className='flex flex-wrap pt-1.56 gap-2'>
-                            <div className='labels flex  items-center px-2  h-8 rounded bg-tagSection'>
-                                <div className='font-Poppins text-profileBlack font-normal text-card leading-4'>Influencer</div>
-                                <div className='pl-2'>
+                        <div className="flex flex-wrap pt-1.56 gap-2">
+                            <div className="labels flex  items-center px-2  h-8 rounded bg-tagSection">
+                                <div className="font-Poppins text-profileBlack font-normal text-card leading-4">Influencer</div>
+                                <div className="pl-2">
                                     <img src={closeIcon} alt="" />
                                 </div>
                             </div>
-                            <div className='labels flex  items-center px-2 h-8 rounded bg-tagSection'>
-                                <div className='font-Poppins text-profileBlack font-normal text-card leading-4'>Admin</div>
-                                <div className='pl-2'>
+                            <div className="labels flex  items-center px-2 h-8 rounded bg-tagSection">
+                                <div className="font-Poppins text-profileBlack font-normal text-card leading-4">Admin</div>
+                                <div className="pl-2">
                                     <img src={closeIcon} alt="" />
                                 </div>
                             </div>
-                            <div className='labels flex  items-center px-2 h-8 rounded bg-tagSection'>
-                                <div className='font-Poppins text-profileBlack font-normal text-card leading-4'>Charity</div>
-                                <div className='pl-2'>
+                            <div className="labels flex  items-center px-2 h-8 rounded bg-tagSection">
+                                <div className="font-Poppins text-profileBlack font-normal text-card leading-4">Charity</div>
+                                <div className="pl-2">
                                     <img src={closeIcon} alt="" />
                                 </div>
                             </div>
-                            <div className='labels flex  items-center px-2 h-8 rounded bg-tagSection'>
-                                <div className='font-Poppins text-profileBlack font-normal text-card leading-4'>Creator</div>
-                                <div className='pl-2'>
+                            <div className="labels flex  items-center px-2 h-8 rounded bg-tagSection">
+                                <div className="font-Poppins text-profileBlack font-normal text-card leading-4">Creator</div>
+                                <div className="pl-2">
                                     <img src={closeIcon} alt="" />
                                 </div>
                             </div>
-                            <div className='labels flex  items-center px-2 h-8 rounded bg-tagSection'>
-                                <div className='font-Poppins text-profileBlack font-normal text-card leading-4'>Social</div>
-                                <div className='pl-2'>
+                            <div className="labels flex  items-center px-2 h-8 rounded bg-tagSection">
+                                <div className="font-Poppins text-profileBlack font-normal text-card leading-4">Social</div>
+                                <div className="pl-2">
                                     <img src={closeIcon} alt="" />
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
                 <div className="mt-1.8">
-                    <Button type="button" text="Merge Members" className="cursor-pointer border-none font-Poppins font-medium text-search leading-5 btn-save-modal hover:shadow-buttonShadowHover transition ease-in duration-300 text-white shadow-contactBtn rounded-0.3 w-full h-3.06" onClick={() => handleModal(true)} />
+                    <Button
+                        type="button"
+                        text="Merge Members"
+                        className="cursor-pointer border-none font-Poppins font-medium text-search leading-5 btn-save-modal hover:shadow-buttonShadowHover transition ease-in duration-300 text-white shadow-contactBtn rounded-0.3 w-full h-3.06"
+                        onClick={() => handleModal(true)}
+                    />
                 </div>
                 <Modal
                     isOpen={isModalOpen}
@@ -244,9 +257,7 @@ const MembersProfile: React.FC = () => {
                     className="w-24.31 pb-28 mx-auto  mt-32 rounded-lg modals-tag bg-white shadow-modal "
                 >
                     <div className="flex flex-col ml-1.8 pt-9 ">
-                        <h3 className="font-Inter font-semibold text-xl leading-1.43">
-                            Merge Members
-                        </h3>
+                        <h3 className="font-Inter font-semibold text-xl leading-1.43">Merge Members</h3>
                         <div className="flex relative items-center mt-1.43">
                             <input
                                 type="text"
@@ -263,9 +274,7 @@ const MembersProfile: React.FC = () => {
                                     <input type="checkbox" className="" />
                                 </div>
                                 <div className="flex flex-col">
-                                    <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31">
-                                        Emerson Schleifer
-                                    </div>
+                                    <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31">Emerson Schleifer</div>
                                     <div className="text-tagEmail font-Poppins font-normal leading-1.31 text-email pl-1">
                                         dmrity125@mail.com | neoito technologies
                                     </div>
@@ -302,7 +311,7 @@ const MembersProfile: React.FC = () => {
                 </Modal>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default MembersProfile;
