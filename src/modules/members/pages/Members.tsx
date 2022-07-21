@@ -17,7 +17,7 @@ import prevIcon from '../../../assets/images/previous-page-icon.svg';
 import {useNavigate} from 'react-router-dom';
 import Input from 'common/input';
 import {membersTableData } from './MembersTableData';
-import MembersDraggableColumn from './membersTableColumn/membersDraggableColumn';
+import MembersDraggableColumn from './membersTableColumn/pages/membersDraggableColumn';
 
 Modal.setAppElement('#root');
 

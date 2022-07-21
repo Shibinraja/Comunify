@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 
 import Button from 'common/button';
 import Modal from 'react-modal';
-import MembersProfileGraph from '../membersProfileGraph/MembersProfileGraph';
+import MembersProfileGraph from '../../membersProfileGraph/MembersProfileGraph';
 Modal.setAppElement('#root');
 
 const MembersProfile: React.FC = () => {

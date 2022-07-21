@@ -1,7 +1,6 @@
 import { GeneratorResponse } from '@/lib/api';
-import { API_ENDPOINT, auth_module, subscription_module, workspace_module } from '@/lib/config';
+import { auth_module, subscription_module, workspace_module } from '@/lib/config';
 import { request } from '@/lib/request';
-import axios from 'axios';
 
 import {
     CreateWorkspaceNameInput,
