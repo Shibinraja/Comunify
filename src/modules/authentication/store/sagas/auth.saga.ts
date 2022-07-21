@@ -21,7 +21,7 @@ import {  createWorkspaceService, forgotPasswordService, getSubscriptionPackages
 import { AxiosError } from '../types/auth.types';
 import { AxiosResponse } from 'axios';
 import {  SuccessResponse } from '@/lib/api';
-import cookie from 'react-cookies';
+import { deleteAllCookies } from '../../../../lib/helper';
 
 const forwardTo = (location: string) => {
     history.push(location);
@@ -177,9 +177,9 @@ function* createWorkspace(action: PayloadAction<CreateWorkspaceNameInput>) {
 
 function* logout() {
     try {
-        const res: SuccessResponse<{}> = yield call(signOutService)
+        yield call(signOutService)
         window.localStorage.clear();
-        cookie.remove("x-auth-cookie")
+        deleteAllCookies()
         location.reload();
     } catch (e) {
         const error = e as AxiosError<unknown>;
