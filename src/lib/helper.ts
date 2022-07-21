@@ -13,4 +13,3 @@ export function deleteAllCookies() {
         document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
     });
 }
-

@@ -1,16 +1,12 @@
-import React from 'react';
+import { lazy } from 'react';
+import { Loadable } from 'routes/suspenseLoader';
 import { RoutesArray } from '../../../interface/interface';
 
-const Dashboard = React.lazy(() => import('../pages/Dashboard'));
+const Dashboard = Loadable(lazy(() => import('../pages/Dashboard')));
 
 const dashboardRoutes: RoutesArray = {
     path: 'dashboard',
-    children: [
-        {
-            path: '',
-            element: <Dashboard />,
-        }
-    ],
+    element: <Dashboard />
 };
 
 export default dashboardRoutes;
