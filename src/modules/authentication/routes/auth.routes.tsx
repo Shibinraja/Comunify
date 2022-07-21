@@ -1,19 +1,25 @@
-import React from "react";
+import  { lazy } from "react";
 import PublicRoute from "../../../routes/PublicRoute";
 import { RoutesArray } from "../../../interface/interface";
 import CreateNewPassword from "../createNewPassword/pages/CreateNewPassword";
-import Subscription from "../subscription/pages/Subscription";
-import Welcome from "../welcome/pages/Welcome";
-import Integration from "../integration/pages/Integration";
-import SubscriptionExpired from "../subscriptionExpired/pages/SubscriptionExpired";
 import PrivateRoute from 'routes/PrivateRoute';
+import GuestRoute from 'routes/GuestGuard';
+import { Loadable } from 'routes/suspenseLoader';
 
-const SignIn = React.lazy(() => import("../signIn/pages/SignIn"));
-const SignUp = React.lazy(() => import("../signUp/pages/SignUp"));
-const ForgotPassword = React.lazy(() => import("../forgotPassword/pages/ForgotPassword"));
-const CreateWorkSpace = React.lazy(()=> import("../createWorkSpace/pages/CreateWorkSpace"));
-const ResendVerificationMail = React.lazy(()=> import("../resendVerificationMail/ResendVerification"))
-const AuthLayout = React.lazy(() => import("../../../layout/AuthLayout"));
+//Public Route
+const SignIn = Loadable(lazy(() => import("../signIn/pages/SignIn")));
+const SignUp = Loadable(lazy(() => import("../signUp/pages/SignUp")));
+const ForgotPassword = Loadable(lazy(() => import("../forgotPassword/pages/ForgotPassword")));
+const CreateWorkSpace = Loadable(lazy(()=> import("../createWorkSpace/pages/CreateWorkSpace")));
+const ResendVerificationMail = Loadable(lazy(()=> import("../resendVerificationMail/ResendVerification")));
+const AuthLayout = Loadable(lazy(() => import("../../../layout/AuthLayout")));
+
+//Private Route
+const Welcome = Loadable(lazy(()=> import("../welcome/pages/Welcome")));
+const Integration = Loadable(lazy(()=> import("../integration/pages/Integration")));
+const Subscription = Loadable(lazy(()=> import("../subscription/pages/Subscription")));
+const SubscriptionExpired = Loadable(lazy(()=> import("../subscriptionExpired/pages/SubscriptionExpired")));
+
 
 let authRoutes: RoutesArray[] = [
   {
@@ -63,9 +69,9 @@ let authRoutes: RoutesArray[] = [
       {
         path: "/resend-mail",
         element: (
-          <PublicRoute>
+           <GuestRoute>
             <ResendVerificationMail />
-          </PublicRoute>
+          </GuestRoute>
         )
       },
       {

@@ -161,14 +161,20 @@ const CreateNewPassword: React.FC = () => {
 };
 
 const confirmPasswordSchema = Yup.object().shape({
-    password: Yup.string()
-        .required('Password is required')
-        .min(8, 'Password must be atleast 8 characters')
-        .matches(password_regex, 'Password must have one uppercase , one lowercase , a digit and specialcharacters'),
-    confirmPassword: Yup.string()
-        .min(8, 'Password must be atleast 8 characters')
-        .oneOf([Yup.ref('password'), null], 'Passwords must match')
-        .matches(password_regex, 'Password must have one uppercase , one lowercase , a digit and specialcharacters')
-        .required('Confirm Password is required'),
+  password: Yup.string()
+    .required("Password is required")
+    .min(8, "Password must be atleast 8 characters")
+    .matches(
+      password_regex,
+      "Password must have one uppercase , one lowercase , a digit and specialcharacters"
+    ),
+  confirmPassword: Yup.string()
+    .min(8, "Password must be atleast 8 characters")
+    .oneOf([Yup.ref("password"), null], "Passwords must match")
+    // .matches(
+    //   password_regex,
+    //   "Password must have one uppercase , one lowercase , a digit and specialcharacters"
+    // )
+    .required("Confirm Password is required"),
 });
 export default CreateNewPassword;

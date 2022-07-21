@@ -11,10 +11,9 @@ import bgSignInImage from "../../../../assets/images/bg-sign.svg";
 import closeEyeIcon from '../../../../assets/images/closeeye.png';
 import eyeIcon from "../../../../assets/images/eye.svg";
 import socialLogo from "../../../../assets/images/Social.svg";
-import { email_regex, password_regex } from '../../../../constants/constants';
+import { email_regex } from '../../../../constants/constants';
 import { AppDispatch } from '../../../../store/index';
 import authSlice from "../../store/slices/auth.slice";
-import bgLine from '../../../../assets/images/bg-line.svg';
 import "./SignIn.css";
 
 const SignIn: React.FC = () => {
@@ -154,8 +153,6 @@ const signInSchema = Yup.object().shape({
     }),
     password: Yup.string()
         .required('Password is required')
-        .min(8, 'Password must be atleast 8 characters')
-        .matches(password_regex, 'Password must have one uppercase , one lowercase , a digit and specialcharacters'),
 });
 
 export default SignIn;

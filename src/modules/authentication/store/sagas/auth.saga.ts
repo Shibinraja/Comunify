@@ -20,7 +20,6 @@ import {CreateWorkspaceNameInput, ForgotPasswordInput, ResendVerificationMailInp
 import {  createWorkspaceService, forgotPasswordService, getSubscriptionPackagesService, getWorkspaceService, resendVerifyEmailService , resetPasswordService, signInService, signUpService, verifyEmailService, verifyForgotEmailService, sendSubscriptionPlan, signOutService } from 'modules/authentication/services/authentication.service';
 import { AxiosResponse } from 'axios';
 import {  AxiosError, SuccessResponse } from '@/lib/api';
-import cookie from 'react-cookies';
 
 const forwardTo = (location: string) => {
     history.push(location);
@@ -176,9 +175,8 @@ function* createWorkspace(action: PayloadAction<CreateWorkspaceNameInput>) {
 
 function* logout() {
     try {
-        const res: SuccessResponse<{}> = yield call(signOutService)
+        yield call(signOutService)
         window.localStorage.clear();
-        cookie.remove("x-auth-cookie")
         location.reload();
     } catch (e) {
         const error = e as AxiosError<unknown>;

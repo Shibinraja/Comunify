@@ -1,8 +1,10 @@
-import React from 'react';
+import { lazy } from 'react';
+import { Loadable } from 'routes/suspenseLoader';
 import { RoutesArray } from '../../../interface/interface';
 
-const Members = React.lazy(() => import('../pages/Members'));
-const MembersProfileRoute = React.lazy(() => import('../pages/membersProfile/pages/membersProfile'));
+const Members = Loadable(lazy(() => import('../pages/Members')));
+const MembersProfileRoute = Loadable(lazy(() => import('../pages/membersProfile/pages/membersProfile')));
+const MembersReview = Loadable(lazy(()=>import('../pages/membersReview/membersReview')));
 
 const membersRoutes: RoutesArray = {
     path: 'members',
@@ -14,6 +16,10 @@ const membersRoutes: RoutesArray = {
         {
             element: <MembersProfileRoute />,
             path: 'profile',
+        },
+        {
+            element: <MembersReview />,
+            path: 'members-review',
         },
     ],
 };

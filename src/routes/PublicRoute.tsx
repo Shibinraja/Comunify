@@ -1,4 +1,4 @@
-import { ReactElement, Reducer, useEffect, useReducer } from 'react';
+import {  Reducer, useEffect, useReducer } from 'react';
 import { Navigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import cookie from 'react-cookies';
@@ -8,7 +8,6 @@ import { AppDispatch } from '../store';
 import authSlice from 'modules/authentication/store/slices/auth.slice';
 import { getLocalRefreshToken } from '@/lib/request';
 import { Props, PublicRouteState, PublicRouteStateValues } from './routesTypes';
-import { useSearchParams } from 'react-router-dom';
 
 const reducer: Reducer<PublicRouteState, PublicRouteStateValues> = (state, action): {route:string} => {
     switch (action.type) {
@@ -18,6 +17,8 @@ const reducer: Reducer<PublicRouteState, PublicRouteStateValues> = (state, actio
         return { ...state, route: action.payload };
       case 'SET_DASHBOARD_ROUTE':
         return { ...state, route: action.payload };
+      case 'SET_RESEND_VERIFICATION_ROUTE':
+         return { ...state, route: action.payload };
       default:
         return state;
     }
@@ -40,7 +41,7 @@ const PublicRoute: React.FC<Props> = ({ children }) => {
         reducer,
         InitialRouteState
       );
-    
+
       useEffect(()=>{
        if(access_token){
             localStorage.setItem('accessToken', access_token);
@@ -52,6 +53,11 @@ const PublicRoute: React.FC<Props> = ({ children }) => {
     //Functionality to check the workspace and packages subscription and route dynamically to the respected page.
 
     const checkWorkspaceCreation = () => {
+        if(!decodedToken.isVerfied){
+            dispatchReducer({ type: 'SET_RESEND_VERIFICATION_ROUTE', payload: '/resend-mail' });
+            dispatch(authSlice.actions.setIsAuthenticated(true))
+            return false;
+        }
         if(!decodedToken?.isSubscribed){
             dispatchReducer({ type: 'SET_WELCOME_ROUTE', payload: '/welcome' });
             dispatch(authSlice.actions.setIsAuthenticated(true))
