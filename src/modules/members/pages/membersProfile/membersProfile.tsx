@@ -42,7 +42,7 @@ const MembersProfile: React.FC = () => {
     return (
         <div className="flex pt-3.93 w-full">
             <div className="flex flex-col">
-                <div className="p-5 flex flex-col box-border w-41.68 rounded-0.6 shadow-contactCard app-input-card-border">
+                <div className="p-5 flex flex-col box-border w-[60.625rem] rounded-0.6 shadow-contactCard app-input-card-border">
                     <div className="flex justify-between items-center relative">
                         <div className="font-Poppins font-semibold text-base leading-9 text-accountBlack">Member Activity by Source</div>
                         <div className="select relative">
@@ -78,7 +78,7 @@ const MembersProfile: React.FC = () => {
                     </div>
                 </div>
                 <div className="flex pt-2.18 items-center">
-                    <div className="flex flex-col w-1/2">
+                    <div className="flex flex-col w-full">
                         <div className="font-Poppins font-normal text-card leading-4 text-renewalGray">Last Active Date</div>
                         <div className="font-Poppins font-semibold text-base leading-6 text-accountBlack">22 May 2022</div>
                     </div>
@@ -95,7 +95,7 @@ const MembersProfile: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                <div className="mt-1.56 pt-8 px-1.62 box-border w-41.62 pb-10 rounded-0.6 shadow-contactCard app-input-card-border">
+                <div className="mt-1.56 pt-8 px-1.62 box-border w-[60.625rem] pb-10 rounded-0.6 shadow-contactCard app-input-card-border">
                     <div className="flex justify-between">
                         <div className="font-Poppins text-card leading-4 font-medium">May 2022</div>
                         <div className="font-Poppins font-normal leading-4 text-renewalGray text-preview cursor-pointer">Preview All</div>
@@ -141,7 +141,7 @@ const MembersProfile: React.FC = () => {
                 </div>
             </div>
             <div className=" flex flex-col ml-1.8">
-                <div className="w-1/5  flex flex-col ">
+                <div className=" flex flex-col ">
                     <div className="profile-card items-center btn-save-modal justify-center pro-bag rounded-t-0.6 w-18.125 shadow-contactBtn box-border h-6.438 "></div>
                     <div className="flex flex-col profile-card items-center justify-center bg-white rounded-b-0.6 w-18.125 shadow-contactCard box-border h-11.06">
                         <div className="-mt-24 ">
