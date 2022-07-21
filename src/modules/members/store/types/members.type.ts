@@ -3,5 +3,8 @@ import { MembersCountResponse } from 'modules/members/interface/members.interfac
 export type VoidGenerator<T = unknown, TNext = unknown> = Generator<T, void, TNext>;
 
 export interface InitialState {
-    countData: Array<MembersCountResponse>;
+    membersTotalCountData: MembersCountResponse;
+    membersNewCountData: MembersCountResponse;
+    membersActiveCountData: MembersCountResponse;
+    membersInActiveCountData: MembersCountResponse
 }

@@ -6,7 +6,7 @@ import {  AxiosError, SuccessResponse } from '@/lib/api';
 import { showErrorToast, showSuccessToast } from 'common/toast/toastFunctions';
 import loaderSlice from 'modules/authentication/store/slices/loader.slice';
 import membersSlice from '../slice/members.slice';
-import { TotalCountService } from 'modules/members/services/members.services';
+import { InactiveCountService, TotalCountService } from 'modules/members/services/members.services';
 import { MembersCountResponse } from 'modules/members/interface/members.interface';
 
 const forwardTo = (location: string) => {
@@ -19,7 +19,7 @@ function* membersTotalCount() {
 
         const res: SuccessResponse<MembersCountResponse> = yield call(TotalCountService);
         if (res?.data) {
-            
+            yield put(membersSlice.actions.getmembersTotalCountData(res?.data))
         }
     } catch (e) {
         const error = e as AxiosError<unknown>;
@@ -35,7 +35,7 @@ function* membersNewCount() {
 
         const res: SuccessResponse<MembersCountResponse> = yield call(TotalCountService);
         if (res?.data) {
-            
+            yield put(membersSlice.actions.getmembersNewCountData(res?.data))
         }
     } catch (e) {
         const error = e as AxiosError<unknown>;
@@ -51,7 +51,7 @@ function* membersActiveCount() {
 
         const res: SuccessResponse<MembersCountResponse> = yield call(TotalCountService);
         if (res?.data) {
-            
+            yield put(membersSlice.actions.getmembersActiveCountData(res?.data))
         }
     } catch (e) {
         const error = e as AxiosError<unknown>;
@@ -61,8 +61,25 @@ function* membersActiveCount() {
     }
 }
 
+function* membersInActiveCount() {
+    try {
+        yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.membersInActiveCount.type));
+
+        const res: SuccessResponse<MembersCountResponse> = yield call(InactiveCountService);
+        if (res?.data) {
+            yield put(membersSlice.actions.getmembersInActiveCountData(res?.data))
+        }
+    } catch (e) {
+        const error = e as AxiosError<unknown>;
+        showErrorToast(error?.response?.data?.message);
+    } finally {
+        yield put(loaderSlice.actions.stopLoadingAction(membersSlice.actions.membersInActiveCount.type));
+    }
+}
+
 export default function* membersSaga(): SagaIterator {
     yield takeEvery(membersSlice.actions.membersTotalCount.type, membersTotalCount);
     yield takeEvery(membersSlice.actions.membersNewCount.type, membersNewCount);
     yield takeEvery(membersSlice.actions.membersActiveCount.type, membersActiveCount);
+    yield takeEvery(membersSlice.actions.membersInActiveCount.type, membersInActiveCount);
 }

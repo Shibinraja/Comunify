@@ -19,3 +19,9 @@ export function* TotalCountService(): GeneratorResponse<MembersCountResponse> {
     const { data } = yield request.get(`${members_module}/total-count`);
     return data;
 }
+
+export function* InactiveCountService(): GeneratorResponse<MembersCountResponse> {
+    const { data } = yield request.get(`${members_module}/inactive-count`);
+    return data;
+}
+
