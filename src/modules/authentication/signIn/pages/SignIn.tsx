@@ -4,17 +4,18 @@ import Button from 'common/button/Button';
 import Input from 'common/input/Input';
 import { Form, Formik } from 'formik';
 import { FormValues } from 'modules/authentication/interface/authentication.interface';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import * as Yup from 'yup';
-import bgSignInImage from '../../../../assets/images/bg-sign.svg';
-import closeEyeIcon from '../../../../assets/images/closeEyeIcon.svg';
-import eyeIcon from '../../../../assets/images/eye.svg';
-import socialLogo from '../../../../assets/images/Social.svg';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import * as Yup from "yup";
+import bgSignInImage from "../../../../assets/images/bg-sign.svg";
+import closeEyeIcon from '../../../../assets/images/closeeye.png';
+import eyeIcon from "../../../../assets/images/eye.svg";
+import socialLogo from "../../../../assets/images/Social.svg";
 import { email_regex, password_regex } from '../../../../constants/constants';
 import { AppDispatch } from '../../../../store/index';
-import authSlice from '../../store/slices/auth.slice';
-import './SignIn.css';
+import authSlice from "../../store/slices/auth.slice";
+import bgLine from '../../../../assets/images/bg-line.svg';
+import "./SignIn.css";
 
 const SignIn: React.FC = () => {
     const dispatch: AppDispatch = useAppDispatch();
@@ -45,25 +46,25 @@ const SignIn: React.FC = () => {
     };
 
     return (
-        <div className="w-full flex flex-col justify-between  relative overflow-y-auto no-scroll-bar">
-            <div className="flex w-full container x-auto ">
-                <div className="w-full md:w-2/5  mt-5.2 flex flex-col pl-10 ">
-                    {' '}
-                    <h3 className="font-Inter text-neutralBlack font-bold not-italic text-signIn leading-2.8">Sign In </h3>{' '}
-                    <p className="text-lightGray font-Inter  max-w-sm font-normal not-italic mt-0.78 text-desc">
-                        Welcome back to Comunify. Let's get you know your communities better{' '}
-                    </p>
-                    <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={signInSchema}>
-                        {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }): JSX.Element => (
+        <div className="sign-in-page">
+          <div className="flex w-full height-calc">
+            <div className="w-1/2 overflow-scroll pb-5">
+              <div className="max-w-40 px-28  mt-5.2 flex flex-col">
+              <h3 className="font-Inter text-neutralBlack font-bold not-italic text-signIn leading-2.8">Sign In </h3>
+              <p className="text-lightGray font-Inter  max-w-sm font-normal not-italic mt-0.78 text-desc">
+                  Welcome back to Comunify. Let's get you know your communities better{' '}
+              </p>
+                <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={signInSchema}>
+                  {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }): JSX.Element => (
                             <Form className="flex flex-col  mt-1.8 w-25.9 " autoComplete="off">
                                 <div className="username">
                                     <Input
                                         type="text"
-                                        placeholder="Username / Email"
-                                        label="UserName"
+                                        placeholder="Username/Email"
+                                        label="Username"
                                         id="userName"
                                         name="userName"
-                                        className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
+                                        className="h-4.5 pr-3.12 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
                                         onBlur={handleBlur}
                                         onChange={handleChange}
                                         value={values.userName}
@@ -78,7 +79,7 @@ const SignIn: React.FC = () => {
                                         label="Password"
                                         id="password"
                                         name="password"
-                                        className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
+                                        className="h-4.5 rounded-lg bg-white p-2.5 pr-3.12 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
                                         onBlur={handleBlur}
                                         onChange={handleChange}
                                         value={values.password}
@@ -127,15 +128,14 @@ const SignIn: React.FC = () => {
                             </Form>
                         )}
                     </Formik>
-                </div>
+              </div>
             </div>
-            <div className="container mx-auto fixed right-0 flex items-center justify-center top-0 bg-no-repeat">
-                <div className="pb-80 w-full md:w-3/5 login-cover-bg bg-no-repeat bg-right rounded-lg  bg-thinBlue flex items-center justify-center absolute top-20 right-0 mt-5 py-20 ">
-                    <img src={bgSignInImage} alt="signin-image" />
-                </div>
+            <div className=" w-1/2 bg-thinBlue flex items-center justify-center login-cover-bg bg-no-repeat bg-right rounded-l-lg overflow-hidden">
+              <div className="flex items-center p-28">
+                    <img src={bgSignInImage} alt="" className="object-cover"/>
+              </div>
             </div>
-            <div className="py-1.9"></div>
-            <div className="footer"></div>
+          </div>
         </div>
     );
 };

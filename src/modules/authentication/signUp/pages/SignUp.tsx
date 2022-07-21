@@ -16,23 +16,23 @@ import {
   companyName_regex,
   email_regex,
 } from "../../../../constants/constants";
-import cookie from 'react-cookies';
-import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
+import { useAppDispatch } from '@/hooks/useRedux';
 import { AppDispatch } from '../../../../store/index';
 import authSlice from '../../store/slices/auth.slice';
 import { SignUpFormValues } from 'modules/authentication/interface/authentication.interface';
 import { API_ENDPOINT, auth_module } from '@/lib/config';
+import './SignUp.css';
 
-const SignUp : React.FC = () => {
+const SignUp: React.FC = () => {
     const [passwordType, setPasswordType] = useState<string>('password');
     const [isDropDownActive, setDropDownActive] = useState<boolean>(false);
     const [selectedDomainSector, setSelectedDomainSector] = useState<string>('Domain');
     const formikRef: any = useRef();
+    const dropDownRef:any=useRef();
 
     const options = ['Marketing', 'Sales', 'Customer Support', 'Customer Success', 'Others'];
 
     const dispatch: AppDispatch = useAppDispatch();
-    const resetValue = useAppSelector((state) => state.auth.clearFormikValue);
 
     const initialValues: SignUpFormValues = {
         userName: '',
@@ -41,7 +41,23 @@ const SignUp : React.FC = () => {
         companyName: '',
         domainSector: '',
     };
-      
+
+
+    const handleOutsideClick=(event:MouseEvent)=>{
+        if(dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target)){
+            setDropDownActive(true)
+        }else{
+            setDropDownActive(false)
+        }
+    }
+
+    useEffect(() => {
+        document.addEventListener('click',handleOutsideClick)
+        return () => {
+            document.removeEventListener('click',handleOutsideClick)
+        }
+    }, [])
+
     // useEffect(()=>{
     //     if(resetValue) formikRef?.current?.resetForm({values:initialValues})
     //   },[resetValue])
@@ -72,13 +88,12 @@ const SignUp : React.FC = () => {
       };
 
     return (
-        <div className="w-full flex flex-col  h-screen">
-            <div className="flex w-full relative">
-                <div className="w-full md:w-1/2 signup-cover-bg bg-no-repeat pt-20 bg-left rounded-lg  bg-thinBlue flex items-center justify-center fixed pb-80">
-                    <img src={bgSignUpImage} alt="signup-image" />
+        <div className="sign-up">
+            <div className="flex w-full height-calc">
+                <div className="w-1/2 rounded-r-lg  bg-thinBlue flex items-center justify-center p-28 signup-cover-bg bg-no-repeat bg-left overflow-hidden">
+                    <img src={bgSignUpImage} alt="" className="object-cover" />
                 </div>
-                <div className="w-full md:w-1/2 flex flex-col lg:pl-48  overflow-y-auto no-scroll-bar absolute right-0 pb-20">
-                    {' '}
+                <div className="w-1/2 flex flex-col pl-7.5 overflow-scroll">
                     <h3 className="font-Inter text-neutralBlack font-bold not-italic text-signIn leading-2.8">Sign Up </h3>{' '}
                     <p className="text-lightGray font-Inter  max-w-sm font-normal not-italic mt-0.78 text-desc">
                         Get Comunified with your communities. Create your account now.
@@ -129,7 +144,7 @@ const SignUp : React.FC = () => {
                                         label="Password"
                                         id="password"
                                         name="password"
-                                        className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border "
+                                        className="h-4.5 rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border "
                                         onBlur={handleBlur}
                                         onChange={handleChange}
                                         value={values.password}
@@ -159,10 +174,11 @@ const SignUp : React.FC = () => {
                                         helperText={touched.companyName && errors.companyName}
                                     />
                                 </div>
-                                <div className="domain mt-1.258">
-                                    <div className="cursor-pointer relative">
+                                <div className="domain mt-1.258 relative">
+                                    <div className="cursor-pointer ">
                                         <div
-                                            className="flex items-center w-full  justify-between app-result-card-border  box-border rounded-lg h-4.5  bg-white p-2.5 focus:outline-none font-normal text-secondaryGray text-base leading-6 font-Inter shadow-trialButtonShadow"
+                                            className="flex items-center w-full  justify-between app-result-card-border  box-border rounded-lg h-4.5  bg-white p-2.5 focus:outline-none font-normal text-secondaryGray text-base leading-6 font-Inter shadow-trialButtonShadow relative"
+                                            ref={dropDownRef}
                                             onClick={e => setDropDownActive(!isDropDownActive)}
                                         >
                                             <div className={selectedDomainSector === 'Domain' ? 'text-secondaryGray' : 'text-black'}>
@@ -192,7 +208,7 @@ const SignUp : React.FC = () => {
                                         )}
                                     </div>
                                     {Boolean(touched.domainSector && errors.domainSector) && (
-                                        <p className="text-lightRed font-normal text-error font-Inter mt-0.287 ">{errors?.domainSector}</p>
+                                        <p className="text-lightRed font-normal text-email absolute font-Inter mt-0.287  pl-1">{errors?.domainSector}</p>
                                     )}
                                 </div>
                                 <Button
@@ -217,8 +233,6 @@ const SignUp : React.FC = () => {
                     </Formik>
                 </div>
             </div>
-            <div className="py-1.9"></div>
-            <div className="footer"></div>
         </div>
     );
 };
@@ -229,7 +243,7 @@ const signUpSchema = Yup.object().shape({
     .min(5, "Username should be more than 5 character long")
     .max(25, "Username should not exceed 25 characters")
     .matches(whiteSpace_regex, "Whitespaces are not allowed")
-    .matches(userName_regex, "UserName is not valid")
+    .matches(userName_regex, "Username is not valid")
     .trim(),
   password: Yup.string()
     .required("Password is required")
@@ -245,10 +259,10 @@ const signUpSchema = Yup.object().shape({
     .required("Email is required"),
   domainSector: Yup.string().required("Domain is required"),
   companyName: Yup.string()
-  .min(2, "CompanyName must be atleast 2 characters")
-  .max(15, "CompanyName should not exceed 15 characters")
+  .min(2, "Company Name must be atleast 2 characters")
+  .max(15, "Company Name should not exceed 15 characters")
   .strict(true)
-  .matches(companyName_regex, "CompanyName is not valid")
+  .matches(companyName_regex, "Company Name is not valid")
   .trim("Whitespaces are not allowed"),
 });
 

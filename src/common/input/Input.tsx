@@ -21,7 +21,7 @@ const Input = ({
 
     return (
         <Fragment>
-             <div className='flex flex-col'>
+             <div className='flex flex-col relative pb-2'>
                 <input
                     id={id}
                     type={type}
@@ -34,8 +34,8 @@ const Input = ({
                     onBlur={onBlur}
                     onChange={onChange}
                 />
+             {errors && <p className='text-lightRed absolute -bottom-4 font-normal text-email font-Inter mt-0.287 pl-1'>{helperText}</p>}
             </div>
-            {errors && <p className='text-lightRed font-normal text-error font-Inter mt-0.287 '>{helperText}</p>}
         </Fragment>
     );
 };
