@@ -21,7 +21,6 @@ import {  createWorkspaceService, forgotPasswordService, getSubscriptionPackages
 import { AxiosError } from '../types/auth.types';
 import { AxiosResponse } from 'axios';
 import {  SuccessResponse } from '@/lib/api';
-import { deleteAllCookies } from '../../../../lib/helper';
 
 const forwardTo = (location: string) => {
     history.push(location);
@@ -179,7 +178,6 @@ function* logout() {
     try {
         yield call(signOutService)
         window.localStorage.clear();
-        deleteAllCookies()
         location.reload();
     } catch (e) {
         const error = e as AxiosError<unknown>;
