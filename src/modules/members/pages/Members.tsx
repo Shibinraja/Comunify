@@ -80,7 +80,7 @@ const Members:FC = () => {
             />
           </div>
         </div>
-        <div className="ml-1.30">
+        <div className="ml-1.30 ">
           <div className="box-border cursor-pointer rounded-0.6 shadow-contactCard app-input-card-border relative ">
             <div
               className="flex w-9.59 h-3.06  items-center justify-between px-5 "
@@ -95,7 +95,7 @@ const Members:FC = () => {
             </div>
             {isFilterDropdownActive && (
               <div
-                className="absolute w-16.56 pb-0 bg-white border z-40 rounded-0.3"
+                className="absolute w-16.56 pb-0 bg-white border z-40 rounded-0.3 "
                 onClick={handleFilterDropdown}
               >
                 <div className="flex flex-col pb-5">
