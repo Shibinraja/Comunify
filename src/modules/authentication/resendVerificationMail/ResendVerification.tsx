@@ -31,7 +31,6 @@ const ResendVerificationMail: React.FC = () => {
 
   const resendVerifyEmail = () => {
     if(verifyToken?.email) dispatch( authSlice.actions.resendVerificationMail({email:verifyToken.email}))
-    showErrorToast('No token provided');
   }
 
   return (
@@ -50,8 +49,9 @@ const ResendVerificationMail: React.FC = () => {
             <Button
               text='Resend Verification Mail'
               onClick={resendVerifyEmail}
+              disabled={Boolean(token)}
               type='submit'
-              className='font-Poppins rounded-lg text-base font-semibold text-white mt-1.8 h-3.6  w-full hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient'
+              className={`font-Poppins rounded-lg text-base font-semibold text-white mt-1.8 h-3.6  w-full hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient ${!Boolean(token) ? 'cursor-not-allowed': "cursor-pointer"}`}
             />
             </div>
           </div>

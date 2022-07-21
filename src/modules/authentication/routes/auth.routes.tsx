@@ -7,6 +7,7 @@ import Welcome from "../welcome/pages/Welcome";
 import Integration from "../integration/pages/Integration";
 import SubscriptionExpired from "../subscriptionExpired/pages/SubscriptionExpired";
 import PrivateRoute from 'routes/PrivateRoute';
+import GuestRoute from 'routes/GuestGuard';
 
 const SignIn = React.lazy(() => import("../signIn/pages/SignIn"));
 const SignUp = React.lazy(() => import("../signUp/pages/SignUp"));
@@ -63,9 +64,9 @@ let authRoutes: RoutesArray[] = [
       {
         path: "/resend-mail",
         element: (
-          <PublicRoute>
+           <GuestRoute>
             <ResendVerificationMail />
-          </PublicRoute>
+          </GuestRoute>
         )
       },
       {
