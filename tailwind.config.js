@@ -51,7 +51,9 @@ module.exports = {
         settingsTabActive: "#69B5E5",
         letsSignInSignUp:'#0091DF',
         memberDay:' #55555C;',
-        pagination:'#9A9BA6;'
+        pagination:'#9A9BA6;',
+        duration:' #C4C4C4;',
+        addTag:' #1E86E7;'
       },
       margin: {
         2.6: "43px",
@@ -125,7 +127,9 @@ module.exports = {
         1.125:'18px',
         0.652:'10.44px',
         9.18:'147px',
-        "1.30":'20.8px'
+        "1.30":'20.8px',
+        1.37:'22px',
+        0.61:'9.76px'
       },
       padding: {
         14: "14.67px",
@@ -174,6 +178,13 @@ module.exports = {
         13.9: "223.57px",
         6.84: "109.57px",
         3.12: "50px",
+        3.93:'63px',
+        1.12:'18px',
+        0.68:'10.98px',
+        0.89:'14.24px',
+        1.62:'26px',
+
+
 
       },
       width: {
@@ -230,7 +241,11 @@ module.exports = {
         0.78:'12.53px',
         16.56:'265px',
         2.53:'40.6px',
-        38.81:'621.06px'
+        38.81:'621.06px',
+        41.68:'667px',
+        9.59:'153.53px',
+        10.81:'173px',
+        41.62:'666px'
       },
       height: {
         4.5: "72.87px",
@@ -279,7 +294,8 @@ module.exports = {
         3.375:'54px',
         1.51:'24.28px',
         0.75:'12px',
-        38.68:'619.02px'
+        38.68:'619.02px',
+        1.93:'31px'
       },
       fontSize: {
         logo: "21.35px",
@@ -302,7 +318,8 @@ module.exports = {
         price: "32px",
         createdAt: "8px",
         membersCreatedAt: "6.41509px",
-        pageNumber:'9.86548px'
+        pageNumber:'9.86548px',
+        preview:'10.2899px;',
       },
       fontFamily: {
         Inter: ["Inter", "sans-serif"],
@@ -360,7 +377,8 @@ module.exports = {
       gap: {
         2.28: "36.56px",
         0.93: "15px",
-        0.66:'10.62px'
+        0.66:'10.62px',
+        0.83:'13.42px'
       },
       maxWidth: {
         '40': '640px',
