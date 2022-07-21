@@ -1,3 +1,3 @@
-export const MemberService=()=>{
+ const MemberService=()=>{
     return;
 }
