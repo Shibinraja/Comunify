@@ -1,5 +1,5 @@
 import settingRoutes from 'modules/settings/routes/settings.routes';
-import React from "react";
+import { lazy } from 'react';
 import { Navigate, useRoutes } from "react-router-dom";
 import { RoutesArray } from "../interface/interface";
 import authRoutes from "../modules/authentication/routes/auth.routes";
@@ -8,7 +8,7 @@ import membersRoutes from "../modules/members/routes/members.routes";
 import PrivateRoute from './PrivateRoute';
 import { Loadable } from './suspenseLoader';
 
-const MainLayout = Loadable(React.lazy(() => import("../layout/MainLayout")));
+const MainLayout = Loadable(lazy(() => import("../layout/MainLayout")));
 
 const routes: RoutesArray[] = [
   ...authRoutes,
