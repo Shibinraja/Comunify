@@ -4,6 +4,7 @@ import { RoutesArray } from '../../../interface/interface';
 
 const Members = Loadable(lazy(() => import('../pages/Members')));
 const MembersProfileRoute = Loadable(lazy(() => import('../pages/membersProfile/membersProfile')));
+const MembersReview = Loadable(lazy(()=>import('../pages/membersReview/membersReview')));
 
 const membersRoutes: RoutesArray = {
     path: 'members',
@@ -15,6 +16,10 @@ const membersRoutes: RoutesArray = {
         {
             element: <MembersProfileRoute />,
             path: 'profile',
+        },
+        {
+            element: <MembersReview />,
+            path: 'members-review',
         },
     ],
 };
