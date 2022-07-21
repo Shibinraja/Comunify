@@ -18,10 +18,8 @@ import history from '@/lib/history';
 import { showErrorToast, showSuccessToast } from 'common/toast/toastFunctions';
 import {CreateWorkspaceNameInput, ForgotPasswordInput, ResendVerificationMailInput,  ResetPasswordInput,  SignInInput, SignUpInput, SignUpResponse, SubscriptionPackages, TokenResponse, VerifyEmailInput, WorkspaceResponse } from 'modules/authentication/interface/authentication.interface';
 import {  createWorkspaceService, forgotPasswordService, getSubscriptionPackagesService, getWorkspaceService, resendVerifyEmailService , resetPasswordService, signInService, signUpService, verifyEmailService, verifyForgotEmailService, sendSubscriptionPlan, signOutService } from 'modules/authentication/services/authentication.service';
-import { AxiosError } from '../types/auth.types';
 import { AxiosResponse } from 'axios';
-import {  SuccessResponse } from '@/lib/api';
-import cookie from 'react-cookies';
+import {  AxiosError, SuccessResponse } from '@/lib/api';
 
 const forwardTo = (location: string) => {
     history.push(location);
@@ -177,9 +175,8 @@ function* createWorkspace(action: PayloadAction<CreateWorkspaceNameInput>) {
 
 function* logout() {
     try {
-        const res: SuccessResponse<{}> = yield call(signOutService)
+        yield call(signOutService)
         window.localStorage.clear();
-        cookie.remove("x-auth-cookie")
         location.reload();
     } catch (e) {
         const error = e as AxiosError<unknown>;

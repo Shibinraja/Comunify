@@ -1,21 +1,20 @@
 /* eslint-disable react/no-unescaped-entities */
 import React, { useEffect, useRef, useState } from 'react';
 import { AppDispatch } from '../../../../store/index';
-import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
+import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import bgSignInImage from '../../../../assets/images/bg-sign.svg';
 import openEyeIcon from '../../../../assets/images/eye.svg';
 import closeEyeIcon from '../../../../assets/images/closeEyeIcon.svg';
 
 import Input from 'common/input';
 import Button from 'common/button';
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
-import { password_regex } from "../../../../constants/constants";
+import { Formik, Form } from 'formik';
+import * as Yup from 'yup';
+import { password_regex } from '../../../../constants/constants';
 import { PasswordFormValues } from 'modules/authentication/interface/authentication.interface';
 import authSlice from 'modules/authentication/store/slices/auth.slice';
 import { useSearchParams } from 'react-router-dom';
-
-
+import './CreateNewPassword.css';
 
 const CreateNewPassword: React.FC = () => {
   const dispatch: AppDispatch = useAppDispatch();
@@ -26,8 +25,8 @@ const CreateNewPassword: React.FC = () => {
   const [confirmPassword, setPasswordType2] = useState<string>('password');
 
   const initialValues: PasswordFormValues = {
-    password: "",
-    confirmPassword: "",
+    password: '',
+    confirmPassword: '',
   };
 
   useEffect(()=>{
@@ -57,19 +56,19 @@ const CreateNewPassword: React.FC = () => {
   };
 
   return (
-    <div className='w-full flex flex-col  '>
-      <div className='flex w-full relative'>
-        <div className='w-1/2 password-cover-bg bg-no-repeat bg-left rounded-lg  bg-thinBlue flex items-center justify-center py-20 fixed'>
-          <img src={bgSignInImage} alt='' />
+    <div className="create-password">
+      <div className="flex w-full height-calc">
+        <div className="w-1/2 rounded-r-lg  bg-thinBlue flex items-center justify-center p-28 signup-cover-bg bg-no-repeat bg-left overflow-hidden">
+          <img src={bgSignInImage} alt="" className="object-cover" />
         </div>
-        <div className='w-1/2 flex pl-7.5 mt-13.1 flex-col  overflow-y-auto no-scroll-bar absolute right-0 pb-3.75'>
-          <h1 className='font-Inter font-bold text-signIn text-neutralBlack leading-2.8'>
+        <div className="flex flex-col w-1/2 pt-13.1 pl-7.5 overflow-scroll">
+          <h1 className="font-Inter font-bold text-signIn text-neutralBlack leading-2.8">
             Forgot Password
           </h1>
-          <p className='mt-0.78 text-desc font-normal leading-1.8 font-Inter text-lightGray max-w-sm'>
+          <p className="mt-0.78 text-desc font-normal leading-1.8 font-Inter text-lightGray max-w-sm">
             Enter your new password.
           </p>
-          <Formik
+         <Formik
             initialValues={initialValues}
             onSubmit={handleSubmit}
             validateOnChange={true}
@@ -92,7 +91,7 @@ const CreateNewPassword: React.FC = () => {
                     label="New Password"
                     id="password"
                     name="password"
-                    className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
+                    className="h-4.5 rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.password}
@@ -113,7 +112,7 @@ const CreateNewPassword: React.FC = () => {
                         alt=""
                       />
                     )}
-                  </div>       
+                  </div>
                 </div>
                 <div className="password relative mt-1.258">
                   <Input
@@ -122,7 +121,7 @@ const CreateNewPassword: React.FC = () => {
                     label="Confirm Password"
                     id="confirmPassword"
                     name="confirmPassword"
-                    className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
+                    className="h-4.5 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.confirmPassword}
@@ -157,8 +156,6 @@ const CreateNewPassword: React.FC = () => {
           </Formik>
         </div>
       </div>
-      <div className='py-1.9'></div>
-      <div className='footer'></div>
     </div>
   );
 };
@@ -174,10 +171,10 @@ const confirmPasswordSchema = Yup.object().shape({
   confirmPassword: Yup.string()
     .min(8, "Password must be atleast 8 characters")
     .oneOf([Yup.ref("password"), null], "Passwords must match")
-    .matches(
-      password_regex,
-      "Password must have one uppercase , one lowercase , a digit and specialcharacters"
-    )
+    // .matches(
+    //   password_regex,
+    //   "Password must have one uppercase , one lowercase , a digit and specialcharacters"
+    // )
     .required("Confirm Password is required"),
 });
 export default CreateNewPassword;

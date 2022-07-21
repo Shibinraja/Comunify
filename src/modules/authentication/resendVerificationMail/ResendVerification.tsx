@@ -31,16 +31,15 @@ const ResendVerificationMail: React.FC = () => {
 
   const resendVerifyEmail = () => {
     if(verifyToken?.email) dispatch( authSlice.actions.resendVerificationMail({email:verifyToken.email}))
-    showErrorToast('No token provided');
   }
 
   return (
-    <div className="w-full flex flex-col ">
-      <div className="flex w-full relative">
-        <div className="w-1/2 resend-cover-bg bg-no-repeat bg-left rounded-lg  bg-thinBlue flex items-center justify-center py-20 fixed">
-          <img src={bgSendMailImage} alt="" />
+    <div className="create-password">
+      <div className="flex w-full height-calc">
+        <div className="w-1/2 rounded-r-lg   bg-thinBlue flex items-center justify-center p-28 resend-cover-bg bg-no-repeat bg-left overflow-hidden">
+          <img src={bgSendMailImage} alt="" className="object-cover" />
         </div>
-        <div className="w-1/2 flex pl-7.40 mt-13.9 flex-col overflow-y-auto no-scroll-bar absolute right-0 pb-6.25">
+        <div className="flex flex-col w-1/2  pl-7.40 overflow-scroll pt-13.9">
           <div className="w-25.9">
             <p className="font-Inter font-normal leading-1.8 text-lightGray text-desc">
               A verification link has been sent to the entered email address.
@@ -50,15 +49,14 @@ const ResendVerificationMail: React.FC = () => {
             <Button
               text='Resend Verification Mail'
               onClick={resendVerifyEmail}
+              disabled={Boolean(token)}
               type='submit'
-              className='font-Poppins rounded-lg text-base font-semibold text-white mt-1.8 h-3.6  w-full hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient'
+              className={`font-Poppins rounded-lg text-base font-semibold text-white mt-1.8 h-3.6  w-full hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient ${!Boolean(token) ? 'cursor-not-allowed': "cursor-pointer"}`}
             />
             </div>
           </div>
         </div>
       </div>
-      <div className="py-1.9"></div>
-      <div className="footer"></div>
     </div>
   );
 };

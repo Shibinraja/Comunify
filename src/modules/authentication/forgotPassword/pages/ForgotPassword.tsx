@@ -32,12 +32,12 @@ const ForgotPassword: React.FC = () => {
     };
 
     return (
-        <div className="w-full flex flex-col forgot-password-wrapper">
-            <div className="flex w-full relative">
-                <div className="w-1/2 password-cover-bg bg-no-repeat bg-left rounded-lg  bg-thinBlue flex items-center justify-center py-20 fixed">
-                    <img src={bgForgotImage} alt="" />
+        <div className="forgot-password">
+            <div className="flex w-full height-calc">
+                <div className="w-1/2 rounded-r-lg  bg-thinBlue flex items-center justify-center  p-28 signup-cover-bg bg-no-repeat bg-left overflow-hidden">
+                    <img src={bgForgotImage} alt="" className="object-cover" />
                 </div>
-                <div className="w-1/2 flex pl-7.5 mt-13.1 flex-col overflow-y-auto no-scroll-bar absolute right-0 ">
+                <div className="w-1/2 flex pl-7.5 pt-13.1 flex-col overflow-scroll pb-5">
                     <h1 className="font-Inter font-bold text-signIn text-neutralBlack leading-2.8">Forgot Password</h1>
                     <p className="mt-0.78 text-desc font-normal leading-1.8 font-Inter text-lightGray max-w-sm">
                         Enter your email address to reset your password.
@@ -76,8 +76,6 @@ const ForgotPassword: React.FC = () => {
                     </Formik>
                 </div>
             </div>
-            <div className="py-1.9"></div>
-            <div className="footer"></div>
         </div>
     );
 };
