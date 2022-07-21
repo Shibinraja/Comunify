@@ -2,7 +2,7 @@ import { Card } from 'common/draggableCard/draggableCard';
 import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
 import { FC, Fragment, ReactElement, useCallback, useState } from 'react';
 import dragIcon from '../../../../assets/images/drag.svg';
-import { ColumNames } from '../../MembersTableData';
+import { ColumNames } from '../MembersTableData';
 
 
 const MembersDraggableColumn: FC = () => {
