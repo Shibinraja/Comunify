@@ -6,8 +6,9 @@ import authRoutes from "../modules/authentication/routes/auth.routes";
 import dashboardRoutes from "../modules/dashboard/routes/dashboard.routes";
 import membersRoutes from "../modules/members/routes/members.routes";
 import PrivateRoute from './PrivateRoute';
+import { Loadable } from './suspenseLoader';
 
-const MainLayout = React.lazy(() => import("../layout/MainLayout"));
+const MainLayout = Loadable(React.lazy(() => import("../layout/MainLayout")));
 
 const routes: RoutesArray[] = [
   ...authRoutes,

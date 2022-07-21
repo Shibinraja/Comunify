@@ -1,16 +1,12 @@
 import React from "react";
+import { Loadable } from 'routes/suspenseLoader';
 import { RoutesArray } from "../../../interface/interface";
 
-const Settings = React.lazy(() => import("../pages/Settings"));
+const Settings = Loadable(React.lazy(() => import("../pages/Settings")));
 
 const settingRoutes: RoutesArray = {
   path: 'settings',
-  children: [
-      {
-          path: '',
-          element: <Settings/>,
-      }
-  ],
+  element: <Settings/>
 };
 
 export default settingRoutes;
