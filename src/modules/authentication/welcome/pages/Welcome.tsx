@@ -31,16 +31,16 @@ const Welcome:React.FC = () => {
   };
 
   return (
-    <div className="w-full flex flex-col welcome-wrapper">
-      <div className="flex w-full relative">
-        <div className="w-full md:w-1/2 signup-cover-bg  bg-no-repeat pt-20 bg-left rounded-lg  bg-thinBlue flex items-center justify-center fixed pb-80">
-          <img src={bgWelcomeImage} alt="welcome-image" className="image-welcome"/>
+    <div className="welcome">
+      <div className="flex w-full height-calc">
+        <div className="w-1/2 rounded-r-lg  bg-thinBlue flex items-center justify-center p-28 signup-cover-bg bg-no-repeat bg-left overflow-hidden">
+          <img src={bgWelcomeImage} alt="" className="object-cover" />
         </div>
-        <div className="w-full md:w-1/2 flex flex-col pl-7.40 mt-16  overflow-y-auto no-scroll-bar absolute right-0 ">
+        <div className="flex flex-col w-1/2 pl-7.40 pt-16 overflow-scroll pb-6">
           <div className="w-25.9">
             <h1 className="font-Inter font-bold text-signIn text-neutralBlack leading-2.8">
               Welcome to Comunify!
-            </h1>{" "}
+            </h1>{' '}
             <p className="mt-0.81 text-desc font-normal leading-1.8 font-Inter text-lightGray max-w-sm">
               Thank you for choosing comunify. Let’s get to know your
               communities better.
@@ -60,9 +60,7 @@ const Welcome:React.FC = () => {
             </button>
           </div>
         </div>
-      </div>
-      <div className="py-1.9"></div>
-      <div className="footer"></div>
+     </div>
     </div>
   );
 };
