@@ -10,7 +10,7 @@ function MembersTab() {
     "in-active",
   ]);
   return (
-    <div className="w-29.9375 h-full   box-border bg-white  rounded-0.6 mt-1.868 app-input-card-border shadow-profileCard ">
+    <div className="w-full h-full   box-border bg-white  rounded-0.6 mt-1.868 app-input-card-border shadow-profileCard ">
       <div className="w-full mt-7 flex flex-col ">
         <nav>
           <TabSelector

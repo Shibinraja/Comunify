@@ -53,7 +53,9 @@ module.exports = {
         memberDay:' #55555C;',
         pagination:'#9A9BA6;',
         duration:' #C4C4C4;',
-        addTag:' #1E86E7;'
+        addTag:' #1E86E7;',
+        paymentSubscription:'#fefeff',
+        trialButton:'#9CC986;',
       },
       margin: {
         2.6: "43px",
@@ -251,6 +253,8 @@ module.exports = {
         3.12:'49.92px',
         8.37:'133.92px',
         2.62:'42px',
+        13.31:'212.96px',
+        6.25:'100px'
       },
       height: {
         4.5: "72.87px",
@@ -373,7 +377,8 @@ module.exports = {
           '0px 100px 80px rgba(41, 72, 152, 0.05),0px 64.8148px 46.8519px rgba(41, 72, 152, 0.037963),0px 38.5185px 25.4815px rgba(41, 72, 152, 0.0303704),0px 20px 13px rgba(41, 72, 152, 0.025),0px 8.14815px 6.51852px rgba(41, 72, 152, 0.0196296),0px 1.85185px 3.14815px rgba(41, 72, 152, 0.012037)',
         reportInput:'8.32785px 8.32785px 24.9835px rgba(2, 2, 70, 0.05)',
         subscription:'0px 100px 80px rgba(110, 181, 217, 0.1);',
-        dragButton:'0px 4.90909px 61.3636px rgba(0, 0, 0, 0.2)'
+        dragButton:'0px 4.90909px 61.3636px rgba(0, 0, 0, 0.2)',
+        paymentSubscriptionCard:'0px 100px 80px rgba(110, 181, 217, 0.05)',
         
       },
       maxHeight:{
