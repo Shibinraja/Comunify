@@ -2,6 +2,7 @@ import Button from 'common/button';
 import React, { useState } from 'react';
 import unsplashIcon from '../../../../assets/images/unsplash.svg';
 import slackIcon from '../../../../assets/images/slack.svg';
+import { TabPanel } from 'common/tabs/TabPanel';
 
 const Integration: React.FC<{hidden:boolean}> = ({ hidden }) => {
     
@@ -10,6 +11,7 @@ const Integration: React.FC<{hidden:boolean}> = ({ hidden }) => {
     const disConnectedBtnClassName="btn-disconnect-gradient shadow-contactCard font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300";
 
     return (
+        <TabPanel hidden={hidden}>
         <div className="settings-integration container mt-2.62 pb-20">
             <h3 className="font-Poppins text-infoBlack font-semibold text-base leading-1.43">Connected Integrations</h3>
             <div className="flex mt-1.8 flex-wrap w-full pb-1.68 border-b border-bottom-card">
@@ -78,6 +80,7 @@ const Integration: React.FC<{hidden:boolean}> = ({ hidden }) => {
                 </div>
             </div>
         </div>
+        </TabPanel>
     );
 };
 
