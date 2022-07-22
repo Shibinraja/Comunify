@@ -68,22 +68,22 @@ const SideNav: React.FC = () => {
           </div>
         </div>
         <div className="flex mt-2.18 items-center">
-          <img src={active.members ? memberDarkIcon : memberIcon} alt="" />
-          <div className={`pl-1.24 font-Poppins font-medium text-desc leading-1.68 cursor-pointer ${active.members ? 'text-black' : 'text-slimGray'}`}
+          <img src={active.members || window.location.href.includes('/members') ? memberDarkIcon : memberIcon} alt="" />
+          <div className={`pl-1.24 font-Poppins font-medium text-desc leading-1.68 cursor-pointer ${active.members || window.location.href.includes('/members')? 'text-black' : 'text-slimGray'}`}
             onClick={() => navigateRoute("/members")}>
             Members
           </div>
         </div>
         <div className="flex mt-2.18 items-center">
-          <img src={active.activity? activeStreamDarkIcon : streamIcon} alt="" />
-          <div className={`pl-1.24 font-Poppins font-medium text-desc leading-1.68 cursor-pointer ${active.activity ? 'text-black' : 'text-slimGray'}`}
+          <img src={active.activity || window.location.href.includes('/activity') ? activeStreamDarkIcon : streamIcon} alt="" />
+          <div className={`pl-1.24 font-Poppins font-medium text-desc leading-1.68 cursor-pointer ${active.activity  || window.location.href.includes('/activity')? 'text-black' : 'text-slimGray'}`}
             onClick={() => navigateRoute("/activity")}>
             Active Stream
           </div>
         </div>
         <div className="flex mt-2.18 items-center">
-          <img src={active.reports ? reportsDarkIcon : chartIcon} alt="" />
-          <div className={`pl-1.24 font-Poppins font-medium text-desc leading-1.68 cursor-pointer ${active.reports ? 'text-black' : 'text-slimGray'}`}
+          <img src={active.reports || window.location.href.includes('/reports') ? reportsDarkIcon : chartIcon} alt="" />
+          <div className={`pl-1.24 font-Poppins font-medium text-desc leading-1.68 cursor-pointer ${active.reports || window.location.href.includes('/reports') ? 'text-black' : 'text-slimGray'}`}
             onClick={() => navigateRoute("/reports")}>
             Reports
           </div>
@@ -91,8 +91,8 @@ const SideNav: React.FC = () => {
         <div
           className="flex mt-2.18 items-center"
           onClick={() => navigateRoute("/settings")} >
-          <img src={active.settings ? settingsDarkIcon : settingsIcon} alt="" />
-          <div className={`pl-1.24 font-Poppins font-medium text-desc leading-1.68 cursor-pointer ${active.settings ? 'text-black' : 'text-slimGray'}`}>
+          <img src={active.settings || window.location.href.includes('/settings') ? settingsDarkIcon : settingsIcon} alt="" />
+          <div className={`pl-1.24 font-Poppins font-medium text-desc leading-1.68 cursor-pointer ${active.settings  || window.location.href.includes('/settings') ? 'text-black' : 'text-slimGray'}`}>
             Settings
           </div>
         </div>
