@@ -6,7 +6,7 @@ import unplashMj from '../../assets/images/unsplash_mj.svg';
 import unionIcon from '../../assets/images/Union.svg';
 import sunIcon from '../../assets/images/sun.svg';
 import ellipseIcon from '../../assets/images/Ellipse 39.svg';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAppDispatch } from '../../hooks/useRedux';
 import authSlice from '../../modules/authentication/store/slices/auth.slice';
 import { AppDispatch } from '../../store';
@@ -16,6 +16,8 @@ const TopBar: React.FC = () => {
     const [isDropdownActive, setIsDropdownActive] = useState<boolean>(false);
     const options: string[] = ['Profile Settings', 'Sign Out'];
     const dispatch: AppDispatch = useAppDispatch();
+    const dropDownRef:any=useRef();
+
 
     const handleDropDownActive = async (data?: string): Promise<void> => {
         switch (data) {
@@ -27,6 +29,21 @@ const TopBar: React.FC = () => {
         }
         setIsDropdownActive(prev => !prev);
     };
+
+    const handleOutsideClick=(event:MouseEvent)=>{
+        if(dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target)){
+            setIsDropdownActive(true)
+        }else{
+            setIsDropdownActive(false)
+        }
+    }
+
+    useEffect(() => {
+        document.addEventListener('click',handleOutsideClick)
+        return () => {
+            document.removeEventListener('click',handleOutsideClick)
+        }
+    }, [])
 
     return (
         <div className="container mt-6 mx-auto ">
@@ -56,6 +73,7 @@ const TopBar: React.FC = () => {
                             src={profilePic}
                             alt=""
                             className="rounded-full bg-cover bg-center relative cursor-pointer"
+                            ref={dropDownRef}
                             onClick={() => handleDropDownActive()}
                         />
                         {isDropdownActive && (
