@@ -23,7 +23,7 @@ useEffect(() => {
       <h3 className="text-neutralBlack font-bold font-Inter text-signIn leading-2.8">Subscription Expired!</h3>
       <p className="mt-2.5 text-lightGray font-Inter font-normal leading-1.43 text-desc">Choose a plan to continue.</p>
       <div className="subscriptionCard">
-        {comunifySubscriptionPlan?.map((data:SubscriptionPackages) => data?.name !== 'Free Trial' && (
+        {comunifySubscriptionPlan?.map((data:SubscriptionPackages) => (
              <SubscriptionCard  key={data.id} subscriptionData={data}/>
         ) )}
       </div>
