@@ -1,9 +1,10 @@
+import React from 'react';
 import LoadingScreen from 'common/Loader/LoadingScreen';
 import { Suspense } from 'react';
 
 // Function to load fallbackUI when react renders the user component/ route based on it's priority.
 
-export const Loadable = (Component:any) => (props: JSX.IntrinsicAttributes) =>
+export const Loadable = (Component:React.FC) => (props: JSX.IntrinsicAttributes) =>
   (
     <Suspense fallback={<LoadingScreen />}>
       <Component {...props} />
