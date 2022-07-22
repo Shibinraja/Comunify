@@ -6,13 +6,40 @@ import streamIcon from '../../assets/images/stream.svg';
 import chartIcon from '../../assets/images/pie_chart.svg';
 import dropdownIcon from '../../assets/images/dropdown.svg';
 import Button from 'common/button';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { ActiveState } from '../../interface/interface';
 
 const SideNav: React.FC = () => {
   const navigate = useNavigate();
+  const [active, setActive] = useState<ActiveState>({dashboard:false, members:false, activity:false, reports:false, settings:false})
 
   const navigateRoute = (route:string):void => {
-        navigate(route)
+        switch (route) {
+            case '/dashboard':
+                setActive({dashboard:true})
+                navigate('/dashboard')
+                break;
+            case '/members':
+                setActive({members:true})
+                navigate('/members')
+                break
+            case '/activity':
+                setActive({activity:true})
+                navigate('/activity')
+                break
+            case '/reports':
+                setActive({reports:true})
+                navigate('/reports')
+                break   
+            case '/settings':
+                setActive({settings:true})
+                navigate('/settings')
+                break     
+        
+            default:
+                break;
+        }
   };
 
   return (
@@ -30,28 +57,28 @@ const SideNav: React.FC = () => {
           <div>
             <img src={dashboardIcon} alt="" />
           </div>
-          <div className="pl-1.24 font-Poppins font-medium text-desc text-slimGray leading-1.68 cursor-pointer" 
+          <div className={`pl-1.24 font-Poppins font-medium text-desc leading-1.68 cursor-pointer ${active.dashboard ? 'text-black' : 'text-slimGray'}`}
             onClick={() => navigateRoute("/dashboard")}>
             Dashboard
           </div>
         </div>
         <div className="flex mt-2.18 items-center">
           <img src={memberIcon} alt="" />
-          <div className="pl-1.24 font-Poppins font-medium text-desc text-slimGray leading-1.68 cursor-pointer"
+          <div className={`pl-1.24 font-Poppins font-medium text-desc leading-1.68 cursor-pointer ${active.members ? 'text-black' : 'text-slimGray'}`}
             onClick={() => navigateRoute("/members")}>
             Members
           </div>
         </div>
         <div className="flex mt-2.18 items-center">
           <img src={streamIcon} alt="" />
-          <div className="pl-1.24 font-Poppins font-medium text-desc text-slimGray leading-1.68 cursor-pointer"
+          <div className={`pl-1.24 font-Poppins font-medium text-desc leading-1.68 cursor-pointer ${active.activity ? 'text-black' : 'text-slimGray'}`}
             onClick={() => navigateRoute("/activity")}>
             Active Stream
           </div>
         </div>
         <div className="flex mt-2.18 items-center">
           <img src={chartIcon} alt="" />
-          <div className="pl-1.24 font-Poppins font-medium text-desc text-slimGray leading-1.68 cursor-pointer"
+          <div className={`pl-1.24 font-Poppins font-medium text-desc leading-1.68 cursor-pointer ${active.reports ? 'text-black' : 'text-slimGray'}`}
             onClick={() => navigateRoute("/reports")}>
             Reports
           </div>
@@ -60,7 +87,7 @@ const SideNav: React.FC = () => {
           className="flex mt-2.18 items-center"
           onClick={() => navigateRoute("/settings")} >
           <img src={settingsIcon} alt="" />
-          <div className="pl-1.24 font-Poppins font-medium text-desc text-slimGray leading-1.68 cursor-pointer">
+          <div className={`pl-1.24 font-Poppins font-medium text-desc leading-1.68 cursor-pointer ${active.settings ? 'text-black' : 'text-slimGray'}`}>
             Settings
           </div>
         </div>
