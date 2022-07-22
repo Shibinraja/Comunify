@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { useAppDispatch } from '../../hooks/useRedux';
 import authSlice from '../../modules/authentication/store/slices/auth.slice';
 import { AppDispatch } from '../../store';
+import Input from 'common/input';
 
 const TopBar: React.FC = () => {
     const [isDropdownActive, setIsDropdownActive] = useState<boolean>(false);
@@ -31,7 +32,9 @@ const TopBar: React.FC = () => {
         <div className="container mt-6 mx-auto ">
             <div className="flex justify-between items-center ">
                 <div className="relative">
-                    <input
+                    <Input
+                        name="search"
+                        id="searchId"
                         type="text"
                         placeholder="Search..."
                         className="app-input-card-border focus:outline-none pl-4.18 box-border text-search bg-white rounded-0.6 h-16 w-34.3 placeholder:font-Poppins placeholder:font-normal placeholder:leading-snug placeholder:text-search opacity-40 placeholder:text-searchGray shadow-profileCard"
