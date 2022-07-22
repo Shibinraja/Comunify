@@ -1,13 +1,16 @@
 import { getResolution } from '@/lib/resolution';
 import { maximum_screen_height } from 'constants/constants';
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { Outlet } from 'react-router';
 import SideNav from '../common/sideNav/SideNav';
 import TopBar from '../common/topBar/TopBar';
 import ResolutionLayout from './ResolutionLayout';
 
 const MainLayout: React.FC = () => {
-    const {width:screenWidth} = getResolution();
+    const { width: screenWidth } = getResolution();
+    useEffect(() => {
+        document.body.style.overflow = "hidden"
+    }, [])
 
     return (
         <Fragment>
