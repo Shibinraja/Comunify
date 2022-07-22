@@ -1,6 +1,9 @@
 import { useTabs } from '@/hooks/useTabs';
 import { TabSelector } from 'common/tabs/TabSelector';
+import BillingHistory from './billingHistory/BillingHistory';
 import Integration from './integration/Integration';
+import Subscription from './subscription/Subscription';
+import Tags from './tags/Tags';
 
 const Settings = () => {
   const [selectedTab, setSelectedTab] = useTabs([
@@ -72,6 +75,9 @@ const Settings = () => {
         </nav>
         <div className="items-center relative overflow-y-auto block section ">
           <Integration hidden={selectedTab !== "integrations"} />
+          <Subscription hidden={selectedTab !== "subscription"}/>
+          <BillingHistory hidden={selectedTab !== "billing_history"}/>
+          <Tags hidden={selectedTab !== "tags"}/>
         </div>
       </div>
     </div>
