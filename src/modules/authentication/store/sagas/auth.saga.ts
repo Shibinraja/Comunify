@@ -33,7 +33,6 @@ function* loginSaga(action: PayloadAction<SignInInput>) {
         if (res?.data) {
             localStorage.setItem('accessToken' , res?.data?.token)
             yield put(authSlice.actions.setIsAuthenticated(true));
-            // yield put(authSlice.actions.loginData(res?.data?.token));
         }
     } catch (e) {
         const error = e as AxiosError<unknown>;
@@ -50,6 +49,7 @@ function* signUp(action: PayloadAction<SignUpInput>) {
 
         if (res?.data) {
             showSuccessToast('Please, verify your email');
+            yield put(authSlice.actions.signUpData(res?.data?.email));
             yield call(forwardTo, '/resend-mail');
         }
     } catch (e) {
