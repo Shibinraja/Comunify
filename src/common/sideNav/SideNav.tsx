@@ -1,9 +1,14 @@
 import comunifyLogo from '../../assets/images/Group 2 (1).svg';
 import dashboardIcon from '../../assets/images/dashboard.svg';
+import dashboardDarkIcon from '../../assets/images/svg/dashboard_black_icon.svg'
 import memberIcon from '../../assets/images/members.svg';
+import memberDarkIcon from '../../assets/images/svg/members_black_icon.svg'
 import settingsIcon from '../../assets/images/settings.svg';
+import settingsDarkIcon from '../../assets/images/svg/settings_black_icon.svg'
 import streamIcon from '../../assets/images/stream.svg';
+import activeStreamDarkIcon from '../../assets/images/svg/activities_black_icon.svg'
 import chartIcon from '../../assets/images/pie_chart.svg';
+import reportsDarkIcon from '../../assets/images/svg/reports_black_icon.svg'
 import dropdownIcon from '../../assets/images/dropdown.svg';
 import Button from 'common/button';
 import { useNavigate } from 'react-router-dom';
@@ -55,7 +60,7 @@ const SideNav: React.FC = () => {
         </div>
         <div className="mt-5.8 flex items-center ">
           <div>
-            <img src={dashboardIcon} alt="" />
+            <img src={active.dashboard ? dashboardDarkIcon : dashboardIcon} alt="" />
           </div>
           <div className={`pl-1.24 font-Poppins font-medium text-desc leading-1.68 cursor-pointer ${active.dashboard ? 'text-black' : 'text-slimGray'}`}
             onClick={() => navigateRoute("/dashboard")}>
@@ -63,21 +68,21 @@ const SideNav: React.FC = () => {
           </div>
         </div>
         <div className="flex mt-2.18 items-center">
-          <img src={memberIcon} alt="" />
+          <img src={active.members ? memberDarkIcon : memberIcon} alt="" />
           <div className={`pl-1.24 font-Poppins font-medium text-desc leading-1.68 cursor-pointer ${active.members ? 'text-black' : 'text-slimGray'}`}
             onClick={() => navigateRoute("/members")}>
             Members
           </div>
         </div>
         <div className="flex mt-2.18 items-center">
-          <img src={streamIcon} alt="" />
+          <img src={active.activity? activeStreamDarkIcon : streamIcon} alt="" />
           <div className={`pl-1.24 font-Poppins font-medium text-desc leading-1.68 cursor-pointer ${active.activity ? 'text-black' : 'text-slimGray'}`}
             onClick={() => navigateRoute("/activity")}>
             Active Stream
           </div>
         </div>
         <div className="flex mt-2.18 items-center">
-          <img src={chartIcon} alt="" />
+          <img src={active.reports ? reportsDarkIcon : chartIcon} alt="" />
           <div className={`pl-1.24 font-Poppins font-medium text-desc leading-1.68 cursor-pointer ${active.reports ? 'text-black' : 'text-slimGray'}`}
             onClick={() => navigateRoute("/reports")}>
             Reports
@@ -86,7 +91,7 @@ const SideNav: React.FC = () => {
         <div
           className="flex mt-2.18 items-center"
           onClick={() => navigateRoute("/settings")} >
-          <img src={settingsIcon} alt="" />
+          <img src={active.settings ? settingsDarkIcon : settingsIcon} alt="" />
           <div className={`pl-1.24 font-Poppins font-medium text-desc leading-1.68 cursor-pointer ${active.settings ? 'text-black' : 'text-slimGray'}`}>
             Settings
           </div>
