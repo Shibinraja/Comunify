@@ -345,7 +345,7 @@ const Members: FC = () => {
       </div>
       <div className="memberTable mt-1.8">
         <div className="py-2 overflow-x-auto mt-1.868">
-          <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-t-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixTableHead max-h-34">
+          <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-t-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto sticky top-0 fixTableHead max-h-34">
             <table className="min-w-full relative  rounded-t-0.6 ">
               <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
                 <tr className="min-w-full">
