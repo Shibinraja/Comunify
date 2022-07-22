@@ -117,7 +117,7 @@ function* verifyForgotEmail(action: PayloadAction<VerifyEmailInput>) {
         const res: SuccessResponse<TokenResponse> = yield call(verifyForgotEmailService, action.payload);
         if (res?.data) {
             // yield put(authSlice.actions.setIsAuthenticated(true));
-            showSuccessToast(res.message);
+            // showSuccessToast(res.message);
         }
     } catch (e) {
         const error = e as AxiosError<unknown>;
