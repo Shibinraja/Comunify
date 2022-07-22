@@ -21,7 +21,7 @@ const MembersCard = () => {
               New Members
             </div>
             <div className="text-card font-Poppins font-normal leading-1.12 text-status mt-0.151">
-              12% Increse from Last Week
+              12% Increase from Last Week
             </div>
           </div>
           <div className=" flex-col items-center justify-center flex bg-member3 rounded-0.9 w-full h-8.34 cursor-pointer">
