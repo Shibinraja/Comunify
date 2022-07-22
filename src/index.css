@@ -145,3 +145,11 @@ input {
 .height-calc{
   height: calc(100vh - 190px);
 }
+
+.price {
+  background: linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0px 4px 30px rgba(0, 0, 0, 0.1);
+}

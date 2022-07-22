@@ -7,5 +7,5 @@ export interface InitialState {
     subscriptionData: SubscriptionPackages[];
     workspaceData: Array<[]>;
     clearFormikValue: boolean;
-    authorizedToken:string
+    userEmail:string
 }

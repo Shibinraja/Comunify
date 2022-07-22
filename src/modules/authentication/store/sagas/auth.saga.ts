@@ -33,7 +33,6 @@ function* loginSaga(action: PayloadAction<SignInInput>) {
         if (res?.data) {
             localStorage.setItem('accessToken' , res?.data?.token)
             yield put(authSlice.actions.setIsAuthenticated(true));
-            // yield put(authSlice.actions.loginData(res?.data?.token));
         }
     } catch (e) {
         const error = e as AxiosError<unknown>;
@@ -50,6 +49,7 @@ function* signUp(action: PayloadAction<SignUpInput>) {
 
         if (res?.data) {
             showSuccessToast('Please, verify your email');
+            yield put(authSlice.actions.signUpData(res?.data?.email));
             yield call(forwardTo, '/resend-mail');
         }
     } catch (e) {
@@ -117,7 +117,7 @@ function* verifyForgotEmail(action: PayloadAction<VerifyEmailInput>) {
         const res: SuccessResponse<TokenResponse> = yield call(verifyForgotEmailService, action.payload);
         if (res?.data) {
             // yield put(authSlice.actions.setIsAuthenticated(true));
-            showSuccessToast(res.message);
+            // showSuccessToast(res.message);
         }
     } catch (e) {
         const error = e as AxiosError<unknown>;
@@ -197,7 +197,7 @@ function* getSubscriptions() {
     }
 }
 
-function* freeTrialSubscription(action: PayloadAction<string>) {
+function* chooseSubscription(action: PayloadAction<string>) {
     try {
         yield put(loaderSlice.actions.startLoadingAction(authSlice.actions.getSubscriptions.type));
         const res: SuccessResponse<SubscriptionPackages> = yield call(sendSubscriptionPlan, action.payload);
@@ -225,5 +225,5 @@ export default function* authSaga(): SagaIterator {
     yield takeEvery(CREATE_WORKSPACE, createWorkspace);
     yield takeEvery(GET_WORKSPACE, getWorkspace);
     yield takeEvery(authSlice.actions.signOut.type, logout);
-    yield takeEvery(authSlice.actions.freeTrialSubscription.type, freeTrialSubscription);
+    yield takeEvery(authSlice.actions.chooseSubscription.type, chooseSubscription);
 }

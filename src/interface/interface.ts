@@ -37,3 +37,10 @@ export type SubscriptionProps = {
   subscriptionData: SubscriptionPackages;
 }
 
+export interface ActiveState {
+  dashboard?: boolean;
+  members?: boolean;
+  activity?: boolean;
+  reports?: boolean;
+  settings?: boolean
+}
