@@ -197,7 +197,7 @@ function* getSubscriptions() {
     }
 }
 
-function* freeTrialSubscription(action: PayloadAction<string>) {
+function* chooseSubscription(action: PayloadAction<string>) {
     try {
         yield put(loaderSlice.actions.startLoadingAction(authSlice.actions.getSubscriptions.type));
         const res: SuccessResponse<SubscriptionPackages> = yield call(sendSubscriptionPlan, action.payload);
@@ -225,5 +225,5 @@ export default function* authSaga(): SagaIterator {
     yield takeEvery(CREATE_WORKSPACE, createWorkspace);
     yield takeEvery(GET_WORKSPACE, getWorkspace);
     yield takeEvery(authSlice.actions.signOut.type, logout);
-    yield takeEvery(authSlice.actions.freeTrialSubscription.type, freeTrialSubscription);
+    yield takeEvery(authSlice.actions.chooseSubscription.type, chooseSubscription);
 }
