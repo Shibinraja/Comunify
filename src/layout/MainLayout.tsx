@@ -8,9 +8,6 @@ import ResolutionLayout from './ResolutionLayout';
 
 const MainLayout: React.FC = () => {
     const { width: screenWidth } = getResolution();
-    useEffect(() => {
-        document.body.style.overflow = "hidden"
-    }, [])
 
     return (
         <Fragment>

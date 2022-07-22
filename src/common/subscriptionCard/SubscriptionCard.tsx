@@ -1,16 +1,17 @@
 import Button from 'common/button';
 import successIcon from '../../assets/images/tostr.png';
-import { useNavigate } from 'react-router-dom';
 import { Fragment } from 'react';
 import { SubscriptionProps } from 'interface/interface';
-
+import { useDispatch } from 'react-redux';
+import authSlice from '../../modules/authentication/store/slices/auth.slice';
+import { AppDispatch } from '../../store';
 
 const SubscriptionCard: React.FC<SubscriptionProps> = ({ subscriptionData }) => {
-    const navigate = useNavigate();
+    const dispatch:AppDispatch = useDispatch();
 
-    const navigateToWorkSpace = (): void => {
-        navigate('/create-workspace');
-    };
+    const selectPlan = ():void => {
+        dispatch(authSlice.actions.chooseSubscription(subscriptionData?.id))
+    }
 
     return (
         <Fragment>
@@ -39,7 +40,7 @@ const SubscriptionCard: React.FC<SubscriptionProps> = ({ subscriptionData }) => 
                     </div>
                     <Button
                         text="Choose the plan"
-                        onClick={navigateToWorkSpace}
+                        onClick={selectPlan}
                         type="submit"
                         className="font-Poppins rounded-lg text-base font-semibold text-white hover:shadow-buttonShadowHover transition ease-in duration-300 w-full mt-1.8  h-3.6 btn-gradient "
                     />
@@ -50,3 +51,7 @@ const SubscriptionCard: React.FC<SubscriptionProps> = ({ subscriptionData }) => 
 };
 
 export default SubscriptionCard;
+function useEffect(arg0: () => void, arg1: never[]) {
+    throw new Error('Function not implemented.');
+}
+

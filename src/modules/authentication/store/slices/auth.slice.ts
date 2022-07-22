@@ -16,17 +16,17 @@ const initialState: InitialState = {
     subscriptionData: [],
     workspaceData: [],
     clearFormikValue: false,
-    authorizedToken: ""
+    userEmail: ""
 };
 
 const login = (state: InitialState, action: PayloadAction<SignInInput>) => state;
 
-const loginData = (state:InitialState , action:PayloadAction<string>) => ({
-    ...state,
-    authorizedToken:action.payload
-});
-
 const signup = (state: InitialState, action: PayloadAction<SignUpInput>) => state;
+
+const signUpData = (state:InitialState , action:PayloadAction<string>) => ({
+    ...state,
+    userEmail:action.payload
+});
 
 const verifyEmail = (state: InitialState, action: PayloadAction<VerifyEmailInput>) => state;
 
@@ -68,14 +68,14 @@ const setSubscriptions = (state: InitialState, action: PayloadAction<{ subscript
     state.subscriptionData = action.payload.subscriptionData;
 };
 
-const freeTrialSubscription = (state: InitialState, action:PayloadAction<string>) => state
+const chooseSubscription = (state: InitialState, action:PayloadAction<string>) => state
 
 const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
         login,
-        loginData,
+        signUpData,
         setIsAuthenticated,
         signup,
         verifyEmail,
@@ -90,7 +90,7 @@ const authSlice = createSlice({
         signOut,
         getSubscriptions,
         setSubscriptions,
-        freeTrialSubscription,
+        chooseSubscription,
     },
 });
 

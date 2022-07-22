@@ -26,7 +26,7 @@ const Welcome:React.FC = () => {
   // Function to filter out free trial plan from the list of comunify plans and subscribe to it.
   const selectFreeTrialPlan = ():void => {
   const freeTrialSubscriptionPlan:SubscriptionPackages[] = subscriptionData.length > 0 && subscriptionData.filter((plans:SubscriptionPackages)=> plans.planName.trim() === 'Free Trial') || [];
-  dispatch(authSlice.actions.freeTrialSubscription(freeTrialSubscriptionPlan[0]?.id))
+  dispatch(authSlice.actions.chooseSubscription(freeTrialSubscriptionPlan[0]?.id))
 
   };
 
