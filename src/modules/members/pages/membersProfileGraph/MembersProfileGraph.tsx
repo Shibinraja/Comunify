@@ -9,7 +9,7 @@ const MembersProfileGraph = () => {
     const options = {};
 
     return (
-        <div className='h-[21.875rem]'>
+        <div className='h-[18.75rem]'>
             <Chart options={options} type="line" series={series} width="100%" height="100%" />
         </div>
     );
