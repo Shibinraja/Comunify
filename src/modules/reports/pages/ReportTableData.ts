@@ -17,7 +17,7 @@ export const reportData = [
       reportName: 'Member Growth',
       date: '30 April 2022',
       platform: {
-        img1: '',
+        img1: slackIcon,
         img2: unsplashIcon,
       },
       reportStatus: 'Monthly',
@@ -28,7 +28,7 @@ export const reportData = [
       date: '30 April 2022',
       platform: {
         img1: unsplashIcon,
-        img2: '',
+        img2: slackIcon,
       },
       reportStatus: 'Monthly',
       id: 3,
@@ -51,7 +51,7 @@ export const reportData = [
         img2: unsplashIcon,
       },
       reportStatus: 'Monthly',
-      id: 4,
+      id: 5,
     },
     {
       reportName: 'Member Growth',
@@ -61,7 +61,7 @@ export const reportData = [
         img2: unsplashIcon,
       },
       reportStatus: 'Monthly',
-      id: 4,
+      id: 6,
     },
     {
       reportName: 'Member Growth',
@@ -71,7 +71,7 @@ export const reportData = [
         img2: unsplashIcon,
       },
       reportStatus: 'Monthly',
-      id: 4,
+      id: 7,
     },
     {
       reportName: 'Member Growth',
@@ -81,6 +81,6 @@ export const reportData = [
         img2: unsplashIcon,
       },
       reportStatus: 'Monthly',
-      id: 4,
+      id: 8,
     },
   ];

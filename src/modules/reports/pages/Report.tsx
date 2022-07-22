@@ -199,11 +199,11 @@ const Report: React.FC = () => {
                         </div>
                       </td>
                       <td className="px-6 py-3">
-                        <div className="flex gap-1">
-                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                        <div className="flex gap-x-1">
+                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer w-1.375">
                             <img src={data.platform.img1} alt="" />
                           </div>
-                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer w-1.375">
                             <img src={data.platform.img2} alt="" />
                           </div>
                         </div>
