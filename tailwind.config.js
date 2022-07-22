@@ -383,7 +383,7 @@ module.exports = {
         
       },
       maxHeight:{
-        34:'544px'
+        34:'47vh'
       },
       gap: {
         2.28: "36.56px",
