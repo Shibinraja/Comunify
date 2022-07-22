@@ -60,9 +60,9 @@ const SideNav: React.FC = () => {
         </div>
         <div className="mt-5.8 flex items-center ">
           <div>
-            <img src={active.dashboard ? dashboardDarkIcon : dashboardIcon} alt="" />
+            <img src={active.dashboard || window.location.href.includes('/dashboard') ? dashboardDarkIcon : dashboardIcon} alt="" />
           </div>
-          <div className={`pl-1.24 font-Poppins font-medium text-desc leading-1.68 cursor-pointer ${active.dashboard ? 'text-black' : 'text-slimGray'}`}
+          <div className={`pl-1.24 font-Poppins font-medium text-desc leading-1.68 cursor-pointer ${active.dashboard || window.location.href.includes('/dashboard') ? 'text-black' : 'text-slimGray'}`}
             onClick={() => navigateRoute("/dashboard")}>
             Dashboard
           </div>
