@@ -8,21 +8,22 @@ import { useEffect } from 'react';
 import authSlice from '../store/slices/auth.slice';
 import { DecodeToken } from '../interface/authentication.interface';
 import { AppDispatch } from '../../../store/index';
-import { showErrorToast } from 'common/toast/toastFunctions';
 import { decodeToken } from '@/lib/decodeToken';
+import { getLocalRefreshToken } from '@/lib/request';
 
 const ResendVerificationMail: React.FC = () => {
   const navigate = useNavigate()
   const dispatch: AppDispatch = useAppDispatch();
-  const verifiedEmailSuccess = useAppSelector((state) => state.auth.clearFormikValue);
+  const {clearFormikValue:verifiedEmailSuccess , userEmail} = useAppSelector((state) => state.auth);
 
   const [searchParams] = useSearchParams();
-  const token: string | any = searchParams.get('confirm') || "";
+  const tokenData = getLocalRefreshToken();
+  const token: string | any = searchParams.get('confirm') || tokenData || "";
 
   const verifyToken:DecodeToken = token && decodeToken(token);
 
   useEffect(()=>{
-    if(token) dispatch(authSlice.actions.verifyEmail({id:token}))
+    if(!tokenData && !!token) dispatch(authSlice.actions.verifyEmail({id:token}))
   },[token])
 
   useEffect(()=>{
@@ -30,7 +31,8 @@ const ResendVerificationMail: React.FC = () => {
   },[verifiedEmailSuccess])
 
   const resendVerifyEmail = () => {
-    if(verifyToken?.email) dispatch( authSlice.actions.resendVerificationMail({email:verifyToken.email}))
+    if(verifyToken?.email) dispatch( authSlice.actions.resendVerificationMail({email:verifyToken.email}));
+    if(userEmail)dispatch( authSlice.actions.resendVerificationMail({email:userEmail}))
   }
 
   return (
@@ -49,9 +51,8 @@ const ResendVerificationMail: React.FC = () => {
             <Button
               text='Resend Verification Mail'
               onClick={resendVerifyEmail}
-              disabled={Boolean(token)}
               type='submit'
-              className={`font-Poppins rounded-lg text-base font-semibold text-white mt-1.8 h-3.6  w-full hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient ${!Boolean(token) ? 'cursor-not-allowed': "cursor-pointer"}`}
+              className={`font-Poppins rounded-lg text-base font-semibold text-white mt-1.8 h-3.6  w-full hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient`}
             />
             </div>
           </div>
