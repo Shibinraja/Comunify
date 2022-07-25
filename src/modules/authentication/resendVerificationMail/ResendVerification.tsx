@@ -14,21 +14,25 @@ import { getLocalRefreshToken } from '@/lib/request';
 const ResendVerificationMail: React.FC = () => {
   const navigate = useNavigate()
   const dispatch: AppDispatch = useAppDispatch();
-  const {clearFormikValue:verifiedEmailSuccess , userEmail} = useAppSelector((state) => state.auth);
+  const {clearFormikValue:verifyEmailRoute , userEmail} = useAppSelector((state) => state.auth);
 
   const [searchParams] = useSearchParams();
-  const tokenData = getLocalRefreshToken();
-  const token: string | any = searchParams.get('confirm') || tokenData || "";
+  const tokenData = getLocalRefreshToken() || "";
+  const token: string | any = searchParams.get('confirm') || "";
 
-  const verifyToken:DecodeToken = token && decodeToken(token);
+  const verifyToken:DecodeToken = token && decodeToken(token) || decodeToken(tokenData);
 
   useEffect(()=>{
-    if(!tokenData && !!token) dispatch(authSlice.actions.verifyEmail({id:token}))
+    if(token){
+      dispatch(authSlice.actions.verifyEmail({id:token}))
+    } else if(tokenData){
+      dispatch(authSlice.actions.verifyEmail({id:tokenData}))
+    }
   },[token])
 
   useEffect(()=>{
-    if(verifiedEmailSuccess) navigate('/welcome')
-  },[verifiedEmailSuccess])
+    if(verifyEmailRoute) navigate('/welcome')
+  },[verifyEmailRoute])
 
   const resendVerifyEmail = () => {
     if(verifyToken?.email) dispatch( authSlice.actions.resendVerificationMail({email:verifyToken.email}));
