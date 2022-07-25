@@ -56,6 +56,9 @@ module.exports = {
         addTag:' #1E86E7;',
         paymentSubscription:'#fefeff',
         trialButton:'#9CC986;',
+        outerCirlceLoader: '#68B4E5',
+        innerCircleLoader: '#ED9333',
+        backdropColor: 'rgba(0, 0, 0, 0.5)'
       },
       margin: {
         2.6: "43px",
@@ -256,7 +259,8 @@ module.exports = {
         13.31:'212.96px',
         6.25:'100px',
         11.68:'187px',
-        1.375:'22px'
+        1.375:'22px',
+        11:'176px'
       },
       height: {
         4.5: "72.87px",
@@ -306,7 +310,8 @@ module.exports = {
         1.51:'24.28px',
         0.75:'12px',
         38.68:'619.02px',
-        1.93:'31px'
+        1.93:'31px',
+        11:'176px'
       },
       fontSize: {
         logo: "21.35px",
@@ -392,8 +397,32 @@ module.exports = {
         0.66:'10.62px',
         0.83:'13.42px'
       },
+      borderWidth:{
+        15:'15px',
+        20:'20px'
+      },
       maxWidth: {
         '40': '640px',
+      },
+      inset : { 
+        0.9375:'15px'
+      },
+      animation: {
+        'spin': 'spin 1.5s linear infinite',
+        'spinBack': 'spinBack 2s linear infinite',
+      },  
+      keyframes:{
+        'spin':{
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' }
+        },
+        'spinBack':{
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(-720deg)' }
+        }
+      },
+      zIndex: {
+        '9999': '9999',
       }
     },
   },
