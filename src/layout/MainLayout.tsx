@@ -14,9 +14,11 @@ const MainLayout: React.FC = () => {
             {screenWidth < maximum_screen_height ? (
                 <ResolutionLayout />
             ) : (
-                <div className="flex w-full h-full">
-                    <SideNav />
-                    <div className="w-[83%] px-16">
+                <div className="flex h-screen">
+                    <div className="w-[20%]">
+                        <SideNav />
+                    </div>
+                    <div className="w-full px-20">
                         <TopBar />
                         <div className="mt-10">
                             <Outlet />

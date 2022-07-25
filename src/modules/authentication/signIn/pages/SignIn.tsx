@@ -8,7 +8,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import bgSignInImage from "../../../../assets/images/bg-sign.svg";
-import closeEyeIcon from '../../../../assets/images/closeeye.png';
+import closeEyeIcon from '../../../../assets/images/closeEyeIcon.svg';
 import eyeIcon from "../../../../assets/images/eye.svg";
 import socialLogo from "../../../../assets/images/Social.svg";
 import { email_regex } from '../../../../constants/constants';
@@ -110,9 +110,9 @@ const SignIn: React.FC = () => {
                                     <img src={socialLogo} alt="" className="pr-0.781" />
                                     Continue with Google
                                 </div>
-                                <div className="font-Inter text-secondaryGray text-center text-base font-normal mt-1.8 leading-2.8 text-signLink">
+                                <div className="font-Inter text-secondaryGray text-center text-base font-normal mt-1.8 leading-2.8 text-signLink hover:underline transition ease-in duration-300">
                                     <Link to="forgot-password">
-                                        <h3>Forgot your password?</h3>
+                                        Forgot your password?
                                     </Link>
                                 </div>
                                 <div className="font-Poppins text-secondaryGray text-center text-base font-normal mt-5  text-signLink ">

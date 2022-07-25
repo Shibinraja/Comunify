@@ -48,7 +48,7 @@ const SideNav: React.FC = () => {
   };
 
   return (
-    <nav className="h-screen bg-brightGray w-2/12">
+    <nav className="h-screen bg-brightGray w-2/12 fixed z-40 top-0 left-0">
       <div className="flex flex-col pl-2.58 mt-3.01">
         <div className="flex items-center">
           <div>
@@ -97,7 +97,7 @@ const SideNav: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="mt-[300px]  w-13.5 mx-auto h-8.75 rounded-xl bg-sidenavCard">
+      <div className="mt-18.75 md:mt-0 xl:mt-6.25 2xl:mt-18.75 w-13.5 mx-auto h-8.75 rounded-xl bg-sidenavCard">
         <div className="flex flex-col pt-1.43">
           <h3 className="text-center font-Poppins text-trial font-semibold text-black leading-1.31">
             10 days left{" "}
@@ -116,15 +116,15 @@ const SideNav: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="absolute bottom-0 bg-lightBlack w-2/12 h-[50px] flex items-center justify-center rounded-t-lg cursor-pointer">
-        <div className="flex pl-9 items-center">
+      <div className="absolute bottom-0 bg-lightBlack w-full h-[50px] flex items-center pl-10 rounded-t-lg cursor-pointer">
+        <div className="flex  items-center">
           <div className="text-white  font-Poppins font-medium leading-6 text-base">
             Platforms
           </div>
-          <div className="text-white pl-0.81 font-Poppins font-medium leading-6 text-base">
+          <div className="text-white pl-0.81 font-Poppins font-medium leading-6 text-base relative">
             4/10
           </div>
-          <div className="pl-5.06">
+          <div className="absolute right-7">
             <img src={dropdownIcon} alt="" />
           </div>
         </div>

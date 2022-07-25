@@ -34,7 +34,7 @@ const ForgotPassword: React.FC = () => {
     return (
         <div className="forgot-password">
             <div className="flex w-full height-calc">
-                <div className="w-1/2 rounded-r-lg  bg-thinBlue flex items-center justify-center  p-28 signup-cover-bg bg-no-repeat bg-left overflow-hidden">
+                <div className="w-1/2 rounded-r-lg  bg-thinBlue flex items-center password-cover-bg justify-center  p-28 signup-cover-bg bg-no-repeat bg-left overflow-hidden">
                     <img src={bgForgotImage} alt="" className="object-cover" />
                 </div>
                 <div className="w-1/2 flex pl-7.5 pt-13.1 flex-col overflow-scroll pb-5">
