@@ -20,7 +20,7 @@ const ResendVerificationMail: React.FC = () => {
   const tokenData = getLocalRefreshToken() || "";
   const token: string | any = searchParams.get('confirm') || "";
 
-  const verifyToken:DecodeToken = token && decodeToken(token);
+  const verifyToken:DecodeToken = token && decodeToken(token) || decodeToken(tokenData);
 
   useEffect(()=>{
     if(token){
