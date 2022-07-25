@@ -72,6 +72,7 @@ function* verifyEmail(action: PayloadAction<VerifyEmailInput>) {
         }
     } catch (e) {
         const error = e as AxiosError<unknown>;
+        if(error?.response?.data?.message === "Email already verified") yield put(authSlice.actions.formikValueReset(true));
         showErrorToast(error?.response?.data?.message);
     } finally {
         yield put(loaderSlice.actions.stopLoadingAction(VERIFY_EMAIL));
