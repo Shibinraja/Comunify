@@ -1,4 +1,5 @@
 import { default as Axios, default as axios } from 'axios';
+import { showErrorToast } from 'common/toast/toastFunctions';
 import { isBefore } from 'date-fns';
 import { DecodeToken } from 'modules/authentication/interface/authentication.interface';
 import { API_ENDPOINT, auth_module } from './config';
@@ -46,11 +47,28 @@ request.interceptors.request.use(
     },
 );
 
+// For Response
 request.interceptors.response.use(
-    response => response,
-    error => {
+   response => response,
+     error => {
+        const token = getLocalRefreshToken();
         if (error.response.status === 410) {
             window.location.href = '/subscription/expired';
+        }
+        if( error.response.data.message === 'Token expired') {
+            axios.post(`${API_ENDPOINT}${auth_module}/logout`,{},{
+                withCredentials:true,
+                headers:{
+                    Authorization: `Bearer ${token}`,
+                }
+          }).then((res)=>{
+                //
+          }).catch((err)=>{
+            showErrorToast(err?.response?.data?.message);
+            window.localStorage.clear(); 
+            window.location.href='/'
+          })
+    
         }
         return Promise.reject(error);
     },
