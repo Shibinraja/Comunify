@@ -1,4 +1,4 @@
-export const API_ENDPOINT = 'https://testapi.comunifyllc.com' || process.env.base_url
+export const API_ENDPOINT =  'https://testapi.comunifyllc.com' || process.env.base_url
 
 // Auth Module URL
 export const auth_module = '/auth/v1';
