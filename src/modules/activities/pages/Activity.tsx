@@ -40,7 +40,7 @@ const Activity: React.FC = () => {
 
 
   return (
-    <div className="memberTable mt-1.8 flex flex-col">
+    <div className="container mx-auto memberTable mt-1.8 flex flex-col">
       <div className="flex items-center ">
         <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 w-full">
           Activities
@@ -50,7 +50,7 @@ const Activity: React.FC = () => {
             type="text"
             name="search"
             id="searchId"
-            className="app-input-card-border focus:outline-none px-4 mr-0.76 box-border h-3.06 w-19.06 bg-white shadow-profileCard rounded-0.6 placeholder:text-reportSearch placeholder:text-card placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.12 font-Poppins"
+            className="app-input-card-border focus:outline-none px-4 mr-0.76 box-border h-3.06 w-19.06 mt-2 bg-white shadow-profileCard rounded-0.6 placeholder:text-reportSearch placeholder:text-card placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.12 font-Poppins"
             placeholder="Search By Name or Email"
           />
         </div>
@@ -73,7 +73,7 @@ const Activity: React.FC = () => {
                   className="mx-auto focus:outline-none px-3 box-border bg-white shadow-profileCard rounded-0.6 app-input-card-border h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
                   placeholder="Report Name"
                 />
-                <div className="absolute right-5 w-0.78 h-3 z-40">
+                <div className="absolute right-5 top-4 w-0.78 h-3 z-40">
                   <img src={searchIcon} alt="" />
                 </div>
               </div>
