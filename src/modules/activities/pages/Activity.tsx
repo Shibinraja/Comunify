@@ -40,7 +40,7 @@ const Activity: React.FC = () => {
 
 
   return (
-    <div className="memberTable mt-1.8 flex flex-col">
+    <div className="container mx-auto memberTable mt-1.8 flex flex-col">
       <div className="flex items-center ">
         <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 w-full">
           Activities
@@ -50,7 +50,7 @@ const Activity: React.FC = () => {
             type="text"
             name="search"
             id="searchId"
-            className="app-input-card-border focus:outline-none px-4 mr-0.76 box-border h-3.06 w-19.06 bg-white shadow-profileCard rounded-0.6 placeholder:text-reportSearch placeholder:text-card placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.12 font-Poppins"
+            className="app-input-card-border focus:outline-none px-4 mr-0.76 box-border h-3.06 w-19.06 mt-2 bg-white shadow-profileCard rounded-0.6 placeholder:text-reportSearch placeholder:text-card placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.12 font-Poppins"
             placeholder="Search By Name or Email"
           />
         </div>
@@ -73,7 +73,7 @@ const Activity: React.FC = () => {
                   className="mx-auto focus:outline-none px-3 box-border bg-white shadow-profileCard rounded-0.6 app-input-card-border h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
                   placeholder="Report Name"
                 />
-                <div className="absolute right-5 w-0.78 h-3 z-40">
+                <div className="absolute right-5 top-4 w-0.78 h-3 z-40">
                   <img src={searchIcon} alt="" />
                 </div>
               </div>
@@ -88,7 +88,7 @@ const Activity: React.FC = () => {
               <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
                 <div className="flex items-center">
                   <div className="mr-2">
-                    <input type="checkbox" />
+                    <input type="checkbox" className="checkbox"/>
                   </div>
                   <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                     All
@@ -96,7 +96,7 @@ const Activity: React.FC = () => {
                 </div>
                 <div className="flex items-center">
                   <div className="mr-2">
-                    <input type="checkbox" />
+                    <input type="checkbox" className="checkbox"/>
                   </div>
                   <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                     Salesforce
@@ -104,7 +104,7 @@ const Activity: React.FC = () => {
                 </div>
                 <div className="flex items-center">
                   <div className="mr-2">
-                    <input type="checkbox" />
+                    <input type="checkbox" className="checkbox"/>
                   </div>
                   <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                     Khoros
@@ -122,7 +122,7 @@ const Activity: React.FC = () => {
               <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
                 <div className="flex items-center">
                   <div className="mr-2">
-                    <input type="checkbox" />
+                    <input type="checkbox" className="checkbox"/>
                   </div>
                   <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                     Daily
@@ -130,7 +130,7 @@ const Activity: React.FC = () => {
                 </div>
                 <div className="flex items-center">
                   <div className="mr-2">
-                    <input type="checkbox" />
+                    <input type="checkbox" className="checkbox"/>
                   </div>
                   <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                     Weekly
@@ -138,7 +138,7 @@ const Activity: React.FC = () => {
                 </div>
                 <div className="flex items-center">
                   <div className="mr-2">
-                    <input type="checkbox" />
+                    <input type="checkbox" className="checkbox"/>
                   </div>
                   <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                     Monthly
@@ -166,7 +166,7 @@ const Activity: React.FC = () => {
         </div>
       </div>
       <div className="py-2 overflow-x-auto mt-1.868">
-        <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-t-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixTableHead max-h-34">
+        <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixTableHead max-h-34">
           <table className="min-w-full relative  rounded-t-0.6 ">
             <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
               <tr className="min-w-full">
@@ -193,7 +193,7 @@ const Activity: React.FC = () => {
                   <td className="px-6 py-3 border-b">
                     <div className="flex ">
                       <div className="py-3 mr-2">
-                        <input type="checkbox" />
+                        <input type="checkbox" className="checkbox"/>
                       </div>
                       <div>
                       <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
@@ -244,7 +244,9 @@ const Activity: React.FC = () => {
                   </td>
                 </tr>
               ))}
-
+              <tr className="px-6 py-3 ">
+                <td className="px-6 py-3 "></td>
+              </tr>
             </tbody>
           </table>
           <Modal
@@ -370,7 +372,7 @@ const Activity: React.FC = () => {
               </div>
             </div>
           </Modal>
-          <div className="px-6 py-6 flex items-center gap-0.66 justify-center w-full rounded-b-lg ">
+          <div className="px-6 py-6 flex items-center gap-0.66 pl-[30%] w-full rounded-b-lg fixed bottom-0 bg-white">
             <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
               <img src={prevIcon} alt="" />
             </div>

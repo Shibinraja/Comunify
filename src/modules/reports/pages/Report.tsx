@@ -81,7 +81,7 @@ const Report: React.FC = () => {
                 <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
                   <div className="flex items-center">
                     <div className="mr-2">
-                      <input type="checkbox" />
+                      <input type="checkbox" className="checkbox"/>
                     </div>
                     <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                       All
@@ -89,7 +89,7 @@ const Report: React.FC = () => {
                   </div>
                   <div className="flex items-center">
                     <div className="mr-2">
-                      <input type="checkbox" />
+                      <input type="checkbox" className="checkbox"/>
                     </div>
                     <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                       Salesforce
@@ -97,7 +97,7 @@ const Report: React.FC = () => {
                   </div>
                   <div className="flex items-center">
                     <div className="mr-2">
-                      <input type="checkbox" />
+                      <input type="checkbox" className="checkbox"/>
                     </div>
                     <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                       Khoros
@@ -115,7 +115,7 @@ const Report: React.FC = () => {
                 <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
                   <div className="flex items-center">
                     <div className="mr-2">
-                      <input type="checkbox" />
+                      <input type="checkbox" className="checkbox"/>
                     </div>
                     <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                       Daily
@@ -123,7 +123,7 @@ const Report: React.FC = () => {
                   </div>
                   <div className="flex items-center">
                     <div className="mr-2">
-                      <input type="checkbox" />
+                      <input type="checkbox" className="checkbox"/>
                     </div>
                     <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                       Weekly
@@ -131,7 +131,7 @@ const Report: React.FC = () => {
                   </div>
                   <div className="flex items-center">
                     <div className="mr-2">
-                      <input type="checkbox" />
+                      <input type="checkbox" className="checkbox"/>
                     </div>
                     <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                       Monthly
@@ -159,7 +159,7 @@ const Report: React.FC = () => {
           </div>
         </div>
         <div className="py-2 overflow-x-auto mt-1.868">
-          <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-t-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixTableHead max-h-34">
+          <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixTableHead max-h-34">
             <table className="min-w-full relative  rounded-t-0.6 ">
               <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky z-40">
                 <tr className="min-w-full">
@@ -246,11 +246,14 @@ const Report: React.FC = () => {
                       </td>
                     </tr>
                   ))}
+                  <tr className="px-6 py-3 ">
+                    <td className="px-6 py-3 "></td>
+                  </tr>
               </tbody>
             </table>
 
 
-            <div className="px-6 py-6 flex items-center gap-0.66 justify-center w-full rounded-b-lg ">
+            <div className="px-6 py-6 flex items-center gap-0.66 pl-[30%] w-full rounded-b-lg fixed bg-white bottom-0">
               <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
                 <img src={prevIcon} alt="" />
               </div>
