@@ -166,7 +166,7 @@ const Activity: React.FC = () => {
         </div>
       </div>
       <div className="py-2 overflow-x-auto mt-1.868">
-        <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-t-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixTableHead max-h-34">
+        <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixTableHead max-h-34">
           <table className="min-w-full relative  rounded-t-0.6 ">
             <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
               <tr className="min-w-full">
@@ -244,7 +244,9 @@ const Activity: React.FC = () => {
                   </td>
                 </tr>
               ))}
-
+              <tr className="px-6 py-3 ">
+                <td className="px-6 py-3 "></td>
+              </tr>
             </tbody>
           </table>
           <Modal
@@ -370,7 +372,7 @@ const Activity: React.FC = () => {
               </div>
             </div>
           </Modal>
-          <div className="px-6 py-6 flex items-center gap-0.66 justify-center w-full rounded-b-lg ">
+          <div className="px-6 py-6 flex items-center gap-0.66 pl-[30%] w-full rounded-b-lg fixed bottom-0 bg-white">
             <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
               <img src={prevIcon} alt="" />
             </div>
