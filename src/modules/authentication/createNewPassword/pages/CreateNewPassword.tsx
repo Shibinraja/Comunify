@@ -58,7 +58,7 @@ const CreateNewPassword: React.FC = () => {
   return (
     <div className="create-password">
       <div className="flex w-full height-calc">
-        <div className="w-1/2 rounded-r-lg  bg-thinBlue flex items-center justify-center p-28 signup-cover-bg bg-no-repeat bg-left overflow-hidden">
+        <div className="w-1/2 rounded-r-lg  bg-thinBlue flex items-center password-cover-bg  justify-center p-28 signup-cover-bg bg-no-repeat bg-left overflow-hidden">
           <img src={bgSignInImage} alt="" className="object-cover" />
         </div>
         <div className="flex flex-col w-1/2 pt-13.1 pl-7.5 overflow-scroll">

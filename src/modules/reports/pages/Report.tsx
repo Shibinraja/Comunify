@@ -81,7 +81,7 @@ const Report: React.FC = () => {
                 <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
                   <div className="flex items-center">
                     <div className="mr-2">
-                      <input type="checkbox" />
+                      <input type="checkbox" className="checkbox"/>
                     </div>
                     <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                       All
@@ -89,7 +89,7 @@ const Report: React.FC = () => {
                   </div>
                   <div className="flex items-center">
                     <div className="mr-2">
-                      <input type="checkbox" />
+                      <input type="checkbox" className="checkbox"/>
                     </div>
                     <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                       Salesforce
@@ -97,7 +97,7 @@ const Report: React.FC = () => {
                   </div>
                   <div className="flex items-center">
                     <div className="mr-2">
-                      <input type="checkbox" />
+                      <input type="checkbox" className="checkbox"/>
                     </div>
                     <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                       Khoros
@@ -115,7 +115,7 @@ const Report: React.FC = () => {
                 <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
                   <div className="flex items-center">
                     <div className="mr-2">
-                      <input type="checkbox" />
+                      <input type="checkbox" className="checkbox"/>
                     </div>
                     <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                       Daily
@@ -123,7 +123,7 @@ const Report: React.FC = () => {
                   </div>
                   <div className="flex items-center">
                     <div className="mr-2">
-                      <input type="checkbox" />
+                      <input type="checkbox" className="checkbox"/>
                     </div>
                     <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                       Weekly
@@ -131,7 +131,7 @@ const Report: React.FC = () => {
                   </div>
                   <div className="flex items-center">
                     <div className="mr-2">
-                      <input type="checkbox" />
+                      <input type="checkbox" className="checkbox"/>
                     </div>
                     <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                       Monthly

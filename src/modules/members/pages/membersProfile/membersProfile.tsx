@@ -271,7 +271,7 @@ const MembersProfile: React.FC = () => {
                         <div className="flex-flex-col relative mt-1.8">
                             <div className="flex">
                                 <div className="mr-0.34">
-                                    <input type="checkbox" className="" />
+                                    <input type="checkbox" className="checkbox"/>
                                 </div>
                                 <div className="flex flex-col">
                                     <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31">Emerson Schleifer</div>

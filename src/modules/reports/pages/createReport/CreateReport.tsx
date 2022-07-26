@@ -70,16 +70,16 @@ const CreateReport=()=>{
                 Choose Condition
               </label>
               <div className="flex gap-[1.375rem] mt-0.375 ">
-                <div className="w-4.06 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12">
+                <div className="w-4.06 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer">
                   1 Day
                 </div>
-                <div className="w-4.06 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12">
+                <div className="w-4.06 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer">
                   1 Week
                 </div>
-                <div className="w-4.06 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12">
+                <div className="w-4.06 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer">
                   1 Month
                 </div>
-                <div className="w-4.06 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12">
+                <div className="w-4.06 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer">
                   1 Year
                 </div>
               </div>
@@ -138,16 +138,16 @@ const CreateReport=()=>{
                 </div>
               </div>
               {isPlatformActive && (
-                <div className="flex-flex-col p-3 app-result-card-border box-border w-20.5 rounded-0.3 shadow-reportInput cursor-pointer absolute bottom-0 bg-white">
+                <div className="flex-flex-col p-3 app-result-card-border box-border w-20.5 rounded-0.3 shadow-reportInput cursor-pointer absolute bottom-0 bg-white z-40">
                   <div className="flex items-center gap-2 cursor-pointer">
                     <div>
-                      <input type="checkbox" />
+                      <input type="checkbox" className="checkbox"/>
                     </div>
                     <div>All</div>
                   </div>
                   <div className="flex items-center gap-2 cursor-pointer mt-5">
                     <div>
-                      <input type="checkbox" />
+                      <input type="checkbox" className="checkbox"/>
                     </div>
                     <div>Slack</div>
                   </div>

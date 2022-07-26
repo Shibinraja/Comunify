@@ -45,7 +45,7 @@ const MembersDraggableColumn: FC = () => {
                         <div className="flex justify-between items-center px-2 cursor-pointer rounded-0.3 h-2.81 bg-white box-border border-table shadow-inputShadow">
                             <div className="flex items-center gap-1">
                                 <div>
-                                    <input type="checkbox" name="" id="" />
+                                    <input type="checkbox" name="" id="" className="checkbox"/>
                                 </div>
                                 <div className="font-Poppins font-normal text-infoBlack text-trial leading-1.31">{item.name}</div>
                             </div>

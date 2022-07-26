@@ -133,6 +133,8 @@ module.exports = {
         1.37:'22px',
         0.61:'9.76px',
         0.76:'12.29px',
+        6.25:'100px',
+        18.75:'300px'
       },
       padding: {
         14: "14.67px",
@@ -256,7 +258,8 @@ module.exports = {
         13.31:'212.96px',
         6.25:'100px',
         11.68:'187px',
-        1.375:'22px'
+        1.375:'22px',
+        11.72:'187.59px'
       },
       height: {
         4.5: "72.87px",
@@ -381,6 +384,7 @@ module.exports = {
         subscription:'0px 100px 80px rgba(110, 181, 217, 0.1);',
         dragButton:'0px 4.90909px 61.3636px rgba(0, 0, 0, 0.2)',
         paymentSubscriptionCard:'0px 100px 80px rgba(110, 181, 217, 0.05)',
+        
         
       },
       maxHeight:{

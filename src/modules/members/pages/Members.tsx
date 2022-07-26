@@ -64,7 +64,7 @@ const Members: FC = () => {
   }
 
   return (
-    <div className="container flex flex-col">
+    <div className="container flex flex-col mx-auto">
       <h3 className="font-Poppins font-semibold text-infoBlack text-infoData leading-9">
         Members
       </h3>
@@ -135,7 +135,7 @@ const Members: FC = () => {
                   {isPlatformActive && <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125 pb-3">
                     <div className="flex items-center">
                       <div className="mr-2">
-                        <input type="checkbox" />
+                        <input type="checkbox" className="checkbox"/>
                       </div>
                       <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                         Slack
@@ -143,7 +143,7 @@ const Members: FC = () => {
                     </div>
                     <div className="flex items-center">
                       <div className="mr-2">
-                        <input type="checkbox" />
+                        <input type="checkbox" className="checkbox"/>
                       </div>
                       <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                         Higher Logic
@@ -151,7 +151,7 @@ const Members: FC = () => {
                     </div>
                     <div className="flex items-center">
                       <div className="mr-2">
-                        <input type="checkbox" />
+                        <input type="checkbox" className="checkbox"/>
                       </div>
                       <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                         Vanilla Forums
@@ -185,7 +185,7 @@ const Members: FC = () => {
                       <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
                         <div className="flex items-center">
                           <div className="mr-2">
-                            <input type="checkbox" />
+                            <input type="checkbox" className="checkbox"/>
                           </div>
                           <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                             Admin
@@ -193,7 +193,7 @@ const Members: FC = () => {
                         </div>
                         <div className="flex items-center">
                           <div className="mr-2">
-                            <input type="checkbox" />
+                            <input type="checkbox" className="checkbox"/>
                           </div>
                           <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                             Influencer
@@ -201,7 +201,7 @@ const Members: FC = () => {
                         </div>
                         <div className="flex items-center">
                           <div className="mr-2">
-                            <input type="checkbox" />
+                            <input type="checkbox" className="checkbox"/>
                           </div>
                           <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                             Influencer
@@ -239,7 +239,7 @@ const Members: FC = () => {
                       <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125 bg-white">
                         <div className="flex items-center">
                           <div className="mr-2">
-                            <input type="checkbox" />
+                            <input type="checkbox" className="checkbox"/>
                           </div>
                           <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                             Texas
@@ -247,7 +247,7 @@ const Members: FC = () => {
                         </div>
                         <div className="flex items-center">
                           <div className="mr-2">
-                            <input type="checkbox" />
+                            <input type="checkbox" className="checkbox"/>
                           </div>
                           <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                             London
@@ -255,7 +255,7 @@ const Members: FC = () => {
                         </div>
                         <div className="flex items-center">
                           <div className="mr-2">
-                            <input type="checkbox" />
+                            <input type="checkbox" className="checkbox"/>
                           </div>
                           <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                             Texas
@@ -292,7 +292,7 @@ const Members: FC = () => {
                       <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125 bg-white">
                         <div className="flex items-center">
                           <div className="mr-2">
-                            <input type="checkbox" />
+                            <input type="checkbox" className="checkbox"/>
                           </div>
                           <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                             Microsoft
@@ -300,7 +300,7 @@ const Members: FC = () => {
                         </div>
                         <div className="flex items-center">
                           <div className="mr-2">
-                            <input type="checkbox" />
+                            <input type="checkbox" className="checkbox"/>
                           </div>
                           <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                             Hp
@@ -308,7 +308,7 @@ const Members: FC = () => {
                         </div>
                         <div className="flex items-center">
                           <div className="mr-2">
-                            <input type="checkbox" />
+                            <input type="checkbox" className="checkbox"/>
                           </div>
                           <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                             Lenovo
