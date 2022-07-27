@@ -31,7 +31,7 @@ request.interceptors.request.use(
     const isExpired = user && isBefore(new Date(user?.exp * 1000), new Date());
     if (!isExpired) {return config;}
 
-    const response = await axios.post(`${API_ENDPOINT}${auth_module}/refresh-token`, {}, {
+    const response = await axios.post(`${API_ENDPOINT}${auth_module}/refreshtoken`, {}, {
       withCredentials:true
     });
     if (response) {

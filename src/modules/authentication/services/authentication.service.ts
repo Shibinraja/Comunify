@@ -29,48 +29,48 @@ export function* signUpService(body: SignUpInput): GeneratorResponse<SignUpRespo
 }
 
 export function* verifyEmailService(token: VerifyEmailInput): GeneratorResponse<TokenResponse> {
-  const { data } = yield request.post(`${auth_module}/verify-email?id=${token.id}`);
+  const { data } = yield request.post(`${auth_module}/verifyemail?id=${token.id}`);
   return data;
 }
 
 export function* resendVerifyEmailService(body: ResendVerificationMailInput): GeneratorResponse<TokenResponse> {
-  const { data } = yield request.post(`${auth_module}/resend-email`, body);
+  const { data } = yield request.post(`${auth_module}/resendemail`, body);
   return data;
 }
 
 export function* forgotPasswordService(body: ForgotPasswordInput): GeneratorResponse<{}> {
-  const { data } = yield request.post(`${auth_module}/forgot-password-email`, body);
+  const { data } = yield request.post(`${auth_module}/forgotpasswordemail`, body);
   return data;
 }
 
 export function* verifyForgotEmailService(token: VerifyEmailInput): GeneratorResponse<TokenResponse> {
-  const { data } = yield request.post(`${auth_module}/verify-forgot-email?id=${token.id}`);
+  const { data } = yield request.post(`${auth_module}/verifyforgotemail?id=${token.id}`);
   return data;
 }
 
 export function* resetPasswordService(body: ResetPasswordInput): GeneratorResponse<{}> {
-  const { data } = yield request.post(`${auth_module}/reset-password`, body);
+  const { data } = yield request.post(`${auth_module}/resetpassword`, body);
   return data;
 }
 
 // Workspace Module
 export function* getWorkspaceService(): GeneratorResponse<WorkspaceResponse> {
-  const { data } = yield request.get(`${workspace_module}/get-workspace`);
+  const { data } = yield request.get(`${workspace_module}/getworkspace`);
   return data;
 }
 
 export function* createWorkspaceService(body: CreateWorkspaceNameInput): GeneratorResponse<WorkspaceResponse> {
-  const { data } = yield request.post(`${workspace_module}/create-workspace`, body);
+  const { data } = yield request.post(`${workspace_module}/createworkspace`, body);
   return data;
 }
 //Subscription Module
 export function* getSubscriptionPackagesService(): GeneratorResponse<SubscriptionPackages> {
-  const { data } = yield request.get(`${subscription_module}/get-subscription`);
+  const { data } = yield request.get(`${subscription_module}/getsubscription`);
   return data;
 }
 
 export function* sendSubscriptionPlan(id: string): GeneratorResponse<SubscriptionPackages> {
-  const { data } = yield request.post(`${subscription_module}/choose-plan/${id}`);
+  const { data } = yield request.post(`${subscription_module}/chooseplan/${id}`);
   return data;
 }
 
