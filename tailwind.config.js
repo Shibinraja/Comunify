@@ -421,7 +421,7 @@ module.exports = {
         9999: '9999'
       },
       backgroundImage: {
-        'background-pattern': "url('src/assets/images/background-pattern.svg')",
+        'background-pattern': "url('src/assets/images/background-pattern.svg')"
       }
     }
   },
