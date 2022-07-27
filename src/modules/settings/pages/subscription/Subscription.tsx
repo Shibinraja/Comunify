@@ -1,7 +1,7 @@
-import Button from "common/button";
-import { TabPanel } from "common/tabs/TabPanel";
-import ToggleButton from "common/ToggleButton/ToggleButton";
-import React, { useState } from "react";
+import Button from 'common/button';
+import { TabPanel } from 'common/tabs/TabPanel';
+import ToggleButton from 'common/ToggleButton/ToggleButton';
+import React, { useState } from 'react';
 import tickIcon from '../../../..//assets/images/tostr.png';
 
 type Props = {

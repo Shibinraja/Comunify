@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 module.exports = {
   content: ["./src/**/*.tsx"],
   theme: {
@@ -55,7 +56,7 @@ module.exports = {
         duration:' #C4C4C4;',
         addTag:' #1E86E7;',
         paymentSubscription:'#fefeff',
-        trialButton:'#9CC986;',
+        trialButton:'#9CC986;'
       },
       margin: {
         2.6: "43px",
@@ -114,7 +115,6 @@ module.exports = {
         1.43: "23px",
         2.625: "42px",
         4.68: "75px",
-        7.59: "121.57px",
         44.618: "713.88px",
         0.438: "7px",
         2.024: "32.39px",
@@ -126,7 +126,6 @@ module.exports = {
         0.653:'10.44px',
         3.19:'51.18px',
         1.30:'20.89px',
-        1.125:'18px',
         0.652:'10.44px',
         9.18:'147px',
         "1.30":'20.8px',
@@ -177,9 +176,6 @@ module.exports = {
         4.68:'75px',
         7.46:'119.5px',
         8.11:'129.76px',
-        6.25:'100px',
-        3.75:'60px',
-        7.5:'120px',
         13.9: "223.57px",
         6.84: "109.57px",
         3.12: "50px",
@@ -189,9 +185,6 @@ module.exports = {
         0.89:'14.24px',
         1.62:'26px',
         1.08:'17.4px'
-
-
-
       },
       width: {
         25.9: "414.75px",
@@ -235,8 +228,6 @@ module.exports = {
         14.889: "238.23px",
         1.918: "30.68px",
         1.959: "31.35px",
-        11.43:'183px',
-        34.37:'550px',
         9.62:'154px',
         3.375:'54px',
         3.003:'48.04px',
@@ -249,7 +240,6 @@ module.exports = {
         2.53:'40.6px',
         38.81:'621.06px',
         41.68:'667px',
-        9.59:'153.53px',
         10.81:'173px',
         41.62:'666px',
         3.12:'49.92px',
@@ -333,14 +323,14 @@ module.exports = {
         createdAt: "8px",
         membersCreatedAt: "6.41509px",
         pageNumber:'9.86548px',
-        preview:'10.2899px;',
+        preview:'10.2899px;'
       },
       fontFamily: {
         Inter: ["Inter", "sans-serif"],
         Outfit: ["Outfit", "sans-serif"],
         Poppins: ["Poppins", "sans-serif"],
         Manrope: ["Manrope", "sans-serif"],
-        Lato:["Lato","sans-serif"]
+        Lato:["Lato", "sans-serif"]
       },
       lineHeight: {
         1.6: "1.688rem",
@@ -358,13 +348,13 @@ module.exports = {
         2.62: "2.625rem",
         3.1: "3rem",
         0.93: "0.938rem",
-        35: "2.188rem",
+        35: "2.188rem"
       },
       borderRadius: {
         0.9: "15px",
         0.6: "10px",
         0.3: "6px",
-        0.31: "5px",
+        0.31: "5px"
       },
       boxShadow: {
         buttonShadowHover: "0px 13.64px 27.2727px rgba(0, 0, 0, 0.15);",
@@ -383,9 +373,7 @@ module.exports = {
         reportInput:'8.32785px 8.32785px 24.9835px rgba(2, 2, 70, 0.05)',
         subscription:'0px 100px 80px rgba(110, 181, 217, 0.1);',
         dragButton:'0px 4.90909px 61.3636px rgba(0, 0, 0, 0.2)',
-        paymentSubscriptionCard:'0px 100px 80px rgba(110, 181, 217, 0.05)',
-        
-        
+        paymentSubscriptionCard:'0px 100px 80px rgba(110, 181, 217, 0.05)'
       },
       maxHeight:{
         34:'47vh'
@@ -397,9 +385,9 @@ module.exports = {
         0.83:'13.42px'
       },
       maxWidth: {
-        '40': '640px',
+        '40': '640px'
       }
-    },
+    }
   },
-  plugins: [],
+  plugins: []
 };

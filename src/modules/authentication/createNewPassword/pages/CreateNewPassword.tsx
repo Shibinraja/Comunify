@@ -1,7 +1,6 @@
-/* eslint-disable react/no-unescaped-entities */
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { AppDispatch } from '../../../../store/index';
-import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
+import { useAppDispatch } from '@/hooks/useRedux';
 import bgSignInImage from '../../../../assets/images/bg-sign.svg';
 import openEyeIcon from '../../../../assets/images/eye.svg';
 import closeEyeIcon from '../../../../assets/images/closeEyeIcon.svg';
@@ -19,19 +18,19 @@ import './CreateNewPassword.css';
 const CreateNewPassword: React.FC = () => {
   const dispatch: AppDispatch = useAppDispatch();
   const [searchParams] = useSearchParams();
-  const token: string | any = searchParams.get('reset') || ""
+  const token: string | any = searchParams.get('reset') || '';
 
   const [password, setPasswordType1] = useState<string>('password');
   const [confirmPassword, setPasswordType2] = useState<string>('password');
 
   const initialValues: PasswordFormValues = {
     password: '',
-    confirmPassword: '',
+    confirmPassword: ''
   };
 
-  useEffect(()=>{
-    if(token) dispatch(authSlice.actions.verifyForgotEmail({id:token}))
-  },[token])
+  useEffect(() => {
+    if (token) {dispatch(authSlice.actions.verifyForgotEmail({id:token}));}
+  }, [token]);
 
   const togglePassword1 = () => {
     if (password === 'password') {
@@ -51,7 +50,7 @@ const CreateNewPassword: React.FC = () => {
 
   const handleSubmit = (values: PasswordFormValues): void => {
     const newValues = {...values};
-        newValues['token'] = token;
+    newValues['token'] = token;
     dispatch(authSlice.actions.resetPassword(newValues));
   };
 
@@ -68,7 +67,7 @@ const CreateNewPassword: React.FC = () => {
           <p className="mt-0.78 text-desc font-normal leading-1.8 font-Inter text-lightGray max-w-sm">
             Enter your new password.
           </p>
-         <Formik
+          <Formik
             initialValues={initialValues}
             onSubmit={handleSubmit}
             validateOnChange={true}
@@ -78,10 +77,8 @@ const CreateNewPassword: React.FC = () => {
               errors,
               handleBlur,
               handleChange,
-              handleSubmit,
-              isSubmitting,
               touched,
-              values,
+              values
             }): JSX.Element => (
               <Form className="w-25.9 mt-1.9 " autoComplete="off">
                 <div className="password relative">
@@ -99,7 +96,7 @@ const CreateNewPassword: React.FC = () => {
                     helperText={touched.password && errors.password}
                   />
                   <div onClick={togglePassword1} className="absolute top-7 right-[28.87px]">
-                    {password === "password" ? (
+                    {password === 'password' ? (
                       <img
                         className="cursor-pointer "
                         src={openEyeIcon}
@@ -129,7 +126,7 @@ const CreateNewPassword: React.FC = () => {
                     helperText={touched.confirmPassword && errors.confirmPassword}
                   />
                   <div onClick={togglePassword2} className="absolute top-7 right-[28.87px]">
-                    {confirmPassword === "password" ? (
+                    {confirmPassword === 'password' ? (
                       <img
                         className="cursor-pointer "
                         src={openEyeIcon}
@@ -162,19 +159,19 @@ const CreateNewPassword: React.FC = () => {
 
 const confirmPasswordSchema = Yup.object().shape({
   password: Yup.string()
-    .required("Password is required")
-    .min(8, "Password must be atleast 8 characters")
+    .required('Password is required')
+    .min(8, 'Password must be atleast 8 characters')
     .matches(
       password_regex,
-      "Password must have one uppercase , one lowercase , a digit and specialcharacters"
+      'Password must have one uppercase , one lowercase , a digit and specialcharacters'
     ),
   confirmPassword: Yup.string()
-    .min(8, "Password must be atleast 8 characters")
-    .oneOf([Yup.ref("password"), null], "Passwords must match")
+    .min(8, 'Password must be atleast 8 characters')
+    .oneOf([Yup.ref('password'), null], 'Passwords must match')
     // .matches(
     //   password_regex,
     //   "Password must have one uppercase , one lowercase , a digit and specialcharacters"
     // )
-    .required("Confirm Password is required"),
+    .required('Confirm Password is required')
 });
 export default CreateNewPassword;

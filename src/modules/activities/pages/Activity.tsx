@@ -1,4 +1,5 @@
-import Input from "common/input";
+import React, {useState} from 'react';
+import Input from 'common/input';
 import nextIcon from '../../../assets/images/next-page-icon.svg';
 import prevIcon from '../../../assets/images/previous-page-icon.svg';
 import slackIcon from '../../../assets/images/slack.svg';
@@ -10,11 +11,10 @@ import filterDownIcon from '../../../assets/images/report-dropdown.svg';
 import exportImage from '../../../assets/images/export.svg';
 
 
-import { activityData } from "./ActivityTableData";
+import { activityData } from './ActivityTableData';
 import Modal from 'react-modal';
-import { useState } from "react";
-import Button from "common/button";
-import "./Activity.css";
+import Button from 'common/button';
+import './Activity.css';
 
 
 Modal.setAppElement('#root');
@@ -23,7 +23,6 @@ const Activity: React.FC = () => {
 
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [isTagModalOpen, setTagModalOpen] = useState<boolean>(false);
-  const [isDropdownActive, setisDropdownActive] = useState<number>(0);
   const [isFilterDropdownActive, setisFilterDropdownActive] = useState<boolean>(false);
 
   const handleFilterDropdown = (): void => {
@@ -31,12 +30,11 @@ const Activity: React.FC = () => {
   };
 
   const handleModal = (val: boolean) => {
-    setModalOpen(val)
-  }
+    setModalOpen(val);
+  };
   const handleTagModal = (val: boolean) => {
     setTagModalOpen(val);
   };
-
 
 
   return (
@@ -157,7 +155,7 @@ const Activity: React.FC = () => {
 
         </div>
         <div className="">
-        <div className="app-input-card-border w-6.98 h-3.06 rounded-0.6 shadow-contactCard box-border bg-white items-center justify-evenly flex ml-0.63 cursor-pointer">
+          <div className="app-input-card-border w-6.98 h-3.06 rounded-0.6 shadow-contactCard box-border bg-white items-center justify-evenly flex ml-0.63 cursor-pointer">
             <h3 className="text-dropGray leading-1.12 font-Poppins font-semibld text-card">
               Export
             </h3>
@@ -196,9 +194,9 @@ const Activity: React.FC = () => {
                         <input type="checkbox" className="checkbox"/>
                       </div>
                       <div>
-                      <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                        {data.memberName}
-                      </div>
+                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                          {data.memberName}
+                        </div>
                       </div>
                     </div>
                   </td>
@@ -392,38 +390,38 @@ const Activity: React.FC = () => {
           </div>
         </div>
       </div>
-    
+
       <div className="mt-5 pl-5 hidden">
-      <div className="w-12.87 h-4.57 profile-card-header rounded-t-0.6"></div>
-      <div className="w-12.87 pb-3 rounded-b-0.6 profile-card-body profile-inner shadow-profileCard flex flex-col items-center bg-white">
-        <div className="w-4.43 h-4.43 -mt-10 flex items-center justify-center">
-          <img src={profileImage} alt="" />
-        </div>
-        <div className="font-semibold font-Poppins text-card text-profileBlack leading-1.12">
+        <div className="w-12.87 h-4.57 profile-card-header rounded-t-0.6"></div>
+        <div className="w-12.87 pb-3 rounded-b-0.6 profile-card-body profile-inner shadow-profileCard flex flex-col items-center bg-white">
+          <div className="w-4.43 h-4.43 -mt-10 flex items-center justify-center">
+            <img src={profileImage} alt="" />
+          </div>
+          <div className="font-semibold font-Poppins text-card text-profileBlack leading-1.12">
           Randy Dias
-        </div>
-        <div className="text-profileEmail font-Poppins font-normal text-profileBlack text-center w-6.875 mt-0.146">
+          </div>
+          <div className="text-profileEmail font-Poppins font-normal text-profileBlack text-center w-6.875 mt-0.146">
           randy125@mail.com neoito technologies pvt ltd
-        </div>
-        <div className="flex mt-2.5">
-          <div className="bg-cover bg-center mr-1 w-0.92 h-0.92">
-            <img src={slackIcon} alt="" />
           </div>
-          <div className="bg-cover bg-center mr-1 w-0.92 h-0.92">
-            <img src={slackIcon} alt="" />
+          <div className="flex mt-2.5">
+            <div className="bg-cover bg-center mr-1 w-0.92 h-0.92">
+              <img src={slackIcon} alt="" />
+            </div>
+            <div className="bg-cover bg-center mr-1 w-0.92 h-0.92">
+              <img src={slackIcon} alt="" />
+            </div>
+            <div className="bg-cover bg-center mr-1 w-0.92 h-0.92">
+              <img src={slackIcon} alt="" />
+            </div>
           </div>
-          <div className="bg-cover bg-center mr-1 w-0.92 h-0.92">
-            <img src={slackIcon} alt="" />
-          </div>
-        </div>
-        <div className="mt-0.84 font-normal font-Poppins text-card underline text-profileBlack leading-5 cursor-pointer">
+          <div className="mt-0.84 font-normal font-Poppins text-card underline text-profileBlack leading-5 cursor-pointer">
           VIEW PROFILE
+          </div>
         </div>
       </div>
+
     </div>
-      
-    </div>
-  )
-}
+  );
+};
 
 export default Activity;

@@ -1,3 +1,4 @@
+import React from 'react';
 import { useTabs } from '@/hooks/useTabs';
 import { TabSelector } from 'common/tabs/TabSelector';
 import BillingHistory from './billingHistory/BillingHistory';
@@ -10,7 +11,7 @@ const Settings = () => {
     'integrations',
     'subscription',
     'billing_history',
-    'tags',
+    'tags'
   ]);
 
   return (
@@ -21,63 +22,63 @@ const Settings = () => {
       <div className="w-full mt-10 flex flex-col ">
         <nav className="flex items-end">
           <TabSelector
-            isActive={selectedTab === "integrations"}
-            onClick={() => setSelectedTab("integrations")}
+            isActive={selectedTab === 'integrations'}
+            onClick={() => setSelectedTab('integrations')}
             style={
-              "text-center justify-center text-xs font-Poppins not-italic font-normal text-profileBlack leading-4 font-medium w-12.87 h-2.68 border-solid border border-settingsTabBorder"
+              'text-center justify-center text-xs font-Poppins not-italic font-normal text-profileBlack leading-4 font-medium w-12.87 h-2.68 border-solid border border-settingsTabBorder'
             }
             styleActive={
-              "h-3.12 border-b-2 border-b-solid border-b-settingsTabActive"
+              'h-3.12 border-b-2 border-b-solid border-b-settingsTabActive'
             }
-            styleInActive={"text-profileBlack "}
+            styleInActive={'text-profileBlack '}
           >
             INTEGRATIONS
           </TabSelector>
           <TabSelector
-            isActive={selectedTab === "subscription"}
-            onClick={() => setSelectedTab("subscription")}
+            isActive={selectedTab === 'subscription'}
+            onClick={() => setSelectedTab('subscription')}
             style={
-              "text-center justify-center text-xs font-Poppins not-italic font-normal text-profileBlack leading-4 font-medium w-12.87 h-2.68 border border-solid border-settingsTabBorder"
+              'text-center justify-center text-xs font-Poppins not-italic font-normal text-profileBlack leading-4 font-medium w-12.87 h-2.68 border border-solid border-settingsTabBorder'
             }
             styleActive={
-              "h-3.12 border-b-2 border-b-solid border-b-settingsTabActive"
+              'h-3.12 border-b-2 border-b-solid border-b-settingsTabActive'
             }
-            styleInActive={"text-profileBlack"}
+            styleInActive={'text-profileBlack'}
           >
             SUBSCRIPTION
           </TabSelector>
           <TabSelector
-            isActive={selectedTab === "billing_history"}
-            onClick={() => setSelectedTab("billing_history")}
+            isActive={selectedTab === 'billing_history'}
+            onClick={() => setSelectedTab('billing_history')}
             style={
-              "text-center justify-center text-xs font-Poppins not-italic font-normal text-profileBlack leading-4 font-medium w-12.87 h-2.68 border border-solid border-settingsTabBorder"
+              'text-center justify-center text-xs font-Poppins not-italic font-normal text-profileBlack leading-4 font-medium w-12.87 h-2.68 border border-solid border-settingsTabBorder'
             }
             styleActive={
-              "h-3.12 border-b-2 border-b-solid border-b-settingsTabActive"
+              'h-3.12 border-b-2 border-b-solid border-b-settingsTabActive'
             }
-            styleInActive={"text-profileBlack"}
+            styleInActive={'text-profileBlack'}
           >
             BILLING HISTORY
           </TabSelector>
           <TabSelector
-            isActive={selectedTab === "tags"}
-            onClick={() => setSelectedTab("tags")}
+            isActive={selectedTab === 'tags'}
+            onClick={() => setSelectedTab('tags')}
             style={
-              "text-center justify-center text-xs font-Poppins not-italic font-normal text-profileBlack leading-4 font-medium w-12.87 h-2.68 border border-solid border-settingsTabBorder"
+              'text-center justify-center text-xs font-Poppins not-italic font-normal text-profileBlack leading-4 font-medium w-12.87 h-2.68 border border-solid border-settingsTabBorder'
             }
             styleActive={
-              "h-3.12 border-b-2 border-b-solid border-b-settingsTabActive"
+              'h-3.12 border-b-2 border-b-solid border-b-settingsTabActive'
             }
-            styleInActive={"text-profileBlack"}
+            styleInActive={'text-profileBlack'}
           >
             TAGS
           </TabSelector>
         </nav>
         <div className="items-center relative overflow-y-auto block section ">
-          <Integration hidden={selectedTab !== "integrations"} />
-          <Subscription hidden={selectedTab !== "subscription"}/>
-          <BillingHistory hidden={selectedTab !== "billing_history"}/>
-          <Tags hidden={selectedTab !== "tags"}/>
+          <Integration hidden={selectedTab !== 'integrations'} />
+          <Subscription hidden={selectedTab !== 'subscription'}/>
+          <BillingHistory hidden={selectedTab !== 'billing_history'}/>
+          <Tags hidden={selectedTab !== 'tags'}/>
         </div>
       </div>
     </div>

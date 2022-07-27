@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from 'react';
+import React, { useState }  from 'react';
 import MembersCard from 'common/membersCard/membersCard';
 import Modal from 'react-modal';
 import './Members.css';
@@ -21,7 +21,7 @@ import MembersDraggableColumn from './membersTableColumn/membersDraggableColumn'
 
 Modal.setAppElement('#root');
 
-const Members: FC = () => {
+const Members: React.FC = () => {
 
   const navigate = useNavigate();
   const [isModalOpen, setisModalOpen] = useState<boolean>(false);
@@ -33,35 +33,34 @@ const Members: FC = () => {
   const [isOrganizationActive, setOrganizationActive] = useState<boolean>(false);
 
 
-
   const handleFilterDropdown = (val: boolean): void => {
-    setisFilterDropdownActive(val)
+    setisFilterDropdownActive(val);
   };
 
   const handlePlatformActive = (val: boolean) => {
-    setPlatformActive(val)
-  }
+    setPlatformActive(val);
+  };
 
   const handleLocationActive = (val: boolean) => {
-    setLocationActive(val)
-  }
+    setLocationActive(val);
+  };
 
 
   const handleTagActive = (val: boolean) => {
-    setTagActive(val)
-  }
+    setTagActive(val);
+  };
 
   const handleOrganizationActive = (val: boolean) => {
-    setOrganizationActive(val)
-  }
+    setOrganizationActive(val);
+  };
 
   const handleModalClose = () => {
     setisModalOpen(false);
-  }
+  };
 
   const navigateToProfile = () => {
     navigate('/members/profile');
-  }
+  };
 
   return (
     <div className="container flex flex-col mx-auto">
@@ -124,7 +123,10 @@ const Members: FC = () => {
               >
                 <div className="flex flex-col pb-5">
                   <div className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06  px-3 mx-auto  cursor-pointer"
-                    onClick={() => { handlePlatformActive(isPlatformActive ? false : true); handleTagActive(false); handleLocationActive(false); handleOrganizationActive(false) }}>
+                    onClick={() => { handlePlatformActive(isPlatformActive ? false : true);
+                      handleTagActive(false);
+                      handleLocationActive(false);
+                      handleOrganizationActive(false); }}>
                     <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">
                       Platform
                     </div>
@@ -160,7 +162,10 @@ const Members: FC = () => {
                   </div>}
 
                   <div className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06 px-3 mx-auto  cursor-pointer"
-                    onClick={() => { handleTagActive(isTagActive ? false : true); handlePlatformActive(false); handleLocationActive(false); handleOrganizationActive(false) }}>
+                    onClick={() => { handleTagActive(isTagActive ? false : true);
+                      handlePlatformActive(false);
+                      handleLocationActive(false);
+                      handleOrganizationActive(false); }}>
                     <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">
                       Tags
                     </div>
@@ -214,7 +219,9 @@ const Members: FC = () => {
 
 
                   <div className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06 px-3 mx-auto  cursor-pointer"
-                    onClick={() => { handleLocationActive(isLocationActive ? false : true); handleTagActive(false); handlePlatformActive(false); handleOrganizationActive(false) }}>
+                    onClick={() => { handleLocationActive(isLocationActive ? false : true);
+                      handleTagActive(false); handlePlatformActive(false);
+                      handleOrganizationActive(false); }}>
                     <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">
                       Location
                     </div>
@@ -267,7 +274,9 @@ const Members: FC = () => {
 
 
                   <div className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06  px-3 mx-auto  cursor-pointer"
-                  onClick={() => { handleOrganizationActive(isOrganizationActive ? false : true); handleTagActive(false); handlePlatformActive(false); handleLocationActive(false) }}>
+                    onClick={() => { handleOrganizationActive(isOrganizationActive ? false : true);
+                      handleTagActive(false); handlePlatformActive(false);
+                      handleLocationActive(false); }}>
                     <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">
                       Organization
                     </div>

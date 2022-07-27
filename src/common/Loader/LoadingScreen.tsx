@@ -1,10 +1,7 @@
-import type { FC } from 'react';
+import React from 'react';
 
-const LoadingScreen: FC = () => {
-
-    return (
-        <div className='bg-inherit min-h-full'/>
-    );
-};
+const LoadingScreen: React.FC = () => (
+  <div className='bg-inherit min-h-full'/>
+);
 
 export default LoadingScreen;

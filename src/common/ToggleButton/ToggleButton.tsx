@@ -1,4 +1,4 @@
-
+import React from 'react';
 interface SwitchProps {
   value: boolean;
   onChange: () => void;

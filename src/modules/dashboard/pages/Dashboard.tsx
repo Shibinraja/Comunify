@@ -6,11 +6,11 @@ import brickIcon from '../../../assets/images/brick.svg';
 import dropDownIcon from '../../../assets/images/profile-dropdown.svg';
 
 const Dashboard: React.FC = () => {
-  
+
   const [isSelectDropDownActive, setSelectDropDownActive] = useState<boolean>(false);
   const [selected, setSelected] = useState<string>('');
   const handleDropDownActive = (): void => {
-    setSelectDropDownActive(prev => !prev);
+    setSelectDropDownActive((prev) => !prev);
   };
   const selectOptions = ['This Week', 'Last Week', 'Month'];
 
@@ -27,8 +27,8 @@ const Dashboard: React.FC = () => {
           </div>
           {isSelectDropDownActive &&
             <div className="absolute top-12 w-11.72 app-input-card-border bg-white shadow-integrationCardShadow rounded-0.6" onClick={handleDropDownActive}>
-              {selectOptions.map((options: string) =>
-                <div className="flex flex-col p-2 hover:bg-signUpDomain transition ease-in duration-300 cursor-pointer">
+              {selectOptions.map((options: string, index: number) =>
+                <div key={index} className="flex flex-col p-2 hover:bg-signUpDomain transition ease-in duration-300 cursor-pointer">
                   <div className="text-searchBlack font-Poppins font-normal text-trial leading-1.31" onClick={() => setSelected(options)}>{options}</div>
                 </div>
               )}

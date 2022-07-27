@@ -2,7 +2,7 @@ import React from 'react';
 
 const ToastContent = ({
   title,
-  description,
+  description
 }: {
   title: string;
   description: string;

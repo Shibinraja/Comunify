@@ -6,6 +6,6 @@ import { SagaType } from './rootSagaTypes';
 
 export default function* rootSaga(): Generator<
   AllEffect<SagaIterator<SagaType>>
-> {
+  > {
   yield all([authSaga(), membersSaga()]);
 }

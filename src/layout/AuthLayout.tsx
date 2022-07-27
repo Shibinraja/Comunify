@@ -9,19 +9,19 @@ import ResolutionLayout from './ResolutionLayout';
 const AuthLayout: React.FC = () => {
   const {width:screenWidth} = getResolution();
 
-    return (
-        <Fragment>
-            {screenWidth < maximum_screen_height ? (
-                <ResolutionLayout />
-            ) : (
-                <div>
-                    <Header />
-                    <Outlet />
-                    <Footer />
-                </div>
-            )}
-        </Fragment>
-    );
+  return (
+    <Fragment>
+      {screenWidth < maximum_screen_height ? (
+        <ResolutionLayout />
+      ) : (
+        <div>
+          <Header />
+          <Outlet />
+          <Footer />
+        </div>
+      )}
+    </Fragment>
+  );
 };
 
 export default AuthLayout;

@@ -1,8 +1,9 @@
+import React from 'react';
 import { ButtonProps } from '../../interface/interface';
 
 const Button: React.FC<ButtonProps> = ({
   text,
-  isLoading,
+  //   isLoading,
   disabled,
   className,
   children,

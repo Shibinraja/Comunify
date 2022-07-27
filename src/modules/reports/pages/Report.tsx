@@ -1,5 +1,5 @@
+import React, { useState }  from 'react';
 import Input from 'common/input';
-import { useState } from 'react';
 import downArrow from '../../../assets/images/filter-dropdown.svg';
 import filterDownIcon from '../../../assets/images/report-dropdown.svg';
 import searchIcon from '../../../assets/images/search.svg';
@@ -10,7 +10,7 @@ import Button from 'common/button';
 import { useNavigate } from 'react-router';
 import nextIcon from '../../../assets/images/next-page-icon.svg';
 import prevIcon from '../../../assets/images/previous-page-icon.svg';
-import closeIcon from '../../../assets/images/close.svg';
+// import closeIcon from '../../../assets/images/close.svg';
 
 const Report: React.FC = () => {
   const navigate = useNavigate();
@@ -28,8 +28,8 @@ const Report: React.FC = () => {
   };
 
   const navigateToCreateReport = () => {
-    navigate('/reports/create-report')
-  }
+    navigate('/reports/create-report');
+  };
 
   return (
     <div className="mt-2.62 w-full">
@@ -182,73 +182,73 @@ const Report: React.FC = () => {
               </thead>
               <tbody>
 
-              {reportData.map((data, i) => (
-                    <tr className="border-b" key={i}>
-                      <td className="px-6 py-3">
-                        <div className="flex ">
-                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                            {data.reportName}
-                          </div>
+                {reportData.map((data, i) => (
+                  <tr className="border-b" key={i}>
+                    <td className="px-6 py-3">
+                      <div className="flex ">
+                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                          {data.reportName}
                         </div>
-                      </td>
-                      <td className="px-6 py-3">
-                        <div className="flex ">
-                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                            {data.date}
-                          </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-3">
+                      <div className="flex ">
+                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                          {data.date}
                         </div>
-                      </td>
-                      <td className="px-6 py-3">
-                        <div className="flex gap-x-1">
-                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer w-1.375">
-                            <img src={data.platform.img1} alt="" />
-                          </div>
-                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer w-1.375">
-                            <img src={data.platform.img2} alt="" />
-                          </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-3">
+                      <div className="flex gap-x-1">
+                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer w-1.375">
+                          <img src={data.platform.img1} alt="" />
                         </div>
-                      </td>
-                      <td className="px-6 py-3">
-                        <div className="flex ">
-                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                            {data.reportStatus}
-                          </div>
+                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer w-1.375">
+                          <img src={data.platform.img2} alt="" />
                         </div>
-                      </td>
-                      <td className="px-6 py-3">
-                        <div className="flex   cursor-pointer relative">
-                          <div
-                            onClick={() => handleDropDownActive(data.id)}
-                            className="flex items-center justify-center action  h-3.12 box-border bg-white rounded-0.1 shadow-deleteButton w-3.12 "
-                          >
-                            <img
-                              src={actionDotIcon}
-                              alt=""
-                              className="relative"
-                            />
-                          </div>
-                          {isDropdownActive === data.id && (
-                            <div className="absolute top-6 app-result-card-border bg-white rounded-0.6 box-border w-9.62  right-32 shadow-inputShadow z-40">
-                              {options.map((options, i) => (
-                                <div
-                                  className="flex flex-col"
-                                  onClick={() => handleDropDownActive(0)}
-                                  key={i}
-                                >
-                                  <div className="h-3.06 p-2 flex items-center text-searchBlack font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300">
-                                    {options}
-                                  </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-3">
+                      <div className="flex ">
+                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                          {data.reportStatus}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-3">
+                      <div className="flex   cursor-pointer relative">
+                        <div
+                          onClick={() => handleDropDownActive(data.id)}
+                          className="flex items-center justify-center action  h-3.12 box-border bg-white rounded-0.1 shadow-deleteButton w-3.12 "
+                        >
+                          <img
+                            src={actionDotIcon}
+                            alt=""
+                            className="relative"
+                          />
+                        </div>
+                        {isDropdownActive === data.id && (
+                          <div className="absolute top-6 app-result-card-border bg-white rounded-0.6 box-border w-9.62  right-32 shadow-inputShadow z-40">
+                            {options.map((options, i) => (
+                              <div
+                                className="flex flex-col"
+                                onClick={() => handleDropDownActive(0)}
+                                key={i}
+                              >
+                                <div className="h-3.06 p-2 flex items-center text-searchBlack font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300">
+                                  {options}
                                 </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                  <tr className="px-6 py-3 ">
-                    <td className="px-6 py-3 "></td>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </td>
                   </tr>
+                ))}
+                <tr className="px-6 py-3 ">
+                  <td className="px-6 py-3 "></td>
+                </tr>
               </tbody>
             </table>
 
@@ -275,7 +275,7 @@ const Report: React.FC = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default Report;
