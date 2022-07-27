@@ -11,8 +11,10 @@ import { useAppDispatch } from '../../hooks/useRedux';
 import authSlice from '../../modules/authentication/store/slices/auth.slice';
 import { AppDispatch } from '../../store';
 import Input from 'common/input';
+import { useNavigate } from 'react-router';
 
 const TopBar: React.FC = () => {
+  const navigate = useNavigate();
   const [isDropdownActive, setIsDropdownActive] = useState<boolean>(false);
   const options: string[] = ['Profile Settings', 'Sign Out'];
   const dispatch: AppDispatch = useAppDispatch();
@@ -23,6 +25,8 @@ const TopBar: React.FC = () => {
     switch (data) {
       case 'Sign Out':
         dispatch(authSlice.actions.signOut());
+      case 'Profile Settings':
+        navigate('/account');
         break;
       default:
         break;
