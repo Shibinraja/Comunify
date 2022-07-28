@@ -42,18 +42,18 @@ const Tags: React.FC<Props> = ({ hidden }) => {
             <Modal
               isOpen={isTagModalOpen}
               shouldCloseOnOverlayClick={false}
-              className="w-24.31 h-18.125 mx-auto  mt-32 rounded-lg modals-tag bg-white shadow-modal"
+              className="w-24.31 h-18.75 mx-auto  mt-32 rounded-lg modals-tag bg-white shadow-modal"
             >
               <div className="flex flex-col">
-                <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Tags</h3>
+                <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Add Tag</h3>
                 <form className="flex flex-col relative px-1.93 mt-9">
                   <label htmlFor="billingName " className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack ">
-                                            Enter Tag Name
+                      Tag Name
                   </label>
                   <input
                     type="text"
                     className="mt-0.375 inputs box-border bg-white shadow-inputShadow rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-trial placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
-                    placeholder="Tag Name"
+                    placeholder="Enter Tag Name"
                   />
                   <div className="flex absolute right-1 top-24 pr-6 items-center">
                     <Button
@@ -65,7 +65,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                     <Button
                       type="button"
                       text="SAVE"
-                      className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-7.68 border-none h-2.81 btn-save-modal"
+                      className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-5.25 border-none h-2.81 btn-save-modal"
                     />
                   </div>
                 </form>
