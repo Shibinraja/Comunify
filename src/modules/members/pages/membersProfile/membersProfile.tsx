@@ -193,13 +193,13 @@ const MembersProfile: React.FC = () => {
                       <Button
                         type="button"
                         text="CANCEL"
-                        className="mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  h-2.81 w-5.25 rounded border-none"
+                        className="mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel px-2 py-3  rounded border-none"
                         onClick={() => setTagModalOpen(false)}
                       />
                       <Button
                         type="button"
                         text="SAVE"
-                        className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-5.25 border-none h-2.81 btn-save-modal"
+                        className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn px-5 py-3  border-none btn-save-modal"
                       />
                     </div>
                   </form>
