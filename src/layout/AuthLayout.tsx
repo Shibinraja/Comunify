@@ -11,6 +11,7 @@ import ResolutionLayout from './ResolutionLayout';
 const AuthLayout: React.FC = () => {
   const {width:screenWidth} = getResolution();
   const loader = useLoading();
+
   return (
     <Fragment>
       {screenWidth < maximum_screen_height ? (

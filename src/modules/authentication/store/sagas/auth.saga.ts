@@ -1,32 +1,40 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import {call, put, takeEvery} from 'redux-saga/effects';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import {
-  CREATE_WORKSPACE,
-  FORGOT_PASSWORD,
-  GET_WORKSPACE,
-  LOGIN,
-  RESEND_VERIFY_EMAIL,
-  RESET_PASSWORD,
-  SIGNUP,
-  VERIFY_EMAIL,
-  VERIFY_FORGOT_EMAIL
-} from '../actions/auth.actions';
 import authSlice from '../slices/auth.slice';
 import loaderSlice from '../slices/loader.slice';
 import { SagaIterator } from 'redux-saga';
 import history from '@/lib/history';
 import { showErrorToast, showSuccessToast } from 'common/toast/toastFunctions';
 import {
-  CreateWorkspaceNameInput, ForgotPasswordInput, ResendVerificationMailInput,  ResetPasswordInput,  SignInInput, SignUpInput, SignUpResponse,
-  SubscriptionPackages, TokenResponse, VerifyEmailInput, WorkspaceResponse
+  CreateWorkspaceNameInput,
+  ForgotPasswordInput,
+  ResendVerificationMailInput,
+  ResetPasswordInput,
+  SignInInput,
+  SignUpInput,
+  SignUpResponse,
+  SubscriptionPackages,
+  TokenResponse,
+  VerifyEmailInput,
+  WorkspaceResponse
 } from 'modules/authentication/interface/authentication.interface';
 import {
-  createWorkspaceService, forgotPasswordService, getSubscriptionPackagesService, getWorkspaceService, resendVerifyEmailService, resetPasswordService,
-  signInService, signUpService, verifyEmailService, verifyForgotEmailService, sendSubscriptionPlan, signOutService
+  createWorkspaceService,
+  forgotPasswordService,
+  getSubscriptionPackagesService,
+  getWorkspaceService,
+  resendVerifyEmailService,
+  resetPasswordService,
+  signInService,
+  signUpService,
+  verifyEmailService,
+  verifyForgotEmailService,
+  sendSubscriptionPlan,
+  signOutService
 } from 'modules/authentication/services/authentication.service';
 import { AxiosResponse } from 'axios';
-import {  AxiosError, SuccessResponse } from '@/lib/api';
+import { AxiosError, SuccessResponse } from '@/lib/api';
 
 const forwardTo = (location: string) => {
   history.push(location);
@@ -55,7 +63,7 @@ function* signUp(action: PayloadAction<SignUpInput>) {
     const res: SuccessResponse<SignUpResponse> = yield call(signUpService, action.payload);
 
     if (res?.data) {
-      showSuccessToast('Please, verify your email');
+      showSuccessToast('Please verify your email');
       yield put(authSlice.actions.signUpData(res?.data?.email));
       yield call(forwardTo, '/resend-mail');
     }
@@ -79,7 +87,9 @@ function* verifyEmail(action: PayloadAction<VerifyEmailInput>) {
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
-    if (error?.response?.data?.message === 'Email already verified') {yield put(authSlice.actions.formikValueReset(true));}
+    if (error?.response?.data?.message.toLocaleLowerCase().trim() === 'email already verified') {
+      yield put(authSlice.actions.formikValueReset(true));
+    }
     showErrorToast(error?.response?.data?.message);
   } finally {
     yield put(loaderSlice.actions.stopLoadingAction());
@@ -109,7 +119,7 @@ function* forgotPassword(action: PayloadAction<ForgotPasswordInput>) {
     if (!res?.error) {
       yield call(forwardTo, '/resend-mail');
       // yield put(authSlice.actions.formikValueReset(true));
-      showSuccessToast(res.message);
+      showSuccessToast('Password reset mail sent');
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
@@ -141,7 +151,7 @@ function* resetPassword(action: PayloadAction<ResetPasswordInput>) {
     const res: SuccessResponse<{}> = yield call(resetPasswordService, action.payload);
     if (res?.message) {
       yield put(authSlice.actions.formikValueReset(true));
-      showSuccessToast(res.message);
+      showSuccessToast('Password updated');
       yield call(forwardTo, '/welcome');
     }
   } catch (e) {
@@ -169,8 +179,8 @@ function* createWorkspace(action: PayloadAction<CreateWorkspaceNameInput>) {
   try {
     yield put(loaderSlice.actions.startLoadingAction());
     const res: SuccessResponse<WorkspaceResponse> = yield call(createWorkspaceService, action.payload);
-    if (res?.message) {
-      showSuccessToast(res.message);
+    if (res) {
+      showSuccessToast('Workspace created successfully');
       yield call(forwardTo, '/integration');
     }
   } catch (e) {
@@ -183,12 +193,15 @@ function* createWorkspace(action: PayloadAction<CreateWorkspaceNameInput>) {
 
 function* logout() {
   try {
+    yield put(loaderSlice.actions.startLoadingAction());
     yield call(signOutService);
     window.localStorage.clear();
     location.reload();
   } catch (e) {
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
+  } finally {
+    yield put(loaderSlice.actions.stopLoadingAction());
   }
 }
 
@@ -209,8 +222,12 @@ function* chooseSubscription(action: PayloadAction<string>) {
   try {
     yield put(loaderSlice.actions.startLoadingAction());
     const res: SuccessResponse<SubscriptionPackages> = yield call(sendSubscriptionPlan, action.payload);
-    if (res?.message) {
-      showSuccessToast(res.message);
+    if (res) {
+      if (res.data.planName.toLocaleLowerCase().trim() === 'free trial') {
+        showSuccessToast('Free trial plan activated');
+      } else {
+        showSuccessToast('Comunify plus activated');
+      }
       yield call(forwardTo, '/create-workspace');
     }
   } catch (e) {
@@ -222,16 +239,16 @@ function* chooseSubscription(action: PayloadAction<string>) {
 }
 
 export default function* authSaga(): SagaIterator {
-  yield takeEvery(LOGIN, loginSaga);
-  yield takeEvery(SIGNUP, signUp);
-  yield takeEvery(VERIFY_EMAIL, verifyEmail);
-  yield takeEvery(RESEND_VERIFY_EMAIL, resendVerificationMail);
-  yield takeEvery(FORGOT_PASSWORD, forgotPassword);
-  yield takeEvery(VERIFY_FORGOT_EMAIL, verifyForgotEmail);
-  yield takeEvery(RESET_PASSWORD, resetPassword);
+  yield takeEvery(authSlice.actions.login.type, loginSaga);
+  yield takeEvery(authSlice.actions.signup.type, signUp);
+  yield takeEvery(authSlice.actions.verifyEmail.type, verifyEmail);
+  yield takeEvery(authSlice.actions.resendVerificationMail.type, resendVerificationMail);
+  yield takeEvery(authSlice.actions.forgotPassword.type, forgotPassword);
+  yield takeEvery(authSlice.actions.verifyForgotEmail.type, verifyForgotEmail);
+  yield takeEvery(authSlice.actions.resetPassword.type, resetPassword);
   yield takeEvery(authSlice.actions.getSubscriptions.type, getSubscriptions);
-  yield takeEvery(CREATE_WORKSPACE, createWorkspace);
-  yield takeEvery(GET_WORKSPACE, getWorkspace);
+  yield takeEvery(authSlice.actions.createWorkspace.type, createWorkspace);
+  yield takeEvery(authSlice.actions.getWorkspace.type, getWorkspace);
   yield takeEvery(authSlice.actions.signOut.type, logout);
   yield takeEvery(authSlice.actions.chooseSubscription.type, chooseSubscription);
 }

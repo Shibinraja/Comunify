@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 import { useAppSelector } from './useRedux';
 
 const useLoading = (): boolean => {
