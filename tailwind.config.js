@@ -332,7 +332,9 @@ module.exports = {
         createdAt: '8px',
         membersCreatedAt: '6.41509px',
         pageNumber: '9.86548px',
-        preview: '10.2899px;'
+        preview: '10.2899px;',
+        activityHealth: '0.5521rem',
+        activityPercentage: '1.1042rem'
       },
       fontFamily: {
         Inter: ['Inter', 'sans-serif'],
