@@ -1,5 +1,5 @@
 import QuickInfo from 'common/quickInfo/QuickInfo';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ActivitiesTab from '../activitiesTab/pages/ActivitiesTab';
 import MembersTab from '../membersTab/pages/MembersTab';
 import brickIcon from '../../../assets/images/brick.svg';
@@ -14,11 +14,29 @@ const Dashboard: React.FC = () => {
   };
   const selectOptions = ['This Week', 'Last Week', 'Month'];
 
+  const dropDownRef:any=useRef();
+
+  const handleOutsideClick=(event:MouseEvent) => {
+    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target)) {
+      setSelectDropDownActive(true);
+    } else {
+      setSelectDropDownActive(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleOutsideClick);
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, []);
+
   return (
     <>
       <div className="container mx-auto flex justify-between">
         <div className="flex relative">
           <div className="flex items-center justify-between px-5 w-11.72 h-3.06 app-input-card-border rounded-0.6 shadow-integrationCardShadow cursor-pointer "
+            ref={dropDownRef}
             onClick={handleDropDownActive}>
             <div className="font-Poppins font-semibold text-card text-dropGray leading-4">{selected ? selected : 'Select'}</div>
             <div className="bg-cover ">
