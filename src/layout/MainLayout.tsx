@@ -1,4 +1,6 @@
+import useLoading from '@/hooks/useLoading';
 import { getResolution } from '@/lib/resolution';
+import Loader from 'common/Loader/Loader';
 import { maximum_screen_height } from 'constants/constants';
 import React, { Fragment } from 'react';
 import { Outlet } from 'react-router';
@@ -8,6 +10,7 @@ import ResolutionLayout from './ResolutionLayout';
 
 const MainLayout: React.FC = () => {
   const { width: screenWidth } = getResolution();
+  const loader = useLoading();
 
   return (
     <Fragment>
@@ -15,6 +18,7 @@ const MainLayout: React.FC = () => {
         <ResolutionLayout />
       ) : (
         <div className="flex h-screen">
+          {loader && <Loader/>}
           <div className="w-[20%]">
             <SideNav />
           </div>

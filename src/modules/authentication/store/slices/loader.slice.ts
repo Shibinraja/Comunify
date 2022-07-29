@@ -1,27 +1,17 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { InitialState } from '../types/loader.type';
 
 const initialState: InitialState = {
-  loadingActions: []
+  loadingState: false
 };
 
 const startLoadingAction = (
-  state: InitialState,
-  action: PayloadAction<string>
-) => ({
-  ...state,
-  loadingActions: [...state.loadingActions, action.payload]
-});
+  state: InitialState
+) => { state.loadingState = true;};
 
 const stopLoadingAction = (
-  state: InitialState,
-  action: PayloadAction<string>
-) => ({
-  ...state,
-  loadingActions: state.loadingActions.filter(
-    (item) => item !== action.payload
-  )
-});
+  state: InitialState
+) => { state.loadingState = false;};
 
 const loaderSlice = createSlice({
   name: 'loader',

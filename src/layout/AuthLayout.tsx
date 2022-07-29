@@ -1,6 +1,8 @@
+import useLoading from '@/hooks/useLoading';
 import { getResolution } from '@/lib/resolution';
 import Footer from 'common/footer';
 import Header from 'common/header';
+import Loader from 'common/Loader/Loader';
 import { maximum_screen_height } from 'constants/constants';
 import React, { Fragment } from 'react';
 import { Outlet } from 'react-router';
@@ -8,6 +10,7 @@ import ResolutionLayout from './ResolutionLayout';
 
 const AuthLayout: React.FC = () => {
   const {width:screenWidth} = getResolution();
+  const loader = useLoading();
 
   return (
     <Fragment>
@@ -16,6 +19,7 @@ const AuthLayout: React.FC = () => {
       ) : (
         <div>
           <Header />
+          {loader && <Loader/>}
           <Outlet />
           <Footer />
         </div>

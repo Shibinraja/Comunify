@@ -1,10 +1,10 @@
-// eslint-disable-next-line no-unused-vars
-import React from 'react';
+import { useAppSelector } from './useRedux';
 
-// const useLoading = (action: string): boolean => {
-//   const loadingState = useAppSelector((state) => state.loader.loadingActions);
+const useLoading = (): boolean => {
 
-//   return loadingState.includes(action);
-// };
+  const loadingState = useAppSelector((state) => state.loader.loadingState);
 
-// export default useLoading;
+  return loadingState;
+};
+
+export default useLoading;
