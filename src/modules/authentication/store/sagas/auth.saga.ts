@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import {call, put, takeEvery} from 'redux-saga/effects';
+import { call, put, takeEvery } from 'redux-saga/effects';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import {
   CREATE_WORKSPACE,
@@ -18,15 +18,34 @@ import { SagaIterator } from 'redux-saga';
 import history from '@/lib/history';
 import { showErrorToast, showSuccessToast } from 'common/toast/toastFunctions';
 import {
-  CreateWorkspaceNameInput, ForgotPasswordInput, ResendVerificationMailInput,  ResetPasswordInput,  SignInInput, SignUpInput, SignUpResponse,
-  SubscriptionPackages, TokenResponse, VerifyEmailInput, WorkspaceResponse
+  CreateWorkspaceNameInput,
+  ForgotPasswordInput,
+  ResendVerificationMailInput,
+  ResetPasswordInput,
+  SignInInput,
+  SignUpInput,
+  SignUpResponse,
+  SubscriptionPackages,
+  TokenResponse,
+  VerifyEmailInput,
+  WorkspaceResponse
 } from 'modules/authentication/interface/authentication.interface';
 import {
-  createWorkspaceService, forgotPasswordService, getSubscriptionPackagesService, getWorkspaceService, resendVerifyEmailService, resetPasswordService,
-  signInService, signUpService, verifyEmailService, verifyForgotEmailService, sendSubscriptionPlan, signOutService
+  createWorkspaceService,
+  forgotPasswordService,
+  getSubscriptionPackagesService,
+  getWorkspaceService,
+  resendVerifyEmailService,
+  resetPasswordService,
+  signInService,
+  signUpService,
+  verifyEmailService,
+  verifyForgotEmailService,
+  sendSubscriptionPlan,
+  signOutService
 } from 'modules/authentication/services/authentication.service';
 import { AxiosResponse } from 'axios';
-import {  AxiosError, SuccessResponse } from '@/lib/api';
+import { AxiosError, SuccessResponse } from '@/lib/api';
 
 const forwardTo = (location: string) => {
   history.push(location);
@@ -55,7 +74,7 @@ function* signUp(action: PayloadAction<SignUpInput>) {
     const res: SuccessResponse<SignUpResponse> = yield call(signUpService, action.payload);
 
     if (res?.data) {
-      showSuccessToast('Please, verify your email');
+      showSuccessToast('Please verify your email');
       yield put(authSlice.actions.signUpData(res?.data?.email));
       yield call(forwardTo, '/resend-mail');
     }
@@ -79,7 +98,9 @@ function* verifyEmail(action: PayloadAction<VerifyEmailInput>) {
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
-    if (error?.response?.data?.message === 'Email already verified') {yield put(authSlice.actions.formikValueReset(true));}
+    if (error?.response?.data?.message.toLocaleLowerCase().trim() === 'email already verified') {
+      yield put(authSlice.actions.formikValueReset(true));
+    }
     showErrorToast(error?.response?.data?.message);
   } finally {
     yield put(loaderSlice.actions.stopLoadingAction(VERIFY_EMAIL));
@@ -109,7 +130,7 @@ function* forgotPassword(action: PayloadAction<ForgotPasswordInput>) {
     if (!res?.error) {
       yield call(forwardTo, '/resend-mail');
       // yield put(authSlice.actions.formikValueReset(true));
-      showSuccessToast(res.message);
+      showSuccessToast('Password reset mail sent');
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
@@ -141,7 +162,7 @@ function* resetPassword(action: PayloadAction<ResetPasswordInput>) {
     const res: SuccessResponse<{}> = yield call(resetPasswordService, action.payload);
     if (res?.message) {
       yield put(authSlice.actions.formikValueReset(true));
-      showSuccessToast(res.message);
+      showSuccessToast('Password updated');
       yield call(forwardTo, '/welcome');
     }
   } catch (e) {
@@ -169,8 +190,8 @@ function* createWorkspace(action: PayloadAction<CreateWorkspaceNameInput>) {
   try {
     yield put(loaderSlice.actions.startLoadingAction(CREATE_WORKSPACE));
     const res: SuccessResponse<WorkspaceResponse> = yield call(createWorkspaceService, action.payload);
-    if (res?.message) {
-      showSuccessToast(res.message);
+    if (res) {
+      showSuccessToast('Workspace created successfully');
       yield call(forwardTo, '/integration');
     }
   } catch (e) {
@@ -209,8 +230,13 @@ function* chooseSubscription(action: PayloadAction<string>) {
   try {
     yield put(loaderSlice.actions.startLoadingAction(authSlice.actions.getSubscriptions.type));
     const res: SuccessResponse<SubscriptionPackages> = yield call(sendSubscriptionPlan, action.payload);
-    if (res?.message) {
-      showSuccessToast(res.message);
+    if (res) {
+      if (res.data.planName.toLocaleLowerCase().trim() === 'free trial') {
+        showSuccessToast('Free trial plan activated');
+      } else {
+        showSuccessToast('Comunify plus activated');
+      }
+      console.log(res);
       yield call(forwardTo, '/create-workspace');
     }
   } catch (e) {
