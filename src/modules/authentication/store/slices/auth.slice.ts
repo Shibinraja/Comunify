@@ -24,9 +24,9 @@ const login = (state: InitialState, action: PayloadAction<SignInInput>) => state
 
 const signup = (state: InitialState, action: PayloadAction<SignUpInput>) => state;
 
-const signUpData = (state:InitialState, action:PayloadAction<string>) => ({
+const signUpData = (state: InitialState, action: PayloadAction<string>) => ({
   ...state,
-  userEmail:action.payload
+  userEmail: action.payload
 });
 
 const verifyEmail = (state: InitialState, action: PayloadAction<VerifyEmailInput>) => state;
@@ -69,7 +69,7 @@ const setSubscriptions = (state: InitialState, action: PayloadAction<{ subscript
   state.subscriptionData = action.payload.subscriptionData;
 };
 
-const chooseSubscription = (state: InitialState, action:PayloadAction<string>) => state;
+const chooseSubscription = (state: InitialState, action: PayloadAction<string>) => state;
 
 const authSlice = createSlice({
   name: 'auth',

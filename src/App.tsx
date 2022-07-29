@@ -14,7 +14,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 function App() {
   return (
     <Provider store={store}>
-      <div className=''>
+      <div className="">
         <React.Suspense>
           <DndProvider backend={HTML5Backend}>
             {/* <BrowserRouter> */}
@@ -30,7 +30,7 @@ function App() {
         pauseOnHover={true}
         autoClose={3000}
         newestOnTop={true}
-        closeButton={<img src={toastCloseButton} className='w-3 pb-4' />}
+        closeButton={<img src={toastCloseButton} className="w-3 pb-4" />}
       />
     </Provider>
   );

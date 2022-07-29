@@ -10,11 +10,7 @@ import { SubscriptionValues } from 'modules/authentication/interface/auth.interf
 const Subscription: React.FC = () => {
   const navigate = useNavigate();
 
-  const initialValues: SubscriptionValues = {username: '',
-    password: '',
-    card_holder: '',
-    cardnumber: '',
-    cvv: ''  };
+  const initialValues: SubscriptionValues = { username: '', password: '', card_holder: '', cardnumber: '', cvv: '' };
 
   const handleSubmit = (): void => {
     navigate('/create-workspace');
@@ -27,9 +23,7 @@ const Subscription: React.FC = () => {
           <img src={bgSubscriptionImage} alt="" className="object-cover" />
         </div>
         <div className="flex flex-col w-1/2 pl-7.5 mt-2.53 overflow-scroll">
-          <h1 className="font-Inter font-bold text-neutralBlack text-signIn leading-2.8">
-            Subscription
-          </h1>
+          <h1 className="font-Inter font-bold text-neutralBlack text-signIn leading-2.8">Subscription</h1>
           <p className="mt-0.78 font-Inter font-normal text-desc max-w-sm leading-1.8 text-lightGray">
             Get Comunified with your communities. Create your account now.
           </p>
@@ -44,11 +38,7 @@ const Subscription: React.FC = () => {
                 // touched,
                 values
               }): JSX.Element => (
-                <Form
-                  className="w-25.9 "
-                  autoComplete="off"
-                  onSubmit={handleSubmit}
-                >
+                <Form className="w-25.9 " autoComplete="off" onSubmit={handleSubmit}>
                   <div className="card-holder-name">
                     <Input
                       type="text"
@@ -74,11 +64,7 @@ const Subscription: React.FC = () => {
                       onChange={handleChange}
                       value={values.cardnumber}
                     />
-                    <img
-                      className="absolute icon-holder left-96 cursor-pointer"
-                      src={cardNumberIcon}
-                      alt=""
-                    />
+                    <img className="absolute icon-holder left-96 cursor-pointer" src={cardNumberIcon} alt="" />
                   </div>
                   <div className="flex mt-1.258">
                     <div className="w-1/2">

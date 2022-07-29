@@ -1,7 +1,7 @@
-import {call, put, takeEvery} from 'redux-saga/effects';
+import { call, put, takeEvery } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
 // import history from '@/lib/history';
-import {  AxiosError, SuccessResponse } from '@/lib/api';
+import { AxiosError, SuccessResponse } from '@/lib/api';
 import { showErrorToast } from 'common/toast/toastFunctions';
 import loaderSlice from 'modules/authentication/store/slices/loader.slice';
 import membersSlice from '../slice/members.slice';

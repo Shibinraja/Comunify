@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 
 export const getResolution = () => {
-
   const [width, setWidth] = useState<number>(window.innerWidth);
 
   useEffect(() => {

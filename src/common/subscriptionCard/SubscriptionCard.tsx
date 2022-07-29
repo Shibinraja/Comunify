@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React, { Fragment } from 'react';
 import Button from 'common/button';
 import successIcon from '../../assets/images/tostr.png';
 import { SubscriptionProps } from 'interface/interface';
@@ -7,9 +7,9 @@ import authSlice from '../../modules/authentication/store/slices/auth.slice';
 import { AppDispatch } from '../../store';
 
 const SubscriptionCard: React.FC<SubscriptionProps> = ({ subscriptionData }) => {
-  const dispatch:AppDispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
 
-  const selectPlan = ():void => {
+  const selectPlan = (): void => {
     dispatch(authSlice.actions.chooseSubscription(subscriptionData?.id));
   };
 
@@ -27,10 +27,7 @@ const SubscriptionCard: React.FC<SubscriptionProps> = ({ subscriptionData }) => 
           <h6 className="pt-5 font-Poppins text-infoBlack text-base font-semibold leading-6">Features</h6>
           <div className="mt-2 ">
             {subscriptionData?.features?.map((featuresData: string, index: number) => (
-              <div
-                key={`featuresData_${index}`}
-                className="flex items-center font-normal text-listGray text-error font-Poppins leading-1.56"
-              >
+              <div key={`featuresData_${index}`} className="flex items-center font-normal text-listGray text-error font-Poppins leading-1.56">
                 <span>
                   <img src={successIcon} alt="" className="w-[17px] pr-1" />
                 </span>
@@ -51,5 +48,3 @@ const SubscriptionCard: React.FC<SubscriptionProps> = ({ subscriptionData }) => 
 };
 
 export default SubscriptionCard;
-
-

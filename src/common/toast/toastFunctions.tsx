@@ -6,21 +6,21 @@ import { toast } from 'react-toastify';
 import ToastContent from './ToastContent';
 
 export const showSuccessToast = (message: string) => {
-  toast(<ToastContent title='Success' description={message} />, {
+  toast(<ToastContent title="Success" description={message} />, {
     type: 'success',
     icon: () => <img src={successToastIcon} />
   });
 };
 
 export const showErrorToast = (message: string) => {
-  toast(<ToastContent title='Failed!' description={message} />, {
+  toast(<ToastContent title="Failed!" description={message} />, {
     type: 'error',
     icon: () => <img src={errorToastIcon} />
   });
 };
 
 export const showWarningToast = (message: string) => {
-  toast(<ToastContent title='Warning' description={message} />, {
+  toast(<ToastContent title="Warning" description={message} />, {
     type: 'warning',
     icon: () => <img src={warningCloseButton} />
   });

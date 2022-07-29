@@ -1,7 +1,6 @@
 import unsplashIcon from '../../../assets/images/unsplash.svg';
 import slackIcon from '../../../assets/images/slack.svg';
 
-
 export const reportData = [
   {
     reportName: 'Activity Growth',

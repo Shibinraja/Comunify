@@ -1,9 +1,8 @@
 /* eslint-disable no-unused-vars */
-import React, { ReactElement }  from 'react';
+import React, { ReactElement } from 'react';
 import { Navigate } from 'react-router';
 import { getLocalRefreshToken } from '@/lib/request';
 import { Props } from './routesTypes';
-
 
 const PrivateRoute: React.FC<Props> = ({ children }) => {
   // const isAuthenticated = useAppSelector(state => state.auth.isAuthenticated);
@@ -26,7 +25,6 @@ const PrivateRoute: React.FC<Props> = ({ children }) => {
       return page;
     }
     return <Navigate to="/" />;
-
   };
 
   return checkAuthAndExpiry(children);

@@ -1,5 +1,5 @@
 .signup-cover-bg {
-  background-image: url("../../../../assets/images/signup-line.svg");
+  background-image: url('../../../../assets/images/signup-line.svg');
 }
 
 .dot-pulse {
@@ -32,13 +32,11 @@
 }
 
 .dot-pulse__dot {
-  animation: pulse var(--uib-speed) ease-in-out calc(var(--uib-speed) * 0.125)
-    infinite both;
+  animation: pulse var(--uib-speed) ease-in-out calc(var(--uib-speed) * 0.125) infinite both;
 }
 
 .dot-pulse::after {
-  animation: pulse var(--uib-speed) ease-in-out calc(var(--uib-speed) * 0.25)
-    infinite;
+  animation: pulse var(--uib-speed) ease-in-out calc(var(--uib-speed) * 0.25) infinite;
   background-color: #ffdd75;
 }
 

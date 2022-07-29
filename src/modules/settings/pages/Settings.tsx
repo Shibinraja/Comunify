@@ -7,18 +7,11 @@ import Subscription from './subscription/Subscription';
 import Tags from './tags/Tags';
 
 const Settings = () => {
-  const [selectedTab, setSelectedTab] = useTabs([
-    'integrations',
-    'subscription',
-    'billing_history',
-    'tags'
-  ]);
+  const [selectedTab, setSelectedTab] = useTabs(['integrations', 'subscription', 'billing_history', 'tags']);
 
   return (
     <div className="container lg">
-      <div className="font-Poppins  leading-35 text-infoData not-italic font-semibold">
-        Settings
-      </div>
+      <div className="font-Poppins  leading-35 text-infoData not-italic font-semibold">Settings</div>
       <div className="w-full mt-10 flex flex-col ">
         <nav className="flex items-end">
           <TabSelector
@@ -27,9 +20,7 @@ const Settings = () => {
             style={
               'text-center justify-center text-xs font-Poppins not-italic font-normal text-profileBlack leading-4 font-medium w-12.87 h-2.68 border-solid border border-settingsTabBorder'
             }
-            styleActive={
-              'h-3.12 border-b-2 border-b-solid border-b-settingsTabActive'
-            }
+            styleActive={'h-3.12 border-b-2 border-b-solid border-b-settingsTabActive'}
             styleInActive={'text-profileBlack '}
           >
             INTEGRATIONS
@@ -40,9 +31,7 @@ const Settings = () => {
             style={
               'text-center justify-center text-xs font-Poppins not-italic font-normal text-profileBlack leading-4 font-medium w-12.87 h-2.68 border border-solid border-settingsTabBorder'
             }
-            styleActive={
-              'h-3.12 border-b-2 border-b-solid border-b-settingsTabActive'
-            }
+            styleActive={'h-3.12 border-b-2 border-b-solid border-b-settingsTabActive'}
             styleInActive={'text-profileBlack'}
           >
             SUBSCRIPTION
@@ -53,9 +42,7 @@ const Settings = () => {
             style={
               'text-center justify-center text-xs font-Poppins not-italic font-normal text-profileBlack leading-4 font-medium w-12.87 h-2.68 border border-solid border-settingsTabBorder'
             }
-            styleActive={
-              'h-3.12 border-b-2 border-b-solid border-b-settingsTabActive'
-            }
+            styleActive={'h-3.12 border-b-2 border-b-solid border-b-settingsTabActive'}
             styleInActive={'text-profileBlack'}
           >
             BILLING HISTORY
@@ -66,9 +53,7 @@ const Settings = () => {
             style={
               'text-center justify-center text-xs font-Poppins not-italic font-normal text-profileBlack leading-4 font-medium w-12.87 h-2.68 border border-solid border-settingsTabBorder'
             }
-            styleActive={
-              'h-3.12 border-b-2 border-b-solid border-b-settingsTabActive'
-            }
+            styleActive={'h-3.12 border-b-2 border-b-solid border-b-settingsTabActive'}
             styleInActive={'text-profileBlack'}
           >
             TAGS
@@ -76,9 +61,9 @@ const Settings = () => {
         </nav>
         <div className="items-center relative overflow-y-auto block section ">
           <Integration hidden={selectedTab !== 'integrations'} />
-          <Subscription hidden={selectedTab !== 'subscription'}/>
-          <BillingHistory hidden={selectedTab !== 'billing_history'}/>
-          <Tags hidden={selectedTab !== 'tags'}/>
+          <Subscription hidden={selectedTab !== 'subscription'} />
+          <BillingHistory hidden={selectedTab !== 'billing_history'} />
+          <Tags hidden={selectedTab !== 'tags'} />
         </div>
       </div>
     </div>

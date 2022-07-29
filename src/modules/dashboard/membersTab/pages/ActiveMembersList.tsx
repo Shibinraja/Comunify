@@ -63,9 +63,7 @@ const ActiveMembersList: React.FC<Props> = ({ hidden }) => (
 
                 <div className="ml-0.865">
                   <div>
-                    <p className="font-medium pt-0.5 text-card font-Poppins">
-                      {item.name}
-                    </p>
+                    <p className="font-medium pt-0.5 text-card font-Poppins">{item.name}</p>
                   </div>
                   <div className="font-Poppins text-membersCreatedAt not-italic font-normal text-createdAtGrey">
                     <p>{item.createdAt}</p>

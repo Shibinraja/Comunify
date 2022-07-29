@@ -1,4 +1,4 @@
-import React, {lazy} from 'react';
+import React, { lazy } from 'react';
 import activityRoutes from 'modules/activities/routes/activities.routes';
 import reportRoutes from 'modules/reports/routes/reports.routes';
 import settingRoutes from 'modules/settings/routes/settings.routes';
@@ -21,7 +21,7 @@ const routes: RoutesArray[] = [
       </PrivateRoute>
     ),
     path: '/',
-    children:[dashboardRoutes, membersRoutes, settingRoutes, activityRoutes, reportRoutes]
+    children: [dashboardRoutes, membersRoutes, settingRoutes, activityRoutes, reportRoutes]
   },
   //to redirect invalid routes back to the index route
   {

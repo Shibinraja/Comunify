@@ -45,7 +45,6 @@ const getmembersInActiveCountData = (state: InitialState, action: PayloadAction<
   workspaceData: action.payload
 });
 
-
 const membersSlice = createSlice({
   name: 'members',
   initialState,

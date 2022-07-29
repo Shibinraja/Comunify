@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import {call, put, takeEvery} from 'redux-saga/effects';
+import { call, put, takeEvery } from 'redux-saga/effects';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import authSlice from '../slices/auth.slice';
 import loaderSlice from '../slices/loader.slice';

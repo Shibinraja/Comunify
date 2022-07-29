@@ -15,10 +15,10 @@ const Input = ({
   onBlur,
   onChange,
   helperText
-  // ...rest
-}: Props) => (
+}: // ...rest
+Props) => (
   <Fragment>
-    <div className='flex flex-col relative pb-2'>
+    <div className="flex flex-col relative pb-2">
       <input
         id={id}
         type={type}
@@ -26,12 +26,12 @@ const Input = ({
         className={className}
         placeholder={placeholder}
         disabled={disabled}
-        autoComplete='off'
+        autoComplete="off"
         value={value}
         onBlur={onBlur}
         onChange={onChange}
       />
-      {errors && <p className='text-lightRed absolute -bottom-4 font-normal text-email font-Inter mt-0.287 pl-1'>{helperText}</p>}
+      {errors && <p className="text-lightRed absolute -bottom-4 font-normal text-email font-Inter mt-0.287 pl-1">{helperText}</p>}
     </div>
   </Fragment>
 );
