@@ -8,9 +8,7 @@ const Header: React.FC = () => (
         <img src={comunifyLogo} alt="" />
       </div>
       <div className="pl-14">
-        <h1 className="font-Outfit text-logo font-bold leading-1.6 text-lightBlack">
-            COMUNIFY
-        </h1>
+        <h1 className="font-Outfit text-logo font-bold leading-1.6 text-lightBlack">COMUNIFY</h1>
       </div>
     </div>
   </nav>

@@ -4,11 +4,12 @@ import unsplashIcon from '../../../../assets/images/unsplash.svg';
 import slackIcon from '../../../../assets/images/slack.svg';
 import { TabPanel } from 'common/tabs/TabPanel';
 
-const Integration: React.FC<{hidden:boolean}> = ({ hidden }) => {
-
+const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
   const [isButtonConnect] = useState<boolean>(true);
-  const connectedBtnClassName='bg-connectButton shadow-contactCard font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient';
-  const disConnectedBtnClassName='btn-disconnect-gradient shadow-contactCard font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300';
+  const connectedBtnClassName =
+    'bg-connectButton shadow-contactCard font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient';
+  const disConnectedBtnClassName =
+    'btn-disconnect-gradient shadow-contactCard font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300';
 
   return (
     <TabPanel hidden={hidden}>
@@ -22,7 +23,7 @@ const Integration: React.FC<{hidden:boolean}> = ({ hidden }) => {
             <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">Khoros</div>
             <Button
               type="button"
-              text={isButtonConnect ? 'Disconnect' :'Connect'}
+              text={isButtonConnect ? 'Disconnect' : 'Connect'}
               className={isButtonConnect ? disConnectedBtnClassName : connectedBtnClassName}
             />
           </div>
@@ -31,17 +32,13 @@ const Integration: React.FC<{hidden:boolean}> = ({ hidden }) => {
               <img src={slackIcon} alt="" className="h-2.31" />
             </div>
             <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">HIgher Logi</div>
-            <Button
-              type="button"
-              text="Disconnect"
-              className={isButtonConnect ? disConnectedBtnClassName : connectedBtnClassName}
-            />
+            <Button type="button" text="Disconnect" className={isButtonConnect ? disConnectedBtnClassName : connectedBtnClassName} />
           </div>
         </div>
         <div className="pending-connect mt-1.8">
           <h3 className="font-Poppins text-infoBlack font-semibold text-base leading-1.43">Integrations</h3>
           <p className="font-Poppins font-normal text-error leading-1.43 mt-0.5">
-                    Choose from any of the following data sources to connect with and see what your community members are up to!
+            Choose from any of the following data sources to connect with and see what your community members are up to!
           </p>
           <div className="flex mt-1.8 flex-wrap w-full">
             <div className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5">
@@ -49,22 +46,14 @@ const Integration: React.FC<{hidden:boolean}> = ({ hidden }) => {
                 <img src={unsplashIcon} alt="" className="h-2.31" />
               </div>
               <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">Khoros</div>
-              <Button
-                type="button"
-                text="Connect"
-                className={!isButtonConnect ? disConnectedBtnClassName : connectedBtnClassName}
-              />
+              <Button type="button" text="Connect" className={!isButtonConnect ? disConnectedBtnClassName : connectedBtnClassName} />
             </div>
             <div className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5">
               <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
                 <img src={unsplashIcon} alt="" className="h-2.31" />
               </div>
               <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">Khoros</div>
-              <Button
-                type="button"
-                text="Connect"
-                className={!isButtonConnect ? disConnectedBtnClassName : connectedBtnClassName}
-              />
+              <Button type="button" text="Connect" className={!isButtonConnect ? disConnectedBtnClassName : connectedBtnClassName} />
             </div>
             <div className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5">
               <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">

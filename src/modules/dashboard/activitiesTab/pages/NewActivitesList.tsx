@@ -46,7 +46,7 @@ const NewActivitesList: React.FC<Props> = ({ hidden }) => (
   <TabPanel hidden={hidden}>
     <div>
       <ul>
-        {activities.map((item, index:number) => (
+        {activities.map((item, index: number) => (
           <>
             <li key={index} className="my-1.68">
               <div className="w-full flex justify-start items-center">
@@ -59,9 +59,7 @@ const NewActivitesList: React.FC<Props> = ({ hidden }) => (
 
                 <div className="ml-0.865">
                   <div>
-                    <p className="font-medium text-card font-Poppins">
-                      {item.message}
-                    </p>
+                    <p className="font-medium text-card font-Poppins">{item.message}</p>
                   </div>
                   <div className="font-Poppins text-createdAt not-italic font-normal text-createdAtGrey">
                     <p>{item.createdAt}</p>

@@ -1,5 +1,5 @@
 import { configureStore, Store } from '@reduxjs/toolkit';
-import type { Middleware, compose} from 'redux';
+import type { Middleware, compose } from 'redux';
 import logger from 'redux-logger';
 import createSagaMiddleware, { SagaMiddleware } from 'redux-saga';
 import rootReducer from './rootReducer';

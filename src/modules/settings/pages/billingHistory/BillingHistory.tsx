@@ -7,35 +7,23 @@ import prevIcon from '../../../../assets/images/previous-page-icon.svg';
 import { billingHistoryData } from './BillingHistoryTableData';
 
 type Props = {
-    hidden: boolean;
+  hidden: boolean;
 };
 
 const BillingHistory: React.FC<Props> = ({ hidden }) => (
   <TabPanel hidden={hidden}>
     <div className="billingTable mt-1.8">
-      <h3 className="text-infoBlack font-Poppins font-semibold text-base leading-1.56">
-                    Billing History
-      </h3>
+      <h3 className="text-infoBlack font-Poppins font-semibold text-base leading-1.56">Billing History</h3>
       <div className="py-2 overflow-x-auto mt-1.868">
         <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-t-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixTableHead max-h-34">
           <table className="min-w-full relative  rounded-t-0.6 ">
             <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
               <tr className="min-w-full">
-                <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white border-b">
-                                        Plan Name
-                </th>
-                <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white border-b">
-                                        Date
-                </th>
-                <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white border-b">
-                                        Amount
-                </th>
-                <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white border-b">
-                                        Validity
-                </th>
-                <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white border-b">
-
-                </th>
+                <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white border-b">Plan Name</th>
+                <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white border-b">Date</th>
+                <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white border-b">Amount</th>
+                <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white border-b">Validity</th>
+                <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white border-b"></th>
               </tr>
             </thead>
             <tbody>

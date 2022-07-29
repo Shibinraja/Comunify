@@ -5,7 +5,7 @@ import { DecodeToken } from 'modules/authentication/interface/auth.interface';
 import { API_ENDPOINT, auth_module } from './config';
 import { decodeToken } from './decodeToken';
 
-export function getLocalRefreshToken(): string  {
+export function getLocalRefreshToken(): string {
   const refreshToken: string | null = localStorage.getItem('accessToken')!;
   return refreshToken;
 }
@@ -15,7 +15,7 @@ const request = Axios.create({
   headers: {
     'Content-Type': 'application/json'
   },
-  withCredentials:true
+  withCredentials: true
 });
 
 // For Request
@@ -27,13 +27,19 @@ request.interceptors.request.use(
         Authorization: `Bearer ${token}`
       };
     }
-    const user: DecodeToken | null =  decodeToken(token);
+    const user: DecodeToken | null = decodeToken(token);
     const isExpired = user && isBefore(new Date(user?.exp * 1000), new Date());
-    if (!isExpired) {return config;}
+    if (!isExpired) {
+      return config;
+    }
 
-    const response = await axios.post(`${API_ENDPOINT}${auth_module}/refreshtoken`, {}, {
-      withCredentials:true
-    });
+    const response = await axios.post(
+      `${API_ENDPOINT}${auth_module}/refreshtoken`,
+      {},
+      {
+        withCredentials: true
+      }
+    );
     if (response) {
       localStorage.setItem('accessToken', response?.data?.data?.token);
       config.headers = {
@@ -54,19 +60,25 @@ request.interceptors.response.use(
       window.location.href = '/subscription/expired';
     }
     if (error.response.data.message === 'Token expired') {
-      axios.post(`${API_ENDPOINT}${auth_module}/logout`, {}, {
-        withCredentials:true,
-        headers:{
-          Authorization: `Bearer ${token}`
-        }
-      }).then(() => {
-        //
-      }).catch((err) => {
-        showErrorToast(err?.response?.data?.message);
-        window.localStorage.clear();
-        window.location.href='/';
-      });
-
+      axios
+        .post(
+          `${API_ENDPOINT}${auth_module}/logout`,
+          {},
+          {
+            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        )
+        .then(() => {
+          //
+        })
+        .catch((err) => {
+          showErrorToast(err?.response?.data?.message);
+          window.localStorage.clear();
+          window.location.href = '/';
+        });
     }
     return Promise.reject(error);
   }

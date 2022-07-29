@@ -18,7 +18,7 @@ const MainLayout: React.FC = () => {
         <ResolutionLayout />
       ) : (
         <div className="flex h-screen">
-          {loader && <Loader/>}
+          {loader && <Loader />}
           <div className="w-[20%]">
             <SideNav />
           </div>

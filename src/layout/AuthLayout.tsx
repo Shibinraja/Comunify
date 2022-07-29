@@ -9,7 +9,7 @@ import { Outlet } from 'react-router';
 import ResolutionLayout from './ResolutionLayout';
 
 const AuthLayout: React.FC = () => {
-  const {width:screenWidth} = getResolution();
+  const { width: screenWidth } = getResolution();
   const loader = useLoading();
 
   return (
@@ -19,7 +19,7 @@ const AuthLayout: React.FC = () => {
       ) : (
         <div>
           <Header />
-          {loader && <Loader/>}
+          {loader && <Loader />}
           <Outlet />
           <Footer />
         </div>

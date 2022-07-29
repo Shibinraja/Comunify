@@ -32,12 +32,6 @@ export type AxiosError<T> = {
   response: NetworkResponse<T>;
 };
 
-export type ServerResponse<T extends any = any> = AxiosResponse<
-  SuccessResponse<T>
->;
+export type ServerResponse<T extends any = any> = AxiosResponse<SuccessResponse<T>>;
 
-export type GeneratorResponse<T extends unknown = unknown> = Generator<
-  Promise<ServerResponse<T>>,
-  SuccessResponse<T>,
-  ServerResponse<T>
->;
+export type GeneratorResponse<T extends unknown = unknown> = Generator<Promise<ServerResponse<T>>, SuccessResponse<T>, ServerResponse<T>>;

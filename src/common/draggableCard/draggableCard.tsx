@@ -3,7 +3,6 @@ import { useDrag, useDrop } from 'react-dnd';
 import { DraggableCardProps } from './draggableCardTypes';
 
 export const Card: React.FC<DraggableCardProps> = ({ id, children, index, moveCard }) => {
-
   const ref = useRef<HTMLInputElement>(null);
 
   const [{ handlerId }, drop] = useDrop({
@@ -13,7 +12,7 @@ export const Card: React.FC<DraggableCardProps> = ({ id, children, index, moveCa
         handlerId: monitor.getHandlerId()
       };
     },
-    hover(item:any, monitor) {
+    hover(item: any, monitor) {
       if (!ref.current) {
         return;
       }
@@ -26,10 +25,9 @@ export const Card: React.FC<DraggableCardProps> = ({ id, children, index, moveCa
       // Determine rectangle on screen
       const hoverBoundingRect = ref.current?.getBoundingClientRect();
       // Get vertical middle
-      const hoverMiddleY =
-        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+      const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
       // Determine mouse position
-      const clientOffset:any = monitor.getClientOffset();
+      const clientOffset: any = monitor.getClientOffset();
       // Get pixels to the top
       const hoverClientY = clientOffset.y - hoverBoundingRect.top;
       // Only perform the move when the mouse has crossed half of the items height
@@ -64,7 +62,7 @@ export const Card: React.FC<DraggableCardProps> = ({ id, children, index, moveCa
   drag(drop(ref));
 
   return (
-    <div ref={ref} className = {isDragging ? 'opacity-0' : 'opacity-100'} data-handler-id={handlerId}>
+    <div ref={ref} className={isDragging ? 'opacity-0' : 'opacity-100'} data-handler-id={handlerId}>
       {children}
     </div>
   );

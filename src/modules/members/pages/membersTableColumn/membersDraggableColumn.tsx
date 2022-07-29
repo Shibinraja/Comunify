@@ -1,9 +1,8 @@
-import React,  { Fragment, ReactElement, useCallback, useState }  from 'react';
+import React, { Fragment, ReactElement, useCallback, useState } from 'react';
 import { Card } from 'common/draggableCard/draggableCard';
 import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
 import dragIcon from '../../../../assets/images/drag.svg';
 import { ColumNames } from '../MembersTableData';
-
 
 const MembersDraggableColumn: React.FC = () => {
   const [columns, setColumns] = useState<Array<ColumnNameProps>>(ColumNames);
@@ -27,11 +26,14 @@ const MembersDraggableColumn: React.FC = () => {
   }, []);
 
   // Renders the actual array in to useCallback to prevent re-renderization.
-  const renderCard = useCallback((card: ColumnNameProps, index: number, children: ReactElement) => (
-    <Card key={card.id} index={index} id={card.id} moveCard={moveCardHandler}>
-      {children}
-    </Card>
-  ), []);
+  const renderCard = useCallback(
+    (card: ColumnNameProps, index: number, children: ReactElement) => (
+      <Card key={card.id} index={index} id={card.id} moveCard={moveCardHandler}>
+        {children}
+      </Card>
+    ),
+    []
+  );
 
   return (
     <Fragment>
@@ -43,7 +45,7 @@ const MembersDraggableColumn: React.FC = () => {
             <div className="flex justify-between items-center px-2 cursor-pointer rounded-0.3 h-2.81 bg-white box-border border-table shadow-inputShadow">
               <div className="flex items-center gap-1">
                 <div>
-                  <input type="checkbox" name="" id="" className="checkbox"/>
+                  <input type="checkbox" name="" id="" className="checkbox" />
                 </div>
                 <div className="font-Poppins font-normal text-infoBlack text-trial leading-1.31">{item.name}</div>
               </div>

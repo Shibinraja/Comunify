@@ -24,7 +24,7 @@ const SignUp: React.FC = () => {
   const [selectedDomainSector, setSelectedDomainSector] = useState<string>('Domain');
   const [cursor, setCursor] = useState<number>(0);
   const formikRef: any = useRef();
-  const dropDownRef= useRef<HTMLDivElement>(null);
+  const dropDownRef = useRef<HTMLDivElement>(null);
   const domainRef = useRef<HTMLLIElement>(null);
 
   const options = ['Marketing', 'Sales', 'Customer Support', 'Customer Success', 'Others'];

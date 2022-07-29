@@ -5,11 +5,7 @@ import ActiveMembersList from './ActiveMembersList';
 import infoIcon from '../../../../assets/images/info.svg';
 
 function MembersTab() {
-  const [selectedTab, setSelectedTab] = useTabs([
-    'top_contributors',
-    'active',
-    'in-active'
-  ]);
+  const [selectedTab, setSelectedTab] = useTabs(['top_contributors', 'active', 'in-active']);
   return (
     <div className="w-full h-full   box-border bg-white  rounded-0.6 mt-1.868 app-input-card-border shadow-profileCard ">
       <div className="w-full mt-7 flex flex-col ">
@@ -24,7 +20,6 @@ function MembersTab() {
             <span className="pl-2">
               <img src={infoIcon} alt="" />
             </span>
-
           </TabSelector>
           <TabSelector
             isActive={selectedTab === 'active'}

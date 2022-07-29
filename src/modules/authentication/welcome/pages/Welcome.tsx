@@ -1,4 +1,4 @@
-import React, { useEffect }  from 'react';
+import React, { useEffect } from 'react';
 import SubscriptionCard from 'common/subscriptionCard/SubscriptionCard';
 import bgWelcomeImage from '../../../../assets/images/bg-sign.svg';
 import './Welcome.css';
@@ -8,9 +8,7 @@ import { SubscriptionPackages } from '../../interface/auth.interface';
 import authSlice from '../../store/slices/auth.slice';
 import { useAppSelector } from '@/hooks/useRedux';
 
-
-const Welcome:React.FC = () => {
-
+const Welcome: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
 
   useEffect(() => {
@@ -19,14 +17,14 @@ const Welcome:React.FC = () => {
 
   const subscriptionData = useAppSelector((state) => state.auth.subscriptionData);
 
-  const comunifySubscriptionPlan:SubscriptionPackages[] = subscriptionData.length > 0 && subscriptionData.filter((plans:SubscriptionPackages) => plans.planName.trim() !== 'Free Trial') || [];
-
+  const comunifySubscriptionPlan: SubscriptionPackages[] =
+    (subscriptionData.length > 0 && subscriptionData.filter((plans: SubscriptionPackages) => plans.planName.trim() !== 'Free Trial')) || [];
 
   // Function to filter out free trial plan from the list of comunify plans and subscribe to it.
-  const selectFreeTrialPlan = ():void => {
-    const freeTrialSubscriptionPlan:SubscriptionPackages[] = subscriptionData.length > 0 && subscriptionData.filter((plans:SubscriptionPackages) => plans.planName.trim() === 'Free Trial') || [];
+  const selectFreeTrialPlan = (): void => {
+    const freeTrialSubscriptionPlan: SubscriptionPackages[] =
+      (subscriptionData.length > 0 && subscriptionData.filter((plans: SubscriptionPackages) => plans.planName.trim() === 'Free Trial')) || [];
     dispatch(authSlice.actions.chooseSubscription(freeTrialSubscriptionPlan[0]?.id));
-
   };
 
   return (
@@ -37,16 +35,13 @@ const Welcome:React.FC = () => {
         </div>
         <div className="flex flex-col w-1/2 pl-7.40 pt-16 overflow-scroll pb-6">
           <div className="w-25.9">
-            <h1 className="font-Inter font-bold text-signIn text-neutralBlack leading-2.8">
-              Welcome to Comunify!
-            </h1>{' '}
+            <h1 className="font-Inter font-bold text-signIn text-neutralBlack leading-2.8">Welcome to Comunify!</h1>{' '}
             <p className="mt-0.81 text-desc font-normal leading-1.8 font-Inter text-lightGray max-w-sm">
-              Thank you for choosing comunify. Let’s get to know your
-              communities better.
+              Thank you for choosing comunify. Let’s get to know your communities better.
             </p>
             <div className="subscriptionCard">
-              {comunifySubscriptionPlan?.map((data:SubscriptionPackages) => (
-                <SubscriptionCard  key={data.id} subscriptionData={data}/>
+              {comunifySubscriptionPlan?.map((data: SubscriptionPackages) => (
+                <SubscriptionCard key={data.id} subscriptionData={data} />
               ))}
             </div>
           </div>
@@ -65,5 +60,3 @@ const Welcome:React.FC = () => {
 };
 
 export default Welcome;
-
-

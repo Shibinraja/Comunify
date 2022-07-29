@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState}  from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import searchIcon from '../../assets/images/search.svg';
 import profilePic from '../../assets/images/profile image.svg';
 import slackIcon from '../../assets/images/slack.svg';
@@ -16,8 +16,7 @@ const TopBar: React.FC = () => {
   const [isDropdownActive, setIsDropdownActive] = useState<boolean>(false);
   const options: string[] = ['Profile Settings', 'Sign Out'];
   const dispatch: AppDispatch = useAppDispatch();
-  const dropDownRef:any=useRef();
-
+  const dropDownRef: any = useRef();
 
   const handleDropDownActive = async(data?: string): Promise<void> => {
     switch (data) {
@@ -30,7 +29,7 @@ const TopBar: React.FC = () => {
     setIsDropdownActive((prev) => !prev);
   };
 
-  const handleOutsideClick=(event:MouseEvent) => {
+  const handleOutsideClick = (event: MouseEvent) => {
     if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target)) {
       setIsDropdownActive(true);
     } else {
@@ -78,7 +77,7 @@ const TopBar: React.FC = () => {
             />
             {isDropdownActive && (
               <div className="absolute border-box w-9.62 rounded-0.3 app-result-card-border bg-white cursor-pointer top-10 right-0 shadow-trialButtonShadow">
-                {options.map((options, i:number) => (
+                {options.map((options, i: number) => (
                   <div className="flex flex-col" onClick={() => handleDropDownActive(options)} key={i}>
                     <div className="h-3.06 p-2 flex items-center text-searchBlack font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300">
                       {options}
@@ -97,7 +96,7 @@ const TopBar: React.FC = () => {
               <img src={unplashMjIcon} alt="" />
             </div>
             <div className="pl-6 font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
-                            John posted a “Latest Release” on channel “Updates”
+              John posted a “Latest Release” on channel “Updates”
             </div>
           </div>
           <div className="flex  mt-1.625">
@@ -105,7 +104,7 @@ const TopBar: React.FC = () => {
               <img src={unplashMj} alt="" />
             </div>
             <div className="pl-6 font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
-                            Nishitha commented a post “Latest Release” on channel “Updates”
+              Nishitha commented a post “Latest Release” on channel “Updates”
             </div>
           </div>
           <div className="flex mt-1.625">
@@ -113,7 +112,7 @@ const TopBar: React.FC = () => {
               <img src={slackIcon} alt="" />
             </div>
             <div className="pl-6 font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
-                            Nishitha started a discussion “Latest Release” of our product”
+              Nishitha started a discussion “Latest Release” of our product”
             </div>
           </div>
           <div className="flex mt-1.625">
@@ -121,7 +120,7 @@ const TopBar: React.FC = () => {
               <img src={unplashMjIcon} alt="" />
             </div>
             <div className="pl-6 font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
-                            John posted a “Latest Release” on channel “Updates”
+              John posted a “Latest Release” on channel “Updates”
             </div>
           </div>
         </div>
