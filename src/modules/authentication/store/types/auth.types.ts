@@ -1,4 +1,4 @@
-import { SubscriptionPackages } from '../../interface/authentication.interface';
+import { SubscriptionPackages } from '../../interface/auth.interface';
 
 export type VoidGenerator<T = unknown, TNext = unknown> = Generator<T, void, TNext>;
 

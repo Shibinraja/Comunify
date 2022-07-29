@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { SubscriptionPackages } from 'modules/authentication/interface/authentication.interface';
+import { SubscriptionPackages } from 'modules/authentication/interface/auth.interface';
 
 export interface RoutesArray {
     index?: boolean;

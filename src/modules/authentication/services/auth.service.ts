@@ -15,7 +15,7 @@ import {
   SubscriptionPackages,
   TokenResponse,
   WorkspaceResponse
-} from '../interface/authentication.interface';
+} from '../interface/auth.interface';
 
 //Auth Module
 export function* signInService(body: SignInInput): GeneratorResponse<TokenResponse> {

@@ -6,7 +6,7 @@ import './resendVerification.css';
 import {  useNavigate, useSearchParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import authSlice from '../store/slices/auth.slice';
-import { DecodeToken } from '../interface/authentication.interface';
+import { DecodeToken } from '../interface/auth.interface';
 import { AppDispatch } from '../../../store/index';
 import { decodeToken } from '@/lib/decodeToken';
 import { getLocalRefreshToken } from '@/lib/request';

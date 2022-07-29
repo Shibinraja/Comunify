@@ -2,7 +2,7 @@ import React, {Reducer, useEffect, useReducer} from 'react';
 import { Navigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import cookie from 'react-cookies';
-import { DecodeToken } from 'modules/authentication/interface/authentication.interface';
+import { DecodeToken } from 'modules/authentication/interface/auth.interface';
 import { decodeToken } from '@/lib/decodeToken';
 import { AppDispatch } from '../store';
 import authSlice from 'modules/authentication/store/slices/auth.slice';

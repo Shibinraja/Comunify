@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import SubscriptionCard from 'common/subscriptionCard/SubscriptionCard';
 import { AppDispatch } from '../../../../store';
-import { SubscriptionPackages } from '../../interface/authentication.interface';
+import { SubscriptionPackages } from '../../interface/auth.interface';
 import { useDispatch } from 'react-redux';
 import authSlice from '../../store/slices/auth.slice';
 import { useAppSelector } from '@/hooks/useRedux';

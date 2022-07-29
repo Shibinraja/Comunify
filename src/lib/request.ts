@@ -1,7 +1,7 @@
 import { default as Axios, default as axios } from 'axios';
 import { showErrorToast } from 'common/toast/toastFunctions';
 import { isBefore } from 'date-fns';
-import { DecodeToken } from 'modules/authentication/interface/authentication.interface';
+import { DecodeToken } from 'modules/authentication/interface/auth.interface';
 import { API_ENDPOINT, auth_module } from './config';
 import { decodeToken } from './decodeToken';
 

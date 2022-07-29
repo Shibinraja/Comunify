@@ -4,7 +4,7 @@ import bgWelcomeImage from '../../../../assets/images/bg-sign.svg';
 import './Welcome.css';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../../../store';
-import { SubscriptionPackages } from '../../interface/authentication.interface';
+import { SubscriptionPackages } from '../../interface/auth.interface';
 import authSlice from '../../store/slices/auth.slice';
 import { useAppSelector } from '@/hooks/useRedux';
 

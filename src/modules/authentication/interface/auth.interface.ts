@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+
 export type PasswordFormValues = {
     password: string;
     confirmPassword: string;

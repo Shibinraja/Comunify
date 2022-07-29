@@ -10,7 +10,7 @@ import Button from 'common/button';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { password_regex } from '../../../../constants/constants';
-import { PasswordFormValues } from 'modules/authentication/interface/authentication.interface';
+import { PasswordFormValues } from 'modules/authentication/interface/auth.interface';
 import authSlice from 'modules/authentication/store/slices/auth.slice';
 import { useSearchParams } from 'react-router-dom';
 import './CreateNewPassword.css';

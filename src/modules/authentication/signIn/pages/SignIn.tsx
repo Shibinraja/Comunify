@@ -5,7 +5,7 @@ import { API_ENDPOINT, auth_module } from '@/lib/config';
 import Button from 'common/button/Button';
 import Input from 'common/input/Input';
 import { Form, Formik } from 'formik';
-import { FormValues } from 'modules/authentication/interface/authentication.interface';
+import { FormValues } from 'modules/authentication/interface/auth.interface';
 import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
 import bgSignInImage from '../../../../assets/images/bg-sign.svg';

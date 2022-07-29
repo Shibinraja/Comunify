@@ -14,7 +14,7 @@ import { MembersCountResponse } from 'modules/members/interface/members.interfac
 
 function* membersTotalCount() {
   try {
-    yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.membersTotalCount.type));
+    yield put(loaderSlice.actions.startLoadingAction());
 
     const res: SuccessResponse<MembersCountResponse> = yield call(TotalCountService);
     if (res?.data) {
@@ -24,13 +24,13 @@ function* membersTotalCount() {
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction(membersSlice.actions.membersTotalCount.type));
+    yield put(loaderSlice.actions.stopLoadingAction());
   }
 }
 
 function* membersNewCount() {
   try {
-    yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.membersNewCount.type));
+    yield put(loaderSlice.actions.startLoadingAction());
 
     const res: SuccessResponse<MembersCountResponse> = yield call(TotalCountService);
     if (res?.data) {
@@ -40,13 +40,13 @@ function* membersNewCount() {
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction(membersSlice.actions.membersNewCount.type));
+    yield put(loaderSlice.actions.stopLoadingAction());
   }
 }
 
 function* membersActiveCount() {
   try {
-    yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.membersActiveCount.type));
+    yield put(loaderSlice.actions.startLoadingAction());
 
     const res: SuccessResponse<MembersCountResponse> = yield call(TotalCountService);
     if (res?.data) {
@@ -56,13 +56,13 @@ function* membersActiveCount() {
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction(membersSlice.actions.membersActiveCount.type));
+    yield put(loaderSlice.actions.stopLoadingAction());
   }
 }
 
 function* membersInActiveCount() {
   try {
-    yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.membersInActiveCount.type));
+    yield put(loaderSlice.actions.startLoadingAction());
 
     const res: SuccessResponse<MembersCountResponse> = yield call(InactiveCountService);
     if (res?.data) {
@@ -72,7 +72,7 @@ function* membersInActiveCount() {
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction(membersSlice.actions.membersInActiveCount.type));
+    yield put(loaderSlice.actions.stopLoadingAction());
   }
 }
 

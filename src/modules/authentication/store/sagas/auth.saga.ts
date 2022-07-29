@@ -18,7 +18,7 @@ import {
   TokenResponse,
   VerifyEmailInput,
   WorkspaceResponse
-} from 'modules/authentication/interface/authentication.interface';
+} from 'modules/authentication/interface/auth.interface';
 import {
   createWorkspaceService,
   forgotPasswordService,
@@ -32,7 +32,7 @@ import {
   verifyForgotEmailService,
   sendSubscriptionPlan,
   signOutService
-} from 'modules/authentication/services/authentication.service';
+} from 'modules/authentication/services/auth.service';
 import { AxiosResponse } from 'axios';
 import { AxiosError, SuccessResponse } from '@/lib/api';
 

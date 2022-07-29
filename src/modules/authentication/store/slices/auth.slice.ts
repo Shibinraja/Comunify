@@ -9,7 +9,7 @@ import {
   SignUpInput,
   SubscriptionPackages,
   VerifyEmailInput
-} from 'modules/authentication/interface/authentication.interface';
+} from 'modules/authentication/interface/auth.interface';
 import type { InitialState } from '../types/auth.types';
 
 const initialState: InitialState = {
