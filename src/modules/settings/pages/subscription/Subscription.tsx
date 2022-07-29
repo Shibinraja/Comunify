@@ -1,7 +1,7 @@
-import Button from "common/button";
-import { TabPanel } from "common/tabs/TabPanel";
-import ToggleButton from "common/ToggleButton/ToggleButton";
-import React, { useState } from "react";
+import Button from 'common/button';
+import { TabPanel } from 'common/tabs/TabPanel';
+import ToggleButton from 'common/ToggleButton/ToggleButton';
+import React, { useState } from 'react';
 import tickIcon from '../../../..//assets/images/tostr.png';
 
 type Props = {
@@ -11,7 +11,7 @@ type Props = {
 const Subscription: React.FC<Props> = ({ hidden }) => {
   const [toggle, settoggle] = useState<boolean>(false);
   return <TabPanel hidden={hidden}>
-    <div className="subscription mt-2.625 pl-10">
+    <div className="subscription mt-2.625 pl-5">
       <h3 className="text-infoBlack font-Poppins font-semibold text-base leading-1.56">
         Subscription
       </h3>

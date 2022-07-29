@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-type-constraint */
 import type { AxiosResponse } from 'axios';
 
 export interface AjaxResponse<T extends unknown = unknown> {
@@ -18,13 +19,13 @@ export type NetworkResponse<T> = {
   data: SuccessResponse<T>;
   status: number;
   statusText: string;
-  headers: {};
-  config: {};
+  headers: any;
+  config: any;
 };
 
 export type AxiosError<T> = {
   code: string;
-  config: {};
+  config: any;
   message: string;
   name: string;
   request: XMLHttpRequest;

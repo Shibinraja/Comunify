@@ -1,7 +1,5 @@
 import { Props } from './routesTypes';
 
-const GuestRoute: React.FC<Props> = ({ children }) => {
-    return children;
-};
+const GuestRoute: React.FC<Props> = ({ children }) => children;
 
 export default GuestRoute;

@@ -1,12 +1,14 @@
-import React from 'react';
+/* eslint-disable react/display-name */
+import React, { JSXElementConstructor, Suspense } from 'react';
 import LoadingScreen from 'common/Loader/LoadingScreen';
-import { Suspense } from 'react';
 
 // Function to load fallbackUI when react renders the user component/ route based on it's priority.
 
-export const Loadable = (Component:React.FC) => (props: JSX.IntrinsicAttributes) =>
+const Loadable = (Component:JSXElementConstructor<any>) => (props: JSX.IntrinsicAttributes) =>
   (
     <Suspense fallback={<LoadingScreen />}>
       <Component {...props} />
     </Suspense>
   );
+
+export default Loadable;

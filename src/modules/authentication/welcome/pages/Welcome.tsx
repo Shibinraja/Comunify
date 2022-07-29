@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useEffect }  from 'react';
 import SubscriptionCard from 'common/subscriptionCard/SubscriptionCard';
 import bgWelcomeImage from '../../../../assets/images/bg-sign.svg';
 import './Welcome.css';
-import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../../../store';
 import { SubscriptionPackages } from '../../interface/authentication.interface';
@@ -16,17 +15,17 @@ const Welcome:React.FC = () => {
 
   useEffect(() => {
     dispatch(authSlice.actions.getSubscriptions());
-  },[])
+  }, []);
 
   const subscriptionData = useAppSelector((state) => state.auth.subscriptionData);
 
-  const comunifySubscriptionPlan:SubscriptionPackages[] = subscriptionData.length > 0 && subscriptionData.filter((plans:SubscriptionPackages)=> plans.planName.trim() !== 'Free Trial') || [];
+  const comunifySubscriptionPlan:SubscriptionPackages[] = subscriptionData.length > 0 && subscriptionData.filter((plans:SubscriptionPackages) => plans.planName.trim() !== 'Free Trial') || [];
 
 
   // Function to filter out free trial plan from the list of comunify plans and subscribe to it.
   const selectFreeTrialPlan = ():void => {
-  const freeTrialSubscriptionPlan:SubscriptionPackages[] = subscriptionData.length > 0 && subscriptionData.filter((plans:SubscriptionPackages)=> plans.planName.trim() === 'Free Trial') || [];
-  dispatch(authSlice.actions.chooseSubscription(freeTrialSubscriptionPlan[0]?.id))
+    const freeTrialSubscriptionPlan:SubscriptionPackages[] = subscriptionData.length > 0 && subscriptionData.filter((plans:SubscriptionPackages) => plans.planName.trim() === 'Free Trial') || [];
+    dispatch(authSlice.actions.chooseSubscription(freeTrialSubscriptionPlan[0]?.id));
 
   };
 
@@ -46,13 +45,13 @@ const Welcome:React.FC = () => {
               communities better.
             </p>
             <div className="subscriptionCard">
-                {comunifySubscriptionPlan?.map((data:SubscriptionPackages) => (
-                    <SubscriptionCard  key={data.id} subscriptionData={data}/>
-                ))}
+              {comunifySubscriptionPlan?.map((data:SubscriptionPackages) => (
+                <SubscriptionCard  key={data.id} subscriptionData={data}/>
+              ))}
             </div>
           </div>
           <div className="mt-5">
-          <button
+            <button
               className="free-trial-btn font-Inter text-desc w-25.9 font-normal leading-1.8 text-lightBlue box-border rounded-lg bg-white py-2.5 px-4 shadow-trialButtonShadow "
               onClick={selectFreeTrialPlan}
             >
@@ -60,7 +59,7 @@ const Welcome:React.FC = () => {
             </button>
           </div>
         </div>
-     </div>
+      </div>
     </div>
   );
 };

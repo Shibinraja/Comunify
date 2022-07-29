@@ -1,38 +1,35 @@
-import { ReactElement } from 'react';
+/* eslint-disable no-unused-vars */
+import React, { ReactElement }  from 'react';
 import { Navigate } from 'react-router';
 import { getLocalRefreshToken } from '@/lib/request';
-import { SubscriptionToken } from '../modules/authentication/interface/authentication.interface';
-import jwt_decode from 'jwt-decode';
-import { decodeToken } from '@/lib/decodeToken';
 import { Props } from './routesTypes';
 
 
 const PrivateRoute: React.FC<Props> = ({ children }) => {
-    // const isAuthenticated = useAppSelector(state => state.auth.isAuthenticated);
-    let subscriptionToken: string | null = localStorage.getItem('accessToken');
+  // const isAuthenticated = useAppSelector(state => state.auth.isAuthenticated);
+  //   const subscriptionToken: string | null = localStorage.getItem('accessToken');
+  //   const decodeJWTToken = (token: string | null): SubscriptionToken => {
+  //     const value: SubscriptionToken | any = Boolean(token) && decodeToken(`${token}`);
+  //     return value;
+  //   };
 
-    const decodeJWTToken = (token: string | null): SubscriptionToken => {
-        let value: SubscriptionToken | any = Boolean(token) && decodeToken(`${token}`);
-        return value;
-    };
+  const refreshToken: string | null = getLocalRefreshToken();
+  //   const decodedToken: SubscriptionToken = decodeJWTToken(subscriptionToken);
+  //   const expiryDate: Date = new Date(decodedToken?.exp);
+  //   const currentDate: Date = new Date();
 
-    let refreshToken: string | null = getLocalRefreshToken();
-    let decodedToken: SubscriptionToken = decodeJWTToken(subscriptionToken);
-    let expiryDate: Date = new Date(decodedToken?.exp);
-    let currentDate: Date = new Date();
+  const checkAuthAndExpiry = (page: ReactElement): ReactElement => {
+    if (refreshToken) {
+      // if (expiryDate < currentDate && !location.pathname.includes('/subscription/expired/')) {
+      //     return <Navigate to={`/subscription/expired/${decodedToken?.id}`} />;
+      // }
+      return page;
+    }
+    return <Navigate to="/" />;
 
-    const checkAuthAndExpiry = (page: ReactElement): ReactElement => {
-        if (Boolean(refreshToken)) {
-            // if (expiryDate < currentDate && !location.pathname.includes('/subscription/expired/')) {
-            //     return <Navigate to={`/subscription/expired/${decodedToken?.id}`} />;
-            // }
-            return page;
-        } else {
-            return <Navigate to="/" />;
-        }
-    };
+  };
 
-    return checkAuthAndExpiry(children);
+  return checkAuthAndExpiry(children);
 };
 
 export default PrivateRoute;

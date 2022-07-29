@@ -1,4 +1,5 @@
-import Input from "common/input";
+import React, {useState} from 'react';
+import Input from 'common/input';
 import nextIcon from '../../../assets/images/next-page-icon.svg';
 import prevIcon from '../../../assets/images/previous-page-icon.svg';
 import slackIcon from '../../../assets/images/slack.svg';
@@ -10,11 +11,10 @@ import filterDownIcon from '../../../assets/images/report-dropdown.svg';
 import exportImage from '../../../assets/images/export.svg';
 
 
-import { activityData } from "./ActivityTableData";
+import { activityData } from './ActivityTableData';
 import Modal from 'react-modal';
-import { useState } from "react";
-import Button from "common/button";
-import "./Activity.css";
+import Button from 'common/button';
+import './Activity.css';
 
 
 Modal.setAppElement('#root');
@@ -23,7 +23,6 @@ const Activity: React.FC = () => {
 
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [isTagModalOpen, setTagModalOpen] = useState<boolean>(false);
-  const [isDropdownActive, setisDropdownActive] = useState<number>(0);
   const [isFilterDropdownActive, setisFilterDropdownActive] = useState<boolean>(false);
 
   const handleFilterDropdown = (): void => {
@@ -31,16 +30,15 @@ const Activity: React.FC = () => {
   };
 
   const handleModal = (val: boolean) => {
-    setModalOpen(val)
-  }
+    setModalOpen(val);
+  };
   const handleTagModal = (val: boolean) => {
     setTagModalOpen(val);
   };
 
 
-
   return (
-    <div className="memberTable mt-1.8 flex flex-col">
+    <div className="container mx-auto memberTable mt-1.8 flex flex-col">
       <div className="flex items-center ">
         <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 w-full">
           Activities
@@ -50,7 +48,7 @@ const Activity: React.FC = () => {
             type="text"
             name="search"
             id="searchId"
-            className="app-input-card-border focus:outline-none px-4 mr-0.76 box-border h-3.06 w-19.06 bg-white shadow-profileCard rounded-0.6 placeholder:text-reportSearch placeholder:text-card placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.12 font-Poppins"
+            className="app-input-card-border focus:outline-none px-4 mr-0.76 box-border h-3.06 w-19.06 mt-2 bg-white shadow-profileCard rounded-0.6 placeholder:text-reportSearch placeholder:text-card placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.12 font-Poppins"
             placeholder="Search By Name or Email"
           />
         </div>
@@ -73,7 +71,7 @@ const Activity: React.FC = () => {
                   className="mx-auto focus:outline-none px-3 box-border bg-white shadow-profileCard rounded-0.6 app-input-card-border h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
                   placeholder="Report Name"
                 />
-                <div className="absolute right-5 w-0.78 h-3 z-40">
+                <div className="absolute right-5 top-4 w-0.78 h-3 z-40">
                   <img src={searchIcon} alt="" />
                 </div>
               </div>
@@ -88,7 +86,7 @@ const Activity: React.FC = () => {
               <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
                 <div className="flex items-center">
                   <div className="mr-2">
-                    <input type="checkbox" />
+                    <input type="checkbox" className="checkbox"/>
                   </div>
                   <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                     All
@@ -96,7 +94,7 @@ const Activity: React.FC = () => {
                 </div>
                 <div className="flex items-center">
                   <div className="mr-2">
-                    <input type="checkbox" />
+                    <input type="checkbox" className="checkbox"/>
                   </div>
                   <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                     Salesforce
@@ -104,7 +102,7 @@ const Activity: React.FC = () => {
                 </div>
                 <div className="flex items-center">
                   <div className="mr-2">
-                    <input type="checkbox" />
+                    <input type="checkbox" className="checkbox"/>
                   </div>
                   <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                     Khoros
@@ -122,7 +120,7 @@ const Activity: React.FC = () => {
               <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
                 <div className="flex items-center">
                   <div className="mr-2">
-                    <input type="checkbox" />
+                    <input type="checkbox" className="checkbox"/>
                   </div>
                   <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                     Daily
@@ -130,7 +128,7 @@ const Activity: React.FC = () => {
                 </div>
                 <div className="flex items-center">
                   <div className="mr-2">
-                    <input type="checkbox" />
+                    <input type="checkbox" className="checkbox"/>
                   </div>
                   <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                     Weekly
@@ -138,7 +136,7 @@ const Activity: React.FC = () => {
                 </div>
                 <div className="flex items-center">
                   <div className="mr-2">
-                    <input type="checkbox" />
+                    <input type="checkbox" className="checkbox"/>
                   </div>
                   <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                     Monthly
@@ -157,7 +155,7 @@ const Activity: React.FC = () => {
 
         </div>
         <div className="">
-        <div className="app-input-card-border w-6.98 h-3.06 rounded-0.6 shadow-contactCard box-border bg-white items-center justify-evenly flex ml-0.63 cursor-pointer">
+          <div className="app-input-card-border w-6.98 h-3.06 rounded-0.6 shadow-contactCard box-border bg-white items-center justify-evenly flex ml-0.63 cursor-pointer">
             <h3 className="text-dropGray leading-1.12 font-Poppins font-semibld text-card">
               Export
             </h3>
@@ -166,7 +164,7 @@ const Activity: React.FC = () => {
         </div>
       </div>
       <div className="py-2 overflow-x-auto mt-1.868">
-        <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-t-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixTableHead max-h-34">
+        <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixTableHead max-h-34">
           <table className="min-w-full relative  rounded-t-0.6 ">
             <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
               <tr className="min-w-full">
@@ -193,12 +191,12 @@ const Activity: React.FC = () => {
                   <td className="px-6 py-3 border-b">
                     <div className="flex ">
                       <div className="py-3 mr-2">
-                        <input type="checkbox" />
+                        <input type="checkbox" className="checkbox"/>
                       </div>
                       <div>
-                      <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                        {data.memberName}
-                      </div>
+                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                          {data.memberName}
+                        </div>
                       </div>
                     </div>
                   </td>
@@ -244,7 +242,9 @@ const Activity: React.FC = () => {
                   </td>
                 </tr>
               ))}
-
+              <tr className="px-6 py-3 ">
+                <td className="px-6 py-3 "></td>
+              </tr>
             </tbody>
           </table>
           <Modal
@@ -265,35 +265,35 @@ const Activity: React.FC = () => {
                   isOpen={isTagModalOpen}
                   shouldCloseOnOverlayClick={false}
                   onRequestClose={() => setModalOpen(false)}
-                  className="w-24.31 h-18.125 mx-auto  mt-32 rounded-lg modals-tag bg-white shadow-modal"
+                  className="w-24.31 h-18.75 mx-auto  mt-32 rounded-lg modals-tag bg-white shadow-modal"
                 >
                   <div className="flex flex-col">
                     <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">
-                      Tags
+                      Add Tag
                     </h3>
                     <form className="flex flex-col relative px-1.93 mt-9">
                       <label
                         htmlFor="billingName "
                         className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack "
                       >
-                        Enter Tag Name
+                        Tag Name
                       </label>
                       <input
                         type="text"
                         className="mt-0.375 inputs box-border bg-white shadow-inputShadow rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-trial placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
-                        placeholder="Tag Name"
+                        placeholder="Enter Tag Name"
                       />
                       <div className="flex absolute right-1 top-24 pr-6 items-center">
                         <Button
                           type="button"
                           text="CANCEL"
-                          className="mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  h-2.81 w-5.25 rounded border-none"
+                          className="mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel px-2 py-3 rounded border-none"
                           onClick={() => setTagModalOpen(false)}
                         />
                         <Button
                           type="button"
                           text="SAVE"
-                          className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-7.68 border-none h-2.81 btn-save-modal"
+                          className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn px-5 py-3 border-none btn-save-modal"
                         />
                       </div>
                     </form>
@@ -370,7 +370,7 @@ const Activity: React.FC = () => {
               </div>
             </div>
           </Modal>
-          <div className="px-6 py-6 flex items-center gap-0.66 justify-center w-full rounded-b-lg ">
+          <div className="px-6 py-6 flex items-center gap-0.66 pl-[30%] w-full rounded-b-lg fixed bottom-0 bg-white">
             <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
               <img src={prevIcon} alt="" />
             </div>
@@ -390,38 +390,38 @@ const Activity: React.FC = () => {
           </div>
         </div>
       </div>
-    
+
       <div className="mt-5 pl-5 hidden">
-      <div className="w-12.87 h-4.57 profile-card-header rounded-t-0.6"></div>
-      <div className="w-12.87 pb-3 rounded-b-0.6 profile-card-body profile-inner shadow-profileCard flex flex-col items-center bg-white">
-        <div className="w-4.43 h-4.43 -mt-10 flex items-center justify-center">
-          <img src={profileImage} alt="" />
-        </div>
-        <div className="font-semibold font-Poppins text-card text-profileBlack leading-1.12">
+        <div className="w-12.87 h-4.57 profile-card-header rounded-t-0.6"></div>
+        <div className="w-12.87 pb-3 rounded-b-0.6 profile-card-body profile-inner shadow-profileCard flex flex-col items-center bg-white">
+          <div className="w-4.43 h-4.43 -mt-10 flex items-center justify-center">
+            <img src={profileImage} alt="" />
+          </div>
+          <div className="font-semibold font-Poppins text-card text-profileBlack leading-1.12">
           Randy Dias
-        </div>
-        <div className="text-profileEmail font-Poppins font-normal text-profileBlack text-center w-6.875 mt-0.146">
+          </div>
+          <div className="text-profileEmail font-Poppins font-normal text-profileBlack text-center w-6.875 mt-0.146">
           randy125@mail.com neoito technologies pvt ltd
-        </div>
-        <div className="flex mt-2.5">
-          <div className="bg-cover bg-center mr-1 w-0.92 h-0.92">
-            <img src={slackIcon} alt="" />
           </div>
-          <div className="bg-cover bg-center mr-1 w-0.92 h-0.92">
-            <img src={slackIcon} alt="" />
+          <div className="flex mt-2.5">
+            <div className="bg-cover bg-center mr-1 w-0.92 h-0.92">
+              <img src={slackIcon} alt="" />
+            </div>
+            <div className="bg-cover bg-center mr-1 w-0.92 h-0.92">
+              <img src={slackIcon} alt="" />
+            </div>
+            <div className="bg-cover bg-center mr-1 w-0.92 h-0.92">
+              <img src={slackIcon} alt="" />
+            </div>
           </div>
-          <div className="bg-cover bg-center mr-1 w-0.92 h-0.92">
-            <img src={slackIcon} alt="" />
-          </div>
-        </div>
-        <div className="mt-0.84 font-normal font-Poppins text-card underline text-profileBlack leading-5 cursor-pointer">
+          <div className="mt-0.84 font-normal font-Poppins text-card underline text-profileBlack leading-5 cursor-pointer">
           VIEW PROFILE
+          </div>
         </div>
       </div>
+
     </div>
-      
-    </div>
-  )
-}
+  );
+};
 
 export default Activity;

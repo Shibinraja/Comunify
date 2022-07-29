@@ -1,10 +1,11 @@
-import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
-import membersSlice from 'modules/members/store/slice/members.slice';
-import { useEffect } from 'react';
-import { AppDispatch } from '../../store/index';
+import React from 'react';
+// import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
+// import membersSlice from 'modules/members/store/slice/members.slice';
+// import { useEffect } from 'react';
+// import { AppDispatch } from '../../store/index';
 
 
-const QuickInfo: React.FC = () => {
+const QuickInfo: React.FC = () =>
 
 //   const dispatch: AppDispatch = useAppDispatch();
 
@@ -17,7 +18,7 @@ const QuickInfo: React.FC = () => {
 //     dispatch(membersSlice.actions.membersInActiveCount());
 //   },[]);
 
-  return (
+  (
     <div className="container mx-auto mt-5 ">
       <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18">Quick Info</h3>
       <div className="grid grid-cols-4 info-data h-8.37 box-border bg-white  rounded-0.6 mt-1.868 app-input-card-border shadow-profileCard">
@@ -43,7 +44,7 @@ const QuickInfo: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+;
 
 export default QuickInfo;

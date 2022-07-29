@@ -1,57 +1,57 @@
-import  { lazy } from "react";
-import PublicRoute from "../../../routes/PublicRoute";
-import { RoutesArray } from "../../../interface/interface";
-import CreateNewPassword from "../createNewPassword/pages/CreateNewPassword";
+import React, { lazy } from 'react';
+import PublicRoute from '../../../routes/PublicRoute';
+import { RoutesArray } from '../../../interface/interface';
+import CreateNewPassword from '../createNewPassword/pages/CreateNewPassword';
 import PrivateRoute from 'routes/PrivateRoute';
 import GuestRoute from 'routes/GuestGuard';
-import { Loadable } from 'routes/suspenseLoader';
+import Loadable from 'routes/suspenseLoader';
 
 //Public Route
-const SignIn = Loadable(lazy(() => import("../signIn/pages/SignIn")));
-const SignUp = Loadable(lazy(() => import("../signUp/pages/SignUp")));
-const ForgotPassword = Loadable(lazy(() => import("../forgotPassword/pages/ForgotPassword")));
-const CreateWorkSpace = Loadable(lazy(()=> import("../createWorkSpace/pages/CreateWorkSpace")));
-const ResendVerificationMail = Loadable(lazy(()=> import("../resendVerificationMail/ResendVerification")));
-const AuthLayout = Loadable(lazy(() => import("../../../layout/AuthLayout")));
+const SignIn = Loadable(lazy(() => import('../signIn/pages/SignIn')));
+const SignUp = Loadable(lazy(() => import('../signUp/pages/SignUp')));
+const ForgotPassword = Loadable(lazy(() => import('../forgotPassword/pages/ForgotPassword')));
+const CreateWorkSpace = Loadable(lazy(() => import('../createWorkSpace/pages/CreateWorkSpace')));
+const ResendVerificationMail = Loadable(lazy(() => import('../resendVerificationMail/ResendVerification')));
+const AuthLayout = Loadable(lazy(() => import('../../../layout/AuthLayout')));
 
 //Private Route
-const Welcome = Loadable(lazy(()=> import("../welcome/pages/Welcome")));
-const Integration = Loadable(lazy(()=> import("../integration/pages/Integration")));
-const Subscription = Loadable(lazy(()=> import("../subscription/pages/Subscription")));
-const SubscriptionExpired = Loadable(lazy(()=> import("../subscriptionExpired/pages/SubscriptionExpired")));
+const Welcome = Loadable(lazy(() => import('../welcome/pages/Welcome')));
+const Integration = Loadable(lazy(() => import('../integration/pages/Integration')));
+const Subscription = Loadable(lazy(() => import('../subscription/pages/Subscription')));
+const SubscriptionExpired = Loadable(lazy(() => import('../subscriptionExpired/pages/SubscriptionExpired')));
 
 
-let authRoutes: RoutesArray[] = [
+const authRoutes: RoutesArray[] = [
   {
     element: <AuthLayout />,
-    path: "/",
+    path: '/',
     children: [
       {
-        path: "/",
+        path: '/',
         element: (
           <PublicRoute>
             <SignIn />
           </PublicRoute>
-        ),
+        )
       },
       {
-        path: "/signup",
+        path: '/signup',
         element: (
           <PublicRoute>
             <SignUp />
           </PublicRoute>
-        ),
+        )
       },
       {
-        path: "/create-workspace",
+        path: '/create-workspace',
         element: (
           <PrivateRoute>
             <CreateWorkSpace />
           </PrivateRoute>
-        ),
+        )
       },
       {
-        path: "/forgot-password",
+        path: '/forgot-password',
         element: (
           <PublicRoute>
             <ForgotPassword />
@@ -59,7 +59,7 @@ let authRoutes: RoutesArray[] = [
         )
       },
       {
-        path: "/create-password",
+        path: '/create-password',
         element: (
           <PublicRoute>
             <CreateNewPassword />
@@ -67,9 +67,9 @@ let authRoutes: RoutesArray[] = [
         )
       },
       {
-        path: "/resend-mail",
+        path: '/resend-mail',
         element: (
-           <GuestRoute>
+          <GuestRoute>
             <ResendVerificationMail />
           </GuestRoute>
         )
@@ -80,7 +80,7 @@ let authRoutes: RoutesArray[] = [
             <Welcome/>
           </PrivateRoute>
         ),
-        path: "/welcome",
+        path: '/welcome'
       },
       {
         element: (
@@ -88,7 +88,7 @@ let authRoutes: RoutesArray[] = [
             <Integration/>
           </PrivateRoute>
         ),
-        path: "/integration",
+        path: '/integration'
       },
       {
         element: (
@@ -96,7 +96,7 @@ let authRoutes: RoutesArray[] = [
             <Subscription/>
           </PrivateRoute>
         ),
-        path: "/subscription",
+        path: '/subscription'
       },
       {
         element: (
@@ -104,10 +104,10 @@ let authRoutes: RoutesArray[] = [
             <SubscriptionExpired/>
           </PrivateRoute>
         ),
-        path: "/subscription/expired",
-      },
-    ],
-  },
+        path: '/subscription/expired'
+      }
+    ]
+  }
 ];
 
 export default authRoutes;

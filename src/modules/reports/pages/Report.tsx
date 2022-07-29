@@ -1,5 +1,5 @@
+import React, { useState }  from 'react';
 import Input from 'common/input';
-import { useState } from 'react';
 import downArrow from '../../../assets/images/filter-dropdown.svg';
 import filterDownIcon from '../../../assets/images/report-dropdown.svg';
 import searchIcon from '../../../assets/images/search.svg';
@@ -10,7 +10,7 @@ import Button from 'common/button';
 import { useNavigate } from 'react-router';
 import nextIcon from '../../../assets/images/next-page-icon.svg';
 import prevIcon from '../../../assets/images/previous-page-icon.svg';
-import closeIcon from '../../../assets/images/close.svg';
+// import closeIcon from '../../../assets/images/close.svg';
 
 const Report: React.FC = () => {
   const navigate = useNavigate();
@@ -28,8 +28,8 @@ const Report: React.FC = () => {
   };
 
   const navigateToCreateReport = () => {
-    navigate('/reports/create-report')
-  }
+    navigate('/reports/create-report');
+  };
 
   return (
     <div className="mt-2.62 w-full">
@@ -81,7 +81,7 @@ const Report: React.FC = () => {
                 <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
                   <div className="flex items-center">
                     <div className="mr-2">
-                      <input type="checkbox" />
+                      <input type="checkbox" className="checkbox"/>
                     </div>
                     <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                       All
@@ -89,7 +89,7 @@ const Report: React.FC = () => {
                   </div>
                   <div className="flex items-center">
                     <div className="mr-2">
-                      <input type="checkbox" />
+                      <input type="checkbox" className="checkbox"/>
                     </div>
                     <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                       Salesforce
@@ -97,7 +97,7 @@ const Report: React.FC = () => {
                   </div>
                   <div className="flex items-center">
                     <div className="mr-2">
-                      <input type="checkbox" />
+                      <input type="checkbox" className="checkbox"/>
                     </div>
                     <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                       Khoros
@@ -115,7 +115,7 @@ const Report: React.FC = () => {
                 <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
                   <div className="flex items-center">
                     <div className="mr-2">
-                      <input type="checkbox" />
+                      <input type="checkbox" className="checkbox"/>
                     </div>
                     <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                       Daily
@@ -123,7 +123,7 @@ const Report: React.FC = () => {
                   </div>
                   <div className="flex items-center">
                     <div className="mr-2">
-                      <input type="checkbox" />
+                      <input type="checkbox" className="checkbox"/>
                     </div>
                     <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                       Weekly
@@ -131,7 +131,7 @@ const Report: React.FC = () => {
                   </div>
                   <div className="flex items-center">
                     <div className="mr-2">
-                      <input type="checkbox" />
+                      <input type="checkbox" className="checkbox"/>
                     </div>
                     <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
                       Monthly
@@ -159,7 +159,7 @@ const Report: React.FC = () => {
           </div>
         </div>
         <div className="py-2 overflow-x-auto mt-1.868">
-          <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-t-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixTableHead max-h-34">
+          <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixTableHead max-h-34">
             <table className="min-w-full relative  rounded-t-0.6 ">
               <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky z-40">
                 <tr className="min-w-full">
@@ -182,75 +182,78 @@ const Report: React.FC = () => {
               </thead>
               <tbody>
 
-              {reportData.map((data, i) => (
-                    <tr className="border-b" key={i}>
-                      <td className="px-6 py-3">
-                        <div className="flex ">
-                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                            {data.reportName}
-                          </div>
+                {reportData.map((data, i) => (
+                  <tr className="border-b" key={i}>
+                    <td className="px-6 py-3">
+                      <div className="flex ">
+                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                          {data.reportName}
                         </div>
-                      </td>
-                      <td className="px-6 py-3">
-                        <div className="flex ">
-                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                            {data.date}
-                          </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-3">
+                      <div className="flex ">
+                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                          {data.date}
                         </div>
-                      </td>
-                      <td className="px-6 py-3">
-                        <div className="flex gap-x-1">
-                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer w-1.375">
-                            <img src={data.platform.img1} alt="" />
-                          </div>
-                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer w-1.375">
-                            <img src={data.platform.img2} alt="" />
-                          </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-3">
+                      <div className="flex gap-x-1">
+                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer w-1.375">
+                          <img src={data.platform.img1} alt="" />
                         </div>
-                      </td>
-                      <td className="px-6 py-3">
-                        <div className="flex ">
-                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                            {data.reportStatus}
-                          </div>
+                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer w-1.375">
+                          <img src={data.platform.img2} alt="" />
                         </div>
-                      </td>
-                      <td className="px-6 py-3">
-                        <div className="flex   cursor-pointer relative">
-                          <div
-                            onClick={() => handleDropDownActive(data.id)}
-                            className="flex items-center justify-center action  h-3.12 box-border bg-white rounded-0.1 shadow-deleteButton w-3.12 "
-                          >
-                            <img
-                              src={actionDotIcon}
-                              alt=""
-                              className="relative"
-                            />
-                          </div>
-                          {isDropdownActive === data.id && (
-                            <div className="absolute top-6 app-result-card-border bg-white rounded-0.6 box-border w-9.62  right-32 shadow-inputShadow z-40">
-                              {options.map((options, i) => (
-                                <div
-                                  className="flex flex-col"
-                                  onClick={() => handleDropDownActive(0)}
-                                  key={i}
-                                >
-                                  <div className="h-3.06 p-2 flex items-center text-searchBlack font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300">
-                                    {options}
-                                  </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-3">
+                      <div className="flex ">
+                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                          {data.reportStatus}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-3">
+                      <div className="flex   cursor-pointer relative">
+                        <div
+                          onClick={() => handleDropDownActive(data.id)}
+                          className="flex items-center justify-center action  h-3.12 box-border bg-white rounded-0.1 shadow-deleteButton w-3.12 "
+                        >
+                          <img
+                            src={actionDotIcon}
+                            alt=""
+                            className="relative"
+                          />
+                        </div>
+                        {isDropdownActive === data.id && (
+                          <div className="absolute top-6 app-result-card-border bg-white rounded-0.6 box-border w-9.62  right-32 shadow-inputShadow z-40">
+                            {options.map((options, i) => (
+                              <div
+                                className="flex flex-col"
+                                onClick={() => handleDropDownActive(0)}
+                                key={i}
+                              >
+                                <div className="h-3.06 p-2 flex items-center text-searchBlack font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300">
+                                  {options}
                                 </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+                <tr className="px-6 py-3 ">
+                  <td className="px-6 py-3 "></td>
+                </tr>
               </tbody>
             </table>
 
 
-            <div className="px-6 py-6 flex items-center gap-0.66 justify-center w-full rounded-b-lg ">
+            <div className="px-6 py-6 flex items-center gap-0.66 pl-[30%] w-full rounded-b-lg fixed bg-white bottom-0">
               <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
                 <img src={prevIcon} alt="" />
               </div>
@@ -272,7 +275,7 @@ const Report: React.FC = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default Report;

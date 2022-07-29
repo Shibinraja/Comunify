@@ -1,3 +1,4 @@
+import React from 'react';
 import Button from 'common/button';
 import Input from 'common/input';
 import bgSubscriptionImage from '../../../../assets/images/bg-sign.svg';
@@ -9,15 +10,14 @@ import { SubscriptionValues } from 'modules/authentication/interface/authenticat
 const Subscription: React.FC = () => {
   const navigate = useNavigate();
 
-  const initialValues: SubscriptionValues = {
-    username: '',
+  const initialValues: SubscriptionValues = {username: '',
     password: '',
     card_holder: '',
     cardnumber: '',
-    cvv: '',  };
+    cvv: ''  };
 
-  const handleSubmit = (values: SubscriptionValues): void => {
-   navigate('/create-workspace');
+  const handleSubmit = (): void => {
+    navigate('/create-workspace');
   };
 
   return (
@@ -34,15 +34,15 @@ const Subscription: React.FC = () => {
             Get Comunified with your communities. Create your account now.
           </p>
           <div className="form mt-1.8">
-          <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+            <Formik initialValues={initialValues} onSubmit={handleSubmit}>
               {({
-                errors,
+                // errors,
                 handleBlur,
                 handleChange,
                 handleSubmit,
-                isSubmitting,
-                touched,
-                values,
+                // isSubmitting,
+                // touched,
+                values
               }): JSX.Element => (
                 <Form
                   className="w-25.9 "
@@ -131,9 +131,9 @@ const Subscription: React.FC = () => {
                 </Form>
               )}
             </Formik>
+          </div>
         </div>
-        </div>
-    </div>
+      </div>
     </div>
   );
 };
