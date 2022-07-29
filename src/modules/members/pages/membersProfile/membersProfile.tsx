@@ -1,4 +1,4 @@
-import React,  { useState }  from 'react';
+import React,  { useEffect, useRef, useState }  from 'react';
 import profileImage from '../../../../assets/images/profile-member.svg';
 import dropDownIcon from '../../../../assets/images/profile-dropdown.svg';
 import slackIcon from '../../../../assets/images/slack.svg';
@@ -36,6 +36,23 @@ const MembersProfile: React.FC = () => {
     navigate('/members/members-review');
   };
 
+  const dropDownRef:any=useRef();
+
+  const handleOutsideClick=(event:MouseEvent) => {
+    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target)) {
+      setSelectDropDownActive(true);
+    } else {
+      setSelectDropDownActive(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleOutsideClick);
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, []);
+
   const selectOptions = ['All', 'Slack', 'Higherlogic'];
   return (
     <div className="flex pt-3.93 w-full">
@@ -46,6 +63,7 @@ const MembersProfile: React.FC = () => {
             <div className="select relative">
               <div
                 className="flex justify-around items-center cursor-pointer box-border w-9.59 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border"
+                ref={dropDownRef}
                 onClick={handleDropDownActive}
               >
                 <div className="font-Poppins font-semibold text-card text-memberDay leading-4">{selected ? selected : 'Select'}</div>
