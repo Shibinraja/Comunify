@@ -51,7 +51,7 @@ const SideNav: React.FC = () => {
     <nav className="h-screen bg-brightGray w-2/12 fixed z-40 top-0 left-0">
       <div className="flex flex-col pl-2.58 mt-3.01">
         <div className="flex items-center">
-          <div>
+          <div className="w-1.81 h-1.81">
             <img src={comunifyLogo} alt="" />
           </div>
           <div className="pl-0.66 font-Outfit font-bold text-dashboardLogo text-lightBlack leading-1.43">

@@ -182,3 +182,9 @@ input {
 .checkbox:checked::before{
   display: block;
 }
+
+.gradient-bottom-border{
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
+  border-image-slice: 1;
+}
