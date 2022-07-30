@@ -145,7 +145,7 @@ const signInSchema = Yup.object().shape({
     }
 
     return Yup.string()
-      .required('Username is required')
+      .required('Username/Email is required')
       .min(5, 'Username should be more than 5 character long')
       .max(30, 'Username should not exceed 30 characters')
       .trim();
