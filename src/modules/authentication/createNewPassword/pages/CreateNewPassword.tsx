@@ -132,10 +132,10 @@ const confirmPasswordSchema = Yup.object().shape({
   password: Yup.string()
     .required('Password is required')
     .min(8, 'Password must be atleast 8 characters')
-    .matches(password_regex, 'Password must have one uppercase , one lowercase , a digit and specialcharacters'),
+    .matches(password_regex, 'Password must have one uppercase, one lowercase, a digit and special characters'),
   confirmPassword: Yup.string()
     .min(8, 'Password must be atleast 8 characters')
-    .oneOf([Yup.ref('password'), null], 'Passwords must match')
+    .oneOf([Yup.ref('password'), null], 'Passwords do not match')
     // .matches(
     //   password_regex,
     //   "Password must have one uppercase , one lowercase , a digit and specialcharacters"
