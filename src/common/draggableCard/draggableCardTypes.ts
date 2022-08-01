@@ -8,6 +8,7 @@ export type ColumnNameProps = {
 export type DraggableCardProps = {
   id: number;
   index: number;
-  moveCard: (dragIndex:number , hoverIndex:number)=> void;
-  children: ReactElement
-}
+  // eslint-disable-next-line no-unused-vars
+  moveCard: (dragIndex: number, hoverIndex: number) => void;
+  children: ReactElement;
+};

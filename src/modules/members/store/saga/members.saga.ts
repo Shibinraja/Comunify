@@ -1,85 +1,84 @@
 import { call, put, takeEvery } from 'redux-saga/effects';
-import type { PayloadAction } from '@reduxjs/toolkit';
 import { SagaIterator } from 'redux-saga';
-import history from '@/lib/history';
-import {  AxiosError, SuccessResponse } from '@/lib/api';
-import { showErrorToast, showSuccessToast } from 'common/toast/toastFunctions';
+// import history from '@/lib/history';
+import { AxiosError, SuccessResponse } from '@/lib/api';
+import { showErrorToast } from 'common/toast/toastFunctions';
 import loaderSlice from 'modules/authentication/store/slices/loader.slice';
 import membersSlice from '../slice/members.slice';
 import { InactiveCountService, TotalCountService } from 'modules/members/services/members.services';
 import { MembersCountResponse } from 'modules/members/interface/members.interface';
 
-const forwardTo = (location: string) => {
-    history.push(location);
-};
+// const forwardTo = (location: string) => {
+//     history.push(location);
+// };
 
 function* membersTotalCount() {
-    try {
-        yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.membersTotalCount.type));
+  try {
+    yield put(loaderSlice.actions.startLoadingAction());
 
-        const res: SuccessResponse<MembersCountResponse> = yield call(TotalCountService);
-        if (res?.data) {
-            yield put(membersSlice.actions.getmembersTotalCountData(res?.data))
-        }
-    } catch (e) {
-        const error = e as AxiosError<unknown>;
-        showErrorToast(error?.response?.data?.message);
-    } finally {
-        yield put(loaderSlice.actions.stopLoadingAction(membersSlice.actions.membersTotalCount.type));
+    const res: SuccessResponse<MembersCountResponse> = yield call(TotalCountService);
+    if (res?.data) {
+      yield put(membersSlice.actions.getmembersTotalCountData(res?.data));
     }
-};
+  } catch (e) {
+    const error = e as AxiosError<unknown>;
+    showErrorToast(error?.response?.data?.message);
+  } finally {
+    yield put(loaderSlice.actions.stopLoadingAction());
+  }
+}
 
 function* membersNewCount() {
-    try {
-        yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.membersNewCount.type));
+  try {
+    yield put(loaderSlice.actions.startLoadingAction());
 
-        const res: SuccessResponse<MembersCountResponse> = yield call(TotalCountService);
-        if (res?.data) {
-            yield put(membersSlice.actions.getmembersNewCountData(res?.data))
-        }
-    } catch (e) {
-        const error = e as AxiosError<unknown>;
-        showErrorToast(error?.response?.data?.message);
-    } finally {
-        yield put(loaderSlice.actions.stopLoadingAction(membersSlice.actions.membersNewCount.type));
+    const res: SuccessResponse<MembersCountResponse> = yield call(TotalCountService);
+    if (res?.data) {
+      yield put(membersSlice.actions.getmembersNewCountData(res?.data));
     }
+  } catch (e) {
+    const error = e as AxiosError<unknown>;
+    showErrorToast(error?.response?.data?.message);
+  } finally {
+    yield put(loaderSlice.actions.stopLoadingAction());
+  }
 }
 
 function* membersActiveCount() {
-    try {
-        yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.membersActiveCount.type));
+  try {
+    yield put(loaderSlice.actions.startLoadingAction());
 
-        const res: SuccessResponse<MembersCountResponse> = yield call(TotalCountService);
-        if (res?.data) {
-            yield put(membersSlice.actions.getmembersActiveCountData(res?.data))
-        }
-    } catch (e) {
-        const error = e as AxiosError<unknown>;
-        showErrorToast(error?.response?.data?.message);
-    } finally {
-        yield put(loaderSlice.actions.stopLoadingAction(membersSlice.actions.membersActiveCount.type));
+    const res: SuccessResponse<MembersCountResponse> = yield call(TotalCountService);
+    if (res?.data) {
+      yield put(membersSlice.actions.getmembersActiveCountData(res?.data));
     }
+  } catch (e) {
+    const error = e as AxiosError<unknown>;
+    showErrorToast(error?.response?.data?.message);
+  } finally {
+    yield put(loaderSlice.actions.stopLoadingAction());
+  }
 }
 
 function* membersInActiveCount() {
-    try {
-        yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.membersInActiveCount.type));
+  try {
+    yield put(loaderSlice.actions.startLoadingAction());
 
-        const res: SuccessResponse<MembersCountResponse> = yield call(InactiveCountService);
-        if (res?.data) {
-            yield put(membersSlice.actions.getmembersInActiveCountData(res?.data))
-        }
-    } catch (e) {
-        const error = e as AxiosError<unknown>;
-        showErrorToast(error?.response?.data?.message);
-    } finally {
-        yield put(loaderSlice.actions.stopLoadingAction(membersSlice.actions.membersInActiveCount.type));
+    const res: SuccessResponse<MembersCountResponse> = yield call(InactiveCountService);
+    if (res?.data) {
+      yield put(membersSlice.actions.getmembersInActiveCountData(res?.data));
     }
+  } catch (e) {
+    const error = e as AxiosError<unknown>;
+    showErrorToast(error?.response?.data?.message);
+  } finally {
+    yield put(loaderSlice.actions.stopLoadingAction());
+  }
 }
 
 export default function* membersSaga(): SagaIterator {
-    yield takeEvery(membersSlice.actions.membersTotalCount.type, membersTotalCount);
-    yield takeEvery(membersSlice.actions.membersNewCount.type, membersNewCount);
-    yield takeEvery(membersSlice.actions.membersActiveCount.type, membersActiveCount);
-    yield takeEvery(membersSlice.actions.membersInActiveCount.type, membersInActiveCount);
+  yield takeEvery(membersSlice.actions.membersTotalCount.type, membersTotalCount);
+  yield takeEvery(membersSlice.actions.membersNewCount.type, membersNewCount);
+  yield takeEvery(membersSlice.actions.membersActiveCount.type, membersActiveCount);
+  yield takeEvery(membersSlice.actions.membersInActiveCount.type, membersInActiveCount);
 }

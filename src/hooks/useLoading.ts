@@ -1,9 +1,9 @@
 import { useAppSelector } from './useRedux';
 
-// const useLoading = (action: string): boolean => {
-//   const loadingState = useAppSelector((state) => state.loader.loadingActions);
+const useLoading = (): boolean => {
+  const loadingState = useAppSelector((state) => state.loader.loadingState);
 
-//   return loadingState.includes(action);
-// };
+  return loadingState;
+};
 
-// export default useLoading;
+export default useLoading;

@@ -10,33 +10,32 @@ import * as Yup from 'yup';
 
 const CreateWorkSpace: React.FC = () => {
   const dispatch: AppDispatch = useAppDispatch();
-  const { workspaceData } = useAppSelector(state => state.auth);
+  const { workspaceData } = useAppSelector((state) => state.auth);
 
   const [workspaceName, setWorkspaceName] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string | unknown>('');
 
-  const workspaceNameValidation = Yup.string().min(4,'Workspace Name must be atleast 4 characters')
+  const workspaceNameValidation = Yup.string().min(4, 'Workspace Name must be atleast 4 characters');
 
-    useEffect(() => {
-        dispatch(authSlice.actions.getWorkspace());
-    }, []);
+  useEffect(() => {
+    dispatch(authSlice.actions.getWorkspace());
+  }, []);
 
-    const handleWorkspaceName = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleWorkspaceName = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const workspace_name = e.target.value;
-    setWorkspaceName(workspace_name)
-    try{
+    setWorkspaceName(workspace_name);
+    try {
       workspaceNameValidation.validateSync(workspace_name);
-      setErrorMessage('')
+      setErrorMessage('');
+    } catch ({ message }) {
+      setErrorMessage(message);
     }
-    catch({message}){
-      setErrorMessage(message)
-    }
-  }
+  };
 
-  const handleSubmit = (e:React.FormEvent<HTMLFormElement>):void => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    dispatch(authSlice.actions.createWorkspace({workspaceName}))
-  }
+    dispatch(authSlice.actions.createWorkspace({ workspaceName }));
+  };
 
   return (
     <div className="create-workspace">
@@ -45,14 +44,14 @@ const CreateWorkSpace: React.FC = () => {
           <img src={bgWorkSpaceImage} alt="" className="object-cover" />
         </div>
         <div className="flex flex-col w-1/2 pl-7.53 pt-6.84 overflow-scroll">
-          {" "}
-          <h3 className="font-Inter text-neutralBlack font-bold not-italic text-signIn leading-2.8">
-            Create Workspace{" "}
-          </h3>{" "}
+          {' '}
+          <h3 className="font-Inter text-neutralBlack font-bold not-italic text-signIn leading-2.8">Create Workspace </h3>{' '}
           <form
             className="flex flex-col pb-10 mt-1.8 w-25.9 "
             autoComplete="off"
-            onSubmit={(e) => {handleSubmit(e)}}
+            onSubmit={(e) => {
+              handleSubmit(e);
+            }}
           >
             <div className="workspace">
               <Input
@@ -69,7 +68,7 @@ const CreateWorkSpace: React.FC = () => {
               />
             </div>
             <Button
-              disabled={Boolean(workspaceData?.length !== 0 ) || Boolean(errorMessage) || !Boolean(workspaceName)}
+              disabled={Boolean(workspaceData?.length !== 0) || Boolean(errorMessage) || !workspaceName}
               text="Confirm"
               type="submit"
               className="font-Poppins rounded-lg text-base font-semibold text-white mt-1.8 h-3.6 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient"

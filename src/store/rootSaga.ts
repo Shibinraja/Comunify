@@ -4,8 +4,6 @@ import authSaga from '../modules/authentication/store/sagas/auth.saga';
 import membersSaga from 'modules/members/store/saga/members.saga';
 import { SagaType } from './rootSagaTypes';
 
-export default function* rootSaga(): Generator<
-  AllEffect<SagaIterator<SagaType>>
-> {
+export default function* rootSaga(): Generator<AllEffect<SagaIterator<SagaType>>> {
   yield all([authSaga(), membersSaga()]);
 }

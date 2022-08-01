@@ -1,6 +1,5 @@
-
 .section::-webkit-scrollbar {
-    width: 4.18px;
+  width: 4.18px;
 }
 
 /* .section::-webkit-scrollbar-track {
@@ -8,6 +7,6 @@
 } */
 
 .section::-webkit-scrollbar-thumb {
-    background: #EEEEEE;
-    border-radius: 60px;
+  background: #eeeeee;
+  border-radius: 60px;
 }

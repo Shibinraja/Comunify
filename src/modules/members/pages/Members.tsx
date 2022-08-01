@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import MembersCard from 'common/membersCard/membersCard';
 import Modal from 'react-modal';
 import './Members.css';
@@ -21,8 +21,7 @@ import MembersDraggableColumn from './membersTableColumn/membersDraggableColumn'
 
 Modal.setAppElement('#root');
 
-const Members: FC = () => {
-
+const Members: React.FC = () => {
   const navigate = useNavigate();
   const [isModalOpen, setisModalOpen] = useState<boolean>(false);
   const [toDate, setToDate] = useState<Date>();
@@ -32,42 +31,37 @@ const Members: FC = () => {
   const [isLocationActive, setLocationActive] = useState<boolean>(false);
   const [isOrganizationActive, setOrganizationActive] = useState<boolean>(false);
 
-
-
   const handleFilterDropdown = (val: boolean): void => {
-    setisFilterDropdownActive(val)
+    setisFilterDropdownActive(val);
   };
 
   const handlePlatformActive = (val: boolean) => {
-    setPlatformActive(val)
-  }
+    setPlatformActive(val);
+  };
 
   const handleLocationActive = (val: boolean) => {
-    setLocationActive(val)
-  }
-
+    setLocationActive(val);
+  };
 
   const handleTagActive = (val: boolean) => {
-    setTagActive(val)
-  }
+    setTagActive(val);
+  };
 
   const handleOrganizationActive = (val: boolean) => {
-    setOrganizationActive(val)
-  }
+    setOrganizationActive(val);
+  };
 
   const handleModalClose = () => {
     setisModalOpen(false);
-  }
+  };
 
   const navigateToProfile = () => {
     navigate('/members/profile');
-  }
+  };
 
   return (
     <div className="container flex flex-col mx-auto">
-      <h3 className="font-Poppins font-semibold text-infoBlack text-infoData leading-9">
-        Members
-      </h3>
+      <h3 className="font-Poppins font-semibold text-infoBlack text-infoData leading-9">Members</h3>
       <div className="flex mt-1.8 items-center ">
         <div className="flex relative items-center ">
           <input
@@ -95,13 +89,8 @@ const Members: FC = () => {
             onChange={(date: any) => setToDate(date)}
             className="export w-9.92 h-3.06  shadow-contactCard rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
             placeholderText="Custom Date"
-
           />
-          <img
-            className="absolute icon-holder left-32 cursor-pointer"
-            src={calandarIcon}
-            alt=""
-          />
+          <img className="absolute icon-holder left-32 cursor-pointer" src={calandarIcon} alt="" />
         </div>
 
         <div className="ml-1.30 w-full">
@@ -114,61 +103,64 @@ const Members: FC = () => {
                 Filters
               </div>
               <div>
-                <img src={dropdownIcon} alt="" className={isFilterDropdownActive ? 'rotate-180': 'rotate-0'}/>
+                <img src={dropdownIcon} alt="" className={isFilterDropdownActive ? 'rotate-180' : 'rotate-0'} />
               </div>
             </div>
             {isFilterDropdownActive && (
-              <div
-                className="absolute w-16.56 pb-0 bg-white border z-40 rounded-0.3"
-                onClick={() => handleFilterDropdown(true)}
-              >
+              <div className="absolute w-16.56 pb-0 bg-white border z-40 rounded-0.3" onClick={() => handleFilterDropdown(true)}>
                 <div className="flex flex-col pb-5">
-                  <div className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06  px-3 mx-auto  cursor-pointer"
-                    onClick={() => { handlePlatformActive(isPlatformActive ? false : true); handleTagActive(false); handleLocationActive(false); handleOrganizationActive(false) }}>
-                    <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">
-                      Platform
-                    </div>
+                  <div
+                    className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06  px-3 mx-auto  cursor-pointer"
+                    onClick={() => {
+                      handlePlatformActive(isPlatformActive ? false : true);
+                      handleTagActive(false);
+                      handleLocationActive(false);
+                      handleOrganizationActive(false);
+                    }}
+                  >
+                    <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">Platform</div>
                     <div>
                       <img src={downArrow} alt="" className={isPlatformActive ? 'rotate-0' : 'rotate-180'} />
                     </div>
                   </div>
-                  {isPlatformActive && <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125 pb-3">
-                    <div className="flex items-center">
-                      <div className="mr-2">
-                        <input type="checkbox" className="checkbox"/>
+                  {isPlatformActive && (
+                    <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125 pb-3">
+                      <div className="flex items-center">
+                        <div className="mr-2">
+                          <input type="checkbox" className="checkbox" />
+                        </div>
+                        <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Slack</div>
                       </div>
-                      <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
-                        Slack
+                      <div className="flex items-center">
+                        <div className="mr-2">
+                          <input type="checkbox" className="checkbox" />
+                        </div>
+                        <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Higher Logic</div>
                       </div>
-                    </div>
-                    <div className="flex items-center">
-                      <div className="mr-2">
-                        <input type="checkbox" className="checkbox"/>
-                      </div>
-                      <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
-                        Higher Logic
-                      </div>
-                    </div>
-                    <div className="flex items-center">
-                      <div className="mr-2">
-                        <input type="checkbox" className="checkbox"/>
-                      </div>
-                      <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
-                        Vanilla Forums
+                      <div className="flex items-center">
+                        <div className="mr-2">
+                          <input type="checkbox" className="checkbox" />
+                        </div>
+                        <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Vanilla Forums</div>
                       </div>
                     </div>
-                  </div>}
+                  )}
 
-                  <div className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06 px-3 mx-auto  cursor-pointer"
-                    onClick={() => { handleTagActive(isTagActive ? false : true); handlePlatformActive(false); handleLocationActive(false); handleOrganizationActive(false) }}>
-                    <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">
-                      Tags
-                    </div>
+                  <div
+                    className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06 px-3 mx-auto  cursor-pointer"
+                    onClick={() => {
+                      handleTagActive(isTagActive ? false : true);
+                      handlePlatformActive(false);
+                      handleLocationActive(false);
+                      handleOrganizationActive(false);
+                    }}
+                  >
+                    <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">Tags</div>
                     <div>
-                      <img src={downArrow} alt="" className={isTagActive ? 'rotate-0' : 'rotate-180'}/>
+                      <img src={downArrow} alt="" className={isTagActive ? 'rotate-0' : 'rotate-180'} />
                     </div>
                   </div>
-                  {isTagActive &&
+                  {isTagActive && (
                     <div>
                       <div className="flex relative items-center pt-2 pb-3">
                         <input
@@ -185,44 +177,41 @@ const Members: FC = () => {
                       <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
                         <div className="flex items-center">
                           <div className="mr-2">
-                            <input type="checkbox" className="checkbox"/>
+                            <input type="checkbox" className="checkbox" />
                           </div>
-                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
-                            Admin
-                          </div>
+                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Admin</div>
                         </div>
                         <div className="flex items-center">
                           <div className="mr-2">
-                            <input type="checkbox" className="checkbox"/>
+                            <input type="checkbox" className="checkbox" />
                           </div>
-                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
-                            Influencer
-                          </div>
+                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Influencer</div>
                         </div>
                         <div className="flex items-center">
                           <div className="mr-2">
-                            <input type="checkbox" className="checkbox"/>
+                            <input type="checkbox" className="checkbox" />
                           </div>
-                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
-                            Influencer
-                          </div>
+                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Influencer</div>
                         </div>
                       </div>
                     </div>
+                  )}
 
-                  }
-
-
-                  <div className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06 px-3 mx-auto  cursor-pointer"
-                    onClick={() => { handleLocationActive(isLocationActive ? false : true); handleTagActive(false); handlePlatformActive(false); handleOrganizationActive(false) }}>
-                    <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">
-                      Location
-                    </div>
+                  <div
+                    className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06 px-3 mx-auto  cursor-pointer"
+                    onClick={() => {
+                      handleLocationActive(isLocationActive ? false : true);
+                      handleTagActive(false);
+                      handlePlatformActive(false);
+                      handleOrganizationActive(false);
+                    }}
+                  >
+                    <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">Location</div>
                     <div>
-                      <img src={downArrow} alt="" className={isLocationActive ? 'rotate-0' : 'rotate-180'}/>
+                      <img src={downArrow} alt="" className={isLocationActive ? 'rotate-0' : 'rotate-180'} />
                     </div>
                   </div>
-                  {isLocationActive &&
+                  {isLocationActive && (
                     <div>
                       <div className="flex relative items-center pt-2 pb-3">
                         <input
@@ -239,43 +228,41 @@ const Members: FC = () => {
                       <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125 bg-white">
                         <div className="flex items-center">
                           <div className="mr-2">
-                            <input type="checkbox" className="checkbox"/>
+                            <input type="checkbox" className="checkbox" />
                           </div>
-                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
-                            Texas
-                          </div>
+                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Texas</div>
                         </div>
                         <div className="flex items-center">
                           <div className="mr-2">
-                            <input type="checkbox" className="checkbox"/>
+                            <input type="checkbox" className="checkbox" />
                           </div>
-                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
-                            London
-                          </div>
+                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">London</div>
                         </div>
                         <div className="flex items-center">
                           <div className="mr-2">
-                            <input type="checkbox" className="checkbox"/>
+                            <input type="checkbox" className="checkbox" />
                           </div>
-                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
-                            Texas
-                          </div>
+                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Texas</div>
                         </div>
                       </div>
                     </div>
-                  }
+                  )}
 
-
-                  <div className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06  px-3 mx-auto  cursor-pointer"
-                  onClick={() => { handleOrganizationActive(isOrganizationActive ? false : true); handleTagActive(false); handlePlatformActive(false); handleLocationActive(false) }}>
-                    <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">
-                      Organization
-                    </div>
+                  <div
+                    className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06  px-3 mx-auto  cursor-pointer"
+                    onClick={() => {
+                      handleOrganizationActive(isOrganizationActive ? false : true);
+                      handleTagActive(false);
+                      handlePlatformActive(false);
+                      handleLocationActive(false);
+                    }}
+                  >
+                    <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">Organization</div>
                     <div>
-                      <img src={downArrow} alt="" className={isOrganizationActive ? 'rotate-0' : 'rotate-180'}/>
+                      <img src={downArrow} alt="" className={isOrganizationActive ? 'rotate-0' : 'rotate-180'} />
                     </div>
                   </div>
-                  {isOrganizationActive &&
+                  {isOrganizationActive && (
                     <div>
                       <div className="flex relative items-center pt-2 pb-3 ">
                         <input
@@ -292,32 +279,25 @@ const Members: FC = () => {
                       <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125 bg-white">
                         <div className="flex items-center">
                           <div className="mr-2">
-                            <input type="checkbox" className="checkbox"/>
+                            <input type="checkbox" className="checkbox" />
                           </div>
-                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
-                            Microsoft
-                          </div>
+                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Microsoft</div>
                         </div>
                         <div className="flex items-center">
                           <div className="mr-2">
-                            <input type="checkbox" className="checkbox"/>
+                            <input type="checkbox" className="checkbox" />
                           </div>
-                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
-                            Hp
-                          </div>
+                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Hp</div>
                         </div>
                         <div className="flex items-center">
                           <div className="mr-2">
-                            <input type="checkbox" className="checkbox"/>
+                            <input type="checkbox" className="checkbox" />
                           </div>
-                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
-                            Lenovo
-                          </div>
+                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Lenovo</div>
                         </div>
-
                       </div>
                     </div>
-                  }
+                  )}
                   <div className="buttons px-2">
                     <Button
                       type="button"
@@ -325,7 +305,6 @@ const Members: FC = () => {
                       className="border-none btn-save-modal rounded-0.31 h-2.063 w-full mt-1.56 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white transition ease-in duration-300 hover:shadow-buttonShadowHover"
                     />
                   </div>
-
                 </div>
               </div>
             )}
@@ -333,9 +312,7 @@ const Members: FC = () => {
         </div>
         <div className="ml-0.652">
           <div className="export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex ml-0.63 cursor-pointer">
-            <h3 className="text-memberDay leading-1.12 font-Poppins font-semibold text-card">
-              Export
-            </h3>
+            <h3 className="text-memberDay leading-1.12 font-Poppins font-semibold text-card">Export</h3>
             <img src={exportImage} alt="" />
           </div>
         </div>
@@ -349,27 +326,19 @@ const Members: FC = () => {
             <table className="min-w-full relative  rounded-t-0.6 ">
               <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
                 <tr className="min-w-full">
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray ">
-                    Name
-                  </th>
+                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray ">Name</th>
                   <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
                     Platforms Connected
                   </th>
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
-                    Tags
-                  </th>
+                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Tags</th>
                   <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
                     Last Activity
                   </th>
                   <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
                     Organization
                   </th>
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
-                    Location
-                  </th>
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
-                    Email
-                  </th>
+                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Location</th>
+                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Email</th>
                 </tr>
               </thead>
               <tbody>
@@ -377,7 +346,10 @@ const Members: FC = () => {
                   <tr className="border-b" key={i}>
                     <td className="px-6 py-4">
                       <div className="flex ">
-                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer" onClick={navigateToProfile}>
+                        <div
+                          className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer"
+                          onClick={navigateToProfile}
+                        >
                           {data.name}
                         </div>
                       </div>
@@ -407,38 +379,28 @@ const Members: FC = () => {
                               <img src={closeIcon} alt="" />
                             </div>
                           </div>
-                          <div className="font-Poppins font-semibold leading-5 text-tag text-card underline">
-                            2 More
-                          </div>
+                          <div className="font-Poppins font-semibold leading-5 text-tag text-card underline">2 More</div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex ">
-                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                          {data.lastActivity}
-                        </div>
+                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.lastActivity}</div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex ">
-                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                          {data.organization}
-                        </div>
+                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.organization}</div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex ">
-                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                          {data.location}
-                        </div>
+                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.location}</div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex ">
-                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                          {data.email}
-                        </div>
+                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.email}</div>
                       </div>
                     </td>
                   </tr>
@@ -481,9 +443,7 @@ const Members: FC = () => {
               className="w-24.31 mx-auto mt-9.18  pb-20 bg-white border-fetching-card rounded-lg shadow-modal"
             >
               <div className="flex flex-col px-1.68 relative">
-                <h3 className="font-Inter font-semibold text-xl mt-1.8  leading-6">
-                  Customize Column
-                </h3>
+                <h3 className="font-Inter font-semibold text-xl mt-1.8  leading-6">Customize Column</h3>
                 <div className="pb-10">
                   <MembersDraggableColumn />
                 </div>

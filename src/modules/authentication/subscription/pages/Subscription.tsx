@@ -1,23 +1,19 @@
+import React from 'react';
 import Button from 'common/button';
 import Input from 'common/input';
 import bgSubscriptionImage from '../../../../assets/images/bg-sign.svg';
 import cardNumberIcon from '../../../../assets/images/card.svg';
 import { Formik, Form } from 'formik';
 import { useNavigate } from 'react-router-dom';
-import { SubscriptionValues } from 'modules/authentication/interface/authentication.interface';
+import { SubscriptionValues } from 'modules/authentication/interface/auth.interface';
 
 const Subscription: React.FC = () => {
   const navigate = useNavigate();
 
-  const initialValues: SubscriptionValues = {
-    username: '',
-    password: '',
-    card_holder: '',
-    cardnumber: '',
-    cvv: '',  };
+  const initialValues: SubscriptionValues = { username: '', password: '', card_holder: '', cardnumber: '', cvv: '' };
 
-  const handleSubmit = (values: SubscriptionValues): void => {
-   navigate('/create-workspace');
+  const handleSubmit = (): void => {
+    navigate('/create-workspace');
   };
 
   return (
@@ -27,28 +23,22 @@ const Subscription: React.FC = () => {
           <img src={bgSubscriptionImage} alt="" className="object-cover" />
         </div>
         <div className="flex flex-col w-1/2 pl-7.5 mt-2.53 overflow-scroll">
-          <h1 className="font-Inter font-bold text-neutralBlack text-signIn leading-2.8">
-            Subscription
-          </h1>
+          <h1 className="font-Inter font-bold text-neutralBlack text-signIn leading-2.8">Subscription</h1>
           <p className="mt-0.78 font-Inter font-normal text-desc max-w-sm leading-1.8 text-lightGray">
             Get Comunified with your communities. Create your account now.
           </p>
           <div className="form mt-1.8">
-          <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+            <Formik initialValues={initialValues} onSubmit={handleSubmit}>
               {({
-                errors,
+                // errors,
                 handleBlur,
                 handleChange,
                 handleSubmit,
-                isSubmitting,
-                touched,
-                values,
+                // isSubmitting,
+                // touched,
+                values
               }): JSX.Element => (
-                <Form
-                  className="w-25.9 "
-                  autoComplete="off"
-                  onSubmit={handleSubmit}
-                >
+                <Form className="w-25.9 " autoComplete="off" onSubmit={handleSubmit}>
                   <div className="card-holder-name">
                     <Input
                       type="text"
@@ -74,11 +64,7 @@ const Subscription: React.FC = () => {
                       onChange={handleChange}
                       value={values.cardnumber}
                     />
-                    <img
-                      className="absolute icon-holder left-96 cursor-pointer"
-                      src={cardNumberIcon}
-                      alt=""
-                    />
+                    <img className="absolute icon-holder left-96 cursor-pointer" src={cardNumberIcon} alt="" />
                   </div>
                   <div className="flex mt-1.258">
                     <div className="w-1/2">
@@ -131,9 +117,9 @@ const Subscription: React.FC = () => {
                 </Form>
               )}
             </Formik>
+          </div>
         </div>
-        </div>
-    </div>
+      </div>
     </div>
   );
 };
