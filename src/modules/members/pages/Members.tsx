@@ -60,13 +60,13 @@ const Members: React.FC = () => {
   };
 
   return (
-    <div className="container flex flex-col mx-auto">
+    <div className="flex flex-col mt-12">
       <h3 className="font-Poppins font-semibold text-infoBlack text-infoData leading-9">Members</h3>
       <div className="flex mt-1.8 items-center ">
         <div className="flex relative items-center ">
           <input
             type="text"
-            className="focus:outline-none px-3 box-border w-19.06 h-3.06  rounded-0.6 shadow-profileCard placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray"
+            className="focus:outline-none px-3 box-border w-19.06 h-3.06  rounded-0.6  placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray"
             placeholder="Search By Name or Email"
           />
           <div className="absolute right-5 w-0.78 h-0.75 ">
@@ -317,12 +317,12 @@ const Members: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="member-card pt-10">
+      <div className="member-card mt-10">
         <MembersCard />
       </div>
       <div className="memberTable mt-1.8">
-        <div className="py-2 overflow-x-auto mt-1.868">
-          <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto sticky top-0 fixTableHead max-h-34">
+        <div className="py-2 overflow-x-auto">
+          <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto sticky top-0 fixTableHead  ">
             <table className="min-w-full relative  rounded-t-0.6 ">
               <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
                 <tr className="min-w-full">
@@ -405,8 +405,8 @@ const Members: React.FC = () => {
                     </td>
                   </tr>
                 ))}
-                <tr className="px-6 py-4">
-                  <td className="px-6 py-4"></td>
+                <tr className="px-6 py-3 ">
+                  <td className="px-6 py-3 "></td>
                 </tr>
               </tbody>
             </table>

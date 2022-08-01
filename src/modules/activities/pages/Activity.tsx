@@ -34,21 +34,21 @@ const Activity: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto memberTable mt-1.8 flex flex-col">
-      <div className="flex items-center ">
+    <div className="  flex flex-col   mt-1.8">
+      <div className="flex items-center">
         <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 w-full">Activities</h3>
         <div>
           <Input
             type="text"
             name="search"
             id="searchId"
-            className="app-input-card-border focus:outline-none px-4 mr-0.76 box-border h-3.06 w-19.06 mt-2 bg-white shadow-profileCard rounded-0.6 placeholder:text-reportSearch placeholder:text-card placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.12 font-Poppins"
+            className="app-input-card-border focus:outline-none px-4 mr-0.76 box-border h-3.06 w-19.06 bg-white  rounded-0.6 placeholder:text-reportSearch placeholder:text-card placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.12 font-Poppins"
             placeholder="Search By Name or Email"
           />
         </div>
         <div className="relative mr-5">
           <div
-            className="flex justify-between items-center px-1.08 app-input-card-border rounded-0.6 box-border w-9.59 h-3.06 cursor-pointer bg-white shadow-profileCard"
+            className="flex justify-between items-center px-1.08 app-input-card-border rounded-0.6 box-border w-9.59 h-3.06 cursor-pointer bg-white "
             onClick={handleFilterDropdown}
           >
             <div className="font-Poppins font-normal text-card text-dropGray leading-1.12">Filters</div>
@@ -67,7 +67,7 @@ const Activity: React.FC = () => {
                     type="text"
                     name="reportName"
                     id="report"
-                    className="mx-auto focus:outline-none px-3 box-border bg-white shadow-profileCard rounded-0.6 app-input-card-border h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
+                    className="mx-auto focus:outline-none px-3 box-border bg-white  rounded-0.6 app-input-card-border h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
                     placeholder="Report Name"
                   />
                   <div className="absolute right-5 top-4 w-0.78 h-3 z-40">
@@ -145,7 +145,7 @@ const Activity: React.FC = () => {
         </div>
       </div>
       <div className="py-2 overflow-x-auto mt-1.868">
-        <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixTableHead max-h-34">
+        <div className="inline-block min-w-full  align-middle w-61.68 rounded-0.6 border-table no-scroll-bar  overflow-y-auto h-screen sticky top-0 fixActivityTableHead ">
           <table className="min-w-full relative  rounded-t-0.6 ">
             <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
               <tr className="min-w-full">
@@ -200,9 +200,6 @@ const Activity: React.FC = () => {
                   <td className="px-6 py-3 border-b font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.type}</td>
                 </tr>
               ))}
-              <tr className="px-6 py-3 ">
-                <td className="px-6 py-3 "></td>
-              </tr>
             </tbody>
           </table>
           <Modal
