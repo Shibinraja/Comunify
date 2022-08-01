@@ -107,7 +107,7 @@ const Members: React.FC = () => {
               </div>
             </div>
             {isFilterDropdownActive && (
-              <div className="absolute w-16.56 pb-0 bg-white border z-40 rounded-0.3" onClick={() => handleFilterDropdown(true)}>
+              <div className="absolute w-16.56 pb-0 bg-white border z-40 rounded-0.3 " onClick={() => handleFilterDropdown(true)}>
                 <div className="flex flex-col pb-5">
                   <div
                     className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06  px-3 mx-auto  cursor-pointer"
@@ -124,7 +124,7 @@ const Members: React.FC = () => {
                     </div>
                   </div>
                   {isPlatformActive && (
-                    <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125 pb-3">
+                    <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125 pb-3 ">
                       <div className="flex items-center">
                         <div className="mr-2">
                           <input type="checkbox" className="checkbox" />

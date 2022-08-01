@@ -203,3 +203,7 @@ input {
 .fixBillingTableHead {
   height: calc(100vh - 23rem);
 }
+
+.fixTagsTableHead{
+  height: calc(100vh - 32rem);
+}

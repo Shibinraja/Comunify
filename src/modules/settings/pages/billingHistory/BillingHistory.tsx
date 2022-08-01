@@ -44,7 +44,7 @@ const BillingHistory: React.FC<Props> = ({ hidden }) => (
               ))}
             </tbody>
           </table>
-          <div className="px-6 py-6 flex items-center gap-0.66 justify-center w-full rounded-b-lg ">
+          <div className="px-6 py-6 flex items-center gap-0.66 pl-[30%] w-full rounded-b-lg fixed bg-white bottom-0">
             <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
               <img src={prevIcon} alt="" />
             </div>

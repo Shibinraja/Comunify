@@ -18,7 +18,7 @@ const TopBar: React.FC = () => {
   const dispatch: AppDispatch = useAppDispatch();
   const dropDownRef: any = useRef();
 
-  const handleDropDownActive = async (data?: string): Promise<void> => {
+  const handleDropDownActive = async(data?: string): Promise<void> => {
     switch (data) {
       case 'Sign Out':
         dispatch(authSlice.actions.signOut());

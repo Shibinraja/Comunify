@@ -75,7 +75,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
           </div>
           <div className="billingTable mt-1.8">
             <div className="py-2 overflow-x-auto mt-1.868">
-              <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-t-0.6  no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixTableHead max-h-34">
+              <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-t-0.6  no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixTagsTableHead">
                 <table className="min-w-full relative  rounded-t-0.6 ">
                   <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
                     <tr className="min-w-full">
@@ -122,7 +122,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                     ))}
                   </tbody>
                 </table>
-                <div className="px-6 py-6 flex items-center gap-0.66 justify-center w-full rounded-b-lg ">
+                <div className="px-6 py-6 flex items-center gap-0.66 pl-[30%] w-full rounded-b-lg fixed bg-white bottom-0">
                   <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
                     <img src={prevIcon} alt="" />
                   </div>
@@ -137,12 +137,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                   </div>
                   <div className="font-Lato font-normal text-pageNumber leading-4 text-pagination cursor-pointer">Go to page:</div>
                   <div>
-                    <Input
-                      name="pagination"
-                      id="page"
-                      type="text"
-                      className="page-input focus:outline-none px-0.5 rounded box-border w-1.47 h-1.51"
-                    />
+                    <Input name="pagination" id="page" type="text" className="page-input focus:outline-none px-0.5 rounded box-border w-1.47 h-1.51" />
                   </div>
                 </div>
               </div>
