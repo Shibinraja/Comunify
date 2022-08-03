@@ -1,5 +1,7 @@
+/* eslint-disable no-unused-vars */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { MembersCountResponse } from 'modules/members/interface/members.interface';
+import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
+import { GetMembersListQueryParams, MembersCountResponse, MembersListResponse } from 'modules/members/interface/members.interface';
 import { InitialState } from '../types/members.type';
 
 const countResponse = {
@@ -7,14 +9,62 @@ const countResponse = {
   title: '',
   analyticMessage: ''
 };
+
+export const membersListResponse = {
+  data: [
+    {
+      id: '',
+      name: '',
+      userName: '',
+      comunifyUserId: '',
+      lastActivity: '2022-06-15T00:00:00.000Z',
+      email: '',
+      organization: '',
+      profileUrl: '',
+      workspaceId: '',
+      createdAt: '',
+      updatedAt: '',
+      tags: [
+        {
+          tag: {
+            name: ''
+          }
+        }
+      ],
+      platforms: [
+        {
+          platform: {
+            name: ''
+          }
+        }
+      ]
+    }
+  ],
+  totalPages: '',
+  previousPage: '',
+  nextPage: ''
+};
+
+export const customizedColumnProps = [
+  {
+    name: '',
+    id: '',
+    isDisplayed: true,
+    isDraggable: 'card'
+  }
+];
+
 const initialState: InitialState = {
   membersTotalCountData: countResponse,
   membersNewCountData: countResponse,
   membersActiveCountData: countResponse,
-  membersInActiveCountData: countResponse
+  membersInActiveCountData: countResponse,
+  membersListData: membersListResponse,
+  customizedColumn: customizedColumnProps
 };
 
 //Saga Call
+
 const membersTotalCount = (state: InitialState) => state;
 
 const membersNewCount = (state: InitialState) => state;
@@ -23,26 +73,38 @@ const membersActiveCount = (state: InitialState) => state;
 
 const membersInActiveCount = (state: InitialState) => state;
 
+const membersList = (state: InitialState, action: PayloadAction<GetMembersListQueryParams>) => state;
+
 //Reducer Call
 
 const getmembersTotalCountData = (state: InitialState, action: PayloadAction<MembersCountResponse>) => ({
   ...state,
-  workspaceData: action.payload
+  membersTotalCountData: action.payload
 });
 
 const getmembersNewCountData = (state: InitialState, action: PayloadAction<MembersCountResponse>) => ({
   ...state,
-  workspaceData: action.payload
+  membersNewCountData: action.payload
 });
 
 const getmembersActiveCountData = (state: InitialState, action: PayloadAction<MembersCountResponse>) => ({
   ...state,
-  workspaceData: action.payload
+  membersActiveCountData: action.payload
 });
 
 const getmembersInActiveCountData = (state: InitialState, action: PayloadAction<MembersCountResponse>) => ({
   ...state,
-  workspaceData: action.payload
+  membersInActiveCountData: action.payload
+});
+
+const getmembersListData = (state: InitialState, action: PayloadAction<MembersListResponse>) => ({
+  ...state,
+  membersListData: action.payload
+});
+
+const customizedColumnData = (state: InitialState, action: PayloadAction<Array<ColumnNameProps>>) => ({
+  ...state,
+  customizedColumn: action.payload
 });
 
 const membersSlice = createSlice({
@@ -56,7 +118,10 @@ const membersSlice = createSlice({
     getmembersTotalCountData,
     getmembersNewCountData,
     getmembersActiveCountData,
-    getmembersInActiveCountData
+    getmembersInActiveCountData,
+    membersList,
+    getmembersListData,
+    customizedColumnData
   }
 });
 

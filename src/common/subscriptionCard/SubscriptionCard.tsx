@@ -4,10 +4,9 @@ import successIcon from '../../assets/images/tostr.png';
 import { SubscriptionProps } from 'interface/interface';
 import { useDispatch } from 'react-redux';
 import authSlice from '../../modules/authentication/store/slices/auth.slice';
-import { AppDispatch } from '../../store';
 
 const SubscriptionCard: React.FC<SubscriptionProps> = ({ subscriptionData }) => {
-  const dispatch: AppDispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const selectPlan = (): void => {
     dispatch(authSlice.actions.chooseSubscription(subscriptionData?.id));

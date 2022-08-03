@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+/* eslint-disable no-unused-vars */
+import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import MembersCard from 'common/membersCard/membersCard';
 import Modal from 'react-modal';
 import './Members.css';
@@ -16,8 +17,13 @@ import nextIcon from '../../../assets/images/next-page-icon.svg';
 import prevIcon from '../../../assets/images/previous-page-icon.svg';
 import { useNavigate } from 'react-router-dom';
 import Input from 'common/input';
-import { membersTableData } from './MembersTableData';
+// import { membersTableData } from './MembersTableData';
 import MembersDraggableColumn from './membersTableColumn/membersDraggableColumn';
+import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
+import membersSlice from '../store/slice/members.slice';
+import { format, parseISO } from 'date-fns';
+import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
+import { ColumNames } from './MembersTableData';
 
 Modal.setAppElement('#root');
 
@@ -30,6 +36,39 @@ const Members: React.FC = () => {
   const [isTagActive, setTagActive] = useState<boolean>(false);
   const [isLocationActive, setLocationActive] = useState<boolean>(false);
   const [isOrganizationActive, setOrganizationActive] = useState<boolean>(false);
+  const [columns, setColumns] = useState<Array<ColumnNameProps>>(ColumNames);
+  const [customizedColumnBool, saveCustomizedColumn] = useState<boolean>(false);
+
+  const dispatch = useAppDispatch();
+  const customizedColumnData = useAppSelector((state) => state.members.customizedColumn);
+
+  const { data, totalPages, previousPage, nextPage } = useAppSelector((state) => state.members.membersListData);
+
+  useEffect(() => {
+    dispatch(
+      membersSlice.actions.membersList({
+        page: 1,
+        limit: 10,
+        search: '',
+        tags: '',
+        platforms: '',
+        organization: '',
+        lastActivity: '',
+        createdAT: ''
+      })
+    );
+  }, []);
+
+  //Set new column change if the initial order changes.
+  useEffect(() => {
+    if (customizedColumnData.length > 1) {
+      setColumns(customizedColumnData);
+    }
+  }, [customizedColumnData]);
+
+  const handleCustomizeColumnSave = () => {
+    saveCustomizedColumn(!customizedColumnBool);
+  };
 
   const handleFilterDropdown = (val: boolean): void => {
     setisFilterDropdownActive(val);
@@ -51,13 +90,37 @@ const Members: React.FC = () => {
     setOrganizationActive(val);
   };
 
-  const handleModalClose = () => {
+  const handleModalClose = (): void => {
     setisModalOpen(false);
+    handleCustomizeColumnSave();
   };
 
   const navigateToProfile = () => {
     navigate('/members/profile');
   };
+
+  // Function to map customized column with api data response to create a new column array with index matching with customized column.
+  const customizedColumn = data?.reduce((acc: Record<string, any>, currentValue: Record<string, any>): Record<string, any> => {
+    const accumulatedColumn: Record<string, any> = {};
+    const memberValue = { ...currentValue };
+    memberValue['location'] = 'India';
+    columns.forEach((column: { id: string; name: string; isDisplayed: boolean }) => {
+      // eslint-disable-next-line no-prototype-builtins
+      if (memberValue.hasOwnProperty(column.id)) {
+        if (column.isDisplayed) {
+          accumulatedColumn[column.id] = memberValue[column.id];
+        }
+      }
+    });
+    acc.push(accumulatedColumn);
+    return acc;
+  }, []);
+
+  // Memoized functionality to stop re-renderization.
+  const membersColumn = useMemo(
+    () => <MembersDraggableColumn MembersColumn={customizedColumnBool} handleModalClose={handleModalClose} />,
+    [customizedColumnBool]
+  );
 
   return (
     <div className="container flex flex-col mx-auto">
@@ -86,7 +149,7 @@ const Members: React.FC = () => {
         <div className="relative flex items-center  ml-0.653 ">
           <DatePicker
             selected={toDate}
-            onChange={(date: any) => setToDate(date)}
+            onChange={(date: Date) => setToDate(date)}
             className="export w-9.92 h-3.06  shadow-contactCard rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
             placeholderText="Custom Date"
           />
@@ -326,83 +389,72 @@ const Members: React.FC = () => {
             <table className="min-w-full relative  rounded-t-0.6 ">
               <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
                 <tr className="min-w-full">
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray ">Name</th>
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
-                    Platforms Connected
-                  </th>
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Tags</th>
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
-                    Last Activity
-                  </th>
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
-                    Organization
-                  </th>
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Location</th>
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Email</th>
+                  {columns.map(
+                    (columnName: ColumnNameProps) =>
+                      columnName.isDisplayed && (
+                        <Fragment key={columnName.id}>
+                          <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray ">
+                            {columnName.name}
+                          </th>
+                        </Fragment>
+                      )
+                  )}
                 </tr>
               </thead>
+              {/* {Check with the custom column dynamic order and displays content/rows as per the index position of the arranged column name} */}
               <tbody>
-                {membersTableData.map((data, i) => (
-                  <tr className="border-b" key={i}>
-                    <td className="px-6 py-4">
-                      <div className="flex ">
-                        <div
-                          className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer"
-                          onClick={navigateToProfile}
-                        >
-                          {data.name}
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex gap-x-2">
-                        <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                          <img src={data.platform.img1} alt="" />
-                        </div>
-                        <div className="font-Poppins  font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                          <img src={data.platform.img1} alt="" />
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex ">
-                        <div className="py-3 flex gap-2 items-center font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                          <div className="bg-tagSection rounded w-5.25 h-8 flex justify-between px-3 items-center">
-                            <div className="font-Poppins font-normal text-card text-profileBlack leading-5">Tag1</div>
-                            <div>
-                              <img src={closeIcon} alt="" />
+                {customizedColumn.map((member: Record<string, any>) => (
+                  <tr className="border-b" key={member.name}>
+                    {Object.keys(member).map((column: keyof typeof member, index) => (
+                      <td className="px-6 py-4" key={index}>
+                        {column === 'name' ? (
+                          <div className="flex ">
+                            <div
+                              className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer"
+                              onClick={navigateToProfile}
+                            >
+                              {member.name}
                             </div>
                           </div>
-                          <div className="bg-tagSection rounded w-5.25 h-8 flex justify-between px-3 items-center">
-                            <div className="font-Poppins font-normal text-card text-profileBlack leading-5">Tag2</div>
-                            <div>
-                              <img src={closeIcon} alt="" />
+                        ) : column === 'platforms' ? (
+                          <div className="flex gap-x-2">
+                            {member?.platforms?.map((platforms: { platform: { name: string } }, index: number) => (
+                              <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer" key={index}>
+                                {platforms.platform.name}
+                              </div>
+                            ))}
+                          </div>
+                        ) : column === 'tags' ? (
+                          <div className="flex ">
+                            <div className="py-3 flex gap-2 items-center font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                              {member?.tags?.slice(0, 2).map((tags: { tag: { name: string } }, index: number) => (
+                                <div className="bg-tagSection rounded w-5.25 h-8 flex justify-between px-3 items-center" key={index}>
+                                  <div className="font-Poppins font-normal text-card text-profileBlack leading-5">{tags?.tag?.name}</div>
+                                  <div>
+                                    <img src={closeIcon} alt="" />
+                                  </div>
+                                </div>
+                              ))}
+                              <div className="font-Poppins font-semibold leading-5 text-tag text-card underline">
+                                {member?.tags.length > 2 ? `${member?.tags.length - 2} more` : ''}{' '}
+                              </div>
                             </div>
                           </div>
-                          <div className="font-Poppins font-semibold leading-5 text-tag text-card underline">2 More</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex ">
-                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.lastActivity}</div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex ">
-                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.organization}</div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex ">
-                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.location}</div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex ">
-                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.email}</div>
-                      </div>
-                    </td>
+                        ) : column === 'lastActivity' ? (
+                          <div className="flex ">
+                            <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                              {format(parseISO(member?.lastActivity), 'MM/dd/yyyy')}
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex ">
+                            <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                              {member[column]}
+                            </div>
+                          </div>
+                        )}
+                      </td>
+                    ))}
                   </tr>
                 ))}
                 <tr className="px-6 py-4">
@@ -444,9 +496,7 @@ const Members: React.FC = () => {
             >
               <div className="flex flex-col px-1.68 relative">
                 <h3 className="font-Inter font-semibold text-xl mt-1.8  leading-6">Customize Column</h3>
-                <div className="pb-10">
-                  <MembersDraggableColumn />
-                </div>
+                <div className="pb-10">{membersColumn}</div>
                 <div className="flex buttons absolute -bottom-16 right-[27px]">
                   <Button
                     text="CANCEL"
@@ -455,6 +505,7 @@ const Members: React.FC = () => {
                     onClick={handleModalClose}
                   />
                   <Button
+                    onClick={handleCustomizeColumnSave}
                     text="SAVE"
                     type="submit"
                     className="text-white font-Poppins text-error font-medium leading-5 btn-save-modal cursor-pointer rounded shadow-contactBtn w-5.25 border-none h-2.81"
