@@ -207,3 +207,7 @@ input {
 .fixTagsTableHead{
   height: calc(100vh - 32rem);
 }
+
+.widgetDrawerGradient{
+  background: linear-gradient(180deg, #F9C837 0%, #EE9834 100%);
+}

@@ -14,10 +14,14 @@ import dropdownIcon from '../../assets/images/dropdown.svg';
 import Button from 'common/button';
 import { useNavigate } from 'react-router-dom';
 import { ActiveState } from '../../interface/interface';
+import Input from 'common/input';
+import widgetSearchIcon from '../../assets/images/widget-search.svg';
+import QuickInfo from 'common/quickInfo/QuickInfo';
 
 const SideNav: React.FC = () => {
   const navigate = useNavigate();
   const [active, setActive] = useState<ActiveState>({ dashboard: false, members: false, activity: false, reports: false, settings: false });
+  const [isDrawerOpen, setDrawerOpen] = useState<boolean>(false);
 
   const navigateRoute = (route: string): void => {
     switch (route) {
@@ -49,7 +53,36 @@ const SideNav: React.FC = () => {
 
   return (
     <nav className="h-screen bg-brightGray relative">
-      <div className="flex flex-col pl-2.58 pt-12">
+      {isDrawerOpen && (
+        <div className="w-full widgetDrawerGradient h-full px-7 absolute z-40 opacity-90">
+          <div className="flex flex-col">
+            <div className="flex flex-col">
+              <div className="text-center font-Poppins font-semibold text-2xl pt-24">Add Widget</div>
+              <div className="pt-4 relative">
+                <Input
+                  type="text"
+                  name="search"
+                  id="searchId"
+                  placeholder="Search widgets"
+                  className="py-3 bg-white text-xs focus:outline-none px-4 rounded-0.6 pr-8 placeholder:font-Poppins placeholder:font-normal placeholder:text-widgetSearch placeholder:text-xs"
+                />
+                <div className="absolute top-8 right-5">
+                  <img src={widgetSearchIcon} alt="" />
+                </div>
+              </div>
+            </div>
+            <div className="hidden">
+              <QuickInfo />
+            </div>
+            <Button
+              text="Request for a Widget"
+              type="submit"
+              className="font-Poppins rounded-lg text-base font-semibold text-white py-3.5 mt-7 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient"
+            />
+          </div>
+        </div>
+      )}
+      <div className="flex flex-col pl-2.58 pt-12 " onClick={() => setDrawerOpen(false)}>
         <div className="flex items-center">
           <div className="w-1.81 h-1.81">
             <img src={comunifyLogo} alt="" />
