@@ -1,27 +1,32 @@
+/* eslint-disable no-console */
 import React, { useEffect, useRef, useState } from 'react';
 import profileImage from '../../../../assets/images/profile-member.svg';
 import dropDownIcon from '../../../../assets/images/profile-dropdown.svg';
 import slackIcon from '../../../../assets/images/slack.svg';
 import closeIcon from '../../../../assets/images/close-member.svg';
-import yelloDottedIcon from '../../../../assets/images/yellow_dotted.svg';
+import yellowDottedIcon from '../../../../assets/images/yellow_dotted.svg';
 import unsplashIcon from '../../../../assets/images/unsplash_mj.svg';
 import searchIcon from '../../../../assets/images/search.svg';
 import { useNavigate } from 'react-router-dom';
-
 import Button from 'common/button';
 import Modal from 'react-modal';
 import MembersProfileGraph from '../membersProfileGraph/MembersProfileGraph';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../../../store';
+import membersSlice from '../../store/slice/members.slice';
+import { useAppSelector } from '../../../../hooks/useRedux';
+import { MembersProfileActivityGraphData, PlatformsData } from '../../interface/members.interface';
 Modal.setAppElement('#root');
 
 const MembersProfile: React.FC = () => {
   const navigate = useNavigate();
   const [isSelectDropDownActive, setSelectDropDownActive] = useState<boolean>(false);
   const [selected, setSelected] = useState<string>('');
-  const [isModalOpen, setisModalOpen] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isTagModalOpen, setTagModalOpen] = useState<boolean>(false);
 
   const handleModal = (val: boolean) => {
-    setisModalOpen(val);
+    setIsModalOpen(val);
   };
 
   const handleTagModal = (val: boolean) => {
@@ -30,11 +35,14 @@ const MembersProfile: React.FC = () => {
 
   const handleDropDownActive = (): void => {
     setSelectDropDownActive((prev) => !prev);
+    console.log('set');
   };
 
   const navigateToReviewMerge = () => {
     navigate('/members/members-review');
   };
+
+  const dispatch: AppDispatch = useDispatch();
 
   const dropDownRef: any = useRef();
 
@@ -47,13 +55,28 @@ const MembersProfile: React.FC = () => {
   };
 
   useEffect(() => {
+    dispatch(membersSlice.actions.getMembersActivityGraphData({ memberId: 'e2612c51-a300-4c5e-8afe-a6585d24f7fc' }));
+    dispatch(membersSlice.actions.platformData());
     document.addEventListener('click', handleOutsideClick);
     return () => {
       document.removeEventListener('click', handleOutsideClick);
     };
   }, []);
 
-  const selectOptions = ['All', 'Slack', 'Higherlogic'];
+  const activityGraphData: MembersProfileActivityGraphData = useAppSelector((state) => state.members.membersProfileActivityGraphData);
+  const platformData: PlatformsData[] = useAppSelector((state) => state.members.platformsData);
+
+  const selectPlatformToDisplayOnGraph = (id: string, name: string) => {
+    setSelected(name);
+    switch (name) {
+      case 'Slack':
+        break;
+
+      default:
+        break;
+    }
+  };
+
   return (
     <div className="flex pt-3.93 w-full">
       <div className="flex flex-col w-full">
@@ -76,13 +99,16 @@ const MembersProfile: React.FC = () => {
                   className="absolute flex flex-col text-left px-5 pt-2  cursor-pointer box-border w-full bg-white z-40 rounded-0.6 shadow-contactCard pb-2 app-input-card-border"
                   onClick={handleDropDownActive}
                 >
-                  {selectOptions.map((options: string) => (
+                  <div className='className="rounded-0.3 h-1.93 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack hover:bg-signUpDomain transition ease-in duration-100"'>
+                    All
+                  </div>
+                  {platformData?.map((data: PlatformsData) => (
                     <div
-                      key={options}
+                      key={data?.id}
                       className="rounded-0.3 h-1.93 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack hover:bg-signUpDomain transition ease-in duration-100"
-                      onClick={() => setSelected(options)}
+                      onClick={() => selectPlatformToDisplayOnGraph(data?.id, data?.name)}
                     >
-                      {options}
+                      {data?.name}
                     </div>
                   ))}
                 </div>
@@ -90,7 +116,7 @@ const MembersProfile: React.FC = () => {
             </div>
           </div>
           <div className="chart pt-5 ">
-            <MembersProfileGraph />
+            <MembersProfileGraph activityGraphData={activityGraphData} />
           </div>
         </div>
         <div className="flex pt-2.18 items-center">
@@ -119,7 +145,7 @@ const MembersProfile: React.FC = () => {
           <div className="flex flex-col pt-4 gap-0.83 justify-center">
             <div className="flex items-center">
               <div>
-                <img src={yelloDottedIcon} alt="" />
+                <img src={yellowDottedIcon} alt="" />
               </div>
               <div className="pl-0.68">
                 <img src={slackIcon} alt="" />
@@ -131,7 +157,7 @@ const MembersProfile: React.FC = () => {
             </div>
             <div className="flex items-center">
               <div>
-                <img src={yelloDottedIcon} alt="" />
+                <img src={yellowDottedIcon} alt="" />
               </div>
               <div className="pl-0.68">
                 <img src={slackIcon} alt="" />
@@ -143,7 +169,7 @@ const MembersProfile: React.FC = () => {
             </div>
             <div className="flex items-center">
               <div>
-                <img src={yelloDottedIcon} alt="" />
+                <img src={yellowDottedIcon} alt="" />
               </div>
               <div className="pl-0.68">
                 <img src={slackIcon} alt="" />
@@ -188,7 +214,7 @@ const MembersProfile: React.FC = () => {
               <Modal
                 isOpen={isTagModalOpen}
                 shouldCloseOnOverlayClick={false}
-                onRequestClose={() => setisModalOpen(false)}
+                onRequestClose={() => setIsModalOpen(false)}
                 className="w-24.31 h-18.75 mx-auto  mt-32 rounded-lg modals-tag bg-white shadow-modal"
               >
                 <div className="flex flex-col">
@@ -264,7 +290,7 @@ const MembersProfile: React.FC = () => {
         <Modal
           isOpen={isModalOpen}
           shouldCloseOnOverlayClick={false}
-          onRequestClose={() => setisModalOpen(false)}
+          onRequestClose={() => setIsModalOpen(false)}
           className="w-24.31 pb-28 mx-auto  mt-32 rounded-lg modals-tag bg-white shadow-modal "
         >
           <div className="flex flex-col ml-1.8 pt-9 ">
@@ -306,7 +332,7 @@ const MembersProfile: React.FC = () => {
                   type="button"
                   text="CANCEL"
                   className="mr-2.5 font-Poppins text-error font-medium border-cancel  leading-1.31 text-thinGray cursor-pointer w-5.25 h-2.81 rounded box-border"
-                  onClick={() => setisModalOpen(false)}
+                  onClick={() => setIsModalOpen(false)}
                 />
                 <Button
                   type="button"

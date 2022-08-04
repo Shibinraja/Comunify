@@ -1,4 +1,4 @@
-import { MembersCountResponse } from 'modules/members/interface/members.interface';
+import { PlatformsData, MembersCountResponse, MembersProfileActivityGraphData } from 'modules/members/interface/members.interface';
 
 export type VoidGenerator<T = unknown, TNext = unknown> = Generator<T, void, TNext>;
 
@@ -7,4 +7,6 @@ export interface InitialState {
   membersNewCountData: MembersCountResponse;
   membersActiveCountData: MembersCountResponse;
   membersInActiveCountData: MembersCountResponse;
+  membersProfileActivityGraphData: MembersProfileActivityGraphData;
+  platformsData: PlatformsData[];
 }

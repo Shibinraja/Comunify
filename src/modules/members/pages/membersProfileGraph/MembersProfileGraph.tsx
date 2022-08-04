@@ -1,16 +1,25 @@
-import React from 'react';
+/* eslint-disable no-console */
+import React, { useEffect } from 'react';
 import Chart from 'react-apexcharts';
+import { useDispatch } from 'react-redux';
+import membersSlice from '../../store/slice/members.slice';
+import { MemberGraphProps } from '../../interface/members.interface';
 
-const MembersProfileGraph = () => {
-  const series = [
-    { name: 'Estimate', data: [10, 15, 4, 12, 17] },
-    { name: 'Actual', data: [12, 10, 12, 5, 12] }
-  ];
-  const options = {};
+const MembersProfileGraph: React.FC<MemberGraphProps> = ({ activityGraphData }) => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(membersSlice.actions.getMembersActivityGraphData({ memberId: 'e2612c51-a300-4c5e-8afe-a6585d24f7fc' }));
+  }, []);
+
+  const options = {
+    xaxis: {
+      categories: activityGraphData?.xAxis
+    }
+  };
 
   return (
     <div className="h-[18.75rem]">
-      <Chart options={options} type="line" series={series} width="100%" height="100%" />
+      <Chart options={options} type="line" series={activityGraphData?.series} width="100%" height="100%" />
     </div>
   );
 };
