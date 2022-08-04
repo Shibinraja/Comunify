@@ -147,7 +147,7 @@ const SideNav: React.FC = () => {
         </div>
       </div>
       <div className="absolute subcribe-box w-full">
-        <div className="mt-18.75 md:mt-0 xl:mt-6.25 2xl:mt-18.75 w-13.5 mx-auto h-8.75 rounded-xl bg-sidenavCard flex justify-center">
+        <div className="w-13.5 mx-auto h-8.75 rounded-xl bg-sidenavCard flex justify-center">
           <div className="flex flex-col pt-1.43">
             <h3 className="text-center font-Poppins text-trial font-semibold text-black leading-1.31">10 days left </h3>
             <h5 className="text-center font-Poppins text-trial font-normal text-black leading-1.31">in your free trial</h5>
