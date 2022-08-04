@@ -195,13 +195,13 @@ input {
   height: calc(100vh - 36rem);
 }
 .fixActivityTableHead {
-  height: calc(100vh - 18rem);
-}
-.fixReportTableHead {
   height: calc(100vh - 19rem);
 }
+.fixReportTableHead {
+  height: calc(100vh - 20rem);
+}
 .fixBillingTableHead {
-  height: calc(100vh - 23rem);
+  height: calc(100vh - 28rem);
 }
 
 .fixTagsTableHead{

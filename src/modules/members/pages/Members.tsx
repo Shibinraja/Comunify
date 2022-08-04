@@ -320,148 +320,154 @@ const Members: React.FC = () => {
       <div className="member-card mt-10">
         <MembersCard />
       </div>
-      <div className="memberTable mt-1.8">
-        <div className="py-2 overflow-x-auto">
-          <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto sticky top-0 fixTableHead  ">
-            <table className="min-w-full relative  rounded-t-0.6 ">
-              <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
-                <tr className="min-w-full">
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray ">Name</th>
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
+      <div className="relative">
+        <div className="memberTable mt-1.8">
+          <div className="py-2 overflow-x-auto">
+            <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto sticky top-0 fixTableHead  ">
+              <table className="min-w-full relative  rounded-t-0.6 ">
+                <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
+                  <tr className="min-w-full">
+                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray ">Name</th>
+                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
                     Platforms Connected
-                  </th>
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Tags</th>
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
+                    </th>
+                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Tags</th>
+                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
                     Last Activity
-                  </th>
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
+                    </th>
+                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
                     Organization
-                  </th>
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Location</th>
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Email</th>
-                </tr>
-              </thead>
-              <tbody>
-                {membersTableData.map((data, i) => (
-                  <tr className="border-b" key={i}>
-                    <td className="px-6 py-4">
-                      <div className="flex ">
-                        <div
-                          className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer"
-                          onClick={navigateToProfile}
-                        >
-                          {data.name}
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex gap-x-2">
-                        <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                          <img src={data.platform.img1} alt="" />
-                        </div>
-                        <div className="font-Poppins  font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                          <img src={data.platform.img1} alt="" />
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex ">
-                        <div className="py-3 flex gap-2 items-center font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                          <div className="bg-tagSection rounded w-5.25 h-8 flex justify-between px-3 items-center">
-                            <div className="font-Poppins font-normal text-card text-profileBlack leading-5">Tag1</div>
-                            <div>
-                              <img src={closeIcon} alt="" />
-                            </div>
-                          </div>
-                          <div className="bg-tagSection rounded w-5.25 h-8 flex justify-between px-3 items-center">
-                            <div className="font-Poppins font-normal text-card text-profileBlack leading-5">Tag2</div>
-                            <div>
-                              <img src={closeIcon} alt="" />
-                            </div>
-                          </div>
-                          <div className="font-Poppins font-semibold leading-5 text-tag text-card underline">2 More</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex ">
-                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.lastActivity}</div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex ">
-                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.organization}</div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex ">
-                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.location}</div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex ">
-                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.email}</div>
-                      </div>
-                    </td>
+                    </th>
+                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Location</th>
+                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Email</th>
                   </tr>
-                ))}
-                <tr className="px-6 py-3 ">
-                  <td className="px-6 py-3 "></td>
-                </tr>
-              </tbody>
-            </table>
-            <div className="px-6 py-6 flex items-center gap-0.66 pl-[30%] w-full rounded-b-lg fixed bg-white bottom-0">
-              <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
-                <img src={prevIcon} alt="" />
-              </div>
-              <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">1</div>
-              <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">2</div>
-              <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">3</div>
-              <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">4</div>
-              <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">...</div>
-              <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">10</div>
-              <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
-                <img src={nextIcon} alt="" />
-              </div>
-              <div className="font-Lato font-normal text-pageNumber leading-4 text-pagination cursor-pointer">Go to page:</div>
-              <div>
-                <Input name="pagination" id="page" type="text" className="page-input focus:outline-none px-0.5 rounded box-border w-1.47 h-1.51" />
-              </div>
-            </div>
-            <div className="fixed bottom-10 right-32">
-              <div
-                className="btn-drag w-3.375 h-3.375 flex items-center justify-center cursor-pointer shadow-dragButton rounded-0.6 "
-                onClick={() => setisModalOpen(true)}
+                </thead>
+                <tbody>
+                  {membersTableData.map((data, i) => (
+                    <tr className="border-b" key={i}>
+                      <td className="px-6 py-4">
+                        <div className="flex ">
+                          <div
+                            className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer"
+                            onClick={navigateToProfile}
+                          >
+                            {data.name}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex gap-x-2">
+                          <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                            <img src={data.platform.img1} alt="" />
+                          </div>
+                          <div className="font-Poppins  font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                            <img src={data.platform.img1} alt="" />
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex ">
+                          <div className="py-3 flex gap-2 items-center font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                            <div className="bg-tagSection rounded w-5.25 h-8 flex justify-between px-3 items-center">
+                              <div className="font-Poppins font-normal text-card text-profileBlack leading-5">Tag1</div>
+                              <div>
+                                <img src={closeIcon} alt="" />
+                              </div>
+                            </div>
+                            <div className="bg-tagSection rounded w-5.25 h-8 flex justify-between px-3 items-center">
+                              <div className="font-Poppins font-normal text-card text-profileBlack leading-5">Tag2</div>
+                              <div>
+                                <img src={closeIcon} alt="" />
+                              </div>
+                            </div>
+                            <div className="font-Poppins font-semibold leading-5 text-tag text-card underline">2 More</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex ">
+                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.lastActivity}</div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex ">
+                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.organization}</div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex ">
+                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.location}</div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex ">
+                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.email}</div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  <tr className="px-6 py-3 ">
+                    <td className="px-6 py-3 "></td>
+                  </tr>
+                </tbody>
+              </table>
+
+
+              <Modal
+                isOpen={isModalOpen}
+                shouldCloseOnOverlayClick={true}
+                onRequestClose={() => setisModalOpen(false)}
+                className="w-24.31 mx-auto mt-9.18  pb-20 bg-white border-fetching-card rounded-lg shadow-modal"
               >
-                <img src={editIcon} alt="" />
-              </div>
+                <div className="flex flex-col px-1.68 relative">
+                  <h3 className="font-Inter font-semibold text-xl mt-1.8  leading-6">Customize Column</h3>
+                  <div className="pb-10">
+                    <MembersDraggableColumn />
+                  </div>
+                  <div className="flex buttons absolute -bottom-16 right-[27px]">
+                    <Button
+                      text="CANCEL"
+                      type="submit"
+                      className="cancel mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  h-2.81 w-5.25  rounded border-none"
+                      onClick={handleModalClose}
+                    />
+                    <Button
+                      text="SAVE"
+                      type="submit"
+                      className="text-white font-Poppins text-error font-medium leading-5 btn-save-modal cursor-pointer rounded shadow-contactBtn w-5.25 border-none h-2.81"
+                    />
+                  </div>
+                </div>
+              </Modal>
             </div>
-            <Modal
-              isOpen={isModalOpen}
-              shouldCloseOnOverlayClick={true}
-              onRequestClose={() => setisModalOpen(false)}
-              className="w-24.31 mx-auto mt-9.18  pb-20 bg-white border-fetching-card rounded-lg shadow-modal"
-            >
-              <div className="flex flex-col px-1.68 relative">
-                <h3 className="font-Inter font-semibold text-xl mt-1.8  leading-6">Customize Column</h3>
-                <div className="pb-10">
-                  <MembersDraggableColumn />
-                </div>
-                <div className="flex buttons absolute -bottom-16 right-[27px]">
-                  <Button
-                    text="CANCEL"
-                    type="submit"
-                    className="cancel mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  h-2.81 w-5.25  rounded border-none"
-                    onClick={handleModalClose}
-                  />
-                  <Button
-                    text="SAVE"
-                    type="submit"
-                    className="text-white font-Poppins text-error font-medium leading-5 btn-save-modal cursor-pointer rounded shadow-contactBtn w-5.25 border-none h-2.81"
-                  />
-                </div>
-              </div>
-            </Modal>
+          </div>
+        </div>
+        <div className="w-full justify-center flex absolute ">
+          <div className="px-6 py-6 flex items-center justify-center gap-0.66 w-full rounded-b-lg  bg-white bottom-0 ">
+            <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
+              <img src={prevIcon} alt="" />
+            </div>
+            <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">1</div>
+            <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">2</div>
+            <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">3</div>
+            <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">4</div>
+            <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">...</div>
+            <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">10</div>
+            <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
+              <img src={nextIcon} alt="" />
+            </div>
+            <div className="font-Lato font-normal text-pageNumber leading-4 text-pagination cursor-pointer">Go to page:</div>
+            <div>
+              <Input name="pagination" id="page" type="text" className="page-input focus:outline-none px-0.5 rounded box-border w-1.47 h-1.51" />
+            </div>
+          </div>
+        </div>
+        <div className="fixed bottom-10 right-32">
+          <div
+            className="btn-drag w-3.375 h-3.375 flex items-center justify-center cursor-pointer shadow-dragButton rounded-0.6 "
+            onClick={() => setisModalOpen(true)}
+          >
+            <img src={editIcon} alt="" />
           </div>
         </div>
       </div>

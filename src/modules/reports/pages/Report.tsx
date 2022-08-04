@@ -145,96 +145,99 @@ const Report: React.FC = () => {
             />
           </div>
         </div>
-        <div className="py-2 overflow-x-auto mt-1.868">
-          <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixReportTableHead">
-            <table className="min-w-full relative  rounded-t-0.6 ">
-              <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky z-40">
-                <tr className="min-w-full">
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray ">
+        <div className="relative">
+          <div className="py-2 overflow-x-auto mt-1.868">
+            <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixReportTableHead">
+              <table className="min-w-full relative  rounded-t-0.6 ">
+                <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky z-40">
+                  <tr className="min-w-full">
+                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray ">
                     Report Name
-                  </th>
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Date</th>
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Platforms</th>
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
+                    </th>
+                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Date</th>
+                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Platforms</th>
+                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
                     Report Status
-                  </th>
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {reportData.map((data, i) => (
-                  <tr className="border-b" key={i}>
-                    <td className="px-6 py-3">
-                      <div className="flex ">
-                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.reportName}</div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-3">
-                      <div className="flex ">
-                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.date}</div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-3">
-                      <div className="flex gap-x-1">
-                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer w-1.375">
-                          <img src={data.platform.img1} alt="" />
-                        </div>
-                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer w-1.375">
-                          <img src={data.platform.img2} alt="" />
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-3">
-                      <div className="flex ">
-                        <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.reportStatus}</div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-3">
-                      <div className="flex   cursor-pointer relative">
-                        <div
-                          onClick={() => handleDropDownActive(data.id)}
-                          className="flex items-center justify-center action  h-3.12 box-border bg-white rounded-0.1 shadow-deleteButton w-3.12 "
-                        >
-                          <img src={actionDotIcon} alt="" className="relative" />
-                        </div>
-                        {isDropdownActive === data.id && (
-                          <div className="absolute top-6 app-result-card-border bg-white rounded-0.6 box-border w-9.62  right-32 shadow-inputShadow z-40">
-                            {options.map((options, i) => (
-                              <div className="flex flex-col" onClick={() => handleDropDownActive(0)} key={i}>
-                                <div className="h-3.06 p-2 flex items-center text-searchBlack font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300">
-                                  {options}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </td>
+                    </th>
+                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Actions</th>
                   </tr>
-                ))}
-                <tr className="px-6 py-3 ">
-                  <td className="px-6 py-3 "></td>
-                </tr>
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {reportData.map((data, i) => (
+                    <tr className="border-b" key={i}>
+                      <td className="px-6 py-3">
+                        <div className="flex ">
+                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.reportName}</div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-3">
+                        <div className="flex ">
+                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.date}</div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-3">
+                        <div className="flex gap-x-1">
+                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer w-1.375">
+                            <img src={data.platform.img1} alt="" />
+                          </div>
+                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer w-1.375">
+                            <img src={data.platform.img2} alt="" />
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-3">
+                        <div className="flex ">
+                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.reportStatus}</div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-3">
+                        <div className="flex   cursor-pointer relative">
+                          <div
+                            onClick={() => handleDropDownActive(data.id)}
+                            className="flex items-center justify-center action  h-3.12 box-border bg-white rounded-0.1 shadow-deleteButton w-3.12 "
+                          >
+                            <img src={actionDotIcon} alt="" className="relative" />
+                          </div>
+                          {isDropdownActive === data.id && (
+                            <div className="absolute top-6 app-result-card-border bg-white rounded-0.6 box-border w-9.62  right-32 shadow-inputShadow z-40">
+                              {options.map((options, i) => (
+                                <div className="flex flex-col" onClick={() => handleDropDownActive(0)} key={i}>
+                                  <div className="h-3.06 p-2 flex items-center text-searchBlack font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300">
+                                    {options}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  <tr className="px-6 py-3 ">
+                    <td className="px-6 py-3 "></td>
+                  </tr>
+                </tbody>
+              </table>
 
-            <div className="px-6 py-6 flex items-center gap-0.66 pl-[30%] w-full rounded-b-lg fixed bg-white bottom-0">
-              <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
-                <img src={prevIcon} alt="" />
-              </div>
-              <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">1</div>
-              <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">2</div>
-              <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">3</div>
-              <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">4</div>
-              <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">...</div>
-              <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">10</div>
-              <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
-                <img src={nextIcon} alt="" />
-              </div>
-              <div className="font-Lato font-normal text-pageNumber leading-4 text-pagination cursor-pointer">Go to page:</div>
-              <div>
-                <Input name="pagination" id="page" type="text" className="page-input focus:outline-none px-0.5 rounded box-border w-1.47 h-1.51" />
-              </div>
+            </div>
+          </div>
+
+          <div className="px-6 py-6 flex items-center justify-center gap-0.66 w-full rounded-b-lg bg-white bottom-0">
+            <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
+              <img src={prevIcon} alt="" />
+            </div>
+            <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">1</div>
+            <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">2</div>
+            <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">3</div>
+            <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">4</div>
+            <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">...</div>
+            <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">10</div>
+            <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
+              <img src={nextIcon} alt="" />
+            </div>
+            <div className="font-Lato font-normal text-pageNumber leading-4 text-pagination cursor-pointer">Go to page:</div>
+            <div>
+              <Input name="pagination" id="page" type="text" className="page-input focus:outline-none px-0.5 rounded box-border w-1.47 h-1.51" />
             </div>
           </div>
         </div>
