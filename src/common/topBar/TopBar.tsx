@@ -24,6 +24,7 @@ const TopBar: React.FC = () => {
     switch (data) {
       case 'Sign Out':
         dispatch(authSlice.actions.signOut());
+        break;
       case 'Profile Settings':
         navigate('/account');
         break;

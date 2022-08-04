@@ -16,13 +16,13 @@ const MainLayout = Loadable(lazy(() => import('../layout/MainLayout')));
 const routes: RoutesArray[] = [
   ...authRoutes,
   {
-      element: (
-          <PrivateRoute>
-              <MainLayout />
-          </PrivateRoute>
-      ),
-      path: '/',
-      children:[dashboardRoutes,membersRoutes, settingRoutes, activityRoutes, reportRoutes, accountRoutes]
+    element: (
+      <PrivateRoute>
+        <MainLayout />
+      </PrivateRoute>
+    ),
+    path: '/',
+    children: [dashboardRoutes, membersRoutes, settingRoutes, activityRoutes, reportRoutes, accountRoutes]
   },
   //to redirect invalid routes back to the index route
   {
