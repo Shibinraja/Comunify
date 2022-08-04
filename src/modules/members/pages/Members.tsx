@@ -20,7 +20,7 @@ import Input from 'common/input';
 // import { membersTableData } from './MembersTableData';
 import MembersDraggableColumn from './membersTableColumn/membersDraggableColumn';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
-import membersSlice from '../store/slice/members.slice';
+import  membersSlice from '../store/slice/members.slice';
 import { format, parseISO } from 'date-fns';
 import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
 import { ColumNames } from './MembersTableData';
@@ -100,11 +100,11 @@ const Members: React.FC = () => {
   };
 
   // Function to map customized column with api data response to create a new column array with index matching with customized column.
-  const customizedColumn = data?.reduce((acc: Record<string, any>, currentValue: Record<string, any>): Record<string, any> => {
-    const accumulatedColumn: Record<string, any> = {};
+  const customizedColumn = data?.reduce((acc: Array<Record<string, unknown>>, currentValue: Record<string, any>): Array<Record<string, unknown>> => {
+    const accumulatedColumn: Record<string, unknown> = {};
     const memberValue = { ...currentValue };
     memberValue['location'] = 'India';
-    columns.forEach((column: { id: string; name: string; isDisplayed: boolean }) => {
+    columns.forEach((column: ColumnNameProps) => {
       // eslint-disable-next-line no-prototype-builtins
       if (memberValue.hasOwnProperty(column.id)) {
         if (column.isDisplayed) {

@@ -40,9 +40,9 @@ export const membersListResponse = {
       ]
     }
   ],
-  totalPages: '',
-  previousPage: '',
-  nextPage: ''
+  totalPages: 0,
+  previousPage: 0,
+  nextPage: 0
 };
 
 export const customizedColumnProps = [

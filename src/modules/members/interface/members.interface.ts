@@ -19,11 +19,36 @@ export type MembersCountResponse = {
   analyticMessage: string;
 };
 
+export type MembersListData = {
+  id: string,
+  name: string,
+  userName: string,
+  comunifyUserId: string,
+  lastActivity: string,
+  email: string,
+  organization: string,
+  profileUrl: string,
+  workspaceId: string,
+  createdAt: string,
+  updatedAt: string,
+  location?:string
+  tags: {
+      tag: {
+        name: string
+      }
+  }[],
+  platforms: {
+      platform: {
+        name: string
+      }
+  }[];
+}
+
 export type MembersListResponse = {
-  data: Array<Record<string, any>>;
-  totalPages: string;
-  previousPage: string;
-  nextPage: string;
+  data: Array<MembersListData>;
+  totalPages: number;
+  previousPage: number;
+  nextPage: number;
 };
 
 export interface DraggableComponentsProps {
