@@ -11,6 +11,7 @@
         "format": "prettier --ignore-path .gitignore --write \"**/*.+(ts|tsx|json)\"",
         "release": "standard-version",
         "prettier-check": "prettier src --check",
+        "prettier-fix": "prettier src --write",
         "prettier": "prettier src --list-different",
         "husky-install": "husky install"
     },

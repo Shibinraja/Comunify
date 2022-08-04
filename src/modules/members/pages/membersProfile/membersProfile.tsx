@@ -1,4 +1,4 @@
-import React,  { useState }  from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import profileImage from '../../../../assets/images/profile-member.svg';
 import dropDownIcon from '../../../../assets/images/profile-dropdown.svg';
 import slackIcon from '../../../../assets/images/slack.svg';
@@ -36,6 +36,23 @@ const MembersProfile: React.FC = () => {
     navigate('/members/members-review');
   };
 
+  const dropDownRef: any = useRef();
+
+  const handleOutsideClick = (event: MouseEvent) => {
+    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target)) {
+      setSelectDropDownActive(true);
+    } else {
+      setSelectDropDownActive(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleOutsideClick);
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, []);
+
   const selectOptions = ['All', 'Slack', 'Higherlogic'];
   return (
     <div className="flex pt-3.93 w-full">
@@ -46,6 +63,7 @@ const MembersProfile: React.FC = () => {
             <div className="select relative">
               <div
                 className="flex justify-around items-center cursor-pointer box-border w-9.59 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border"
+                ref={dropDownRef}
                 onClick={handleDropDownActive}
               >
                 <div className="font-Poppins font-semibold text-card text-memberDay leading-4">{selected ? selected : 'Select'}</div>
@@ -146,9 +164,7 @@ const MembersProfile: React.FC = () => {
               <img src={profileImage} alt="profileImage" className="bg-cover " />
             </div>
             <div className="mt-0.688 text-profileBlack font-semibold font-Poppins leading-1.31 text-trial">Dmitry Kargaev</div>
-            <div className="text-center pt-0.125 font-Poppins text-profileBlack text-member">
-                            dmrity125@mail.com | neoito technologies
-            </div>
+            <div className="text-center pt-0.125 font-Poppins text-profileBlack text-member">dmrity125@mail.com | neoito technologies</div>
             <div className="flex gap-1 pt-1.12">
               <div>
                 <img src={slackIcon} alt="" />
@@ -166,11 +182,8 @@ const MembersProfile: React.FC = () => {
           <div className="flex flex-col p-5">
             <div className="flex items-center justify-between border-b pb-2">
               <div className="font-Poppins font-medium text-error leading-5 text-profileBlack">Tags</div>
-              <div
-                className="font-Poppins font-medium text-error leading-5 text-addTag cursor-pointer"
-                onClick={() => handleTagModal(true)}
-              >
-                                ADD TAG
+              <div className="font-Poppins font-medium text-error leading-5 text-addTag cursor-pointer" onClick={() => handleTagModal(true)}>
+                ADD TAG
               </div>
               <Modal
                 isOpen={isTagModalOpen}
@@ -182,7 +195,7 @@ const MembersProfile: React.FC = () => {
                   <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Add Tag</h3>
                   <form className="flex flex-col relative px-1.93 mt-9">
                     <label htmlFor="billingName " className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack ">
-                       Tag Name
+                      Tag Name
                     </label>
                     <input
                       type="text"
@@ -269,13 +282,11 @@ const MembersProfile: React.FC = () => {
             <div className="flex-flex-col relative mt-1.8">
               <div className="flex">
                 <div className="mr-0.34">
-                  <input type="checkbox" className="checkbox"/>
+                  <input type="checkbox" className="checkbox" />
                 </div>
                 <div className="flex flex-col">
                   <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31">Emerson Schleifer</div>
-                  <div className="text-tagEmail font-Poppins font-normal leading-1.31 text-email pl-1">
-                                        dmrity125@mail.com | neoito technologies
-                  </div>
+                  <div className="text-tagEmail font-Poppins font-normal leading-1.31 text-email pl-1">dmrity125@mail.com | neoito technologies</div>
                   <div className="flex mt-2.5">
                     <div className="mr-0.34 w-1.001 h-1.001">
                       <img src={slackIcon} alt="" />

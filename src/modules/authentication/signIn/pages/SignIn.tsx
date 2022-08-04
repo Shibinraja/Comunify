@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { useAppDispatch } from '@/hooks/useRedux';
 import { API_ENDPOINT, auth_module } from '@/lib/config';
 import Button from 'common/button/Button';
@@ -28,8 +28,8 @@ const SignIn: React.FC = () => {
   const [passwordType, setPasswordType] = useState<string>('password');
 
   const handleSubmit = (values: FormValues): void => {
-    const newValues = {...values};
-    newValues['userName'] =  values.userName.includes('@') ? values.userName.toLocaleLowerCase() : values.userName;
+    const newValues = { ...values };
+    newValues['userName'] = values.userName.includes('@') ? values.userName.toLocaleLowerCase() : values.userName;
     dispatch(authSlice.actions.login(newValues));
   };
 
@@ -52,7 +52,7 @@ const SignIn: React.FC = () => {
           <div className="max-w-40 px-28  mt-5.2 flex flex-col">
             <h3 className="font-Inter text-neutralBlack font-bold not-italic text-signIn leading-2.8">Sign In </h3>
             <p className="text-lightGray font-Inter  max-w-sm font-normal not-italic mt-0.78 text-desc">
-                  Welcome back to Comunify. Let's get you know your communities better{' '}
+              Welcome back to Comunify. Let's get you know your communities better{' '}
             </p>
             <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={signInSchema}>
               {({ errors, handleBlur, handleChange, touched, values }): JSX.Element => (
@@ -109,16 +109,14 @@ const SignIn: React.FC = () => {
                     onClick={navigateToGoogleSignIn}
                   >
                     <img src={socialLogo} alt="" className="pr-0.781" />
-                                    Continue with Google
+                    Continue with Google
                   </div>
                   <div className="font-Inter text-secondaryGray text-center text-base font-normal mt-1.8 leading-2.8 text-signLink hover:underline transition ease-in duration-300">
-                    <Link to="forgot-password">
-                                        Forgot your password?
-                    </Link>
+                    <Link to="forgot-password">Forgot your password?</Link>
                   </div>
                   <div className="font-Poppins text-secondaryGray text-center text-base font-normal mt-5  text-signLink ">
                     <h3>
-                                        Don’t have an account yet?{' '}
+                      Don’t have an account yet?{' '}
                       <Link to="signup">
                         {' '}
                         <span className="text-letsSignInSignUp underline">Let’s Sign Up</span>
@@ -132,7 +130,7 @@ const SignIn: React.FC = () => {
         </div>
         <div className=" w-1/2 bg-thinBlue flex items-center justify-center login-cover-bg bg-no-repeat bg-right rounded-l-lg overflow-hidden">
           <div className="flex items-center p-28">
-            <img src={bgSignInImage} alt="" className="object-cover"/>
+            <img src={bgSignInImage} alt="" className="object-cover" />
           </div>
         </div>
       </div>
@@ -147,13 +145,12 @@ const signInSchema = Yup.object().shape({
     }
 
     return Yup.string()
-      .required('Username is required')
+      .required('Username/Email is required')
       .min(5, 'Username should be more than 5 character long')
       .max(30, 'Username should not exceed 30 characters')
       .trim();
   }),
-  password: Yup.string()
-    .required('Password is required')
+  password: Yup.string().required('Password is required')
 });
 
 export default SignIn;

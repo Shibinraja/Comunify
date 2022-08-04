@@ -14,6 +14,7 @@ export default function ActivitiesTab() {
             isActive={selectedTab === 'activites'}
             onClick={() => setSelectedTab('activites')}
             style={'ml-1.625 mt-0.438 text-sm '}
+            styleActive={'gradient-bottom-border'}
           >
             New Activities
           </TabSelector>
@@ -21,6 +22,7 @@ export default function ActivitiesTab() {
             isActive={selectedTab === 'highlights'}
             onClick={() => setSelectedTab('highlights')}
             style={'ml-1.625 mt-0.438 text-sm '}
+            styleActive={'gradient-bottom-border'}
           >
             Highlights
           </TabSelector>

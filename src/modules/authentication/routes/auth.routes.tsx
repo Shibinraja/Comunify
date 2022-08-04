@@ -20,7 +20,6 @@ const Integration = Loadable(lazy(() => import('../integration/pages/Integration
 const Subscription = Loadable(lazy(() => import('../subscription/pages/Subscription')));
 const SubscriptionExpired = Loadable(lazy(() => import('../subscriptionExpired/pages/SubscriptionExpired')));
 
-
 const authRoutes: RoutesArray[] = [
   {
     element: <AuthLayout />,
@@ -77,7 +76,7 @@ const authRoutes: RoutesArray[] = [
       {
         element: (
           <PrivateRoute>
-            <Welcome/>
+            <Welcome />
           </PrivateRoute>
         ),
         path: '/welcome'
@@ -85,7 +84,7 @@ const authRoutes: RoutesArray[] = [
       {
         element: (
           <PrivateRoute>
-            <Integration/>
+            <Integration />
           </PrivateRoute>
         ),
         path: '/integration'
@@ -93,7 +92,7 @@ const authRoutes: RoutesArray[] = [
       {
         element: (
           <PrivateRoute>
-            <Subscription/>
+            <Subscription />
           </PrivateRoute>
         ),
         path: '/subscription'
@@ -101,7 +100,7 @@ const authRoutes: RoutesArray[] = [
       {
         element: (
           <PrivateRoute>
-            <SubscriptionExpired/>
+            <SubscriptionExpired />
           </PrivateRoute>
         ),
         path: '/subscription/expired'

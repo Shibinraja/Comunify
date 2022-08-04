@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useRef, useState} from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 function usePrevious<T>(value: T) {
   const ref = useRef<T>();
@@ -37,14 +37,8 @@ export function useTabs<K extends string>(tabs: K[], defaultTab?: K | null) {
     }
 
     // If more thean two tabs, it check the previous tab selection and states the current index with the previous tab index number
-    if (
-      typeof previousActiveIndex === 'number' &&
-      previousActiveIndex >= 0 &&
-      (tabs[previousActiveIndex] || tabs[previousActiveIndex - 1])
-    ) {
-      setSelectedTab(
-        tabs[previousActiveIndex] || tabs[previousActiveIndex - 1]
-      );
+    if (typeof previousActiveIndex === 'number' && previousActiveIndex >= 0 && (tabs[previousActiveIndex] || tabs[previousActiveIndex - 1])) {
+      setSelectedTab(tabs[previousActiveIndex] || tabs[previousActiveIndex - 1]);
 
       return;
     }
@@ -55,9 +49,7 @@ export function useTabs<K extends string>(tabs: K[], defaultTab?: K | null) {
       return;
     }
 
-    setSelectedTab(
-      defaultTab && tabs.includes(defaultTab) ? defaultTab : tabs[0]
-    );
+    setSelectedTab(defaultTab && tabs.includes(defaultTab) ? defaultTab : tabs[0]);
   }, [defaultTab, previousActiveIndex, selectedTab, setSelectedTab, tabs]);
 
   return state;

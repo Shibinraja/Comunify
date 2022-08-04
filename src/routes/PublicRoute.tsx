@@ -1,4 +1,4 @@
-import React, {Reducer, useEffect, useReducer} from 'react';
+import React, { Reducer, useEffect, useReducer } from 'react';
 import { Navigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import cookie from 'react-cookies';
@@ -7,9 +7,9 @@ import { decodeToken } from '@/lib/decodeToken';
 import { AppDispatch } from '../store';
 import authSlice from 'modules/authentication/store/slices/auth.slice';
 import { getLocalRefreshToken } from '@/lib/request';
-import {Props, PublicRouteState, PublicRouteStateValues} from './routesTypes';
+import { Props, PublicRouteState, PublicRouteStateValues } from './routesTypes';
 
-const reducer: Reducer<PublicRouteState, PublicRouteStateValues> = (state, action): {route:string} => {
+const reducer: Reducer<PublicRouteState, PublicRouteStateValues> = (state, action): { route: string } => {
   switch (action.type) {
     case 'SET_WELCOME_ROUTE':
       return { ...state, route: action.payload };
@@ -25,30 +25,25 @@ const reducer: Reducer<PublicRouteState, PublicRouteStateValues> = (state, actio
 };
 
 const InitialRouteState = {
-  route:'/'
+  route: '/'
 };
 
 // eslint-disable-next-line react/prop-types
 const PublicRoute: React.FC<Props> = ({ children }) => {
-
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const dispatch: AppDispatch = useAppDispatch();
   const tokenData = getLocalRefreshToken();
 
   const access_token = tokenData || cookie.load('x-auth-cookie');
-  const decodedToken:DecodeToken = access_token && decodeToken(access_token);
+  const decodedToken: DecodeToken = access_token && decodeToken(access_token);
 
-  const [state, dispatchReducer] = useReducer<Reducer<PublicRouteState, PublicRouteStateValues>>(
-    reducer,
-    InitialRouteState
-  );
+  const [state, dispatchReducer] = useReducer<Reducer<PublicRouteState, PublicRouteStateValues>>(reducer, InitialRouteState);
 
   useEffect(() => {
     if (access_token) {
       localStorage.setItem('accessToken', access_token);
       checkWorkspaceCreation();
     }
-
   }, [access_token]);
 
   //Functionality to check the workspace and packages subscription and route dynamically to the respected page.
@@ -76,7 +71,7 @@ const PublicRoute: React.FC<Props> = ({ children }) => {
     }
   };
 
-  return isAuthenticated ? <Navigate to= {state.route}/> : children;
+  return isAuthenticated ? <Navigate to={state.route} /> : children;
 };
 
 export default PublicRoute;

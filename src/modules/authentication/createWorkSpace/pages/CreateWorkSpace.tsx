@@ -27,15 +27,14 @@ const CreateWorkSpace: React.FC = () => {
     try {
       workspaceNameValidation.validateSync(workspace_name);
       setErrorMessage('');
-    }
-    catch ({message}) {
+    } catch ({ message }) {
       setErrorMessage(message);
     }
   };
 
-  const handleSubmit = (e:React.FormEvent<HTMLFormElement>):void => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    dispatch(authSlice.actions.createWorkspace({workspaceName}));
+    dispatch(authSlice.actions.createWorkspace({ workspaceName }));
   };
 
   return (
@@ -46,13 +45,13 @@ const CreateWorkSpace: React.FC = () => {
         </div>
         <div className="flex flex-col w-1/2 pl-7.53 pt-6.84 overflow-scroll">
           {' '}
-          <h3 className="font-Inter text-neutralBlack font-bold not-italic text-signIn leading-2.8">
-            Create Workspace{' '}
-          </h3>{' '}
+          <h3 className="font-Inter text-neutralBlack font-bold not-italic text-signIn leading-2.8">Create Workspace </h3>{' '}
           <form
             className="flex flex-col pb-10 mt-1.8 w-25.9 "
             autoComplete="off"
-            onSubmit={(e) => {handleSubmit(e);}}
+            onSubmit={(e) => {
+              handleSubmit(e);
+            }}
           >
             <div className="workspace">
               <Input

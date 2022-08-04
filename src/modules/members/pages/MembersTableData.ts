@@ -447,7 +447,7 @@ export const membersTableData = [
   }
 ];
 
-export const ColumNames: Array<{name:string, id:number}> = [
+export const ColumNames: Array<{ name: string; id: number }> = [
   {
     name: 'Name',
     id: 1

@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, { useRef } from 'react';
 import Button from 'common/button';
 import Input from 'common/input';
 import './ForgotPassword.css';
@@ -25,8 +25,8 @@ const ForgotPassword: React.FC = () => {
   // }, [resetValue]);
 
   const handleSubmit = (values: EmailFormValues): void => {
-    const newValues = {...values};
-    newValues['email'] =  values.email.toLocaleLowerCase();
+    const newValues = { ...values };
+    newValues['email'] = values.email.toLocaleLowerCase();
     dispatch(authSlice.actions.forgotPassword(values));
   };
 
@@ -39,7 +39,7 @@ const ForgotPassword: React.FC = () => {
         <div className="w-1/2 flex pl-7.5 pt-13.1 flex-col overflow-scroll pb-5">
           <h1 className="font-Inter font-bold text-signIn text-neutralBlack leading-2.8">Forgot Password</h1>
           <p className="mt-0.78 text-desc font-normal leading-1.8 font-Inter text-lightGray max-w-sm">
-                        Enter your email address to reset your password.
+            Enter your email address to reset your password.
           </p>
           <Formik
             innerRef={formikRef}
@@ -80,7 +80,7 @@ const ForgotPassword: React.FC = () => {
 };
 
 const forgotPasswordSchema = Yup.object().shape({
-  email: Yup.string().email('Must be a valid email') .matches(email_regex, 'Must be a valid email').max(255).required('Email is required')
+  email: Yup.string().email('Must be a valid email').matches(email_regex, 'Must be a valid email').max(255).required('Email is required')
 });
 
 export default ForgotPassword;

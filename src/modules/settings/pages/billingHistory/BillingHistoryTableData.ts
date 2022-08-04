@@ -1,4 +1,4 @@
-export const billingHistoryData=[
+export const billingHistoryData = [
   {
     planName: 'Comunify Plus',
     date: '30 April 2022',

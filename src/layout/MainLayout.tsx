@@ -18,13 +18,13 @@ const MainLayout: React.FC = () => {
         <ResolutionLayout />
       ) : (
         <div className="flex h-screen">
-          {loader && <Loader/>}
-          <div className="w-[20%]">
+          {loader && <Loader />}
+          <div className="w-1/4 xl:w-1/5">
             <SideNav />
           </div>
-          <div className="w-full px-20">
+          <div className="w-3/4 xl:w-4/5">
             <TopBar />
-            <div className="mt-10">
+            <div className="px-12 xl:px-20  overflow-y-auto layout-screen">
               <Outlet />
             </div>
           </div>

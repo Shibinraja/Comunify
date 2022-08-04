@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { GeneratorResponse } from '@/lib/api';
-import {auth_module, subscription_module, workspace_module} from '@/lib/config';
+import { auth_module, subscription_module, workspace_module } from '@/lib/config';
 import { request } from '@/lib/request';
 
 import {
@@ -76,6 +76,6 @@ export function* sendSubscriptionPlan(id: string): GeneratorResponse<Subscriptio
 
 //Logout
 export function* signOutService(): GeneratorResponse<{}> {
-  const {data} = yield request.post(`${auth_module}/logout`);
+  const { data } = yield request.post(`${auth_module}/logout`);
   return data;
 }

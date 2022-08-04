@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { AppDispatch } from '../../../../store/index';
 import { useAppDispatch } from '@/hooks/useRedux';
 import bgSignInImage from '../../../../assets/images/bg-sign.svg';
@@ -29,7 +29,9 @@ const CreateNewPassword: React.FC = () => {
   };
 
   useEffect(() => {
-    if (token) {dispatch(authSlice.actions.verifyForgotEmail({id:token}));}
+    if (token) {
+      dispatch(authSlice.actions.verifyForgotEmail({ id: token }));
+    }
   }, [token]);
 
   const togglePassword1 = () => {
@@ -49,7 +51,7 @@ const CreateNewPassword: React.FC = () => {
   };
 
   const handleSubmit = (values: PasswordFormValues): void => {
-    const newValues = {...values};
+    const newValues = { ...values };
     newValues['token'] = token;
     dispatch(authSlice.actions.resetPassword(newValues));
   };
@@ -61,25 +63,10 @@ const CreateNewPassword: React.FC = () => {
           <img src={bgSignInImage} alt="" className="object-cover" />
         </div>
         <div className="flex flex-col w-1/2 pt-13.1 pl-7.5 overflow-scroll">
-          <h1 className="font-Inter font-bold text-signIn text-neutralBlack leading-2.8">
-            Forgot Password
-          </h1>
-          <p className="mt-0.78 text-desc font-normal leading-1.8 font-Inter text-lightGray max-w-sm">
-            Enter your new password.
-          </p>
-          <Formik
-            initialValues={initialValues}
-            onSubmit={handleSubmit}
-            validateOnChange={true}
-            validationSchema={confirmPasswordSchema}
-          >
-            {({
-              errors,
-              handleBlur,
-              handleChange,
-              touched,
-              values
-            }): JSX.Element => (
+          <h1 className="font-Inter font-bold text-signIn text-neutralBlack leading-2.8">Forgot Password</h1>
+          <p className="mt-0.78 text-desc font-normal leading-1.8 font-Inter text-lightGray max-w-sm">Enter your new password.</p>
+          <Formik initialValues={initialValues} onSubmit={handleSubmit} validateOnChange={true} validationSchema={confirmPasswordSchema}>
+            {({ errors, handleBlur, handleChange, touched, values }): JSX.Element => (
               <Form className="w-25.9 mt-1.9 " autoComplete="off">
                 <div className="password relative">
                   <Input
@@ -97,17 +84,9 @@ const CreateNewPassword: React.FC = () => {
                   />
                   <div onClick={togglePassword1} className="absolute top-7 right-[28.87px]">
                     {password === 'password' ? (
-                      <img
-                        className="cursor-pointer "
-                        src={openEyeIcon}
-                        alt=""
-                      />
+                      <img className="cursor-pointer " src={openEyeIcon} alt="" />
                     ) : (
-                      <img
-                        className="cursor-pointer "
-                        src={closeEyeIcon}
-                        alt=""
-                      />
+                      <img className="cursor-pointer " src={closeEyeIcon} alt="" />
                     )}
                   </div>
                 </div>
@@ -127,17 +106,9 @@ const CreateNewPassword: React.FC = () => {
                   />
                   <div onClick={togglePassword2} className="absolute top-7 right-[28.87px]">
                     {confirmPassword === 'password' ? (
-                      <img
-                        className="cursor-pointer "
-                        src={openEyeIcon}
-                        alt=""
-                      />
+                      <img className="cursor-pointer " src={openEyeIcon} alt="" />
                     ) : (
-                      <img
-                        className="cursor-pointer "
-                        src={closeEyeIcon}
-                        alt=""
-                      />
+                      <img className="cursor-pointer " src={closeEyeIcon} alt="" />
                     )}
                   </div>
                 </div>
@@ -161,13 +132,10 @@ const confirmPasswordSchema = Yup.object().shape({
   password: Yup.string()
     .required('Password is required')
     .min(8, 'Password must be atleast 8 characters')
-    .matches(
-      password_regex,
-      'Password must have one uppercase , one lowercase , a digit and specialcharacters'
-    ),
+    .matches(password_regex, 'Password must have one uppercase, one lowercase, a digit and special characters'),
   confirmPassword: Yup.string()
     .min(8, 'Password must be atleast 8 characters')
-    .oneOf([Yup.ref('password'), null], 'Passwords must match')
+    .oneOf([Yup.ref('password'), null], 'Passwords do not match')
     // .matches(
     //   password_regex,
     //   "Password must have one uppercase , one lowercase , a digit and specialcharacters"

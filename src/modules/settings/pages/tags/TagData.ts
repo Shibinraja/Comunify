@@ -1,4 +1,4 @@
-export const tagData=[
+export const tagData = [
   {
     tagName: 'Admin',
     type: 'Default'
