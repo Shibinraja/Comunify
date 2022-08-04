@@ -58,7 +58,8 @@ module.exports = {
         trialButton: '#9CC986;',
         outerCirlceLoader: '#68B4E5',
         innerCircleLoader: '#ED9333',
-        backdropColor: 'rgba(0, 0, 0, 0.5)'
+        backdropColor: 'rgba(0, 0, 0, 0.5)',
+        widgetSearch:'#ACACAC;'
       },
       margin: {
         2.6: '43px',
@@ -368,7 +369,7 @@ module.exports = {
         buttonShadowHover: '0px 13.64px 27.2727px rgba(0, 0, 0, 0.15);',
         connectButtonShadow: '0px 4px 30px rgba(0, 0, 0, 0.1)',
         integrationCardShadow:
-          '0px 100px 80px rgba(41, 72, 152, 0.05),0px 64.8148px 46.8519px rgba(41, 72, 152, 0.037963),0px 38.5185px 25.4815px rgba(41, 72, 152, 0.0303704),0px 20px 13px rgba(41, 72, 152, 0.025),0px 8.14815px 6.51852px rgba(41, 72, 152, 0.0196296), 0px 1.85185px 3.14815px rgba(41, 72, 152, 0.012037)',
+          '0px 48px 37px rgba(41, 72, 152, 0.05),0px 6.8148px 29.8519px rgba(41, 72, 152, 0.037963),0px 0.5185px 2.4815px rgba(41, 72, 152, 0.0303704),0px 20px 13px rgba(41, 72, 152, 0.025),0px 8.14815px 0.51852px rgba(41, 72, 152, 0.0196296),0px 1.85185px 27.14815px rgba(41, 72, 152, 0.012037)',
         trialButtonShadow: '8px 8px 24px rgba(2, 2, 70, 0.05)',
         contactBtn: '0px 4px 30px rgba(0, 0, 0, 0.1)',
         contactCard:
@@ -376,11 +377,12 @@ module.exports = {
         inputShadow: '8.32785px 8.32785px 24.9835px rgba(2, 2, 70, 0.05)',
         modal: '0px 0px 2px rgba(0, 0, 0, 0.12), 0px 20px 20px rgba(0, 0, 0, 0.08)',
         profileCard:
-          '0px 100px 80px rgba(41, 72, 152, 0.05),0px 64.8148px 46.8519px rgba(41, 72, 152, 0.037963),0px 38.5185px 25.4815px rgba(41, 72, 152, 0.0303704),0px 20px 13px rgba(41, 72, 152, 0.025),0px 8.14815px 6.51852px rgba(41, 72, 152, 0.0196296),0px 1.85185px 3.14815px rgba(41, 72, 152, 0.012037)',
+          '0px 48px 37px rgba(41, 72, 152, 0.05),0px 6.8148px 29.8519px rgba(41, 72, 152, 0.037963),0px 0.5185px 2.4815px rgba(41, 72, 152, 0.0303704),0px 20px 13px rgba(41, 72, 152, 0.025),0px 8.14815px 0.51852px rgba(41, 72, 152, 0.0196296),0px 1.85185px 27.14815px rgba(41, 72, 152, 0.012037)',
         reportInput: '8.32785px 8.32785px 24.9835px rgba(2, 2, 70, 0.05)',
         subscription: '0px 100px 80px rgba(110, 181, 217, 0.1);',
         dragButton: '0px 4.90909px 61.3636px rgba(0, 0, 0, 0.2)',
-        paymentSubscriptionCard: '0px 100px 80px rgba(110, 181, 217, 0.05)'
+        paymentSubscriptionCard: '0px 100px 80px rgba(110, 181, 217, 0.05)',
+        shadowInput:'8px 8px 24px rgba(2,2,70,0.1)'
       },
       maxHeight: {
         34: '47vh'

@@ -45,7 +45,7 @@ const TopBar: React.FC = () => {
   }, []);
 
   return (
-    <div className="container mt-6 mx-auto ">
+    <div className=" mt-6 px-12 xl:px-20">
       <div className="flex justify-between items-center ">
         <div className="relative">
           <Input
