@@ -35,7 +35,7 @@ const Dashboard: React.FC = () => {
       <div className=" flex justify-between mt-10">
         <div className="flex relative">
           <div
-            className="flex items-center justify-between px-5 w-11.72 h-3.06 app-input-card-border rounded-0.6 shadow-integrationCardShadow cursor-pointer "
+            className="flex items-center justify-between px-5 w-11.72 h-3.06 app-input-card-border rounded-0.6 shadow-shadowInput cursor-pointer "
             ref={dropDownRef}
             onClick={handleDropDownActive}
           >
@@ -46,7 +46,7 @@ const Dashboard: React.FC = () => {
           </div>
           {isSelectDropDownActive && (
             <div
-              className="absolute top-12 w-11.72 app-input-card-border bg-white shadow-integrationCardShadow rounded-0.6"
+              className="absolute top-12 w-11.72 app-input-card-border bg-white shadow-shadowInput rounded-0.6"
               onClick={handleDropDownActive}
             >
               {selectOptions.map((options: string, index: number) => (

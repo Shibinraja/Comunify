@@ -41,13 +41,13 @@ const Report: React.FC = () => {
               type="text"
               name="search"
               id="searchId"
-              className="app-input-card-border focus:outline-none px-4 mr-0.76 box-border h-3.06 w-19.06 bg-white shadow-profileCard rounded-0.6 placeholder:text-reportSearch placeholder:text-card placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.12 font-Poppins"
+              className="app-input-card-border focus:outline-none px-4 mr-0.76 box-border h-3.06 w-19.06 bg-white shadow-shadowInput rounded-0.6 placeholder:text-reportSearch placeholder:text-card placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.12 font-Poppins"
               placeholder="Search By Name or Email"
             />
           </div>
           <div className="relative mr-5">
             <div
-              className="flex justify-between items-center px-1.08 app-input-card-border rounded-0.6 box-border w-9.59 h-3.06 cursor-pointer bg-white shadow-profileCard"
+              className="flex justify-between items-center px-1.08 app-input-card-border rounded-0.6 box-border w-9.59 h-3.06 cursor-pointer bg-white shadow-shadowInput"
               onClick={handleFilterDropdown}
             >
               <div className="font-Poppins font-normal text-card text-dropGray leading-1.12">Filters</div>
@@ -57,7 +57,7 @@ const Report: React.FC = () => {
             </div>
             {isFilterDropdownActive && (
               <div
-                className="absolute app-result-card-border box-border bg-white rounded-0.3 w-16.56 shadow-inputShadow z-40 pb-1.56 "
+                className="absolute app-result-card-border box-border bg-white rounded-0.3 w-16.56 shadow-shadowInput z-40 pb-1.56 "
                 onClick={handleFilterDropdown}
               >
                 <div className="flex flex-col mt-1.43">
@@ -66,7 +66,7 @@ const Report: React.FC = () => {
                       type="text"
                       name="reportName"
                       id="report"
-                      className="mx-auto focus:outline-none px-3 box-border bg-white shadow-profileCard rounded-0.6 app-input-card-border h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
+                      className="mx-auto focus:outline-none px-3 box-border bg-white shadow-shadowInput rounded-0.6 app-input-card-border h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
                       placeholder="Report Name"
                     />
                     <div className="absolute right-5 w-0.78 h-3 z-40">
@@ -159,7 +159,7 @@ const Report: React.FC = () => {
                     <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
                     Report Status
                     </th>
-                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Actions</th>
+                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray w-6.25">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -199,7 +199,7 @@ const Report: React.FC = () => {
                             <img src={actionDotIcon} alt="" className="relative" />
                           </div>
                           {isDropdownActive === data.id && (
-                            <div className="absolute top-6 app-result-card-border bg-white rounded-0.6 box-border w-9.62  right-32 shadow-inputShadow z-40">
+                            <div className="absolute top-6 app-result-card-border bg-white rounded-0.6 box-border w-9.62  right-[0.5rem] shadow-shadowInput z-40">
                               {options.map((options, i) => (
                                 <div className="flex flex-col" onClick={() => handleDropDownActive(0)} key={i}>
                                   <div className="h-3.06 p-2 flex items-center text-searchBlack font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300">

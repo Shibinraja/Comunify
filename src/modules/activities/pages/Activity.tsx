@@ -58,7 +58,7 @@ const Activity: React.FC = () => {
           </div>
           {isFilterDropdownActive && (
             <div
-              className="absolute app-result-card-border box-border bg-white rounded-0.3 w-16.56 shadow-inputShadow z-40 pb-1.56 "
+              className="absolute app-result-card-border box-border bg-white rounded-0.3 w-16.56 shadow-shadowInput z-40 pb-1.56 "
               onClick={handleFilterDropdown}
             >
               <div className="flex flex-col mt-1.43">
@@ -138,7 +138,7 @@ const Activity: React.FC = () => {
           )}
         </div>
         <div className="">
-          <div className="app-input-card-border w-6.98 h-3.06 rounded-0.6 shadow-contactCard box-border bg-white items-center justify-evenly flex ml-0.63 cursor-pointer">
+          <div className="app-input-card-border w-6.98 h-3.06 rounded-0.6 shadow-shadowInput box-border bg-white items-center justify-evenly flex ml-0.63 cursor-pointer">
             <h3 className="text-dropGray leading-1.12 font-Poppins font-semibld text-card">Export</h3>
             <img src={exportImage} alt="" />
           </div>
@@ -229,7 +229,7 @@ const Activity: React.FC = () => {
                         </label>
                         <input
                           type="text"
-                          className="mt-0.375 inputs box-border bg-white shadow-inputShadow rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-trial placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
+                          className="mt-0.375 inputs box-border bg-white shadow-shadowInput rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-trial placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
                           placeholder="Enter Tag Name"
                         />
                         <div className="flex absolute right-1 top-24 pr-6 items-center">

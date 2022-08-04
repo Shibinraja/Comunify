@@ -381,7 +381,8 @@ module.exports = {
         reportInput: '8.32785px 8.32785px 24.9835px rgba(2, 2, 70, 0.05)',
         subscription: '0px 100px 80px rgba(110, 181, 217, 0.1);',
         dragButton: '0px 4.90909px 61.3636px rgba(0, 0, 0, 0.2)',
-        paymentSubscriptionCard: '0px 100px 80px rgba(110, 181, 217, 0.05)'
+        paymentSubscriptionCard: '0px 100px 80px rgba(110, 181, 217, 0.05)',
+        shadowInput:'8px 8px 24px rgba(2,2,70,0.1)'
       },
       maxHeight: {
         34: '47vh'

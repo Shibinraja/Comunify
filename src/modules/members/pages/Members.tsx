@@ -66,20 +66,20 @@ const Members: React.FC = () => {
         <div className="flex relative items-center ">
           <input
             type="text"
-            className="focus:outline-none px-3 box-border w-19.06 h-3.06  rounded-0.6  placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray"
+            className="focus:outline-none px-3 box-border w-19.06 h-3.06  rounded-0.6  placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray shadow-shadowInput"
             placeholder="Search By Name or Email"
           />
           <div className="absolute right-5 w-0.78 h-0.75 ">
             <img src={searchIcon} alt="" />
           </div>
         </div>
-        <div className="day w-full h-3.06 flex items-center justify-center ml-3.19 box-border rounded-0.6 app-input-card-border shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">
+        <div className="day w-full h-3.06 flex items-center justify-center ml-3.19 box-border rounded-0.6 app-input-card-border shadow-shadowInput font-Poppins font-semibold text-card text-memberDay leading-1.12">
           1D
         </div>
-        <div className="day w-full h-3.06 flex items-center justify-center ml-0.653 box-border rounded-0.6 app-input-card-border shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">
+        <div className="day w-full h-3.06 flex items-center justify-center ml-0.653 box-border rounded-0.6 app-input-card-border shadow-shadowInput font-Poppins font-semibold text-card text-memberDay leading-1.12">
           7D
         </div>
-        <div className="day w-full h-3.06 flex items-center justify-center ml-0.653 box-border rounded-0.6 app-input-card-border shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">
+        <div className="day w-full h-3.06 flex items-center justify-center ml-0.653 box-border rounded-0.6 app-input-card-border shadow-shadowInput font-Poppins font-semibold text-card text-memberDay leading-1.12">
           1M
         </div>
 
@@ -87,19 +87,19 @@ const Members: React.FC = () => {
           <DatePicker
             selected={toDate}
             onChange={(date: any) => setToDate(date)}
-            className="export w-9.92 h-3.06  shadow-contactCard rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
+            className="export w-9.92 h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
             placeholderText="Custom Date"
           />
           <img className="absolute icon-holder left-32 cursor-pointer" src={calandarIcon} alt="" />
         </div>
 
         <div className="ml-1.30 w-full">
-          <div className="box-border cursor-pointer rounded-0.6 shadow-contactCard app-input-card-border relative ">
+          <div className="box-border cursor-pointer rounded-0.6 shadow-shadowInput app-input-card-border relative ">
             <div
               className="flex h-3.06  items-center justify-between px-5 "
               onClick={() => handleFilterDropdown(isFilterDropdownActive ? false : true)}
             >
-              <div className="box-border rounded-0.6 shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">
+              <div className="box-border rounded-0.6 shadow-shadowInput font-Poppins font-semibold text-card text-memberDay leading-1.12">
                 Filters
               </div>
               <div>
@@ -167,7 +167,7 @@ const Members: React.FC = () => {
                           type="text"
                           name="search"
                           id="searchId"
-                          className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-profileCard rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
+                          className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-shadowInput rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
                           placeholder="Search Tags"
                         />
                         <div className="absolute right-5 w-0.78 h-0.75  z-40">
@@ -218,7 +218,7 @@ const Members: React.FC = () => {
                           type="text"
                           name="reportName"
                           id="reportName"
-                          className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-profileCard rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
+                          className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-shadowInput rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
                           placeholder="Report Name"
                         />
                         <div className="absolute right-5 w-0.78 h-0.75  z-40">
@@ -269,7 +269,7 @@ const Members: React.FC = () => {
                           type="text"
                           name="report"
                           id="reportId"
-                          className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-profileCard rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
+                          className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-shadowInput rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
                           placeholder="Report Name"
                         />
                         <div className="absolute right-5 w-0.78 h-0.75  z-40">
@@ -311,7 +311,7 @@ const Members: React.FC = () => {
           </div>
         </div>
         <div className="ml-0.652">
-          <div className="export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex ml-0.63 cursor-pointer">
+          <div className="export w-6.98 rounded-0.6 shadow-shadowInput box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex ml-0.63 cursor-pointer">
             <h3 className="text-memberDay leading-1.12 font-Poppins font-semibold text-card">Export</h3>
             <img src={exportImage} alt="" />
           </div>
