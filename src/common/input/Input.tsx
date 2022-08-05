@@ -18,7 +18,7 @@ const Input = ({
 }: // ...rest
 Props) => (
   <Fragment>
-    <div className="flex flex-col relative pb-2">
+    <div className="flex flex-col relative">
       <input
         id={id}
         type={type}

@@ -4,10 +4,15 @@
 @tailwind utilities;
 
 input {
-  border: 2px solid #eff0f7;
+  border: 1px solid #eff0f7;
   box-shadow: 8px 8px 24px rgba(2, 2, 70, 0.05);
 }
-
+.layout-screen {
+  height: calc(100vh - 6rem);
+}
+.subcribe-box {
+  bottom: 5rem;
+}
 .btn-gradient {
   background: linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
   box-shadow: 0px 3.63636px 27.2727px rgba(0, 0, 0, 0.1);
@@ -185,4 +190,24 @@ input {
   border-bottom: 2px solid transparent;
   border-image: linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
   border-image-slice: 1;
+}
+.fixTableHead {
+  height: calc(100vh - 36rem);
+}
+.fixActivityTableHead {
+  height: calc(100vh - 19rem);
+}
+.fixReportTableHead {
+  height: calc(100vh - 20rem);
+}
+.fixBillingTableHead {
+  height: calc(100vh - 28rem);
+}
+
+.fixTagsTableHead {
+  height: calc(100vh - 32rem);
+}
+
+.widgetDrawerGradient {
+  background: linear-gradient(180deg, #f9c837 0%, #ee9834 100%);
 }
