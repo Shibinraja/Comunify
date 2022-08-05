@@ -32,10 +32,10 @@ const Dashboard: React.FC = () => {
 
   return (
     <>
-      <div className="container mx-auto flex justify-between">
+      <div className=" flex justify-between mt-10">
         <div className="flex relative">
           <div
-            className="flex items-center justify-between px-5 w-11.72 h-3.06 app-input-card-border rounded-0.6 shadow-integrationCardShadow cursor-pointer "
+            className="flex items-center justify-between px-5 w-11.72 h-3.06 app-input-card-border rounded-0.6 shadow-shadowInput cursor-pointer "
             ref={dropDownRef}
             onClick={handleDropDownActive}
           >
@@ -45,10 +45,7 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
           {isSelectDropDownActive && (
-            <div
-              className="absolute top-12 w-11.72 app-input-card-border bg-white shadow-integrationCardShadow rounded-0.6"
-              onClick={handleDropDownActive}
-            >
+            <div className="absolute top-12 w-11.72 app-input-card-border bg-white shadow-shadowInput rounded-0.6" onClick={handleDropDownActive}>
               {selectOptions.map((options: string, index: number) => (
                 <div key={index} className="flex flex-col p-2 hover:bg-signUpDomain transition ease-in duration-300 cursor-pointer">
                   <div className="text-searchBlack font-Poppins font-normal text-trial leading-1.31" onClick={() => setSelected(options)}>
@@ -69,7 +66,7 @@ const Dashboard: React.FC = () => {
       <div className="flex flex-col mt-1.8">
         <QuickInfo />
       </div>
-      <div className=" flex flex-row mt-2.47 container mx-auto">
+      <div className=" flex flex-row mt-2.47 mb-4">
         <div className=" flex flex-col w-full">
           <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 mt-1.258">Activities</h3>
           <ActivitiesTab />

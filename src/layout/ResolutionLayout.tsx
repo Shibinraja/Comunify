@@ -10,11 +10,13 @@ const ResolutionLayout: React.FC = () => (
           <img src={resolutionBg} alt="" />
         </div>
       </div>
-      <div className="mt-9 font-Poppins text-resolution text-xs md:text-signIn leading-3 md:leading-10 font-bold text-center w-full">Current Resolution Not Supported!</div>
-      <div className="pt-4 font-Poppins font-medium text-xs md:text-resolutionDescription  text-resolution max-w-[43rem] text-center">
-      The current window is too small to properly display the page.Please reload the page in a larger window/screen
+      <div className="mt-9 font-Poppins text-resolution text-xs md:text-signIn leading-3 md:leading-10 font-bold text-center w-full">
+        Current Resolution Not Supported!
       </div>
-    </div >
+      <div className="pt-4 font-Poppins font-medium text-xs md:text-resolutionDescription  text-resolution max-w-[43rem] text-center">
+        The current window is too small to properly display the page.Please reload the page in a larger window/screen
+      </div>
+    </div>
   </div>
 );
 
