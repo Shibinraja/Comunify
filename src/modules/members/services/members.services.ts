@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { GeneratorResponse } from '@/lib/api';
 import { members_module } from '@/lib/config';
 import { request } from '@/lib/request';
@@ -24,8 +25,8 @@ export function* InactiveCountService(): GeneratorResponse<MembersCountResponse>
   return data;
 }
 
-export function* MembersListService(query: GetMembersListQueryParams): GeneratorResponse<MembersListResponse> {
-  const { data } = yield request.get(`/v1/members?page=${query.page}&limit=${query.limit}`);
+export function* MembersListService(query: Required<GetMembersListQueryParams>): GeneratorResponse<MembersListResponse> {
+  const { data } = yield request.get(`/v1/members?page=${query.page}&limit=${query.limit}${query.search ?`&search=${query.search}` : ''}${query.tags ?`&tags=${query.tags}` : ''}${query.platforms ?`&platforms=${query.platforms}` : ''}${query.organization ?`&organization=${query.organization}` : ''}${query['lastActivity.gte'] ?`&lastActivity.gte=${query['lastActivity.gte']}` : ''}${query['lastActivity.lte'] ?`&lastActivity.lte=${query['lastActivity.lte']}` : ''}${query['createdAT.lte'] ?`&createdAT.lte=${query['createdAT.lte']}` : ''}`);
   return data;
 }
 

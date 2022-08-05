@@ -1,28 +1,26 @@
+/* eslint-disable no-console */
 /* eslint-disable no-unused-vars */
-import React, { Fragment, useEffect, useMemo, useState } from 'react';
-import MembersCard from 'common/membersCard/membersCard';
-import Modal from 'react-modal';
-import './Members.css';
-import editIcon from '../../../assets/images/edit.svg';
 import Button from 'common/button';
-import searchIcon from '../../../assets/images/search.svg';
-import calandarIcon from '../../../assets/images/calandar.svg';
+import MembersCard from 'common/membersCard/membersCard';
+import Pagination from 'common/pagination/pagination';
+import React, { ChangeEvent, Fragment, useEffect, useMemo, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import exportImage from '../../../assets/images/export.svg';
-import downArrow from '../../../assets/images/sub-down-arrow.svg';
-import dropdownIcon from '../../../assets/images/Vector.svg';
-import closeIcon from '../../../assets/images/tag-close.svg';
-import nextIcon from '../../../assets/images/next-page-icon.svg';
-import prevIcon from '../../../assets/images/previous-page-icon.svg';
+import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
-import Input from 'common/input';
-// import { membersTableData } from './MembersTableData';
-import MembersDraggableColumn from './membersTableColumn/membersDraggableColumn';
+import calendarIcon from '../../../assets/images/calandar.svg';
+import editIcon from '../../../assets/images/edit.svg';
+import exportImage from '../../../assets/images/export.svg';
+import searchIcon from '../../../assets/images/search.svg';
+import closeIcon from '../../../assets/images/tag-close.svg';
+import './Members.css';
+import useDebounce from '@/hooks/useDebounce';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
-import  membersSlice from '../store/slice/members.slice';
-import { format, parseISO } from 'date-fns';
 import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
+import { format, parseISO, subDays, subMonths } from 'date-fns';
+import membersSlice from '../store/slice/members.slice';
+import MembersFilter from './MembersFilter';
+import MembersDraggableColumn from './membersTableColumn/membersDraggableColumn';
 import { ColumNames } from './MembersTableData';
 
 Modal.setAppElement('#root');
@@ -31,33 +29,27 @@ const Members: React.FC = () => {
   const navigate = useNavigate();
   const [isModalOpen, setisModalOpen] = useState<boolean>(false);
   const [toDate, setToDate] = useState<Date>();
-  const [isFilterDropdownActive, setisFilterDropdownActive] = useState<boolean>(false);
-  const [isPlatformActive, setPlatformActive] = useState<boolean>(true);
-  const [isTagActive, setTagActive] = useState<boolean>(false);
-  const [isLocationActive, setLocationActive] = useState<boolean>(false);
-  const [isOrganizationActive, setOrganizationActive] = useState<boolean>(false);
   const [columns, setColumns] = useState<Array<ColumnNameProps>>(ColumNames);
   const [customizedColumnBool, saveCustomizedColumn] = useState<boolean>(false);
+  const [page, setpage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(10);
+  const [searchText, setSearchText] = useState<string>('');
 
   const dispatch = useAppDispatch();
   const customizedColumnData = useAppSelector((state) => state.members.customizedColumn);
+
+  const debouncedValue = useDebounce(searchText, 300);
 
   const { data, totalPages, previousPage, nextPage } = useAppSelector((state) => state.members.membersListData);
 
   useEffect(() => {
     dispatch(
       membersSlice.actions.membersList({
-        page: 1,
-        limit: 10,
-        search: '',
-        tags: '',
-        platforms: '',
-        organization: '',
-        lastActivity: '',
-        createdAT: ''
+        page,
+        limit
       })
     );
-  }, []);
+  }, [page]);
 
   //Set new column change if the initial order changes.
   useEffect(() => {
@@ -66,28 +58,27 @@ const Members: React.FC = () => {
     }
   }, [customizedColumnData]);
 
+  // Returns the debounced value of the search text.
+  useEffect(() => {
+    if (debouncedValue) {
+      getFilteredMembersList(debouncedValue);
+    }
+  }, [debouncedValue]);
+
+  // Function to dispatch the search text to hit api of member list.
+  const getFilteredMembersList = (text: string, date?: string) => {
+    dispatch(
+      membersSlice.actions.membersList({
+        page,
+        limit,
+        search: text,
+        'createdAT.lte': date
+      })
+    );
+  };
+
   const handleCustomizeColumnSave = () => {
     saveCustomizedColumn(!customizedColumnBool);
-  };
-
-  const handleFilterDropdown = (val: boolean): void => {
-    setisFilterDropdownActive(val);
-  };
-
-  const handlePlatformActive = (val: boolean) => {
-    setPlatformActive(val);
-  };
-
-  const handleLocationActive = (val: boolean) => {
-    setLocationActive(val);
-  };
-
-  const handleTagActive = (val: boolean) => {
-    setTagActive(val);
-  };
-
-  const handleOrganizationActive = (val: boolean) => {
-    setOrganizationActive(val);
   };
 
   const handleModalClose = (): void => {
@@ -97,6 +88,32 @@ const Members: React.FC = () => {
 
   const navigateToProfile = () => {
     navigate('/members/profile');
+  };
+
+  // Function to convert the day and subtract based on no of days/ months.
+  const selectCustomDate = (date: string, customDate?:Date) => {
+    const todayDate = new Date();
+    if (date === '1day') {
+      getFilteredMembersList('', format(subDays(todayDate, 1), 'yyyy-MM-dd'));
+    }
+    if (date === '7day') {
+      getFilteredMembersList('', format(subDays(todayDate, 7), 'yyyy-MM-dd'));
+    }
+    if (date === '1month') {
+      getFilteredMembersList('', format(subMonths(todayDate, 1), 'yyyy-MM-dd'));
+    }
+    if(customDate) {
+      setToDate(customDate);
+      getFilteredMembersList('', format(customDate, 'yyyy-MM-dd'));
+    }
+  };
+
+  const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const searchText: string = event.target.value;
+    if (searchText === '') {
+      getFilteredMembersList(searchText);
+    }
+    setSearchText(searchText);
   };
 
   // Function to map customized column with api data response to create a new column array with index matching with customized column.
@@ -122,6 +139,8 @@ const Members: React.FC = () => {
     [customizedColumnBool]
   );
 
+  const MemberFilter = useMemo(() => <MembersFilter page={page} limit={limit} />, []);
+
   return (
     <div className="container flex flex-col mx-auto">
       <h3 className="font-Poppins font-semibold text-infoBlack text-infoData leading-9">Members</h3>
@@ -131,248 +150,42 @@ const Members: React.FC = () => {
             type="text"
             className="focus:outline-none px-3 box-border w-19.06 h-3.06  rounded-0.6 shadow-profileCard placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray"
             placeholder="Search By Name or Email"
+            onChange={handleSearchTextChange}
           />
           <div className="absolute right-5 w-0.78 h-0.75 ">
             <img src={searchIcon} alt="" />
           </div>
         </div>
-        <div className="day w-full h-3.06 flex items-center justify-center ml-3.19 box-border rounded-0.6 app-input-card-border shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">
+        <div
+          className="day w-full h-3.06 flex items-center justify-center ml-3.19 box-border rounded-0.6 app-input-card-border shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer"
+          onClick={() => selectCustomDate('1day')}
+        >
           1D
         </div>
-        <div className="day w-full h-3.06 flex items-center justify-center ml-0.653 box-border rounded-0.6 app-input-card-border shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">
+        <div
+          className="day w-full h-3.06 flex items-center justify-center ml-0.653 box-border rounded-0.6 app-input-card-border shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer"
+          onClick={() => selectCustomDate('7day')}
+        >
           7D
         </div>
-        <div className="day w-full h-3.06 flex items-center justify-center ml-0.653 box-border rounded-0.6 app-input-card-border shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">
+        <div
+          className="day w-full h-3.06 flex items-center justify-center ml-0.653 box-border rounded-0.6 app-input-card-border shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer"
+          onClick={() => selectCustomDate('1month')}
+        >
           1M
         </div>
 
         <div className="relative flex items-center  ml-0.653 ">
           <DatePicker
             selected={toDate}
-            onChange={(date: Date) => setToDate(date)}
+            onChange={(date: Date) => selectCustomDate('', date)}
             className="export w-9.92 h-3.06  shadow-contactCard rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
             placeholderText="Custom Date"
           />
-          <img className="absolute icon-holder left-32 cursor-pointer" src={calandarIcon} alt="" />
+          <img className="absolute icon-holder left-32 cursor-pointer" src={calendarIcon} alt="" />
         </div>
 
-        <div className="ml-1.30 w-full">
-          <div className="box-border cursor-pointer rounded-0.6 shadow-contactCard app-input-card-border relative ">
-            <div
-              className="flex h-3.06  items-center justify-between px-5 "
-              onClick={() => handleFilterDropdown(isFilterDropdownActive ? false : true)}
-            >
-              <div className="box-border rounded-0.6 shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">
-                Filters
-              </div>
-              <div>
-                <img src={dropdownIcon} alt="" className={isFilterDropdownActive ? 'rotate-180' : 'rotate-0'} />
-              </div>
-            </div>
-            {isFilterDropdownActive && (
-              <div className="absolute w-16.56 pb-0 bg-white border z-40 rounded-0.3" onClick={() => handleFilterDropdown(true)}>
-                <div className="flex flex-col pb-5">
-                  <div
-                    className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06  px-3 mx-auto  cursor-pointer"
-                    onClick={() => {
-                      handlePlatformActive(isPlatformActive ? false : true);
-                      handleTagActive(false);
-                      handleLocationActive(false);
-                      handleOrganizationActive(false);
-                    }}
-                  >
-                    <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">Platform</div>
-                    <div>
-                      <img src={downArrow} alt="" className={isPlatformActive ? 'rotate-0' : 'rotate-180'} />
-                    </div>
-                  </div>
-                  {isPlatformActive && (
-                    <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125 pb-3">
-                      <div className="flex items-center">
-                        <div className="mr-2">
-                          <input type="checkbox" className="checkbox" />
-                        </div>
-                        <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Slack</div>
-                      </div>
-                      <div className="flex items-center">
-                        <div className="mr-2">
-                          <input type="checkbox" className="checkbox" />
-                        </div>
-                        <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Higher Logic</div>
-                      </div>
-                      <div className="flex items-center">
-                        <div className="mr-2">
-                          <input type="checkbox" className="checkbox" />
-                        </div>
-                        <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Vanilla Forums</div>
-                      </div>
-                    </div>
-                  )}
-
-                  <div
-                    className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06 px-3 mx-auto  cursor-pointer"
-                    onClick={() => {
-                      handleTagActive(isTagActive ? false : true);
-                      handlePlatformActive(false);
-                      handleLocationActive(false);
-                      handleOrganizationActive(false);
-                    }}
-                  >
-                    <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">Tags</div>
-                    <div>
-                      <img src={downArrow} alt="" className={isTagActive ? 'rotate-0' : 'rotate-180'} />
-                    </div>
-                  </div>
-                  {isTagActive && (
-                    <div>
-                      <div className="flex relative items-center pt-2 pb-3">
-                        <input
-                          type="text"
-                          name="search"
-                          id="searchId"
-                          className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-profileCard rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
-                          placeholder="Search Tags"
-                        />
-                        <div className="absolute right-5 w-0.78 h-0.75  z-40">
-                          <img src={searchIcon} alt="" />
-                        </div>
-                      </div>
-                      <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
-                        <div className="flex items-center">
-                          <div className="mr-2">
-                            <input type="checkbox" className="checkbox" />
-                          </div>
-                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Admin</div>
-                        </div>
-                        <div className="flex items-center">
-                          <div className="mr-2">
-                            <input type="checkbox" className="checkbox" />
-                          </div>
-                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Influencer</div>
-                        </div>
-                        <div className="flex items-center">
-                          <div className="mr-2">
-                            <input type="checkbox" className="checkbox" />
-                          </div>
-                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Influencer</div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  <div
-                    className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06 px-3 mx-auto  cursor-pointer"
-                    onClick={() => {
-                      handleLocationActive(isLocationActive ? false : true);
-                      handleTagActive(false);
-                      handlePlatformActive(false);
-                      handleOrganizationActive(false);
-                    }}
-                  >
-                    <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">Location</div>
-                    <div>
-                      <img src={downArrow} alt="" className={isLocationActive ? 'rotate-0' : 'rotate-180'} />
-                    </div>
-                  </div>
-                  {isLocationActive && (
-                    <div>
-                      <div className="flex relative items-center pt-2 pb-3">
-                        <input
-                          type="text"
-                          name="reportName"
-                          id="reportName"
-                          className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-profileCard rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
-                          placeholder="Report Name"
-                        />
-                        <div className="absolute right-5 w-0.78 h-0.75  z-40">
-                          <img src={searchIcon} alt="" />
-                        </div>
-                      </div>
-                      <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125 bg-white">
-                        <div className="flex items-center">
-                          <div className="mr-2">
-                            <input type="checkbox" className="checkbox" />
-                          </div>
-                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Texas</div>
-                        </div>
-                        <div className="flex items-center">
-                          <div className="mr-2">
-                            <input type="checkbox" className="checkbox" />
-                          </div>
-                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">London</div>
-                        </div>
-                        <div className="flex items-center">
-                          <div className="mr-2">
-                            <input type="checkbox" className="checkbox" />
-                          </div>
-                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Texas</div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  <div
-                    className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06  px-3 mx-auto  cursor-pointer"
-                    onClick={() => {
-                      handleOrganizationActive(isOrganizationActive ? false : true);
-                      handleTagActive(false);
-                      handlePlatformActive(false);
-                      handleLocationActive(false);
-                    }}
-                  >
-                    <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">Organization</div>
-                    <div>
-                      <img src={downArrow} alt="" className={isOrganizationActive ? 'rotate-0' : 'rotate-180'} />
-                    </div>
-                  </div>
-                  {isOrganizationActive && (
-                    <div>
-                      <div className="flex relative items-center pt-2 pb-3 ">
-                        <input
-                          type="text"
-                          name="report"
-                          id="reportId"
-                          className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-profileCard rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
-                          placeholder="Report Name"
-                        />
-                        <div className="absolute right-5 w-0.78 h-0.75  z-40">
-                          <img src={searchIcon} alt="" />
-                        </div>
-                      </div>
-                      <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125 bg-white">
-                        <div className="flex items-center">
-                          <div className="mr-2">
-                            <input type="checkbox" className="checkbox" />
-                          </div>
-                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Microsoft</div>
-                        </div>
-                        <div className="flex items-center">
-                          <div className="mr-2">
-                            <input type="checkbox" className="checkbox" />
-                          </div>
-                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Hp</div>
-                        </div>
-                        <div className="flex items-center">
-                          <div className="mr-2">
-                            <input type="checkbox" className="checkbox" />
-                          </div>
-                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Lenovo</div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  <div className="buttons px-2">
-                    <Button
-                      type="button"
-                      text="Apply"
-                      className="border-none btn-save-modal rounded-0.31 h-2.063 w-full mt-1.56 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white transition ease-in duration-300 hover:shadow-buttonShadowHover"
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+        <div className="ml-1.30 w-full">{MemberFilter}</div>
         <div className="ml-0.652">
           <div className="export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex ml-0.63 cursor-pointer">
             <h3 className="text-memberDay leading-1.12 font-Poppins font-semibold text-card">Export</h3>
@@ -463,22 +276,7 @@ const Members: React.FC = () => {
               </tbody>
             </table>
             <div className="px-6 py-6 flex items-center gap-0.66 pl-[30%] w-full rounded-b-lg fixed bg-white bottom-0">
-              <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
-                <img src={prevIcon} alt="" />
-              </div>
-              <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">1</div>
-              <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">2</div>
-              <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">3</div>
-              <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">4</div>
-              <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">...</div>
-              <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">10</div>
-              <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
-                <img src={nextIcon} alt="" />
-              </div>
-              <div className="font-Lato font-normal text-pageNumber leading-4 text-pagination cursor-pointer">Go to page:</div>
-              <div>
-                <Input name="pagination" id="page" type="text" className="page-input focus:outline-none px-0.5 rounded box-border w-1.47 h-1.51" />
-              </div>
+              <Pagination currentPage={page} totalPages={totalPages} limit={limit} onPageChange={(page) => setpage(Number(page))} />
             </div>
             <div className="fixed bottom-10 right-32">
               <div

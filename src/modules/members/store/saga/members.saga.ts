@@ -77,7 +77,7 @@ function* membersInActiveCount() {
   }
 }
 
-function* membersList(action: PayloadAction<GetMembersListQueryParams>) {
+function* membersList(action: PayloadAction<Required<GetMembersListQueryParams>>) {
   try {
     yield put(loaderSlice.actions.startLoadingAction());
 

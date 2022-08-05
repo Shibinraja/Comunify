@@ -58,7 +58,8 @@ module.exports = {
         trialButton: '#9CC986;',
         outerCirlceLoader: '#68B4E5',
         innerCircleLoader: '#ED9333',
-        backdropColor: 'rgba(0, 0, 0, 0.5)'
+        backdropColor: 'rgba(0, 0, 0, 0.5)',
+        widgetSearch: '#ACACAC'
       },
       margin: {
         2.6: '43px',

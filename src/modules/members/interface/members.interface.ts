@@ -3,12 +3,13 @@
 export type GetMembersListQueryParams = {
   page: number;
   limit: number;
-  search: string;
-  tags: string;
-  platforms: string;
-  organization: string;
-  lastActivity: string;
-  createdAT: string;
+  search?: string;
+  tags?: string;
+  platforms?: string;
+  organization?: string;
+  'lastActivity.lte'?: string;
+  'lastActivity.gte'?: string;
+  'createdAT.lte'?: string;
 };
 
 // Response Body
@@ -20,29 +21,29 @@ export type MembersCountResponse = {
 };
 
 export type MembersListData = {
-  id: string,
-  name: string,
-  userName: string,
-  comunifyUserId: string,
-  lastActivity: string,
-  email: string,
-  organization: string,
-  profileUrl: string,
-  workspaceId: string,
-  createdAt: string,
-  updatedAt: string,
-  location?:string
+  id: string;
+  name: string;
+  userName: string;
+  comunifyUserId: string;
+  lastActivity: string;
+  email: string;
+  organization: string;
+  profileUrl: string;
+  workspaceId: string;
+  createdAt: string;
+  updatedAt: string;
+  location?: string;
   tags: {
-      tag: {
-        name: string
-      }
-  }[],
-  platforms: {
-      platform: {
-        name: string
-      }
+    tag: {
+      name: string;
+    };
   }[];
-}
+  platforms: {
+    platform: {
+      name: string;
+    };
+  }[];
+};
 
 export type MembersListResponse = {
   data: Array<MembersListData>;
@@ -53,5 +54,5 @@ export type MembersListResponse = {
 
 export interface DraggableComponentsProps {
   MembersColumn: boolean;
-  handleModalClose:()=> void;
+  handleModalClose: () => void;
 }
