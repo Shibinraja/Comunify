@@ -30,7 +30,6 @@ export interface PlatformsData {
 }
 
 export interface VerifyPlatform {
-  memberId: VerifyMembers;
+  memberId: string;
   platformId: string;
-  name: string;
 }

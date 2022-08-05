@@ -26,16 +26,6 @@ const membersGraphResponse = {
   xAxis: []
 };
 
-const platformsDataResponse = [
-  {
-    id: '',
-    name: '',
-    status: undefined,
-    createdAt: undefined,
-    updatedAt: undefined
-  }
-];
-
 const initialState: InitialState = {
   membersTotalCountData: countResponse,
   membersNewCountData: countResponse,

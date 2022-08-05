@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { call, put, takeEvery } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
 // import history from '@/lib/history';
@@ -10,9 +9,16 @@ import {
   InactiveCountService,
   PlatformsDataService,
   MembersActivityGraphService,
-  TotalCountService
+  TotalCountService,
+  GetMembersActivityGraphDataPerPlatformService
 } from 'modules/members/services/members.services';
-import { PlatformsData, MembersCountResponse, MembersProfileActivityGraphData, VerifyMembers } from 'modules/members/interface/members.interface';
+import {
+  PlatformsData,
+  MembersCountResponse,
+  MembersProfileActivityGraphData,
+  VerifyMembers,
+  VerifyPlatform
+} from 'modules/members/interface/members.interface';
 import { PayloadAction } from '@reduxjs/toolkit';
 
 // const forwardTo = (location: string) => {
@@ -90,7 +96,9 @@ function* membersActivityGraphSaga(action: PayloadAction<VerifyMembers>) {
     yield put(membersSlice.actions.setMembersActivityGraphData(res?.data));
   } catch (e) {
     const error = e as AxiosError<unknown>;
-    showErrorToast(error?.response?.data?.message);
+    if (error?.response?.data?.message) {
+      showErrorToast('Failed to load graph data');
+    }
   } finally {
     yield put(loaderSlice.actions.stopLoadingAction());
   }
@@ -98,14 +106,30 @@ function* membersActivityGraphSaga(action: PayloadAction<VerifyMembers>) {
 
 function* getPlatformsDataSaga() {
   try {
+    yield put(loaderSlice.actions.startLoadingAction());
     const res: SuccessResponse<PlatformsData[]> = yield call(PlatformsDataService);
     yield put(membersSlice.actions.setPlatformsData({ platformsData: res?.data }));
-  } catch (error) {
-    console.log(error);
+  } catch (e) {
+    const error = e as AxiosError<unknown>;
+    throw error.response?.data?.message;
+  } finally {
+    yield put(loaderSlice.actions.stopLoadingAction());
   }
 }
 
-// function* getMembersActivityGraphDataPerPlatformSaga(action: PayloadAction<VerifyPlatform>) {}
+function* getMembersActivityGraphDataPerPlatformSaga(action: PayloadAction<VerifyPlatform>) {
+  try {
+    const res: SuccessResponse<MembersProfileActivityGraphData> = yield call(GetMembersActivityGraphDataPerPlatformService, action.payload);
+    yield put(membersSlice.actions.setMembersActivityGraphData(res?.data));
+  } catch (e) {
+    const error = e as AxiosError<unknown>;
+    if (error?.response?.data?.message) {
+      showErrorToast('Failed to load graph data');
+    }
+  } finally {
+    yield put(loaderSlice.actions.stopLoadingAction());
+  }
+}
 
 export default function* membersSaga(): SagaIterator {
   yield takeEvery(membersSlice.actions.membersTotalCount.type, membersTotalCount);
@@ -114,5 +138,5 @@ export default function* membersSaga(): SagaIterator {
   yield takeEvery(membersSlice.actions.membersInActiveCount.type, membersInActiveCount);
   yield takeEvery(membersSlice.actions.getMembersActivityGraphData.type, membersActivityGraphSaga);
   yield takeEvery(membersSlice.actions.platformData.type, getPlatformsDataSaga);
-  //   yield takeEvery(membersSlice.actions.getMembersActivityGraphDataPerPlatform.type, getMembersActivityGraphDataPerPlatformSaga);
+  yield takeEvery(membersSlice.actions.getMembersActivityGraphDataPerPlatform.type, getMembersActivityGraphDataPerPlatformSaga);
 }

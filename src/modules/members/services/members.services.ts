@@ -1,8 +1,7 @@
-/* eslint-disable no-console */
 import { GeneratorResponse } from '@/lib/api';
 import { members_module, platforms_module } from '@/lib/config';
 import { request } from '@/lib/request';
-import { MembersCountResponse, MembersProfileActivityGraphData, PlatformsData } from '../interface/members.interface';
+import { MembersCountResponse, MembersProfileActivityGraphData, PlatformsData, VerifyPlatform } from '../interface/members.interface';
 
 //Members Module
 export function* ActiveCountService(): GeneratorResponse<MembersCountResponse> {
@@ -35,10 +34,7 @@ export function* PlatformsDataService(): GeneratorResponse<PlatformsData[]> {
   return data;
 }
 
-export function* GetMembersActivityGraphDataPerPlatformService(
-  memberId: string,
-  platformId: string
-): GeneratorResponse<MembersProfileActivityGraphData> {
-  const { data } = yield request.get(`${members_module}/${memberId}/activitygraph?platforms=${platformId}`);
+export function* GetMembersActivityGraphDataPerPlatformService(params: VerifyPlatform): GeneratorResponse<MembersProfileActivityGraphData> {
+  const { data } = yield request.get(`${members_module}/${params.memberId}/activitygraph?platforms=${params.platformId}`);
   return data;
 }

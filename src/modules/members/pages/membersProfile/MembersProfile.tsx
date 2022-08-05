@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { useEffect, useRef, useState } from 'react';
 import profileImage from '../../../../assets/images/profile-member.svg';
 import dropDownIcon from '../../../../assets/images/profile-dropdown.svg';
@@ -35,7 +34,6 @@ const MembersProfile: React.FC = () => {
 
   const handleDropDownActive = (): void => {
     setSelectDropDownActive((prev) => !prev);
-    console.log('set');
   };
 
   const navigateToReviewMerge = () => {
@@ -68,12 +66,10 @@ const MembersProfile: React.FC = () => {
 
   const selectPlatformToDisplayOnGraph = (id: string, name: string) => {
     setSelected(name);
-    switch (name) {
-      case 'Slack':
-        break;
-
-      default:
-        break;
+    if (name.trim() !== 'All') {
+      dispatch(membersSlice.actions.getMembersActivityGraphDataPerPlatform({ memberId: 'e2612c51-a300-4c5e-8afe-a6585d24f7fc', platformId: id }));
+    } else {
+      dispatch(membersSlice.actions.getMembersActivityGraphData({ memberId: 'e2612c51-a300-4c5e-8afe-a6585d24f7fc' }));
     }
   };
 
@@ -85,7 +81,7 @@ const MembersProfile: React.FC = () => {
             <div className="font-Poppins font-semibold text-base leading-9 text-accountBlack">Member Activity by Source</div>
             <div className="select relative">
               <div
-                className="flex justify-around items-center cursor-pointer box-border w-9.59 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border"
+                className="flex justify-around items-center cursor-pointer box-border w-9.59 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border "
                 ref={dropDownRef}
                 onClick={handleDropDownActive}
               >
@@ -99,7 +95,10 @@ const MembersProfile: React.FC = () => {
                   className="absolute flex flex-col text-left px-5 pt-2  cursor-pointer box-border w-full bg-white z-40 rounded-0.6 shadow-contactCard pb-2 app-input-card-border"
                   onClick={handleDropDownActive}
                 >
-                  <div className='className="rounded-0.3 h-1.93 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack hover:bg-signUpDomain transition ease-in duration-100"'>
+                  <div
+                    className='className="rounded-0.3 h-1.93 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack hover:bg-signUpDomain transition ease-in duration-100'
+                    onClick={() => selectPlatformToDisplayOnGraph('', 'All')}
+                  >
                     All
                   </div>
                   {platformData?.map((data: PlatformsData) => (
