@@ -24,7 +24,7 @@ const MainLayout: React.FC = () => {
           </div>
           <div className="w-3/4 xl:w-4/5">
             <TopBar />
-            <div className="px-12 xl:px-20  overflow-y-auto layout-screen">
+            <div className="px-12 xl:px-20  overflow-y-auto layout-screen bg-background-pattern bg-right-top bg-no-repeat">
               <Outlet />
             </div>
           </div>
