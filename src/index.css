@@ -208,6 +208,11 @@ input {
   height: calc(100vh - 32rem);
 }
 
-.widgetDrawerGradient {
-  background: linear-gradient(180deg, #f9c837 0%, #ee9834 100%);
+.report-border{
+  border-top: 1px solid #E6E6E6;
+}
+
+.widgetDrawerGradient{
+  background: linear-gradient(180deg, #F9C837 0%, #EE9834 100%);
+
 }
