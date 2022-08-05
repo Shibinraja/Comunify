@@ -1,10 +1,13 @@
-import { buildStyles, CircularProgressbar, CircularProgressbarWithChildren } from 'react-circular-progressbar';
+import { buildStyles, CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import healthUpArrowIcon from '../../assets/images/health-bar-up.svg';
 import healthDownArrowIcon from '../../assets/images/health-bar-down.svg';
 import ProgressProvider from './progressProvider';
+
 const HealthCard = () => {
     const percentage = 66;
+    const gradientTransform = `rotate(90)`;
+
     return (
         <div className="heathCard">
             <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18">Health</h3>
@@ -32,13 +35,21 @@ const HealthCard = () => {
                 </div>
                 <div className="flex items-center">
                     <div className="w-[49.87px]">
+                        <svg style={{ height: 0 }}>
+                            <defs>
+                                <linearGradient id={'hai'} gradientTransform={gradientTransform}>
+                                    <stop offset="16.29%" stopColor={'#ED9333'} />
+                                    <stop offset="85.56%" stopColor={'#F9CB37'} />
+                                </linearGradient>
+                            </defs>
+                        </svg>
                         <ProgressProvider valueStart={0} valueEnd={percentage}>
                             {(value: number) => (
                                 <CircularProgressbarWithChildren
                                     value={value}
                                     strokeWidth={10}
                                     styles={buildStyles({
-                                        pathColor: '#ED9333',
+                                        pathColor: `url(#${'hai'})`,
                                     })}
                                 >
                                     <img src={healthDownArrowIcon} className="rotate-180" alt="" />
@@ -74,13 +85,21 @@ const HealthCard = () => {
                 </div>
                 <div className="flex items-center">
                     <div className="w-[71.08px]">
+                        <svg style={{ height: 0 }}>
+                            <defs>
+                                <linearGradient id={'hello'} gradientTransform={gradientTransform}>
+                                    <stop offset="16.29%" stopColor={'#AACF6F'} />
+                                    <stop offset="85.56%" stopColor={'#6CB7E0'} />
+                                </linearGradient>
+                            </defs>
+                        </svg>
                         <ProgressProvider valueStart={0} valueEnd={percentage}>
                             {(value: number) => (
                                 <CircularProgressbarWithChildren
                                     value={value}
                                     strokeWidth={10}
                                     styles={buildStyles({
-                                        pathColor: '#AACF6F',
+                                        pathColor: `url(#${'hello'})`,
                                     })}
                                 >
                                     <img src={healthUpArrowIcon} alt="" />
