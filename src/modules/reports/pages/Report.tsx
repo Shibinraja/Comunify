@@ -152,14 +152,16 @@ const Report: React.FC = () => {
                 <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky z-40">
                   <tr className="min-w-full">
                     <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray ">
-                    Report Name
+                      Report Name
                     </th>
                     <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Date</th>
                     <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Platforms</th>
                     <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
-                    Report Status
+                      Report Status
                     </th>
-                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray w-6.25">Actions</th>
+                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray w-6.25">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -187,7 +189,9 @@ const Report: React.FC = () => {
                       </td>
                       <td className="px-6 py-3">
                         <div className="flex ">
-                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.reportStatus}</div>
+                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                            {data.reportStatus}
+                          </div>
                         </div>
                       </td>
                       <td className="px-6 py-3">
@@ -218,7 +222,6 @@ const Report: React.FC = () => {
                   </tr>
                 </tbody>
               </table>
-
             </div>
           </div>
 

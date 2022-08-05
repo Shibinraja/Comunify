@@ -59,7 +59,7 @@ module.exports = {
         outerCirlceLoader: '#68B4E5',
         innerCircleLoader: '#ED9333',
         backdropColor: 'rgba(0, 0, 0, 0.5)',
-        widgetSearch:'#ACACAC;'
+        widgetSearch: '#ACACAC;'
       },
       margin: {
         2.6: '43px',
@@ -382,7 +382,7 @@ module.exports = {
         subscription: '0px 100px 80px rgba(110, 181, 217, 0.1);',
         dragButton: '0px 4.90909px 61.3636px rgba(0, 0, 0, 0.2)',
         paymentSubscriptionCard: '0px 100px 80px rgba(110, 181, 217, 0.05)',
-        shadowInput:'8px 8px 24px rgba(2,2,70,0.1)'
+        shadowInput: '8px 8px 24px rgba(2,2,70,0.1)'
       },
       maxHeight: {
         34: '47vh'

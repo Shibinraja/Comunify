@@ -45,10 +45,7 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
           {isSelectDropDownActive && (
-            <div
-              className="absolute top-12 w-11.72 app-input-card-border bg-white shadow-shadowInput rounded-0.6"
-              onClick={handleDropDownActive}
-            >
+            <div className="absolute top-12 w-11.72 app-input-card-border bg-white shadow-shadowInput rounded-0.6" onClick={handleDropDownActive}>
               {selectOptions.map((options: string, index: number) => (
                 <div key={index} className="flex flex-col p-2 hover:bg-signUpDomain transition ease-in duration-300 cursor-pointer">
                   <div className="text-searchBlack font-Poppins font-normal text-trial leading-1.31" onClick={() => setSelected(options)}>

@@ -154,7 +154,9 @@ const Activity: React.FC = () => {
                   <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Date & Time</th>
                   <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Summary</th>
                   <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Source</th>
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Activity Type</th>
+                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
+                    Activity Type
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -213,7 +215,7 @@ const Activity: React.FC = () => {
                 <div className="flex justify-between">
                   <div className="font-Inter font-semibold text-black text-xl leading-6">Activity</div>
                   <div className="font-Poppins text-error leading-5 text-tag font-medium cursor-pointer" onClick={() => handleTagModal(true)}>
-                  ADD TAG
+                    ADD TAG
                   </div>
                   <Modal
                     isOpen={isTagModalOpen}
@@ -225,7 +227,7 @@ const Activity: React.FC = () => {
                       <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Add Tag</h3>
                       <form className="flex flex-col relative px-1.93 mt-9">
                         <label htmlFor="billingName " className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack ">
-                        Tag Name
+                          Tag Name
                         </label>
                         <input
                           type="text"
@@ -267,7 +269,7 @@ const Activity: React.FC = () => {
                     <div className="pl-2.5 text-tagChannel font-Poppins font-medium text-card leading-1.12">#channel 1</div>
                   </div>
                   <div className="mt-5 font-Poppins font-medium text-infoBlack text-card leading-1.12">
-                  The journey of a thousand miles begins with one step.
+                    The journey of a thousand miles begins with one step.
                   </div>
                   <div className="mt-1.18 flex relative">
                     <div className="font-Poppins font-medium text-card leading-1.12 text-tag underline cursor-pointer">VIEW ON SLACK</div>
@@ -299,7 +301,6 @@ const Activity: React.FC = () => {
                 </div>
               </div>
             </Modal>
-
           </div>
         </div>
         <div className="px-6 py-6 flex items-center justify-center gap-0.66 w-full rounded-b-lg  bottom-0 bg-white">
