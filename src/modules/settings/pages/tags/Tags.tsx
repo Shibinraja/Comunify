@@ -49,7 +49,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                     <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Add Tag</h3>
                     <form className="flex flex-col relative px-1.93 mt-9">
                       <label htmlFor="billingName " className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack ">
-                      Tag Name
+                        Tag Name
                       </label>
                       <input
                         type="text"
@@ -81,13 +81,13 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                     <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
                       <tr className="min-w-full">
                         <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white  bg-tableHeaderGray">
-                        Tag Name
+                          Tag Name
                         </th>
                         <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white  bg-tableHeaderGray">
-                        Type
+                          Type
                         </th>
                         <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white  bg-tableHeaderGray">
-                        Action
+                          Action
                         </th>
                       </tr>
                     </thead>
@@ -96,7 +96,9 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                         <tr className="border" key={i}>
                           <td className="px-6 py-3">
                             <div className="flex ">
-                              <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.tagName}</div>
+                              <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                                {data.tagName}
+                              </div>
                             </div>
                           </td>
 
@@ -123,7 +125,6 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                       ))}
                     </tbody>
                   </table>
-
                 </div>
               </div>
             </div>

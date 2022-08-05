@@ -329,14 +329,14 @@ const Members: React.FC = () => {
                   <tr className="min-w-full">
                     <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray ">Name</th>
                     <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
-                    Platforms Connected
+                      Platforms Connected
                     </th>
                     <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Tags</th>
                     <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
-                    Last Activity
+                      Last Activity
                     </th>
                     <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
-                    Organization
+                      Organization
                     </th>
                     <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Location</th>
                     <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Email</th>
@@ -386,12 +386,16 @@ const Members: React.FC = () => {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex ">
-                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.lastActivity}</div>
+                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                            {data.lastActivity}
+                          </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex ">
-                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.organization}</div>
+                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                            {data.organization}
+                          </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">
@@ -411,7 +415,6 @@ const Members: React.FC = () => {
                   </tr>
                 </tbody>
               </table>
-
 
               <Modal
                 isOpen={isModalOpen}

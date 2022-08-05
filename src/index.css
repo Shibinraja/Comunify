@@ -204,10 +204,10 @@ input {
   height: calc(100vh - 28rem);
 }
 
-.fixTagsTableHead{
+.fixTagsTableHead {
   height: calc(100vh - 32rem);
 }
 
-.widgetDrawerGradient{
-  background: linear-gradient(180deg, #F9C837 0%, #EE9834 100%);
+.widgetDrawerGradient {
+  background: linear-gradient(180deg, #f9c837 0%, #ee9834 100%);
 }

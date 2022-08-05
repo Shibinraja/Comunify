@@ -45,7 +45,6 @@ const BillingHistory: React.FC<Props> = ({ hidden }) => (
                 ))}
               </tbody>
             </table>
-
           </div>
         </div>
       </div>
