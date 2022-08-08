@@ -91,7 +91,7 @@ const SideNav: React.FC = () => {
           </div>
           <div className="pl-0.66 font-Outfit font-bold text-dashboardLogo text-lightBlack leading-1.43">COMUNIFY</div>
         </div>
-        <div className="flex flex-col mt-5.8 menu-box">
+        <div className="flex flex-col mt-5.8 menu-box overflow-y-auto">
           <div className="flex items-center ">
             <div>
               <img src={active.dashboard || window.location.href.includes('/dashboard') ? dashboardDarkIcon : dashboardIcon} alt="" />
