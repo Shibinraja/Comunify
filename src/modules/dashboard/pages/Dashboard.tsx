@@ -4,6 +4,7 @@ import ActivitiesTab from '../activitiesTab/pages/ActivitiesTab';
 import MembersTab from '../membersTab/pages/MembersTab';
 import brickIcon from '../../../assets/images/brick.svg';
 import dropDownIcon from '../../../assets/images/profile-dropdown.svg';
+import HealthCard from 'common/healthCard/healthCard';
 
 const Dashboard: React.FC = () => {
   const [isSelectDropDownActive, setSelectDropDownActive] = useState<boolean>(false);
@@ -66,7 +67,10 @@ const Dashboard: React.FC = () => {
       <div className="flex flex-col mt-1.8">
         <QuickInfo />
       </div>
-      <div className=" flex flex-row mt-2.47 mb-4">
+      <div className="flex flex-col mt-1.8">
+        <HealthCard />
+      </div>
+      <div className=" flex flex-row mt-2.47 container mx-auto">
         <div className=" flex flex-col w-full">
           <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 mt-1.258">Activities</h3>
           <ActivitiesTab />
