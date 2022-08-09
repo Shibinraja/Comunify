@@ -315,10 +315,10 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
                 <div className="flex relative items-center pt-2 pb-3">
                   <input
                     type="text"
-                    name="reportName"
-                    id="reportName"
+                    name="locationName"
+                    id="locationName"
                     className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-profileCard rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
-                    placeholder="Report Name"
+                    placeholder="Search Location"
                   />
                   <div className="absolute right-5 w-0.78 h-0.75  z-40">
                     <img src={searchIcon} alt="" />
@@ -367,10 +367,10 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
                 <div className="flex relative items-center pt-2 pb-3 ">
                   <input
                     type="text"
-                    name="report"
-                    id="reportId"
+                    name="organization"
+                    id="orgaanizationId"
                     className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-profileCard rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
-                    placeholder="Report Name"
+                    placeholder="Search Organization"
                   />
                   <div className="absolute right-5 w-0.78 h-0.75  z-40">
                     <img src={searchIcon} alt="" />

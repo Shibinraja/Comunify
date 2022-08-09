@@ -1,10 +1,9 @@
+/* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 import Button from 'common/button';
 import MembersCard from 'common/membersCard/membersCard';
 import Pagination from 'common/pagination/pagination';
-import React, {
-  ChangeEvent, Fragment, Key, ReactNode, useEffect, useMemo, useState
-} from 'react';
+import React, { ChangeEvent, Fragment, Key, ReactNode, useEffect, useMemo, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Modal from 'react-modal';
@@ -23,6 +22,7 @@ import membersSlice from '../store/slice/members.slice';
 import MembersFilter from './MembersFilter';
 import MembersDraggableColumn from './membersTableColumn/membersDraggableColumn';
 import { ColumNames } from './MembersTableData';
+import { customDateLinkProps } from './membertypes';
 
 Modal.setAppElement('#root');
 
@@ -35,6 +35,11 @@ const Members: React.FC = () => {
   const [page, setpage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(10);
   const [searchText, setSearchText] = useState<string>('');
+  const [customDateLink, setCustomDateLink] = useState<Partial<customDateLinkProps>>({
+    '1day': false,
+    '7day': false,
+    '1month': false
+  });
 
   const dispatch = useAppDispatch();
   const customizedColumnData = useAppSelector((state) => state.members.customizedColumn);
@@ -50,6 +55,7 @@ const Members: React.FC = () => {
         limit
       })
     );
+    setCustomDateLink({ '1day': false, '7day': false, '1month': false });
   }, [page]);
 
   //Set new column change if the initial order changes.
@@ -96,16 +102,20 @@ const Members: React.FC = () => {
     const todayDate = new Date();
     if (date === '1day') {
       getFilteredMembersList('', format(subDays(todayDate, 1), 'yyyy-MM-dd'));
+      setCustomDateLink({ [date]: true });
     }
     if (date === '7day') {
       getFilteredMembersList('', format(subDays(todayDate, 7), 'yyyy-MM-dd'));
+      setCustomDateLink({ [date]: true });
     }
     if (date === '1month') {
       getFilteredMembersList('', format(subMonths(todayDate, 1), 'yyyy-MM-dd'));
+      setCustomDateLink({ [date]: true });
     }
     if (customDate) {
       setToDate(customDate);
       getFilteredMembersList('', format(customDate, 'yyyy-MM-dd'));
+      setCustomDateLink({ '1day': false, '7day': false, '1month': false });
     }
   };
 
@@ -119,21 +129,24 @@ const Members: React.FC = () => {
 
   // Function to map customized column with api data response to create a new column array with index matching with customized column.
   // eslint-disable-next-line max-len
-  const customizedColumn = data?.reduce((acc: Array<Record<string, unknown>>, currentValue: Record<string, unknown>): Array<Record<string, unknown>> => {
-    const accumulatedColumn: Record<string, unknown> = {};
-    const memberValue = { ...currentValue };
-    memberValue['location'] = 'India';
-    columns.forEach((column: ColumnNameProps) => {
-      // eslint-disable-next-line no-prototype-builtins
-      if (memberValue.hasOwnProperty(column.id)) {
-        if (column.isDisplayed) {
-          accumulatedColumn[column.id] = memberValue[column.id];
+  const customizedColumn = data?.reduce(
+    (acc: Array<Record<string, unknown>>, currentValue: Record<string, unknown>): Array<Record<string, unknown>> => {
+      const accumulatedColumn: Record<string, unknown> = {};
+      const memberValue = { ...currentValue };
+      memberValue['location'] = 'India';
+      columns.forEach((column: ColumnNameProps) => {
+        // eslint-disable-next-line no-prototype-builtins
+        if (memberValue.hasOwnProperty(column.id)) {
+          if (column.isDisplayed) {
+            accumulatedColumn[column.id] = memberValue[column.id];
+          }
         }
-      }
-    });
-    acc.push(accumulatedColumn);
-    return acc;
-  }, []);
+      });
+      acc.push(accumulatedColumn);
+      return acc;
+    },
+    []
+  );
 
   // Memoized functionality to stop re-renderization.
   const membersColumn = useMemo(
@@ -142,6 +155,9 @@ const Members: React.FC = () => {
   );
 
   const MemberFilter = useMemo(() => <MembersFilter page={page} limit={limit} />, []);
+
+  // eslint-disable-next-line no-console
+  console.log('err', customDateLink);
 
   return (
     <div className="container flex flex-col mx-auto">
@@ -159,19 +175,25 @@ const Members: React.FC = () => {
           </div>
         </div>
         <div
-          className="day w-full h-3.06 flex items-center justify-center ml-3.19 box-border rounded-0.6 app-input-card-border shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer"
+          className={`day w-full h-3.06 flex items-center justify-center ml-3.19 box-border rounded-0.6 ${
+            customDateLink['1day'] ? 'border-gradient-rounded' : 'app-input-card-border'
+          } shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
           onClick={() => selectCustomDate('1day')}
         >
           1D
         </div>
         <div
-          className="day w-full h-3.06 flex items-center justify-center ml-0.653 box-border rounded-0.6 app-input-card-border shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer"
+          className={`day w-full h-3.06 flex items-center justify-center ml-3.19 box-border rounded-0.6 ${
+            customDateLink['7day'] ? 'border-gradient-rounded' : 'app-input-card-border'
+          } shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
           onClick={() => selectCustomDate('7day')}
         >
           7D
         </div>
         <div
-          className="day w-full h-3.06 flex items-center justify-center ml-0.653 box-border rounded-0.6 app-input-card-border shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer"
+          className={`day w-full h-3.06 flex items-center justify-center ml-3.19 box-border rounded-0.6 ${
+            customDateLink['1month'] ? 'border-gradient-rounded' : 'app-input-card-border'
+          } shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
           onClick={() => selectCustomDate('1month')}
         >
           1M
@@ -253,7 +275,9 @@ const Members: React.FC = () => {
                                 </div>
                               ))}
                               <div className="font-Poppins font-semibold leading-5 text-tag text-card underline">
-                                {(member?.tags as Array<Record<string, unknown>>).length > 2 ? `${(member?.tags as Array<Record<string, unknown>>).length - 2} more` : ''}{' '}
+                                {(member?.tags as Array<Record<string, unknown>>).length > 2
+                                  ? `${(member?.tags as Array<Record<string, unknown>>).length - 2} more`
+                                  : ''}{' '}
                               </div>
                             </div>
                           </div>
