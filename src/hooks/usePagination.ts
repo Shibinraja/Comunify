@@ -4,7 +4,7 @@ export const usePagination = (props: { currentPage: number; totalPages: number; 
 
   const { totalPages, skipCount = 2, currentPage, limit } = props;
 
-  const DOTS='…';
+  const DOTS='...';
 
   const range = (start:number, end:number) => {
     const length = end - start + 1;
@@ -16,7 +16,6 @@ export const usePagination = (props: { currentPage: number; totalPages: number; 
   };
 
   const paginationRange = useMemo(() => {
-    // Our implementation logic will go here
 
     // Pages count is determined as siblingCount + firstPage + lastPage + currentPage + 2*DOTS
     const totalPageNumbers = skipCount + 5;
@@ -37,7 +36,7 @@ export const usePagination = (props: { currentPage: number; totalPages: number; 
       totalPages
     );
 
-    //We do not show dots just when there is just one page number to be inserted between the extremes of sibling and the page limits i.e 1 and totalPages. Hence we are using leftSiblingIndex > 2 and rightSiblingIndex < totalPages - 2
+    // We do not show dots just when there is just one page number to be inserted between the extremes of sibling and the page limits i.e 1 and totalPages. Hence we are using leftSiblingIndex > 2 and rightSiblingIndex < totalPages - 2
 
     const shouldShowLeftDots = leftSiblingIndex > 2;
     const shouldShowRightDots = rightSiblingIndex < totalPages - 2;
@@ -46,7 +45,7 @@ export const usePagination = (props: { currentPage: number; totalPages: number; 
     const lastPageIndex = totalPages;
 
 
-    //Case 2: No left dots to show, but rights dots to be shown
+    // Case 2: No left dots to show, but rights dots to be shown
 
     if (!shouldShowLeftDots && shouldShowRightDots) {
       const leftItemCount = 3 + 2 * skipCount;
@@ -56,7 +55,7 @@ export const usePagination = (props: { currentPage: number; totalPages: number; 
     }
 
 
-    //Case 3: No right dots to show, but left dots to be shown
+    // Case 3: No right dots to show, but left dots to be shown
 
     if (shouldShowLeftDots && !shouldShowRightDots) {
 
@@ -68,7 +67,7 @@ export const usePagination = (props: { currentPage: number; totalPages: number; 
       return [firstPageIndex, DOTS, ...rightRange];
     }
 
-    //Case 4: Both left and right dots to be shown
+    // Case 4: Both left and right dots to be shown
 
     if (shouldShowLeftDots && shouldShowRightDots) {
       const middleRange = range(leftSiblingIndex, rightSiblingIndex);

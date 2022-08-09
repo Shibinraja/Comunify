@@ -1,9 +1,10 @@
-/* eslint-disable no-console */
 /* eslint-disable no-unused-vars */
 import Button from 'common/button';
 import MembersCard from 'common/membersCard/membersCard';
 import Pagination from 'common/pagination/pagination';
-import React, { ChangeEvent, Fragment, useEffect, useMemo, useState } from 'react';
+import React, {
+  ChangeEvent, Fragment, Key, ReactNode, useEffect, useMemo, useState
+} from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Modal from 'react-modal';
@@ -91,7 +92,7 @@ const Members: React.FC = () => {
   };
 
   // Function to convert the day and subtract based on no of days/ months.
-  const selectCustomDate = (date: string, customDate?:Date) => {
+  const selectCustomDate = (date: string, customDate?: Date) => {
     const todayDate = new Date();
     if (date === '1day') {
       getFilteredMembersList('', format(subDays(todayDate, 1), 'yyyy-MM-dd'));
@@ -102,7 +103,7 @@ const Members: React.FC = () => {
     if (date === '1month') {
       getFilteredMembersList('', format(subMonths(todayDate, 1), 'yyyy-MM-dd'));
     }
-    if(customDate) {
+    if (customDate) {
       setToDate(customDate);
       getFilteredMembersList('', format(customDate, 'yyyy-MM-dd'));
     }
@@ -117,7 +118,8 @@ const Members: React.FC = () => {
   };
 
   // Function to map customized column with api data response to create a new column array with index matching with customized column.
-  const customizedColumn = data?.reduce((acc: Array<Record<string, unknown>>, currentValue: Record<string, any>): Array<Record<string, unknown>> => {
+  // eslint-disable-next-line max-len
+  const customizedColumn = data?.reduce((acc: Array<Record<string, unknown>>, currentValue: Record<string, unknown>): Array<Record<string, unknown>> => {
     const accumulatedColumn: Record<string, unknown> = {};
     const memberValue = { ...currentValue };
     memberValue['location'] = 'India';
@@ -216,8 +218,8 @@ const Members: React.FC = () => {
               </thead>
               {/* {Check with the custom column dynamic order and displays content/rows as per the index position of the arranged column name} */}
               <tbody>
-                {customizedColumn.map((member: Record<string, any>) => (
-                  <tr className="border-b" key={member.name}>
+                {customizedColumn.map((member: Record<string, unknown>) => (
+                  <tr className="border-b" key={member.name as Key}>
                     {Object.keys(member).map((column: keyof typeof member, index) => (
                       <td className="px-6 py-4" key={index}>
                         {column === 'name' ? (
@@ -226,21 +228,23 @@ const Members: React.FC = () => {
                               className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer"
                               onClick={navigateToProfile}
                             >
-                              {member.name}
+                              {member.name as string}
                             </div>
                           </div>
                         ) : column === 'platforms' ? (
                           <div className="flex gap-x-2">
-                            {member?.platforms?.map((platforms: { platform: { name: string } }, index: number) => (
-                              <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer" key={index}>
-                                {platforms.platform.name}
-                              </div>
-                            ))}
+                            {(member?.platforms as Array<{ platform: { name: '' } }>)?.map(
+                              (platforms: { platform: { name: string } }, index: number) => (
+                                <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer" key={index}>
+                                  {platforms.platform.name}
+                                </div>
+                              )
+                            )}
                           </div>
                         ) : column === 'tags' ? (
                           <div className="flex ">
                             <div className="py-3 flex gap-2 items-center font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                              {member?.tags?.slice(0, 2).map((tags: { tag: { name: string } }, index: number) => (
+                              {(member?.tags as Array<{ tag: { name: '' } }>)?.slice(0, 2).map((tags: { tag: { name: string } }, index: number) => (
                                 <div className="bg-tagSection rounded w-5.25 h-8 flex justify-between px-3 items-center" key={index}>
                                   <div className="font-Poppins font-normal text-card text-profileBlack leading-5">{tags?.tag?.name}</div>
                                   <div>
@@ -249,20 +253,20 @@ const Members: React.FC = () => {
                                 </div>
                               ))}
                               <div className="font-Poppins font-semibold leading-5 text-tag text-card underline">
-                                {member?.tags.length > 2 ? `${member?.tags.length - 2} more` : ''}{' '}
+                                {(member?.tags as Array<Record<string, unknown>>).length > 2 ? `${(member?.tags as Array<Record<string, unknown>>).length - 2} more` : ''}{' '}
                               </div>
                             </div>
                           </div>
                         ) : column === 'lastActivity' ? (
                           <div className="flex ">
                             <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                              {format(parseISO(member?.lastActivity), 'MM/dd/yyyy')}
+                              {format(parseISO(member?.lastActivity as string), 'MM/dd/yyyy')}
                             </div>
                           </div>
                         ) : (
                           <div className="flex ">
                             <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                              {member[column]}
+                              {member[column] as ReactNode}
                             </div>
                           </div>
                         )}

@@ -25,6 +25,7 @@ const Pagination: FC<PaginationProps> = (props) => {
   };
 
   const lastPage = paginationRange![paginationRange!.length - 1];
+
   return (
     <>
       <div

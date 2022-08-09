@@ -1,22 +1,22 @@
+import Input from 'common/input';
 import React, { useEffect, useRef, useState } from 'react';
-import searchIcon from '../../assets/images/search.svg';
+import ellipseIcon from '../../assets/images/Ellipse 39.svg';
 import profilePic from '../../assets/images/profile image.svg';
+import searchIcon from '../../assets/images/search.svg';
 import slackIcon from '../../assets/images/slack.svg';
+import sunIcon from '../../assets/images/sun.svg';
+import unionIcon from '../../assets/images/Union.svg';
 import unplashMjIcon from '../../assets/images/unsplash.svg';
 import unplashMj from '../../assets/images/unsplash_mj.svg';
-import unionIcon from '../../assets/images/Union.svg';
-import sunIcon from '../../assets/images/sun.svg';
-import ellipseIcon from '../../assets/images/Ellipse 39.svg';
 import { useAppDispatch } from '../../hooks/useRedux';
 import authSlice from '../../modules/authentication/store/slices/auth.slice';
 import { AppDispatch } from '../../store';
-import Input from 'common/input';
 
 const TopBar: React.FC = () => {
   const [isDropdownActive, setIsDropdownActive] = useState<boolean>(false);
   const options: string[] = ['Profile Settings', 'Sign Out'];
   const dispatch: AppDispatch = useAppDispatch();
-  const dropDownRef: any = useRef();
+  const dropDownRef = useRef<HTMLImageElement | null>(null);
 
   const handleDropDownActive = async(data?: string): Promise<void> => {
     switch (data) {
@@ -30,7 +30,7 @@ const TopBar: React.FC = () => {
   };
 
   const handleOutsideClick = (event: MouseEvent) => {
-    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target)) {
+    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target as Node)) {
       setIsDropdownActive(true);
     } else {
       setIsDropdownActive(false);
