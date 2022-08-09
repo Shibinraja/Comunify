@@ -20,7 +20,8 @@ const TopBar: React.FC = () => {
   const dispatch: AppDispatch = useAppDispatch();
   const dropDownRef: any = useRef();
 
-  const handleDropDownActive = async(data?: string): Promise<void> => {
+  // eslint-disable-next-line space-before-function-paren
+  const handleDropDownActive = async (data?: string): Promise<void> => {
     switch (data) {
       case 'Sign Out':
         dispatch(authSlice.actions.signOut());
@@ -58,7 +59,7 @@ const TopBar: React.FC = () => {
             id="searchId"
             type="text"
             placeholder="Search..."
-            className="app-input-card-border focus:outline-none font-normal pl-4.18 box-border text-search bg-white rounded-0.6 h-16 w-34.3 placeholder:font-Poppins placeholder:font-normal placeholder:leading-snug placeholder:text-search opacity-40 placeholder:text-searchGray shadow-profileCard"
+            className="app-input-card-border focus:outline-none font-normal pl-4.18 box-border text-search bg-white rounded-0.6 h-16 w-34.3 placeholder:font-Poppins placeholder:font-normal placeholder:leading-snug placeholder:text-search placeholder:text-searchGray shadow-profileCard"
           />
           <img src={searchIcon} alt="" className="absolute pl-7 top-[1.3rem]" />
         </div>
