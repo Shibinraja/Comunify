@@ -83,7 +83,7 @@ const Members: React.FC = () => {
         <div className="flex relative items-center ">
           <input
             type="text"
-            className="focus:outline-none px-3 box-border w-19.06 h-3.06  rounded-0.6  placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray shadow-shadowInput"
+            className="focus:outline-none px-3 box-border w-19.06 h-3.06 pr-8 rounded-0.6  placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray shadow-shadowInput"
             placeholder="Search By Name or Email"
           />
           <div className="absolute right-5 w-0.78 h-0.75 ">
@@ -184,7 +184,7 @@ const Members: React.FC = () => {
                           type="text"
                           name="search"
                           id="searchId"
-                          className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-shadowInput rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
+                          className="inputs mx-auto focus:outline-none px-3 pr-5 box-border bg-white shadow-shadowInput rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
                           placeholder="Search Tags"
                         />
                         <div className="absolute right-5 w-0.78 h-0.75  z-40">
@@ -235,7 +235,7 @@ const Members: React.FC = () => {
                           type="text"
                           name="reportName"
                           id="reportName"
-                          className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-shadowInput rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
+                          className="inputs mx-auto focus:outline-none px-3 pr-5 box-border bg-white shadow-shadowInput rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
                           placeholder="Report Name"
                         />
                         <div className="absolute right-5 w-0.78 h-0.75  z-40">
@@ -286,7 +286,7 @@ const Members: React.FC = () => {
                           type="text"
                           name="report"
                           id="reportId"
-                          className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-shadowInput rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
+                          className="inputs mx-auto focus:outline-none px-3 pr-5 box-border bg-white shadow-shadowInput rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
                           placeholder="Report Name"
                         />
                         <div className="absolute right-5 w-0.78 h-0.75  z-40">
