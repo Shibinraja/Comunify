@@ -194,6 +194,9 @@ input {
 .fixTableHead {
   height: calc(100vh - 36rem);
 }
+.fixTableHead-nomember {
+  height: calc(100vh - 20rem);
+}
 .fixActivityTableHead {
   height: calc(100vh - 19rem);
 }
