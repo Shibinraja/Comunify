@@ -216,3 +216,18 @@ input {
   background: linear-gradient(180deg, #F9C837 0%, #EE9834 100%);
 
 }
+
+.height-member-activity{
+  height: calc(100vh - 44rem);
+  min-height: 150px;
+  max-height: 150px;
+}
+
+.member-section::-webkit-scrollbar {
+  width: 4.18px;
+}
+
+.member-section::-webkit-scrollbar-thumb {
+  background: #eeeeee;
+  border-radius: 60px;
+}
