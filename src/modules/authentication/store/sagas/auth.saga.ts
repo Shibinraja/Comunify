@@ -223,7 +223,7 @@ function* chooseSubscription(action: PayloadAction<string>) {
     yield put(loaderSlice.actions.startLoadingAction());
     const res: SuccessResponse<SubscriptionPackages> = yield call(sendSubscriptionPlan, action.payload);
     if (res) {
-      if (res.data.planName.toLocaleLowerCase().trim() === 'free trial') {
+      if (res.data.viewName.toLocaleLowerCase().trim() === 'free trial') {
         showSuccessToast('Free trial plan activated');
       } else {
         showSuccessToast('Comunify plus activated');

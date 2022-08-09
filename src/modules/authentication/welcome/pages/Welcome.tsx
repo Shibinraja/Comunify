@@ -18,12 +18,12 @@ const Welcome: React.FC = () => {
   const subscriptionData = useAppSelector((state) => state.auth.subscriptionData);
 
   const comunifySubscriptionPlan: SubscriptionPackages[] =
-    (subscriptionData.length > 0 && subscriptionData.filter((plans: SubscriptionPackages) => plans.planName.trim() !== 'Free Trial')) || [];
+    (subscriptionData.length > 0 && subscriptionData.filter((plans: SubscriptionPackages) => plans.viewName.trim() !== 'Free Trial')) || [];
 
   // Function to filter out free trial plan from the list of comunify plans and subscribe to it.
   const selectFreeTrialPlan = (): void => {
     const freeTrialSubscriptionPlan: SubscriptionPackages[] =
-      (subscriptionData.length > 0 && subscriptionData.filter((plans: SubscriptionPackages) => plans.planName.trim() === 'Free Trial')) || [];
+      (subscriptionData.length > 0 && subscriptionData.filter((plans: SubscriptionPackages) => plans.viewName.trim() === 'Free Trial')) || [];
     dispatch(authSlice.actions.chooseSubscription(freeTrialSubscriptionPlan[0]?.id));
   };
 
