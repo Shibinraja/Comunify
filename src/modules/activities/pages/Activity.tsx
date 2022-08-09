@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Input from 'common/input';
 import nextIcon from '../../../assets/images/next-page-icon.svg';
 import prevIcon from '../../../assets/images/previous-page-icon.svg';
@@ -22,8 +22,27 @@ const Activity: React.FC = () => {
   const [isTagModalOpen, setTagModalOpen] = useState<boolean>(false);
   const [isFilterDropdownActive, setisFilterDropdownActive] = useState<boolean>(false);
 
-  const handleFilterDropdown = (): void => {
-    setisFilterDropdownActive((prev) => !prev);
+  const [isPlatformActive, setPlatformActive] = useState<boolean>(true);
+  const [isStatusActive, setStatusActive] = useState<boolean>(false);
+
+  const dropDownRef: any = useRef();
+  const handleOutsideClick = (event: MouseEvent) => {
+    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target)) {
+      setisFilterDropdownActive(true);
+    } else {
+      setisFilterDropdownActive(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleOutsideClick);
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, []);
+
+  const handleFilterDropdown = (val: boolean): void => {
+    setisFilterDropdownActive(val);
   };
 
   const handleModal = (val: boolean) => {
@@ -31,6 +50,14 @@ const Activity: React.FC = () => {
   };
   const handleTagModal = (val: boolean) => {
     setTagModalOpen(val);
+  };
+
+  const handlePlatformActive = (val: boolean) => {
+    setPlatformActive(val);
+  };
+
+  const handleStatusActive = (val: boolean) => {
+    setStatusActive(val);
   };
 
   return (
@@ -46,21 +73,18 @@ const Activity: React.FC = () => {
             placeholder="Search By Name or Email"
           />
         </div>
-        <div className="relative mr-5">
+        <div className="relative mr-5" ref={dropDownRef}>
           <div
             className="flex justify-between items-center px-1.08 app-input-card-border rounded-0.6 box-border w-9.59 h-3.06 cursor-pointer bg-white "
-            onClick={handleFilterDropdown}
+            onClick={() => handleFilterDropdown(isFilterDropdownActive ? false : true)}
           >
             <div className="font-Poppins font-normal text-card text-dropGray leading-1.12">Filters</div>
             <div>
-              <img src={filterDownIcon} alt="" />
+              <img src={filterDownIcon} alt="" className={isFilterDropdownActive ? 'rotate-180' : 'rotate-0'} />
             </div>
           </div>
           {isFilterDropdownActive && (
-            <div
-              className="absolute app-result-card-border box-border bg-white rounded-0.3 w-16.56 shadow-shadowInput z-40 pb-1.56 "
-              onClick={handleFilterDropdown}
-            >
+            <div className="absolute app-result-card-border box-border bg-white rounded-0.3 w-16.56 shadow-shadowInput z-40 pb-1.56 ">
               <div className="flex flex-col mt-1.43">
                 <div className="flex relative items-center mx-auto">
                   <Input
@@ -74,58 +98,76 @@ const Activity: React.FC = () => {
                     <img src={searchIcon} alt="" />
                   </div>
                 </div>
-                <div className="flex justify-between items-center app-result-card-border w-full box-border bg-signUpDomain h-3.06 mt-5 px-3 mx-auto  cursor-pointer">
+                <div
+                  className="flex justify-between items-center app-result-card-border w-full box-border bg-signUpDomain h-3.06 mt-5 px-3 mx-auto  cursor-pointer"
+                  onClick={() => {
+                    handlePlatformActive(isPlatformActive ? false : true);
+                    handleStatusActive(false);
+                  }}
+                >
                   <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">Choose platform</div>
                   <div>
-                    <img src={downArrow} alt="" />
+                    <img src={downArrow} alt="" className={isPlatformActive ? 'rotate-0' : 'rotate-180'} />
                   </div>
                 </div>
-                <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
-                  <div className="flex items-center">
-                    <div className="mr-2">
-                      <input type="checkbox" className="checkbox" />
+                {isPlatformActive && (
+                  <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
+                    <div className="flex items-center">
+                      <div className="mr-2">
+                        <input type="checkbox" className="checkbox" />
+                      </div>
+                      <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">All</div>
                     </div>
-                    <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">All</div>
-                  </div>
-                  <div className="flex items-center">
-                    <div className="mr-2">
-                      <input type="checkbox" className="checkbox" />
+                    <div className="flex items-center">
+                      <div className="mr-2">
+                        <input type="checkbox" className="checkbox" />
+                      </div>
+                      <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Salesforce</div>
                     </div>
-                    <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Salesforce</div>
-                  </div>
-                  <div className="flex items-center">
-                    <div className="mr-2">
-                      <input type="checkbox" className="checkbox" />
+                    <div className="flex items-center">
+                      <div className="mr-2">
+                        <input type="checkbox" className="checkbox" />
+                      </div>
+                      <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Khoros</div>
                     </div>
-                    <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Khoros</div>
                   </div>
-                </div>
-                <div className="flex justify-between items-center app-result-card-border w-full box-border bg-signUpDomain h-3.06 mt-5 px-3 mx-auto cursor-pointer">
+                )}
+
+                <div
+                  className="flex justify-between items-center app-result-card-border w-full box-border bg-signUpDomain h-3.06 px-3 mx-auto cursor-pointer"
+                  onClick={() => {
+                    handleStatusActive(isStatusActive ? false : true);
+                    handlePlatformActive(false);
+                  }}
+                >
                   <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold ">Choose Status</div>
                   <div>
-                    <img src={downArrow} alt="" />
+                    <img src={downArrow} alt="" className={isStatusActive ? 'rotate-0' : 'rotate-180'} />
                   </div>
                 </div>
-                <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
-                  <div className="flex items-center">
-                    <div className="mr-2">
-                      <input type="checkbox" className="checkbox" />
+                {isStatusActive && (
+                  <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
+                    <div className="flex items-center">
+                      <div className="mr-2">
+                        <input type="checkbox" className="checkbox" />
+                      </div>
+                      <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Daily</div>
                     </div>
-                    <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Daily</div>
-                  </div>
-                  <div className="flex items-center">
-                    <div className="mr-2">
-                      <input type="checkbox" className="checkbox" />
+                    <div className="flex items-center">
+                      <div className="mr-2">
+                        <input type="checkbox" className="checkbox" />
+                      </div>
+                      <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Weekly</div>
                     </div>
-                    <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Weekly</div>
-                  </div>
-                  <div className="flex items-center">
-                    <div className="mr-2">
-                      <input type="checkbox" className="checkbox" />
+                    <div className="flex items-center">
+                      <div className="mr-2">
+                        <input type="checkbox" className="checkbox" />
+                      </div>
+                      <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Monthly</div>
                     </div>
-                    <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Monthly</div>
                   </div>
-                </div>
+                )}
+
                 <div className="buttons px-3 ">
                   <Button
                     type="button"

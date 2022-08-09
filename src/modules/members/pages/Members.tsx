@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import MembersCard from 'common/membersCard/membersCard';
 import Modal from 'react-modal';
 import './Members.css';
@@ -30,6 +30,23 @@ const Members: React.FC = () => {
   const [isTagActive, setTagActive] = useState<boolean>(false);
   const [isLocationActive, setLocationActive] = useState<boolean>(false);
   const [isOrganizationActive, setOrganizationActive] = useState<boolean>(false);
+
+  const dropDownRef: any = useRef();
+
+  const handleOutsideClick = (event: MouseEvent) => {
+    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target)) {
+      setisFilterDropdownActive(true);
+    } else {
+      setisFilterDropdownActive(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleOutsideClick);
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, []);
 
   const handleFilterDropdown = (val: boolean): void => {
     setisFilterDropdownActive(val);
@@ -86,14 +103,14 @@ const Members: React.FC = () => {
         <div className="relative flex items-center  ml-0.653 ">
           <DatePicker
             selected={toDate}
-            onChange={(date: any) => setToDate(date)}
+            onChange={(date: Date) => setToDate(date)}
             className="export w-9.92 h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
             placeholderText="Custom Date"
           />
           <img className="absolute icon-holder left-32 cursor-pointer" src={calandarIcon} alt="" />
         </div>
 
-        <div className="ml-1.30 w-full">
+        <div className="ml-1.30 w-full" ref={dropDownRef}>
           <div className="box-border cursor-pointer rounded-0.6 shadow-shadowInput app-input-card-border relative ">
             <div
               className="flex h-3.06  items-center justify-between px-5 "
