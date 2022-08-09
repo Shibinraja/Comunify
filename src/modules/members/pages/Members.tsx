@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import MembersCard from 'common/membersCard/membersCard';
+import MembersCard from 'common/membersCard/MembersCard';
 import Modal from 'react-modal';
 import './Members.css';
 import editIcon from '../../../assets/images/edit.svg';
