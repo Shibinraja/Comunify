@@ -4,7 +4,7 @@ import ActivitiesTab from '../activitiesTab/pages/ActivitiesTab';
 import MembersTab from '../membersTab/pages/MembersTab';
 import brickIcon from '../../../assets/images/brick.svg';
 import dropDownIcon from '../../../assets/images/profile-dropdown.svg';
-import HealthCard from 'common/healthCard/healthCard';
+import HealthCard from 'common/healthCard/HealthCard';
 
 const Dashboard: React.FC = () => {
   const [isSelectDropDownActive, setSelectDropDownActive] = useState<boolean>(false);

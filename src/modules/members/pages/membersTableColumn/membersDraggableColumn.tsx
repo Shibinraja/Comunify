@@ -1,5 +1,5 @@
 import React, { Fragment, ReactElement, useCallback, useState } from 'react';
-import { Card } from 'common/draggableCard/draggableCard';
+import { Card } from 'common/draggableCard/DraggableCard';
 import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
 import dragIcon from '../../../../assets/images/drag.svg';
 import { ColumNames } from '../MembersTableData';
