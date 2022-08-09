@@ -12,7 +12,7 @@ const SubscriptionExpired: React.FC = () => {
   const subscriptionData = useAppSelector((state) => state.auth.subscriptionData);
 
   const comunifySubscriptionPlan: SubscriptionPackages[] =
-    (subscriptionData.length > 0 && subscriptionData.filter((plans: SubscriptionPackages) => plans.planName.trim() !== 'Free Trial')) || [];
+    (subscriptionData.length > 0 && subscriptionData.filter((plans: SubscriptionPackages) => plans.viewName.trim() !== 'Free Trial')) || [];
 
   useEffect(() => {
     dispatch(authSlice.actions.getSubscriptions());
