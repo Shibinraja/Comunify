@@ -9,6 +9,7 @@ import downArrow from '../../../assets/images/filter-dropdown.svg';
 import searchIcon from '../../../assets/images/search.svg';
 import filterDownIcon from '../../../assets/images/report-dropdown.svg';
 import exportImage from '../../../assets/images/export.svg';
+import noActivityIcon from '../../../assets/images/no-reports.svg';
 
 import { activityData } from './ActivityTableData';
 import Modal from 'react-modal';
@@ -388,6 +389,12 @@ const Activity: React.FC = () => {
           </div>
           <div className="mt-0.84 font-normal font-Poppins text-card underline text-profileBlack leading-5 cursor-pointer">VIEW PROFILE</div>
         </div>
+      </div>
+      <div className="flex flex-col items-center justify-center w-full fixActivityTableHead hidden">
+        <div>
+          <img src={noActivityIcon} alt="" />
+        </div>
+        <div className="pt-5 font-Poppins font-medium text-tableDuration text-lg leading-10">No activities to display</div>
       </div>
     </div>
   );

@@ -14,6 +14,7 @@ import dropdownIcon from '../../../assets/images/Vector.svg';
 import closeIcon from '../../../assets/images/tag-close.svg';
 import nextIcon from '../../../assets/images/next-page-icon.svg';
 import prevIcon from '../../../assets/images/previous-page-icon.svg';
+import noMemberIcon from '../../../assets/images/no-member.svg';
 import { useNavigate } from 'react-router-dom';
 import Input from 'common/input';
 import { membersTableData } from './MembersTableData';
@@ -490,6 +491,12 @@ const Members: React.FC = () => {
             <img src={editIcon} alt="" />
           </div>
         </div>
+      </div>
+      <div className="flex flex-col items-center justify-center w-full fixTableHead-nomember hidden">
+        <div>
+          <img src={noMemberIcon} alt="" />
+        </div>
+        <div className="pt-5 font-Poppins font-medium text-tableDuration text-lg leading-10">No Members</div>
       </div>
     </div>
   );
