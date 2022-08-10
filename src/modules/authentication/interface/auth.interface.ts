@@ -139,3 +139,15 @@ export type WorkspaceResponse = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type GetWorkspaceIdResponse = {
+    id: string;
+    userId: string;
+    name: string;
+    isActive: boolean;
+    isDeleted: boolean;
+    subscriptionId: string;
+    subscriptionExpiry: Date;
+    createdAt: Date;
+    updatedAt: Date;
+}[];

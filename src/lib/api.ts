@@ -2,10 +2,10 @@
 import type { AxiosResponse } from 'axios';
 
 export interface AjaxResponse<T extends unknown = unknown> {
-  config?: any;
+  config?: T;
   data?: T;
-  headers?: any;
-  request?: any;
+  headers?: T;
+  request?: T;
 }
 
 export type SuccessResponse<T> = {
@@ -19,19 +19,19 @@ export type NetworkResponse<T> = {
   data: SuccessResponse<T>;
   status: number;
   statusText: string;
-  headers: any;
-  config: any;
+  headers: T;
+  config: T;
 };
 
 export type AxiosError<T> = {
   code: string;
-  config: any;
+  config: T;
   message: string;
   name: string;
   request: XMLHttpRequest;
   response: NetworkResponse<T>;
 };
 
-export type ServerResponse<T extends any = any> = AxiosResponse<SuccessResponse<T>>;
+export type ServerResponse<T extends unknown = unknown> = AxiosResponse<SuccessResponse<T>>;
 
 export type GeneratorResponse<T extends unknown = unknown> = Generator<Promise<ServerResponse<T>>, SuccessResponse<T>, ServerResponse<T>>;

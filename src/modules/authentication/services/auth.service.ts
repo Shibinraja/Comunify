@@ -14,7 +14,8 @@ import {
   VerifyEmailInput,
   SubscriptionPackages,
   TokenResponse,
-  WorkspaceResponse
+  WorkspaceResponse,
+  GetWorkspaceIdResponse
 } from '../interface/auth.interface';
 
 //Auth Module
@@ -63,6 +64,11 @@ export function* createWorkspaceService(body: CreateWorkspaceNameInput): Generat
   const { data } = yield request.post(`${workspace_module}/createworkspace`, body);
   return data;
 }
+export function* getworkspaceIdService(): GeneratorResponse<GetWorkspaceIdResponse> {
+  const { data } = yield request.get(`${workspace_module}/getworkspaces`);
+  return data;
+}
+
 //Subscription Module
 export function* getSubscriptionPackagesService(): GeneratorResponse<SubscriptionPackages> {
   const { data } = yield request.get(`${subscription_module}/getsubscription`);
@@ -74,7 +80,7 @@ export function* sendSubscriptionPlan(id: string): GeneratorResponse<Subscriptio
   return data;
 }
 
-//Logout
+//Logout Module
 export function* signOutService(): GeneratorResponse<{}> {
   const { data } = yield request.post(`${auth_module}/logout`);
   return data;
