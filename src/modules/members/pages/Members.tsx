@@ -105,7 +105,7 @@ const Members: React.FC = () => {
           <DatePicker
             selected={toDate}
             onChange={(date: Date) => setToDate(date)}
-            className="export w-9.92 h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
+            className="export w-9.92 h-3.06  shadow-shadowInput app-input-card-border rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
             placeholderText="Custom Date"
           />
           <img className="absolute icon-holder left-32 cursor-pointer" src={calandarIcon} alt="" />
