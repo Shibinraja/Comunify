@@ -87,7 +87,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
             </div>
             <div className="billingTable mt-1.8">
               <div className="py-2 overflow-x-auto mt-1.868">
-                <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-t-0.6  no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixTagsTableHead">
+                <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-t-0.6  no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixTagsTableHead min-h-[31.25rem]">
                   <table className="min-w-full relative  rounded-t-0.6 ">
                     <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
                       <tr className="min-w-full">
