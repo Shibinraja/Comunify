@@ -140,7 +140,7 @@ export type WorkspaceResponse = {
   updatedAt: Date;
 };
 
-export type GetWorkspaceResponse = {
+export type GetWorkspaceIdResponse = {
     id: string;
     userId: string;
     name: string;

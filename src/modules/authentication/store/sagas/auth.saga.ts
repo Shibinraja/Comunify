@@ -9,7 +9,7 @@ import { showErrorToast, showSuccessToast } from 'common/toast/toastFunctions';
 import {
   CreateWorkspaceNameInput,
   ForgotPasswordInput,
-  GetWorkspaceResponse,
+  GetWorkspaceIdResponse,
   ResendVerificationMailInput,
   ResetPasswordInput,
   SignInInput,
@@ -244,7 +244,7 @@ function* chooseSubscription(action: PayloadAction<string>) {
 function* getWorkspaceId() {
   try {
     yield put(loaderSlice.actions.startLoadingAction());
-    const res: SuccessResponse<GetWorkspaceResponse> = yield call(getworkspaceIdService);
+    const res: SuccessResponse<GetWorkspaceIdResponse> = yield call(getworkspaceIdService);
     if (res) {
       const workspaceId = res?.data[0]?.id;
       localStorage.setItem('workspaceId', workspaceId);

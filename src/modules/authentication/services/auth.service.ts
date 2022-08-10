@@ -15,7 +15,7 @@ import {
   SubscriptionPackages,
   TokenResponse,
   WorkspaceResponse,
-  GetWorkspaceResponse
+  GetWorkspaceIdResponse
 } from '../interface/auth.interface';
 
 //Auth Module
@@ -64,7 +64,7 @@ export function* createWorkspaceService(body: CreateWorkspaceNameInput): Generat
   const { data } = yield request.post(`${workspace_module}/createworkspace`, body);
   return data;
 }
-export function* getworkspaceIdService(): GeneratorResponse<GetWorkspaceResponse> {
+export function* getworkspaceIdService(): GeneratorResponse<GetWorkspaceIdResponse> {
   const { data } = yield request.get(`${workspace_module}/getworkspaces`);
   return data;
 }

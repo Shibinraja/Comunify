@@ -14,7 +14,7 @@ export function deleteAllCookies() {
   });
 }
 
-export function getLocalWorkspaceID(): string {
+export function getLocalWorkspaceId(): string {
   const workspaceId: string | null = localStorage.getItem('workspaceId')!;
   return workspaceId;
 }
