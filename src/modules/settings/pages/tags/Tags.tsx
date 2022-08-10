@@ -43,7 +43,18 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                 <Modal
                   isOpen={isTagModalOpen}
                   shouldCloseOnOverlayClick={false}
-                  className="w-24.31 h-18.75 mx-auto  mt-32 rounded-lg modals-tag bg-white shadow-modal"
+                  className="w-24.31 h-18.75 mx-auto rounded-lg modals-tag bg-white shadow-modal"
+                  style={{
+                    overlay: {
+                      display: 'flex',
+                      position: 'fixed',
+                      top: 0,
+                      left: 0,
+                      bottom: 0,
+                      right: 0,
+                      alignItems: 'center'
+                    }
+                  }}
                 >
                   <div className="flex flex-col">
                     <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Add Tag</h3>
