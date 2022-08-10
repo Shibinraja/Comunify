@@ -8,6 +8,8 @@ import unsplashIcon from '../../../../assets/images/unsplash_mj.svg';
 import closeIcon from '../../../../assets/images/close-member.svg';
 import Button from 'common/button';
 import Modal from 'react-modal';
+import './membersReview.css';
+
 Modal.setAppElement('#root');
 
 const MembersReview: React.FC = () => {
@@ -86,8 +88,11 @@ const MembersReview: React.FC = () => {
                 </div>
               </div>
               <div className="flex absolute left-[20rem] bottom-4 items-center">
-                <input type="radio" className="" />
-                <h2 className="pl-3 font-normal font-Poppins text-card leading-1.31">Primary</h2>
+                <label htmlFor="opt1" className="flex items-center">
+                  <input type="radio" className="hidden peer" name="radio" id="opt1" />{' '}
+                  <span className="w-3 h-3 mr-1.5 border font-normal font-Poppins text-card leading-1.31 border-[#ddd] rounded-full inline-flex peer-checked:bg-[#ABCF6B]"></span>
+                  Primary
+                </label>
               </div>
             </div>
           </div>
@@ -115,11 +120,14 @@ const MembersReview: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex absolute right-8 bottom-4 items-center">
-                    <input type="radio" className="hello" />
-                    <h2 className="pl-3 font-normal font-Poppins text-card leading-1.31">Primary</h2>
+                    <label htmlFor="opt2" className="flex items-center">
+                      <input type="radio" className="hidden peer" name="radio" id="opt2" />{' '}
+                      <span className="w-3 h-3 mr-1.5 border font-normal font-Poppins text-card leading-1.31 border-[#ddd] rounded-full inline-flex peer-checked:bg-[#ABCF6B]"></span>
+                      Primary
+                    </label>
                   </div>
                 </div>
-                <div className="absolute right-7 top-5">
+                <div className="absolute right-7 top-5 cursor-pointer">
                   <img src={closeIcon} alt="" />
                 </div>
               </div>
@@ -144,11 +152,14 @@ const MembersReview: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex absolute right-8 bottom-4 items-center">
-                    <input type="radio" className="" />
-                    <h2 className="pl-3 font-normal font-Poppins text-card leading-1.31">Primary</h2>
+                    <label htmlFor="opt3" className="flex items-center">
+                      <input type="radio" className="hidden peer" name="radio" id="opt3" />{' '}
+                      <span className="w-3 h-3 mr-1.5 border font-normal font-Poppins text-card leading-1.31 border-[#ddd] rounded-full inline-flex peer-checked:bg-[#ABCF6B]"></span>
+                      Primary
+                    </label>
                   </div>
                 </div>
-                <div className="absolute right-7 top-5">
+                <div className="absolute right-7 top-5 cursor-pointer">
                   <img src={closeIcon} alt="" />
                 </div>
               </div>
