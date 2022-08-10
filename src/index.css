@@ -234,3 +234,8 @@ input {
   background: #eeeeee;
   border-radius: 60px;
 }
+
+.border-review{
+  border-bottom: 1px solid #E5E5E5;;
+}
+
