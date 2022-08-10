@@ -189,7 +189,7 @@ const Activity: React.FC = () => {
       </div>
       <div className="relative">
         <div className="py-2 overflow-x-auto mt-1.868">
-          <div className="inline-block min-w-full  align-middle w-61.68 rounded-0.6 border-table no-scroll-bar  overflow-y-auto h-screen sticky top-0 fixActivityTableHead ">
+          <div className="inline-block min-w-full  align-middle w-61.68 rounded-0.6 border-table no-scroll-bar  overflow-y-auto h-screen sticky top-0 fixActivityTableHead min-h-[31.25rem]">
             <table className="min-w-full relative  rounded-t-0.6 ">
               <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
                 <tr className="min-w-full">
@@ -252,7 +252,18 @@ const Activity: React.FC = () => {
               isOpen={isModalOpen}
               shouldCloseOnOverlayClick={true}
               onRequestClose={() => setModalOpen(false)}
-              className="mode w-32.5 mx-auto pb-10 border-none mt-14.87 px-2.18 bg-white shadow-modal rounded"
+              className="mode w-32.5 mx-auto pb-10 border-none px-2.18 bg-white shadow-modal rounded"
+              style={{
+                overlay: {
+                  display: 'flex',
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  bottom: 0,
+                  right: 0,
+                  alignItems: 'center'
+                }
+              }}
             >
               <div className="pt-9 flex flex-col">
                 <div className="flex justify-between">
@@ -265,6 +276,17 @@ const Activity: React.FC = () => {
                     shouldCloseOnOverlayClick={false}
                     onRequestClose={() => setModalOpen(false)}
                     className="w-24.31 h-18.75 mx-auto  mt-32 rounded-lg modals-tag bg-white shadow-modal"
+                    style={{
+                      overlay: {
+                        display: 'flex',
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        bottom: 0,
+                        right: 0,
+                        alignItems: 'center'
+                      }
+                    }}
                   >
                     <div className="flex flex-col">
                       <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Add Tag</h3>

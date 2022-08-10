@@ -16,7 +16,7 @@ const BillingHistory: React.FC<Props> = ({ hidden }) => (
       <div className="billingTable mt-1.8">
         <h3 className="text-infoBlack font-Poppins font-semibold text-base leading-1.56">Billing History</h3>
         <div className="py-2 overflow-x-auto mt-1.868">
-          <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-t-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixBillingTableHead">
+          <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-t-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixBillingTableHead min-h-[31.25rem]">
             <table className="min-w-full relative  rounded-t-0.6 ">
               <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
                 <tr className="min-w-full">

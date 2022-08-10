@@ -42,7 +42,18 @@ const MembersReview: React.FC = () => {
             isOpen={isModalOpen}
             shouldCloseOnOverlayClick={false}
             onRequestClose={() => setisModalOpen(false)}
-            className="w-24.31 h-18.43 mx-auto  mt-32 rounded-lg modals-tag bg-white shadow-modal flex items-center justify-center"
+            className="w-24.31 h-18.43 mx-auto rounded-lg modals-tag bg-white shadow-modal flex items-center justify-center"
+            style={{
+              overlay: {
+                display: 'flex',
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0,
+                alignItems: 'center'
+              }
+            }}
           >
             <div className="flex flex-col items-center justify-center ">
               <div className="bg-cover">

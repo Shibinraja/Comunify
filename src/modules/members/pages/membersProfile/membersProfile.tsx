@@ -268,39 +268,52 @@ const MembersProfile: React.FC = () => {
               <div className="font-Poppins font-medium text-error leading-5 text-addTag cursor-pointer" onClick={() => handleTagModal(true)}>
                 ADD TAG
               </div>
-              <Modal
-                isOpen={isTagModalOpen}
-                shouldCloseOnOverlayClick={false}
-                onRequestClose={() => setisModalOpen(false)}
-                className="w-24.31 h-18.75 mx-auto  mt-32 rounded-lg modals-tag bg-white shadow-modal"
-              >
-                <div className="flex flex-col">
-                  <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Add Tag</h3>
-                  <form className="flex flex-col relative px-1.93 mt-9">
-                    <label htmlFor="billingName " className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack ">
-                      Tag Name
-                    </label>
-                    <input
-                      type="text"
-                      className="mt-0.375 inputs box-border bg-white shadow-inputShadow rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-trial placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
-                      placeholder="Enter Tag Name"
-                    />
-                    <div className="flex absolute right-1 top-24 pr-6 items-center">
-                      <Button
-                        type="button"
-                        text="CANCEL"
-                        className="mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel px-2 py-3  rounded border-none"
-                        onClick={() => setTagModalOpen(false)}
+              <div className="flex items-center justify-center">
+                <Modal
+                  isOpen={isTagModalOpen}
+                  shouldCloseOnOverlayClick={false}
+                  onRequestClose={() => setisModalOpen(false)}
+                  className="w-24.31 h-18.75 mx-auto  rounded-lg modals-tag bg-white shadow-modal"
+                  style={{
+                    overlay: {
+                      display: 'flex',
+                      position: 'fixed',
+                      top: 0,
+                      left: 0,
+                      bottom: 0,
+                      right: 0,
+                      alignItems: 'center'
+                    }
+                  }}
+                >
+                  <div className="flex flex-col">
+                    <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Add Tag</h3>
+                    <form className="flex flex-col relative px-1.93 mt-9">
+                      <label htmlFor="billingName " className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack ">
+                        Tag Name
+                      </label>
+                      <input
+                        type="text"
+                        className="mt-0.375 inputs box-border bg-white shadow-inputShadow rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-trial placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
+                        placeholder="Enter Tag Name"
                       />
-                      <Button
-                        type="button"
-                        text="SAVE"
-                        className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn px-5 py-3  border-none btn-save-modal"
-                      />
-                    </div>
-                  </form>
-                </div>
-              </Modal>
+                      <div className="flex absolute right-1 top-24 pr-6 items-center">
+                        <Button
+                          type="button"
+                          text="CANCEL"
+                          className="mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel px-2 py-3  rounded border-none"
+                          onClick={() => setTagModalOpen(false)}
+                        />
+                        <Button
+                          type="button"
+                          text="SAVE"
+                          className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn px-5 py-3  border-none btn-save-modal"
+                        />
+                      </div>
+                    </form>
+                  </div>
+                </Modal>
+              </div>
             </div>
             <div className="flex flex-wrap pt-1.56 gap-2">
               <div className="labels flex  items-center px-2  h-8 rounded bg-tagSection">
@@ -349,6 +362,17 @@ const MembersProfile: React.FC = () => {
           shouldCloseOnOverlayClick={false}
           onRequestClose={() => setisModalOpen(false)}
           className="w-24.31 pb-28 mx-auto  mt-32 rounded-lg modals-tag bg-white shadow-modal "
+          style={{
+            overlay: {
+              display: 'flex',
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              bottom: 0,
+              right: 0,
+              alignItems: 'center'
+            }
+          }}
         >
           <div className="flex flex-col ml-1.8 pt-9 ">
             <h3 className="font-Inter font-semibold text-xl leading-1.43">Merge Members</h3>
