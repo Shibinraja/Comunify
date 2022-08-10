@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { default as Axios, default as axios } from 'axios';
 import { showErrorToast } from 'common/toast/toastFunctions';
 import { isBefore } from 'date-fns';

@@ -9,6 +9,7 @@ import { showErrorToast, showSuccessToast } from 'common/toast/toastFunctions';
 import {
   CreateWorkspaceNameInput,
   ForgotPasswordInput,
+  GetWorkspaceResponse,
   ResendVerificationMailInput,
   ResetPasswordInput,
   SignInInput,
@@ -31,7 +32,8 @@ import {
   verifyEmailService,
   verifyForgotEmailService,
   sendSubscriptionPlan,
-  signOutService
+  signOutService,
+  getworkspaceIdService
 } from 'modules/authentication/services/auth.service';
 import { AxiosResponse } from 'axios';
 import { AxiosError, SuccessResponse } from '@/lib/api';
@@ -48,6 +50,7 @@ function* loginSaga(action: PayloadAction<SignInInput>) {
     if (res?.data) {
       localStorage.setItem('accessToken', res?.data?.token);
       yield put(authSlice.actions.setIsAuthenticated(true));
+      yield call(getWorkspaceId);
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
@@ -238,6 +241,22 @@ function* chooseSubscription(action: PayloadAction<string>) {
   }
 }
 
+function* getWorkspaceId() {
+  try {
+    yield put(loaderSlice.actions.startLoadingAction());
+    const res: SuccessResponse<GetWorkspaceResponse> = yield call(getworkspaceIdService);
+    if (res) {
+      const workspaceId = res?.data[0]?.id;
+      localStorage.setItem('workspaceId', workspaceId);
+    }
+  } catch (e) {
+    const error = e as AxiosError<unknown>;
+    showErrorToast(error?.response?.data?.message);
+  } finally {
+    yield put(loaderSlice.actions.stopLoadingAction());
+  }
+}
+
 export default function* authSaga(): SagaIterator {
   yield takeEvery(authSlice.actions.login.type, loginSaga);
   yield takeEvery(authSlice.actions.signup.type, signUp);
@@ -251,4 +270,5 @@ export default function* authSaga(): SagaIterator {
   yield takeEvery(authSlice.actions.getWorkspace.type, getWorkspace);
   yield takeEvery(authSlice.actions.signOut.type, logout);
   yield takeEvery(authSlice.actions.chooseSubscription.type, chooseSubscription);
+  yield takeEvery(authSlice.actions.getWorkspaceId.type, getWorkspaceId);
 }
