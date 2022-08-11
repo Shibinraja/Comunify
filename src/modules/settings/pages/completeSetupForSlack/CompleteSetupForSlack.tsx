@@ -28,8 +28,9 @@ const CompleteSetup: React.FC = () => {
       const response = await request.post(`${API_ENDPOINT}/v1/slack/complete-setup`, body);
       if (response) {
         navigate('/settings');
+        showSuccessToast('Successfully integrated');
       } else {
-        showErrorToast('Slack integration failed');
+        showErrorToast('Integration failed');
       }
     } catch (error) {
       console.error(error);

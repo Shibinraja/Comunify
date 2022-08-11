@@ -53,7 +53,7 @@ const Integration: React.FC = () => {
         setIsModalOpen(false);
         navigate('/settings/complete-setup', { state: { workspacePlatformSettingId: response?.data?.data?.id } });
       } else {
-        showErrorToast('Slack integration failed');
+        showErrorToast('Integration failed');
       }
     } catch (error) {
       console.log(error);
