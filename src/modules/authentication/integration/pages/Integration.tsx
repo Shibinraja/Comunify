@@ -62,7 +62,7 @@ const Integration: React.FC = () => {
 
   const navigateToConnectPage = () => {
     window.location.href =
-      'https://slack.com/oauth/v2/authorize?client_id=3699971256053.3748193065905&scope=channels:history,channels:read,incoming-webhook,links:read,users:read,reactions:read&user_scope=channels:history,channels:read,users:read,reactions:read';
+      'https://slack.com/oauth/v2/authorize?client_id=3699971256053.3748193065905&scope=channels:history,channels:read,incoming-webhook,links:read,reactions:read,users:read,users:read.email&user_scope=channels:history,channels:read,reactions:read,users:read,users:read.email';
   };
 
   return (
