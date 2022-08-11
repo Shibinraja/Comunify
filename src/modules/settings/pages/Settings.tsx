@@ -10,9 +10,9 @@ const Settings = () => {
   const [selectedTab, setSelectedTab] = useTabs(['integrations', 'subscription', 'billing_history', 'tags']);
 
   return (
-    <div className="container lg">
-      <div className="font-Poppins  leading-35 text-infoData not-italic font-semibold">Settings</div>
-      <div className="w-full mt-10 flex flex-col ">
+    <div className="flex flex-col ">
+      <div className="font-Poppins  leading-35 text-infoData not-italic font-semibold mt-12">Settings</div>
+      <div className="w-full mt-10 ">
         <nav className="flex items-end">
           <TabSelector
             isActive={selectedTab === 'integrations'}
@@ -59,7 +59,7 @@ const Settings = () => {
             TAGS
           </TabSelector>
         </nav>
-        <div className="items-center relative overflow-y-auto block section ">
+        <div className="items-center block section ">
           <Integration hidden={selectedTab !== 'integrations'} />
           <Subscription hidden={selectedTab !== 'subscription'} />
           <BillingHistory hidden={selectedTab !== 'billing_history'} />

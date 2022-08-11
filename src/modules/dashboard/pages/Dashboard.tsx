@@ -4,6 +4,7 @@ import ActivitiesTab from '../activitiesTab/pages/ActivitiesTab';
 import MembersTab from '../membersTab/pages/MembersTab';
 import brickIcon from '../../../assets/images/brick.svg';
 import dropDownIcon from '../../../assets/images/profile-dropdown.svg';
+import HealthCard from 'common/healthCard/HealthCard';
 
 const Dashboard: React.FC = () => {
   const [isSelectDropDownActive, setSelectDropDownActive] = useState<boolean>(false);
@@ -13,10 +14,10 @@ const Dashboard: React.FC = () => {
   };
   const selectOptions = ['This Week', 'Last Week', 'Month'];
 
-  const dropDownRef: any = useRef();
+  const dropDownRef = useRef<HTMLDivElement>(null);
 
   const handleOutsideClick = (event: MouseEvent) => {
-    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target)) {
+    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target as Node)) {
       setSelectDropDownActive(true);
     } else {
       setSelectDropDownActive(false);
@@ -32,10 +33,10 @@ const Dashboard: React.FC = () => {
 
   return (
     <>
-      <div className="container mx-auto flex justify-between">
+      <div className=" flex justify-between mt-10">
         <div className="flex relative">
           <div
-            className="flex items-center justify-between px-5 w-11.72 h-3.06 app-input-card-border rounded-0.6 shadow-integrationCardShadow cursor-pointer "
+            className="flex items-center justify-between px-5 w-11.72 h-3.06 app-input-card-border rounded-0.6 shadow-shadowInput cursor-pointer "
             ref={dropDownRef}
             onClick={handleDropDownActive}
           >
@@ -45,10 +46,7 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
           {isSelectDropDownActive && (
-            <div
-              className="absolute top-12 w-11.72 app-input-card-border bg-white shadow-integrationCardShadow rounded-0.6"
-              onClick={handleDropDownActive}
-            >
+            <div className="absolute top-12 w-11.72 app-input-card-border bg-white shadow-shadowInput rounded-0.6" onClick={handleDropDownActive}>
               {selectOptions.map((options: string, index: number) => (
                 <div key={index} className="flex flex-col p-2 hover:bg-signUpDomain transition ease-in duration-300 cursor-pointer">
                   <div className="text-searchBlack font-Poppins font-normal text-trial leading-1.31" onClick={() => setSelected(options)}>
@@ -68,6 +66,9 @@ const Dashboard: React.FC = () => {
       </div>
       <div className="flex flex-col mt-1.8">
         <QuickInfo />
+      </div>
+      <div className="flex flex-col mt-1.8">
+        <HealthCard />
       </div>
       <div className=" flex flex-row mt-2.47 container mx-auto">
         <div className=" flex flex-col w-full">

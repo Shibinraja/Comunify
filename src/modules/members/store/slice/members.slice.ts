@@ -24,6 +24,7 @@ export const membersListResponse = {
       workspaceId: '',
       createdAt: '',
       updatedAt: '',
+      platformName: '',
       tags: [
         {
           tag: {
@@ -106,6 +107,7 @@ const customizedColumnData = (state: InitialState, action: PayloadAction<Array<C
   ...state,
   customizedColumn: action.payload
 });
+
 
 const membersSlice = createSlice({
   name: 'members',

@@ -1,21 +1,64 @@
-import React, { useState } from 'react';
+/* eslint-disable no-console */
+import React, { useEffect, useState } from 'react';
 import unsplashIcon from '../../../../assets/images/unsplash.svg';
 import slackIcon from '../../../../assets/images/slack.svg';
 import nextIcon from '../../../../assets/images/next.svg';
 import bgIntegrationImage from '../../../../assets/images/bg-sign.svg';
-
 import './Integration.css';
 import Button from 'common/button';
 import Modal from 'react-modal';
 import { useNavigate } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
+import { request } from '../../../../lib/request';
+import { showErrorToast } from '../../../../common/toast/toastFunctions';
+import { API_ENDPOINT } from '../../../../lib/config';
+import { getLocalWorkspaceId } from '@/lib/helper';
+
 Modal.setAppElement('#root');
 
-const Integration: React.FC = () => {
-  const [isModalOpen, setisModalOpen] = useState<boolean>(false);
-  const navigate = useNavigate();
+interface Body {
+  code: string | null;
+  workspaceId: string;
+}
 
-  const handleModalopen = () => {
-    setisModalOpen(true);
+const Integration: React.FC = () => {
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const workspaceId = getLocalWorkspaceId();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get('code')) {
+      const codeParams: null | string = searchParams.get('code');
+      if (codeParams !== '') {
+        getData(codeParams);
+      }
+    }
+  }, []);
+
+  // eslint-disable-next-line space-before-function-paren
+  const getData = async (codeParams: string | null) => {
+    try {
+      setIsModalOpen(true);
+      const body: Body = {
+        code: codeParams,
+        workspaceId
+      };
+      const response = await request.post(`${API_ENDPOINT}/v1/slack/connect`, body);
+      if (response) {
+        setIsModalOpen(false);
+        navigate('/settings/complete-setup', { state: { workspacePlatformSettingId: response?.data?.data?.id } });
+      } else {
+        showErrorToast('Slack integration failed');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const navigateToConnectPage = () => {
+    window.location.href =
+      'https://slack.com/oauth/v2/authorize?client_id=3699971256053.3748193065905&scope=channels:history,channels:read,incoming-webhook,links:read,users:read,reactions:read&user_scope=channels:history,channels:read,users:read,reactions:read';
   };
 
   return (
@@ -31,19 +74,19 @@ const Integration: React.FC = () => {
               <div className="flex gap-0.93">
                 <div className="integration shadow-integrationCardShadow app-input-card-border border-integrationBorder w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center">
                   <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                    <img src={unsplashIcon} alt="" className="h-2.31" />
+                    <img src={slackIcon} alt="" className="h-2.31" />
                   </div>
-                  <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">Khoros</div>
+                  <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">Slack</div>
                   <Button
                     type="button"
                     text="CONNECT"
                     className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient"
-                    onClick={handleModalopen}
+                    onClick={navigateToConnectPage}
                   />
                 </div>
                 <div className="integration shadow-integrationCardShadow app-input-card-border w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center">
                   <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                    <img src={slackIcon} alt="" className="h-2.31" />
+                    <img src={unsplashIcon} alt="" className="h-2.31" />
                   </div>
                   <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">Khoros</div>
                   <Button
@@ -78,7 +121,7 @@ const Integration: React.FC = () => {
                 </div>
                 <div className="integration shadow-integrationCardShadow app-input-card-border w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center">
                   <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                    <img src={slackIcon} alt="" className="h-2.31" />
+                    <img src={unsplashIcon} alt="" className="h-2.31" />
                   </div>
                   <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">Khoros</div>
                   <Button
@@ -113,7 +156,7 @@ const Integration: React.FC = () => {
                 </div>
                 <div className="integration shadow-integrationCardShadow app-input-card-border w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center">
                   <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                    <img src={slackIcon} alt="" className="h-2.31" />
+                    <img src={unsplashIcon} alt="" className="h-2.31" />
                   </div>
                   <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">Khoros</div>
                   <Button
@@ -136,7 +179,7 @@ const Integration: React.FC = () => {
                 <Modal
                   isOpen={isModalOpen}
                   shouldCloseOnOverlayClick={true}
-                  onRequestClose={() => setisModalOpen(false)}
+                  onRequestClose={() => setIsModalOpen(false)}
                   className="right-[400px] top-72 absolute  mt-24 rounded-lg modals-tag bg-white shadow-modal"
                 >
                   <div className="flex flex-col items-center justify-center  h-14.56 w-22.31 shadow-modal rounded-lg border-fetching-card">

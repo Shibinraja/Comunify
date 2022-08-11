@@ -26,7 +26,6 @@ export function* InactiveCountService(): GeneratorResponse<MembersCountResponse>
 }
 
 export function* MembersListService(query: Required<GetMembersListQueryParams>): GeneratorResponse<MembersListResponse> {
-  const { data } = yield request.get(`/v1/members?page=${query.page}&limit=${query.limit}${query.search ?`&search=${query.search}` : ''}${query.tags ?`&tags=${query.tags}` : ''}${query.platforms ?`&platforms=${query.platforms}` : ''}${query.organization ?`&organization=${query.organization}` : ''}${query['lastActivity.gte'] ?`&lastActivity.gte=${query['lastActivity.gte']}` : ''}${query['lastActivity.lte'] ?`&lastActivity.lte=${query['lastActivity.lte']}` : ''}${query['createdAT.lte'] ?`&createdAT.lte=${query['createdAT.lte']}` : ''}`);
+  const { data } = yield request.get(`/v1/${query.workspaceId}/members?page=${query.membersQuery.page}&limit=${query.membersQuery.limit}${query.membersQuery.search ?`&search=${query.membersQuery.search}` : ''}${query.membersQuery.tags ?`&tags=${query.membersQuery.tags}` : ''}${query.membersQuery.platforms ?`&platforms=${query.membersQuery.platforms}` : ''}${query.membersQuery.organization ?`&organization=${query.membersQuery.organization}` : ''}${query.membersQuery['lastActivity.gte'] ?`&lastActivity.gte=${query.membersQuery['lastActivity.gte']}` : ''}${query.membersQuery['lastActivity.lte'] ?`&lastActivity.lte=${query.membersQuery['lastActivity.lte']}` : ''}${query.membersQuery['createdAT.lte'] ?`&createdAT.lte=${query.membersQuery['createdAT.lte']}` : ''}`);
   return data;
 }
-

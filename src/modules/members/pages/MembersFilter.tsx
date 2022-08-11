@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import Button from 'common/button';
-import { ChangeEvent, useState, type FC } from 'react';
+import { ChangeEvent, useEffect, useRef, useState, type FC } from 'react';
 import membersSlice from '../store/slice/members.slice';
 import downArrow from '../../../assets/images/sub-down-arrow.svg';
 import dropdownIcon from '../../../assets/images/Vector.svg';
@@ -11,6 +11,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import calendarIcon from '../../../assets/images/calandar.svg';
 import { format } from 'date-fns';
+import { getLocalWorkspaceId } from '@/lib/helper';
 
 const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
   const [isFilterDropdownActive, setisFilterDropdownActive] = useState<boolean>(false);
@@ -25,8 +26,25 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
   const [endDate, setEndDate] = useState<Date>();
   const [isActiveBetween, setActiveBetween] = useState<boolean>(false);
 
+  const workspaceId = getLocalWorkspaceId();
   const dispatch = useAppDispatch();
+  const dropDownRef = useRef<HTMLDivElement>(null);
   // const customizedColumnData = useAppSelector((state) => state.members.customizedColumn);
+
+  useEffect(() => {
+    document.addEventListener('click', handleOutsideClick);
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, []);
+
+  const handleOutsideClick = (event: MouseEvent) => {
+    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target as Node)) {
+      setisFilterDropdownActive(true);
+    } else {
+      setisFilterDropdownActive(false);
+    }
+  };
 
   const handleFilterDropdown = (val: boolean): void => {
     setisFilterDropdownActive(val);
@@ -98,14 +116,17 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
 
     dispatch(
       membersSlice.actions.membersList({
-        page,
-        limit,
-        search: '',
-        tags: checkTags.toString(),
-        platforms: checkPlatform.toString(),
-        organization: checkOrganization.toString(),
-        'lastActivity.lte': startDate && format(startDate!, 'yyyy-MM-dd'),
-        'lastActivity.gte': endDate && format(endDate!, 'yyyy-MM-dd')
+        membersQuery: {
+          page,
+          limit,
+          search: '',
+          tags: checkTags.toString(),
+          platforms: checkPlatform.toString(),
+          organization: checkOrganization.toString(),
+          'lastActivity.lte': startDate && format(startDate!, 'yyyy-MM-dd'),
+          'lastActivity.gte': endDate && format(endDate!, 'yyyy-MM-dd')
+        },
+        workspaceId: workspaceId!
       })
     );
   };

@@ -1,16 +1,22 @@
+export interface workspaceId {
+  workspaceId: string;
+}
+
 // Input Body
 
-export type GetMembersListQueryParams = {
-  page: number;
-  limit: number;
-  search?: string;
-  tags?: string;
-  platforms?: string;
-  organization?: string;
-  'lastActivity.lte'?: string;
-  'lastActivity.gte'?: string;
-  'createdAT.lte'?: string;
-};
+export interface GetMembersListQueryParams extends workspaceId {
+  membersQuery: {
+    page: number;
+    limit: number;
+    search?: string;
+    tags?: string;
+    platforms?: string;
+    organization?: string;
+    'lastActivity.lte'?: string;
+    'lastActivity.gte'?: string;
+    'createdAT.lte'?: string;
+  };
+}
 
 // Response Body
 
@@ -33,6 +39,7 @@ export type MembersListData = {
   createdAt: string;
   updatedAt: string;
   location?: string;
+  platformName: string;
   tags: {
     tag: {
       name: string;

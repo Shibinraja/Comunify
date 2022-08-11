@@ -1,7 +1,6 @@
 import React, { ChangeEvent, Fragment, ReactElement, useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../../../store';
-import { Card } from 'common/draggableCard/draggableCard';
+import { Card } from 'common/draggableCard/DraggableCard';
 import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
 import dragIcon from '../../../../assets/images/drag.svg';
 import { ColumNames } from '../MembersTableData';
@@ -10,7 +9,7 @@ import membersSlice from 'modules/members/store/slice/members.slice';
 import { useAppSelector } from '@/hooks/useRedux';
 
 const MembersDraggableColumn: React.FC<DraggableComponentsProps> = ({ MembersColumn, handleModalClose }) => {
-  const dispatch: AppDispatch = useDispatch();
+  const dispatch = useDispatch();
   const customizedColumn = useAppSelector((state) => state.members.customizedColumn);
   const [columns, setColumns] = useState<Array<ColumnNameProps>>(ColumNames);
 
