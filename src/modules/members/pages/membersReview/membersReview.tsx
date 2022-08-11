@@ -100,7 +100,7 @@ const MembersReview: React.FC = () => {
               </div>
               <div className="flex absolute left-[20rem] bottom-4 items-center">
                 <label htmlFor="opt1" className="flex items-center radio">
-                  <input type="radio" className="" name="radio" value={'primary'} id="opt1" />
+                  <input type="radio" className="" name="radio" value={''} id="opt1" />
                   <span></span>
                   <h1 className="ml-1.5 font-Poppins font-normal text-xs">Primary</h1>
                 </label>
@@ -132,7 +132,7 @@ const MembersReview: React.FC = () => {
                   </div>
                   <div className="flex absolute right-8 bottom-4 items-center">
                     <label htmlFor="opt2" className="flex items-center radio">
-                      <input type="radio" className="" name="radio" value={'primary-pot'} id="opt2" />
+                      <input type="radio" className="" name="radio" value={''} id="opt2" />
                       <span></span>
                       <h1 className="ml-1.5 font-Poppins font-normal text-xs">Primary</h1>
                     </label>
@@ -164,7 +164,7 @@ const MembersReview: React.FC = () => {
                   </div>
                   <div className="flex absolute right-8 bottom-4 items-center">
                     <label htmlFor="opt3" className="flex items-center radio">
-                      <input type="radio" className="" name="radio" value={'primary'} id="opt3" />
+                      <input type="radio" className="" name="radio" value={''} id="opt3" />
                       <span></span>
                       <h1 className="ml-1.5 font-Poppins font-normal text-xs">Primary</h1>
                     </label>
