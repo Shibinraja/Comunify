@@ -27,8 +27,8 @@ const CompleteSetup: React.FC = () => {
       showSuccessToast('Integration in progress...');
       const response = await request.post(`${API_ENDPOINT}/v1/slack/complete-setup`, body);
       if (response) {
-        navigate('/settings');
         showSuccessToast('Successfully integrated');
+        navigate('/settings');
       } else {
         showErrorToast('Integration failed');
       }
