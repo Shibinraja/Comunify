@@ -321,3 +321,37 @@ input {
 .react-datepicker__day {
   font-weight: 400;
 }
+/* Customradio button */
+
+.radio input[type="radio"]{
+  display: none;
+}
+
+.radio{
+  position: relative;
+}
+
+.radio span{
+  width: 15px;
+  height: 15px;
+  display: block;
+  border-radius: 50%;
+  border: 3px solid #ABCF6B;
+}
+
+.radio span:after{
+  content: "";
+  height: 7px;
+  width: 7px;
+  background: linear-gradient(277.31deg, #69B5E5 1.11%, #ABCF6B 100%);;
+  border-radius: 50%;
+  position: absolute;
+  top: 8px;
+  right: 53.5px;
+  transform: translate(-50%,-50%) scale(0)
+
+}
+
+.radio input[type="radio"]:checked ~ span:after{
+  transform: translate(-50%,-50%) scale(1)
+}
