@@ -17,13 +17,11 @@ import { ActiveState } from '../../interface/interface';
 import Input from 'common/input';
 import widgetSearchIcon from '../../assets/images/widget-search.svg';
 import QuickInfo from 'common/quickInfo/QuickInfo';
-import { getLocalWorkspaceId } from '@/lib/helper';
 
 const SideNav: React.FC = () => {
   const navigate = useNavigate();
   const [active, setActive] = useState<ActiveState>({ dashboard: false, members: false, activity: false, reports: false, settings: false });
   const [isDrawerOpen, setDrawerOpen] = useState<boolean>(false);
-  const workspaceId = getLocalWorkspaceId();
 
   const navigateRoute = (route: string): void => {
     switch (route) {
@@ -33,7 +31,7 @@ const SideNav: React.FC = () => {
         break;
       case '/members':
         setActive({ members: true });
-        navigate(`${workspaceId}/members`);
+        navigate('/members');
         break;
       case '/activity':
         setActive({ activity: true });

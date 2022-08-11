@@ -27,12 +27,14 @@ import membersSlice from '../store/slice/members.slice';
 import MembersDraggableColumn from './membersTableColumn/membersDraggableColumn';
 import { ColumNames } from './MembersTableData';
 import slackIcon from '../../../assets/images/slack.svg';
+import { getLocalWorkspaceId } from '@/lib/helper';
 
 
 Modal.setAppElement('#root');
 
 const Members: React.FC = () => {
   const navigate = useNavigate();
+  const workspaceId = getLocalWorkspaceId();
   const [isModalOpen, setisModalOpen] = useState<boolean>(false);
   const [toDate, setToDate] = useState<Date>();
   const [isFilterDropdownActive, setisFilterDropdownActive] = useState<boolean>(false);
@@ -47,8 +49,6 @@ const Members: React.FC = () => {
   const customizedColumnData = useAppSelector((state) => state.members.customizedColumn);
 
   const { data, totalPages, previousPage, nextPage } = useAppSelector((state) => state.members.membersListData);
-
-  const { workspaceId } = useParams();
 
   useEffect(() => {
     dispatch(

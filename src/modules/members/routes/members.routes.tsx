@@ -7,7 +7,7 @@ const MembersProfileRoute = Loadable(lazy(() => import('../pages/membersProfile/
 const MembersReview = Loadable(lazy(() => import('../pages/membersReview/membersReview')));
 
 const membersRoutes: RoutesArray = {
-  path: ':workspaceId/members',
+  path: 'members',
   children: [
     {
       path: '',
