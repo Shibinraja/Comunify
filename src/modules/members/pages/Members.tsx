@@ -60,8 +60,8 @@ const Members: React.FC = () => {
     dispatch(
       membersSlice.actions.membersList({
         membersQuery: {
-          page,
-          limit
+          page: 1,
+          limit: 10
         },
         workspaceId: workspaceId!
       })
