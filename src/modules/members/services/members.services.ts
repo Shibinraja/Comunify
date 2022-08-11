@@ -1,7 +1,7 @@
 import { GeneratorResponse } from '@/lib/api';
 import { members_module } from '@/lib/config';
 import { request } from '@/lib/request';
-import { MembersCountResponse } from '../interface/members.interface';
+import { GetMembersListQueryParams, MembersCountResponse, MembersListResponse } from '../interface/members.interface';
 
 //Members Module
 export function* ActiveCountService(): GeneratorResponse<MembersCountResponse> {
@@ -21,5 +21,10 @@ export function* TotalCountService(): GeneratorResponse<MembersCountResponse> {
 
 export function* InactiveCountService(): GeneratorResponse<MembersCountResponse> {
   const { data } = yield request.get(`${members_module}/inactivecount`);
+  return data;
+}
+
+export function* MembersListService(query: GetMembersListQueryParams): GeneratorResponse<MembersListResponse> {
+  const { data } = yield request.get(`/v1/${query.workspaceId}/members?page=${query.membersQuery.page}&limit=${query.membersQuery.limit}`);
   return data;
 }

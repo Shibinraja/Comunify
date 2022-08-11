@@ -150,4 +150,4 @@ export type GetWorkspaceIdResponse = {
     subscriptionExpiry: Date;
     createdAt: Date;
     updatedAt: Date;
-}[];
+};

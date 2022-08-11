@@ -181,8 +181,10 @@ function* getWorkspace() {
 function* createWorkspace(action: PayloadAction<CreateWorkspaceNameInput>) {
   try {
     yield put(loaderSlice.actions.startLoadingAction());
-    const res: SuccessResponse<WorkspaceResponse> = yield call(createWorkspaceService, action.payload);
+    const res: SuccessResponse<GetWorkspaceIdResponse> = yield call(createWorkspaceService, action.payload);
     if (res) {
+      const workspaceId = res?.data?.id;
+      localStorage.setItem('workspaceId', workspaceId);
       showSuccessToast('Workspace created successfully');
       yield call(forwardTo, '/integration');
     }
@@ -244,7 +246,7 @@ function* chooseSubscription(action: PayloadAction<string>) {
 function* getWorkspaceId() {
   try {
     yield put(loaderSlice.actions.startLoadingAction());
-    const res: SuccessResponse<GetWorkspaceIdResponse> = yield call(getworkspaceIdService);
+    const res: SuccessResponse<Array<GetWorkspaceIdResponse>> = yield call(getworkspaceIdService);
     if (res) {
       const workspaceId = res?.data[0]?.id;
       localStorage.setItem('workspaceId', workspaceId);

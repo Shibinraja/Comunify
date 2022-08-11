@@ -447,33 +447,47 @@ export const membersTableData = [
   }
 ];
 
-export const ColumNames: Array<{ name: string; id: number }> = [
+export const ColumNames: Array<{ name: string; id: string; isDisplayed: boolean; isDraggable: string }> = [
   {
     name: 'Name',
-    id: 1
+    id: 'name',
+    isDisplayed: true,
+    isDraggable: 'name'
   },
   {
     name: 'Platforms Connected',
-    id: 2
+    id: 'platforms',
+    isDisplayed: true,
+    isDraggable: 'platforms'
   },
   {
     name: 'Tags',
-    id: 3
+    id: 'tags',
+    isDisplayed: true,
+    isDraggable: 'card'
   },
   {
     name: 'Last Activity',
-    id: 4
+    id: 'lastActivity',
+    isDisplayed: true,
+    isDraggable: 'card'
   },
   {
     name: 'Organization',
-    id: 5
+    id: 'organization',
+    isDisplayed: true,
+    isDraggable: 'card'
   },
   {
     name: 'Location',
-    id: 6
+    id: 'location',
+    isDisplayed: true,
+    isDraggable: 'card'
   },
   {
     name: 'Email',
-    id: 7
+    id: 'email',
+    isDisplayed: true,
+    isDraggable: 'card'
   }
 ];
