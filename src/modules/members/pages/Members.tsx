@@ -347,21 +347,21 @@ const Members: React.FC = () => {
                   isOpen={isModalOpen}
                   shouldCloseOnOverlayClick={true}
                   onRequestClose={() => setisModalOpen(false)}
-                  className="w-24.31 mx-auto mt-9.18  pb-20 bg-white border-fetching-card rounded-lg shadow-modal"
+                  className="w-24.31 mx-auto mt-9.18  pb-20 bg-white border-fetching-card rounded-lg shadow-modal outline-none"
                 >
                   <div className="flex flex-col px-1.68 relative">
                     <h3 className="font-Inter font-semibold text-xl mt-1.8  leading-6">Customize Column</h3>
                     <div className="pb-10">{membersColumn}</div>
                     <div className="flex buttons absolute -bottom-16 right-[27px]">
                       <Button
-                        text="CANCEL"
+                        text="Cancel"
                         type="submit"
                         className="cancel mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  h-2.81 w-5.25  rounded border-none"
                         onClick={handleModalClose}
                       />
                       <Button
                         onClick={handleCustomizeColumnSave}
-                        text="SAVE"
+                        text="Save"
                         type="submit"
                         className="text-white font-Poppins text-error font-medium leading-5 btn-save-modal cursor-pointer rounded shadow-contactBtn w-5.25 border-none h-2.81"
                       />
