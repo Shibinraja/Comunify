@@ -82,7 +82,7 @@ const TopBar: React.FC = () => {
               onClick={() => handleDropDownActive()}
             />
             {isDropdownActive && (
-              <div className="absolute border-box w-9.62 rounded-0.3 app-result-card-border bg-white cursor-pointer top-10 right-0 shadow-trialButtonShadow">
+              <div className="absolute border-box w-9.62 rounded-0.3 app-result-card-border bg-white cursor-pointer top-10 right-0 shadow-trialButtonShadow z-10">
                 {options.map((options, i: number) => (
                   <div className="flex flex-col" onClick={() => handleDropDownActive(options)} key={i}>
                     <div className="h-3.06 p-2 flex items-center text-searchBlack font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300">
