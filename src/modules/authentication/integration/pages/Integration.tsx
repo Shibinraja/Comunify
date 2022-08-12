@@ -184,13 +184,13 @@ const Integration: React.FC = () => {
                   isOpen={isModalOpen}
                   shouldCloseOnOverlayClick={true}
                   onRequestClose={() => setIsModalOpen(false)}
-                  className="right-[400px] top-72 absolute  mt-24 rounded-lg modals-tag bg-white shadow-modal"
+                  className="right-[400px] top-72 absolute  mt-24 rounded-lg modals-tag bg-white shadow-modal outline-none"
                 >
                   <div className="flex flex-col items-center justify-center  h-14.56 w-22.31 shadow-modal rounded-lg border-fetching-card">
                     <div className=" bg-no-repeat bg-center bg-contain ">
                       <img src={slackIcon} alt="" className="rounded-full w-2.68 h-2.68" />
                     </div>
-                    <div className="mt-4 text-integray font-Poppins fomt-normal text-desc leadind-1.68">
+                    <div className="mt-4 text-integrationGray font-Poppins fomt-normal text-desc leadind-1.68">
                       Fetching data from <span className="text-black font-normal">Slack</span>
                     </div>
                     <div className="mt-1.8">
