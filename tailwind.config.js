@@ -59,7 +59,8 @@ module.exports = {
         outerCirlceLoader: '#68B4E5',
         innerCircleLoader: '#ED9333',
         backdropColor: 'rgba(0, 0, 0, 0.5)',
-        widgetSearch: '#ACACAC;'
+        widgetSearch: '#ACACAC;',
+        paginationArrowButton: '#337AB7'
       },
       margin: {
         2.6: '43px',

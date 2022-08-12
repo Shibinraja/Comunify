@@ -31,7 +31,7 @@ const SideNav: React.FC = () => {
         break;
       case '/members':
         setActive({ members: true });
-        navigate(`/members`);
+        navigate('/members');
         break;
       case '/activity':
         setActive({ activity: true });
