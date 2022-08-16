@@ -8,7 +8,7 @@ import unsplashIcon from '../../../../assets/images/unsplash_mj.svg';
 import searchIcon from '../../../../assets/images/search.svg';
 import calendarIcon from '../../../../assets/images/calandar.svg';
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -19,6 +19,7 @@ Modal.setAppElement('#root');
 
 const MembersProfile: React.FC = () => {
   const navigate = useNavigate();
+  const { workspaceId } = useParams();
   const [isSelectDropDownActive, setSelectDropDownActive] = useState<boolean>(false);
   const [selected, setSelected] = useState<string>('');
   const [isIntegrationDropDownActive, setIntegrationDropDownActive] = useState<boolean>(false);
@@ -50,7 +51,7 @@ const MembersProfile: React.FC = () => {
   };
 
   const navigateToReviewMerge = () => {
-    navigate('/members/members-review');
+    navigate(`/${workspaceId}/members/members-review`);
   };
 
   const dropDownRef = useRef<HTMLDivElement>(null);

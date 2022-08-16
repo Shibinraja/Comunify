@@ -33,7 +33,7 @@ Modal.setAppElement('#root');
 
 const Members: React.FC = () => {
   const navigate = useNavigate();
-  // const workspaceId = getLocalWorkspaceId();
+  const { workspaceId } = useParams();
   const [isModalOpen, setisModalOpen] = useState<boolean>(false);
   const [toDate, setToDate] = useState<Date>();
   const [columns, setColumns] = useState<Array<ColumnNameProps>>(ColumNames);
@@ -46,7 +46,6 @@ const Members: React.FC = () => {
     '7day': false,
     '1month': false
   });
-  const { workspaceId } = useParams();
 
   const dispatch = useAppDispatch();
   const customizedColumnData = useAppSelector((state) => state.members.customizedColumn);
