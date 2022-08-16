@@ -25,6 +25,7 @@ export type DecodeToken = {
   isSubscribed: boolean;
   isWorkSpaceCreated: boolean;
   isVerified: boolean;
+  workspaceId: string;
 };
 
 export type SignUpFormValues = {

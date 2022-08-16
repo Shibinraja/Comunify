@@ -8,6 +8,7 @@ import { AppDispatch } from '../store';
 import authSlice from 'modules/authentication/store/slices/auth.slice';
 import { getLocalRefreshToken } from '@/lib/request';
 import { Props, PublicRouteState, PublicRouteStateValues } from './routesTypes';
+import { getLocalWorkspaceId } from '@/lib/helper';
 
 const reducer: Reducer<PublicRouteState, PublicRouteStateValues> = (state, action): { route: string } => {
   switch (action.type) {
@@ -36,6 +37,7 @@ const PublicRoute: React.FC<Props> = ({ children }) => {
 
   const access_token = tokenData || cookie.load('x-auth-cookie');
   const decodedToken: DecodeToken = access_token && decodeToken(access_token);
+  const workspaceId = getLocalWorkspaceId() || decodedToken?.workspaceId;
 
   const [state, dispatchReducer] = useReducer<Reducer<PublicRouteState, PublicRouteStateValues>>(reducer, InitialRouteState);
 
@@ -65,7 +67,7 @@ const PublicRoute: React.FC<Props> = ({ children }) => {
       return false;
     }
     if (decodedToken?.isSubscribed && decodedToken?.isWorkSpaceCreated) {
-      dispatchReducer({ type: 'SET_DASHBOARD_ROUTE', payload: '/dashboard' });
+      dispatchReducer({ type: 'SET_DASHBOARD_ROUTE', payload: `/${workspaceId}/dashboard` });
       dispatch(authSlice.actions.setIsAuthenticated(true));
       return false;
     }
