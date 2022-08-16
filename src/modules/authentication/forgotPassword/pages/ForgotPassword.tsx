@@ -36,7 +36,7 @@ const ForgotPassword: React.FC = () => {
         <div className="w-1/2 rounded-r-lg  bg-thinBlue flex items-center password-cover-bg justify-center  p-28 signup-cover-bg bg-no-repeat bg-left overflow-hidden">
           <img src={bgForgotImage} alt="" className="object-cover" />
         </div>
-        <div className="flex items-center w-1/2 justify-start 2xl:justify-center pl-7.5 2xl:pl-0">
+        <div className="flex items-center w-1/2 justify-center">
           <div className="flex flex-col overflow-scroll pb-5">
             <h1 className="font-Inter font-bold text-signIn text-neutralBlack leading-2.8">Forgot Password</h1>
             <p className="mt-0.78 text-desc font-normal leading-1.8 font-Inter text-lightGray max-w-sm">
