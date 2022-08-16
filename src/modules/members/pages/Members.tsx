@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import Button from 'common/button';
@@ -53,6 +54,7 @@ const Members: React.FC = () => {
   const debouncedValue = useDebounce(searchText, 300);
 
   const { data, totalPages, previousPage, nextPage } = useAppSelector((state) => state.members.membersListData);
+  console.log('data is', data);
 
   useEffect(() => {
     dispatch(
@@ -174,7 +176,6 @@ const Members: React.FC = () => {
   );
 
   const MemberFilter = useMemo(() => <MembersFilter page={page} limit={limit} />, []);
-
   return (
     <div className="flex flex-col mt-12">
       <h3 className="font-Poppins font-semibold text-infoBlack text-infoData leading-9">Members</h3>
@@ -312,7 +313,7 @@ const Members: React.FC = () => {
                               ) : column === 'lastActivity' ? (
                                 <div className="flex ">
                                   <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                                    {format(parseISO(member?.lastActivity as string), 'MM/dd/yyyy')}
+                                    {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'MM/dd/yyyy') : '--'}
                                   </div>
                                 </div>
                               ) : (

@@ -53,8 +53,9 @@ export interface PlatformsData {
 }
 
 export interface VerifyPlatform {
+  workspaceId: string;
   memberId: string;
-  platformId: string;
+  platform: string;
 }
 
 export type MembersListData = {

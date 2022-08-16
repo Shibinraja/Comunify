@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { useEffect, useRef, useState } from 'react';
 import profileImage from '../../../../assets/images/profile-member.svg';
 import dropDownIcon from '../../../../assets/images/profile-dropdown.svg';
@@ -83,15 +82,24 @@ const MembersProfile: React.FC = () => {
 
   const activityGraphData: MembersProfileActivityGraphData = useAppSelector((state) => state.members.membersProfileActivityGraphData);
   const platformData: PlatformsData[] = useAppSelector((state) => state.members.platformsData);
-
-  console.log('workspace id is', workspaceId);
-
   const selectPlatformToDisplayOnGraph = (id: string, name: string) => {
     setSelected(name);
-    if (name.trim() !== 'All') {
-      dispatch(membersSlice.actions.getMembersActivityGraphDataPerPlatform({ memberId: 'e2612c51-a300-4c5e-8afe-a6585d24f7fc', platformId: id }));
-    } else {
-      dispatch(membersSlice.actions.getMembersActivityGraphData({ workspaceId, memberId: '98dd1af5-e8ce-4924-a133-61409b3f56e2' }));
+
+    switch (name) {
+      case 'All':
+        dispatch(membersSlice.actions.getMembersActivityGraphData({ workspaceId, memberId: '98dd1af5-e8ce-4924-a133-61409b3f56e2' }));
+        break;
+      case 'Slack':
+        dispatch(
+          membersSlice.actions.getMembersActivityGraphDataPerPlatform({
+            workspaceId,
+            memberId: '98dd1af5-e8ce-4924-a133-61409b3f56e2',
+            platform: name.toLocaleLowerCase().trim()
+          })
+        );
+        break;
+      default:
+        break;
     }
   };
 

@@ -45,7 +45,7 @@ export function* PlatformsDataService(): GeneratorResponse<PlatformsData[]> {
 }
 
 export function* GetMembersActivityGraphDataPerPlatformService(params: VerifyPlatform): GeneratorResponse<MembersProfileActivityGraphData> {
-  const { data } = yield request.get(`${members_module}/${params.memberId}/activitygraph?platforms=${params.platformId}`);
+  const { data } = yield request.get(`/v1/${params.workspaceId}/members/${params.memberId}/activitygraph?platforms=${params.platform}`);
   return data;
 }
 
