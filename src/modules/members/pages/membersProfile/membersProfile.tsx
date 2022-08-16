@@ -53,10 +53,10 @@ const MembersProfile: React.FC = () => {
     navigate('/members/members-review');
   };
 
-  const dropDownRef: any = useRef();
+  const dropDownRef = useRef<HTMLDivElement>(null);
 
   const handleOutsideClick = (event: MouseEvent) => {
-    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target)) {
+    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target as Node)) {
       setSelectDropDownActive(true);
     } else {
       setSelectDropDownActive(false);

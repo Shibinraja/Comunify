@@ -16,20 +16,16 @@ import { getLocalWorkspaceId } from '@/lib/helper';
 
 Modal.setAppElement('#root');
 
+interface Body {
+  code: string | null;
+  workspaceId: string;
+}
+
 const Integration: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const navigate = useNavigate();
   const workspaceId = getLocalWorkspaceId();
-
-  //   const handleModalopen = () => {
-  //     setIsModalOpen(true);
-  //   };
   const [searchParams] = useSearchParams();
-
-  interface Body {
-    code: string | null;
-    workspaceId: string;
-  }
 
   useEffect(() => {
     if (searchParams.get('code')) {

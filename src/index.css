@@ -8,16 +8,20 @@ input {
   border: 1px solid #eff0f7;
   box-shadow: 8px 8px 24px rgba(2, 2, 70, 0.05);
 }
+
 .layout-screen {
   height: calc(100vh - 6rem);
 }
+
 .subcribe-box {
   bottom: 5rem;
 }
+
 .btn-gradient {
   background: linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
   box-shadow: 0px 3.63636px 27.2727px rgba(0, 0, 0, 0.1);
 }
+
 .btn-disconnect-gradient {
   background: linear-gradient(8.33deg, #ee9934 24.35%, #f9c837 94.6%);
 }
@@ -39,9 +43,11 @@ input {
 .no-scroll-bar::-webkit-scrollbar {
   display: none;
 }
+
 .app-input-card-border {
   border: 1px solid #dbd8fc;
 }
+
 .app-result-card-border {
   border: 2px solid #eff0f7;
 }
@@ -104,6 +110,7 @@ input {
   padding-top: 3px !important;
   padding-right: 13px !important;
 }
+
 .Toastify__toast--error {
   border: 1px solid #eb5757 !important;
   background: #eb5757 !important;
@@ -113,6 +120,7 @@ input {
   padding-top: 3px !important;
   padding-right: 13px !important;
 }
+
 .Toastify__toast--warning {
   border: 1px solid #f2c94c !important;
   background: #f2c94c !important;
@@ -143,9 +151,11 @@ input {
     display: block;
   }
 }
+
 .border-cancel {
   border: 1px solid #9b9b9b;
 }
+
 .height-calc {
   height: calc(100vh - 190px);
 }
@@ -192,18 +202,32 @@ input {
   border-image: linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
   border-image-slice: 1;
 }
+
+.app-input-card-border-selected {
+  border: 1px solid transparent;
+  border-image: linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
+  border-image-slice: 1;
+  border-radius: 10px;
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+}
+
 .fixTableHead {
   height: calc(100vh - 36rem);
 }
+
 .fixTableHead-nomember {
   height: calc(100vh - 20rem);
 }
+
 .fixActivityTableHead {
   height: calc(100vh - 19rem);
 }
+
 .fixReportTableHead {
   height: calc(100vh - 20rem);
 }
+
 .fixBillingTableHead {
   height: calc(100vh - 28rem);
 }
@@ -243,33 +267,40 @@ input {
   font-size: 15px;
   font-weight: 900;
 }
+
 .react-datepicker .react-datepicker__month-container .react-datepicker__header .react-datepicker__day-names {
   font-size: 10px;
   font-weight: 900;
 
   margin-top: 10px;
 }
+
 .react-datepicker-popper[data-placement^='top'] .react-datepicker__triangle::before,
 .react-datepicker-popper[data-placement^='bottom'] .react-datepicker__triangle::before,
 .react-datepicker-popper[data-placement^='top'] .react-datepicker__triangle::after,
 .react-datepicker-popper[data-placement^='bottom'] .react-datepicker__triangle::after {
   border: none !important;
 }
+
 .react-datepicker-popper[data-placement^='bottom'] {
   padding-top: 1px !important;
 }
+
 .react-datepicker {
   font-family: 'Roboto', sans-serif !important;
   border: 1.61935px solid #eff0f7 !important;
 }
+
 .react-datepicker__header {
   border-bottom: none !important;
   padding: 15px 0 0 0 !important;
 }
+
 .react-datepicker__month {
   margin: 0.6rem !important;
   border: 0.5px solid #dfdfdf !important;
 }
+
 .react-datepicker__day,
 .react-datepicker__month-text,
 .react-datepicker__quarter-text,
@@ -280,6 +311,7 @@ input {
   margin: 0 !important;
   padding: 2px !important;
 }
+
 .react-datepicker__day--selected,
 .react-datepicker__day--keyboard-selected,
 .react-datepicker__day--in-selecting-range,
@@ -298,15 +330,19 @@ input {
   color: #fff;
   background-image: linear-gradient(299.41deg, #69b5e5 3.2%, #abcf6b 88.99%) !important;
 }
+
 .react-datepicker__navigation-icon--previous::before {
   right: 0px !important;
 }
+
 .react-datepicker__navigation-icon--previous {
   right: 0px !important;
 }
-<style > .react-datepicker__navigation-icon {
+
+<style>.react-datepicker__navigation-icon {
   top: 14px !important;
 }
+
 .react-datepicker__year-read-view--down-arrow,
 .react-datepicker__month-read-view--down-arrow,
 .react-datepicker__month-year-read-view--down-arrow,
@@ -314,13 +350,16 @@ input {
   border-color: #4c4a4a !important;
   border-width: 2px 2px 0 0 !important;
 }
+
 .react-datepicker__day--outside-month {
   color: #747474 !important;
   font-weight: 200 !important;
 }
+
 .react-datepicker__day {
   font-weight: 400;
 }
+
 /* Customradio button */
 
 .radio input[type="radio"]{

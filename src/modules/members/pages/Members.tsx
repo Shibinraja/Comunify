@@ -1,70 +1,72 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable no-unused-vars */
 import Button from 'common/button';
-import Input from 'common/input';
 import MembersCard from 'common/membersCard/MembersCard';
-import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  ChangeEvent, Fragment, Key, ReactNode, useEffect, useMemo, useState
+} from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Modal from 'react-modal';
 import { useNavigate, useParams } from 'react-router-dom';
-import calandarIcon from '../../../assets/images/calandar.svg';
+import calendarIcon from '../../../assets/images/calandar.svg';
 import editIcon from '../../../assets/images/edit.svg';
 import exportImage from '../../../assets/images/export.svg';
-import nextIcon from '../../../assets/images/next-page-icon.svg';
-import prevIcon from '../../../assets/images/previous-page-icon.svg';
 import searchIcon from '../../../assets/images/search.svg';
-import downArrow from '../../../assets/images/sub-down-arrow.svg';
 import closeIcon from '../../../assets/images/tag-close.svg';
-import dropdownIcon from '../../../assets/images/Vector.svg';
 import './Members.css';
 // import { membersTableData } from './MembersTableData';
+import useDebounce from '@/hooks/useDebounce';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
-import { format, parseISO } from 'date-fns';
+import Pagination from 'common/pagination/pagination';
+import { format, parseISO, subDays, subMonths } from 'date-fns';
 import noMemberIcon from '../../../assets/images/no-member.svg';
+import slackIcon from '../../../assets/images/slack.svg';
 import membersSlice from '../store/slice/members.slice';
+import MembersFilter from './MembersFilter';
 import MembersDraggableColumn from './membersTableColumn/membersDraggableColumn';
 import { ColumNames } from './MembersTableData';
-import slackIcon from '../../../assets/images/slack.svg';
+import { customDateLinkProps } from './membertypes';
 import { getLocalWorkspaceId } from '@/lib/helper';
-
 
 Modal.setAppElement('#root');
 
 const Members: React.FC = () => {
   const navigate = useNavigate();
-  const workspaceId = getLocalWorkspaceId();
   const [isModalOpen, setisModalOpen] = useState<boolean>(false);
   const [toDate, setToDate] = useState<Date>();
-  const [isFilterDropdownActive, setisFilterDropdownActive] = useState<boolean>(false);
-  const [isPlatformActive, setPlatformActive] = useState<boolean>(true);
-  const [isTagActive, setTagActive] = useState<boolean>(false);
-  const [isLocationActive, setLocationActive] = useState<boolean>(false);
-  const [isOrganizationActive, setOrganizationActive] = useState<boolean>(false);
   const [columns, setColumns] = useState<Array<ColumnNameProps>>(ColumNames);
   const [customizedColumnBool, saveCustomizedColumn] = useState<boolean>(false);
+  const [page, setpage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(10);
+  const [searchText, setSearchText] = useState<string>('');
+  const [customDateLink, setCustomDateLink] = useState<Partial<customDateLinkProps>>({
+    '1day': false,
+    '7day': false,
+    '1month': false
+  });
 
+  const workspaceId = getLocalWorkspaceId();
   const dispatch = useAppDispatch();
   const customizedColumnData = useAppSelector((state) => state.members.customizedColumn);
+
+  const debouncedValue = useDebounce(searchText, 300);
 
   const { data, totalPages, previousPage, nextPage } = useAppSelector((state) => state.members.membersListData);
 
   useEffect(() => {
     dispatch(
-      membersSlice.actions.membersList({ membersQuery: {
-        page: 1,
-        limit: 10,
-        search: '',
-        tags: '',
-        platforms: '',
-        organization: '',
-        lastActivity: '',
-        createdAT: ''
-      }, workspaceId: workspaceId! })
+      membersSlice.actions.membersList({
+        membersQuery: {
+          page,
+          limit
+        },
+        workspaceId: workspaceId!
+      })
     );
-    // dispatch(membersSlice.actions.memberWorkspaceId(workspaceId));
-  }, []);
+    setCustomDateLink({ '1day': false, '7day': false, '1month': false });
+  }, [page]);
 
   //Set new column change if the initial order changes.
   useEffect(() => {
@@ -73,45 +75,37 @@ const Members: React.FC = () => {
     }
   }, [customizedColumnData]);
 
+  // Returns the debounced value of the search text.
+  useEffect(() => {
+    if (debouncedValue) {
+      getFilteredMembersList(debouncedValue);
+    }
+  }, [debouncedValue]);
+
+  //Set new column change if the initial order changes.
+  useEffect(() => {
+    if (customizedColumnData.length > 1) {
+      setColumns(customizedColumnData);
+    }
+  }, [customizedColumnData]);
+
+  // Function to dispatch the search text to hit api of member list.
+  const getFilteredMembersList = (text: string, date?: string) => {
+    dispatch(
+      membersSlice.actions.membersList({
+        membersQuery: {
+          page,
+          limit,
+          search: text,
+          'createdAT.lte': date
+        },
+        workspaceId: workspaceId!
+      })
+    );
+  };
+
   const handleCustomizeColumnSave = () => {
     saveCustomizedColumn(!customizedColumnBool);
-  };
-
-  const dropDownRef: any = useRef();
-
-  const handleOutsideClick = (event: MouseEvent) => {
-    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target)) {
-      setisFilterDropdownActive(true);
-    } else {
-      setisFilterDropdownActive(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('click', handleOutsideClick);
-    return () => {
-      document.removeEventListener('click', handleOutsideClick);
-    };
-  }, []);
-
-  const handleFilterDropdown = (val: boolean): void => {
-    setisFilterDropdownActive(val);
-  };
-
-  const handlePlatformActive = (val: boolean) => {
-    setPlatformActive(val);
-  };
-
-  const handleLocationActive = (val: boolean) => {
-    setLocationActive(val);
-  };
-
-  const handleTagActive = (val: boolean) => {
-    setTagActive(val);
-  };
-
-  const handleOrganizationActive = (val: boolean) => {
-    setOrganizationActive(val);
   };
 
   const handleModalClose = (): void => {
@@ -120,31 +114,67 @@ const Members: React.FC = () => {
   };
 
   const navigateToProfile = () => {
-    navigate('/members/profile');
+    navigate(`/members/profile`);
+  };
+
+  // Function to convert the day and subtract based on no of days/ months.
+  const selectCustomDate = (date: string, customDate?: Date) => {
+    const todayDate = new Date();
+    if (date === '1day') {
+      getFilteredMembersList('', format(subDays(todayDate, 1), 'yyyy-MM-dd'));
+      setCustomDateLink({ [date]: true });
+    }
+    if (date === '7day') {
+      getFilteredMembersList('', format(subDays(todayDate, 7), 'yyyy-MM-dd'));
+      setCustomDateLink({ [date]: true });
+    }
+    if (date === '1month') {
+      getFilteredMembersList('', format(subMonths(todayDate, 1), 'yyyy-MM-dd'));
+      setCustomDateLink({ [date]: true });
+    }
+    if (customDate) {
+      setToDate(customDate);
+      getFilteredMembersList('', format(customDate, 'yyyy-MM-dd'));
+      setCustomDateLink({ '1day': false, '7day': false, '1month': false });
+    }
+  };
+
+  const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const searchText: string = event.target.value;
+    if (searchText === '') {
+      getFilteredMembersList(searchText);
+    }
+    setSearchText(searchText);
   };
 
   // Function to map customized column with api data response to create a new column array with index matching with customized column.
-  const customizedColumn = data?.reduce((acc: Array<Record<string, unknown>>, currentValue: Record<string, any>): Array<Record<string, unknown>> => {
-    const accumulatedColumn: Record<string, unknown> = {};
-    const memberValue = { ...currentValue };
-    memberValue['location'] = 'India';
-    columns.forEach((column: ColumnNameProps) => {
-      // eslint-disable-next-line no-prototype-builtins
-      if (memberValue.hasOwnProperty(column.id)) {
-        if (column.isDisplayed) {
-          accumulatedColumn[column.id] = memberValue[column.id];
+  // eslint-disable-next-line max-len
+  const customizedColumn = data?.reduce(
+    (acc: Array<Record<string, unknown>>, currentValue: Record<string, unknown>): Array<Record<string, unknown>> => {
+      const accumulatedColumn: Record<string, unknown> = {};
+      const memberValue = { ...currentValue };
+      memberValue['location'] = 'India';
+      columns.forEach((column: ColumnNameProps) => {
+        // eslint-disable-next-line no-prototype-builtins
+        if (memberValue.hasOwnProperty(column.id)) {
+          if (column.isDisplayed) {
+            accumulatedColumn[column.id] = memberValue[column.id];
+          }
         }
-      }
-    });
-    acc.push(accumulatedColumn);
-    return acc;
-  }, []);
+      });
+      acc.push(accumulatedColumn);
+      return acc;
+    },
+    []
+  );
 
   // Memoized functionality to stop re-renderization.
   const membersColumn = useMemo(
     () => <MembersDraggableColumn MembersColumn={customizedColumnBool} handleModalClose={handleModalClose} />,
     [customizedColumnBool]
   );
+
+  const MemberFilter = useMemo(() => <MembersFilter page={page} limit={limit} />, []);
 
   return (
     <div className="flex flex-col mt-12">
@@ -155,404 +185,189 @@ const Members: React.FC = () => {
             <div className="flex relative items-center ">
               <input
                 type="text"
-                className="focus:outline-none px-3 box-border w-19.06 h-3.06  rounded-0.6  placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray shadow-shadowInput"
+                className="focus:outline-none px-3 box-border w-19.06 h-3.06  rounded-0.6 shadow-profileCard placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray"
                 placeholder="Search By Name or Email"
+                onChange={handleSearchTextChange}
               />
               <div className="absolute right-5 w-0.78 h-0.75 ">
                 <img src={searchIcon} alt="" />
               </div>
             </div>
-            <div className="day w-full h-3.06 flex items-center justify-center ml-3.19 box-border rounded-0.6 app-input-card-border shadow-shadowInput font-Poppins font-semibold text-card text-memberDay leading-1.12">
+            <div
+              className={`day w-full h-3.06 flex items-center justify-center ml-3.19 box-border rounded-0.6 ${
+                customDateLink['1day'] ? 'border-gradient-rounded' : 'app-input-card-border'
+              } shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
+              onClick={() => selectCustomDate('1day')}
+            >
               1D
             </div>
-            <div className="day w-full h-3.06 flex items-center justify-center ml-0.653 box-border rounded-0.6 app-input-card-border shadow-shadowInput font-Poppins font-semibold text-card text-memberDay leading-1.12">
+            <div
+              className={`day w-full h-3.06 flex items-center justify-center ml-3.19 box-border rounded-0.6 ${
+                customDateLink['7day'] ? 'border-gradient-rounded' : 'app-input-card-border'
+              } shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
+              onClick={() => selectCustomDate('7day')}
+            >
               7D
             </div>
-            <div className="day w-full h-3.06 flex items-center justify-center ml-0.653 box-border rounded-0.6 app-input-card-border shadow-shadowInput font-Poppins font-semibold text-card text-memberDay leading-1.12">
+            <div
+              className={`day w-full h-3.06 flex items-center justify-center ml-3.19 box-border rounded-0.6 ${
+                customDateLink['1month'] ? 'border-gradient-rounded' : 'app-input-card-border'
+              } shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
+              onClick={() => selectCustomDate('1month')}
+            >
               1M
             </div>
 
             <div className="relative flex items-center  ml-0.653 ">
               <DatePicker
                 selected={toDate}
-                onChange={(date: Date) => setToDate(date)}
-                className="export w-9.92 h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
+                onChange={(date: Date) => selectCustomDate('', date)}
+                className="export w-9.92 h-3.06  shadow-contactCard rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                 placeholderText="Custom Date"
               />
-              <img className="absolute icon-holder left-32 cursor-pointer" src={calandarIcon} alt="" />
+              <img className="absolute icon-holder left-32 cursor-pointer" src={calendarIcon} alt="" />
             </div>
 
-            <div className="ml-1.30 w-full" ref={dropDownRef}>
-              <div className="box-border cursor-pointer rounded-0.6 shadow-shadowInput app-input-card-border relative ">
-                <div
-                  className="flex h-3.06  items-center justify-between px-5 "
-                  onClick={() => handleFilterDropdown(isFilterDropdownActive ? false : true)}
-                >
-                  <div className="box-border rounded-0.6 shadow-shadowInput font-Poppins font-semibold text-card text-memberDay leading-1.12">
-                    Filters
-                  </div>
-                  <div>
-                    <img src={dropdownIcon} alt="" className={isFilterDropdownActive ? 'rotate-180' : 'rotate-0'} />
-                  </div>
-                </div>
-                {isFilterDropdownActive && (
-                  <div className="absolute w-16.56 pb-0 bg-white border z-40 rounded-0.3 " onClick={() => handleFilterDropdown(true)}>
-                    <div className="flex flex-col pb-5">
-                      <div
-                        className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06  px-3 mx-auto  cursor-pointer"
-                        onClick={() => {
-                          handlePlatformActive(isPlatformActive ? false : true);
-                          handleTagActive(false);
-                          handleLocationActive(false);
-                          handleOrganizationActive(false);
-                        }}
-                      >
-                        <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">Platform</div>
-                        <div>
-                          <img src={downArrow} alt="" className={isPlatformActive ? 'rotate-0' : 'rotate-180'} />
-                        </div>
-                      </div>
-                      {isPlatformActive && (
-                        <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125 pb-3 ">
-                          <div className="flex items-center">
-                            <div className="mr-2">
-                              <input type="checkbox" className="checkbox" />
-                            </div>
-                            <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Slack</div>
-                          </div>
-                          <div className="flex items-center">
-                            <div className="mr-2">
-                              <input type="checkbox" className="checkbox" />
-                            </div>
-                            <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Higher Logic</div>
-                          </div>
-                          <div className="flex items-center">
-                            <div className="mr-2">
-                              <input type="checkbox" className="checkbox" />
-                            </div>
-                            <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Vanilla Forums</div>
-                          </div>
-                        </div>
-                      )}
-
-                      <div
-                        className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06 px-3 mx-auto  cursor-pointer"
-                        onClick={() => {
-                          handleTagActive(isTagActive ? false : true);
-                          handlePlatformActive(false);
-                          handleLocationActive(false);
-                          handleOrganizationActive(false);
-                        }}
-                      >
-                        <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">Tags</div>
-                        <div>
-                          <img src={downArrow} alt="" className={isTagActive ? 'rotate-0' : 'rotate-180'} />
-                        </div>
-                      </div>
-                      {isTagActive && (
-                        <div>
-                          <div className="flex relative items-center pt-2 pb-3">
-                            <input
-                              type="text"
-                              name="search"
-                              id="searchId"
-                              className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-shadowInput rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
-                              placeholder="Search Tags"
-                            />
-                            <div className="absolute right-5 w-0.78 h-0.75  z-40">
-                              <img src={searchIcon} alt="" />
-                            </div>
-                          </div>
-                          <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
-                            <div className="flex items-center">
-                              <div className="mr-2">
-                                <input type="checkbox" className="checkbox" />
-                              </div>
-                              <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Admin</div>
-                            </div>
-                            <div className="flex items-center">
-                              <div className="mr-2">
-                                <input type="checkbox" className="checkbox" />
-                              </div>
-                              <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Influencer</div>
-                            </div>
-                            <div className="flex items-center">
-                              <div className="mr-2">
-                                <input type="checkbox" className="checkbox" />
-                              </div>
-                              <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Influencer</div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-
-                      <div
-                        className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06 px-3 mx-auto  cursor-pointer"
-                        onClick={() => {
-                          handleLocationActive(isLocationActive ? false : true);
-                          handleTagActive(false);
-                          handlePlatformActive(false);
-                          handleOrganizationActive(false);
-                        }}
-                      >
-                        <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">Location</div>
-                        <div>
-                          <img src={downArrow} alt="" className={isLocationActive ? 'rotate-0' : 'rotate-180'} />
-                        </div>
-                      </div>
-                      {isLocationActive && (
-                        <div>
-                          <div className="flex relative items-center pt-2 pb-3">
-                            <input
-                              type="text"
-                              name="reportName"
-                              id="reportName"
-                              className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-shadowInput rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
-                              placeholder="Report Name"
-                            />
-                            <div className="absolute right-5 w-0.78 h-0.75  z-40">
-                              <img src={searchIcon} alt="" />
-                            </div>
-                          </div>
-                          <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125 bg-white">
-                            <div className="flex items-center">
-                              <div className="mr-2">
-                                <input type="checkbox" className="checkbox" />
-                              </div>
-                              <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Texas</div>
-                            </div>
-                            <div className="flex items-center">
-                              <div className="mr-2">
-                                <input type="checkbox" className="checkbox" />
-                              </div>
-                              <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">London</div>
-                            </div>
-                            <div className="flex items-center">
-                              <div className="mr-2">
-                                <input type="checkbox" className="checkbox" />
-                              </div>
-                              <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Texas</div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-
-                      <div
-                        className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06  px-3 mx-auto  cursor-pointer"
-                        onClick={() => {
-                          handleOrganizationActive(isOrganizationActive ? false : true);
-                          handleTagActive(false);
-                          handlePlatformActive(false);
-                          handleLocationActive(false);
-                        }}
-                      >
-                        <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">Organization</div>
-                        <div>
-                          <img src={downArrow} alt="" className={isOrganizationActive ? 'rotate-0' : 'rotate-180'} />
-                        </div>
-                      </div>
-                      {isOrganizationActive && (
-                        <div>
-                          <div className="flex relative items-center pt-2 pb-3 ">
-                            <input
-                              type="text"
-                              name="report"
-                              id="reportId"
-                              className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-shadowInput rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
-                              placeholder="Report Name"
-                            />
-                            <div className="absolute right-5 w-0.78 h-0.75  z-40">
-                              <img src={searchIcon} alt="" />
-                            </div>
-                          </div>
-                          <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125 bg-white">
-                            <div className="flex items-center">
-                              <div className="mr-2">
-                                <input type="checkbox" className="checkbox" />
-                              </div>
-                              <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Microsoft</div>
-                            </div>
-                            <div className="flex items-center">
-                              <div className="mr-2">
-                                <input type="checkbox" className="checkbox" />
-                              </div>
-                              <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Hp</div>
-                            </div>
-                            <div className="flex items-center">
-                              <div className="mr-2">
-                                <input type="checkbox" className="checkbox" />
-                              </div>
-                              <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Lenovo</div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                      <div className="buttons px-2">
-                        <Button
-                          type="button"
-                          text="Apply"
-                          className="border-none btn-save-modal rounded-0.31 h-2.063 w-full mt-1.56 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white transition ease-in duration-300 hover:shadow-buttonShadowHover"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
+            <div className="ml-1.30 w-full">{MemberFilter}</div>
             <div className="ml-0.652">
-              <div className="export w-6.98 rounded-0.6 shadow-shadowInput box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex ml-0.63 cursor-pointer">
+              <div className="export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex ml-0.63 cursor-pointer">
                 <h3 className="text-memberDay leading-1.12 font-Poppins font-semibold text-card">Export</h3>
                 <img src={exportImage} alt="" />
               </div>
             </div>
           </div>
-          <div className="member-card mt-10">
+          <div className="member-card pt-10">
             <MembersCard />
           </div>
-          <div className="relative">
-            <div className="memberTable mt-1.8">
-              <div className="py-2 overflow-x-auto">
-                <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto sticky top-0 fixTableHead  ">
-                  <table className="min-w-full relative  rounded-t-0.6 ">
-                    <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
-                      <tr className="min-w-full">
-                        {columns.map(
-                          (columnName: ColumnNameProps) =>
-                            columnName.isDisplayed && (
-                              <Fragment key={columnName.id}>
-                                <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray ">
-                                  {columnName.name}
-                                </th>
-                              </Fragment>
-                            )
-                        )}
-                      </tr>
-                    </thead>
-                    {/* {Check with the custom column dynamic order and displays content/rows as per the index position of the arranged column name} */}
-                    <tbody>
-                      {customizedColumn.map((member: Record<string, any>) => (
-                        <tr className="border-b" key={member.name}>
-                          {Object.keys(member).map((column: keyof typeof member, index) => (
-                            <td className="px-6 py-4" key={index}>
-                              {column === 'name' ? (
-                                <div className="flex ">
-                                  <div
-                                    className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer"
-                                    onClick={navigateToProfile}
-                                  >
-                                    {member.name}
-                                  </div>
-                                </div>
-                              ) : column === 'platforms' ? (
+          <div className="memberTable mt-1.8">
+            <div className="py-2 overflow-x-auto mt-1.868">
+              <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto sticky top-0 fixTableHead max-h-34">
+                <table className="min-w-full relative  rounded-t-0.6 ">
+                  <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
+                    <tr className="min-w-full">
+                      {columns.map(
+                        (columnName: ColumnNameProps) =>
+                          columnName.isDisplayed && (
+                            <Fragment key={columnName.id}>
+                              <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray ">
+                                {columnName.name}
+                              </th>
+                            </Fragment>
+                          )
+                      )}
+                    </tr>
+                  </thead>
+                  {/* {Check with the custom column dynamic order and displays content/rows as per the index position of the arranged column name} */}
+                  <tbody>
+                    {customizedColumn.map((member: Record<string, unknown>) => (
+                      <tr className="border-b" key={member.name as Key}>
+                        {Object.keys(member).map((column: keyof typeof member, index) => (
+                          <td className="px-6 py-4" key={index}>
+                            {column === 'name' ? (
+                              <div className="flex ">
                                 <div
-                                  className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer h-1.375 w-1.375 flex"
-                                  key={index}
+                                  className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer"
+                                  onClick={navigateToProfile}
                                 >
-                                  <img  className="m-1 h-1.375 w-1.375 mt-0" src={slackIcon} title='Slack'/>
-                                  {/* <p className='h-1.375 w-1.375'>{'Slack'}</p> */}
+                                  {member?.name as string}
                                 </div>
-                                // <div className="flex gap-x-2">
-                                //   {member?.platforms?.map((platforms: { name: string }, index: number) => (
-                                //     <div
-                                //       className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer h-1.375 w-1.375"
-                                //       key={index}
-                                //     >
-                                //       {'Slack'}
-                                //     </div>
-                                //   ))}
-                                // </div>
-                              ) : column === 'tags' ? (
+                              </div>
+                            ) : column === 'platforms' ? (
+                              <div
+                                className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer h-1.375 w-1.375 flex"
+                                key={index}
+                              >
+                                <img className="m-1 h-1.375 w-1.375 mt-0" src={slackIcon} title="Slack" />
+                                {/* <p className='h-1.375 w-1.375'>{'Slack'}</p> */}
+                              </div>
+                            ) : // <div className="flex gap-x-2">
+                            //   {member?.platforms?.map((platforms: { name: string }, index: number) => (
+                            //     <div
+                            //       className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer h-1.375 w-1.375"
+                            //       key={index}
+                            //     >
+                            //       {'Slack'}
+                            //     </div>
+                            //   ))}
+                            // </div>
+                              column === 'tags' ? (
                                 <div className="flex ">
                                   <div className="py-3 flex gap-2 items-center font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                                    {member?.tags?.slice(0, 2).map((tags: { name: string }, index: number) => (
-                                      <div className="bg-tagSection rounded w-5.25 h-8 flex justify-between px-3 items-center" key={index}>
-                                        <div className="font-Poppins font-normal text-card text-profileBlack leading-5">{tags.name}</div>
-                                        <div>
-                                          <img src={closeIcon} alt="" />
+                                    {(member?.tags as Array<{ tag: { name: '' } }>)
+                                      ?.slice(0, 2)
+                                      .map((tags: { tag: { name: string } }, index: number) => (
+                                        <div className="bg-tagSection rounded w-5.25 h-8 flex justify-between px-3 items-center" key={index}>
+                                          <div className="font-Poppins font-normal text-card text-profileBlack leading-5">{tags?.tag?.name}</div>
+                                          <div>
+                                            <img src={closeIcon} alt="" />
+                                          </div>
                                         </div>
-                                      </div>
-                                    ))}
+                                      ))}
                                     <div className="font-Poppins font-semibold leading-5 text-tag text-card underline">
-                                      {member?.tags?.length > 2 ? `${member?.tags?.length - 2} more` : ''}{' '}
+                                      {(member?.tags as Array<Record<string, unknown>>)?.length > 2
+                                        ? `${(member?.tags as Array<Record<string, unknown>>)?.length - 2} more`
+                                        : ''}{' '}
                                     </div>
                                   </div>
                                 </div>
                               ) : column === 'lastActivity' ? (
                                 <div className="flex ">
                                   <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                                    {format(parseISO(member?.lastActivity), 'MM/dd/yyyy')}
+                                    {format(parseISO(member?.lastActivity as string), 'MM/dd/yyyy')}
                                   </div>
                                 </div>
                               ) : (
                                 <div className="flex ">
                                   <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                                    {member[column]}
+                                    {member[column] as ReactNode}
                                   </div>
                                 </div>
                               )}
-                            </td>
-                          ))}
-                        </tr>
-                      ))}
-                      <tr className="px-6 py-4">
-                        <td className="px-6 py-4"></td>
+                          </td>
+                        ))}
                       </tr>
-                    </tbody>
-                  </table>
-                  <Modal
-                    isOpen={isModalOpen}
-                    shouldCloseOnOverlayClick={true}
-                    onRequestClose={() => setisModalOpen(false)}
-                    className="w-24.31 mx-auto mt-9.18  pb-20 bg-white border-fetching-card rounded-lg shadow-modal"
+                    ))}
+                    <tr className="px-6 py-4">
+                      <td className="px-6 py-4"></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div className="px-6 py-6 flex items-center gap-0.66 pl-[30%] w-full rounded-b-lg fixed bg-white bottom-0">
+                  <Pagination currentPage={page} totalPages={totalPages} limit={limit} onPageChange={(page) => setpage(Number(page))} />
+                </div>
+                <div className="fixed bottom-10 right-32">
+                  <div
+                    className="btn-drag w-3.375 h-3.375 flex items-center justify-center cursor-pointer shadow-dragButton rounded-0.6 "
+                    onClick={() => setisModalOpen(true)}
                   >
-                    <div className="flex flex-col px-1.68 relative">
-                      <h3 className="font-Inter font-semibold text-xl mt-1.8  leading-6">Customize Column</h3>
-                      <div className="pb-10">{membersColumn}</div>
-                      <div className="flex buttons absolute -bottom-16 right-[27px]">
-                        <Button
-                          text="CANCEL"
-                          type="submit"
-                          className="cancel mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  h-2.81 w-5.25  rounded border-none"
-                          onClick={handleModalClose}
-                        />
-                        <Button
-                          onClick={handleCustomizeColumnSave}
-                          text="SAVE"
-                          type="submit"
-                          className="text-white font-Poppins text-error font-medium leading-5 btn-save-modal cursor-pointer rounded shadow-contactBtn w-5.25 border-none h-2.81"
-                        />
-                      </div>
+                    <img src={editIcon} alt="" />
+                  </div>
+                </div>
+                <Modal
+                  isOpen={isModalOpen}
+                  shouldCloseOnOverlayClick={true}
+                  onRequestClose={() => setisModalOpen(false)}
+                  className="w-24.31 mx-auto mt-9.18  pb-20 bg-white border-fetching-card rounded-lg shadow-modal"
+                >
+                  <div className="flex flex-col px-1.68 relative">
+                    <h3 className="font-Inter font-semibold text-xl mt-1.8  leading-6">Customize Column</h3>
+                    <div className="pb-10">{membersColumn}</div>
+                    <div className="flex buttons absolute -bottom-16 right-[27px]">
+                      <Button
+                        text="CANCEL"
+                        type="submit"
+                        className="cancel mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  h-2.81 w-5.25  rounded border-none"
+                        onClick={handleModalClose}
+                      />
+                      <Button
+                        onClick={handleCustomizeColumnSave}
+                        text="SAVE"
+                        type="submit"
+                        className="text-white font-Poppins text-error font-medium leading-5 btn-save-modal cursor-pointer rounded shadow-contactBtn w-5.25 border-none h-2.81"
+                      />
                     </div>
-                  </Modal>
-                </div>
-              </div>
-            </div>
-            <div className="w-full justify-center flex absolute ">
-              <div className="px-6 py-6 flex items-center justify-center gap-0.66 w-full rounded-b-lg  bg-white bottom-0 ">
-                <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
-                  <img src={prevIcon} alt="" />
-                </div>
-                <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">1</div>
-                <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">2</div>
-                <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">3</div>
-                <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">4</div>
-                <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">...</div>
-                <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">10</div>
-                <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
-                  <img src={nextIcon} alt="" />
-                </div>
-                <div className="font-Lato font-normal text-pageNumber leading-4 text-pagination cursor-pointer">Go to page:</div>
-                <div>
-                  <Input name="pagination" id="page" type="text" className="page-input focus:outline-none px-0.5 rounded box-border w-1.47 h-1.51" />
-                </div>
-              </div>
-            </div>
-            <div className="fixed bottom-10 right-32">
-              <div
-                className="btn-drag w-3.375 h-3.375 flex items-center justify-center cursor-pointer shadow-dragButton rounded-0.6 "
-                onClick={() => setisModalOpen(true)}
-              >
-                <img src={editIcon} alt="" />
+                  </div>
+                </Modal>
               </div>
             </div>
           </div>
@@ -560,7 +375,7 @@ const Members: React.FC = () => {
       ) : (
         <div className="flex flex-col items-center justify-center w-full fixTableHead-nomember">
           <div>
-            <img src={noMemberIcon} alt="" />
+            <img src={noMemberIcon} alt="No Member" />
           </div>
           <div className="pt-5 font-Poppins font-medium text-tableDuration text-lg leading-10">No Members</div>
         </div>

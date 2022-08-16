@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { GeneratorResponse } from '@/lib/api';
 import { members_module } from '@/lib/config';
 import { request } from '@/lib/request';
@@ -24,7 +25,7 @@ export function* InactiveCountService(): GeneratorResponse<MembersCountResponse>
   return data;
 }
 
-export function* MembersListService(query: GetMembersListQueryParams): GeneratorResponse<MembersListResponse> {
-  const { data } = yield request.get(`/v1/${query.workspaceId}/members?page=${query.membersQuery.page}&limit=${query.membersQuery.limit}`);
+export function* MembersListService(query: Required<GetMembersListQueryParams>): GeneratorResponse<MembersListResponse> {
+  const { data } = yield request.get(`/v1/${query.workspaceId}/members?page=${query.membersQuery.page}&limit=${query.membersQuery.limit}${query.membersQuery.search ?`&search=${query.membersQuery.search}` : ''}${query.membersQuery.tags ?`&tags=${query.membersQuery.tags}` : ''}${query.membersQuery.platforms ?`&platforms=${query.membersQuery.platforms}` : ''}${query.membersQuery.organization ?`&organization=${query.membersQuery.organization}` : ''}${query.membersQuery['lastActivity.gte'] ?`&lastActivity.gte=${query.membersQuery['lastActivity.gte']}` : ''}${query.membersQuery['lastActivity.lte'] ?`&lastActivity.lte=${query.membersQuery['lastActivity.lte']}` : ''}${query.membersQuery['createdAT.lte'] ?`&createdAT.lte=${query.membersQuery['createdAT.lte']}` : ''}`);
   return data;
 }

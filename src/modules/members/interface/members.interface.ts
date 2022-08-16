@@ -8,12 +8,13 @@ export interface GetMembersListQueryParams extends workspaceId {
   membersQuery: {
     page: number;
     limit: number;
-    search: string;
-    tags: string;
-    platforms: string;
-    organization: string;
-    lastActivity: string;
-    createdAT: string;
+    search?: string;
+    tags?: string;
+    platforms?: string;
+    organization?: string;
+    'lastActivity.lte'?: string;
+    'lastActivity.gte'?: string;
+    'createdAT.lte'?: string;
   };
 }
 

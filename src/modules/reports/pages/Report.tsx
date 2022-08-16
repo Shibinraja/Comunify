@@ -41,10 +41,10 @@ const Report: React.FC = () => {
     setStatusActive(val);
   };
 
-  const dropDownRef: any = useRef();
+  const dropDownRef = useRef<HTMLDivElement>(null);
 
   const handleOutsideClick = (event: MouseEvent) => {
-    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target)) {
+    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target as Node)) {
       setisFilterDropdownActive(true);
     } else {
       setisFilterDropdownActive(false);

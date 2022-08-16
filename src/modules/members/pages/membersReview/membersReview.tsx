@@ -99,10 +99,10 @@ const MembersReview: React.FC = () => {
                 </div>
               </div>
               <div className="flex absolute left-[20rem] bottom-4 items-center">
-                <label htmlFor="opt1" className="flex items-center radio">
-                  <input type="radio" className="" name="radio" value={''} id="opt1" />
-                  <span></span>
-                  <h1 className="ml-1.5 font-Poppins font-normal text-xs">Primary</h1>
+                <label htmlFor="opt1" className="flex items-center">
+                  <input type="radio" className="hidden peer" name="radio" id="opt1" />{' '}
+                  <span className="w-3 h-3 mr-1.5 border font-normal font-Poppins text-card leading-1.31 border-[#ddd] rounded-full inline-flex peer-checked:bg-[#ABCF6B]"></span>
+                  Primary
                 </label>
               </div>
             </div>
@@ -131,10 +131,10 @@ const MembersReview: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex absolute right-8 bottom-4 items-center">
-                    <label htmlFor="opt2" className="flex items-center radio">
-                      <input type="radio" className="" name="radio" value={''} id="opt2" />
-                      <span></span>
-                      <h1 className="ml-1.5 font-Poppins font-normal text-xs">Primary</h1>
+                    <label htmlFor="opt2" className="flex items-center">
+                      <input type="radio" className="hidden peer" name="radio" id="opt2" />{' '}
+                      <span className="w-3 h-3 mr-1.5 border font-normal font-Poppins text-card leading-1.31 border-[#ddd] rounded-full inline-flex peer-checked:bg-[#ABCF6B]"></span>
+                      Primary
                     </label>
                   </div>
                 </div>
@@ -163,10 +163,10 @@ const MembersReview: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex absolute right-8 bottom-4 items-center">
-                    <label htmlFor="opt3" className="flex items-center radio">
-                      <input type="radio" className="" name="radio" value={''} id="opt3" />
-                      <span></span>
-                      <h1 className="ml-1.5 font-Poppins font-normal text-xs">Primary</h1>
+                    <label htmlFor="opt3" className="flex items-center">
+                      <input type="radio" className="hidden peer" name="radio" id="opt3" />{' '}
+                      <span className="w-3 h-3 mr-1.5 border font-normal font-Poppins text-card leading-1.31 border-[#ddd] rounded-full inline-flex peer-checked:bg-[#ABCF6B]"></span>
+                      Primary
                     </label>
                   </div>
                 </div>
