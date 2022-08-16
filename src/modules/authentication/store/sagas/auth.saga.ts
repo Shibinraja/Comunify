@@ -9,6 +9,7 @@ import { showErrorToast, showSuccessToast } from 'common/toast/toastFunctions';
 import {
   CreateWorkspaceNameInput,
   ForgotPasswordInput,
+  GetWorkspaceIdResponse,
   ResendVerificationMailInput,
   ResetPasswordInput,
   SignInInput,
@@ -31,7 +32,8 @@ import {
   verifyEmailService,
   verifyForgotEmailService,
   sendSubscriptionPlan,
-  signOutService
+  signOutService,
+  getworkspaceIdService
 } from 'modules/authentication/services/auth.service';
 import { AxiosResponse } from 'axios';
 import { AxiosError, SuccessResponse } from '@/lib/api';
@@ -48,6 +50,7 @@ function* loginSaga(action: PayloadAction<SignInInput>) {
     if (res?.data) {
       localStorage.setItem('accessToken', res?.data?.token);
       yield put(authSlice.actions.setIsAuthenticated(true));
+      yield call(getWorkspaceId);
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
@@ -178,8 +181,10 @@ function* getWorkspace() {
 function* createWorkspace(action: PayloadAction<CreateWorkspaceNameInput>) {
   try {
     yield put(loaderSlice.actions.startLoadingAction());
-    const res: SuccessResponse<WorkspaceResponse> = yield call(createWorkspaceService, action.payload);
+    const res: SuccessResponse<GetWorkspaceIdResponse> = yield call(createWorkspaceService, action.payload);
     if (res) {
+      const workspaceId = res?.data?.id;
+      localStorage.setItem('workspaceId', workspaceId);
       showSuccessToast('Workspace created successfully');
       yield call(forwardTo, '/integration');
     }
@@ -223,12 +228,28 @@ function* chooseSubscription(action: PayloadAction<string>) {
     yield put(loaderSlice.actions.startLoadingAction());
     const res: SuccessResponse<SubscriptionPackages> = yield call(sendSubscriptionPlan, action.payload);
     if (res) {
-      if (res.data.planName.toLocaleLowerCase().trim() === 'free trial') {
+      if (res.data.viewName.toLocaleLowerCase().trim() === 'free trial') {
         showSuccessToast('Free trial plan activated');
       } else {
         showSuccessToast('Comunify plus activated');
       }
       yield call(forwardTo, '/create-workspace');
+    }
+  } catch (e) {
+    const error = e as AxiosError<unknown>;
+    showErrorToast(error?.response?.data?.message);
+  } finally {
+    yield put(loaderSlice.actions.stopLoadingAction());
+  }
+}
+
+function* getWorkspaceId() {
+  try {
+    yield put(loaderSlice.actions.startLoadingAction());
+    const res: SuccessResponse<Array<GetWorkspaceIdResponse>> = yield call(getworkspaceIdService);
+    if (res) {
+      const workspaceId = res?.data[0]?.id;
+      localStorage.setItem('workspaceId', workspaceId);
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
@@ -251,4 +272,5 @@ export default function* authSaga(): SagaIterator {
   yield takeEvery(authSlice.actions.getWorkspace.type, getWorkspace);
   yield takeEvery(authSlice.actions.signOut.type, logout);
   yield takeEvery(authSlice.actions.chooseSubscription.type, chooseSubscription);
+  yield takeEvery(authSlice.actions.getWorkspaceId.type, getWorkspaceId);
 }

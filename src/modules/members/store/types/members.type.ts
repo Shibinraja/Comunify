@@ -1,4 +1,11 @@
-import { PlatformsData, MembersCountResponse, MembersProfileActivityGraphData } from 'modules/members/interface/members.interface';
+import {
+  PlatformsData,
+  MembersCountResponse,
+  MembersProfileActivityGraphData,
+  MembersListResponse
+} from 'modules/members/interface/members.interface';
+
+import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
 
 export type VoidGenerator<T = unknown, TNext = unknown> = Generator<T, void, TNext>;
 
@@ -7,6 +14,10 @@ export interface InitialState {
   membersNewCountData: MembersCountResponse;
   membersActiveCountData: MembersCountResponse;
   membersInActiveCountData: MembersCountResponse;
+
   membersProfileActivityGraphData: MembersProfileActivityGraphData;
   platformsData: PlatformsData[];
+
+  membersListData: MembersListResponse;
+  customizedColumn: Array<ColumnNameProps>;
 }

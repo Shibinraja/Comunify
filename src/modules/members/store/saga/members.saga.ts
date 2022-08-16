@@ -9,12 +9,15 @@ import {
   InactiveCountService,
   PlatformsDataService,
   MembersActivityGraphService,
+  MembersListService,
   TotalCountService,
   GetMembersActivityGraphDataPerPlatformService
 } from 'modules/members/services/members.services';
 import {
   PlatformsData,
+  GetMembersListQueryParams,
   MembersCountResponse,
+  MembersListResponse,
   MembersProfileActivityGraphData,
   VerifyMembers,
   VerifyPlatform
@@ -89,6 +92,22 @@ function* membersInActiveCount() {
   }
 }
 
+function* membersList(action: PayloadAction<Required<GetMembersListQueryParams>>) {
+  try {
+    yield put(loaderSlice.actions.startLoadingAction());
+
+    const res: SuccessResponse<MembersListResponse> = yield call(MembersListService, action.payload);
+    if (res?.data) {
+      yield put(membersSlice.actions.getMembersListData(res?.data));
+    }
+  } catch (e) {
+    const error = e as AxiosError<unknown>;
+    showErrorToast(error?.response?.data?.message);
+  } finally {
+    yield put(loaderSlice.actions.stopLoadingAction());
+  }
+}
+
 function* membersActivityGraphSaga(action: PayloadAction<VerifyMembers>) {
   try {
     yield put(loaderSlice.actions.startLoadingAction());
@@ -136,6 +155,7 @@ export default function* membersSaga(): SagaIterator {
   yield takeEvery(membersSlice.actions.membersNewCount.type, membersNewCount);
   yield takeEvery(membersSlice.actions.membersActiveCount.type, membersActiveCount);
   yield takeEvery(membersSlice.actions.membersInActiveCount.type, membersInActiveCount);
+  yield takeEvery(membersSlice.actions.membersList.type, membersList);
   yield takeEvery(membersSlice.actions.getMembersActivityGraphData.type, membersActivityGraphSaga);
   yield takeEvery(membersSlice.actions.platformData.type, getPlatformsDataSaga);
   yield takeEvery(membersSlice.actions.getMembersActivityGraphDataPerPlatform.type, getMembersActivityGraphDataPerPlatformSaga);

@@ -2,14 +2,17 @@ import React, { useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { DraggableCardProps } from './draggableCardTypes';
 
-export const Card: React.FC<DraggableCardProps> = ({ id, children, index, moveCard }) => {
+export const Card: React.FC<DraggableCardProps> = ({ id, children, index, moveCard, accepts }) => {
+
   const ref = useRef<HTMLInputElement>(null);
 
   const [{ handlerId }, drop] = useDrop({
-    accept: 'card',
+    accept: accepts ||'card',
     collect(monitor) {
       return {
-        handlerId: monitor.getHandlerId()
+        handlerId: monitor.getHandlerId(),
+        isOver: monitor.isOver(),
+        canDrop: monitor.canDrop()
       };
     },
     hover(item: any, monitor) {
@@ -52,7 +55,7 @@ export const Card: React.FC<DraggableCardProps> = ({ id, children, index, moveCa
   });
 
   const [{ isDragging }, drag] = useDrag({
-    type: 'card',
+    type: accepts || 'card',
     item: () => ({ id, index }),
     collect: (monitor) => ({
       isDragging: monitor.isDragging()

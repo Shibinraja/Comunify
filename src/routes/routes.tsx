@@ -9,6 +9,7 @@ import dashboardRoutes from '../modules/dashboard/routes/dashboard.routes';
 import membersRoutes from '../modules/members/routes/members.routes';
 import PrivateRoute from './PrivateRoute';
 import Loadable from './suspenseLoader';
+import accountRoutes from 'modules/account/routes/account.routes';
 
 const MainLayout = Loadable(lazy(() => import('../layout/MainLayout')));
 
@@ -21,7 +22,7 @@ const routes: RoutesArray[] = [
       </PrivateRoute>
     ),
     path: '/',
-    children: [dashboardRoutes, membersRoutes, settingRoutes, activityRoutes, reportRoutes]
+    children: [dashboardRoutes, membersRoutes, settingRoutes, activityRoutes, reportRoutes, accountRoutes]
   },
   //to redirect invalid routes back to the index route
   {

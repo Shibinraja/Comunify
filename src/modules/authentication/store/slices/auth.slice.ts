@@ -43,6 +43,12 @@ const createWorkspace = (state: InitialState, action: PayloadAction<CreateWorksp
 
 const getWorkspace = (state: InitialState) => state;
 
+const getWorkspaceId = (state:InitialState) => state;
+
+const getSubscriptions = (state: InitialState) => state;
+
+const chooseSubscription = (state: InitialState, action: PayloadAction<string>) => state;
+
 // Data Props returned from saga_module
 
 const formikValueReset = (state: InitialState, action: PayloadAction<boolean>) => ({
@@ -63,13 +69,9 @@ const signOut = (state: InitialState) => {
   state.isAuthenticated = false;
 };
 
-const getSubscriptions = (state: InitialState) => state;
-
 const setSubscriptions = (state: InitialState, action: PayloadAction<{ subscriptionData: SubscriptionPackages[] }>) => {
   state.subscriptionData = action.payload.subscriptionData;
 };
-
-const chooseSubscription = (state: InitialState, action: PayloadAction<string>) => state;
 
 const authSlice = createSlice({
   name: 'auth',
@@ -91,7 +93,8 @@ const authSlice = createSlice({
     signOut,
     getSubscriptions,
     setSubscriptions,
-    chooseSubscription
+    chooseSubscription,
+    getWorkspaceId
   }
 });
 

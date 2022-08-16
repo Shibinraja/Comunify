@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Input from 'common/input';
 import nextIcon from '../../../assets/images/next-page-icon.svg';
 import prevIcon from '../../../assets/images/previous-page-icon.svg';
@@ -9,6 +9,10 @@ import downArrow from '../../../assets/images/filter-dropdown.svg';
 import searchIcon from '../../../assets/images/search.svg';
 import filterDownIcon from '../../../assets/images/report-dropdown.svg';
 import exportImage from '../../../assets/images/export.svg';
+import noActivityIcon from '../../../assets/images/no-reports.svg';
+import calandarIcon from '../../../assets/images/calandar.svg';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 import { activityData } from './ActivityTableData';
 import Modal from 'react-modal';
@@ -21,9 +25,32 @@ const Activity: React.FC = () => {
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [isTagModalOpen, setTagModalOpen] = useState<boolean>(false);
   const [isFilterDropdownActive, setisFilterDropdownActive] = useState<boolean>(false);
+  const [isTagActive, setTagActive] = useState<boolean>(false);
+  const [startDate, setStartDate] = useState<Date>();
+  const [endDate, setEndDate] = useState<Date>();
+  const [isActiveBetween, setActiveBetween] = useState<boolean>(false);
 
-  const handleFilterDropdown = (): void => {
-    setisFilterDropdownActive((prev) => !prev);
+  const [isPlatformActive, setPlatformActive] = useState<boolean>(true);
+
+  const dropDownRef = useRef<HTMLDivElement>(null);
+
+  const handleOutsideClick = (event: MouseEvent) => {
+    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target as Node)) {
+      setisFilterDropdownActive(true);
+    } else {
+      setisFilterDropdownActive(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleOutsideClick);
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, []);
+
+  const handleFilterDropdown = (val: boolean): void => {
+    setisFilterDropdownActive(val);
   };
 
   const handleModal = (val: boolean) => {
@@ -31,6 +58,18 @@ const Activity: React.FC = () => {
   };
   const handleTagModal = (val: boolean) => {
     setTagModalOpen(val);
+  };
+
+  const handlePlatformActive = (val: boolean) => {
+    setPlatformActive(val);
+  };
+
+  const handleTagActive = (val: boolean) => {
+    setTagActive(val);
+  };
+
+  const handleActiveBetween = (val: boolean) => {
+    setActiveBetween(val);
   };
 
   return (
@@ -46,86 +85,147 @@ const Activity: React.FC = () => {
             placeholder="Search By Name or Email"
           />
         </div>
-        <div className="relative mr-5">
+        <div className="relative mr-5" ref={dropDownRef}>
           <div
             className="flex justify-between items-center px-1.08 app-input-card-border rounded-0.6 box-border w-9.59 h-3.06 cursor-pointer bg-white "
-            onClick={handleFilterDropdown}
+            onClick={() => handleFilterDropdown(isFilterDropdownActive ? false : true)}
           >
             <div className="font-Poppins font-normal text-card text-dropGray leading-1.12">Filters</div>
             <div>
-              <img src={filterDownIcon} alt="" />
+              <img src={filterDownIcon} alt="" className={isFilterDropdownActive ? 'rotate-180' : 'rotate-0'} />
             </div>
           </div>
           {isFilterDropdownActive && (
-            <div
-              className="absolute app-result-card-border box-border bg-white rounded-0.3 w-16.56 shadow-shadowInput z-40 pb-1.56 "
-              onClick={handleFilterDropdown}
-            >
-              <div className="flex flex-col mt-1.43">
-                <div className="flex relative items-center mx-auto">
-                  <Input
-                    type="text"
-                    name="reportName"
-                    id="report"
-                    className="mx-auto focus:outline-none px-3 box-border bg-white  rounded-0.6 app-input-card-border h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
-                    placeholder="Report Name"
-                  />
-                  <div className="absolute right-5 top-4 w-0.78 h-3 z-40">
-                    <img src={searchIcon} alt="" />
-                  </div>
-                </div>
-                <div className="flex justify-between items-center app-result-card-border w-full box-border bg-signUpDomain h-3.06 mt-5 px-3 mx-auto  cursor-pointer">
+            <div className="absolute app-result-card-border box-border bg-white rounded-0.3 w-16.56 shadow-shadowInput z-40 pb-1.56 ">
+              <div className="flex flex-col ">
+                <div
+                  className="flex justify-between items-center app-result-card-border w-full box-border bg-signUpDomain h-3.06 px-3 mx-auto  cursor-pointer"
+                  onClick={() => {
+                    handlePlatformActive(isPlatformActive ? false : true);
+                    handleActiveBetween(false);
+                    handleTagActive(false);
+                  }}
+                >
                   <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">Choose platform</div>
                   <div>
-                    <img src={downArrow} alt="" />
+                    <img src={downArrow} alt="" className={isPlatformActive ? 'rotate-0' : 'rotate-180'} />
                   </div>
                 </div>
-                <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
-                  <div className="flex items-center">
-                    <div className="mr-2">
-                      <input type="checkbox" className="checkbox" />
+                {isPlatformActive && (
+                  <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
+                    <div className="flex items-center">
+                      <div className="mr-2">
+                        <input type="checkbox" className="checkbox" />
+                      </div>
+                      <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">All</div>
                     </div>
-                    <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">All</div>
-                  </div>
-                  <div className="flex items-center">
-                    <div className="mr-2">
-                      <input type="checkbox" className="checkbox" />
+                    <div className="flex items-center">
+                      <div className="mr-2">
+                        <input type="checkbox" className="checkbox" />
+                      </div>
+                      <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Salesforce</div>
                     </div>
-                    <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Salesforce</div>
-                  </div>
-                  <div className="flex items-center">
-                    <div className="mr-2">
-                      <input type="checkbox" className="checkbox" />
+                    <div className="flex items-center">
+                      <div className="mr-2">
+                        <input type="checkbox" className="checkbox" />
+                      </div>
+                      <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Khoros</div>
                     </div>
-                    <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Khoros</div>
                   </div>
-                </div>
-                <div className="flex justify-between items-center app-result-card-border w-full box-border bg-signUpDomain h-3.06 mt-5 px-3 mx-auto cursor-pointer">
-                  <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold ">Choose Status</div>
+                )}
+
+                <div
+                  className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06 px-3 mx-auto  cursor-pointer"
+                  onClick={() => {
+                    handleTagActive(isTagActive ? false : true);
+                    handlePlatformActive(false);
+                    handleActiveBetween(false);
+                  }}
+                >
+                  <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">Tags</div>
                   <div>
-                    <img src={downArrow} alt="" />
+                    <img src={downArrow} alt="" className={isTagActive ? 'rotate-0' : 'rotate-180'} />
                   </div>
                 </div>
-                <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
-                  <div className="flex items-center">
-                    <div className="mr-2">
-                      <input type="checkbox" className="checkbox" />
+                {isTagActive && (
+                  <div>
+                    <div className="flex relative items-center pt-2 pb-3">
+                      <input
+                        type="text"
+                        name="search"
+                        id="searchId"
+                        className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-shadowInput rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
+                        placeholder="Search Tags"
+                      />
+                      <div className="absolute right-5 w-0.78 h-0.75  z-40">
+                        <img src={searchIcon} alt="" />
+                      </div>
                     </div>
-                    <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Daily</div>
+                    <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
+                      <div className="flex items-center">
+                        <div className="mr-2">
+                          <input type="checkbox" className="checkbox" />
+                        </div>
+                        <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Admin</div>
+                      </div>
+                      <div className="flex items-center">
+                        <div className="mr-2">
+                          <input type="checkbox" className="checkbox" />
+                        </div>
+                        <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Influencer</div>
+                      </div>
+                      <div className="flex items-center">
+                        <div className="mr-2">
+                          <input type="checkbox" className="checkbox" />
+                        </div>
+                        <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Influencer</div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex items-center">
-                    <div className="mr-2">
-                      <input type="checkbox" className="checkbox" />
-                    </div>
-                    <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Weekly</div>
-                  </div>
-                  <div className="flex items-center">
-                    <div className="mr-2">
-                      <input type="checkbox" className="checkbox" />
-                    </div>
-                    <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Monthly</div>
+                )}
+
+                <div
+                  className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06 px-3 mx-auto  cursor-pointer"
+                  onClick={() => {
+                    handleActiveBetween(isActiveBetween ? false : true);
+                    handlePlatformActive(false);
+                    handleTagActive(false);
+                  }}
+                >
+                  <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">Activity between</div>
+                  <div>
+                    <img src={downArrow} alt="" className={isActiveBetween ? 'rotate-0' : 'rotate-180'} />
                   </div>
                 </div>
+                {isActiveBetween && (
+                  <>
+                    <div className="flex flex-col px-3 pt-4">
+                      <label htmlFor="Start Date p-1 font-Inter font-normal leading-4 text-trial text-searchBlack">Start Date</label>
+                      <div className="relative flex items-center">
+                        <DatePicker
+                          selected={startDate}
+                          onChange={(date: Date) => setStartDate(date)}
+                          className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
+                          placeholderText="DD/MM/YYYY"
+                        />
+                        <img className="absolute icon-holder right-6 cursor-pointer" src={calandarIcon} alt="" />
+                      </div>
+                    </div>
+                    <div className="flex flex-col px-3 pb-4 pt-3">
+                      <label htmlFor="Start Date p-1 font-Inter font-Inter font-normal leading-4 text-trial text-searchBlack">End Date</label>
+                      <div className="relative flex items-center">
+                        <DatePicker
+                          selected={endDate}
+                          onChange={(date: Date) => setEndDate(date)}
+                          className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
+                          placeholderText="DD/MM/YYYY"
+                        />
+                        <img className="absolute icon-holder right-6 cursor-pointer" src={calandarIcon} alt="" />
+                      </div>
+                    </div>
+                  </>
+                )}
+
                 <div className="buttons px-3 ">
                   <Button
                     type="button"
@@ -146,7 +246,7 @@ const Activity: React.FC = () => {
       </div>
       <div className="relative">
         <div className="py-2 overflow-x-auto mt-1.868">
-          <div className="inline-block min-w-full  align-middle w-61.68 rounded-0.6 border-table no-scroll-bar  overflow-y-auto h-screen sticky top-0 fixActivityTableHead ">
+          <div className="inline-block min-w-full  align-middle w-61.68 rounded-0.6 border-table no-scroll-bar  overflow-y-auto h-screen sticky top-0 fixActivityTableHead min-h-[31.25rem]">
             <table className="min-w-full relative  rounded-t-0.6 ">
               <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
                 <tr className="min-w-full">
@@ -209,7 +309,18 @@ const Activity: React.FC = () => {
               isOpen={isModalOpen}
               shouldCloseOnOverlayClick={true}
               onRequestClose={() => setModalOpen(false)}
-              className="mode w-32.5 mx-auto pb-10 border-none mt-14.87 px-2.18 bg-white shadow-modal rounded"
+              className="mode w-32.5 mx-auto pb-10 border-none px-2.18 bg-white shadow-modal rounded"
+              style={{
+                overlay: {
+                  display: 'flex',
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  bottom: 0,
+                  right: 0,
+                  alignItems: 'center'
+                }
+              }}
             >
               <div className="pt-9 flex flex-col">
                 <div className="flex justify-between">
@@ -222,6 +333,17 @@ const Activity: React.FC = () => {
                     shouldCloseOnOverlayClick={false}
                     onRequestClose={() => setModalOpen(false)}
                     className="w-24.31 h-18.75 mx-auto  mt-32 rounded-lg modals-tag bg-white shadow-modal"
+                    style={{
+                      overlay: {
+                        display: 'flex',
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        bottom: 0,
+                        right: 0,
+                        alignItems: 'center'
+                      }
+                    }}
                   >
                     <div className="flex flex-col">
                       <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Add Tag</h3>
@@ -346,6 +468,12 @@ const Activity: React.FC = () => {
           </div>
           <div className="mt-0.84 font-normal font-Poppins text-card underline text-profileBlack leading-5 cursor-pointer">VIEW PROFILE</div>
         </div>
+      </div>
+      <div className="flex flex-col items-center justify-center w-full fixActivityTableHead hidden">
+        <div>
+          <img src={noActivityIcon} alt="" />
+        </div>
+        <div className="pt-5 font-Poppins font-medium text-tableDuration text-lg leading-10">No activities to display</div>
       </div>
     </div>
   );

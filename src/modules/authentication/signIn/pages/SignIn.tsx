@@ -1,12 +1,13 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAppDispatch } from '@/hooks/useRedux';
 import { API_ENDPOINT, auth_module } from '@/lib/config';
 import Button from 'common/button/Button';
 import Input from 'common/input/Input';
+import { showErrorToast, showSuccessToast } from 'common/toast/toastFunctions';
 import { Form, Formik } from 'formik';
 import { FormValues } from 'modules/authentication/interface/auth.interface';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import * as Yup from 'yup';
 import bgSignInImage from '../../../../assets/images/bg-sign.svg';
 import closeEyeIcon from '../../../../assets/images/closeEyeIcon.svg';
@@ -19,6 +20,9 @@ import './SignIn.css';
 
 const SignIn: React.FC = () => {
   const dispatch: AppDispatch = useAppDispatch();
+  const [searchParams] = useSearchParams();
+  const google_signIn_error: string = searchParams.get('err') || '';
+  const google_signUp_success: string = searchParams.get('success') || '';
 
   const initialValues: FormValues = {
     userName: '',
@@ -26,6 +30,18 @@ const SignIn: React.FC = () => {
   };
 
   const [passwordType, setPasswordType] = useState<string>('password');
+
+  useEffect(() => {
+    if (google_signIn_error) {
+      showErrorToast('Signin failed, please try again');
+    }
+  }, [google_signIn_error]);
+
+  useEffect(() => {
+    if (google_signUp_success) {
+      showSuccessToast('Account created successfully');
+    }
+  }, [google_signUp_success]);
 
   const handleSubmit = (values: FormValues): void => {
     const newValues = { ...values };
@@ -139,7 +155,7 @@ const SignIn: React.FC = () => {
 };
 
 const signInSchema = Yup.object().shape({
-  userName: Yup.lazy((value): any => {
+  userName: Yup.lazy((value: string) => {
     if (value?.includes('@')) {
       return Yup.string().email('Must be a valid email').max(255).matches(email_regex, 'Must be a valid email').required('Email is required');
     }

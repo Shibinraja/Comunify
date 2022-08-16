@@ -1,27 +1,33 @@
+import Input from 'common/input';
 import React, { useEffect, useRef, useState } from 'react';
-import searchIcon from '../../assets/images/search.svg';
+import ellipseIcon from '../../assets/images/Ellipse 39.svg';
 import profilePic from '../../assets/images/profile image.svg';
+import searchIcon from '../../assets/images/search.svg';
 import slackIcon from '../../assets/images/slack.svg';
+import sunIcon from '../../assets/images/sun.svg';
+import unionIcon from '../../assets/images/Union.svg';
 import unplashMjIcon from '../../assets/images/unsplash.svg';
 import unplashMj from '../../assets/images/unsplash_mj.svg';
-import unionIcon from '../../assets/images/Union.svg';
-import sunIcon from '../../assets/images/sun.svg';
-import ellipseIcon from '../../assets/images/Ellipse 39.svg';
 import { useAppDispatch } from '../../hooks/useRedux';
 import authSlice from '../../modules/authentication/store/slices/auth.slice';
 import { AppDispatch } from '../../store';
-import Input from 'common/input';
+import { useNavigate } from 'react-router';
 
 const TopBar: React.FC = () => {
+  const navigate = useNavigate();
   const [isDropdownActive, setIsDropdownActive] = useState<boolean>(false);
   const options: string[] = ['Profile Settings', 'Sign Out'];
   const dispatch: AppDispatch = useAppDispatch();
-  const dropDownRef: any = useRef();
+  const dropDownRef = useRef<HTMLImageElement | null>(null);
 
-  const handleDropDownActive = async(data?: string): Promise<void> => {
+  // eslint-disable-next-line space-before-function-paren
+  const handleDropDownActive = async (data?: string): Promise<void> => {
     switch (data) {
       case 'Sign Out':
         dispatch(authSlice.actions.signOut());
+        break;
+      case 'Profile Settings':
+        navigate('/account');
         break;
       default:
         break;
@@ -30,7 +36,7 @@ const TopBar: React.FC = () => {
   };
 
   const handleOutsideClick = (event: MouseEvent) => {
-    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target)) {
+    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target as Node)) {
       setIsDropdownActive(true);
     } else {
       setIsDropdownActive(false);
@@ -53,7 +59,7 @@ const TopBar: React.FC = () => {
             id="searchId"
             type="text"
             placeholder="Search..."
-            className="app-input-card-border focus:outline-none font-normal pl-4.18 box-border text-search bg-white rounded-0.6 h-16 w-34.3 placeholder:font-Poppins placeholder:font-normal placeholder:leading-snug placeholder:text-search opacity-40 placeholder:text-searchGray shadow-profileCard"
+            className="app-input-card-border focus:outline-none font-normal pl-4.18 box-border text-search bg-white rounded-0.6 h-16 w-34.3 placeholder:font-Poppins placeholder:font-normal placeholder:leading-snug placeholder:text-search placeholder:text-searchGray shadow-profileCard"
           />
           <img src={searchIcon} alt="" className="absolute pl-7 top-[1.3rem]" />
         </div>
@@ -76,7 +82,7 @@ const TopBar: React.FC = () => {
               onClick={() => handleDropDownActive()}
             />
             {isDropdownActive && (
-              <div className="absolute border-box w-9.62 rounded-0.3 app-result-card-border bg-white cursor-pointer top-10 right-0 shadow-trialButtonShadow">
+              <div className="absolute border-box w-9.62 rounded-0.3 app-result-card-border bg-white cursor-pointer top-10 right-0 shadow-trialButtonShadow z-10">
                 {options.map((options, i: number) => (
                   <div className="flex flex-col" onClick={() => handleDropDownActive(options)} key={i}>
                     <div className="h-3.06 p-2 flex items-center text-searchBlack font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300">

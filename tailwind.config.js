@@ -59,7 +59,8 @@ module.exports = {
         outerCirlceLoader: '#68B4E5',
         innerCircleLoader: '#ED9333',
         backdropColor: 'rgba(0, 0, 0, 0.5)',
-        widgetSearch: '#ACACAC;'
+        widgetSearch: '#ACACAC;',
+        paginationArrowButton: '#337AB7'
       },
       margin: {
         2.6: '43px',
@@ -308,7 +309,8 @@ module.exports = {
         1.93: '31px',
         11: '176px',
         18.75: '18.75rem',
-        1.81: '1.8125rem'
+        1.81: '1.8125rem',
+        1.375: '22px'
       },
       fontSize: {
         logo: '21.35px',
@@ -332,7 +334,9 @@ module.exports = {
         createdAt: '8px',
         membersCreatedAt: '6.41509px',
         pageNumber: '9.86548px',
-        preview: '10.2899px;'
+        preview: '10.2899px;',
+        activityHealth: '0.5521rem',
+        activityPercentage: '1.1042rem'
       },
       fontFamily: {
         Inter: ['Inter', 'sans-serif'],
@@ -419,6 +423,9 @@ module.exports = {
       },
       zIndex: {
         9999: '9999'
+      },
+      backgroundImage: {
+        'background-pattern': "url('src/assets/images/background-pattern.svg')"
       }
     }
   },

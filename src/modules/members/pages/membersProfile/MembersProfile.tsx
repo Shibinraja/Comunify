@@ -6,7 +6,12 @@ import closeIcon from '../../../../assets/images/close-member.svg';
 import yellowDottedIcon from '../../../../assets/images/yellow_dotted.svg';
 import unsplashIcon from '../../../../assets/images/unsplash_mj.svg';
 import searchIcon from '../../../../assets/images/search.svg';
+import calendarIcon from '../../../../assets/images/calandar.svg';
+
 import { useNavigate } from 'react-router-dom';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+
 import Button from 'common/button';
 import Modal from 'react-modal';
 import MembersProfileGraph from '../membersProfileGraph/MembersProfileGraph';
@@ -21,8 +26,13 @@ const MembersProfile: React.FC = () => {
   const navigate = useNavigate();
   const [isSelectDropDownActive, setSelectDropDownActive] = useState<boolean>(false);
   const [selected, setSelected] = useState<string>('');
+  const [isIntegrationDropDownActive, setIntegrationDropDownActive] = useState<boolean>(false);
+  const [selectedIntegration, setSelectedIntegration] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isTagModalOpen, setTagModalOpen] = useState<boolean>(false);
+  const [fromDate, setFromDate] = useState<Date>();
+  const [toDate, setToDate] = useState<Date>();
+  const [isFilterDropDownActive, setFilterDropdownActive] = useState<boolean>(false);
 
   const handleModal = (val: boolean) => {
     setIsModalOpen(val);
@@ -36,16 +46,24 @@ const MembersProfile: React.FC = () => {
     setSelectDropDownActive((prev) => !prev);
   };
 
+  const handleFilterDropDownActive = (): void => {
+    setFilterDropdownActive((prev) => !prev);
+  };
+
+  const handleIntegrationDropDownActive = (): void => {
+    setIntegrationDropDownActive((prev) => !prev);
+  };
+
   const navigateToReviewMerge = () => {
     navigate('/members/members-review');
   };
 
   const dispatch: AppDispatch = useDispatch();
 
-  const dropDownRef: any = useRef();
+  const dropDownRef = useRef<HTMLDivElement>(null);
 
   const handleOutsideClick = (event: MouseEvent) => {
-    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target)) {
+    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target as Node)) {
       setSelectDropDownActive(true);
     } else {
       setSelectDropDownActive(false);
@@ -72,6 +90,8 @@ const MembersProfile: React.FC = () => {
       dispatch(membersSlice.actions.getMembersActivityGraphData({ memberId: 'e2612c51-a300-4c5e-8afe-a6585d24f7fc' }));
     }
   };
+
+  const integrationOption = ['All Integrations', 'Slack', 'Vanilla', 'Higherlogic'];
 
   return (
     <div className="flex pt-3.93 w-full">
@@ -123,25 +143,89 @@ const MembersProfile: React.FC = () => {
             <div className="font-Poppins font-normal text-card leading-4 text-renewalGray">Last Active Date</div>
             <div className="font-Poppins font-semibold text-base leading-6 text-accountBlack">22 May 2022</div>
           </div>
-          <div className="flex justify-around items-center box-border w-10.81 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border">
-            <div className="text-memberDay font-Poppins font-semibold text-card leading-4">All Integrations</div>
-            <div>
-              <img src={dropDownIcon} alt="" />
+          <div className="select relative mr-2">
+            <div
+              className="flex justify-around items-center cursor-pointer box-border w-9.59 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border"
+              onClick={handleIntegrationDropDownActive}
+            >
+              <div className="font-Poppins font-semibold text-card text-memberDay leading-4">
+                {selectedIntegration ? selectedIntegration : 'All Integrations'}
+              </div>
+              <div>
+                <img src={dropDownIcon} alt="" className={isIntegrationDropDownActive ? 'rotate-180' : 'rotate-0'} />
+              </div>
             </div>
+            {isIntegrationDropDownActive && (
+              <div
+                className="absolute flex flex-col text-left pt-2 px-2 cursor-pointer box-border w-full bg-white z-40 rounded-0.6 shadow-contactCard pb-2 app-input-card-border"
+                onClick={handleIntegrationDropDownActive}
+              >
+                {integrationOption.map((options: string) => (
+                  <div key={options} className="w-full hover:bg-signUpDomain rounded-0.3 transition ease-in duration-100">
+                    <div
+                      key={options}
+                      className="h-1.93 px-3 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack "
+                      onClick={() => setSelectedIntegration(options)}
+                    >
+                      {options}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-          <div className="ml-0.61 flex justify-around items-center w-9.59 h-3.06 box-border rounded-0.6 shadow-contactCard app-input-card-border">
-            <div className="text-memberDay font-Poppins font-semibold text-card leading-4">Filters</div>
-            <div>
-              <img src={dropDownIcon} alt="" />
+          <div className="select relative">
+            <div
+              className="flex justify-around items-center cursor-pointer box-border w-9.59 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border"
+              onClick={handleFilterDropDownActive}
+            >
+              <div className="font-Poppins font-semibold text-card text-memberDay leading-4">Filters</div>
+              <div>
+                <img src={dropDownIcon} alt="" className={isFilterDropDownActive ? 'rotate-180' : 'rotate-0'} />
+              </div>
             </div>
+            {isFilterDropDownActive && (
+              <div className="absolute flex flex-col text-left px-2 pt-2  cursor-pointer box-border w-full bg-white z-40 rounded-0.6 shadow-contactCard pb-2 app-input-card-border">
+                <div className="relative flex items-center ">
+                  <DatePicker
+                    selected={fromDate}
+                    onChange={(date: Date) => setFromDate(date)}
+                    className=" h-3.06 app-result-card-border shadow-reportInput w-full rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
+                    placeholderText="From"
+                  />
+                  <img className="absolute icon-holder right-4 cursor-pointer" src={calendarIcon} alt="" />
+                </div>
+                <div className="relative flex items-center pt-1">
+                  <DatePicker
+                    selected={toDate}
+                    onChange={(date: Date) => setToDate(date)}
+                    className=" h-3.06 app-result-card-border shadow-reportInput w-full rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
+                    placeholderText="To"
+                  />
+                  <img className="absolute icon-holder right-4 cursor-pointer" src={calendarIcon} alt="" />
+                </div>
+              </div>
+            )}
           </div>
         </div>
-        <div className="mt-1.56 pt-8 px-1.62 box-border w-full pb-10 rounded-0.6 shadow-contactCard app-input-card-border">
-          <div className="flex justify-between">
+        <div className="mt-1.56 pt-8 px-1.62 box-border w-full rounded-0.6 shadow-contactCard app-input-card-border pb-5">
+          <div className="flex justify-between ">
             <div className="font-Poppins text-card leading-4 font-medium">May 2022</div>
             <div className="font-Poppins font-normal leading-4 text-renewalGray text-preview cursor-pointer">Preview All</div>
           </div>
-          <div className="flex flex-col pt-4 gap-0.83 justify-center">
+          <div className="flex flex-col pt-8 gap-0.83 justify-center height-member-activity overflow-scroll mt-5 member-section">
+            <div className="flex items-center">
+              <div>
+                <img src={yellowDottedIcon} alt="" />
+              </div>
+              <div className="pl-0.68">
+                <img src={slackIcon} alt="" />
+              </div>
+              <div className="flex flex-col pl-0.89">
+                <div className="font-Poppins font-normal text-card leading-4">Kamil Pavlicko sent 1 message to thread</div>
+                <div className="font-Poppins left-4 font-normal text-profileEmail text-duration">2 hours ago</div>
+              </div>
+            </div>
             <div className="flex items-center">
               <div>
                 <img src={yellowDottedIcon} alt="" />
@@ -210,39 +294,52 @@ const MembersProfile: React.FC = () => {
               <div className="font-Poppins font-medium text-error leading-5 text-addTag cursor-pointer" onClick={() => handleTagModal(true)}>
                 ADD TAG
               </div>
-              <Modal
-                isOpen={isTagModalOpen}
-                shouldCloseOnOverlayClick={false}
-                onRequestClose={() => setIsModalOpen(false)}
-                className="w-24.31 h-18.75 mx-auto  mt-32 rounded-lg modals-tag bg-white shadow-modal"
-              >
-                <div className="flex flex-col">
-                  <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Add Tag</h3>
-                  <form className="flex flex-col relative px-1.93 mt-9">
-                    <label htmlFor="billingName " className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack ">
-                      Tag Name
-                    </label>
-                    <input
-                      type="text"
-                      className="mt-0.375 inputs box-border bg-white shadow-inputShadow rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-trial placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
-                      placeholder="Enter Tag Name"
-                    />
-                    <div className="flex absolute right-1 top-24 pr-6 items-center">
-                      <Button
-                        type="button"
-                        text="CANCEL"
-                        className="mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel px-2 py-3  rounded border-none"
-                        onClick={() => setTagModalOpen(false)}
+              <div className="flex items-center justify-center">
+                <Modal
+                  isOpen={isTagModalOpen}
+                  shouldCloseOnOverlayClick={false}
+                  onRequestClose={() => setIsModalOpen(false)}
+                  className="w-24.31 h-18.75 mx-auto  rounded-lg modals-tag bg-white shadow-modal"
+                  style={{
+                    overlay: {
+                      display: 'flex',
+                      position: 'fixed',
+                      top: 0,
+                      left: 0,
+                      bottom: 0,
+                      right: 0,
+                      alignItems: 'center'
+                    }
+                  }}
+                >
+                  <div className="flex flex-col">
+                    <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Add Tag</h3>
+                    <form className="flex flex-col relative px-1.93 mt-9">
+                      <label htmlFor="billingName " className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack ">
+                        Tag Name
+                      </label>
+                      <input
+                        type="text"
+                        className="mt-0.375 inputs box-border bg-white shadow-inputShadow rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-trial placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
+                        placeholder="Enter Tag Name"
                       />
-                      <Button
-                        type="button"
-                        text="SAVE"
-                        className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn px-5 py-3  border-none btn-save-modal"
-                      />
-                    </div>
-                  </form>
-                </div>
-              </Modal>
+                      <div className="flex absolute right-1 top-24 pr-6 items-center">
+                        <Button
+                          type="button"
+                          text="CANCEL"
+                          className="mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel px-2 py-3  rounded border-none"
+                          onClick={() => setTagModalOpen(false)}
+                        />
+                        <Button
+                          type="button"
+                          text="SAVE"
+                          className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn px-5 py-3  border-none btn-save-modal"
+                        />
+                      </div>
+                    </form>
+                  </div>
+                </Modal>
+              </div>
             </div>
             <div className="flex flex-wrap pt-1.56 gap-2">
               <div className="labels flex  items-center px-2  h-8 rounded bg-tagSection">
@@ -291,6 +388,17 @@ const MembersProfile: React.FC = () => {
           shouldCloseOnOverlayClick={false}
           onRequestClose={() => setIsModalOpen(false)}
           className="w-24.31 pb-28 mx-auto  mt-32 rounded-lg modals-tag bg-white shadow-modal "
+          style={{
+            overlay: {
+              display: 'flex',
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              bottom: 0,
+              right: 0,
+              alignItems: 'center'
+            }
+          }}
         >
           <div className="flex flex-col ml-1.8 pt-9 ">
             <h3 className="font-Inter font-semibold text-xl leading-1.43">Merge Members</h3>
