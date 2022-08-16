@@ -1,13 +1,32 @@
 /* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {
+  MembersProfileActivityGraphData,
+  PlatformsData,
+  VerifyMembers,
+  VerifyPlatform,
+  GetMembersListQueryParams,
+  MembersListResponse,
+  MembersCountResponse
+} from 'modules/members/interface/members.interface';
 import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
-import { GetMembersListQueryParams, MembersCountResponse, MembersListResponse } from 'modules/members/interface/members.interface';
 import { InitialState } from '../types/members.type';
 
 const countResponse = {
   count: 0,
   title: '',
   analyticMessage: ''
+};
+
+const membersGraphResponse = {
+  series: [
+    {
+      name: '',
+      data: []
+    }
+  ],
+  xAxis: []
 };
 
 export const membersListResponse = {
@@ -60,6 +79,8 @@ const initialState: InitialState = {
   membersNewCountData: countResponse,
   membersActiveCountData: countResponse,
   membersInActiveCountData: countResponse,
+  membersProfileActivityGraphData: membersGraphResponse,
+  platformsData: [],
   membersListData: membersListResponse,
   customizedColumn: customizedColumnProps
 };
@@ -74,31 +95,46 @@ const membersActiveCount = (state: InitialState) => state;
 
 const membersInActiveCount = (state: InitialState) => state;
 
+const platformData = (state: InitialState) => state;
+
 const membersList = (state: InitialState, action: PayloadAction<GetMembersListQueryParams>) => state;
 
 //Reducer Call
 
-const getmembersTotalCountData = (state: InitialState, action: PayloadAction<MembersCountResponse>) => ({
+const getMembersTotalCountData = (state: InitialState, action: PayloadAction<MembersCountResponse>) => ({
   ...state,
   membersTotalCountData: action.payload
 });
 
-const getmembersNewCountData = (state: InitialState, action: PayloadAction<MembersCountResponse>) => ({
+const getMembersNewCountData = (state: InitialState, action: PayloadAction<MembersCountResponse>) => ({
   ...state,
   membersNewCountData: action.payload
 });
 
-const getmembersActiveCountData = (state: InitialState, action: PayloadAction<MembersCountResponse>) => ({
+const getMembersActiveCountData = (state: InitialState, action: PayloadAction<MembersCountResponse>) => ({
   ...state,
   membersActiveCountData: action.payload
 });
 
-const getmembersInActiveCountData = (state: InitialState, action: PayloadAction<MembersCountResponse>) => ({
+const getMembersInActiveCountData = (state: InitialState, action: PayloadAction<MembersCountResponse>) => ({
   ...state,
   membersInActiveCountData: action.payload
 });
 
-const getmembersListData = (state: InitialState, action: PayloadAction<MembersListResponse>) => ({
+const getMembersActivityGraphData = (state: InitialState, action: PayloadAction<VerifyMembers>) => state;
+
+const setMembersActivityGraphData = (state: InitialState, action: PayloadAction<MembersProfileActivityGraphData>) => {
+  state.membersProfileActivityGraphData = action.payload;
+};
+
+const setPlatformsData = (state: InitialState, action: PayloadAction<{ platformsData: PlatformsData[] }>) => {
+  //   state.platformsData = state.platformsData.map((data: PlatformsData) => (data = action.payload));
+  state.platformsData = action.payload.platformsData;
+};
+
+const getMembersActivityGraphDataPerPlatform = (state: InitialState, action: PayloadAction<VerifyPlatform>) => state;
+
+const getMembersListData = (state: InitialState, action: PayloadAction<MembersListResponse>) => ({
   ...state,
   membersListData: action.payload
 });
@@ -108,7 +144,6 @@ const customizedColumnData = (state: InitialState, action: PayloadAction<Array<C
   customizedColumn: action.payload
 });
 
-
 const membersSlice = createSlice({
   name: 'members',
   initialState,
@@ -117,12 +152,17 @@ const membersSlice = createSlice({
     membersNewCount,
     membersActiveCount,
     membersInActiveCount,
-    getmembersTotalCountData,
-    getmembersNewCountData,
-    getmembersActiveCountData,
-    getmembersInActiveCountData,
+    getMembersActivityGraphData,
+    getMembersTotalCountData,
+    getMembersNewCountData,
+    getMembersActiveCountData,
+    getMembersInActiveCountData,
+    setMembersActivityGraphData,
+    platformData,
+    setPlatformsData,
+    getMembersActivityGraphDataPerPlatform,
     membersList,
-    getmembersListData,
+    getMembersListData,
     customizedColumnData
   }
 });

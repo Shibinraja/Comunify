@@ -3,35 +3,38 @@ import profileImage from '../../../../assets/images/profile-member.svg';
 import dropDownIcon from '../../../../assets/images/profile-dropdown.svg';
 import slackIcon from '../../../../assets/images/slack.svg';
 import closeIcon from '../../../../assets/images/close-member.svg';
-import yelloDottedIcon from '../../../../assets/images/yellow_dotted.svg';
+import yellowDottedIcon from '../../../../assets/images/yellow_dotted.svg';
 import unsplashIcon from '../../../../assets/images/unsplash_mj.svg';
 import searchIcon from '../../../../assets/images/search.svg';
 import calendarIcon from '../../../../assets/images/calandar.svg';
-
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-
 import Button from 'common/button';
 import Modal from 'react-modal';
 import MembersProfileGraph from '../membersProfileGraph/MembersProfileGraph';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../../../store';
+import membersSlice from '../../store/slice/members.slice';
+import { useAppSelector } from '../../../../hooks/useRedux';
+import { MembersProfileActivityGraphData, PlatformsData } from '../../interface/members.interface';
+import { getLocalWorkspaceId } from '../../../../lib/helper';
 Modal.setAppElement('#root');
 
 const MembersProfile: React.FC = () => {
   const navigate = useNavigate();
-  const { workspaceId } = useParams();
   const [isSelectDropDownActive, setSelectDropDownActive] = useState<boolean>(false);
   const [selected, setSelected] = useState<string>('');
   const [isIntegrationDropDownActive, setIntegrationDropDownActive] = useState<boolean>(false);
   const [selectedIntegration, setSelectedIntegration] = useState<string>('');
-  const [isModalOpen, setisModalOpen] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isTagModalOpen, setTagModalOpen] = useState<boolean>(false);
   const [fromDate, setFromDate] = useState<Date>();
   const [toDate, setToDate] = useState<Date>();
   const [isFilterDropDownActive, setFilterDropdownActive] = useState<boolean>(false);
 
   const handleModal = (val: boolean) => {
-    setisModalOpen(val);
+    setIsModalOpen(val);
   };
 
   const handleTagModal = (val: boolean) => {
@@ -51,8 +54,10 @@ const MembersProfile: React.FC = () => {
   };
 
   const navigateToReviewMerge = () => {
-    navigate(`/${workspaceId}/members/members-review`);
+    navigate('/members/members-review');
   };
+
+  const dispatch: AppDispatch = useDispatch();
 
   const dropDownRef = useRef<HTMLDivElement>(null);
 
@@ -64,14 +69,40 @@ const MembersProfile: React.FC = () => {
     }
   };
 
+  const workspaceId = getLocalWorkspaceId();
+
   useEffect(() => {
+    dispatch(membersSlice.actions.getMembersActivityGraphData({ workspaceId, memberId: '98dd1af5-e8ce-4924-a133-61409b3f56e2' }));
+    dispatch(membersSlice.actions.platformData());
     document.addEventListener('click', handleOutsideClick);
     return () => {
       document.removeEventListener('click', handleOutsideClick);
     };
   }, []);
 
-  const selectOptions = ['All', 'Slack', 'Higherlogic'];
+  const activityGraphData: MembersProfileActivityGraphData = useAppSelector((state) => state.members.membersProfileActivityGraphData);
+  const platformData: PlatformsData[] = useAppSelector((state) => state.members.platformsData);
+  const selectPlatformToDisplayOnGraph = (id: string, name: string) => {
+    setSelected(name);
+
+    switch (name) {
+      case 'All':
+        dispatch(membersSlice.actions.getMembersActivityGraphData({ workspaceId, memberId: '98dd1af5-e8ce-4924-a133-61409b3f56e2' }));
+        break;
+      case 'Slack':
+        dispatch(
+          membersSlice.actions.getMembersActivityGraphDataPerPlatform({
+            workspaceId,
+            memberId: '98dd1af5-e8ce-4924-a133-61409b3f56e2',
+            platform: name.toLocaleLowerCase().trim()
+          })
+        );
+        break;
+      default:
+        break;
+    }
+  };
+
   const integrationOption = ['All Integrations', 'Slack', 'Vanilla', 'Higherlogic'];
 
   return (
@@ -82,7 +113,7 @@ const MembersProfile: React.FC = () => {
             <div className="font-Poppins font-semibold text-base leading-9 text-accountBlack">Member Activity by Source</div>
             <div className="select relative">
               <div
-                className="flex justify-around items-center cursor-pointer box-border w-9.59 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border"
+                className="flex justify-around items-center cursor-pointer box-border w-9.59 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border "
                 ref={dropDownRef}
                 onClick={handleDropDownActive}
               >
@@ -96,13 +127,19 @@ const MembersProfile: React.FC = () => {
                   className="absolute flex flex-col text-left px-5 pt-2  cursor-pointer box-border w-full bg-white z-40 rounded-0.6 shadow-contactCard pb-2 app-input-card-border"
                   onClick={handleDropDownActive}
                 >
-                  {selectOptions.map((options: string) => (
+                  <div
+                    className='className="rounded-0.3 h-1.93 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack hover:bg-signUpDomain transition ease-in duration-100'
+                    onClick={() => selectPlatformToDisplayOnGraph('', 'All')}
+                  >
+                    All
+                  </div>
+                  {platformData?.map((data: PlatformsData) => (
                     <div
-                      key={options}
+                      key={data?.id}
                       className="rounded-0.3 h-1.93 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack hover:bg-signUpDomain transition ease-in duration-100"
-                      onClick={() => setSelected(options)}
+                      onClick={() => selectPlatformToDisplayOnGraph(data?.id, data?.name)}
                     >
-                      {options}
+                      {data?.name}
                     </div>
                   ))}
                 </div>
@@ -110,7 +147,7 @@ const MembersProfile: React.FC = () => {
             </div>
           </div>
           <div className="chart pt-5 ">
-            <MembersProfileGraph />
+            <MembersProfileGraph activityGraphData={activityGraphData} />
           </div>
         </div>
         <div className="flex pt-2.18 items-center">
@@ -191,7 +228,7 @@ const MembersProfile: React.FC = () => {
           <div className="flex flex-col pt-8 gap-0.83 justify-center height-member-activity overflow-scroll mt-5 member-section">
             <div className="flex items-center">
               <div>
-                <img src={yelloDottedIcon} alt="" />
+                <img src={yellowDottedIcon} alt="" />
               </div>
               <div className="pl-0.68">
                 <img src={slackIcon} alt="" />
@@ -203,7 +240,7 @@ const MembersProfile: React.FC = () => {
             </div>
             <div className="flex items-center">
               <div>
-                <img src={yelloDottedIcon} alt="" />
+                <img src={yellowDottedIcon} alt="" />
               </div>
               <div className="pl-0.68">
                 <img src={slackIcon} alt="" />
@@ -215,7 +252,7 @@ const MembersProfile: React.FC = () => {
             </div>
             <div className="flex items-center">
               <div>
-                <img src={yelloDottedIcon} alt="" />
+                <img src={yellowDottedIcon} alt="" />
               </div>
               <div className="pl-0.68">
                 <img src={slackIcon} alt="" />
@@ -227,7 +264,7 @@ const MembersProfile: React.FC = () => {
             </div>
             <div className="flex items-center">
               <div>
-                <img src={yelloDottedIcon} alt="" />
+                <img src={yellowDottedIcon} alt="" />
               </div>
               <div className="pl-0.68">
                 <img src={slackIcon} alt="" />
@@ -273,7 +310,7 @@ const MembersProfile: React.FC = () => {
                 <Modal
                   isOpen={isTagModalOpen}
                   shouldCloseOnOverlayClick={false}
-                  onRequestClose={() => setisModalOpen(false)}
+                  onRequestClose={() => setIsModalOpen(false)}
                   className="w-24.31 h-18.75 mx-auto  rounded-lg modals-tag bg-white shadow-modal"
                   style={{
                     overlay: {
@@ -361,7 +398,7 @@ const MembersProfile: React.FC = () => {
         <Modal
           isOpen={isModalOpen}
           shouldCloseOnOverlayClick={false}
-          onRequestClose={() => setisModalOpen(false)}
+          onRequestClose={() => setIsModalOpen(false)}
           className="w-24.31 pb-28 mx-auto  mt-32 rounded-lg modals-tag bg-white shadow-modal "
           style={{
             overlay: {
@@ -414,7 +451,7 @@ const MembersProfile: React.FC = () => {
                   type="button"
                   text="CANCEL"
                   className="mr-2.5 font-Poppins text-error font-medium border-cancel  leading-1.31 text-thinGray cursor-pointer w-5.25 h-2.81 rounded box-border"
-                  onClick={() => setisModalOpen(false)}
+                  onClick={() => setIsModalOpen(false)}
                 />
                 <Button
                   type="button"

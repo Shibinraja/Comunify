@@ -5,8 +5,23 @@ import { AxiosError, SuccessResponse } from '@/lib/api';
 import { showErrorToast } from 'common/toast/toastFunctions';
 import loaderSlice from 'modules/authentication/store/slices/loader.slice';
 import membersSlice from '../slice/members.slice';
-import { InactiveCountService, MembersListService, TotalCountService } from 'modules/members/services/members.services';
-import { GetMembersListQueryParams, MembersCountResponse, MembersListResponse } from 'modules/members/interface/members.interface';
+import {
+  InactiveCountService,
+  PlatformsDataService,
+  MembersActivityGraphService,
+  MembersListService,
+  TotalCountService,
+  GetMembersActivityGraphDataPerPlatformService
+} from 'modules/members/services/members.services';
+import {
+  PlatformsData,
+  GetMembersListQueryParams,
+  MembersCountResponse,
+  MembersListResponse,
+  MembersProfileActivityGraphData,
+  VerifyMembers,
+  VerifyPlatform
+} from 'modules/members/interface/members.interface';
 import { PayloadAction } from '@reduxjs/toolkit';
 
 // const forwardTo = (location: string) => {
@@ -19,7 +34,7 @@ function* membersTotalCount() {
 
     const res: SuccessResponse<MembersCountResponse> = yield call(TotalCountService);
     if (res?.data) {
-      yield put(membersSlice.actions.getmembersTotalCountData(res?.data));
+      yield put(membersSlice.actions.getMembersTotalCountData(res?.data));
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
@@ -35,7 +50,7 @@ function* membersNewCount() {
 
     const res: SuccessResponse<MembersCountResponse> = yield call(TotalCountService);
     if (res?.data) {
-      yield put(membersSlice.actions.getmembersNewCountData(res?.data));
+      yield put(membersSlice.actions.getMembersNewCountData(res?.data));
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
@@ -51,7 +66,7 @@ function* membersActiveCount() {
 
     const res: SuccessResponse<MembersCountResponse> = yield call(TotalCountService);
     if (res?.data) {
-      yield put(membersSlice.actions.getmembersActiveCountData(res?.data));
+      yield put(membersSlice.actions.getMembersActiveCountData(res?.data));
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
@@ -67,7 +82,7 @@ function* membersInActiveCount() {
 
     const res: SuccessResponse<MembersCountResponse> = yield call(InactiveCountService);
     if (res?.data) {
-      yield put(membersSlice.actions.getmembersInActiveCountData(res?.data));
+      yield put(membersSlice.actions.getMembersInActiveCountData(res?.data));
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
@@ -83,11 +98,53 @@ function* membersList(action: PayloadAction<Required<GetMembersListQueryParams>>
 
     const res: SuccessResponse<MembersListResponse> = yield call(MembersListService, action.payload);
     if (res?.data) {
-      yield put(membersSlice.actions.getmembersListData(res?.data));
+      yield put(membersSlice.actions.getMembersListData(res?.data));
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
+  } finally {
+    yield put(loaderSlice.actions.stopLoadingAction());
+  }
+}
+
+function* membersActivityGraphSaga(action: PayloadAction<VerifyMembers>) {
+  try {
+    yield put(loaderSlice.actions.startLoadingAction());
+    const res: SuccessResponse<MembersProfileActivityGraphData> = yield call(MembersActivityGraphService, action.payload);
+    yield put(membersSlice.actions.setMembersActivityGraphData(res?.data));
+  } catch (e) {
+    const error = e as AxiosError<unknown>;
+    if (error?.response?.data?.message) {
+      showErrorToast('Failed to load graph data');
+    }
+  } finally {
+    yield put(loaderSlice.actions.stopLoadingAction());
+  }
+}
+
+function* getPlatformsDataSaga() {
+  try {
+    yield put(loaderSlice.actions.startLoadingAction());
+    const res: SuccessResponse<PlatformsData[]> = yield call(PlatformsDataService);
+    yield put(membersSlice.actions.setPlatformsData({ platformsData: res?.data }));
+  } catch (e) {
+    const error = e as AxiosError<unknown>;
+    throw error.response?.data?.message;
+  } finally {
+    yield put(loaderSlice.actions.stopLoadingAction());
+  }
+}
+
+function* getMembersActivityGraphDataPerPlatformSaga(action: PayloadAction<VerifyPlatform>) {
+  try {
+    const res: SuccessResponse<MembersProfileActivityGraphData> = yield call(GetMembersActivityGraphDataPerPlatformService, action.payload);
+    yield put(membersSlice.actions.setMembersActivityGraphData(res?.data));
+  } catch (e) {
+    const error = e as AxiosError<unknown>;
+    if (error?.response?.data?.message) {
+      showErrorToast('Failed to load graph data');
+    }
   } finally {
     yield put(loaderSlice.actions.stopLoadingAction());
   }
@@ -99,4 +156,7 @@ export default function* membersSaga(): SagaIterator {
   yield takeEvery(membersSlice.actions.membersActiveCount.type, membersActiveCount);
   yield takeEvery(membersSlice.actions.membersInActiveCount.type, membersInActiveCount);
   yield takeEvery(membersSlice.actions.membersList.type, membersList);
+  yield takeEvery(membersSlice.actions.getMembersActivityGraphData.type, membersActivityGraphSaga);
+  yield takeEvery(membersSlice.actions.platformData.type, getPlatformsDataSaga);
+  yield takeEvery(membersSlice.actions.getMembersActivityGraphDataPerPlatform.type, getMembersActivityGraphDataPerPlatformSaga);
 }

@@ -26,6 +26,38 @@ export type MembersCountResponse = {
   analyticMessage: string;
 };
 
+export interface SeriesDataForMemberGraph {
+  name: string;
+  data: number[];
+}
+
+export interface MembersProfileActivityGraphData {
+  series: SeriesDataForMemberGraph[];
+  xAxis: string[];
+}
+
+export interface VerifyMembers {
+  workspaceId: string;
+  memberId: string;
+}
+
+export interface MemberGraphProps {
+  activityGraphData: MembersProfileActivityGraphData;
+}
+export interface PlatformsData {
+  id: string;
+  name: string;
+  status?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface VerifyPlatform {
+  workspaceId: string;
+  memberId: string;
+  platform: string;
+}
+
 export type MembersListData = {
   id: string;
   name: string;
