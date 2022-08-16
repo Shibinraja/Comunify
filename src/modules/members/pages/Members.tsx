@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import Button from 'common/button';
 import MembersCard from 'common/membersCard/MembersCard';
 import React, {
@@ -28,12 +28,12 @@ import MembersFilter from './MembersFilter';
 import MembersDraggableColumn from './membersTableColumn/membersDraggableColumn';
 import { ColumNames } from './MembersTableData';
 import { customDateLinkProps } from './membertypes';
-import { getLocalWorkspaceId } from '@/lib/helper';
 
 Modal.setAppElement('#root');
 
 const Members: React.FC = () => {
   const navigate = useNavigate();
+  // const workspaceId = getLocalWorkspaceId();
   const [isModalOpen, setisModalOpen] = useState<boolean>(false);
   const [toDate, setToDate] = useState<Date>();
   const [columns, setColumns] = useState<Array<ColumnNameProps>>(ColumNames);
@@ -46,8 +46,8 @@ const Members: React.FC = () => {
     '7day': false,
     '1month': false
   });
+  const { workspaceId } = useParams();
 
-  const workspaceId = getLocalWorkspaceId();
   const dispatch = useAppDispatch();
   const customizedColumnData = useAppSelector((state) => state.members.customizedColumn);
 
@@ -114,7 +114,7 @@ const Members: React.FC = () => {
   };
 
   const navigateToProfile = () => {
-    navigate(`/members/profile`);
+    navigate(`/${workspaceId}/members/profile`);
   };
 
   // Function to convert the day and subtract based on no of days/ months.
@@ -179,7 +179,7 @@ const Members: React.FC = () => {
   return (
     <div className="flex flex-col mt-12">
       <h3 className="font-Poppins font-semibold text-infoBlack text-infoData leading-9">Members</h3>
-      {customizedColumn && customizedColumn[0]?.name ? (
+      {customizedColumn && customizedColumn?.[0]?.name ? (
         <Fragment>
           <div className="flex mt-1.8 items-center ">
             <div className="flex relative items-center ">

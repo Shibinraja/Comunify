@@ -17,33 +17,35 @@ import { ActiveState } from '../../interface/interface';
 import Input from 'common/input';
 import widgetSearchIcon from '../../assets/images/widget-search.svg';
 import QuickInfo from 'common/quickInfo/QuickInfo';
+import { getLocalWorkspaceId } from '@/lib/helper';
 
 const SideNav: React.FC = () => {
   const navigate = useNavigate();
   const [active, setActive] = useState<ActiveState>({ dashboard: false, members: false, activity: false, reports: false, settings: false });
   const [isDrawerOpen, setDrawerOpen] = useState<boolean>(false);
+  const workspaceId = getLocalWorkspaceId();
 
   const navigateRoute = (route: string): void => {
     switch (route) {
       case '/dashboard':
         setActive({ dashboard: true });
-        navigate('/dashboard');
+        navigate(`${workspaceId}/dashboard`);
         break;
       case '/members':
         setActive({ members: true });
-        navigate('/members');
+        navigate(`${workspaceId}/members`);
         break;
       case '/activity':
         setActive({ activity: true });
-        navigate('/activity');
+        navigate(`${workspaceId}/activity`);
         break;
       case '/reports':
         setActive({ reports: true });
-        navigate('/reports');
+        navigate(`${workspaceId}/reports`);
         break;
       case '/settings':
         setActive({ settings: true });
-        navigate('/settings');
+        navigate(`${workspaceId}/settings`);
         break;
 
       default:
