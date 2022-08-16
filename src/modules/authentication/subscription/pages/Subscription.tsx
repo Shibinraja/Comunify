@@ -6,6 +6,7 @@ import cardNumberIcon from '../../../../assets/images/card.svg';
 import { Formik, Form } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { SubscriptionValues } from 'modules/authentication/interface/auth.interface';
+import './Subscription.css';
 
 const Subscription: React.FC = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const Subscription: React.FC = () => {
   return (
     <div className="subscription">
       <div className="flex w-full height-calc">
-        <div className="w-1/2 rounded-r-lg  bg-thinBlue flex items-center justify-center p-28 signup-cover-bg bg-no-repeat bg-left overflow-hidden">
+        <div className="w-1/2 rounded-r-lg  bg-thinBlue flex items-center justify-center p-28 subscription-cover-bg bg-no-repeat bg-left overflow-hidden">
           <img src={bgSubscriptionImage} alt="" className="object-cover" />
         </div>
         <div className="flex justify-center w-1/2">
