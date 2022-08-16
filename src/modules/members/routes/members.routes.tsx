@@ -14,12 +14,12 @@ const membersRoutes: RoutesArray = {
       element: <Members />
     },
     {
-      element: <MembersProfileRoute />,
-      path: 'profile'
+      path: 'profile',
+      element: <MembersProfileRoute />
     },
     {
-      element: <MembersReview />,
-      path: 'members-review'
+      path: 'members-review',
+      element: <MembersReview />
     }
   ]
 };

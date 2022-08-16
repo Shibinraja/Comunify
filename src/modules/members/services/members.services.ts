@@ -9,7 +9,8 @@ import {
   PlatformsData,
   VerifyPlatform,
   GetMembersListQueryParams,
-  MembersListResponse
+  MembersListResponse,
+  VerifyMembers
 } from '../interface/members.interface';
 
 //Members Module
@@ -33,8 +34,8 @@ export function* InactiveCountService(): GeneratorResponse<MembersCountResponse>
   return data;
 }
 
-export function* MembersActivityGraphService(memberId: string): GeneratorResponse<MembersProfileActivityGraphData> {
-  const { data } = yield request.get(`${members_module}/${memberId}/activitygraph`);
+export function* MembersActivityGraphService(params: VerifyMembers): GeneratorResponse<MembersProfileActivityGraphData> {
+  const { data } = yield request.get(`/v1/${params.workspaceId}/members/${params.memberId}/activitygraph`);
   return data;
 }
 

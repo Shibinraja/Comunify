@@ -111,7 +111,7 @@ function* membersList(action: PayloadAction<Required<GetMembersListQueryParams>>
 function* membersActivityGraphSaga(action: PayloadAction<VerifyMembers>) {
   try {
     yield put(loaderSlice.actions.startLoadingAction());
-    const res: SuccessResponse<MembersProfileActivityGraphData> = yield call(MembersActivityGraphService, action.payload.memberId);
+    const res: SuccessResponse<MembersProfileActivityGraphData> = yield call(MembersActivityGraphService, action.payload);
     yield put(membersSlice.actions.setMembersActivityGraphData(res?.data));
   } catch (e) {
     const error = e as AxiosError<unknown>;

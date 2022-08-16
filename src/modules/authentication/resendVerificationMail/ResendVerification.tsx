@@ -25,8 +25,6 @@ const ResendVerificationMail: React.FC = () => {
   useEffect(() => {
     if (token) {
       dispatch(authSlice.actions.verifyEmail({ id: token }));
-    } else if (tokenData) {
-      dispatch(authSlice.actions.verifyEmail({ id: tokenData }));
     }
   }, [token]);
 

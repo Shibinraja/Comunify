@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { useEffect, useRef, useState } from 'react';
 import profileImage from '../../../../assets/images/profile-member.svg';
 import dropDownIcon from '../../../../assets/images/profile-dropdown.svg';
@@ -7,11 +8,9 @@ import yellowDottedIcon from '../../../../assets/images/yellow_dotted.svg';
 import unsplashIcon from '../../../../assets/images/unsplash_mj.svg';
 import searchIcon from '../../../../assets/images/search.svg';
 import calendarIcon from '../../../../assets/images/calandar.svg';
-
 import { useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-
 import Button from 'common/button';
 import Modal from 'react-modal';
 import MembersProfileGraph from '../membersProfileGraph/MembersProfileGraph';
@@ -20,6 +19,7 @@ import { AppDispatch } from '../../../../store';
 import membersSlice from '../../store/slice/members.slice';
 import { useAppSelector } from '../../../../hooks/useRedux';
 import { MembersProfileActivityGraphData, PlatformsData } from '../../interface/members.interface';
+import { getLocalWorkspaceId } from '../../../../lib/helper';
 Modal.setAppElement('#root');
 
 const MembersProfile: React.FC = () => {
@@ -70,8 +70,10 @@ const MembersProfile: React.FC = () => {
     }
   };
 
+  const workspaceId = getLocalWorkspaceId();
+
   useEffect(() => {
-    dispatch(membersSlice.actions.getMembersActivityGraphData({ memberId: 'e2612c51-a300-4c5e-8afe-a6585d24f7fc' }));
+    dispatch(membersSlice.actions.getMembersActivityGraphData({ workspaceId, memberId: '98dd1af5-e8ce-4924-a133-61409b3f56e2' }));
     dispatch(membersSlice.actions.platformData());
     document.addEventListener('click', handleOutsideClick);
     return () => {
@@ -82,12 +84,14 @@ const MembersProfile: React.FC = () => {
   const activityGraphData: MembersProfileActivityGraphData = useAppSelector((state) => state.members.membersProfileActivityGraphData);
   const platformData: PlatformsData[] = useAppSelector((state) => state.members.platformsData);
 
+  console.log('workspace id is', workspaceId);
+
   const selectPlatformToDisplayOnGraph = (id: string, name: string) => {
     setSelected(name);
     if (name.trim() !== 'All') {
       dispatch(membersSlice.actions.getMembersActivityGraphDataPerPlatform({ memberId: 'e2612c51-a300-4c5e-8afe-a6585d24f7fc', platformId: id }));
     } else {
-      dispatch(membersSlice.actions.getMembersActivityGraphData({ memberId: 'e2612c51-a300-4c5e-8afe-a6585d24f7fc' }));
+      dispatch(membersSlice.actions.getMembersActivityGraphData({ workspaceId, memberId: '98dd1af5-e8ce-4924-a133-61409b3f56e2' }));
     }
   };
 

@@ -37,6 +37,7 @@ export interface MembersProfileActivityGraphData {
 }
 
 export interface VerifyMembers {
+  workspaceId: string;
   memberId: string;
 }
 
