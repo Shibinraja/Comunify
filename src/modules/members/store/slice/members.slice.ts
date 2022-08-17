@@ -6,9 +6,11 @@ import {
   PlatformsData,
   VerifyMembers,
   VerifyPlatform,
-  GetMembersListQueryParams,
   MembersListResponse,
-  MembersCountResponse
+  MembersCountResponse,
+  GetMembersListQueryParams,
+  ActivityDataResponse,
+  ActivityInfiniteScroll
 } from 'modules/members/interface/members.interface';
 import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
 import { InitialState } from '../types/members.type';
@@ -74,6 +76,11 @@ export const customizedColumnProps = [
   }
 ];
 
+const membersActivityInitialValue = {
+  result: [],
+  nextCursor: null
+};
+
 const initialState: InitialState = {
   membersTotalCountData: countResponse,
   membersNewCountData: countResponse,
@@ -82,7 +89,8 @@ const initialState: InitialState = {
   membersProfileActivityGraphData: membersGraphResponse,
   platformsData: [],
   membersListData: membersListResponse,
-  customizedColumn: customizedColumnProps
+  customizedColumn: customizedColumnProps,
+  membersActivityData: membersActivityInitialValue
 };
 
 //Saga Call
@@ -144,6 +152,13 @@ const customizedColumnData = (state: InitialState, action: PayloadAction<Array<C
   customizedColumn: action.payload
 });
 
+const getMembersActivityDataInfiniteScroll = (state: InitialState, action: PayloadAction<ActivityInfiniteScroll>) => state;
+
+const setMembersActivityData = (state: InitialState, action: PayloadAction<ActivityDataResponse>) => ({
+  ...state,
+  membersActivityData: { nextCursor: action.payload.nextCursor, result: [...state.membersActivityData.result, ...action.payload.result] }
+});
+
 const membersSlice = createSlice({
   name: 'members',
   initialState,
@@ -152,18 +167,20 @@ const membersSlice = createSlice({
     membersNewCount,
     membersActiveCount,
     membersInActiveCount,
-    getMembersActivityGraphData,
     getMembersTotalCountData,
     getMembersNewCountData,
     getMembersActiveCountData,
     getMembersInActiveCountData,
-    setMembersActivityGraphData,
-    platformData,
-    setPlatformsData,
-    getMembersActivityGraphDataPerPlatform,
     membersList,
     getMembersListData,
-    customizedColumnData
+    customizedColumnData,
+    setMembersActivityData,
+    getMembersActivityGraphData,
+    setMembersActivityGraphData,
+    getMembersActivityGraphDataPerPlatform,
+    platformData,
+    setPlatformsData,
+    getMembersActivityDataInfiniteScroll
   }
 });
 

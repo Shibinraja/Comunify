@@ -1,10 +1,10 @@
 import {
   PlatformsData,
-  MembersCountResponse,
   MembersProfileActivityGraphData,
-  MembersListResponse
+  MembersListResponse,
+  ActivityDataResponse,
+  MembersCountResponse
 } from 'modules/members/interface/members.interface';
-
 import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
 
 export type VoidGenerator<T = unknown, TNext = unknown> = Generator<T, void, TNext>;
@@ -20,4 +20,5 @@ export interface InitialState {
 
   membersListData: MembersListResponse;
   customizedColumn: Array<ColumnNameProps>;
+  membersActivityData: ActivityDataResponse;
 }

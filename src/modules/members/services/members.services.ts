@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import { GeneratorResponse } from '@/lib/api';
-import { members_module, platforms_module } from '@/lib/config';
+import { API_ENDPOINT, members_module, platforms_module } from '@/lib/config';
 import { request } from '@/lib/request';
 
 import {
@@ -10,7 +10,9 @@ import {
   VerifyPlatform,
   GetMembersListQueryParams,
   MembersListResponse,
-  VerifyMembers
+  VerifyMembers,
+  ActivityDataResponse,
+  ActivityInfiniteScroll
 } from '../interface/members.interface';
 
 //Members Module
@@ -61,6 +63,12 @@ export function* MembersListService(query: Required<GetMembersListQueryParams>):
       query.membersQuery['createdAT.lte'] ? `&createdAT.lte=${query.membersQuery['createdAT.lte']}` : ''
     }`
   );
+  return data;
+}
 
+export function* GetMembersActivityDataInfiniteScrollSaga(params: ActivityInfiniteScroll): GeneratorResponse<ActivityDataResponse> {
+  const { data } = yield request.get(
+    `${API_ENDPOINT}/v1/${params.workspaceId}/members/${params.memberId}/activity${params?.nextCursor ? `?cursor=${params.nextCursor}` : ''}`
+  );
   return data;
 }

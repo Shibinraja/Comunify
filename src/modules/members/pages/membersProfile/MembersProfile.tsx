@@ -17,8 +17,9 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../../../store';
 import membersSlice from '../../store/slice/members.slice';
 import { useAppSelector } from '../../../../hooks/useRedux';
-import { MembersProfileActivityGraphData, PlatformsData } from '../../interface/members.interface';
+import { MembersProfileActivityGraphData, PlatformsData, ActivityDataResponse, ActivityResult } from '../../interface/members.interface';
 import { getLocalWorkspaceId } from '../../../../lib/helper';
+
 Modal.setAppElement('#root');
 
 const MembersProfile: React.FC = () => {
@@ -70,9 +71,10 @@ const MembersProfile: React.FC = () => {
   };
 
   const workspaceId = getLocalWorkspaceId();
+  const [activityNextCursor, setActivityNextCursor] = useState<string | null>('');
 
   useEffect(() => {
-    dispatch(membersSlice.actions.getMembersActivityGraphData({ workspaceId, memberId: '98dd1af5-e8ce-4924-a133-61409b3f56e2' }));
+    dispatch(membersSlice.actions.getMembersActivityGraphData({ workspaceId, memberId: '4a717dcd-7bfa-4ed4-a3ee-58efcfd64764' }));
     dispatch(membersSlice.actions.platformData());
     document.addEventListener('click', handleOutsideClick);
     return () => {
@@ -80,20 +82,31 @@ const MembersProfile: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    dispatch(
+      membersSlice.actions.getMembersActivityDataInfiniteScroll({
+        workspaceId,
+        memberId: '4a717dcd-7bfa-4ed4-a3ee-58efcfd64764',
+        nextCursor: activityNextCursor ? activityNextCursor : ''
+      })
+    );
+  }, [activityNextCursor]);
+
+  const activityData: ActivityDataResponse = useAppSelector((state) => state.members.membersActivityData);
   const activityGraphData: MembersProfileActivityGraphData = useAppSelector((state) => state.members.membersProfileActivityGraphData);
   const platformData: PlatformsData[] = useAppSelector((state) => state.members.platformsData);
-  const selectPlatformToDisplayOnGraph = (id: string, name: string) => {
-    setSelected(name);
 
+  const selectPlatformToDisplayOnGraph = (name: string) => {
+    setSelected(name);
     switch (name) {
       case 'All':
-        dispatch(membersSlice.actions.getMembersActivityGraphData({ workspaceId, memberId: '98dd1af5-e8ce-4924-a133-61409b3f56e2' }));
+        dispatch(membersSlice.actions.getMembersActivityGraphData({ workspaceId, memberId: '4a717dcd-7bfa-4ed4-a3ee-58efcfd64764' }));
         break;
       case 'Slack':
         dispatch(
           membersSlice.actions.getMembersActivityGraphDataPerPlatform({
             workspaceId,
-            memberId: '98dd1af5-e8ce-4924-a133-61409b3f56e2',
+            memberId: '4a717dcd-7bfa-4ed4-a3ee-58efcfd64764',
             platform: name.toLocaleLowerCase().trim()
           })
         );
@@ -103,7 +116,11 @@ const MembersProfile: React.FC = () => {
     }
   };
 
-  const integrationOption = ['All Integrations', 'Slack', 'Vanilla', 'Higherlogic'];
+  const handleScroll = (event: React.UIEvent<HTMLElement>) => {
+    if (event.currentTarget.scrollTop > event.currentTarget.offsetHeight) {
+      setActivityNextCursor(activityData?.nextCursor);
+    }
+  };
 
   return (
     <div className="flex pt-3.93 w-full">
@@ -129,7 +146,7 @@ const MembersProfile: React.FC = () => {
                 >
                   <div
                     className='className="rounded-0.3 h-1.93 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack hover:bg-signUpDomain transition ease-in duration-100'
-                    onClick={() => selectPlatformToDisplayOnGraph('', 'All')}
+                    onClick={() => selectPlatformToDisplayOnGraph('All')}
                   >
                     All
                   </div>
@@ -137,7 +154,7 @@ const MembersProfile: React.FC = () => {
                     <div
                       key={data?.id}
                       className="rounded-0.3 h-1.93 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack hover:bg-signUpDomain transition ease-in duration-100"
-                      onClick={() => selectPlatformToDisplayOnGraph(data?.id, data?.name)}
+                      onClick={() => selectPlatformToDisplayOnGraph(data?.name)}
                     >
                       {data?.name}
                     </div>
@@ -172,14 +189,21 @@ const MembersProfile: React.FC = () => {
                 className="absolute flex flex-col text-left pt-2 px-2 cursor-pointer box-border w-full bg-white z-40 rounded-0.6 shadow-contactCard pb-2 app-input-card-border"
                 onClick={handleIntegrationDropDownActive}
               >
-                {integrationOption.map((options: string) => (
-                  <div key={options} className="w-full hover:bg-signUpDomain rounded-0.3 transition ease-in duration-100">
+                <div className="w-full hover:bg-signUpDomain rounded-0.3 transition ease-in duration-100">
+                  <div
+                    className="h-1.93 px-3 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack "
+                    onClick={() => setSelectedIntegration('All Integrations')}
+                  >
+                    All Integrations
+                  </div>
+                </div>
+                {platformData.map((options: PlatformsData) => (
+                  <div key={options.id} className="w-full hover:bg-signUpDomain rounded-0.3 transition ease-in duration-100">
                     <div
-                      key={options}
                       className="h-1.93 px-3 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack "
-                      onClick={() => setSelectedIntegration(options)}
+                      onClick={() => setSelectedIntegration(options?.name)}
                     >
-                      {options}
+                      {options?.name}
                     </div>
                   </div>
                 ))}
@@ -225,55 +249,26 @@ const MembersProfile: React.FC = () => {
             <div className="font-Poppins text-card leading-4 font-medium">May 2022</div>
             <div className="font-Poppins font-normal leading-4 text-renewalGray text-preview cursor-pointer">Preview All</div>
           </div>
-          <div className="flex flex-col pt-8 gap-0.83 justify-center height-member-activity overflow-scroll mt-5 member-section">
-            <div className="flex items-center">
-              <div>
-                <img src={yellowDottedIcon} alt="" />
+          <div
+            onScroll={handleScroll}
+            className="flex flex-col pt-8 gap-0.83 justify-center height-member-activity overflow-scroll mt-5 member-section"
+          >
+            {activityData.result.map((data: ActivityResult) => (
+              <div key={data?.id} className="flex items-center">
+                <div>
+                  <img src={yellowDottedIcon} alt="" />
+                </div>
+                <div className="pl-0.68">
+                  <img src={slackIcon} alt="" />
+                </div>
+                <div className="flex flex-col pl-0.89">
+                  <div className="font-Poppins font-normal text-card leading-4">{data?.displayValue}</div>
+                  <div className="font-Poppins left-4 font-normal text-profileEmail text-duration">
+                    {new Date(`${data?.createdAt}`).getHours()} hours ago
+                  </div>
+                </div>
               </div>
-              <div className="pl-0.68">
-                <img src={slackIcon} alt="" />
-              </div>
-              <div className="flex flex-col pl-0.89">
-                <div className="font-Poppins font-normal text-card leading-4">Kamil Pavlicko sent 1 message to thread</div>
-                <div className="font-Poppins left-4 font-normal text-profileEmail text-duration">2 hours ago</div>
-              </div>
-            </div>
-            <div className="flex items-center">
-              <div>
-                <img src={yellowDottedIcon} alt="" />
-              </div>
-              <div className="pl-0.68">
-                <img src={slackIcon} alt="" />
-              </div>
-              <div className="flex flex-col pl-0.89">
-                <div className="font-Poppins font-normal text-card leading-4">Kamil Pavlicko sent 1 message to thread</div>
-                <div className="font-Poppins left-4 font-normal text-profileEmail text-duration">2 hours ago</div>
-              </div>
-            </div>
-            <div className="flex items-center">
-              <div>
-                <img src={yellowDottedIcon} alt="" />
-              </div>
-              <div className="pl-0.68">
-                <img src={slackIcon} alt="" />
-              </div>
-              <div className="flex flex-col pl-0.89">
-                <div className="font-Poppins font-normal text-card leading-4">Kamil Pavlicko sent 1 message to thread</div>
-                <div className="font-Poppins left-4 font-normal text-profileEmail text-duration">2 hours ago</div>
-              </div>
-            </div>
-            <div className="flex items-center">
-              <div>
-                <img src={yellowDottedIcon} alt="" />
-              </div>
-              <div className="pl-0.68">
-                <img src={slackIcon} alt="" />
-              </div>
-              <div className="flex flex-col pl-0.89">
-                <div className="font-Poppins font-normal text-card leading-4">Kamil Pavlicko sent 1 message to thread</div>
-                <div className="font-Poppins left-4 font-normal text-profileEmail text-duration">2 hours ago</div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>

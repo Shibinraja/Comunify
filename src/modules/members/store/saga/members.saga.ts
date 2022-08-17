@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { call, put, takeEvery } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
 // import history from '@/lib/history';
@@ -11,7 +12,8 @@ import {
   MembersActivityGraphService,
   MembersListService,
   TotalCountService,
-  GetMembersActivityGraphDataPerPlatformService
+  GetMembersActivityGraphDataPerPlatformService,
+  GetMembersActivityDataInfiniteScrollSaga
 } from 'modules/members/services/members.services';
 import {
   PlatformsData,
@@ -20,7 +22,9 @@ import {
   MembersListResponse,
   MembersProfileActivityGraphData,
   VerifyMembers,
-  VerifyPlatform
+  VerifyPlatform,
+  ActivityDataResponse,
+  ActivityInfiniteScroll
 } from 'modules/members/interface/members.interface';
 import { PayloadAction } from '@reduxjs/toolkit';
 
@@ -138,6 +142,7 @@ function* getPlatformsDataSaga() {
 
 function* getMembersActivityGraphDataPerPlatformSaga(action: PayloadAction<VerifyPlatform>) {
   try {
+    yield put(loaderSlice.actions.startLoadingAction());
     const res: SuccessResponse<MembersProfileActivityGraphData> = yield call(GetMembersActivityGraphDataPerPlatformService, action.payload);
     yield put(membersSlice.actions.setMembersActivityGraphData(res?.data));
   } catch (e) {
@@ -145,6 +150,18 @@ function* getMembersActivityGraphDataPerPlatformSaga(action: PayloadAction<Verif
     if (error?.response?.data?.message) {
       showErrorToast('Failed to load graph data');
     }
+  } finally {
+    yield put(loaderSlice.actions.stopLoadingAction());
+  }
+}
+
+function* getMembersActivityDataInfiniteScrollSaga(action: PayloadAction<ActivityInfiniteScroll>) {
+  try {
+    yield put(loaderSlice.actions.startLoadingAction());
+    const res: SuccessResponse<ActivityDataResponse> = yield call(GetMembersActivityDataInfiniteScrollSaga, action.payload);
+    yield put(membersSlice.actions.setMembersActivityData(res?.data));
+  } catch (e) {
+    const error = e as AxiosError<unknown>;
   } finally {
     yield put(loaderSlice.actions.stopLoadingAction());
   }
@@ -159,4 +176,5 @@ export default function* membersSaga(): SagaIterator {
   yield takeEvery(membersSlice.actions.getMembersActivityGraphData.type, membersActivityGraphSaga);
   yield takeEvery(membersSlice.actions.platformData.type, getPlatformsDataSaga);
   yield takeEvery(membersSlice.actions.getMembersActivityGraphDataPerPlatform.type, getMembersActivityGraphDataPerPlatformSaga);
+  yield takeEvery(membersSlice.actions.getMembersActivityDataInfiniteScroll.type, getMembersActivityDataInfiniteScrollSaga);
 }

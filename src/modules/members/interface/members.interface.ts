@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 export interface workspaceId {
   workspaceId: string;
 }
@@ -94,4 +95,43 @@ export type MembersListResponse = {
 export interface DraggableComponentsProps {
   MembersColumn: boolean;
   handleModalClose: () => void;
+}
+
+export enum ActivitiesType {
+  Message = 'Message',
+  Event = 'Event',
+  Thread = 'Thread',
+  Reaction = 'Reaction',
+  Member = 'Member'
+}
+
+export interface ActivityResult {
+  id: string;
+  workspaceId: string;
+  activityId: string;
+  name: string;
+  platform: string;
+  type: ActivitiesType.Message;
+  value: string;
+  displayValue: string;
+  sourceUrl: string | null;
+  description: string;
+  comunifyMemberId: string;
+  profilePictureUrl: string;
+  platformId: string;
+  platformMemberId: string;
+  activityTime: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface ActivityDataResponse {
+  result: ActivityResult[];
+  nextCursor: string | null;
+}
+
+export interface ActivityInfiniteScroll {
+  workspaceId: string;
+  memberId: string;
+  nextCursor?: string | null;
 }
