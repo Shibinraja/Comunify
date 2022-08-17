@@ -64,8 +64,8 @@ const SignIn: React.FC = () => {
   return (
     <div className="sign-in-page ">
       <div className="auth-layout">
-        <div className="flex w-full height-calc container mx-auto">
-          <div className="w-1/2 overflow-scroll pb-5 flex justify-start items-start 2xl:justify-center 2xl:items-center ml-4">
+        <div className="flex w-full height-calc container mx-0 ml-24  xl:mx-28 3xl:mx-auto">
+          <div className="w-1/2 overflow-scroll pb-5 flex justify-start items-start 3xl:justify-center 3xl:items-center ml-4">
             <div className="max-w-40 mt-5.2 flex flex-col">
               <h3 className="font-Inter text-neutralBlack font-bold not-italic text-signIn leading-2.8">Sign In </h3>
               <p className="text-lightGray font-Inter  max-w-sm font-normal not-italic mt-0.78 text-desc">
