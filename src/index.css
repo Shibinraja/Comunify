@@ -57,7 +57,7 @@ input {
 }
 
 .border-fetching-card {
-  border: 1px solid #dee2e6;
+  border: 1px solid #DEE2E6;
 }
 
 .border-table {
@@ -172,8 +172,8 @@ input {
 
 .checkbox {
   -webkit-appearance: none;
-  width: 13px;
-  height: 13px;
+  width: 16px;
+  height: 15px;
   border: 1px solid #B6B7C3;
   border-radius: 2px;
 }
@@ -184,8 +184,7 @@ input {
 
 .checkbox::before {
   content: '';
-  width: 9px;
-  height: 9px;
+  height: 11px;
   pointer-events: none;
   background-image: url('../src/assets/images/check.svg');
   background-size: cover;
