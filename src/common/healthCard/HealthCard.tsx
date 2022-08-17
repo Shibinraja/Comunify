@@ -13,7 +13,7 @@ const HealthCard = () => {
       <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18">Health</h3>
       <div className="flex w-full justify-between items-center border-table shadow-healtCardShadow bg-white box-border rounded-0.9 mt-5 py-5 px-20">
         <div className="flex items-center">
-          <div className="w-[49.87px] relative">
+          <div className="w-[49.87px]">
             <ProgressProvider valueStart={0} valueEnd={percentage}>
               {(value: number) => (
                 <CircularProgressbarWithChildren
