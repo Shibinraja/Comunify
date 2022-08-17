@@ -37,7 +37,7 @@ const PublicRoute: React.FC<Props> = ({ children }) => {
 
   const access_token = tokenData || cookie.load('x-auth-cookie');
   const decodedToken: DecodeToken = access_token && decodeToken(access_token);
-  const workspaceId = getLocalWorkspaceId() || decodedToken?.workspaceId;
+  const workspaceId = decodedToken?.workspaceId || getLocalWorkspaceId();
 
   const [state, dispatchReducer] = useReducer<Reducer<PublicRouteState, PublicRouteStateValues>>(reducer, InitialRouteState);
 
