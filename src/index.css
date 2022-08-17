@@ -402,3 +402,6 @@ input {
 .CircularProgressbar-path {
   stroke-width: 11;
 }
+.menu-box{
+  height: calc(100vh - 25rem);
+}
