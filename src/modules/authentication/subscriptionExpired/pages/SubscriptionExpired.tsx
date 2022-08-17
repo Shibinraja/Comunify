@@ -19,10 +19,10 @@ const SubscriptionExpired: React.FC = () => {
   }, []);
 
   return (
-    <div className="w-full flex flex-col items-center justify-center mt-7.59">
+    <div className="w-full flex flex-col items-center justify-center mt-20 overflow-scroll h-full">
       <h3 className="text-neutralBlack font-bold font-Inter text-signIn leading-2.8">Subscription Expired!</h3>
       <p className="mt-2.5 text-lightGray font-Inter font-normal leading-1.43 text-desc">Choose a plan to continue.</p>
-      <div className="subscriptionCard">
+      <div className="subscriptionCard w-[20%] lg:w-[25%] xl:w-[24%] 2xl:w-[20%] 3xl:w-[16%]">
         {comunifySubscriptionPlan?.map((data: SubscriptionPackages) => (
           <SubscriptionCard key={data.id} subscriptionData={data} />
         ))}
