@@ -32,47 +32,51 @@ const ForgotPassword: React.FC = () => {
 
   return (
     <div className="forgot-password">
-      <div className="flex w-full height-calc">
-        <div className="w-1/2 rounded-r-lg  bg-thinBlue flex items-center password-cover-bg justify-center  p-28 signup-cover-bg bg-no-repeat bg-left overflow-hidden">
-          <img src={bgForgotImage} alt="" className="object-cover" />
-        </div>
-        <div className="w-1/2 flex pl-7.5 pt-13.1 flex-col overflow-scroll pb-5">
-          <h1 className="font-Inter font-bold text-signIn text-neutralBlack leading-2.8">Forgot Password</h1>
-          <p className="mt-0.78 text-desc font-normal leading-1.8 font-Inter text-lightGray max-w-sm">
-            Enter your email address to reset your password.
-          </p>
-          <Formik
-            innerRef={formikRef}
-            initialValues={initialValues}
-            onSubmit={handleSubmit}
-            validateOnChange={true}
-            validationSchema={forgotPasswordSchema}
-          >
-            {({ errors, handleBlur, handleChange, handleSubmit, touched, values }): JSX.Element => (
-              <Form className="w-25.9 mt-1.9" autoComplete="off" onSubmit={handleSubmit}>
-                <div className="email">
-                  <Input
-                    type="email"
-                    placeholder="Email"
-                    label="Email"
-                    id="email"
-                    name="email"
-                    className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.email}
-                    errors={Boolean(touched.email && errors.email)}
-                    helperText={touched.email && errors.email}
-                  />
-                </div>
-                <Button
-                  text="Submit"
-                  type="submit"
-                  className="font-Poppins rounded-lg text-base font-semibold text-white transition ease-in duration-300 w-full mt-1.84 h-3.6 hover:shadow-buttonShadowHover btn-gradient"
-                />
-              </Form>
-            )}
-          </Formik>
+      <div className="auth-layout-forgot">
+        <div className="flex w-full height-calc container mx-auto">
+          <div className="w-1/2 rounded-r-lg   flex items-center justify-center p-28  bg-left overflow-hidden">
+            <img src={bgForgotImage} alt="" className="object-cover" />
+          </div>
+          <div className="flex items-center w-1/2 justify-center">
+            <div className="flex flex-col overflow-scroll pb-5">
+              <h1 className="font-Inter font-bold text-signIn text-neutralBlack leading-2.8">Forgot Password</h1>
+              <p className="mt-0.78 text-desc font-normal leading-1.8 font-Inter text-lightGray max-w-sm">
+                Enter your email address to reset your password.
+              </p>
+              <Formik
+                innerRef={formikRef}
+                initialValues={initialValues}
+                onSubmit={handleSubmit}
+                validateOnChange={true}
+                validationSchema={forgotPasswordSchema}
+              >
+                {({ errors, handleBlur, handleChange, handleSubmit, touched, values }): JSX.Element => (
+                  <Form className="w-25.9 mt-1.9" autoComplete="off" onSubmit={handleSubmit}>
+                    <div className="email">
+                      <Input
+                        type="email"
+                        placeholder="Email"
+                        label="Email"
+                        id="email"
+                        name="email"
+                        className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values.email}
+                        errors={Boolean(touched.email && errors.email)}
+                        helperText={touched.email && errors.email}
+                      />
+                    </div>
+                    <Button
+                      text="Submit"
+                      type="submit"
+                      className="font-Poppins rounded-lg text-base font-semibold text-white transition ease-in duration-300 w-full mt-1.84 h-3.6 hover:shadow-buttonShadowHover btn-gradient"
+                    />
+                  </Form>
+                )}
+              </Formik>
+            </div>
+          </div>
         </div>
       </div>
     </div>
