@@ -129,8 +129,8 @@ function* getPlatformsDataSaga() {
     const res: SuccessResponse<PlatformsData[]> = yield call(PlatformsDataService);
     yield put(membersSlice.actions.setPlatformsData({ platformsData: res?.data }));
   } catch (e) {
-    const error = e as AxiosError<unknown>;
-    throw error.response?.data?.message;
+    // const error = e as AxiosError<unknown>;
+    // throw error.response?.data?.message;
   } finally {
     yield put(loaderSlice.actions.stopLoadingAction());
   }
