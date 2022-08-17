@@ -10,51 +10,84 @@ import searchIcon from '../../../assets/images/search.svg';
 import filterDownIcon from '../../../assets/images/report-dropdown.svg';
 import exportImage from '../../../assets/images/export.svg';
 import noActivityIcon from '../../../assets/images/no-reports.svg';
-import calandarIcon from '../../../assets/images/calandar.svg';
+import calendarIcon from '../../../assets/images/calandar.svg';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-
-import { activityData } from './ActivityTableData';
 import Modal from 'react-modal';
 import Button from 'common/button';
 import './Activity.css';
+import { useDispatch } from 'react-redux';
+import activitiesSlice from '../store/slice/activities.slice';
+import { ActiveStreamData, ActiveStreamResponse, ProfileModal, ActivityCard } from '../interfaces/activities.interface';
+import { useAppSelector } from '../../../hooks/useRedux';
+import { AppDispatch } from '../../../store';
+import { generateDateAndTime, getLocalWorkspaceId } from '../../../lib/helper';
 
 Modal.setAppElement('#root');
 
 const Activity: React.FC = () => {
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [isTagModalOpen, setTagModalOpen] = useState<boolean>(false);
-  const [isFilterDropdownActive, setisFilterDropdownActive] = useState<boolean>(false);
+  const [isFilterDropdownActive, setIsFilterDropdownActive] = useState<boolean>(false);
   const [isTagActive, setTagActive] = useState<boolean>(false);
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [isActiveBetween, setActiveBetween] = useState<boolean>(false);
-
+  const [ProfileModal, setProfileModal] = useState<ProfileModal>({
+    id: '',
+    email: '',
+    isOpen: false,
+    memberName: '',
+    memberProfileUrl: '',
+    organization: '',
+    profilePictureUrl: ''
+  });
+  const [ActivityCard, setActivityCard] = useState<ActivityCard>();
   const [isPlatformActive, setPlatformActive] = useState<boolean>(true);
-
   const dropDownRef = useRef<HTMLDivElement>(null);
+
+  const workspaceId = getLocalWorkspaceId();
 
   const handleOutsideClick = (event: MouseEvent) => {
     if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target as Node)) {
-      setisFilterDropdownActive(true);
+      setIsFilterDropdownActive(true);
     } else {
-      setisFilterDropdownActive(false);
+      setIsFilterDropdownActive(false);
     }
   };
+  const dispatch: AppDispatch = useDispatch();
 
   useEffect(() => {
+    const workSpaceId: string | null = getLocalWorkspaceId();
+    if (workSpaceId !== null) {
+      dispatch(activitiesSlice.actions.getActiveStreamData({ workSpaceId }));
+    }
     document.addEventListener('click', handleOutsideClick);
     return () => {
       document.removeEventListener('click', handleOutsideClick);
     };
   }, []);
 
+  const activeStreamData: ActiveStreamResponse = useAppSelector((state) => state.activities.activeStreamData);
   const handleFilterDropdown = (val: boolean): void => {
-    setisFilterDropdownActive(val);
+    setIsFilterDropdownActive(val);
   };
 
-  const handleModal = (val: boolean) => {
-    setModalOpen(val);
+  const handleModal = (data: ActivityCard) => {
+    setModalOpen(data?.isOpen);
+    setActivityCard({
+      isOpen: data?.isOpen,
+      memberName: data?.memberName,
+      email: data?.email,
+      displayValue: data?.displayValue,
+      createdAt: data?.createdAt,
+      description: data?.description,
+      organization: data?.organization,
+      channelName: data?.channelName,
+      sourceUrl: data?.sourceUrl,
+      profilePictureUrl: data?.profilePictureUrl,
+      value: data?.value
+    });
   };
   const handleTagModal = (val: boolean) => {
     setTagModalOpen(val);
@@ -72,8 +105,20 @@ const Activity: React.FC = () => {
     setActiveBetween(val);
   };
 
+  const handleProfileModal = (data: ProfileModal) => {
+    setProfileModal({
+      isOpen: data.isOpen,
+      id: data?.id,
+      memberName: data.memberName,
+      email: data.email,
+      organization: data.organization,
+      memberProfileUrl: data.memberProfileUrl,
+      profilePictureUrl: data?.profilePictureUrl
+    });
+  };
+
   return (
-    <div className="  flex flex-col   mt-1.8">
+    <div className="flex flex-col mt-1.8">
       <div className="flex items-center">
         <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 w-full">Activities</h3>
         <div>
@@ -208,7 +253,7 @@ const Activity: React.FC = () => {
                           className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                           placeholderText="DD/MM/YYYY"
                         />
-                        <img className="absolute icon-holder right-6 cursor-pointer" src={calandarIcon} alt="" />
+                        <img className="absolute icon-holder right-6 cursor-pointer" src={calendarIcon} alt="" />
                       </div>
                     </div>
                     <div className="flex flex-col px-3 pb-4 pt-3">
@@ -220,7 +265,7 @@ const Activity: React.FC = () => {
                           className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                           placeholderText="DD/MM/YYYY"
                         />
-                        <img className="absolute icon-holder right-6 cursor-pointer" src={calandarIcon} alt="" />
+                        <img className="absolute icon-holder right-6 cursor-pointer" src={calendarIcon} alt="" />
                       </div>
                     </div>
                   </>
@@ -244,237 +289,289 @@ const Activity: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="relative">
-        <div className="py-2 overflow-x-auto mt-1.868">
-          <div className="inline-block min-w-full  align-middle w-61.68 rounded-0.6 border-table no-scroll-bar  overflow-y-auto h-screen sticky top-0 fixActivityTableHead min-h-[31.25rem]">
-            <table className="min-w-full relative  rounded-t-0.6 ">
-              <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
-                <tr className="min-w-full">
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray ">Members</th>
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Date & Time</th>
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Summary</th>
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Source</th>
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
-                    Activity Type
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {activityData.map((data, i) => (
-                  <tr className="h-4.06 " key={i}>
-                    <td className="px-6 py-3 border-b">
-                      <div className="flex ">
-                        <div className="py-3 mr-2">
-                          <input type="checkbox" className="checkbox" />
-                        </div>
-                        <div>
-                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.memberName}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 pt-5 border-b">
-                      <div className="flex flex-col">
-                        <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.dura.date}</div>
-                        <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">{data.dura.time}</div>
-                      </div>
-                    </td>
-                    <td className="px-6 pt-5 border-b ">
-                      <div className="flex ">
-                        <div className="mr-2">
-                          <img src={data.image} alt="" />
-                        </div>
-                        <div className="flex flex-col">
-                          <div
-                            className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer"
-                            onClick={() => handleModal(true)}
-                          >
-                            {data.summary.title}
-                          </div>
-                          <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">{data.summary.date}</div>
-                        </div>
-                      </div>
-                    </td>
-
-                    <td className="px-6 py-3 border-b">
-                      <a href="" className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 underline cursor-pointer">
-                        {data.source}
-                      </a>
-                    </td>
-                    <td className="px-6 py-3 border-b font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.type}</td>
+      {activeStreamData.data.length !== 0 ? (
+        <div className="relative">
+          <div className="py-2 overflow-x-auto mt-1.868">
+            <div className="inline-block min-w-full  align-middle w-61.68 rounded-0.6 border-table no-scroll-bar  overflow-y-auto h-screen sticky top-0 fixActivityTableHead min-h-[31.25rem]">
+              <table className="min-w-full relative  rounded-t-0.6 ">
+                <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
+                  <tr className="min-w-full">
+                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray ">Members</th>
+                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
+                      Date & Time
+                    </th>
+                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Summary</th>
+                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Source</th>
+                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
+                      Activity Type
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-            <Modal
-              isOpen={isModalOpen}
-              shouldCloseOnOverlayClick={true}
-              onRequestClose={() => setModalOpen(false)}
-              className="mode w-32.5 mx-auto pb-10 border-none px-2.18 bg-white shadow-modal rounded"
-              style={{
-                overlay: {
-                  display: 'flex',
-                  position: 'fixed',
-                  top: 0,
-                  left: 0,
-                  bottom: 0,
-                  right: 0,
-                  alignItems: 'center'
-                }
-              }}
-            >
-              <div className="pt-9 flex flex-col">
-                <div className="flex justify-between">
-                  <div className="font-Inter font-semibold text-black text-xl leading-6">Activity</div>
-                  <div className="font-Poppins text-error leading-5 text-tag font-medium cursor-pointer" onClick={() => handleTagModal(true)}>
-                    ADD TAG
-                  </div>
-                  <Modal
-                    isOpen={isTagModalOpen}
-                    shouldCloseOnOverlayClick={false}
-                    onRequestClose={() => setModalOpen(false)}
-                    className="w-24.31 h-18.75 mx-auto  mt-32 rounded-lg modals-tag bg-white shadow-modal"
-                    style={{
-                      overlay: {
-                        display: 'flex',
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        bottom: 0,
-                        right: 0,
-                        alignItems: 'center'
-                      }
-                    }}
-                  >
-                    <div className="flex flex-col">
-                      <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Add Tag</h3>
-                      <form className="flex flex-col relative px-1.93 mt-9">
-                        <label htmlFor="billingName " className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack ">
-                          Tag Name
-                        </label>
-                        <input
-                          type="text"
-                          className="mt-0.375 inputs box-border bg-white shadow-shadowInput rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-trial placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
-                          placeholder="Enter Tag Name"
-                        />
-                        <div className="flex absolute right-1 top-24 pr-6 items-center">
-                          <Button
-                            type="button"
-                            text="CANCEL"
-                            className="mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel px-2 py-3 rounded border-none"
-                            onClick={() => setTagModalOpen(false)}
-                          />
-                          <Button
-                            type="button"
-                            text="SAVE"
-                            className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn px-5 py-3 border-none btn-save-modal"
-                          />
+                </thead>
+                <tbody>
+                  {activeStreamData.data.map((data: ActiveStreamData) => (
+                    <tr className="h-4.06 " key={data?.id}>
+                      <td className="px-6 py-3 border-b">
+                        <div className="flex ">
+                          <div className="py-3 mr-2">
+                            <input type="checkbox" className="checkbox" />
+                          </div>
+                          <div className="relative">
+                            <div
+                              onClick={() =>
+                                handleProfileModal({
+                                  isOpen: true,
+                                  id: data?.id,
+                                  email: data?.email,
+                                  memberName: data?.memberName,
+                                  organization: 'NeoITO',
+                                  memberProfileUrl: `/${workspaceId}/members/profile`,
+                                  profilePictureUrl: data?.profilePictureUrl
+                                })
+                              }
+                              className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer capitalize"
+                            >
+                              {data?.memberName}
+                            </div>
+                            <div
+                              className={`mt-5 pl-5 absolute -top-10 z-10 ${ProfileModal?.isOpen && ProfileModal?.id === data?.id ? '' : 'hidden'} `}
+                            >
+                              <div className="w-12.87 h-4.57 profile-card-header rounded-t-0.6"></div>
+                              <div className="w-12.87 pb-3 rounded-b-0.6 profile-card-body profile-inner shadow-profileCard flex flex-col items-center bg-white">
+                                <div className="w-4.43 h-4.43 -mt-10 flex items-center justify-center">
+                                  <img src={ProfileModal?.profilePictureUrl === null ? profileImage : ProfileModal?.profilePictureUrl} alt="" />
+                                </div>
+                                <div className="font-semibold font-Poppins text-card text-profileBlack leading-1.12">{ProfileModal?.memberName}</div>
+                                <div className="text-profileEmail font-Poppins font-normal text-profileBlack text-center w-6.875 mt-0.146">
+                                  {ProfileModal?.email} {ProfileModal?.organization}
+                                </div>
+                                <div className="flex mt-2.5">
+                                  <div className="bg-cover bg-center mr-1 w-0.92 h-0.92">
+                                    <img src={slackIcon} alt="" />
+                                  </div>
+                                </div>
+                                <a
+                                  href={`${ProfileModal?.memberProfileUrl}`}
+                                  className="mt-0.84 font-normal font-Poppins text-card underline text-profileBlack leading-5 cursor-pointer"
+                                >
+                                  VIEW PROFILE
+                                </a>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                      </form>
-                    </div>
-                  </Modal>
-                </div>
-                <div className="mt-8 flex items-center">
-                  <div className="bg-cover">
-                    <img src={profileImage} alt="" />
-                  </div>
-                  <div className="flex flex-col pl-0.563">
-                    <div className="font-medium text-trial text-infoBlack font-Poppins leading-1.31">Emerson Schleifer</div>
-                    <div className="font-Poppins text-email leading-5 text-tagEmail font-normal">dmrity125@mail.com | neoito technologies</div>
-                  </div>
-                </div>
-                <div className="bg-activitySubCard rounded flex flex-col pt-2.5 pl-0.81 pb-8 mt-5">
-                  <div className="flex items-center">
-                    <div>
-                      <img src={slackIcon} alt="" />
-                    </div>
-                    <div className="pl-0.563 font-Poppins font-medium text-infoBlack text-card leading-1.12">Sent a message in slack</div>
-                    <div className="pl-2.5 text-tagChannel font-Poppins font-medium text-card leading-1.12">#channel 1</div>
-                  </div>
-                  <div className="mt-5 font-Poppins font-medium text-infoBlack text-card leading-1.12">
-                    The journey of a thousand miles begins with one step.
-                  </div>
-                  <div className="mt-1.18 flex relative">
-                    <div className="font-Poppins font-medium text-card leading-1.12 text-tag underline cursor-pointer">VIEW ON SLACK</div>
-                    <div className="absolute right-3 top-5 font-Poppins font-medium text-card leading-1.12 text-slimGray">12:10pm | May 4</div>
-                  </div>
-                </div>
-                <div className="mt-7">
-                  <h3 className="text-profileBlack text-error font-Poppins font-medium leading-5">Tags</h3>
-                  <div className="flex pt-2.5 flex-wrap">
-                    <div className="flex  tags bg-tagSection items-center justify-evenly rounded w-6.563 py-1">
-                      <div className="font-Poppins text-card font-normal leading-5 text-profileBlack">Influencer</div>
-                      <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
-                        <img src={closeIcon} alt="" />
-                      </div>
-                    </div>
-                    <div className="ml-0.313 flex items-center justify-evenly tags bg-tagSection rounded w-6.563 py-1">
-                      <div className="font-Poppins text-card font-normal leading-5 text-profileBlack">Admin</div>
-                      <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
-                        <img src={closeIcon} alt="" />
-                      </div>
-                    </div>
-                    <div className="ml-0.313 flex items-center justify-evenly tags bg-tagSection rounded w-6.563 py-1">
-                      <div className="font-Poppins text-card font-normal leading-5 text-profileBlack">Charity</div>
-                      <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
-                        <img src={closeIcon} alt="" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Modal>
-          </div>
-        </div>
-        <div className="px-6 py-6 flex items-center justify-center gap-0.66 w-full rounded-b-lg  bottom-0 bg-white">
-          <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
-            <img src={prevIcon} alt="" />
-          </div>
-          <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">1</div>
-          <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">2</div>
-          <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">3</div>
-          <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">4</div>
-          <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">...</div>
-          <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">10</div>
-          <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
-            <img src={nextIcon} alt="" />
-          </div>
-          <div className="font-Lato font-normal text-pageNumber leading-4 text-pagination cursor-pointer">Go to page:</div>
-          <div>
-            <Input name="pagination" id="page" type="text" className="page-input focus:outline-none px-0.5 rounded box-border w-1.47 h-1.51" />
-          </div>
-        </div>
-      </div>
+                      </td>
+                      <td className="px-6 pt-5 border-b">
+                        <div className="flex flex-col">
+                          <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                            {generateDateAndTime(`${data?.createdAt}`, 'MM-DD-YYYY')}
+                          </div>
+                          <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
+                            {generateDateAndTime(`${data?.createdAt}`, 'HH:MM')}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 pt-5 border-b ">
+                        <div className="flex ">
+                          <div className="mr-2">
+                            <img src={slackIcon} alt="" />
+                          </div>
+                          <div className="flex flex-col">
+                            <div
+                              className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer"
+                              onClick={() =>
+                                handleModal({
+                                  isOpen: true,
+                                  memberName: data?.memberName,
+                                  email: data?.email,
+                                  description: data?.description,
+                                  displayValue: data?.displayValue,
+                                  createdAt: data?.createdAt,
+                                  organization: 'NeoITO',
+                                  channelName: 'channel 1',
+                                  sourceUrl: data?.sourceUrl,
+                                  profilePictureUrl: data?.profilePictureUrl,
+                                  value: data?.value
+                                })
+                              }
+                            >
+                              {data?.displayValue}
+                            </div>
+                            <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
+                              {generateDateAndTime(`${data?.createdAt}`, 'MM-DD')}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
 
-      <div className="mt-5 pl-5 hidden">
-        <div className="w-12.87 h-4.57 profile-card-header rounded-t-0.6"></div>
-        <div className="w-12.87 pb-3 rounded-b-0.6 profile-card-body profile-inner shadow-profileCard flex flex-col items-center bg-white">
-          <div className="w-4.43 h-4.43 -mt-10 flex items-center justify-center">
-            <img src={profileImage} alt="" />
-          </div>
-          <div className="font-semibold font-Poppins text-card text-profileBlack leading-1.12">Randy Dias</div>
-          <div className="text-profileEmail font-Poppins font-normal text-profileBlack text-center w-6.875 mt-0.146">
-            randy125@mail.com neoito technologies pvt ltd
-          </div>
-          <div className="flex mt-2.5">
-            <div className="bg-cover bg-center mr-1 w-0.92 h-0.92">
-              <img src={slackIcon} alt="" />
+                      <td className="px-6 py-3 border-b">
+                        <a
+                          href={`${data?.sourceUrl}`}
+                          className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 underline cursor-pointer"
+                        >
+                          {data?.sourceUrl === null ? 'www.slack.com/profile' : data?.sourceUrl}
+                        </a>
+                      </td>
+                      <td className="px-6 py-3 border-b font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                        {data?.type}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <Modal
+                isOpen={isModalOpen}
+                shouldCloseOnOverlayClick={true}
+                onRequestClose={() => setModalOpen(false)}
+                className="mode w-32.5 mx-auto pb-10 border-none px-2.18 bg-white shadow-modal rounded"
+                style={{
+                  overlay: {
+                    display: 'flex',
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: 0,
+                    alignItems: 'center'
+                  }
+                }}
+              >
+                <div className="pt-9 flex flex-col">
+                  <div className="flex justify-between">
+                    <div className="font-Inter font-semibold text-black text-xl leading-6">Activity</div>
+                    <div className="font-Poppins text-error leading-5 text-tag font-medium cursor-pointer" onClick={() => handleTagModal(true)}>
+                      ADD TAG
+                    </div>
+                    <Modal
+                      isOpen={isTagModalOpen}
+                      shouldCloseOnOverlayClick={false}
+                      onRequestClose={() => setModalOpen(false)}
+                      className="w-24.31 h-18.75 mx-auto  mt-32 rounded-lg modals-tag bg-white shadow-modal"
+                      style={{
+                        overlay: {
+                          display: 'flex',
+                          position: 'fixed',
+                          top: 0,
+                          left: 0,
+                          bottom: 0,
+                          right: 0,
+                          alignItems: 'center'
+                        }
+                      }}
+                    >
+                      <div className="flex flex-col">
+                        <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Add Tag</h3>
+                        <form className="flex flex-col relative px-1.93 mt-9">
+                          <label htmlFor="billingName " className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack ">
+                            Tag Name
+                          </label>
+                          <input
+                            type="text"
+                            className="mt-0.375 inputs box-border bg-white shadow-shadowInput rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-trial placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
+                            placeholder="Enter Tag Name"
+                          />
+                          <div className="flex absolute right-1 top-24 pr-6 items-center">
+                            <Button
+                              type="button"
+                              text="CANCEL"
+                              className="mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel px-2 py-3 rounded border-none"
+                              onClick={() => setTagModalOpen(false)}
+                            />
+                            <Button
+                              type="button"
+                              text="SAVE"
+                              className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn px-5 py-3 border-none btn-save-modal"
+                            />
+                          </div>
+                        </form>
+                      </div>
+                    </Modal>
+                  </div>
+                  <div className="mt-8 flex items-center">
+                    <div className="bg-cover">
+                      <img src={ActivityCard?.profilePictureUrl === null ? profileImage : ActivityCard?.profilePictureUrl} alt="" />
+                    </div>
+                    <div className="flex flex-col pl-0.563">
+                      <div className="font-medium text-trial text-infoBlack font-Poppins leading-1.31">{ActivityCard?.memberName}</div>
+                      <div className="font-Poppins text-email leading-5 text-tagEmail font-normal">
+                        {ActivityCard?.email} | {ActivityCard?.organization}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-activitySubCard rounded flex flex-col pt-2.5 pl-0.81 pb-8 mt-5">
+                    <div className="flex items-center">
+                      <div>
+                        <img src={slackIcon} alt="" />
+                      </div>
+                      <div className="pl-0.563 font-Poppins font-medium text-infoBlack text-card leading-1.12">{ActivityCard?.displayValue}</div>
+                      <div className="pl-2.5 text-tagChannel font-Poppins font-medium text-card leading-1.12">#{ActivityCard?.channelName}</div>
+                    </div>
+                    <div className="mt-5 font-Poppins font-medium text-infoBlack text-card leading-1.12">{ActivityCard?.value}</div>
+                    <div className="mt-1.18 flex relative">
+                      <a
+                        href={`${ActivityCard?.sourceUrl}`}
+                        className="font-Poppins font-medium text-card leading-1.12 text-tag underline cursor-pointer"
+                      >
+                        VIEW ON SLACK
+                      </a>
+                      <div className="absolute right-3 top-5 font-Poppins font-medium text-card leading-1.12 text-slimGray">
+                        {generateDateAndTime(`${ActivityCard?.createdAt}`, 'HH:MM')} | {generateDateAndTime(`${ActivityCard?.createdAt}`, 'MM-DD')}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-7">
+                    <h3 className="text-profileBlack text-error font-Poppins font-medium leading-5">Tags</h3>
+                    <div className="flex pt-2.5 flex-wrap">
+                      <div className="flex  tags bg-tagSection items-center justify-evenly rounded w-6.563 py-1">
+                        <div className="font-Poppins text-card font-normal leading-5 text-profileBlack">Influencer</div>
+                        <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
+                          <img src={closeIcon} alt="" />
+                        </div>
+                      </div>
+                      <div className="ml-0.313 flex items-center justify-evenly tags bg-tagSection rounded w-6.563 py-1">
+                        <div className="font-Poppins text-card font-normal leading-5 text-profileBlack">Admin</div>
+                        <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
+                          <img src={closeIcon} alt="" />
+                        </div>
+                      </div>
+                      <div className="ml-0.313 flex items-center justify-evenly tags bg-tagSection rounded w-6.563 py-1">
+                        <div className="font-Poppins text-card font-normal leading-5 text-profileBlack">Charity</div>
+                        <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
+                          <img src={closeIcon} alt="" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Modal>
             </div>
-            <div className="bg-cover bg-center mr-1 w-0.92 h-0.92">
-              <img src={slackIcon} alt="" />
+          </div>
+          <div className="px-6 py-6 flex items-center justify-center gap-0.66 w-full rounded-b-lg  bottom-0 bg-white">
+            <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
+              <img src={prevIcon} alt="" />
             </div>
-            <div className="bg-cover bg-center mr-1 w-0.92 h-0.92">
-              <img src={slackIcon} alt="" />
+            <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">1</div>
+            <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">2</div>
+            <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">3</div>
+            <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">4</div>
+            <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">...</div>
+            <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">10</div>
+            <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
+              <img src={nextIcon} alt="" />
+            </div>
+            <div className="font-Lato font-normal text-pageNumber leading-4 text-pagination cursor-pointer">Go to page:</div>
+            <div>
+              <Input name="pagination" id="page" type="text" className="page-input focus:outline-none px-0.5 rounded box-border w-1.47 h-1.51" />
             </div>
           </div>
-          <div className="mt-0.84 font-normal font-Poppins text-card underline text-profileBlack leading-5 cursor-pointer">VIEW PROFILE</div>
         </div>
-      </div>
-      <div className="flex flex-col items-center justify-center w-full fixActivityTableHead hidden">
-        <div>
-          <img src={noActivityIcon} alt="" />
+      ) : (
+        <div className="flex flex-col items-center justify-center w-full fixActivityTableHead">
+          <div>
+            <img src={noActivityIcon} alt="" />
+          </div>
+          <div className="pt-5 font-Poppins font-medium text-tableDuration text-lg leading-10">No activities to display</div>
         </div>
-        <div className="pt-5 font-Poppins font-medium text-tableDuration text-lg leading-10">No activities to display</div>
-      </div>
+      )}
     </div>
   );
 };
