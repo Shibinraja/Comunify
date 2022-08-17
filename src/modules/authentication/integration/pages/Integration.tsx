@@ -47,7 +47,7 @@ const Integration: React.FC = () => {
       const response = await request.post(`${API_ENDPOINT}/v1/slack/connect`, body);
       if (response) {
         setIsModalOpen(false);
-        navigate(`/${workspaceId}/settings/complete-setup`, { state: { workspacePlatformSettingId: response?.data?.data?.id } });
+        navigate('/settings/complete-setup', { state: { workspacePlatformSettingId: response?.data?.data?.id } });
       } else {
         showErrorToast('Integration failed');
       }
@@ -57,8 +57,10 @@ const Integration: React.FC = () => {
   };
 
   const navigateToConnectPage = () => {
-    window.location.href = `${import.meta.env.VITE_SLACK_CONNECT}`;
+    window.location.href =
+      'https://slack.com/oauth/v2/authorize?client_id=3699971256053.3748193065905&scope=channels:history,channels:read,incoming-webhook,links:read,reactions:read,users:read,users:read.email,team:read&user_scope=channels:history,channels:read,reactions:read,users:read,users:read.email,team:read';
   };
+
   return (
     <div className="create-password">
       <div className="flex w-full height-calc">
