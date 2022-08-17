@@ -337,8 +337,7 @@ input {
 .react-datepicker__navigation-icon--previous {
   right: 0px !important;
 }
-
-<style>.react-datepicker__navigation-icon {
+.react-datepicker__navigation-icon {
   top: 14px !important;
 }
 

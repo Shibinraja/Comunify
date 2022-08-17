@@ -60,7 +60,8 @@ module.exports = {
         innerCircleLoader: '#ED9333',
         backdropColor: 'rgba(0, 0, 0, 0.5)',
         widgetSearch: '#ACACAC;',
-        paginationArrowButton: '#337AB7'
+        paginationArrowButton: '#337AB7',
+        toolTip: '#414141;'
       },
       margin: {
         2.6: '43px',
@@ -429,6 +430,11 @@ module.exports = {
       },
       screens: {
         '3xl': '2100px'
+      },
+      variants: {
+        extend: {
+          visibility: ['group-hover']
+        }
       }
     }
   },
