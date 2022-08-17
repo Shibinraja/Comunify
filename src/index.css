@@ -360,35 +360,45 @@ input {
 
 /* Customradio button */
 
-.radio input[type="radio"]{
+.radio input[type='radio'] {
   display: none;
 }
 
-.radio{
+.radio {
   position: relative;
 }
 
-.radio span{
+.radio span {
   width: 15px;
   height: 15px;
   display: block;
   border-radius: 50%;
-  border: 3px solid #ABCF6B;
+  border: 3px solid #abcf6b;
 }
 
-.radio span:after{
-  content: "";
+.radio span:after {
+  content: '';
   height: 7px;
   width: 7px;
-  background: linear-gradient(277.31deg, #69B5E5 1.11%, #ABCF6B 100%);;
+  background: linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
   border-radius: 50%;
   position: absolute;
   top: 8px;
   right: 53.5px;
-  transform: translate(-50%,-50%) scale(0)
-
+  transform: translate(-50%, -50%) scale(0);
 }
 
-.radio input[type="radio"]:checked ~ span:after{
-  transform: translate(-50%,-50%) scale(1)
+.radio input[type='radio']:checked ~ span:after {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.CircularProgressbar {
+  filter: drop-shadow(1px 19px 17px rgba(240, 158, 52, 1)) !important;
+}
+.CircularProgressbar-trail {
+  stroke: #f3f3f3;
+  stroke-width: 11;
+}
+.CircularProgressbar-path {
+  stroke-width: 11;
 }
