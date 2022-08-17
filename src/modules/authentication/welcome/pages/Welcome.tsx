@@ -41,7 +41,7 @@ const Welcome: React.FC = () => {
                 <p className="mt-0.81 text-desc font-normal leading-1.8 font-Inter text-lightGray max-w-sm">
                   Thank you for choosing comunify. Let’s get to know your communities better.
                 </p>
-                <div className="subscriptionCard">
+                <div className="subscriptionCard w-[95%] mx-auto">
                   {comunifySubscriptionPlan?.map((data: SubscriptionPackages) => (
                     <SubscriptionCard key={data.id} subscriptionData={data} />
                   ))}
