@@ -4,6 +4,7 @@ import useDebounce from '@/hooks/useDebounce';
 import Button from 'common/button';
 import Input from 'common/input';
 import Pagination from 'common/pagination/pagination';
+import membersSlice from 'modules/members/store/slice/members.slice';
 import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import Modal from 'react-modal';
@@ -56,6 +57,8 @@ const Activity: React.FC = () => {
         workspaceId: workspaceId!
       })
     );
+
+    dispatch(membersSlice.actions.membersPlatformFilter());
 
     dispatch(
       activitiesSlice.actions.activeStreamTagFilter({

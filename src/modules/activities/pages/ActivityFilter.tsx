@@ -13,6 +13,7 @@ import { ActiveStreamTagResponse } from '../interfaces/activities.interface';
 import useDebounce from '@/hooks/useDebounce';
 import { useParams } from 'react-router-dom';
 import activitiesSlice from '../store/slice/activities.slice';
+import { MembersPlatformResponse } from 'modules/members/interface/members.interface';
 
 const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
   const { workspaceId } = useParams();
@@ -29,6 +30,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
 
   const dropDownRef = useRef<HTMLDivElement>(null);
   const { activeStreamTagFilterResponse } = useAppSelector((state) => state.activities);
+  const { membersPlatformFilterResponse } = useAppSelector((state) => state.members);
 
   const debouncedTagValue = useDebounce(tagSearchText, 300);
 
@@ -92,12 +94,9 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
     event.stopPropagation();
     if (dateTime === 'start') {
       setStartDate(date);
-      setIsFilterDropdownActive(true);
     }
-
     if (dateTime === 'end') {
       setEndDate(date);
-      setIsFilterDropdownActive(true);
     }
   };
 
@@ -138,8 +137,8 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
           search: '',
           tags: { searchedTags: '', checkedTags: checkTags.toString() },
           platforms: checkPlatform.toString(),
-          'activity.lte': startDate && format(startDate!, 'yyyy-MM-dd'),
-          'activity.gte': endDate && format(endDate!, 'yyyy-MM-dd')
+          'activity.lte': endDate && format(endDate!, 'yyyy-MM-dd'),
+          'activity.gte': startDate && format(startDate!, 'yyyy-MM-dd')
         },
         workspaceId: workspaceId!
       })
@@ -175,45 +174,25 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
             </div>
             {isPlatformActive && (
               <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
-                <div className="flex items-center">
-                  <div className="mr-2">
-                    <input
-                      type="checkbox"
-                      className="checkbox"
-                      id="all"
-                      name="all"
-                      checked={(checkedPlatform?.all as boolean) || false}
-                      onChange={handlePlatformsCheckBox}
-                    />
-                  </div>
-                  <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">All</div>
-                </div>
-                <div className="flex items-center">
-                  <div className="mr-2">
-                    <input
-                      type="checkbox"
-                      className="checkbox"
-                      id="salesforce"
-                      name="salesforce"
-                      checked={(checkedPlatform?.salesforce as boolean) || false}
-                      onChange={handlePlatformsCheckBox}
-                    />
-                  </div>
-                  <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Salesforce</div>
-                </div>
-                <div className="flex items-center">
-                  <div className="mr-2">
-                    <input
-                      type="checkbox"
-                      className="checkbox"
-                      id="khoros"
-                      name="khoros"
-                      checked={(checkedPlatform?.khoros as boolean) || false}
-                      onChange={handlePlatformsCheckBox}
-                    />
-                  </div>
-                  <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Khoros</div>
-                </div>
+                {membersPlatformFilterResponse &&
+                  membersPlatformFilterResponse.map(
+                    (platform: MembersPlatformResponse, index: number) =>
+                      platform.name !== null && (
+                        <div className="flex items-center" key={index}>
+                          <div className="mr-2">
+                            <input
+                              type="checkbox"
+                              className="checkbox"
+                              id={platform.id as string}
+                              name={platform.name as string}
+                              checked={(checkedPlatform[platform.name] as boolean) || false}
+                              onChange={handlePlatformsCheckBox}
+                            />
+                          </div>
+                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">{platform.name}</div>
+                        </div>
+                      )
+                  )}
               </div>
             )}
 
