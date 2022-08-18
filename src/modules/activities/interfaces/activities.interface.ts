@@ -1,11 +1,66 @@
-export interface WorkspaceTags {
+export interface ProfileModal {
+  id: string;
+  isOpen: false | boolean;
+  memberName: string;
+  email: string;
+  organization: string;
+  memberProfileUrl: string;
+  profilePictureUrl: string | null;
+}
+
+export interface ActivityCard {
+  isOpen: false | boolean;
+  memberName: string;
+  email: string;
+  organization: string;
+  displayValue: string;
+  description: string;
+  channelName: string;
+  sourceUrl: string | null;
+  createdAt: Date;
+  profilePictureUrl: string | null;
+  value: string | null;
+}
+
+export interface workspaceId {
+  workspaceId: string;
+}
+
+// Input Body
+
+export interface GetActiveStreamListQueryParams extends workspaceId {
+  activeStreamQuery: {
+    page: number;
+    limit: number;
+    search?: string;
+    platforms?:string
+    tags?: {
+      checkedTags: string;
+      searchedTags: string;
+    };
+    'activity.lte'?: string;
+    'activity.gte'?: string;
+  };
+}
+
+export interface GetActiveStreamTagListQueryParams extends workspaceId {
+  activeStreamQuery: {
+    tags: {
+      checkedTags: string;
+      searchedTags: string;
+    };
+  };
+}
+
+// Response Body
+export type WorkspaceTags = {
   id: string;
   name: string;
   viewName: string;
   workspaceId: string;
   createdDate: string;
   updatedDate: string;
-}
+};
 
 export interface ActiveStreamData {
   id: string;
@@ -35,35 +90,16 @@ export interface ActiveStreamData {
 
 export interface ActiveStreamResponse {
   data: ActiveStreamData[];
-  totalPages: number | null;
-  previousPage: number | null;
-  nextPage: number | null;
+  totalPages: number;
+  previousPage: number;
+  nextPage: number;
 }
 
-export interface VerifyWorkSpace {
-  workSpaceId: string;
-}
-
-export interface ProfileModal {
+export type ActiveStreamTagResponse = {
+  createdAt: string;
   id: string;
-  isOpen: false | boolean;
-  memberName: string;
-  email: string;
-  organization: string;
-  memberProfileUrl: string;
-  profilePictureUrl: string | null;
-}
-
-export interface ActivityCard {
-  isOpen: false | boolean;
-  memberName: string;
-  email: string;
-  organization: string;
-  displayValue: string;
-  description: string;
-  channelName: string;
-  sourceUrl: string | null;
-  createdAt: Date;
-  profilePictureUrl: string | null;
-  value: string | null;
-}
+  name: string;
+  updatedAt: Date;
+  viewName: string;
+  workspaceId: string;
+};

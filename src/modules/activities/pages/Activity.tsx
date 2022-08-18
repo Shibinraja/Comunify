@@ -1,38 +1,33 @@
-import React, { useEffect, useRef, useState } from 'react';
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import useDebounce from '@/hooks/useDebounce';
+import Button from 'common/button';
 import Input from 'common/input';
-import nextIcon from '../../../assets/images/next-page-icon.svg';
-import prevIcon from '../../../assets/images/previous-page-icon.svg';
-import slackIcon from '../../../assets/images/slack.svg';
-import profileImage from '../../../assets/images/ellip.svg';
-import closeIcon from '../../../assets/images/close.svg';
-import downArrow from '../../../assets/images/filter-dropdown.svg';
-import searchIcon from '../../../assets/images/search.svg';
-import filterDownIcon from '../../../assets/images/report-dropdown.svg';
-import exportImage from '../../../assets/images/export.svg';
-import noActivityIcon from '../../../assets/images/no-reports.svg';
-import calendarIcon from '../../../assets/images/calandar.svg';
-import DatePicker from 'react-datepicker';
+import Pagination from 'common/pagination/pagination';
+import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import Modal from 'react-modal';
-import Button from 'common/button';
-import './Activity.css';
 import { useDispatch } from 'react-redux';
-import activitiesSlice from '../store/slice/activities.slice';
-import { ActiveStreamData, ActiveStreamResponse, ProfileModal, ActivityCard } from '../interfaces/activities.interface';
+import { useParams } from 'react-router-dom';
+import closeIcon from '../../../assets/images/close.svg';
+import profileImage from '../../../assets/images/ellip.svg';
+import exportImage from '../../../assets/images/export.svg';
+import noActivityIcon from '../../../assets/images/no-reports.svg';
+import slackIcon from '../../../assets/images/slack.svg';
 import { useAppSelector } from '../../../hooks/useRedux';
-import { AppDispatch } from '../../../store';
-import { generateDateAndTime, getLocalWorkspaceId } from '../../../lib/helper';
+import { generateDateAndTime } from '../../../lib/helper';
+import { ActiveStreamData, ActivityCard, ProfileModal } from '../interfaces/activities.interface';
+import activitiesSlice from '../store/slice/activities.slice';
+import './Activity.css';
+import ActivityFilter from './ActivityFilter';
 
 Modal.setAppElement('#root');
 
 const Activity: React.FC = () => {
+  const dispatch = useDispatch();
+  const { workspaceId } = useParams();
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [isTagModalOpen, setTagModalOpen] = useState<boolean>(false);
-  const [isFilterDropdownActive, setIsFilterDropdownActive] = useState<boolean>(false);
-  const [isTagActive, setTagActive] = useState<boolean>(false);
-  const [startDate, setStartDate] = useState<Date>();
-  const [endDate, setEndDate] = useState<Date>();
-  const [isActiveBetween, setActiveBetween] = useState<boolean>(false);
   const [ProfileModal, setProfileModal] = useState<ProfileModal>({
     id: '',
     email: '',
@@ -43,35 +38,39 @@ const Activity: React.FC = () => {
     profilePictureUrl: ''
   });
   const [ActivityCard, setActivityCard] = useState<ActivityCard>();
-  const [isPlatformActive, setPlatformActive] = useState<boolean>(true);
-  const dropDownRef = useRef<HTMLDivElement>(null);
+  const [page, setpage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(10);
+  const [searchText, setSearchText] = useState<string>('');
 
-  const workspaceId = getLocalWorkspaceId();
+  const { data, totalPages, previousPage, nextPage } = useAppSelector((state) => state.activities.activeStreamData);
 
-  const handleOutsideClick = (event: MouseEvent) => {
-    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target as Node)) {
-      setIsFilterDropdownActive(true);
-    } else {
-      setIsFilterDropdownActive(false);
-    }
-  };
-  const dispatch: AppDispatch = useDispatch();
+  const debouncedValue = useDebounce(searchText, 300);
 
   useEffect(() => {
-    const workSpaceId: string | null = getLocalWorkspaceId();
-    if (workSpaceId !== null) {
-      dispatch(activitiesSlice.actions.getActiveStreamData({ workSpaceId }));
-    }
-    document.addEventListener('click', handleOutsideClick);
-    return () => {
-      document.removeEventListener('click', handleOutsideClick);
-    };
-  }, []);
+    dispatch(
+      activitiesSlice.actions.getActiveStreamData({
+        activeStreamQuery: {
+          page,
+          limit
+        },
+        workspaceId: workspaceId!
+      })
+    );
 
-  const activeStreamData: ActiveStreamResponse = useAppSelector((state) => state.activities.activeStreamData);
-  const handleFilterDropdown = (val: boolean): void => {
-    setIsFilterDropdownActive(val);
-  };
+    dispatch(
+      activitiesSlice.actions.activeStreamTagFilter({
+        activeStreamQuery: { tags: { searchedTags: '', checkedTags: '' } },
+        workspaceId: workspaceId!
+      })
+    );
+  }, [page]);
+
+  // Returns the debounced value of the search text.
+  useEffect(() => {
+    if (debouncedValue) {
+      getFilteredMembersList(debouncedValue);
+    }
+  }, [debouncedValue]);
 
   const handleModal = (data: ActivityCard) => {
     setModalOpen(data?.isOpen);
@@ -93,18 +92,6 @@ const Activity: React.FC = () => {
     setTagModalOpen(val);
   };
 
-  const handlePlatformActive = (val: boolean) => {
-    setPlatformActive(val);
-  };
-
-  const handleTagActive = (val: boolean) => {
-    setTagActive(val);
-  };
-
-  const handleActiveBetween = (val: boolean) => {
-    setActiveBetween(val);
-  };
-
   const handleProfileModal = (data: ProfileModal) => {
     setProfileModal({
       isOpen: data.isOpen,
@@ -117,6 +104,30 @@ const Activity: React.FC = () => {
     });
   };
 
+  const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const searchText: string = event.target.value;
+    if (searchText === '') {
+      getFilteredMembersList(searchText);
+    }
+    setSearchText(searchText);
+  };
+
+  // Function to dispatch the search text to hit api of member list.
+  const getFilteredMembersList = (text: string) => {
+    dispatch(
+      activitiesSlice.actions.getActiveStreamData({
+        activeStreamQuery: {
+          page,
+          limit,
+          search: text
+        },
+        workspaceId: workspaceId!
+      })
+    );
+  };
+
+  const ActiveStreamFilter = useMemo(() => <ActivityFilter page={page} limit={limit} />, []);
+
   return (
     <div className="flex flex-col mt-1.8">
       <div className="flex items-center">
@@ -128,160 +139,13 @@ const Activity: React.FC = () => {
             id="searchId"
             className="app-input-card-border focus:outline-none px-4 mr-0.76 box-border h-3.06 w-19.06 bg-white  rounded-0.6 placeholder:text-reportSearch placeholder:text-card placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.12 font-Poppins"
             placeholder="Search By Name or Email"
+            onChange={handleSearchTextChange}
           />
         </div>
-        <div className="relative mr-5" ref={dropDownRef}>
-          <div
-            className="flex justify-between items-center px-1.08 app-input-card-border rounded-0.6 box-border w-9.59 h-3.06 cursor-pointer bg-white "
-            onClick={() => handleFilterDropdown(isFilterDropdownActive ? false : true)}
-          >
-            <div className="font-Poppins font-normal text-card text-dropGray leading-1.12">Filters</div>
-            <div>
-              <img src={filterDownIcon} alt="" className={isFilterDropdownActive ? 'rotate-180' : 'rotate-0'} />
-            </div>
-          </div>
-          {isFilterDropdownActive && (
-            <div className="absolute app-result-card-border box-border bg-white rounded-0.3 w-16.56 shadow-shadowInput z-40 pb-1.56 ">
-              <div className="flex flex-col ">
-                <div
-                  className="flex justify-between items-center app-result-card-border w-full box-border bg-signUpDomain h-3.06 px-3 mx-auto  cursor-pointer"
-                  onClick={() => {
-                    handlePlatformActive(isPlatformActive ? false : true);
-                    handleActiveBetween(false);
-                    handleTagActive(false);
-                  }}
-                >
-                  <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">Choose platform</div>
-                  <div>
-                    <img src={downArrow} alt="" className={isPlatformActive ? 'rotate-0' : 'rotate-180'} />
-                  </div>
-                </div>
-                {isPlatformActive && (
-                  <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
-                    <div className="flex items-center">
-                      <div className="mr-2">
-                        <input type="checkbox" className="checkbox" />
-                      </div>
-                      <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">All</div>
-                    </div>
-                    <div className="flex items-center">
-                      <div className="mr-2">
-                        <input type="checkbox" className="checkbox" />
-                      </div>
-                      <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Salesforce</div>
-                    </div>
-                    <div className="flex items-center">
-                      <div className="mr-2">
-                        <input type="checkbox" className="checkbox" />
-                      </div>
-                      <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Khoros</div>
-                    </div>
-                  </div>
-                )}
-
-                <div
-                  className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06 px-3 mx-auto  cursor-pointer"
-                  onClick={() => {
-                    handleTagActive(isTagActive ? false : true);
-                    handlePlatformActive(false);
-                    handleActiveBetween(false);
-                  }}
-                >
-                  <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">Tags</div>
-                  <div>
-                    <img src={downArrow} alt="" className={isTagActive ? 'rotate-0' : 'rotate-180'} />
-                  </div>
-                </div>
-                {isTagActive && (
-                  <div>
-                    <div className="flex relative items-center pt-2 pb-3">
-                      <input
-                        type="text"
-                        name="search"
-                        id="searchId"
-                        className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-shadowInput rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
-                        placeholder="Search Tags"
-                      />
-                      <div className="absolute right-5 w-0.78 h-0.75  z-40">
-                        <img src={searchIcon} alt="" />
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
-                      <div className="flex items-center">
-                        <div className="mr-2">
-                          <input type="checkbox" className="checkbox" />
-                        </div>
-                        <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Admin</div>
-                      </div>
-                      <div className="flex items-center">
-                        <div className="mr-2">
-                          <input type="checkbox" className="checkbox" />
-                        </div>
-                        <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Influencer</div>
-                      </div>
-                      <div className="flex items-center">
-                        <div className="mr-2">
-                          <input type="checkbox" className="checkbox" />
-                        </div>
-                        <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Influencer</div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                <div
-                  className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06 px-3 mx-auto  cursor-pointer"
-                  onClick={() => {
-                    handleActiveBetween(isActiveBetween ? false : true);
-                    handlePlatformActive(false);
-                    handleTagActive(false);
-                  }}
-                >
-                  <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">Activity between</div>
-                  <div>
-                    <img src={downArrow} alt="" className={isActiveBetween ? 'rotate-0' : 'rotate-180'} />
-                  </div>
-                </div>
-                {isActiveBetween && (
-                  <>
-                    <div className="flex flex-col px-3 pt-4">
-                      <label htmlFor="Start Date p-1 font-Inter font-normal leading-4 text-trial text-searchBlack">Start Date</label>
-                      <div className="relative flex items-center">
-                        <DatePicker
-                          selected={startDate}
-                          onChange={(date: Date) => setStartDate(date)}
-                          className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
-                          placeholderText="DD/MM/YYYY"
-                        />
-                        <img className="absolute icon-holder right-6 cursor-pointer" src={calendarIcon} alt="" />
-                      </div>
-                    </div>
-                    <div className="flex flex-col px-3 pb-4 pt-3">
-                      <label htmlFor="Start Date p-1 font-Inter font-Inter font-normal leading-4 text-trial text-searchBlack">End Date</label>
-                      <div className="relative flex items-center">
-                        <DatePicker
-                          selected={endDate}
-                          onChange={(date: Date) => setEndDate(date)}
-                          className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
-                          placeholderText="DD/MM/YYYY"
-                        />
-                        <img className="absolute icon-holder right-6 cursor-pointer" src={calendarIcon} alt="" />
-                      </div>
-                    </div>
-                  </>
-                )}
-
-                <div className="buttons px-3 ">
-                  <Button
-                    type="button"
-                    text="Apply"
-                    className="border-none btn-save-modal rounded-0.31 h-2.063 w-full mt-1.56 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
+        <div className="relative mr-5">
+          {ActiveStreamFilter}
         </div>
+
         <div className="">
           <div className="app-input-card-border w-6.98 h-3.06 rounded-0.6 shadow-shadowInput box-border bg-white items-center justify-evenly flex ml-0.63 cursor-pointer">
             <h3 className="text-dropGray leading-1.12 font-Poppins font-semibld text-card">Export</h3>
@@ -289,7 +153,7 @@ const Activity: React.FC = () => {
           </div>
         </div>
       </div>
-      {activeStreamData.data.length !== 0 ? (
+      {data?.length !== 0 ? (
         <div className="relative">
           <div className="py-2 overflow-x-auto mt-1.868">
             <div className="inline-block min-w-full  align-middle w-61.68 rounded-0.6 border-table no-scroll-bar  overflow-y-auto h-screen sticky top-0 fixActivityTableHead min-h-[31.25rem]">
@@ -308,114 +172,119 @@ const Activity: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {activeStreamData.data.map((data: ActiveStreamData) => (
-                    <tr className="h-4.06 " key={data?.id}>
-                      <td className="px-6 py-3 border-b">
-                        <div className="flex ">
-                          <div className="py-3 mr-2">
-                            <input type="checkbox" className="checkbox" />
-                          </div>
-                          <div className="relative">
-                            <div
-                              onClick={() =>
-                                handleProfileModal({
-                                  isOpen: true,
-                                  id: data?.id,
-                                  email: data?.email,
-                                  memberName: data?.memberName,
-                                  organization: 'NeoITO',
-                                  memberProfileUrl: `/${workspaceId}/members/profile`,
-                                  profilePictureUrl: data?.profilePictureUrl
-                                })
-                              }
-                              className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer capitalize"
-                            >
-                              {data?.memberName}
+                  {data &&
+                    data?.map((data: ActiveStreamData) => (
+                      <tr className="h-4.06 " key={data?.id}>
+                        <td className="px-6 py-3 border-b">
+                          <div className="flex ">
+                            <div className="py-3 mr-2">
+                              <input type="checkbox" className="checkbox" />
                             </div>
-                            <div
-                              className={`mt-5 pl-5 absolute -top-10 z-10 ${ProfileModal?.isOpen && ProfileModal?.id === data?.id ? '' : 'hidden'} `}
-                            >
-                              <div className="w-12.87 h-4.57 profile-card-header rounded-t-0.6"></div>
-                              <div className="w-12.87 pb-3 rounded-b-0.6 profile-card-body profile-inner shadow-profileCard flex flex-col items-center bg-white">
-                                <div className="w-4.43 h-4.43 -mt-10 flex items-center justify-center">
-                                  <img src={ProfileModal?.profilePictureUrl === null ? profileImage : ProfileModal?.profilePictureUrl} alt="" />
-                                </div>
-                                <div className="font-semibold font-Poppins text-card text-profileBlack leading-1.12">{ProfileModal?.memberName}</div>
-                                <div className="text-profileEmail font-Poppins font-normal text-profileBlack text-center w-6.875 mt-0.146">
-                                  {ProfileModal?.email} {ProfileModal?.organization}
-                                </div>
-                                <div className="flex mt-2.5">
-                                  <div className="bg-cover bg-center mr-1 w-0.92 h-0.92">
-                                    <img src={slackIcon} alt="" />
+                            <div className="relative">
+                              <div
+                                onClick={() =>
+                                  handleProfileModal({
+                                    isOpen: true,
+                                    id: data?.id,
+                                    email: data?.email,
+                                    memberName: data?.memberName,
+                                    organization: 'NeoITO',
+                                    memberProfileUrl: `/${workspaceId}/members/profile`,
+                                    profilePictureUrl: data?.profilePictureUrl
+                                  })
+                                }
+                                className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer capitalize"
+                              >
+                                {data?.memberName}
+                              </div>
+                              <div
+                                className={`mt-5 pl-5 absolute -top-10 z-10 ${
+                                  ProfileModal?.isOpen && ProfileModal?.id === data?.id ? '' : 'hidden'
+                                } `}
+                              >
+                                <div className="w-12.87 h-4.57 profile-card-header rounded-t-0.6"></div>
+                                <div className="w-12.87 pb-3 rounded-b-0.6 profile-card-body profile-inner shadow-profileCard flex flex-col items-center bg-white">
+                                  <div className="w-4.43 h-4.43 -mt-10 flex items-center justify-center">
+                                    <img src={ProfileModal?.profilePictureUrl === null ? profileImage : ProfileModal?.profilePictureUrl} alt="" />
                                   </div>
+                                  <div className="font-semibold font-Poppins text-card text-profileBlack leading-1.12">
+                                    {ProfileModal?.memberName}
+                                  </div>
+                                  <div className="text-profileEmail font-Poppins font-normal text-profileBlack text-center w-6.875 mt-0.146">
+                                    {ProfileModal?.email} {ProfileModal?.organization}
+                                  </div>
+                                  <div className="flex mt-2.5">
+                                    <div className="bg-cover bg-center mr-1 w-0.92 h-0.92">
+                                      <img src={slackIcon} alt="" />
+                                    </div>
+                                  </div>
+                                  <a
+                                    href={`${ProfileModal?.memberProfileUrl}`}
+                                    className="mt-0.84 font-normal font-Poppins text-card underline text-profileBlack leading-5 cursor-pointer"
+                                  >
+                                    VIEW PROFILE
+                                  </a>
                                 </div>
-                                <a
-                                  href={`${ProfileModal?.memberProfileUrl}`}
-                                  className="mt-0.84 font-normal font-Poppins text-card underline text-profileBlack leading-5 cursor-pointer"
-                                >
-                                  VIEW PROFILE
-                                </a>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      </td>
-                      <td className="px-6 pt-5 border-b">
-                        <div className="flex flex-col">
-                          <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                            {generateDateAndTime(`${data?.createdAt}`, 'MM-DD-YYYY')}
-                          </div>
-                          <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
-                            {generateDateAndTime(`${data?.createdAt}`, 'HH:MM')}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 pt-5 border-b ">
-                        <div className="flex ">
-                          <div className="mr-2">
-                            <img src={slackIcon} alt="" />
-                          </div>
+                        </td>
+                        <td className="px-6 pt-5 border-b">
                           <div className="flex flex-col">
-                            <div
-                              className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer"
-                              onClick={() =>
-                                handleModal({
-                                  isOpen: true,
-                                  memberName: data?.memberName,
-                                  email: data?.email,
-                                  description: data?.description,
-                                  displayValue: data?.displayValue,
-                                  createdAt: data?.createdAt,
-                                  organization: 'NeoITO',
-                                  channelName: 'channel 1',
-                                  sourceUrl: data?.sourceUrl,
-                                  profilePictureUrl: data?.profilePictureUrl,
-                                  value: data?.value
-                                })
-                              }
-                            >
-                              {data?.displayValue}
+                            <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                              {generateDateAndTime(`${data?.createdAt}`, 'MM-DD-YYYY')}
                             </div>
                             <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
-                              {generateDateAndTime(`${data?.createdAt}`, 'MM-DD')}
+                              {generateDateAndTime(`${data?.createdAt}`, 'HH:MM')}
                             </div>
                           </div>
-                        </div>
-                      </td>
+                        </td>
+                        <td className="px-6 pt-5 border-b ">
+                          <div className="flex ">
+                            <div className="mr-2">
+                              <img src={slackIcon} alt="" />
+                            </div>
+                            <div className="flex flex-col">
+                              <div
+                                className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer"
+                                onClick={() =>
+                                  handleModal({
+                                    isOpen: true,
+                                    memberName: data?.memberName,
+                                    email: data?.email,
+                                    description: data?.description,
+                                    displayValue: data?.displayValue,
+                                    createdAt: data?.createdAt,
+                                    organization: 'NeoITO',
+                                    channelName: 'channel 1',
+                                    sourceUrl: data?.sourceUrl,
+                                    profilePictureUrl: data?.profilePictureUrl,
+                                    value: data?.value
+                                  })
+                                }
+                              >
+                                {data?.displayValue}
+                              </div>
+                              <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
+                                {generateDateAndTime(`${data?.createdAt}`, 'MM-DD')}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
 
-                      <td className="px-6 py-3 border-b">
-                        <a
-                          href={`${data?.sourceUrl}`}
-                          className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 underline cursor-pointer"
-                        >
-                          {data?.sourceUrl === null ? 'www.slack.com/profile' : data?.sourceUrl}
-                        </a>
-                      </td>
-                      <td className="px-6 py-3 border-b font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                        {data?.type}
-                      </td>
-                    </tr>
-                  ))}
+                        <td className="px-6 py-3 border-b">
+                          <a
+                            href={`${data?.sourceUrl}`}
+                            className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 underline cursor-pointer"
+                          >
+                            {data?.sourceUrl === null ? 'www.slack.com/profile' : data?.sourceUrl}
+                          </a>
+                        </td>
+                        <td className="px-6 py-3 border-b font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                          {data?.type}
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
               <Modal
@@ -546,22 +415,7 @@ const Activity: React.FC = () => {
             </div>
           </div>
           <div className="px-6 py-6 flex items-center justify-center gap-0.66 w-full rounded-b-lg  bottom-0 bg-white">
-            <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
-              <img src={prevIcon} alt="" />
-            </div>
-            <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">1</div>
-            <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">2</div>
-            <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">3</div>
-            <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">4</div>
-            <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">...</div>
-            <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">10</div>
-            <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
-              <img src={nextIcon} alt="" />
-            </div>
-            <div className="font-Lato font-normal text-pageNumber leading-4 text-pagination cursor-pointer">Go to page:</div>
-            <div>
-              <Input name="pagination" id="page" type="text" className="page-input focus:outline-none px-0.5 rounded box-border w-1.47 h-1.51" />
-            </div>
+            <Pagination currentPage={page} totalPages={totalPages} limit={limit} onPageChange={(page) => setpage(Number(page))} />
           </div>
         </div>
       ) : (
