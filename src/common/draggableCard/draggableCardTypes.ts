@@ -4,7 +4,7 @@ export type ColumnNameProps = {
   name: string;
   id: string;
   isDisplayed:boolean;
-  isDraggable:string
+  isDraggable:string;
 };
 
 export type DraggableCardProps = {

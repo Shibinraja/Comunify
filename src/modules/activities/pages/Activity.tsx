@@ -79,7 +79,7 @@ const Activity: React.FC = () => {
       memberName: data?.memberName,
       email: data?.email,
       displayValue: data?.displayValue,
-      createdAt: data?.createdAt,
+      activityTime: data?.activityTime,
       description: data?.description,
       organization: data?.organization,
       channelName: data?.channelName,
@@ -142,9 +142,7 @@ const Activity: React.FC = () => {
             onChange={handleSearchTextChange}
           />
         </div>
-        <div className="relative mr-5">
-          {ActiveStreamFilter}
-        </div>
+        <div className="relative mr-5">{ActiveStreamFilter}</div>
 
         <div className="">
           <div className="app-input-card-border w-6.98 h-3.06 rounded-0.6 shadow-shadowInput box-border bg-white items-center justify-evenly flex ml-0.63 cursor-pointer">
@@ -254,7 +252,7 @@ const Activity: React.FC = () => {
                                     email: data?.email,
                                     description: data?.description,
                                     displayValue: data?.displayValue,
-                                    createdAt: data?.createdAt,
+                                    activityTime: data?.activityTime,
                                     organization: 'NeoITO',
                                     channelName: 'channel 1',
                                     sourceUrl: data?.sourceUrl,
@@ -383,7 +381,8 @@ const Activity: React.FC = () => {
                         VIEW ON SLACK
                       </a>
                       <div className="absolute right-3 top-5 font-Poppins font-medium text-card leading-1.12 text-slimGray">
-                        {generateDateAndTime(`${ActivityCard?.createdAt}`, 'HH:MM')} | {generateDateAndTime(`${ActivityCard?.createdAt}`, 'MM-DD')}
+                        {generateDateAndTime(`${ActivityCard?.activityTime}`, 'HH:MM')} |{' '}
+                        {generateDateAndTime(`${ActivityCard?.activityTime}`, 'MM-DD')}
                       </div>
                     </div>
                   </div>

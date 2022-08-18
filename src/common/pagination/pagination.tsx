@@ -44,7 +44,9 @@ const Pagination: FC<PaginationProps> = (props) => {
         return (
           <div
             key={index}
-            className={`font-Lato font-normal text-error leading-4 cursor-pointer ${currentPage === pageNumber ? 'text-paginationArrowButton font-extrabold': 'text-pagination'}`}
+            className={`font-Lato font-normal text-error leading-4 cursor-pointer ${
+              currentPage === pageNumber ? 'text-paginationArrowButton font-extrabold' : 'text-pagination'
+            }`}
             onClick={() => onPageChange(pageNumber)}
           >
             {pageNumber}

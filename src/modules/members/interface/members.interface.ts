@@ -10,13 +10,58 @@ export interface GetMembersListQueryParams extends workspaceId {
     page: number;
     limit: number;
     search?: string;
-    tags?: string;
+    tags?: {
+      checkedTags: string;
+      searchedTags: string;
+    };
     platforms?: string;
-    organization?: string;
+    organization?: {
+      checkedOrganization: string;
+      searchedOrganization: string;
+    };
+    location?: {
+      checkedLocation: string;
+      searchedLocation: string;
+    };
     'lastActivity.lte'?: string;
     'lastActivity.gte'?: string;
     'createdAT.lte'?: string;
   };
+}
+
+export interface GetMembersTagListQueryParams extends workspaceId {
+  membersQuery: {
+    tags: {
+      checkedTags: string;
+      searchedTags: string;
+    };
+  };
+}
+export interface GetMembersLocationListQueryParams extends workspaceId {
+  membersQuery: {
+    location: {
+      checkedLocation: string;
+      searchedLocation: string;
+    };
+  };
+}
+
+export interface GetMembersOrganizationListQueryParams extends workspaceId {
+  membersQuery: {
+    organization: {
+      checkedOrganization: string;
+      searchedOrganization: string;
+    };
+  };
+}
+
+export interface MembersColumnsParams extends workspaceId {
+  columnData: {
+    name: string;
+    id: string;
+    isDisplayed: boolean;
+    isDraggable: string;
+  }[];
 }
 
 // Response Body
@@ -92,8 +137,26 @@ export type MembersListResponse = {
   nextPage: number;
 };
 
+export type MembersPlatformResponse = {
+  id: string;
+  name: string;
+  status: string;
+  errorMessage: string;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type MembersTagResponse = {
+  createdAt: string;
+  id: string;
+  name: string;
+  updatedAt: Date;
+  viewName: string;
+  workspaceId: string;
+};
 export interface DraggableComponentsProps {
-  MembersColumn: boolean;
+  MembersColumn?: boolean;
   handleModalClose: () => void;
 }
 

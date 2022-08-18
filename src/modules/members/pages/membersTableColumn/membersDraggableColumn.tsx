@@ -7,8 +7,10 @@ import { ColumNames } from '../MembersTableData';
 import { DraggableComponentsProps } from 'modules/members/interface/members.interface';
 import membersSlice from 'modules/members/store/slice/members.slice';
 import { useAppSelector } from '@/hooks/useRedux';
+import { useParams } from 'react-router-dom';
 
 const MembersDraggableColumn: React.FC<DraggableComponentsProps> = ({ MembersColumn, handleModalClose }) => {
+  const { workspaceId } = useParams();
   const dispatch = useDispatch();
   const customizedColumn = useAppSelector((state) => state.members.customizedColumn);
   const [columns, setColumns] = useState<Array<ColumnNameProps>>(ColumNames);
@@ -43,7 +45,7 @@ const MembersDraggableColumn: React.FC<DraggableComponentsProps> = ({ MembersCol
 
   //Set new column change if the initial order changes.
   useEffect(() => {
-    if (customizedColumn.length > 1) {
+    if (customizedColumn?.length > 1) {
       setColumns(customizedColumn);
     }
   }, [customizedColumn]);
@@ -51,7 +53,7 @@ const MembersDraggableColumn: React.FC<DraggableComponentsProps> = ({ MembersCol
   useEffect(() => {
     // eslint-disable-next-line no-extra-boolean-cast
     if (!!MembersColumn) {
-      dispatch(membersSlice.actions.customizedColumnData(columns));
+      dispatch(membersSlice.actions.membersColumnsUpdateList({ columnData: columns, workspaceId: workspaceId! }));
       handleModalClose();
     }
   }, [MembersColumn]);

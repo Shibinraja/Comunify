@@ -12,9 +12,15 @@ import {
   GetMembersListQueryParams,
   MembersListResponse,
   VerifyMembers,
+  MembersColumnsParams,
+  GetMembersOrganizationListQueryParams,
+  GetMembersLocationListQueryParams,
+  GetMembersTagListQueryParams,
+  MembersTagResponse,
   ActivityDataResponse,
   ActivityInfiniteScroll,
-  MemberProfileCard
+  MemberProfileCard,
+  MembersPlatformResponse
 } from '../interface/members.interface';
 
 //Members Module
@@ -57,16 +63,66 @@ export function* MembersListService(query: Required<GetMembersListQueryParams>):
   const { data } = yield request.get(
     `/v1/${query.workspaceId}/members?page=${query.membersQuery.page}&limit=${query.membersQuery.limit}${
       query.membersQuery.search ? `&search=${query.membersQuery.search}` : ''
-    }${query.membersQuery.tags ? `&tags=${query.membersQuery.tags}` : ''}${
+    }${query.membersQuery.tags?.checkedTags ? `&tags=${query.membersQuery.tags.checkedTags}` : ''}${
       query.membersQuery.platforms ? `&platforms=${query.membersQuery.platforms}` : ''
-    }${query.membersQuery.organization ? `&organization=${query.membersQuery.organization}` : ''}${
-      query.membersQuery['lastActivity.gte'] ? `&lastActivity.gte=${query.membersQuery['lastActivity.gte']}` : ''
-    }${query.membersQuery['lastActivity.lte'] ? `&lastActivity.lte=${query.membersQuery['lastActivity.lte']}` : ''}${
-      query.membersQuery['createdAT.lte'] ? `&createdAT.lte=${query.membersQuery['createdAT.lte']}` : ''
+    }${query.membersQuery.location?.checkedLocation ? `&location=${query.membersQuery.location.checkedLocation}` : ''}${
+      query.membersQuery.organization?.checkedOrganization ? `&organization=${query.membersQuery.organization.checkedOrganization}` : ''
+    }${query.membersQuery['lastActivity.gte'] ? `&lastActivity.gte=${query.membersQuery['lastActivity.gte']}` : ''}${
+      query.membersQuery['lastActivity.lte'] ? `&lastActivity.lte=${query.membersQuery['lastActivity.lte']}` : ''
+    }${query.membersQuery['createdAT.lte'] ? `&createdAT.lte=${query.membersQuery['createdAT.lte']}` : ''}`
+  );
+  return data;
+}
+
+export function* MembersPlatformFilterService(): GeneratorResponse<Array<MembersPlatformResponse>> {
+  const { data } = yield request.get(`/v1/platforms`);
+  return data;
+}
+
+export function* MembersTagFilterService(query: Partial<GetMembersTagListQueryParams>): GeneratorResponse<Array<MembersTagResponse>> {
+  const { data } = yield request.get(
+    `/v1/${query.workspaceId}/tags/workspacetags?${query.membersQuery?.tags.searchedTags ? `search=${query.membersQuery.tags.searchedTags}` : ''}`
+  );
+  return data;
+}
+
+export function* MembersLocationFilterService(query: Partial<GetMembersLocationListQueryParams>): GeneratorResponse<Array<{ location: string }>> {
+  const { data } = yield request.get(
+    `/v1/${query.workspaceId}/members/locationfilters?${
+      query.membersQuery?.location?.searchedLocation ? `search=${query.membersQuery.location.searchedLocation}` : ''
     }`
   );
   return data;
 }
+
+export function* MembersOrganizationFilterService(
+  query: Partial<GetMembersOrganizationListQueryParams>
+): GeneratorResponse<Array<{ organization: string }>> {
+  const { data } = yield request.get(
+    `/v1/${query.workspaceId}/members/organizationfilters?${
+      query.membersQuery?.organization?.searchedOrganization ? `search=${query.membersQuery.organization.searchedOrganization}` : ''
+    }`
+  );
+  return data;
+}
+
+export function* MembersColumnsListService(
+  query: Omit<MembersColumnsParams, 'columnData'>
+): GeneratorResponse<Pick<MembersColumnsParams, 'columnData'>> {
+  const { data } = yield request.get(`/v1/${query.workspaceId}/members/getmemberlistcolumnconfig`);
+  return data;
+}
+
+export function* MembersColumnsListUpdateService(body: MembersColumnsParams): GeneratorResponse<Pick<MembersColumnsParams, 'columnData'>> {
+  const { data } = yield request.put(`/v1/${body.workspaceId}/members/updatememberlistcolumnconfig`, { columnData: JSON.stringify(body.columnData) });
+  return data;
+}
+
+export function* MembersListExportService(query: { workspaceId: string }): GeneratorResponse<{ type: string; data: Array<Buffer> }> {
+  const { data } = yield request.get(`/v1/${query.workspaceId}/members/memberlistexport`);
+  return data;
+}
+
 export function* GetMembersActivityDataInfiniteScrollSaga(params: ActivityInfiniteScroll): GeneratorResponse<ActivityDataResponse> {
   const { data } = yield request.get(
     `/v1/${params.workspaceId}/members/${params.memberId}/activity?${params?.nextCursor ? `&cursor=${params.nextCursor}` : ''}${

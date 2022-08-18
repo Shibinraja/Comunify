@@ -8,10 +8,17 @@ import {
   VerifyPlatform,
   MembersListResponse,
   MembersCountResponse,
-  GetMembersListQueryParams,
+  MembersColumnsParams,
+  workspaceId,
+  GetMembersLocationListQueryParams,
+  GetMembersOrganizationListQueryParams,
+  GetMembersTagListQueryParams,
+  MembersTagResponse,
   ActivityDataResponse,
   ActivityInfiniteScroll,
-  MemberProfileCard
+  MemberProfileCard,
+  GetMembersListQueryParams,
+  MembersPlatformResponse
 } from 'modules/members/interface/members.interface';
 import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
 import { InitialState } from '../types/members.type';
@@ -77,6 +84,14 @@ export const customizedColumnProps = [
   }
 ];
 
+export const membersPlatformFilterResponse = [];
+
+export const membersLocationFilterResponse = [];
+
+export const membersOrganizationFilterResponse = [];
+
+export const membersTagFilterResponse = [];
+
 const membersActivityInitialValue = {
   result: [],
   nextCursor: null
@@ -91,6 +106,11 @@ const initialState: InitialState = {
   platformsData: [],
   membersListData: membersListResponse,
   customizedColumn: customizedColumnProps,
+  membersPlatformFilterResponse,
+  membersLocationFilterResponse,
+  membersOrganizationFilterResponse,
+  membersTagFilterResponse,
+  membersListExportData: [],
   membersActivityData: membersActivityInitialValue,
   memberProfileCardData: []
 };
@@ -108,6 +128,20 @@ const membersInActiveCount = (state: InitialState) => state;
 const platformData = (state: InitialState) => state;
 
 const membersList = (state: InitialState, action: PayloadAction<GetMembersListQueryParams>) => state;
+
+const membersPlatformFilter = (state: InitialState) => state;
+
+const membersTagFilter = (state: InitialState, action: PayloadAction<Partial<GetMembersTagListQueryParams>>) => state;
+
+const membersLocationFilter = (state: InitialState, action: PayloadAction<Partial<GetMembersLocationListQueryParams>>) => state;
+
+const membersOrganizationFilter = (state: InitialState, action: PayloadAction<Partial<GetMembersOrganizationListQueryParams>>) => state;
+
+const membersColumnsList = (state: InitialState, action: PayloadAction<Omit<MembersColumnsParams, 'columnData'>>) => state;
+
+const membersColumnsUpdateList = (state: InitialState, action: PayloadAction<MembersColumnsParams>) => state;
+
+const membersListExport = (state: InitialState, action: PayloadAction<workspaceId>) => state;
 
 //Reducer Call
 
@@ -154,6 +188,31 @@ const customizedColumnData = (state: InitialState, action: PayloadAction<Array<C
   customizedColumn: action.payload
 });
 
+const getmembersPlatformFilterData = (state: InitialState, action: PayloadAction<Array<MembersPlatformResponse>>) => ({
+  ...state,
+  membersPlatformFilterResponse: action.payload
+});
+
+const getmembersTagFilterData = (state: InitialState, action: PayloadAction<Array<MembersTagResponse>>) => ({
+  ...state,
+  membersTagFilterResponse: action.payload
+});
+
+const getmembersLocationFilterData = (state: InitialState, action: PayloadAction<Array<{ location: string }>>) => ({
+  ...state,
+  membersLocationFilterResponse: action.payload
+});
+
+const getmembersOrganizationFilterData = (state: InitialState, action: PayloadAction<Array<{ organization: string }>>) => ({
+  ...state,
+  membersOrganizationFilterResponse: action.payload
+});
+
+const getmembersListExport = (state: InitialState, action: PayloadAction<Array<Buffer>>) => ({
+  ...state,
+  membersListExportData: action.payload
+});
+
 const getMembersActivityDataInfiniteScroll = (state: InitialState, action: PayloadAction<ActivityInfiniteScroll>) => state;
 
 const setMembersActivityData = (state: InitialState, action: PayloadAction<ActivityDataResponse>) => ({
@@ -188,9 +247,21 @@ const membersSlice = createSlice({
     getMembersActivityGraphDataPerPlatform,
     platformData,
     setPlatformsData,
+    membersTagFilter,
+    membersLocationFilter,
+    membersOrganizationFilter,
+    getmembersTagFilterData,
+    getmembersLocationFilterData,
+    getmembersOrganizationFilterData,
+    membersColumnsList,
+    membersColumnsUpdateList,
+    membersListExport,
     getMembersActivityDataInfiniteScroll,
     getMemberProfileCardData,
-    setMemberProfileCardData
+    setMemberProfileCardData,
+    membersPlatformFilter,
+    getmembersPlatformFilterData,
+    getmembersListExport
   }
 });
 

@@ -1,37 +1,33 @@
+/* eslint-disable max-len */
 /* eslint-disable no-console */
 import React, { useEffect, useRef, useState } from 'react';
 // import profileImage from '../../../../assets/images/profile-member.svg';
-import dropDownIcon from '../../../../assets/images/profile-dropdown.svg';
-import slackIcon from '../../../../assets/images/slack.svg';
-import closeIcon from '../../../../assets/images/close-member.svg';
-import yellowDottedIcon from '../../../../assets/images/yellow_dotted.svg';
-import unsplashIcon from '../../../../assets/images/unsplash_mj.svg';
-import searchIcon from '../../../../assets/images/search.svg';
-import calendarIcon from '../../../../assets/images/calandar.svg';
-import { useNavigate } from 'react-router-dom';
+import Button from 'common/button';
+import { format } from 'date-fns';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import Button from 'common/button';
 import Modal from 'react-modal';
-import MembersProfileGraph from '../membersProfileGraph/MembersProfileGraph';
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../../../store';
-import membersSlice from '../../store/slice/members.slice';
+import { useNavigate, useParams } from 'react-router-dom';
+import calendarIcon from '../../../../assets/images/calandar.svg';
+import closeIcon from '../../../../assets/images/close-member.svg';
+import dropDownIcon from '../../../../assets/images/profile-dropdown.svg';
+import searchIcon from '../../../../assets/images/search.svg';
+import slackIcon from '../../../../assets/images/slack.svg';
+import unsplashIcon from '../../../../assets/images/unsplash_mj.svg';
+import yellowDottedIcon from '../../../../assets/images/yellow_dotted.svg';
 import { useAppSelector } from '../../../../hooks/useRedux';
-import {
-  MembersProfileActivityGraphData,
-  PlatformsData,
-  ActivityDataResponse,
-  ActivityResult,
-  MemberProfileCard
-} from '../../interface/members.interface';
-import { generateDateAndTime, getLocalWorkspaceId } from '../../../../lib/helper';
-import { format } from 'date-fns';
+import { generateDateAndTime } from '../../../../lib/helper';
+import { AppDispatch } from '../../../../store';
+import { ActivityResult, MemberProfileCard, PlatformsData } from '../../interface/members.interface';
+import membersSlice from '../../store/slice/members.slice';
+import MembersProfileGraph from '../membersProfileGraph/MembersProfileGraph';
 
 Modal.setAppElement('#root');
 
 const MembersProfile: React.FC = () => {
   const navigate = useNavigate();
+  const { workspaceId, memberId } = useParams();
   const [isSelectDropDownActive, setSelectDropDownActive] = useState<boolean>(false);
   const [selected, setSelected] = useState<string>('');
   const [isIntegrationDropDownActive, setIntegrationDropDownActive] = useState<boolean>(false);
@@ -43,6 +39,47 @@ const MembersProfile: React.FC = () => {
   const [isFilterDropDownActive, setFilterDropdownActive] = useState<boolean>(false);
   const [activityNextCursor, setActivityNextCursor] = useState<string | null>('');
   const [platform, setPlatform] = useState<string | null>('');
+  const {
+    membersActivityData: activityData,
+    membersProfileActivityGraphData: activityGraphData,
+    platformsData: platformData,
+    memberProfileCardData
+  } = useAppSelector((state) => state.members);
+
+  const dispatch: AppDispatch = useDispatch();
+
+  const dropDownRef = useRef<HTMLDivElement>(null);
+
+  const handleOutsideClick = (event: MouseEvent) => {
+    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target as Node)) {
+      setSelectDropDownActive(true);
+    } else {
+      setSelectDropDownActive(false);
+    }
+  };
+
+  useEffect(() => {
+    dispatch(membersSlice.actions.getMembersActivityGraphData({ workspaceId: workspaceId as string, memberId: memberId as string }));
+    dispatch(membersSlice.actions.platformData());
+    dispatch(membersSlice.actions.getMemberProfileCardData({ workspaceId: workspaceId as string, memberId: memberId as string }));
+    document.addEventListener('click', handleOutsideClick);
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, []);
+
+  useEffect(() => {
+    dispatch(
+      membersSlice.actions.getMembersActivityDataInfiniteScroll({
+        workspaceId: workspaceId as string,
+        memberId: memberId as string,
+        nextCursor: activityNextCursor ? activityNextCursor : '',
+        platform: platform && platform,
+        fromDate: fromDate && format(fromDate, 'yyyy-MM-dd'),
+        toDate: toDate && format(toDate, 'yyyy-MM-dd')
+      })
+    );
+  }, [activityNextCursor, platform, fromDate && toDate]);
 
   const handleModal = (val: boolean) => {
     setIsModalOpen(val);
@@ -68,61 +105,18 @@ const MembersProfile: React.FC = () => {
     navigate('/members/members-review');
   };
 
-  const dispatch: AppDispatch = useDispatch();
-
-  const dropDownRef = useRef<HTMLDivElement>(null);
-
-  const handleOutsideClick = (event: MouseEvent) => {
-    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target as Node)) {
-      setSelectDropDownActive(true);
-    } else {
-      setSelectDropDownActive(false);
-    }
-  };
-
-  const workspaceId = getLocalWorkspaceId();
-
-  useEffect(() => {
-    dispatch(membersSlice.actions.getMembersActivityGraphData({ workspaceId, memberId: '4a717dcd-7bfa-4ed4-a3ee-58efcfd64764' }));
-    dispatch(membersSlice.actions.platformData());
-    dispatch(membersSlice.actions.getMemberProfileCardData({ workspaceId, memberId: '4a717dcd-7bfa-4ed4-a3ee-58efcfd64764' }));
-    document.addEventListener('click', handleOutsideClick);
-    return () => {
-      document.removeEventListener('click', handleOutsideClick);
-    };
-  }, []);
-
-  useEffect(() => {
-    dispatch(
-      membersSlice.actions.getMembersActivityDataInfiniteScroll({
-        workspaceId,
-        memberId: '4a717dcd-7bfa-4ed4-a3ee-58efcfd64764',
-        nextCursor: activityNextCursor ? activityNextCursor : '',
-        platform: platform && platform,
-        fromDate: fromDate && format(fromDate, 'yyyy-MM-dd'),
-        toDate: toDate && format(toDate, 'yyyy-MM-dd')
-      })
-    );
-  }, [activityNextCursor, platform, fromDate && toDate]);
-
-  const activityData: ActivityDataResponse = useAppSelector((state) => state.members.membersActivityData);
-  const activityGraphData: MembersProfileActivityGraphData = useAppSelector((state) => state.members.membersProfileActivityGraphData);
-  const platformData: PlatformsData[] = useAppSelector((state) => state.members.platformsData);
-  const memberProfileCardData: MemberProfileCard[] = useAppSelector((state) => state.members.memberProfileCardData);
-  console.log('member data is', memberProfileCardData);
-
   // switch case for member graph
   const selectPlatformToDisplayOnGraph = (name: string) => {
     setSelected(name);
     switch (name) {
       case 'All':
-        dispatch(membersSlice.actions.getMembersActivityGraphData({ workspaceId, memberId: '4a717dcd-7bfa-4ed4-a3ee-58efcfd64764' }));
+        dispatch(membersSlice.actions.getMembersActivityGraphData({ workspaceId: workspaceId as string, memberId: memberId as string }));
         break;
       case 'Slack':
         dispatch(
           membersSlice.actions.getMembersActivityGraphDataPerPlatform({
-            workspaceId,
-            memberId: '4a717dcd-7bfa-4ed4-a3ee-58efcfd64764',
+            workspaceId: workspaceId as string,
+            memberId: memberId as string,
             platform: name.toLocaleLowerCase().trim()
           })
         );
@@ -140,8 +134,8 @@ const MembersProfile: React.FC = () => {
       case 'All Integration':
         dispatch(
           membersSlice.actions.getMembersActivityDataInfiniteScroll({
-            workspaceId,
-            memberId: '4a717dcd-7bfa-4ed4-a3ee-58efcfd64764',
+            workspaceId: workspaceId as string,
+            memberId: memberId as string,
             nextCursor: activityNextCursor ? activityNextCursor : '',
             fromDate: fromDate && format(fromDate, 'yyyy-MM-dd'),
             toDate: toDate && format(toDate, 'yyyy-MM-dd')
@@ -152,8 +146,8 @@ const MembersProfile: React.FC = () => {
         setPlatform(name.toLocaleLowerCase().trim());
         dispatch(
           membersSlice.actions.getMembersActivityDataInfiniteScroll({
-            workspaceId,
-            memberId: '4a717dcd-7bfa-4ed4-a3ee-58efcfd64764',
+            workspaceId: workspaceId as string,
+            memberId: memberId as string,
             nextCursor: activityNextCursor ? activityNextCursor : '',
             platform: name?.toLocaleLowerCase(),
             fromDate: fromDate && format(fromDate, 'yyyy-MM-dd'),

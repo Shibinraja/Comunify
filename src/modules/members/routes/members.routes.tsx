@@ -14,7 +14,7 @@ const membersRoutes: RoutesArray = {
       element: <Members />
     },
     {
-      path: 'profile',
+      path: ':memberId/profile',
       element: <MembersProfileRoute />
     },
     {

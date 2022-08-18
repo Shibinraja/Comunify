@@ -7,28 +7,43 @@ import { showErrorToast } from 'common/toast/toastFunctions';
 import loaderSlice from 'modules/authentication/store/slices/loader.slice';
 import membersSlice from '../slice/members.slice';
 import {
+  MembersColumnsListUpdateService,
+  MembersListExportService,
+  MembersListService,
+  MembersLocationFilterService,
+  MembersOrganizationFilterService,
+  TotalCountService,
   InactiveCountService,
   PlatformsDataService,
   MembersActivityGraphService,
-  MembersListService,
-  TotalCountService,
   GetMembersActivityGraphDataPerPlatformService,
+  MembersColumnsListService,
+  MembersTagFilterService,
   GetMembersActivityDataInfiniteScrollSaga,
-  GetMembersProfileCardService
+  GetMembersProfileCardService,
+  MembersPlatformFilterService
 } from 'modules/members/services/members.services';
+import { PayloadAction } from '@reduxjs/toolkit';
+import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
 import {
-  PlatformsData,
   GetMembersListQueryParams,
+  GetMembersLocationListQueryParams,
+  GetMembersOrganizationListQueryParams,
+  GetMembersTagListQueryParams,
+  MembersColumnsParams,
   MembersCountResponse,
   MembersListResponse,
+  MembersPlatformResponse,
   MembersProfileActivityGraphData,
+  MembersTagResponse,
+  PlatformsData,
   VerifyMembers,
   VerifyPlatform,
+  workspaceId,
   ActivityDataResponse,
   ActivityInfiniteScroll,
   MemberProfileCard
 } from 'modules/members/interface/members.interface';
-import { PayloadAction } from '@reduxjs/toolkit';
 
 // const forwardTo = (location: string) => {
 //     history.push(location);
@@ -129,6 +144,70 @@ function* membersActivityGraphSaga(action: PayloadAction<VerifyMembers>) {
   }
 }
 
+function* membersPlatformFilter() {
+  try {
+    yield put(loaderSlice.actions.startLoadingAction());
+
+    const res: SuccessResponse<Array<MembersPlatformResponse>> = yield call(MembersPlatformFilterService);
+    if (res?.data) {
+      yield put(membersSlice.actions.getmembersPlatformFilterData(res?.data));
+    }
+  } catch (e) {
+    const error = e as AxiosError<unknown>;
+    showErrorToast(error?.response?.data?.message);
+  } finally {
+    yield put(loaderSlice.actions.stopLoadingAction());
+  }
+}
+
+function* membersLocationFilter(action: PayloadAction<Partial<GetMembersLocationListQueryParams>>) {
+  try {
+    yield put(loaderSlice.actions.startLoadingAction());
+
+    const res: SuccessResponse<Array<{ location: string }>> = yield call(MembersLocationFilterService, action.payload);
+    if (res?.data) {
+      yield put(membersSlice.actions.getmembersLocationFilterData(res?.data));
+    }
+  } catch (e) {
+    const error = e as AxiosError<unknown>;
+    showErrorToast(error?.response?.data?.message);
+  } finally {
+    yield put(loaderSlice.actions.stopLoadingAction());
+  }
+}
+
+function* membersTagFilter(action: PayloadAction<Partial<GetMembersTagListQueryParams>>) {
+  try {
+    yield put(loaderSlice.actions.startLoadingAction());
+
+    const res: SuccessResponse<Array<MembersTagResponse>> = yield call(MembersTagFilterService, action.payload);
+    if (res?.data) {
+      yield put(membersSlice.actions.getmembersTagFilterData(res.data));
+    }
+  } catch (e) {
+    const error = e as AxiosError<unknown>;
+    showErrorToast(error?.response?.data?.message);
+  } finally {
+    yield put(loaderSlice.actions.stopLoadingAction());
+  }
+}
+
+function* membersOrganizationFilter(action: PayloadAction<Partial<GetMembersOrganizationListQueryParams>>) {
+  try {
+    yield put(loaderSlice.actions.startLoadingAction());
+
+    const res: SuccessResponse<Array<{ organization: string }>> = yield call(MembersOrganizationFilterService, action.payload);
+    if (res?.data) {
+      yield put(membersSlice.actions.getmembersOrganizationFilterData(res?.data));
+    }
+  } catch (e) {
+    const error = e as AxiosError<unknown>;
+    showErrorToast(error?.response?.data?.message);
+  } finally {
+    yield put(loaderSlice.actions.stopLoadingAction());
+  }
+}
+
 function* getPlatformsDataSaga() {
   try {
     yield put(loaderSlice.actions.startLoadingAction());
@@ -137,6 +216,20 @@ function* getPlatformsDataSaga() {
   } catch (e) {
     // const error = e as AxiosError<unknown>;
     // throw error.response?.data?.message;
+  }
+}
+
+function* membersColumnsList(action: PayloadAction<Omit<MembersColumnsParams, 'columnData'>>) {
+  try {
+    yield put(loaderSlice.actions.startLoadingAction());
+
+    const res: SuccessResponse<Pick<MembersColumnsParams, 'columnData'>> = yield call(MembersColumnsListService, action.payload);
+    if (res?.data) {
+      yield put(membersSlice.actions.customizedColumnData(res?.data?.columnData));
+    }
+  } catch (e) {
+    const error = e as AxiosError<unknown>;
+    showErrorToast(error?.response?.data?.message);
   } finally {
     yield put(loaderSlice.actions.stopLoadingAction());
   }
@@ -145,7 +238,7 @@ function* getPlatformsDataSaga() {
 function* getMembersActivityGraphDataPerPlatformSaga(action: PayloadAction<VerifyPlatform>) {
   try {
     yield put(loaderSlice.actions.startLoadingAction());
-    yield put(loaderSlice.actions.startLoadingAction());
+
     const res: SuccessResponse<MembersProfileActivityGraphData> = yield call(GetMembersActivityGraphDataPerPlatformService, action.payload);
     yield put(membersSlice.actions.setMembersActivityGraphData(res?.data));
   } catch (e) {
@@ -153,6 +246,39 @@ function* getMembersActivityGraphDataPerPlatformSaga(action: PayloadAction<Verif
     if (error?.response?.data?.message) {
       showErrorToast('Failed to load graph data');
     }
+  } finally {
+    yield put(loaderSlice.actions.stopLoadingAction());
+  }
+}
+
+function* membersColumnsUpdateList(action: PayloadAction<MembersColumnsParams>) {
+  try {
+    yield put(loaderSlice.actions.startLoadingAction());
+
+    const res: SuccessResponse<Pick<MembersColumnsParams, 'columnData'>> = yield call(MembersColumnsListUpdateService, action.payload);
+    if (res?.data) {
+      yield put(membersSlice.actions.membersColumnsList({ workspaceId: action.payload.workspaceId }));
+      yield put(membersSlice.actions.customizedColumnData(res?.data?.columnData));
+    }
+  } catch (e) {
+    const error = e as AxiosError<unknown>;
+    showErrorToast(error?.response?.data?.message);
+  } finally {
+    yield put(loaderSlice.actions.stopLoadingAction());
+  }
+}
+
+function* membersListExport(action: PayloadAction<workspaceId>) {
+  try {
+    yield put(loaderSlice.actions.startLoadingAction());
+
+    const res: SuccessResponse<{type:string, data:Array<Buffer>}> = yield call(MembersListExportService, action.payload);
+    if (res?.data) {
+      yield put(membersSlice.actions.getmembersListExport(res?.data?.data));
+    }
+  } catch (e) {
+    const error = e as AxiosError<unknown>;
+    showErrorToast(error?.response?.data?.message);
   } finally {
     yield put(loaderSlice.actions.stopLoadingAction());
   }
@@ -191,6 +317,13 @@ export default function* membersSaga(): SagaIterator {
   yield takeEvery(membersSlice.actions.getMembersActivityGraphData.type, membersActivityGraphSaga);
   yield takeEvery(membersSlice.actions.platformData.type, getPlatformsDataSaga);
   yield takeEvery(membersSlice.actions.getMembersActivityGraphDataPerPlatform.type, getMembersActivityGraphDataPerPlatformSaga);
+  yield takeEvery(membersSlice.actions.membersTagFilter.type, membersTagFilter);
+  yield takeEvery(membersSlice.actions.membersPlatformFilter.type, membersPlatformFilter);
+  yield takeEvery(membersSlice.actions.membersLocationFilter.type, membersLocationFilter);
+  yield takeEvery(membersSlice.actions.membersOrganizationFilter.type, membersOrganizationFilter);
+  yield takeEvery(membersSlice.actions.membersColumnsList.type, membersColumnsList);
+  yield takeEvery(membersSlice.actions.membersColumnsUpdateList.type, membersColumnsUpdateList);
+  yield takeEvery(membersSlice.actions.membersListExport.type, membersListExport);
   yield takeEvery(membersSlice.actions.getMembersActivityDataInfiniteScroll.type, getMembersActivityDataInfiniteScrollSaga);
   yield takeEvery(membersSlice.actions.getMemberProfileCardData.type, getMemberProfileCardData);
 }

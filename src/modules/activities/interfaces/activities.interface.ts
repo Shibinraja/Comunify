@@ -17,7 +17,7 @@ export interface ActivityCard {
   description: string;
   channelName: string;
   sourceUrl: string | null;
-  createdAt: Date;
+  activityTime: Date;
   profilePictureUrl: string | null;
   value: string | null;
 }
@@ -33,7 +33,7 @@ export interface GetActiveStreamListQueryParams extends workspaceId {
     page: number;
     limit: number;
     search?: string;
-    platforms?:string
+    platforms?: string;
     tags?: {
       checkedTags: string;
       searchedTags: string;
