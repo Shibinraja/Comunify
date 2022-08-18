@@ -48,7 +48,7 @@ const Integration: React.FC = () => {
       localStorage.setItem('workspacePlatformSettingId', response?.data?.data?.id);
       if (response) {
         setIsModalOpen(false);
-        navigate('/settings/complete-setup', { state: { workspacePlatformSettingId: response?.data?.data?.id } });
+        navigate(`/${workspaceId}/settings/complete-setup`, { state: { workspacePlatformSettingId: response?.data?.data?.id } });
       } else {
         showErrorToast('Integration failed');
       }
