@@ -1,6 +1,7 @@
+/* eslint-disable no-console */
 /* eslint-disable max-len */
 import { GeneratorResponse } from '@/lib/api';
-import { API_ENDPOINT, members_module, platforms_module } from '@/lib/config';
+import { members_module, platforms_module } from '@/lib/config';
 import { request } from '@/lib/request';
 
 import {
@@ -12,7 +13,8 @@ import {
   MembersListResponse,
   VerifyMembers,
   ActivityDataResponse,
-  ActivityInfiniteScroll
+  ActivityInfiniteScroll,
+  MemberProfileCard
 } from '../interface/members.interface';
 
 //Members Module
@@ -65,10 +67,17 @@ export function* MembersListService(query: Required<GetMembersListQueryParams>):
   );
   return data;
 }
-
 export function* GetMembersActivityDataInfiniteScrollSaga(params: ActivityInfiniteScroll): GeneratorResponse<ActivityDataResponse> {
   const { data } = yield request.get(
-    `${API_ENDPOINT}/v1/${params.workspaceId}/members/${params.memberId}/activity${params?.nextCursor ? `?cursor=${params.nextCursor}` : ''}`
+    `/v1/${params.workspaceId}/members/${params.memberId}/activity?${params?.nextCursor ? `&cursor=${params.nextCursor}` : ''}${
+      params?.platform ? `&platforms=${params?.platform}` : ''
+    }
+      ${params?.fromDate ? `&activity.gte=${params.fromDate}` : ''} ${params?.toDate ? `&activity.lte=${params.toDate}` : ''}`
   );
+  return data;
+}
+
+export function* GetMembersProfileCardService(params: VerifyMembers): GeneratorResponse<MemberProfileCard[]> {
+  const { data } = yield request.get(`/v1/${params.workspaceId}/members/${params.memberId}/getMemberById`);
   return data;
 }

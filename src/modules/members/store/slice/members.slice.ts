@@ -10,7 +10,8 @@ import {
   MembersCountResponse,
   GetMembersListQueryParams,
   ActivityDataResponse,
-  ActivityInfiniteScroll
+  ActivityInfiniteScroll,
+  MemberProfileCard
 } from 'modules/members/interface/members.interface';
 import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
 import { InitialState } from '../types/members.type';
@@ -90,7 +91,8 @@ const initialState: InitialState = {
   platformsData: [],
   membersListData: membersListResponse,
   customizedColumn: customizedColumnProps,
-  membersActivityData: membersActivityInitialValue
+  membersActivityData: membersActivityInitialValue,
+  memberProfileCardData: []
 };
 
 //Saga Call
@@ -159,6 +161,12 @@ const setMembersActivityData = (state: InitialState, action: PayloadAction<Activ
   membersActivityData: { nextCursor: action.payload.nextCursor, result: [...state.membersActivityData.result, ...action.payload.result] }
 });
 
+const getMemberProfileCardData = (state: InitialState, action: PayloadAction<VerifyMembers>) => state;
+
+const setMemberProfileCardData = (state: InitialState, action: PayloadAction<MemberProfileCard[]>) => {
+  state.memberProfileCardData = action.payload;
+};
+
 const membersSlice = createSlice({
   name: 'members',
   initialState,
@@ -180,7 +188,9 @@ const membersSlice = createSlice({
     getMembersActivityGraphDataPerPlatform,
     platformData,
     setPlatformsData,
-    getMembersActivityDataInfiniteScroll
+    getMembersActivityDataInfiniteScroll,
+    getMemberProfileCardData,
+    setMemberProfileCardData
   }
 });
 

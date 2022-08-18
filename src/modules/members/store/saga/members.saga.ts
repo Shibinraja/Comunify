@@ -13,7 +13,8 @@ import {
   MembersListService,
   TotalCountService,
   GetMembersActivityGraphDataPerPlatformService,
-  GetMembersActivityDataInfiniteScrollSaga
+  GetMembersActivityDataInfiniteScrollSaga,
+  GetMembersProfileCardService
 } from 'modules/members/services/members.services';
 import {
   PlatformsData,
@@ -24,7 +25,8 @@ import {
   VerifyMembers,
   VerifyPlatform,
   ActivityDataResponse,
-  ActivityInfiniteScroll
+  ActivityInfiniteScroll,
+  MemberProfileCard
 } from 'modules/members/interface/members.interface';
 import { PayloadAction } from '@reduxjs/toolkit';
 
@@ -143,6 +145,7 @@ function* getPlatformsDataSaga() {
 function* getMembersActivityGraphDataPerPlatformSaga(action: PayloadAction<VerifyPlatform>) {
   try {
     yield put(loaderSlice.actions.startLoadingAction());
+    yield put(loaderSlice.actions.startLoadingAction());
     const res: SuccessResponse<MembersProfileActivityGraphData> = yield call(GetMembersActivityGraphDataPerPlatformService, action.payload);
     yield put(membersSlice.actions.setMembersActivityGraphData(res?.data));
   } catch (e) {
@@ -167,6 +170,18 @@ function* getMembersActivityDataInfiniteScrollSaga(action: PayloadAction<Activit
   }
 }
 
+function* getMemberProfileCardData(action: PayloadAction<VerifyMembers>) {
+  try {
+    yield put(loaderSlice.actions.startLoadingAction());
+    const res: SuccessResponse<MemberProfileCard[]> = yield call(GetMembersProfileCardService, action.payload);
+    yield put(membersSlice.actions.setMemberProfileCardData(res?.data));
+  } catch (e) {
+    const error = e as AxiosError<unknown>;
+  } finally {
+    yield put(loaderSlice.actions.stopLoadingAction());
+  }
+}
+
 export default function* membersSaga(): SagaIterator {
   yield takeEvery(membersSlice.actions.membersTotalCount.type, membersTotalCount);
   yield takeEvery(membersSlice.actions.membersNewCount.type, membersNewCount);
@@ -177,4 +192,5 @@ export default function* membersSaga(): SagaIterator {
   yield takeEvery(membersSlice.actions.platformData.type, getPlatformsDataSaga);
   yield takeEvery(membersSlice.actions.getMembersActivityGraphDataPerPlatform.type, getMembersActivityGraphDataPerPlatformSaga);
   yield takeEvery(membersSlice.actions.getMembersActivityDataInfiniteScroll.type, getMembersActivityDataInfiniteScrollSaga);
+  yield takeEvery(membersSlice.actions.getMemberProfileCardData.type, getMemberProfileCardData);
 }

@@ -1,5 +1,6 @@
+/* eslint-disable no-console */
 import React, { useEffect, useRef, useState } from 'react';
-import profileImage from '../../../../assets/images/profile-member.svg';
+// import profileImage from '../../../../assets/images/profile-member.svg';
 import dropDownIcon from '../../../../assets/images/profile-dropdown.svg';
 import slackIcon from '../../../../assets/images/slack.svg';
 import closeIcon from '../../../../assets/images/close-member.svg';
@@ -17,8 +18,15 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../../../store';
 import membersSlice from '../../store/slice/members.slice';
 import { useAppSelector } from '../../../../hooks/useRedux';
-import { MembersProfileActivityGraphData, PlatformsData, ActivityDataResponse, ActivityResult } from '../../interface/members.interface';
+import {
+  MembersProfileActivityGraphData,
+  PlatformsData,
+  ActivityDataResponse,
+  ActivityResult,
+  MemberProfileCard
+} from '../../interface/members.interface';
 import { getLocalWorkspaceId } from '../../../../lib/helper';
+import { format } from 'date-fns';
 
 Modal.setAppElement('#root');
 
@@ -33,6 +41,8 @@ const MembersProfile: React.FC = () => {
   const [fromDate, setFromDate] = useState<Date>();
   const [toDate, setToDate] = useState<Date>();
   const [isFilterDropDownActive, setFilterDropdownActive] = useState<boolean>(false);
+  const [activityNextCursor, setActivityNextCursor] = useState<string | null>('');
+  const [platform, setPlatform] = useState<string | null>('');
 
   const handleModal = (val: boolean) => {
     setIsModalOpen(val);
@@ -71,11 +81,11 @@ const MembersProfile: React.FC = () => {
   };
 
   const workspaceId = getLocalWorkspaceId();
-  const [activityNextCursor, setActivityNextCursor] = useState<string | null>('');
 
   useEffect(() => {
     dispatch(membersSlice.actions.getMembersActivityGraphData({ workspaceId, memberId: '4a717dcd-7bfa-4ed4-a3ee-58efcfd64764' }));
     dispatch(membersSlice.actions.platformData());
+    dispatch(membersSlice.actions.getMemberProfileCardData({ workspaceId, memberId: '4a717dcd-7bfa-4ed4-a3ee-58efcfd64764' }));
     document.addEventListener('click', handleOutsideClick);
     return () => {
       document.removeEventListener('click', handleOutsideClick);
@@ -87,15 +97,21 @@ const MembersProfile: React.FC = () => {
       membersSlice.actions.getMembersActivityDataInfiniteScroll({
         workspaceId,
         memberId: '4a717dcd-7bfa-4ed4-a3ee-58efcfd64764',
-        nextCursor: activityNextCursor ? activityNextCursor : ''
+        nextCursor: activityNextCursor ? activityNextCursor : '',
+        platform: platform && platform,
+        fromDate: fromDate && format(fromDate, 'yyyy-MM-dd'),
+        toDate: toDate && format(toDate, 'yyyy-MM-dd')
       })
     );
-  }, [activityNextCursor]);
+  }, [activityNextCursor, platform, fromDate && toDate]);
 
   const activityData: ActivityDataResponse = useAppSelector((state) => state.members.membersActivityData);
   const activityGraphData: MembersProfileActivityGraphData = useAppSelector((state) => state.members.membersProfileActivityGraphData);
   const platformData: PlatformsData[] = useAppSelector((state) => state.members.platformsData);
+  const memberProfileCardData: MemberProfileCard[] = useAppSelector((state) => state.members.memberProfileCardData);
+  console.log('member data is', memberProfileCardData);
 
+  // switch case for member graph
   const selectPlatformToDisplayOnGraph = (name: string) => {
     setSelected(name);
     switch (name) {
@@ -116,6 +132,41 @@ const MembersProfile: React.FC = () => {
     }
   };
 
+  // switch case for member platforms
+  const selectPlatformForActivityScroll = (name: string) => {
+    setSelectedIntegration(name);
+    console.log('the dates are', fromDate, toDate);
+    switch (name) {
+      case 'All Integration':
+        dispatch(
+          membersSlice.actions.getMembersActivityDataInfiniteScroll({
+            workspaceId,
+            memberId: '4a717dcd-7bfa-4ed4-a3ee-58efcfd64764',
+            nextCursor: activityNextCursor ? activityNextCursor : '',
+            fromDate: fromDate && format(fromDate, 'yyyy-MM-dd'),
+            toDate: toDate && format(toDate, 'yyyy-MM-dd')
+          })
+        );
+        break;
+      case 'Slack':
+        setPlatform(name.toLocaleLowerCase().trim());
+        dispatch(
+          membersSlice.actions.getMembersActivityDataInfiniteScroll({
+            workspaceId,
+            memberId: '4a717dcd-7bfa-4ed4-a3ee-58efcfd64764',
+            nextCursor: activityNextCursor ? activityNextCursor : '',
+            platform: name?.toLocaleLowerCase(),
+            fromDate: fromDate && format(fromDate, 'yyyy-MM-dd'),
+            toDate: toDate && format(toDate, 'yyyy-MM-dd')
+          })
+        );
+        break;
+      default:
+        break;
+    }
+  };
+
+  // function to listen for scroll event
   const handleScroll = (event: React.UIEvent<HTMLElement>) => {
     if (event.currentTarget.scrollTop > event.currentTarget.offsetHeight) {
       setActivityNextCursor(activityData?.nextCursor);
@@ -192,7 +243,7 @@ const MembersProfile: React.FC = () => {
                 <div className="w-full hover:bg-signUpDomain rounded-0.3 transition ease-in duration-100">
                   <div
                     className="h-1.93 px-3 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack "
-                    onClick={() => setSelectedIntegration('All Integrations')}
+                    onClick={() => selectPlatformForActivityScroll('All Integration')}
                   >
                     All Integrations
                   </div>
@@ -201,7 +252,7 @@ const MembersProfile: React.FC = () => {
                   <div key={options.id} className="w-full hover:bg-signUpDomain rounded-0.3 transition ease-in duration-100">
                     <div
                       className="h-1.93 px-3 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack "
-                      onClick={() => setSelectedIntegration(options?.name)}
+                      onClick={() => selectPlatformForActivityScroll(options?.name)}
                     >
                       {options?.name}
                     </div>
@@ -273,27 +324,26 @@ const MembersProfile: React.FC = () => {
         </div>
       </div>
       <div className=" flex flex-col ml-1.8">
-        <div className=" flex flex-col ">
-          <div className="profile-card items-center btn-save-modal justify-center pro-bag rounded-t-0.6 w-18.125 shadow-contactBtn box-border h-6.438 "></div>
-          <div className="flex flex-col profile-card items-center justify-center bg-white rounded-b-0.6 w-18.125 shadow-contactCard box-border h-11.06">
-            <div className="-mt-24 ">
-              <img src={profileImage} alt="profileImage" className="bg-cover " />
-            </div>
-            <div className="mt-0.688 text-profileBlack font-semibold font-Poppins leading-1.31 text-trial">Dmitry Kargaev</div>
-            <div className="text-center pt-0.125 font-Poppins text-profileBlack text-member">dmrity125@mail.com | neoito technologies</div>
-            <div className="flex gap-1 pt-1.12">
-              <div>
-                <img src={slackIcon} alt="" />
+        {memberProfileCardData?.map((data: MemberProfileCard) => (
+          <div key={data?.id + data?.createdAt} className=" flex flex-col ">
+            <div className="profile-card items-center btn-save-modal justify-center pro-bag rounded-t-0.6 w-18.125 shadow-contactBtn box-border h-6.438 "></div>
+            <div className="flex flex-col profile-card items-center justify-center bg-white rounded-b-0.6 w-18.125 shadow-contactCard box-border h-11.06">
+              <div className="-mt-24 ">
+                <img src={data?.profileUrl} alt="profileImage" className="bg-cover " />
               </div>
-              <div>
-                <img src={slackIcon} alt="" />
+              <div className="mt-0.688 text-profileBlack font-semibold font-Poppins leading-1.31 text-trial">{data?.name}</div>
+              <div className="text-center pt-0.125 font-Poppins text-profileBlack text-member">
+                {data?.email} | {data?.organization}
               </div>
-              <div>
-                <img src={slackIcon} alt="" />
+              <div className="flex gap-1 pt-1.12">
+                <div>
+                  <img src={slackIcon} alt="" />
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        ))}
+
         <div className="mt-1.37 box-border w-18.125 rounded-0.6 shadow-profileCard app-input-card-border">
           <div className="flex flex-col p-5">
             <div className="flex items-center justify-between border-b pb-2">

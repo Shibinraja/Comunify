@@ -97,6 +97,37 @@ export interface DraggableComponentsProps {
   handleModalClose: () => void;
 }
 
+export interface ActivityResult {
+  id: string;
+  workspaceId: string;
+  activityId: string;
+  name: string;
+  platform: string;
+  type: ActivitiesType.Message;
+  value: string;
+  displayValue: string;
+  sourceUrl: string | null;
+  description: string;
+  comunifyMemberId: string;
+  profilePictureUrl: string;
+  platformId: string;
+  platformMemberId: string;
+  activityTime: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface ActivityDataResponse {
+  result: ActivityResult[];
+  nextCursor: string | null;
+}
+
+export interface ActivityInfiniteScroll {
+  workspaceId: string;
+  memberId: string;
+  nextCursor?: string | null;
+}
+
 export enum ActivitiesType {
   Message = 'Message',
   Event = 'Event',
@@ -134,4 +165,32 @@ export interface ActivityInfiniteScroll {
   workspaceId: string;
   memberId: string;
   nextCursor?: string | null;
+  platform?: string | null;
+  fromDate?: string;
+  toDate?: string;
+}
+
+export interface MemberProfileCard {
+  id: string;
+  workspaceId: string;
+  name: string;
+  platformName: string;
+  organization: string | null;
+  location: string | null;
+  lastActivity: Date | string;
+  comunifyMemberId: string;
+  email: string;
+  profileUrl: string;
+  isMerged: boolean;
+  parentMemberId: string | null;
+  isPrimary: boolean;
+  platformId: string;
+  platformMemberId: string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+  platforms: {
+    id: string;
+    name: string;
+  }[];
+  tags: string[] | null;
 }
