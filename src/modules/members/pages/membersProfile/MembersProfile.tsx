@@ -25,7 +25,7 @@ import {
   ActivityResult,
   MemberProfileCard
 } from '../../interface/members.interface';
-import { getLocalWorkspaceId } from '../../../../lib/helper';
+import { generateDateAndTime, getLocalWorkspaceId } from '../../../../lib/helper';
 import { format } from 'date-fns';
 
 Modal.setAppElement('#root');
@@ -173,6 +173,10 @@ const MembersProfile: React.FC = () => {
     }
   };
 
+  const navigateToActivities = () => {
+    navigate(`/${workspaceId}/activity`);
+  };
+
   return (
     <div className="flex pt-3.93 w-full">
       <div className="flex flex-col w-full">
@@ -219,10 +223,15 @@ const MembersProfile: React.FC = () => {
           </div>
         </div>
         <div className="flex pt-2.18 items-center">
-          <div className="flex flex-col w-full">
-            <div className="font-Poppins font-normal text-card leading-4 text-renewalGray">Last Active Date</div>
-            <div className="font-Poppins font-semibold text-base leading-6 text-accountBlack">22 May 2022</div>
-          </div>
+          {memberProfileCardData?.map((data: MemberProfileCard) => (
+            <div key={data?.id + data?.name} className="flex flex-col w-full">
+              <div className="font-Poppins font-normal text-card leading-4 text-renewalGray">Last Active Date</div>
+              <div className="font-Poppins font-semibold text-base leading-6 text-accountBlack">
+                {generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY')}
+              </div>
+            </div>
+          ))}
+
           <div className="select relative mr-2">
             <div
               className="flex justify-around items-center cursor-pointer box-border w-9.59 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border"
@@ -296,10 +305,15 @@ const MembersProfile: React.FC = () => {
           </div>
         </div>
         <div className="mt-1.56 pt-8 px-1.62 box-border w-full rounded-0.6 shadow-contactCard app-input-card-border pb-5">
-          <div className="flex justify-between ">
-            <div className="font-Poppins text-card leading-4 font-medium">May 2022</div>
-            <div className="font-Poppins font-normal leading-4 text-renewalGray text-preview cursor-pointer">Preview All</div>
-          </div>
+          {memberProfileCardData?.map((data: MemberProfileCard) => (
+            <div key={data?.id + data?.name} className="flex justify-between ">
+              <div className="font-Poppins text-card leading-4 font-medium"> {generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY')}</div>
+              <div onClick={navigateToActivities} className="font-Poppins font-normal leading-4 text-renewalGray text-preview cursor-pointer">
+                Preview All
+              </div>
+            </div>
+          ))}
+
           <div
             onScroll={handleScroll}
             className="flex flex-col pt-8 gap-0.83 justify-center height-member-activity overflow-scroll mt-5 member-section"

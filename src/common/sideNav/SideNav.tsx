@@ -106,10 +106,10 @@ const SideNav: React.FC = () => {
             </div>
           </div>
           <div className="flex mt-2.18 items-center">
-            <img src={active.members || window.location.href.includes('/members') ? memberDarkIcon : memberIcon} alt="" />
+            <img src={active.members && window.location.href.includes('/members') ? memberDarkIcon : memberIcon} alt="" />
             <div
               className={`pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${
-                active.members || window.location.href.includes('/members') ? 'text-black' : 'text-slimGray'
+                active.members && window.location.href.includes('/members') ? 'text-black' : 'text-slimGray'
               }`}
               onClick={() => navigateRoute('/members')}
             >
