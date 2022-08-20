@@ -11,6 +11,9 @@ import activeStreamDarkIcon from '../../assets/images/svg/activities_black_icon.
 import chartIcon from '../../assets/images/pie_chart.svg';
 import reportsDarkIcon from '../../assets/images/svg/reports_black_icon.svg';
 import dropdownIcon from '../../assets/images/dropdown.svg';
+import unsplashIcon from '../../assets/images/unsplash.svg';
+import unsplashMGIcon from '../../assets/images/unsplash_mj.svg';
+import slackIcon from '../../assets/images/slack.svg';
 import Button from 'common/button';
 import { useNavigate } from 'react-router-dom';
 import { ActiveState } from '../../interface/interface';
@@ -24,6 +27,8 @@ const SideNav: React.FC = () => {
   const [active, setActive] = useState<ActiveState>({ dashboard: false, members: false, activity: false, reports: false, settings: false });
   const [isDrawerOpen, setDrawerOpen] = useState<boolean>(false);
   const workspaceId = getLocalWorkspaceId();
+
+  const [cls, setCls] = useState('platform-layout-close');
 
   const navigateRoute = (route: string): void => {
     switch (route) {
@@ -54,7 +59,7 @@ const SideNav: React.FC = () => {
   };
 
   return (
-    <nav className="h-screen bg-brightGray relative">
+    <nav className="h-screen bg-brightGray relative overflow-y-hidden side-nav-layout">
       {isDrawerOpen && (
         <div className="w-full widgetDrawerGradient h-full px-7 absolute z-40 opacity-90">
           <div className="flex flex-col">
@@ -167,12 +172,68 @@ const SideNav: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="absolute bottom-0 bg-lightBlack w-full h-[50px] flex items-center pl-10 rounded-t-lg cursor-pointer">
-        <div className="flex  items-center">
-          <div className="text-white  font-Poppins font-medium leading-6 text-base">Platforms</div>
-          <div className="text-white pl-0.81 font-Poppins font-medium leading-6 text-base relative">4/10</div>
-          <div className="absolute right-7">
-            <img src={dropdownIcon} alt="" />
+      <div className="absolute bottom-0  w-full  flex items-center">
+        <div className="flex flex-col w-full">
+          <div className="flex justify-between items-center bg-lightBlack h-[60px] w-full rounded-t-lg pl-10 pr-6">
+            <div className="flex items-center">
+              <div className="text-white  font-Poppins font-medium leading-6 text-base">Platforms</div>
+              <div className="text-white pl-0.81 font-Poppins font-medium leading-6 text-base relative">4/10</div>
+            </div>
+            <div
+              className="cursor-pointer"
+              onClick={() => setCls((cls) => (cls === 'platform-layout-open' ? 'platform-layout-close' : 'platform-layout-open'))}
+            >
+              <img
+                src={dropdownIcon}
+                alt=""
+                style={{
+                  transform: cls === 'platform-layout-open' ? '' : 'rotate(180deg)'
+                }}
+              />
+            </div>
+          </div>
+
+          <div className={cls}>
+            <div className="flex flex-col pl-9 pr-4 list-platform mt-4">
+              <div className="flex items-center mb-3">
+                <div className="w-16 h-16 bg-subIntegrationGray flex justify-center items-center">
+                  <img src={unsplashIcon} alt="" className="w-[30px]" />
+                </div>
+                <div className="flex flex-col  pl-3">
+                  <span className="capitalize text-xs font-semibold text-integrationGray">Khoros</span>
+                  <div className="flex items-center">
+                    <span className="w-1.5 h-1.5 bg-green-400 rounded-full"></span>
+                    <span className="capitalize text-xs font-normal pl-1 text-integrationGray">Connected</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center mb-3">
+                <div className="w-16 h-16 bg-subIntegrationGray flex justify-center items-center">
+                  <img src={unsplashMGIcon} alt="" className="w-[30px]" />
+                </div>
+                <div className="flex flex-col  pl-3">
+                  <span className="capitalize text-xs font-semibold text-integrationGray">Higher Logic</span>
+                  <div className="flex items-center">
+                    <span className="w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+                    <span className="capitalize text-xs font-normal pl-1 text-integrationGray">Disconnected</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center mb-3">
+                <div className="w-16 h-16 bg-subIntegrationGray flex justify-center items-center">
+                  <img src={slackIcon} alt="" className="w-[30px]" />
+                </div>
+                <div className="flex flex-col  pl-3">
+                  <span className="capitalize text-xs font-semibold text-integrationGray">slack</span>
+                  <div className="flex items-center">
+                    <span className="w-1.5 h-1.5 bg-gray-300 rounded-full"></span>
+                    <span className="capitalize text-xs font-normal pl-1 text-integrationGray">not active</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
