@@ -65,7 +65,7 @@ const SignIn: React.FC = () => {
   return (
     <div className="flex flex-col h-screen">
       <div className=" flex h-full overflow-auto">
-        <div className="w-2/5 flex items-center justify-center pr-0 3xl:justify-end 3xl:pr-16">
+        <div className="w-2/5 2xl:w-1/2 flex items-center justify-center pr-0 3xl:justify-end 3xl:pr-16">
           <div className=" flex flex-col justify-center items-center ">
             <div className=" flex flex-col ">
               <h3 className="font-Inter text-neutralBlack font-bold not-italic text-signIn leading-2.8 text-left">Sign In </h3>
@@ -149,7 +149,7 @@ const SignIn: React.FC = () => {
             </Formik>
           </div>
         </div>
-        <div className="w-3/5 bg-auth flex items-center justify-center pr-0  3xl:justify-start 3xl:pl-16">
+        <div className="w-3/5 2xl:w-1/2 bg-auth flex items-center justify-center pr-0  3xl:justify-start 3xl:pl-16">
           <div className="flex items-center justify-center">
             <img src={bgSignInImage} alt="" className="w-9/12 xl:w-10/12 3xl:w-full object-cover" />
           </div>
