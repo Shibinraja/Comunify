@@ -61,7 +61,8 @@ module.exports = {
         backdropColor: 'rgba(0, 0, 0, 0.5)',
         widgetSearch: '#ACACAC;',
         paginationArrowButton: '#337AB7',
-        toolTip: '#414141;'
+        toolTip: '#414141',
+        vanillaDescription: '#6F6C90'
       },
       margin: {
         2.6: '43px',
