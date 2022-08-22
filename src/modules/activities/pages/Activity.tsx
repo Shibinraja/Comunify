@@ -9,7 +9,7 @@ import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import Modal from 'react-modal';
 import { useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import closeIcon from '../../../assets/images/close.svg';
 import profileImage from '../../../assets/images/ellip.svg';
 import exportImage from '../../../assets/images/export.svg';
@@ -44,7 +44,13 @@ const Activity: React.FC = () => {
   const [limit, setLimit] = useState<number>(10);
   const [searchText, setSearchText] = useState<string>('');
 
+  const navigate = useNavigate();
+
   const { data, totalPages, previousPage, nextPage } = useAppSelector((state) => state.activities.activeStreamData);
+
+  const navigateToMemberProfile = (url: string) => {
+    navigate(url);
+  };
 
   const debouncedValue = useDebounce(searchText, 300);
 
@@ -221,7 +227,7 @@ const Activity: React.FC = () => {
                                     </div>
                                   </div>
                                   <a
-                                    href={`${API_ENDPOINT}${ProfileModal?.memberProfileUrl}`}
+                                    onClick={() => navigateToMemberProfile(`${ProfileModal?.memberProfileUrl}`)}
                                     className="mt-0.84 font-normal font-Poppins text-card underline text-profileBlack leading-5 cursor-pointer"
                                   >
                                     VIEW PROFILE
