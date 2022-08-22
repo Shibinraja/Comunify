@@ -1,5 +1,8 @@
 // API end point
-export const API_ENDPOINT = 'https://devapi.comunifyllc.com' || process.env.base_url;
+export const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT || 'http://localhost:3001';
+
+//slack connect
+export const SLACK_CONNECT_ENDPOINT = import.meta.env.VITE_SLACK_CONNECT;
 
 // Auth Module URL
 export const auth_module = '/v1/auth';

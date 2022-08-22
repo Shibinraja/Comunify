@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import { request } from '../../../../lib/request';
 import { showErrorToast } from '../../../../common/toast/toastFunctions';
-import { API_ENDPOINT } from '../../../../lib/config';
+import { API_ENDPOINT, SLACK_CONNECT_ENDPOINT } from '../../../../lib/config';
 import { getLocalWorkspaceId } from '@/lib/helper';
 
 Modal.setAppElement('#root');
@@ -58,8 +58,7 @@ const Integration: React.FC = () => {
   };
 
   const navigateToConnectPage = () => {
-    window.location.href =
-      'https://slack.com/oauth/v2/authorize?client_id=3699971256053.3748193065905&scope=channels:history,channels:read,incoming-webhook,links:read,reactions:read,users:read,users:read.email,users.profile:read,team:read&user_scope=channels:history,channels:read,reactions:read,users:read,users:read.email,users.profile:read,team:read';
+    window.location.href = SLACK_CONNECT_ENDPOINT;
   };
 
   return (
