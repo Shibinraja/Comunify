@@ -21,7 +21,7 @@ const AuthLayout: React.FC = () => {
           <Header />
           {loader && <Loader />}
           <Outlet />
-          <Footer />
+          {/* <Footer /> */}
         </div>
       )}
     </Fragment>

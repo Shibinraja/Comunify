@@ -5,10 +5,12 @@
 ::-webkit-scrollbar {
   width: 0px;
 }
-.auth-layout {
+/* .auth-layout {
+  height: 9vh;
+} */
+.bg-auth {
   background-image: url('../src/assets/images/login-bg.svg');
   background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-size: 50%;
+  background-size: 100%;
   background-position: right;
 }
