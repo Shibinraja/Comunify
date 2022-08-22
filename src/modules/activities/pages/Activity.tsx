@@ -276,6 +276,8 @@ const Activity: React.FC = () => {
                         <td className="px-6 py-3 border-b">
                           <a
                             href={`${data?.sourceUrl}`}
+                            target="_blank"
+                            rel="noreferrer noopener"
                             className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 underline cursor-pointer"
                           >
                             {data?.sourceUrl === null ? 'www.slack.com/profile' : data?.sourceUrl}
@@ -379,6 +381,8 @@ const Activity: React.FC = () => {
                     <div className="mt-1.18 flex relative">
                       <a
                         href={`${ActivityCard?.sourceUrl}`}
+                        target="_blank"
+                        rel="noreferrer noopener"
                         className="font-Poppins font-medium text-card leading-1.12 text-tag underline cursor-pointer"
                       >
                         VIEW ON SLACK
