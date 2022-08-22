@@ -221,7 +221,7 @@ const MembersProfile: React.FC = () => {
             <div key={data?.id + data?.name} className="flex flex-col w-full">
               <div className="font-Poppins font-normal text-card leading-4 text-renewalGray">Last Active Date</div>
               <div className="font-Poppins font-semibold text-base leading-6 text-accountBlack">
-                {generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY')}
+                {data?.lastActivity ? generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY') : 'Last active date not available'}
               </div>
             </div>
           ))}
@@ -301,7 +301,10 @@ const MembersProfile: React.FC = () => {
         <div className="mt-1.56 pt-8 px-1.62 box-border w-full rounded-0.6 shadow-contactCard app-input-card-border pb-5">
           {memberProfileCardData?.map((data: MemberProfileCard) => (
             <div key={data?.id + data?.name} className="flex justify-between ">
-              <div className="font-Poppins text-card leading-4 font-medium"> {generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY')}</div>
+              <div className="font-Poppins text-card leading-4 font-medium">
+                {' '}
+                {data?.lastActivity ? generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY') : 'Last active date not available'}
+              </div>
               <div onClick={navigateToActivities} className="font-Poppins font-normal leading-4 text-renewalGray text-preview cursor-pointer">
                 Preview All
               </div>
