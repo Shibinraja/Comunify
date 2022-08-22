@@ -3,7 +3,7 @@
 import Button from 'common/button';
 import MembersCard from 'common/membersCard/MembersCard';
 import React, {
-  ChangeEvent, Fragment, Key, ReactNode, useEffect, useMemo, useState
+  ChangeEvent, Fragment, Key, ReactNode, useEffect, useMemo, useRef, useState
 } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -14,6 +14,7 @@ import editIcon from '../../../assets/images/edit.svg';
 import exportImage from '../../../assets/images/export.svg';
 import searchIcon from '../../../assets/images/search.svg';
 import closeIcon from '../../../assets/images/tag-close.svg';
+import dropdownIcon from '../../../assets/images/Vector.svg';
 import './Members.css';
 // import { membersTableData } from './MembersTableData';
 import useDebounce from '@/hooks/useDebounce';
@@ -41,6 +42,8 @@ const Members: React.FC = () => {
   const [page, setpage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(10);
   const [searchText, setSearchText] = useState<string>('');
+  const [startDate, setStartDate] = useState<Date>();
+  const [endDate, setEndDate] = useState<Date>();
   const [customDateLink, setCustomDateLink] = useState<Partial<customDateLinkProps>>({
     '1day': false,
     '7day': false,
@@ -50,6 +53,27 @@ const Members: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const debouncedValue = useDebounce(searchText, 300);
+
+  const [isFilterDropdownActive, setisFilterDropdownActive] = useState<boolean>(false);
+  const dropDownRef = useRef<HTMLDivElement>(null);
+
+  const handleFilterDropdown = (): void => {
+    setisFilterDropdownActive((prev) => !prev);
+  };
+  const handleOutsideClick = (event: MouseEvent) => {
+    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target as Node)) {
+      setisFilterDropdownActive(true);
+    } else {
+      setisFilterDropdownActive(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleOutsideClick);
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, []);
 
   const {
     membersListData: { data, totalPages, previousPage, nextPage },
@@ -226,6 +250,19 @@ const Members: React.FC = () => {
 
   const MemberFilter = useMemo(() => <MembersFilter page={page} limit={limit} />, []);
 
+  const selectActiveBetweenDate = (event: ChangeEvent<Date>, date: Date, dateTime: string) => {
+    event.stopPropagation();
+    if (dateTime === 'start') {
+      setStartDate(date);
+      setisFilterDropdownActive(true);
+    }
+
+    if (dateTime === 'end') {
+      setEndDate(date);
+      setisFilterDropdownActive(true);
+    }
+  };
+
   return (
     <div className="flex flex-col mt-12">
       <h3 className="font-Poppins font-semibold text-infoBlack text-infoData leading-9">Members</h3>
@@ -245,7 +282,7 @@ const Members: React.FC = () => {
           </div>
         </div>
         <div
-          className={`day w-full h-3.06 flex items-center justify-center ml-3.19 box-border rounded-0.6 ${
+          className={`day w-1/3 h-3.06 flex items-center justify-center ml-5 box-border rounded-0.6 ${
             customDateLink['1day'] ? 'border-gradient-rounded' : 'app-input-card-border'
           } shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
           onClick={() => selectCustomDate('1day')}
@@ -253,7 +290,7 @@ const Members: React.FC = () => {
           1D
         </div>
         <div
-          className={`day w-full h-3.06 flex items-center justify-center ml-3.19 box-border rounded-0.6 ${
+          className={`day w-1/3 h-3.06 flex items-center justify-center ml-5  box-border rounded-0.6 ${
             customDateLink['7day'] ? 'border-gradient-rounded' : 'app-input-card-border'
           } shadow-shadowInput font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
           onClick={() => selectCustomDate('7day')}
@@ -261,7 +298,7 @@ const Members: React.FC = () => {
           7D
         </div>
         <div
-          className={`day w-full h-3.06 flex items-center justify-center ml-3.19 box-border rounded-0.6 ${
+          className={`day w-1/3 h-3.06 flex items-center justify-center ml-5 box-border rounded-0.6 ${
             customDateLink['1month'] ? 'border-gradient-rounded' : 'app-input-card-border'
           } shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
           onClick={() => selectCustomDate('1month')}
@@ -269,7 +306,7 @@ const Members: React.FC = () => {
           1M
         </div>
 
-        <div className="relative flex items-center  ml-0.653 ">
+        {/* <div className="relative flex items-center  ml-0.653 ">
           <DatePicker
             selected={toDate}
             onChange={(date: Date) => selectCustomDate('', date)}
@@ -277,9 +314,47 @@ const Members: React.FC = () => {
             placeholderText="Custom Date"
           />
           <img className="absolute icon-holder left-32 cursor-pointer" src={calendarIcon} alt="" />
+        </div> */}
+        <div className="box-border cursor-pointer rounded-0.6 shadow-contactCard app-input-card-border relative ml-5" ref={dropDownRef}>
+          <div className="flex h-3.06 w-[11.25rem] items-center justify-between px-5 " onClick={handleFilterDropdown}>
+            <div className="box-border rounded-0.6 shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">Custom Date</div>
+            <div>
+              <img src={dropdownIcon} alt="" className={isFilterDropdownActive ? 'rotate-180' : 'rotate-0'} />
+            </div>
+          </div>
+          {isFilterDropdownActive &&  <div className="absolute w-16.56 pb-0 bg-white border z-40 rounded-0.3">
+            <div className="flex flex-col pb-5">
+              <>
+                <div className="flex flex-col px-3 pt-4">
+                  <label htmlFor="Start Date p-1 font-Inter font-normal leading-4 text-trial text-searchBlack">Start Date</label>
+                  <div className="relative flex items-center">
+                    <DatePicker
+                      selected={startDate}
+                      onChange={(date: Date, event: ChangeEvent<Date>) => selectActiveBetweenDate(event, date, 'start')}
+                      className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
+                      placeholderText="DD/MM/YYYY"
+                    />
+                    <img className="absolute icon-holder right-6 cursor-pointer" src={calendarIcon} alt="" />
+                  </div>
+                </div>
+                <div className="flex flex-col px-3 pb-4 pt-3">
+                  <label htmlFor="Start Date p-1 font-Inter font-Inter font-normal leading-4 text-trial text-searchBlack">End Date</label>
+                  <div className="relative flex items-center">
+                    <DatePicker
+                      selected={endDate}
+                      onChange={(date: Date, event: ChangeEvent<Date>) => selectActiveBetweenDate(event, date, 'end')}
+                      className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
+                      placeholderText="DD/MM/YYYY"
+                    />
+                    <img className="absolute icon-holder right-6 cursor-pointer" src={calendarIcon} alt="" />
+                  </div>
+                </div>
+              </>
+            </div>
+          </div>}
         </div>
 
-        <div className="ml-1.30 w-full">{MemberFilter}</div>
+        <div className="ml-1.30 w-[800px]">{MemberFilter}</div>
         <div className="ml-0.652">
           <div
             className="export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex ml-0.63 cursor-pointer"
