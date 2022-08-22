@@ -8,6 +8,7 @@ import { AppDispatch } from '../store';
 import authSlice from 'modules/authentication/store/slices/auth.slice';
 import { getLocalRefreshToken } from '@/lib/request';
 import { Props, PublicRouteState, PublicRouteStateValues } from './routesTypes';
+import { getLocalWorkspaceId } from '@/lib/helper';
 
 const reducer: Reducer<PublicRouteState, PublicRouteStateValues> = (state, action): { route: string } => {
   switch (action.type) {
@@ -36,6 +37,7 @@ const PublicRoute: React.FC<Props> = ({ children }) => {
 
   const access_token = tokenData || cookie.load('x-auth-cookie');
   const decodedToken: DecodeToken = access_token && decodeToken(access_token);
+  const workspaceId = decodedToken?.workspaceId || getLocalWorkspaceId();
 
   const [state, dispatchReducer] = useReducer<Reducer<PublicRouteState, PublicRouteStateValues>>(reducer, InitialRouteState);
 
@@ -49,7 +51,7 @@ const PublicRoute: React.FC<Props> = ({ children }) => {
   //Functionality to check the workspace and packages subscription and route dynamically to the respected page.
 
   const checkWorkspaceCreation = () => {
-    if (!decodedToken.isVerfied) {
+    if (!decodedToken?.isVerified) {
       dispatchReducer({ type: 'SET_RESEND_VERIFICATION_ROUTE', payload: '/resend-mail' });
       dispatch(authSlice.actions.setIsAuthenticated(true));
       return false;
@@ -59,13 +61,13 @@ const PublicRoute: React.FC<Props> = ({ children }) => {
       dispatch(authSlice.actions.setIsAuthenticated(true));
       return false;
     }
-    if (!decodedToken?.isSubscribed || !decodedToken?.isworkSpaceCreated) {
+    if (!decodedToken?.isSubscribed || !decodedToken?.isWorkSpaceCreated) {
       dispatchReducer({ type: 'SET_WORKSPACE_ROUTE', payload: '/create-workspace' });
       dispatch(authSlice.actions.setIsAuthenticated(true));
       return false;
     }
-    if (decodedToken?.isSubscribed && decodedToken?.isworkSpaceCreated) {
-      dispatchReducer({ type: 'SET_DASHBOARD_ROUTE', payload: '/dashboard' });
+    if (decodedToken?.isSubscribed && decodedToken?.isWorkSpaceCreated) {
+      dispatchReducer({ type: 'SET_DASHBOARD_ROUTE', payload: `/${workspaceId}/dashboard` });
       dispatch(authSlice.actions.setIsAuthenticated(true));
       return false;
     }

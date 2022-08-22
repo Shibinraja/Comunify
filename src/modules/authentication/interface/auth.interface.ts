@@ -23,8 +23,9 @@ export type DecodeToken = {
   userName: string;
   isAdmin: boolean;
   isSubscribed: boolean;
-  isworkSpaceCreated: boolean;
-  isVerfied: boolean;
+  isWorkSpaceCreated: boolean;
+  isVerified: boolean;
+  workspaceId: string;
 };
 
 export type SignUpFormValues = {
@@ -100,23 +101,27 @@ enum Type {
   ADDON
 }
 
-enum Status {
-  ACTIVE,
-  DEACTIVE,
-  DISABLED
+enum SubscriptionPeriod {
+  Monthly,
+  Daily,
+  Yearly,
+  Weekly,
+  None
 }
 export interface SubscriptionPackages {
   id: string;
   name: string;
-  planName: string;
+  viewName: string;
   description: string;
-  features: string[];
-  cost: number;
+  features: {
+    comunifyFeature:{name:string},
+    value:string
+  }[];
+  amount: number;
   type: Type;
-  status: Status;
-  subscriptionPeriod: number;
-  createdDate: Date;
-  updatedDate: Date;
+  isActive: boolean;
+  periodType: SubscriptionPeriod;
+  createdAt: Date;
   updatedAt: Date;
 }
 export interface SubscriptionToken {
@@ -134,4 +139,16 @@ export type WorkspaceResponse = {
   name: string;
   createdAt: Date;
   updatedAt: Date;
+};
+
+export type GetWorkspaceIdResponse = {
+    id: string;
+    userId: string;
+    name: string;
+    isActive: boolean;
+    isDeleted: boolean;
+    subscriptionId: string;
+    subscriptionExpiry: Date;
+    createdAt: Date;
+    updatedAt: Date;
 };

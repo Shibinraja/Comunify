@@ -1,5 +1,5 @@
 .signup-cover-bg {
-  background-image: url('../../../../assets/images/signup-line.svg');
+  /* background-image: url('../../../../assets/images/signup-line.svg'); */
 }
 
 .dot-pulse {
@@ -71,4 +71,13 @@
 
 ::-webkit-scrollbar {
   width: 0px;
+}
+
+
+.auth-layout-integration {
+  background-image: url('../../../../assets/images/sign-up-bg.svg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: 50%;
+  background-position: left;
 }

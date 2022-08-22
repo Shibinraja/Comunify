@@ -58,70 +58,74 @@ const CreateNewPassword: React.FC = () => {
 
   return (
     <div className="create-password">
-      <div className="flex w-full height-calc">
-        <div className="w-1/2 rounded-r-lg  bg-thinBlue flex items-center password-cover-bg  justify-center p-28 signup-cover-bg bg-no-repeat bg-left overflow-hidden">
-          <img src={bgSignInImage} alt="" className="object-cover" />
-        </div>
-        <div className="flex flex-col w-1/2 pt-13.1 pl-7.5 overflow-scroll">
-          <h1 className="font-Inter font-bold text-signIn text-neutralBlack leading-2.8">Forgot Password</h1>
-          <p className="mt-0.78 text-desc font-normal leading-1.8 font-Inter text-lightGray max-w-sm">Enter your new password.</p>
-          <Formik initialValues={initialValues} onSubmit={handleSubmit} validateOnChange={true} validationSchema={confirmPasswordSchema}>
-            {({ errors, handleBlur, handleChange, touched, values }): JSX.Element => (
-              <Form className="w-25.9 mt-1.9 " autoComplete="off">
-                <div className="password relative">
-                  <Input
-                    type={password}
-                    placeholder="New Password"
-                    label="New Password"
-                    id="password"
-                    name="password"
-                    className="h-4.5 rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.password}
-                    errors={Boolean(touched.password && errors.password)}
-                    helperText={touched.password && errors.password}
-                  />
-                  <div onClick={togglePassword1} className="absolute top-7 right-[28.87px]">
-                    {password === 'password' ? (
-                      <img className="cursor-pointer " src={openEyeIcon} alt="" />
-                    ) : (
-                      <img className="cursor-pointer " src={closeEyeIcon} alt="" />
-                    )}
-                  </div>
-                </div>
-                <div className="password relative mt-1.258">
-                  <Input
-                    type={confirmPassword}
-                    placeholder="Confirm Password"
-                    label="Confirm Password"
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    className="h-4.5 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.confirmPassword}
-                    errors={Boolean(touched.confirmPassword && errors.confirmPassword)}
-                    helperText={touched.confirmPassword && errors.confirmPassword}
-                  />
-                  <div onClick={togglePassword2} className="absolute top-7 right-[28.87px]">
-                    {confirmPassword === 'password' ? (
-                      <img className="cursor-pointer " src={openEyeIcon} alt="" />
-                    ) : (
-                      <img className="cursor-pointer " src={closeEyeIcon} alt="" />
-                    )}
-                  </div>
-                </div>
-                <div className="pb-10">
-                  <Button
-                    text="Submit"
-                    type="submit"
-                    className="font-Poppins rounded-lg text-base font-semibold text-white mt-1.8 h-3.6  w-full hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient"
-                  />
-                </div>
-              </Form>
-            )}
-          </Formik>
+      <div className="auth-layout-create-password">
+        <div className="flex w-full height-calc container mx-auto">
+          <div className="w-1/2 rounded-r-lg  flex items-center  justify-center p-28 bg-left overflow-hidden">
+            <img src={bgSignInImage} alt="" className="object-cover" />
+          </div>
+          <div className="flex items-center justify-center w-1/2">
+            <div className="flex flex-col overflow-scroll">
+              <h1 className="font-Inter font-bold text-signIn text-neutralBlack leading-2.8">Forgot Password</h1>
+              <p className="mt-0.78 text-desc font-normal leading-1.8 font-Inter text-lightGray max-w-sm">Enter your new password.</p>
+              <Formik initialValues={initialValues} onSubmit={handleSubmit} validateOnChange={true} validationSchema={confirmPasswordSchema}>
+                {({ errors, handleBlur, handleChange, touched, values }): JSX.Element => (
+                  <Form className="w-25.9 mt-1.9 " autoComplete="off">
+                    <div className="password relative">
+                      <Input
+                        type={password}
+                        placeholder="New Password"
+                        label="New Password"
+                        id="password"
+                        name="password"
+                        className="h-4.5 rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values.password}
+                        errors={Boolean(touched.password && errors.password)}
+                        helperText={touched.password && errors.password}
+                      />
+                      <div onClick={togglePassword1} className="absolute top-7 right-[28.87px]">
+                        {password === 'password' ? (
+                          <img className="cursor-pointer " src={openEyeIcon} alt="" />
+                        ) : (
+                          <img className="cursor-pointer " src={closeEyeIcon} alt="" />
+                        )}
+                      </div>
+                    </div>
+                    <div className="password relative mt-1.258">
+                      <Input
+                        type={confirmPassword}
+                        placeholder="Confirm Password"
+                        label="Confirm Password"
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        className="h-4.5 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values.confirmPassword}
+                        errors={Boolean(touched.confirmPassword && errors.confirmPassword)}
+                        helperText={touched.confirmPassword && errors.confirmPassword}
+                      />
+                      <div onClick={togglePassword2} className="absolute top-7 right-[28.87px]">
+                        {confirmPassword === 'password' ? (
+                          <img className="cursor-pointer " src={openEyeIcon} alt="" />
+                        ) : (
+                          <img className="cursor-pointer " src={closeEyeIcon} alt="" />
+                        )}
+                      </div>
+                    </div>
+                    <div className="pb-10">
+                      <Button
+                        text="Submit"
+                        type="submit"
+                        className="font-Poppins rounded-lg text-base font-semibold text-white mt-1.8 h-3.6  w-full hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient"
+                      />
+                    </div>
+                  </Form>
+                )}
+              </Formik>
+            </div>
+          </div>
         </div>
       </div>
     </div>

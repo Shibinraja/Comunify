@@ -1,7 +1,14 @@
 .login-cover-bg {
-  background-image: url('../../../../assets/images/bg-line.svg');
+  /* background-image: url('../../../../assets/images/bg-line.svg'); */
 }
 
 ::-webkit-scrollbar {
   width: 0px;
+}
+.auth-layout {
+  background-image: url('../src/assets/images/login-bg.svg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: 50%;
+  background-position: right;
 }

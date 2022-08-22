@@ -2,13 +2,16 @@ import { ReactElement } from 'react';
 
 export type ColumnNameProps = {
   name: string;
-  id: number;
+  id: string;
+  isDisplayed:boolean;
+  isDraggable:string;
 };
 
 export type DraggableCardProps = {
-  id: number;
+  id: string;
   index: number;
   // eslint-disable-next-line no-unused-vars
-  moveCard: (dragIndex: number, hoverIndex: number) => void;
+  moveCard: (dragIndex:number, hoverIndex:number)=> void;
   children: ReactElement;
-};
+  accepts?:string
+}

@@ -59,7 +59,9 @@ module.exports = {
         outerCirlceLoader: '#68B4E5',
         innerCircleLoader: '#ED9333',
         backdropColor: 'rgba(0, 0, 0, 0.5)',
-        widgetSearch: '#ACACAC;'
+        widgetSearch: '#ACACAC;',
+        paginationArrowButton: '#337AB7',
+        toolTip: '#414141;'
       },
       margin: {
         2.6: '43px',
@@ -308,7 +310,8 @@ module.exports = {
         1.93: '31px',
         11: '176px',
         18.75: '18.75rem',
-        1.81: '1.8125rem'
+        1.81: '1.8125rem',
+        1.375: '22px'
       },
       fontSize: {
         logo: '21.35px',
@@ -332,7 +335,9 @@ module.exports = {
         createdAt: '8px',
         membersCreatedAt: '6.41509px',
         pageNumber: '9.86548px',
-        preview: '10.2899px;'
+        preview: '10.2899px;',
+        activityHealth: '0.5521rem',
+        activityPercentage: '1.1042rem'
       },
       fontFamily: {
         Inter: ['Inter', 'sans-serif'],
@@ -382,7 +387,8 @@ module.exports = {
         subscription: '0px 100px 80px rgba(110, 181, 217, 0.1);',
         dragButton: '0px 4.90909px 61.3636px rgba(0, 0, 0, 0.2)',
         paymentSubscriptionCard: '0px 100px 80px rgba(110, 181, 217, 0.05)',
-        shadowInput: '8px 8px 24px rgba(2,2,70,0.1)'
+        shadowInput: '8px 8px 24px rgba(2,2,70,0.1)',
+        healtCardShadow: '5px 35px 13px rgb(240, 158, 52,.08)'
       },
       maxHeight: {
         34: '47vh'
@@ -419,6 +425,17 @@ module.exports = {
       },
       zIndex: {
         9999: '9999'
+      },
+      backgroundImage: {
+        'background-pattern': "url('src/assets/images/background-pattern.svg')"
+      },
+      screens: {
+        '3xl': '2100px'
+      },
+      variants: {
+        extend: {
+          visibility: ['group-hover']
+        }
       }
     }
   },
