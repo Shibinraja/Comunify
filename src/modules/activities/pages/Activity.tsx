@@ -16,6 +16,7 @@ import exportImage from '../../../assets/images/export.svg';
 import noActivityIcon from '../../../assets/images/no-reports.svg';
 import slackIcon from '../../../assets/images/slack.svg';
 import { useAppSelector } from '../../../hooks/useRedux';
+import { API_ENDPOINT } from '../../../lib/config';
 import { generateDateAndTime } from '../../../lib/helper';
 import { ActiveStreamData, ActivityCard, ProfileModal } from '../interfaces/activities.interface';
 import activitiesSlice from '../store/slice/activities.slice';
@@ -190,7 +191,7 @@ const Activity: React.FC = () => {
                                     email: data?.email,
                                     memberName: data?.memberName,
                                     organization: 'NeoITO',
-                                    memberProfileUrl: `/${workspaceId}/members/profile`,
+                                    memberProfileUrl: `/${workspaceId}/members/${data?.memberId}/profile`,
                                     profilePictureUrl: data?.profilePictureUrl
                                   })
                                 }
@@ -220,7 +221,7 @@ const Activity: React.FC = () => {
                                     </div>
                                   </div>
                                   <a
-                                    href={`${ProfileModal?.memberProfileUrl}`}
+                                    href={`${API_ENDPOINT}${ProfileModal?.memberProfileUrl}`}
                                     className="mt-0.84 font-normal font-Poppins text-card underline text-profileBlack leading-5 cursor-pointer"
                                   >
                                     VIEW PROFILE
