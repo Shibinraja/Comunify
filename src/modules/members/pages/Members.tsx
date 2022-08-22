@@ -236,7 +236,7 @@ const Members: React.FC = () => {
         <div className="flex relative items-center ">
           <input
             type="text"
-            className="focus:outline-none px-3 box-border w-19.06 h-3.06  rounded-0.6 shadow-profileCard placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray"
+            className="focus:outline-none px-3 box-border w-19.06 h-3.06  rounded-0.6  placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray shadow-shadowInput"
             placeholder="Search By Name or Email"
             onChange={handleSearchTextChange}
           />
@@ -255,7 +255,7 @@ const Members: React.FC = () => {
         <div
           className={`day w-full h-3.06 flex items-center justify-center ml-3.19 box-border rounded-0.6 ${
             customDateLink['7day'] ? 'border-gradient-rounded' : 'app-input-card-border'
-          } shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
+          } shadow-shadowInput font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
           onClick={() => selectCustomDate('7day')}
         >
           7D
