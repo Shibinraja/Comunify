@@ -148,8 +148,8 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
               <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">Khoros</div>
               <Button
                 type="button"
-                text="Connect"
-                className="bg-black shadow-contactCard font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded-full h-6 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 "
+                text="Coming soon"
+                className="bg-black shadow-contactCard font-Poppins cursor-none text-white font-medium leading-5 text-error mt-0.81 rounded-full h-6 w-6.56"
               />
             </div>
           </div>
