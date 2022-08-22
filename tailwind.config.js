@@ -430,7 +430,9 @@ module.exports = {
         'background-pattern': "url('src/assets/images/background-pattern.svg')"
       },
       screens: {
-        '3xl': '2100px'
+        '1xl': '1100px',
+        '3xl': '2100px',
+        '4xl': '2400px'
       },
       variants: {
         extend: {
