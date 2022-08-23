@@ -268,7 +268,7 @@ const Activity: React.FC = () => {
                         </td>
                         <td className="px-6 pt-5 border-b">
                           <div className="flex flex-col">
-                            <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                            <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31">
                               {generateDateAndTime(`${data?.activityTime}`, 'MM-DD-YYYY')}
                             </div>
                             <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
@@ -319,9 +319,7 @@ const Activity: React.FC = () => {
                             {data?.sourceUrl === null ? 'www.slack.com/profile' : data?.sourceUrl}
                           </a>
                         </td>
-                        <td className="px-6 py-3 border-b font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                          {data?.type}
-                        </td>
+                        <td className="px-6 py-3 border-b font-Poppins font-medium text-trial text-infoBlack leading-1.31">{data?.type}</td>
                       </tr>
                     ))}
                 </tbody>
