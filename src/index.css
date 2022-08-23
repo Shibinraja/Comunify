@@ -253,8 +253,8 @@ input {
 
 .height-member-activity {
   height: calc(100vh - 44rem);
-  min-height: 150px;
-  max-height: 150px;
+  /* min-height: 150px; */
+  max-height: 300px;
 }
 
 .member-section::-webkit-scrollbar {
