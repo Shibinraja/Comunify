@@ -30,6 +30,10 @@ import MembersDraggableColumn from './membersTableColumn/membersDraggableColumn'
 import { ColumNames } from './MembersTableData';
 import { customDateLinkProps } from './membertypes';
 import { CustomDateType } from '../interface/members.interface';
+import { API_ENDPOINT } from '@/lib/config';
+
+import fetchExportList from '@/lib/fetchExport';
+
 
 Modal.setAppElement('#root');
 
@@ -37,14 +41,13 @@ const Members: React.FC = () => {
   const navigate = useNavigate();
   const { workspaceId } = useParams();
   const [isModalOpen, setisModalOpen] = useState<boolean>(false);
-  const [toDate, setToDate] = useState<Date>();
   const [columns, setColumns] = useState<Array<ColumnNameProps>>(ColumNames);
   const [customizedColumnBool, saveCustomizedColumn] = useState<boolean>(false);
   const [page, setpage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(10);
   const [searchText, setSearchText] = useState<string>('');
-  const [startDate, setStartDate] = useState<Date>();
-  const [endDate, setEndDate] = useState<Date>();
+  const [customStartDate, setCustomStartDate] = useState<Date>();
+  const [customEndDate, setCustomEndDate] = useState<Date>();
   const [customDateLink, setCustomDateLink] = useState<Partial<customDateLinkProps>>({
     '1day': false,
     '7day': false,
@@ -117,7 +120,7 @@ const Members: React.FC = () => {
     );
   }, [page]);
 
-  //Set new column change if the initial order changes.
+  // Set new column change if the initial order changes.
   useEffect(() => {
     if (customizedColumnData?.length > 1) {
       setColumns(customizedColumnData);
@@ -131,15 +134,24 @@ const Members: React.FC = () => {
     }
   }, [debouncedValue]);
 
+  // Custom Date filter member list
+  useEffect(() => {
+    if (customStartDate && customEndDate) {
+      getFilteredMembersList('', format(customStartDate as Date, 'yyyy-MM-dd'), format(customEndDate as Date, 'yyyy-MM-dd'));
+      setCustomDateLink({ '1day': false, '7day': false, '1month': false });
+    }
+  }, [customStartDate, customEndDate]);
+
   // Function to dispatch the search text to hit api of member list.
-  const getFilteredMembersList = (text: string, date?: string) => {
+  const getFilteredMembersList = (text: string, date?: string, endDate?:string) => {
     dispatch(
       membersSlice.actions.membersList({
         membersQuery: {
           page,
           limit,
           search: text,
-          'createdAT.lte': date
+          'createdAT.gte': date,
+          'createdAT.lte': endDate
         },
         workspaceId: workspaceId!
       })
@@ -160,8 +172,10 @@ const Members: React.FC = () => {
   };
 
   // Function to convert the day and subtract based on no of days/ months.
-  const selectCustomDate = (date: string, customDate?: Date) => {
+  const selectCustomDate = (date: string) => {
     const todayDate = new Date();
+    setCustomStartDate(undefined);
+    setCustomEndDate(undefined);
     if (date === CustomDateType.Day) {
       getFilteredMembersList('', format(subDays(todayDate, 1), 'yyyy-MM-dd'));
       setCustomDateLink({ [date]: true });
@@ -174,10 +188,18 @@ const Members: React.FC = () => {
       getFilteredMembersList('', format(subMonths(todayDate, 1), 'yyyy-MM-dd'));
       setCustomDateLink({ [date]: true });
     }
-    if (customDate) {
-      setToDate(customDate);
-      getFilteredMembersList('', format(customDate, 'yyyy-MM-dd'));
-      setCustomDateLink({ '1day': false, '7day': false, '1month': false });
+  };
+
+  const selectCustomBetweenDate = (event: ChangeEvent<Date>, date: Date, dateTime: string) => {
+    event.stopPropagation();
+    if (dateTime === 'start') {
+      setCustomStartDate(date);
+      setisFilterDropdownActive(true);
+    }
+
+    if (dateTime === 'end') {
+      setCustomEndDate(date);
+      setisFilterDropdownActive(true);
     }
   };
 
@@ -190,41 +212,9 @@ const Members: React.FC = () => {
   };
 
   // Fetch members list data in comma separated value
-  // const fetchMembersListExportData = () => {
-  //   // dispatch(membersSlice.actions.membersListExport({ workspaceId: workspaceId! }));
-
-  //   axios.get(`${API_ENDPOINT}/v1/${workspaceId}/members/memberlistexport`, {
-  //     headers: {
-  //       Accept: 'application/json',
-  //       'Content-Type': 'application/json',
-  //       'Authorization': `Bearer ${token}`,
-  //       'responseType': 'base64'
-  //     }
-  //   // eslint-disable-next-line no-console
-  //   }).then((response:any) => response?.data?.data)
-  //     .then((blob) => {
-  //       const decode = Buffer.from(blob, 'base64').toString('utf-8');
-  //       const response = new Blob([decode], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;' });
-  //       const url = window.URL.createObjectURL(response);
-  //       const anchor = document.createElement('a');
-  //       anchor.href = url;
-  //       anchor.download = 'MembersExport.xlsx';
-  //       document.body.appendChild(anchor);
-  //       anchor.click();
-  //       anchor.remove();
-  //     });
-  // .then((blob) => {
-  //   // eslint-disable-next-line no-console
-  //   console.log('err', blob);
-  //   const url = window.URL.createObjectURL(blob);
-  //   const anchor = document.createElement('a');
-  //   anchor.href = url;
-  //   anchor.download = 'MembersExport.xlsx';
-  //   document.body.appendChild(anchor);
-  //   anchor.click();
-  //   anchor.remove();
-  // });
-  // };
+  const fetchMembersListExportData = () => {
+    fetchExportList(`${API_ENDPOINT}/v1/${workspaceId}/members/memberlistexport`, 'MembersListExport.xlsx');
+  };
 
   // Function to map customized column with api data response to create a new column array with index matching with customized column.
   // eslint-disable-next-line max-len
@@ -254,19 +244,6 @@ const Members: React.FC = () => {
   );
 
   const MemberFilter = useMemo(() => <MembersFilter page={page} limit={limit} />, []);
-
-  const selectActiveBetweenDate = (event: ChangeEvent<Date>, date: Date, dateTime: string) => {
-    event.stopPropagation();
-    if (dateTime === 'start') {
-      setStartDate(date);
-      setisFilterDropdownActive(true);
-    }
-
-    if (dateTime === 'end') {
-      setEndDate(date);
-      setisFilterDropdownActive(true);
-    }
-  };
 
   return (
     <div className="flex flex-col mt-12">
@@ -334,8 +311,8 @@ const Members: React.FC = () => {
                   <label htmlFor="Start Date p-1 font-Inter font-normal leading-4 text-trial text-searchBlack">Start Date</label>
                   <div className="relative flex items-center">
                     <DatePicker
-                      selected={startDate}
-                      onChange={(date: Date, event: ChangeEvent<Date>) => selectActiveBetweenDate(event, date, 'start')}
+                      selected={customStartDate}
+                      onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'start')}
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
                     />
@@ -346,8 +323,8 @@ const Members: React.FC = () => {
                   <label htmlFor="Start Date p-1 font-Inter font-Inter font-normal leading-4 text-trial text-searchBlack">End Date</label>
                   <div className="relative flex items-center">
                     <DatePicker
-                      selected={endDate}
-                      onChange={(date: Date, event: ChangeEvent<Date>) => selectActiveBetweenDate(event, date, 'end')}
+                      selected={customEndDate}
+                      onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'end')}
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
                     />
@@ -363,7 +340,7 @@ const Members: React.FC = () => {
         <div className="ml-0.652">
           <div
             className="export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex ml-0.63 cursor-pointer"
-            // onClick={fetchMembersListExportData}
+            onClick={fetchMembersListExportData}
           >
             <h3 className="text-memberDay leading-1.12 font-Poppins font-semibold text-card">Export</h3>
             <img src={exportImage} alt="" />

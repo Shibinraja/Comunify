@@ -62,7 +62,8 @@ export function* MembersListService(query: Required<GetMembersListQueryParams>):
       query.membersQuery.organization?.checkedOrganization ? `&organization=${query.membersQuery.organization.checkedOrganization}` : ''
     }${query.membersQuery['lastActivity.gte'] ? `&lastActivity.gte=${query.membersQuery['lastActivity.gte']}` : ''}${
       query.membersQuery['lastActivity.lte'] ? `&lastActivity.lte=${query.membersQuery['lastActivity.lte']}` : ''
-    }${query.membersQuery['createdAT.lte'] ? `&createdAT.lte=${query.membersQuery['createdAT.lte']}` : ''}`
+    }${query.membersQuery['createdAT.gte'] ? `&createdAT.gte=${query.membersQuery['createdAT.gte']}` : ''}
+    ${query.membersQuery['createdAT.lte'] ? `&createdAT.lte=${query.membersQuery['createdAT.lte']}` : ''}`
   );
   return data;
 }
