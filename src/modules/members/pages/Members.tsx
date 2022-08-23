@@ -484,7 +484,7 @@ const Members: React.FC = () => {
               >
                 <div className="flex flex-col px-1.68 relative">
                   <h3 className="font-Inter font-semibold text-xl mt-1.8  leading-6">Customize Column</h3>
-                  <div className="pb-10">{membersColumn}</div>
+                  <div className="pb-10 members-list-height">{membersColumn}</div>
                   <div className="flex buttons absolute -bottom-16 right-[27px]">
                     <Button
                       text="Cancel"
