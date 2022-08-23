@@ -49,10 +49,22 @@ const MembersProfile: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
 
   const dropDownRef = useRef<HTMLDivElement>(null);
+  const datepickerRefFrom = useRef<any>(null);
+  const datepickerRefTo = useRef<any>(null);
 
   const handleOutsideClick = (event: MouseEvent) => {
     if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
       setSelectDropDownActive(false);
+    }
+  };
+
+  const handleClickDatepickerIcon = (type: string) => {
+    if (type === 'start') {
+      const datepickerElement = datepickerRefFrom.current;
+      datepickerElement.setFocus(true);
+    } else {
+      const datepickerElement = datepickerRefTo.current;
+      datepickerElement.setFocus(true);
     }
   };
 
@@ -282,8 +294,14 @@ const MembersProfile: React.FC = () => {
                     onChange={(date: Date) => setFromDate(date)}
                     className=" h-3.06 app-result-card-border shadow-reportInput w-full rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                     placeholderText="From"
+                    ref={datepickerRefFrom}
                   />
-                  <img className="absolute icon-holder right-4 cursor-pointer" src={calendarIcon} alt="" />
+                  <img
+                    className="absolute icon-holder right-4 cursor-pointer"
+                    src={calendarIcon}
+                    alt=""
+                    onClick={() => handleClickDatepickerIcon('start')}
+                  />
                 </div>
                 <div className="relative flex items-center pt-1">
                   <DatePicker
@@ -291,8 +309,14 @@ const MembersProfile: React.FC = () => {
                     onChange={(date: Date) => setToDate(date)}
                     className=" h-3.06 app-result-card-border shadow-reportInput w-full rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                     placeholderText="To"
+                    ref={datepickerRefTo}
                   />
-                  <img className="absolute icon-holder right-4 cursor-pointer" src={calendarIcon} alt="" />
+                  <img
+                    className="absolute icon-holder right-4 cursor-pointer"
+                    src={calendarIcon}
+                    alt=""
+                    onClick={() => handleClickDatepickerIcon('end')}
+                  />
                 </div>
               </div>
             )}

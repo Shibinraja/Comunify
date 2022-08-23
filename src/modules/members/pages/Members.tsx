@@ -53,6 +53,9 @@ const Members: React.FC = () => {
     '7day': false,
     '1month': false
   });
+  const datepickerRefStart = useRef<any>(null);
+  const datepickerRefEnd = useRef<any>(null);
+
 
   const dispatch = useAppDispatch();
 
@@ -245,6 +248,16 @@ const Members: React.FC = () => {
 
   const MemberFilter = useMemo(() => <MembersFilter page={page} limit={limit} />, []);
 
+  const handleClickDatepickerIcon=(type : string) => {
+    if(type === 'start') {
+      const datepickerElement = datepickerRefStart.current;
+      datepickerElement.setFocus(true);
+    }else{
+      const datepickerElement = datepickerRefEnd.current;
+      datepickerElement.setFocus(true);
+    }
+  };
+
   return (
     <div className="flex flex-col mt-12">
       <h3 className="font-Poppins font-semibold text-infoBlack text-infoData leading-9">Members</h3>
@@ -255,7 +268,7 @@ const Members: React.FC = () => {
         <div className="flex relative items-center ">
           <input
             type="text"
-            className="focus:outline-none px-3 box-border w-19.06 h-3.06  rounded-0.6  placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray shadow-shadowInput"
+            className="focus:outline-none px-3 pr-8 box-border w-19.06 h-3.06  rounded-0.6  placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray shadow-shadowInput"
             placeholder="Search By Name or Email"
             onChange={handleSearchTextChange}
           />
@@ -315,8 +328,9 @@ const Members: React.FC = () => {
                       onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'start')}
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
+                      ref={datepickerRefStart}
                     />
-                    <img className="absolute icon-holder right-6 cursor-pointer" src={calendarIcon} alt="" />
+                    <img className="absolute icon-holder right-6 cursor-pointer" src={calendarIcon} alt="" onClick={() => handleClickDatepickerIcon('start')}/>
                   </div>
                 </div>
                 <div className="flex flex-col px-3 pb-4 pt-3">
@@ -327,8 +341,9 @@ const Members: React.FC = () => {
                       onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'end')}
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
+                      ref={datepickerRefEnd}
                     />
-                    <img className="absolute icon-holder right-6 cursor-pointer" src={calendarIcon} alt="" />
+                    <img className="absolute icon-holder right-6 cursor-pointer" src={calendarIcon} alt="" onClick={() => handleClickDatepickerIcon('end')}/>
                   </div>
                 </div>
               </>

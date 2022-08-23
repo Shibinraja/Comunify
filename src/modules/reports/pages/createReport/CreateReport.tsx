@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import './CreateReport.css';
 import DatePicker from 'react-datepicker';
 import dropdownIcon from '../../../../assets/images/filter-dropdown.svg';
@@ -15,9 +15,21 @@ const CreateReport = () => {
   const [toDate, setToDate] = useState<Date>();
   const [isReportActive, setIsReportActive] = useState(false);
   const [isPlatformActive, setIsPlatformActive] = useState(false);
+  const datepickerRefFrom = useRef<any>(null);
+  const datepickerRefTo = useRef<any>(null);
 
   const options = ['Daily', 'Weekly', 'Monthly'];
   const [selectedReport, setselectedReport] = useState('');
+
+  const handleClickDatepickerIcon = (type: string) => {
+    if (type === 'start') {
+      const datepickerElement = datepickerRefFrom.current;
+      datepickerElement.setFocus(true);
+    } else {
+      const datepickerElement = datepickerRefTo.current;
+      datepickerElement.setFocus(true);
+    }
+  };
 
   const navigateToReports = () => {
     navigate('/reports');
@@ -79,20 +91,32 @@ const CreateReport = () => {
               <div className="relative flex items-center 2xl:w-1/2 ">
                 <DatePicker
                   selected={fromDate}
-                  onChange={(date: any) => setFromDate(date)}
+                  onChange={(date: Date) => setFromDate(date)}
                   className="w-9.92 2xl:w-full h-3.06 app-result-card-border shadow-reportInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                   placeholderText="From"
+                  ref={datepickerRefFrom}
                 />
-                <img className="absolute icon-holder right-4 cursor-pointer" src={calendarIcon} alt="" />
+                <img
+                  className="absolute icon-holder right-4 cursor-pointer"
+                  src={calendarIcon}
+                  alt=""
+                  onClick={() => handleClickDatepickerIcon('start')}
+                />
               </div>
               <div className="relative flex items-center 2xl:w-1/2 ">
                 <DatePicker
                   selected={toDate}
-                  onChange={(date: any) => setToDate(date)}
+                  onChange={(date: Date) => setToDate(date)}
                   className="w-9.92 2xl:w-full h-3.06 app-result-card-border shadow-reportInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                   placeholderText="To"
+                  ref={datepickerRefTo}
                 />
-                <img className="absolute icon-holder right-4 cursor-pointer" src={calendarIcon} alt="" />
+                <img
+                  className="absolute icon-holder right-4 cursor-pointer"
+                  src={calendarIcon}
+                  alt=""
+                  onClick={() => handleClickDatepickerIcon('end')}
+                />
               </div>
             </div>
           </div>

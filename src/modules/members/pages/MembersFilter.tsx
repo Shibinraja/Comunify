@@ -32,12 +32,15 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
   const [locationSearchText, setLocationSearchText] = useState<string>('');
   const [organizationSearchText, setOrganizationSearchText] = useState<string>('');
   const [isActiveBetween, setActiveBetween] = useState<boolean>(false);
+  const datepickerRefStart = useRef<any>(null);
+  const datepickerRefEnd = useRef<any>(null);
 
   const workspaceId = getLocalWorkspaceId();
   const dispatch = useAppDispatch();
   const dropDownRef = useRef<HTMLDivElement>(null);
-  const { membersLocationFilterResponse, membersOrganizationFilterResponse, membersTagFilterResponse, PlatformFilterResponse } =
-    useAppSelector((state) => state.members);
+  const { membersLocationFilterResponse, membersOrganizationFilterResponse, membersTagFilterResponse, PlatformFilterResponse } = useAppSelector(
+    (state) => state.members
+  );
 
   const debouncedLocationValue = useDebounce(locationSearchText, 300);
   const debouncedOrganizationValue = useDebounce(organizationSearchText, 300);
@@ -166,6 +169,16 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
     if (dateTime === 'end') {
       setEndDate(date);
       setisFilterDropdownActive(true);
+    }
+  };
+
+  const handleClickDatepickerIcon = (type: string) => {
+    if (type === 'start') {
+      const datepickerElement = datepickerRefStart.current;
+      datepickerElement.setFocus(true);
+    } else {
+      const datepickerElement = datepickerRefEnd.current;
+      datepickerElement.setFocus(true);
     }
   };
 
@@ -370,8 +383,14 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
                       onChange={(date: Date, event: ChangeEvent<Date>) => selectActiveBetweenDate(event, date, 'start')}
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
+                      ref={datepickerRefStart}
                     />
-                    <img className="absolute icon-holder right-6 cursor-pointer" src={calendarIcon} alt="" />
+                    <img
+                      className="absolute icon-holder right-6 cursor-pointer"
+                      src={calendarIcon}
+                      alt=""
+                      onClick={() => handleClickDatepickerIcon('start')}
+                    />
                   </div>
                 </div>
                 <div className="flex flex-col px-3 pb-4 pt-3">
@@ -382,8 +401,14 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
                       onChange={(date: Date, event: ChangeEvent<Date>) => selectActiveBetweenDate(event, date, 'end')}
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
+                      ref={datepickerRefEnd}
                     />
-                    <img className="absolute icon-holder right-6 cursor-pointer" src={calendarIcon} alt="" />
+                    <img
+                      className="absolute icon-holder right-6 cursor-pointer"
+                      src={calendarIcon}
+                      alt=""
+                      onClick={() => handleClickDatepickerIcon('end')}
+                    />
                   </div>
                 </div>
               </>
