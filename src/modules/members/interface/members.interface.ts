@@ -26,6 +26,8 @@ export interface GetMembersListQueryParams extends workspaceId {
     'lastActivity.lte'?: string;
     'lastActivity.gte'?: string;
     'createdAT.lte'?: string;
+    'createdAT.gte'?: string;
+
   };
 }
 

@@ -1,6 +1,8 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import useDebounce from '@/hooks/useDebounce';
+import { API_ENDPOINT } from '@/lib/config';
+import fetchExportList from '@/lib/fetchExport';
 import Button from 'common/button';
 import Input from 'common/input';
 import Pagination from 'common/pagination/pagination';
@@ -96,7 +98,7 @@ const Activity: React.FC = () => {
   // Returns the debounced value of the search text.
   useEffect(() => {
     if (debouncedValue) {
-      getFilteredMembersList(debouncedValue);
+      getFilteredActiveStreamList(debouncedValue);
     }
   }, [debouncedValue]);
 
@@ -135,13 +137,13 @@ const Activity: React.FC = () => {
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
     if (searchText === '') {
-      getFilteredMembersList(searchText);
+      getFilteredActiveStreamList(searchText);
     }
     setSearchText(searchText);
   };
 
   // Function to dispatch the search text to hit api of member list.
-  const getFilteredMembersList = (text: string) => {
+  const getFilteredActiveStreamList = (text: string) => {
     dispatch(
       activitiesSlice.actions.getActiveStreamData({
         activeStreamQuery: {
@@ -152,6 +154,11 @@ const Activity: React.FC = () => {
         workspaceId: workspaceId!
       })
     );
+  };
+
+  // Fetch members list data in comma separated value
+  const fetchActiveStreamListExportData = () => {
+    fetchExportList(`${API_ENDPOINT}/v1/${workspaceId}/activity/export`, 'ActiveStreamExport.xlsx');
   };
 
   const ActiveStreamFilter = useMemo(() => <ActivityFilter page={page} limit={limit} />, []);
@@ -173,7 +180,9 @@ const Activity: React.FC = () => {
         <div className="relative mr-5">{ActiveStreamFilter}</div>
 
         <div className="">
-          <div className="app-input-card-border w-6.98 h-3.06 rounded-0.6 shadow-shadowInput box-border bg-white items-center justify-evenly flex ml-0.63 cursor-pointer">
+          <div className="app-input-card-border w-6.98 h-3.06 rounded-0.6 shadow-shadowInput box-border bg-white items-center justify-evenly flex ml-0.63 cursor-pointer"
+            onClick={fetchActiveStreamListExportData}
+          >
             <h3 className="text-dropGray leading-1.12 font-Poppins font-semibld text-card">Export</h3>
             <img src={exportImage} alt="" />
           </div>
