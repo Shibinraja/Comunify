@@ -11,7 +11,7 @@ import Modal from 'react-modal';
 import { useNavigate } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import { request } from '../../../../lib/request';
-import { showErrorToast } from '../../../../common/toast/toastFunctions';
+import { showErrorToast, showSuccessToast } from '../../../../common/toast/toastFunctions';
 import { API_ENDPOINT, SLACK_CONNECT_ENDPOINT } from '../../../../lib/config';
 import { getLocalWorkspaceId } from '@/lib/helper';
 import Input from 'common/input';
@@ -23,6 +23,27 @@ interface Body {
   workspaceId: string;
 }
 
+interface VanillaForumsData {
+  vanillaBaseUrl: string;
+  vanillaAccessToken: string;
+  workspaceId: string;
+  workspacePlatformSettingsId?: string;
+}
+
+// interface VanillaConnectResponse {
+//     id: string;
+//     workspacePlatformSettingsId: string;
+//     type: string;
+//     domain: string;
+//     channelId: string | null,
+//     auth_token: string;
+//     clientSecret: null,
+//     clientId: null,
+//     status: string;
+//     createdAt: string;
+//     updatedAt: string;
+// }
+
 const Integration: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -32,6 +53,7 @@ const Integration: React.FC = () => {
   const handleVanillaModal = (val: boolean) => {
     setVanillaModalOpen(val);
   };
+  const [vanillaForumsData, setVanillaForumsData] = useState<VanillaForumsData>({ vanillaAccessToken: '', vanillaBaseUrl: '', workspaceId: '' });
 
   useEffect(() => {
     if (searchParams.get('code')) {
@@ -58,8 +80,38 @@ const Integration: React.FC = () => {
       } else {
         showErrorToast('Integration failed');
       }
+      // eslint-disable-next-line no-empty
+    } catch {}
+  };
+
+  // eslint-disable-next-line space-before-function-paren
+  const sendVanillaData = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    try {
+      event.preventDefault();
+      const body: VanillaForumsData = {
+        vanillaBaseUrl: vanillaForumsData.vanillaBaseUrl,
+        vanillaAccessToken: vanillaForumsData.vanillaAccessToken,
+        workspaceId
+      };
+      const connectResponse = await request.post(`${API_ENDPOINT}/v1/vanilla/connect`, body);
+      if (connectResponse?.data?.data?.id) {
+        showSuccessToast('Integration in progress');
+        try {
+          const completeSetupResponse = await request.post(`${API_ENDPOINT}/v1/vanilla/complete-setup`, {
+            workspaceId,
+            workspacePlatformSettingsId: connectResponse?.data?.data?.id
+          });
+          if (completeSetupResponse) {
+            showSuccessToast('Successfully integrated');
+            setVanillaModalOpen((prevState) => !prevState);
+            navigate(`/${workspaceId}/settings`);
+          }
+        } catch (error) {
+          showErrorToast('Integration Failed');
+        }
+      }
     } catch (error) {
-      console.log(error);
+      showErrorToast('Integration Failed');
     }
   };
 
@@ -141,6 +193,8 @@ const Integration: React.FC = () => {
                                   label="Site URL"
                                   id="siteUrlId"
                                   name="SiteUrl"
+                                  value={vanillaForumsData?.vanillaBaseUrl}
+                                  onChange={(e) => setVanillaForumsData((prevState) => ({ ...prevState, vanillaBaseUrl: e.target.value }))}
                                   className="h-2.81 pr-3.12 rounded-md border-app-result-card-border mt-[0.4375rem] bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-thinGray placeholder:text-sm placeholder:leading-6 placeholder:font-Poppins font-Poppins box-border"
                                 />
                               </div>
@@ -157,19 +211,20 @@ const Integration: React.FC = () => {
                                   label="Access Token"
                                   id="accessTokenId"
                                   name="accessToken"
+                                  value={vanillaForumsData?.vanillaAccessToken}
+                                  onChange={(e) => setVanillaForumsData((prevState) => ({ ...prevState, vanillaAccessToken: e.target.value }))}
                                   className="h-2.81 pr-3.12 rounded-md border-app-result-card-border mt-[0.4375rem] bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-thinGray placeholder:text-sm placeholder:leading-6 placeholder:font-Poppins font-Poppins box-border"
                                 />
                               </div>
                               <div className="flex justify-end pt-[1.875rem]">
                                 <Button
                                   text="Cancel"
-                                  type="submit"
                                   className="cancel mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  h-2.81 w-5.25  rounded border-none"
                                   onClick={() => handleVanillaModal(false)}
                                 />
                                 <Button
                                   text="Save"
-                                  type="submit"
+                                  onClick={(e) => sendVanillaData(e)}
                                   className="text-white font-Poppins text-error font-medium leading-5 btn-save-modal cursor-pointer rounded shadow-contactBtn w-5.25 border-none h-2.81"
                                 />
                               </div>
