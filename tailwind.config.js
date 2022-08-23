@@ -15,7 +15,7 @@ module.exports = {
         grayBorder: ' #D9DBE9',
         listGray: '#6B7280',
         brightGray: '#F9F9F9;',
-        slimGray: '#8A8B9F;',
+        slimGray: '#8A8B9F',
         lightGreeny: '#AACF6F',
         success: '#A9CE70;',
         primary: '#6DB7DF;',
