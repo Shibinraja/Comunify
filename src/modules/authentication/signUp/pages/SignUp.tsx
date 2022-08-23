@@ -40,9 +40,7 @@ const SignUp: React.FC = () => {
   };
 
   const handleOutsideClick = (event: MouseEvent) => {
-    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target as Node)) {
-      setDropDownActive(true);
-    } else {
+    if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
       setDropDownActive(false);
     }
   };

@@ -17,9 +17,7 @@ const Dashboard: React.FC = () => {
   const dropDownRef = useRef<HTMLDivElement>(null);
 
   const handleOutsideClick = (event: MouseEvent) => {
-    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target as Node)) {
-      setSelectDropDownActive(true);
-    } else {
+    if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
       setSelectDropDownActive(false);
     }
   };
