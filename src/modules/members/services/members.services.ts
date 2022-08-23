@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable max-len */
 import { GeneratorResponse } from '@/lib/api';
 import { members_module, platforms_module } from '@/lib/config';
@@ -7,7 +6,6 @@ import { request } from '@/lib/request';
 import {
   MembersCountResponse,
   MembersProfileActivityGraphData,
-  PlatformsData,
   VerifyPlatform,
   GetMembersListQueryParams,
   MembersListResponse,
@@ -20,7 +18,7 @@ import {
   ActivityDataResponse,
   ActivityInfiniteScroll,
   MemberProfileCard,
-  MembersPlatformResponse
+  PlatformResponse
 } from '../interface/members.interface';
 
 //Members Module
@@ -49,11 +47,6 @@ export function* MembersActivityGraphService(params: VerifyMembers): GeneratorRe
   return data;
 }
 
-export function* PlatformsDataService(): GeneratorResponse<PlatformsData[]> {
-  const { data } = yield request.get(`${platforms_module}`);
-  return data;
-}
-
 export function* GetMembersActivityGraphDataPerPlatformService(params: VerifyPlatform): GeneratorResponse<MembersProfileActivityGraphData> {
   const { data } = yield request.get(`/v1/${params.workspaceId}/members/${params.memberId}/activitygraph?platforms=${params.platform}`);
   return data;
@@ -69,13 +62,14 @@ export function* MembersListService(query: Required<GetMembersListQueryParams>):
       query.membersQuery.organization?.checkedOrganization ? `&organization=${query.membersQuery.organization.checkedOrganization}` : ''
     }${query.membersQuery['lastActivity.gte'] ? `&lastActivity.gte=${query.membersQuery['lastActivity.gte']}` : ''}${
       query.membersQuery['lastActivity.lte'] ? `&lastActivity.lte=${query.membersQuery['lastActivity.lte']}` : ''
-    }${query.membersQuery['createdAT.lte'] ? `&createdAT.lte=${query.membersQuery['createdAT.lte']}` : ''}`
+    }${query.membersQuery['createdAT.gte'] ? `&createdAT.gte=${query.membersQuery['createdAT.gte']}` : ''}
+    ${query.membersQuery['createdAT.lte'] ? `&createdAT.lte=${query.membersQuery['createdAT.lte']}` : ''}`
   );
   return data;
 }
 
-export function* MembersPlatformFilterService(): GeneratorResponse<Array<MembersPlatformResponse>> {
-  const { data } = yield request.get(`/v1/platforms`);
+export function* PlatformsDataService(): GeneratorResponse<Array<PlatformResponse>> {
+  const { data } = yield request.get(`${platforms_module}`);
   return data;
 }
 
@@ -125,7 +119,7 @@ export function* MembersListExportService(query: { workspaceId: string }): Gener
 
 export function* GetMembersActivityDataInfiniteScrollSaga(params: ActivityInfiniteScroll): GeneratorResponse<ActivityDataResponse> {
   const { data } = yield request.get(
-    `/v1/${params.workspaceId}/members/${params.memberId}/activity?${params?.nextCursor ? `&cursor=${params.nextCursor}` : ''}${
+    `/v1/${params.workspaceId}/members/${params.memberId}/activity?page=1&limit=10${params?.nextCursor ? `&cursor=${params.nextCursor}` : ''}${
       params?.platform ? `&platforms=${params?.platform}` : ''
     }
       ${params?.fromDate ? `&activity.gte=${params.fromDate}` : ''} ${params?.toDate ? `&activity.lte=${params.toDate}` : ''}`

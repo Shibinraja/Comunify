@@ -1,15 +1,17 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import useDebounce from '@/hooks/useDebounce';
+import { API_ENDPOINT } from '@/lib/config';
+import fetchExportList from '@/lib/fetchExport';
 import Button from 'common/button';
 import Input from 'common/input';
 import Pagination from 'common/pagination/pagination';
 import membersSlice from 'modules/members/store/slice/members.slice';
-import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import Modal from 'react-modal';
 import { useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 import closeIcon from '../../../assets/images/close.svg';
 import profileImage from '../../../assets/images/ellip.svg';
 import exportImage from '../../../assets/images/export.svg';
@@ -29,7 +31,7 @@ const Activity: React.FC = () => {
   const { workspaceId } = useParams();
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [isTagModalOpen, setTagModalOpen] = useState<boolean>(false);
-  const [ProfileModal, setProfileModal] = useState<ProfileModal>({
+  const [ProfileModal, setProfileModal] = useState<Partial<ProfileModal>>({
     id: '',
     email: '',
     isOpen: false,
@@ -42,6 +44,7 @@ const Activity: React.FC = () => {
   const [page, setpage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(10);
   const [searchText, setSearchText] = useState<string>('');
+  const dropDownRef = useRef<HTMLDivElement>(null);
 
   const { data, totalPages, previousPage, nextPage } = useAppSelector((state) => state.activities.activeStreamData);
 
@@ -58,7 +61,7 @@ const Activity: React.FC = () => {
       })
     );
 
-    dispatch(membersSlice.actions.membersPlatformFilter());
+    dispatch(membersSlice.actions.platformData());
 
     dispatch(
       activitiesSlice.actions.activeStreamTagFilter({
@@ -68,10 +71,34 @@ const Activity: React.FC = () => {
     );
   }, [page]);
 
+  useEffect(() => {
+    document.addEventListener('click', handleOutsideClick);
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, []);
+
+  // Function to close the popup modal of the member profile
+  const handleOutsideClick = (event: MouseEvent) => {
+    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target as Node)) {
+      setProfileModal((prevState) => {
+        const prevProfileModal = { ...prevState };
+        prevProfileModal['isOpen'] = true;
+        return prevProfileModal;
+      });
+    } else {
+      setProfileModal((prevState) => {
+        const prevProfileModal = { ...prevState };
+        prevProfileModal['isOpen'] = false;
+        return prevProfileModal;
+      });
+    }
+  };
+
   // Returns the debounced value of the search text.
   useEffect(() => {
     if (debouncedValue) {
-      getFilteredMembersList(debouncedValue);
+      getFilteredActiveStreamList(debouncedValue);
     }
   }, [debouncedValue]);
 
@@ -110,13 +137,13 @@ const Activity: React.FC = () => {
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
     if (searchText === '') {
-      getFilteredMembersList(searchText);
+      getFilteredActiveStreamList(searchText);
     }
     setSearchText(searchText);
   };
 
   // Function to dispatch the search text to hit api of member list.
-  const getFilteredMembersList = (text: string) => {
+  const getFilteredActiveStreamList = (text: string) => {
     dispatch(
       activitiesSlice.actions.getActiveStreamData({
         activeStreamQuery: {
@@ -127,6 +154,11 @@ const Activity: React.FC = () => {
         workspaceId: workspaceId!
       })
     );
+  };
+
+  // Fetch members list data in comma separated value
+  const fetchActiveStreamListExportData = () => {
+    fetchExportList(`${API_ENDPOINT}/v1/${workspaceId}/activity/export`, 'ActiveStreamExport.xlsx');
   };
 
   const ActiveStreamFilter = useMemo(() => <ActivityFilter page={page} limit={limit} />, []);
@@ -148,7 +180,9 @@ const Activity: React.FC = () => {
         <div className="relative mr-5">{ActiveStreamFilter}</div>
 
         <div className="">
-          <div className="app-input-card-border w-6.98 h-3.06 rounded-0.6 shadow-shadowInput box-border bg-white items-center justify-evenly flex ml-0.63 cursor-pointer">
+          <div className="app-input-card-border w-6.98 h-3.06 rounded-0.6 shadow-shadowInput box-border bg-white items-center justify-evenly flex ml-0.63 cursor-pointer"
+            onClick={fetchActiveStreamListExportData}
+          >
             <h3 className="text-dropGray leading-1.12 font-Poppins font-semibld text-card">Export</h3>
             <img src={exportImage} alt="" />
           </div>
@@ -159,7 +193,7 @@ const Activity: React.FC = () => {
           <div className="py-2 overflow-x-auto mt-1.868">
             <div className="inline-block min-w-full  align-middle w-61.68 rounded-0.6 border-table no-scroll-bar  overflow-y-auto h-screen sticky top-0 fixActivityTableHead min-h-[31.25rem]">
               <table className="min-w-full relative  rounded-t-0.6 ">
-                <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
+                <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky z-10">
                   <tr className="min-w-full">
                     <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray ">Members</th>
                     <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
@@ -183,17 +217,19 @@ const Activity: React.FC = () => {
                             </div>
                             <div className="relative">
                               <div
-                                onClick={() =>
+                                ref={dropDownRef}
+                                onClick={(e) => {
+                                  e.stopPropagation();
                                   handleProfileModal({
                                     isOpen: true,
                                     id: data?.id,
                                     email: data?.email,
                                     memberName: data?.memberName,
                                     organization: 'NeoITO',
-                                    memberProfileUrl: `/${workspaceId}/members/profile`,
+                                    memberProfileUrl: `/${workspaceId}/members/${data.memberId}/profile`,
                                     profilePictureUrl: data?.profilePictureUrl
-                                  })
-                                }
+                                  });
+                                }}
                                 className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer capitalize"
                               >
                                 {data?.memberName}
@@ -219,12 +255,12 @@ const Activity: React.FC = () => {
                                       <img src={slackIcon} alt="" />
                                     </div>
                                   </div>
-                                  <a
-                                    href={`${ProfileModal?.memberProfileUrl}`}
+                                  <NavLink
+                                    to={`${ProfileModal?.memberProfileUrl}`}
                                     className="mt-0.84 font-normal font-Poppins text-card underline text-profileBlack leading-5 cursor-pointer"
                                   >
                                     VIEW PROFILE
-                                  </a>
+                                  </NavLink>
                                 </div>
                               </div>
                             </div>
@@ -232,11 +268,11 @@ const Activity: React.FC = () => {
                         </td>
                         <td className="px-6 pt-5 border-b">
                           <div className="flex flex-col">
-                            <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                              {generateDateAndTime(`${data?.createdAt}`, 'MM-DD-YYYY')}
+                            <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31">
+                              {generateDateAndTime(`${data?.activityTime}`, 'MM-DD-YYYY')}
                             </div>
                             <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
-                              {generateDateAndTime(`${data?.createdAt}`, 'HH:MM')}
+                              {generateDateAndTime(`${data?.activityTime}`, 'HH:MM')}
                             </div>
                           </div>
                         </td>
@@ -267,7 +303,7 @@ const Activity: React.FC = () => {
                                 {data?.displayValue}
                               </div>
                               <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
-                                {generateDateAndTime(`${data?.createdAt}`, 'MM-DD')}
+                                {generateDateAndTime(`${data?.activityTime}`, 'MM-DD')}
                               </div>
                             </div>
                           </div>
@@ -276,14 +312,14 @@ const Activity: React.FC = () => {
                         <td className="px-6 py-3 border-b">
                           <a
                             href={`${data?.sourceUrl}`}
+                            target="_blank"
+                            rel="noreferrer noopener"
                             className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 underline cursor-pointer"
                           >
                             {data?.sourceUrl === null ? 'www.slack.com/profile' : data?.sourceUrl}
                           </a>
                         </td>
-                        <td className="px-6 py-3 border-b font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                          {data?.type}
-                        </td>
+                        <td className="px-6 py-3 border-b font-Poppins font-medium text-trial text-infoBlack leading-1.31">{data?.type}</td>
                       </tr>
                     ))}
                 </tbody>
@@ -379,6 +415,8 @@ const Activity: React.FC = () => {
                     <div className="mt-1.18 flex relative">
                       <a
                         href={`${ActivityCard?.sourceUrl}`}
+                        target="_blank"
+                        rel="noreferrer noopener"
                         className="font-Poppins font-medium text-card leading-1.12 text-tag underline cursor-pointer"
                       >
                         VIEW ON SLACK

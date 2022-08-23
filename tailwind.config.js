@@ -65,6 +65,7 @@ module.exports = {
         workSpace: '#696C7D',
         manageTitle: ' #0C0E14',
         slackStatus: ' #A9CE70'
+        vanillaDescription: '#6F6C90'
       },
       margin: {
         2.6: '43px',
@@ -434,7 +435,9 @@ module.exports = {
         'background-pattern': "url('src/assets/images/background-pattern.svg')"
       },
       screens: {
-        '3xl': '2100px'
+        '1xl': '1100px',
+        '3xl': '2100px',
+        '4xl': '2400px'
       },
       variants: {
         extend: {

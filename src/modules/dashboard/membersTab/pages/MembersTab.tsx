@@ -20,7 +20,7 @@ function MembersTab() {
             <span className="pl-2 group relative">
               <img src={infoIcon} alt="" />
               <div className="absolute group-hover:visible invisible mt-4 bg-toolTip text-left p-5 text-white font-Poppins text-email font-normal leading-4 rounded-0.6">
-                Top contributors are the the Members <br /> with most number of activities
+                Top contributors are the Members <br /> with most number of activities
               </div>
             </span>
           </TabSelector>

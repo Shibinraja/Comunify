@@ -19,7 +19,7 @@ import yellowDottedIcon from '../../../../assets/images/yellow_dotted.svg';
 import { useAppSelector } from '../../../../hooks/useRedux';
 import { generateDateAndTime } from '../../../../lib/helper';
 import { AppDispatch } from '../../../../store';
-import { ActivityResult, MemberProfileCard, PlatformsData } from '../../interface/members.interface';
+import { ActivityResult, MemberProfileCard, PlatformResponse } from '../../interface/members.interface';
 import membersSlice from '../../store/slice/members.slice';
 import MembersProfileGraph from '../membersProfileGraph/MembersProfileGraph';
 
@@ -38,11 +38,11 @@ const MembersProfile: React.FC = () => {
   const [toDate, setToDate] = useState<Date>();
   const [isFilterDropDownActive, setFilterDropdownActive] = useState<boolean>(false);
   const [activityNextCursor, setActivityNextCursor] = useState<string | null>('');
-  const [platform, setPlatform] = useState<string | null>('');
+  const [platform, setPlatform] = useState<string>();
   const {
     membersActivityData: activityData,
     membersProfileActivityGraphData: activityGraphData,
-    platformsData: platformData,
+    PlatformFilterResponse: platformData,
     memberProfileCardData
   } = useAppSelector((state) => state.members);
 
@@ -69,16 +69,18 @@ const MembersProfile: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(
-      membersSlice.actions.getMembersActivityDataInfiniteScroll({
-        workspaceId: workspaceId as string,
-        memberId: memberId as string,
-        nextCursor: activityNextCursor ? activityNextCursor : '',
-        platform: platform && platform,
-        fromDate: fromDate && format(fromDate, 'yyyy-MM-dd'),
-        toDate: toDate && format(toDate, 'yyyy-MM-dd')
-      })
-    );
+    if (activityNextCursor !== null) {
+      dispatch(
+        membersSlice.actions.getMembersActivityDataInfiniteScroll({
+          workspaceId: workspaceId as string,
+          memberId: memberId as string,
+          nextCursor: activityNextCursor ? activityNextCursor : '',
+          platform: platform && platform,
+          fromDate: fromDate && format(fromDate, 'yyyy-MM-dd'),
+          toDate: toDate && format(toDate, 'yyyy-MM-dd')
+        })
+      );
+    }
   }, [activityNextCursor, platform, fromDate && toDate]);
 
   const handleModal = (val: boolean) => {
@@ -199,7 +201,7 @@ const MembersProfile: React.FC = () => {
                   >
                     All
                   </div>
-                  {platformData?.map((data: PlatformsData) => (
+                  {platformData?.map((data: PlatformResponse) => (
                     <div
                       key={data?.id}
                       className="rounded-0.3 h-1.93 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack hover:bg-signUpDomain transition ease-in duration-100"
@@ -221,7 +223,7 @@ const MembersProfile: React.FC = () => {
             <div key={data?.id + data?.name} className="flex flex-col w-full">
               <div className="font-Poppins font-normal text-card leading-4 text-renewalGray">Last Active Date</div>
               <div className="font-Poppins font-semibold text-base leading-6 text-accountBlack">
-                {generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY')}
+                {data?.lastActivity ? generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY') : 'Last active date not available'}
               </div>
             </div>
           ))}
@@ -251,7 +253,7 @@ const MembersProfile: React.FC = () => {
                     All Integrations
                   </div>
                 </div>
-                {platformData.map((options: PlatformsData) => (
+                {platformData.map((options: PlatformResponse) => (
                   <div key={options.id} className="w-full hover:bg-signUpDomain rounded-0.3 transition ease-in duration-100">
                     <div
                       className="h-1.93 px-3 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack "
@@ -301,7 +303,10 @@ const MembersProfile: React.FC = () => {
         <div className="mt-1.56 pt-8 px-1.62 box-border w-full rounded-0.6 shadow-contactCard app-input-card-border pb-5">
           {memberProfileCardData?.map((data: MemberProfileCard) => (
             <div key={data?.id + data?.name} className="flex justify-between ">
-              <div className="font-Poppins text-card leading-4 font-medium"> {generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY')}</div>
+              <div className="font-Poppins text-card leading-4 font-medium">
+                {' '}
+                {data?.lastActivity ? generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY') : 'Last active date not available'}
+              </div>
               <div onClick={navigateToActivities} className="font-Poppins font-normal leading-4 text-renewalGray text-preview cursor-pointer">
                 Preview All
               </div>

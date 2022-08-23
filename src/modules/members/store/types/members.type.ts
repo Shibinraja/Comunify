@@ -1,12 +1,11 @@
 import {
-  PlatformsData,
   MembersProfileActivityGraphData,
   MembersListResponse,
   MembersTagResponse,
   ActivityDataResponse,
   MembersCountResponse,
   MemberProfileCard,
-  MembersPlatformResponse
+  PlatformResponse
 } from 'modules/members/interface/members.interface';
 import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
 
@@ -18,10 +17,9 @@ export interface InitialState {
   membersActiveCountData: MembersCountResponse;
   membersInActiveCountData: MembersCountResponse;
   membersProfileActivityGraphData: MembersProfileActivityGraphData;
-  platformsData: PlatformsData[];
+  PlatformFilterResponse: Array<PlatformResponse>;
   membersListData: MembersListResponse;
   customizedColumn: Array<ColumnNameProps>;
-  membersPlatformFilterResponse: Array<MembersPlatformResponse>;
   membersLocationFilterResponse: Array<{ location: string }>;
   membersOrganizationFilterResponse: Array<{ organization: string }>;
   membersTagFilterResponse: Array<MembersTagResponse>;

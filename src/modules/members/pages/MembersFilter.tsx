@@ -14,7 +14,7 @@ import calendarIcon from '../../../assets/images/calandar.svg';
 import { format } from 'date-fns';
 import { getLocalWorkspaceId } from '@/lib/helper';
 import useDebounce from '@/hooks/useDebounce';
-import { MembersPlatformResponse, MembersTagResponse } from '../interface/members.interface';
+import { MembersTagResponse, PlatformResponse } from '../interface/members.interface';
 
 const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
   const [isFilterDropdownActive, setisFilterDropdownActive] = useState<boolean>(false);
@@ -36,7 +36,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
   const workspaceId = getLocalWorkspaceId();
   const dispatch = useAppDispatch();
   const dropDownRef = useRef<HTMLDivElement>(null);
-  const { membersLocationFilterResponse, membersOrganizationFilterResponse, membersTagFilterResponse, membersPlatformFilterResponse } =
+  const { membersLocationFilterResponse, membersOrganizationFilterResponse, membersTagFilterResponse, PlatformFilterResponse } =
     useAppSelector((state) => state.members);
 
   const debouncedLocationValue = useDebounce(locationSearchText, 300);
@@ -274,9 +274,9 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
             </div>
             {isPlatformActive && (
               <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125 pb-3">
-                {membersPlatformFilterResponse &&
-                  membersPlatformFilterResponse.map(
-                    (platform: MembersPlatformResponse, index: number) =>
+                {PlatformFilterResponse &&
+                  PlatformFilterResponse.map(
+                    (platform: PlatformResponse, index: number) =>
                       platform.name !== null && (
                         <div className="flex items-center" key={index}>
                           <div className="mr-2">
