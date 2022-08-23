@@ -5,18 +5,17 @@ import Button from 'common/button';
 import Input from 'common/input';
 import Pagination from 'common/pagination/pagination';
 import membersSlice from 'modules/members/store/slice/members.slice';
-import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import Modal from 'react-modal';
 import { useDispatch } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 import closeIcon from '../../../assets/images/close.svg';
 import profileImage from '../../../assets/images/ellip.svg';
 import exportImage from '../../../assets/images/export.svg';
 import noActivityIcon from '../../../assets/images/no-reports.svg';
 import slackIcon from '../../../assets/images/slack.svg';
 import { useAppSelector } from '../../../hooks/useRedux';
-import { API_ENDPOINT } from '../../../lib/config';
 import { generateDateAndTime } from '../../../lib/helper';
 import { ActiveStreamData, ActivityCard, ProfileModal } from '../interfaces/activities.interface';
 import activitiesSlice from '../store/slice/activities.slice';
@@ -30,7 +29,7 @@ const Activity: React.FC = () => {
   const { workspaceId } = useParams();
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [isTagModalOpen, setTagModalOpen] = useState<boolean>(false);
-  const [ProfileModal, setProfileModal] = useState<ProfileModal>({
+  const [ProfileModal, setProfileModal] = useState<Partial<ProfileModal>>({
     id: '',
     email: '',
     isOpen: false,
@@ -43,14 +42,9 @@ const Activity: React.FC = () => {
   const [page, setpage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(10);
   const [searchText, setSearchText] = useState<string>('');
-
-  const navigate = useNavigate();
+  const dropDownRef = useRef<HTMLDivElement>(null);
 
   const { data, totalPages, previousPage, nextPage } = useAppSelector((state) => state.activities.activeStreamData);
-
-  const navigateToMemberProfile = (url: string) => {
-    navigate(url);
-  };
 
   const debouncedValue = useDebounce(searchText, 300);
 
@@ -65,7 +59,7 @@ const Activity: React.FC = () => {
       })
     );
 
-    dispatch(membersSlice.actions.membersPlatformFilter());
+    dispatch(membersSlice.actions.platformData());
 
     dispatch(
       activitiesSlice.actions.activeStreamTagFilter({
@@ -74,6 +68,30 @@ const Activity: React.FC = () => {
       })
     );
   }, [page]);
+
+  useEffect(() => {
+    document.addEventListener('click', handleOutsideClick);
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, []);
+
+  // Function to close the popup modal of the member profile
+  const handleOutsideClick = (event: MouseEvent) => {
+    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target as Node)) {
+      setProfileModal((prevState) => {
+        const prevProfileModal = { ...prevState };
+        prevProfileModal['isOpen'] = true;
+        return prevProfileModal;
+      });
+    } else {
+      setProfileModal((prevState) => {
+        const prevProfileModal = { ...prevState };
+        prevProfileModal['isOpen'] = false;
+        return prevProfileModal;
+      });
+    }
+  };
 
   // Returns the debounced value of the search text.
   useEffect(() => {
@@ -190,17 +208,19 @@ const Activity: React.FC = () => {
                             </div>
                             <div className="relative">
                               <div
-                                onClick={() =>
+                                ref={dropDownRef}
+                                onClick={(e) => {
+                                  e.stopPropagation();
                                   handleProfileModal({
                                     isOpen: true,
                                     id: data?.id,
                                     email: data?.email,
                                     memberName: data?.memberName,
                                     organization: 'NeoITO',
-                                    memberProfileUrl: `/${workspaceId}/members/${data?.memberId}/profile`,
+                                    memberProfileUrl: `/${workspaceId}/members/${data.memberId}/profile`,
                                     profilePictureUrl: data?.profilePictureUrl
-                                  })
-                                }
+                                  });
+                                }}
                                 className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer capitalize"
                               >
                                 {data?.memberName}
@@ -226,12 +246,12 @@ const Activity: React.FC = () => {
                                       <img src={slackIcon} alt="" />
                                     </div>
                                   </div>
-                                  <a
-                                    onClick={() => navigateToMemberProfile(`${ProfileModal?.memberProfileUrl}`)}
+                                  <NavLink
+                                    to={`${ProfileModal?.memberProfileUrl}`}
                                     className="mt-0.84 font-normal font-Poppins text-card underline text-profileBlack leading-5 cursor-pointer"
                                   >
                                     VIEW PROFILE
-                                  </a>
+                                  </NavLink>
                                 </div>
                               </div>
                             </div>

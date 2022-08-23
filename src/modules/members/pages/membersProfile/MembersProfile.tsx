@@ -19,7 +19,7 @@ import yellowDottedIcon from '../../../../assets/images/yellow_dotted.svg';
 import { useAppSelector } from '../../../../hooks/useRedux';
 import { generateDateAndTime } from '../../../../lib/helper';
 import { AppDispatch } from '../../../../store';
-import { ActivityResult, MemberProfileCard, PlatformsData } from '../../interface/members.interface';
+import { ActivityResult, MemberProfileCard, PlatformResponse } from '../../interface/members.interface';
 import membersSlice from '../../store/slice/members.slice';
 import MembersProfileGraph from '../membersProfileGraph/MembersProfileGraph';
 
@@ -42,7 +42,7 @@ const MembersProfile: React.FC = () => {
   const {
     membersActivityData: activityData,
     membersProfileActivityGraphData: activityGraphData,
-    platformsData: platformData,
+    PlatformFilterResponse: platformData,
     memberProfileCardData
   } = useAppSelector((state) => state.members);
 
@@ -199,7 +199,7 @@ const MembersProfile: React.FC = () => {
                   >
                     All
                   </div>
-                  {platformData?.map((data: PlatformsData) => (
+                  {platformData?.map((data: PlatformResponse) => (
                     <div
                       key={data?.id}
                       className="rounded-0.3 h-1.93 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack hover:bg-signUpDomain transition ease-in duration-100"
@@ -251,7 +251,7 @@ const MembersProfile: React.FC = () => {
                     All Integrations
                   </div>
                 </div>
-                {platformData.map((options: PlatformsData) => (
+                {platformData.map((options: PlatformResponse) => (
                   <div key={options.id} className="w-full hover:bg-signUpDomain rounded-0.3 transition ease-in duration-100">
                     <div
                       className="h-1.93 px-3 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack "

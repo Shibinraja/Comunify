@@ -13,7 +13,7 @@ import { ActiveStreamTagResponse } from '../interfaces/activities.interface';
 import useDebounce from '@/hooks/useDebounce';
 import { useParams } from 'react-router-dom';
 import activitiesSlice from '../store/slice/activities.slice';
-import { MembersPlatformResponse } from 'modules/members/interface/members.interface';
+import { PlatformResponse } from 'modules/members/interface/members.interface';
 
 const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
   const { workspaceId } = useParams();
@@ -30,7 +30,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
 
   const dropDownRef = useRef<HTMLDivElement>(null);
   const { activeStreamTagFilterResponse } = useAppSelector((state) => state.activities);
-  const { membersPlatformFilterResponse } = useAppSelector((state) => state.members);
+  const { PlatformFilterResponse } = useAppSelector((state) => state.members);
 
   const debouncedTagValue = useDebounce(tagSearchText, 300);
 
@@ -174,9 +174,9 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
             </div>
             {isPlatformActive && (
               <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
-                {membersPlatformFilterResponse &&
-                  membersPlatformFilterResponse.map(
-                    (platform: MembersPlatformResponse, index: number) =>
+                {PlatformFilterResponse &&
+                  PlatformFilterResponse.map(
+                    (platform: PlatformResponse, index: number) =>
                       platform.name !== null && (
                         <div className="flex items-center" key={index}>
                           <div className="mr-2">

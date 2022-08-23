@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable max-len */
 import { GeneratorResponse } from '@/lib/api';
 import { members_module, platforms_module } from '@/lib/config';
@@ -7,7 +6,6 @@ import { request } from '@/lib/request';
 import {
   MembersCountResponse,
   MembersProfileActivityGraphData,
-  PlatformsData,
   VerifyPlatform,
   GetMembersListQueryParams,
   MembersListResponse,
@@ -20,7 +18,7 @@ import {
   ActivityDataResponse,
   ActivityInfiniteScroll,
   MemberProfileCard,
-  MembersPlatformResponse
+  PlatformResponse
 } from '../interface/members.interface';
 
 //Members Module
@@ -49,11 +47,6 @@ export function* MembersActivityGraphService(params: VerifyMembers): GeneratorRe
   return data;
 }
 
-export function* PlatformsDataService(): GeneratorResponse<PlatformsData[]> {
-  const { data } = yield request.get(`${platforms_module}`);
-  return data;
-}
-
 export function* GetMembersActivityGraphDataPerPlatformService(params: VerifyPlatform): GeneratorResponse<MembersProfileActivityGraphData> {
   const { data } = yield request.get(`/v1/${params.workspaceId}/members/${params.memberId}/activitygraph?platforms=${params.platform}`);
   return data;
@@ -74,8 +67,8 @@ export function* MembersListService(query: Required<GetMembersListQueryParams>):
   return data;
 }
 
-export function* MembersPlatformFilterService(): GeneratorResponse<Array<MembersPlatformResponse>> {
-  const { data } = yield request.get(`/v1/platforms`);
+export function* PlatformsDataService(): GeneratorResponse<Array<PlatformResponse>> {
+  const { data } = yield request.get(`${platforms_module}`);
   return data;
 }
 
