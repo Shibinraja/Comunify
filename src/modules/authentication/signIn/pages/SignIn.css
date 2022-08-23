@@ -9,6 +9,7 @@
   height: 9vh;
 } */
 .bg-auth {
+  background-color: #f6fdff;
   background-image: url('../src/assets/images/login-bg.svg');
   background-repeat: no-repeat;
   background-size: 100%;

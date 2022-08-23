@@ -63,7 +63,7 @@ const SignIn: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-[100vh] 2xl:h-[96vh]">
       <div className=" flex h-full overflow-auto">
         <div className="w-2/5 2xl:w-1/2 flex items-center justify-center pr-0 3xl:justify-end 3xl:pr-16">
           <div className=" flex flex-col justify-center items-center ">
