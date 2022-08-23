@@ -17,11 +17,11 @@ const AuthLayout: React.FC = () => {
       {screenWidth < maximum_screen_height ? (
         <ResolutionLayout />
       ) : (
-        <div>
+        <div className="flex flex-col">
           <Header />
           {loader && <Loader />}
           <Outlet />
-          {/* <Footer /> */}
+          <Footer />
         </div>
       )}
     </Fragment>

@@ -63,9 +63,9 @@ const SignIn: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-[100vh] 2xl:h-[96vh]">
-      <div className=" flex h-full overflow-auto">
-        <div className="w-2/5 2xl:w-1/2 flex items-center justify-center pr-0 3xl:justify-end 3xl:pr-16">
+    <div className="flex flex-col h-[100vh] xl:h-[85vh] 3xl:h-[93vh]">
+      <div className=" flex h-full overflow-auto h-[85vh]">
+        <div className="w-2/5 2xl:w-1/2 flex items-center justify-center pr-0 3xl:justify-end 3xl:pr-16 pl-4 2xl:pl-0">
           <div className=" flex flex-col justify-center items-center ">
             <div className=" flex flex-col ">
               <h3 className="font-Inter text-neutralBlack font-bold not-italic text-signIn leading-2.8 text-left">Sign In </h3>
@@ -155,7 +155,7 @@ const SignIn: React.FC = () => {
           </div>
         </div>
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 };

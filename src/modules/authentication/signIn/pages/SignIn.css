@@ -1,17 +1,10 @@
-.login-cover-bg {
-  /* background-image: url('../../../../assets/images/bg-line.svg'); */
-}
-
 ::-webkit-scrollbar {
   width: 0px;
 }
-/* .auth-layout {
-  height: 9vh;
-} */
-.bg-auth {
-  background-color: #f6fdff;
+.auth-layout {
   background-image: url('../src/assets/images/login-bg.svg');
   background-repeat: no-repeat;
-  background-size: 100%;
+  background-attachment: fixed;
+  background-size: 50%;
   background-position: right;
 }
