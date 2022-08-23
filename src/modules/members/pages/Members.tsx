@@ -29,6 +29,7 @@ import MembersFilter from './MembersFilter';
 import MembersDraggableColumn from './membersTableColumn/membersDraggableColumn';
 import { ColumNames } from './MembersTableData';
 import { customDateLinkProps } from './membertypes';
+import { CustomDateType } from '../interface/members.interface';
 
 Modal.setAppElement('#root');
 
@@ -81,16 +82,7 @@ const Members: React.FC = () => {
   } = useAppSelector((state) => state.members);
 
   useEffect(() => {
-    dispatch(
-      membersSlice.actions.membersList({
-        membersQuery: {
-          page: 1,
-          limit: 10
-        },
-        workspaceId: workspaceId!
-      })
-    );
-    dispatch(membersSlice.actions.membersPlatformFilter());
+    dispatch(membersSlice.actions.platformData());
     dispatch(
       membersSlice.actions.membersTagFilter({
         membersQuery: { tags: { searchedTags: '', checkedTags: '' } },
@@ -111,6 +103,18 @@ const Members: React.FC = () => {
     );
     dispatch(membersSlice.actions.membersColumnsList({ workspaceId: workspaceId! }));
     setCustomDateLink({ '1day': false, '7day': false, '1month': false });
+  }, []);
+
+  useEffect(() => {
+    dispatch(
+      membersSlice.actions.membersList({
+        membersQuery: {
+          page,
+          limit
+        },
+        workspaceId: workspaceId!
+      })
+    );
   }, [page]);
 
   //Set new column change if the initial order changes.
@@ -158,15 +162,15 @@ const Members: React.FC = () => {
   // Function to convert the day and subtract based on no of days/ months.
   const selectCustomDate = (date: string, customDate?: Date) => {
     const todayDate = new Date();
-    if (date === '1day') {
+    if (date === CustomDateType.Day) {
       getFilteredMembersList('', format(subDays(todayDate, 1), 'yyyy-MM-dd'));
       setCustomDateLink({ [date]: true });
     }
-    if (date === '7day') {
+    if (date === CustomDateType.Week) {
       getFilteredMembersList('', format(subDays(todayDate, 7), 'yyyy-MM-dd'));
       setCustomDateLink({ [date]: true });
     }
-    if (date === '1month') {
+    if (date === CustomDateType.Month) {
       getFilteredMembersList('', format(subMonths(todayDate, 1), 'yyyy-MM-dd'));
       setCustomDateLink({ [date]: true });
     }
@@ -194,12 +198,13 @@ const Members: React.FC = () => {
   //       Accept: 'application/json',
   //       'Content-Type': 'application/json',
   //       'Authorization': `Bearer ${token}`,
-  //       'responseType': 'blob'
+  //       'responseType': 'base64'
   //     }
   //   // eslint-disable-next-line no-console
-  //   }).then((response:any) => console.log('err', response?.data?.data?.data))
+  //   }).then((response:any) => response?.data?.data)
   //     .then((blob) => {
-  //       const response = new Blob([blob], { type: 'application/octet-stream' });
+  //       const decode = Buffer.from(blob, 'base64').toString('utf-8');
+  //       const response = new Blob([decode], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;' });
   //       const url = window.URL.createObjectURL(response);
   //       const anchor = document.createElement('a');
   //       anchor.href = url;
@@ -208,17 +213,17 @@ const Members: React.FC = () => {
   //       anchor.click();
   //       anchor.remove();
   //     });
-  //   // .then((blob) => {
-  //   //   // eslint-disable-next-line no-console
-  //   //   console.log('err', blob);
-  //   //   const url = window.URL.createObjectURL(blob);
-  //   //   const anchor = document.createElement('a');
-  //   //   anchor.href = url;
-  //   //   anchor.download = 'MembersExport.xlsx';
-  //   //   document.body.appendChild(anchor);
-  //   //   anchor.click();
-  //   //   anchor.remove();
-  //   // });
+  // .then((blob) => {
+  //   // eslint-disable-next-line no-console
+  //   console.log('err', blob);
+  //   const url = window.URL.createObjectURL(blob);
+  //   const anchor = document.createElement('a');
+  //   anchor.href = url;
+  //   anchor.download = 'MembersExport.xlsx';
+  //   document.body.appendChild(anchor);
+  //   anchor.click();
+  //   anchor.remove();
+  // });
   // };
 
   // Function to map customized column with api data response to create a new column array with index matching with customized column.
@@ -365,7 +370,7 @@ const Members: React.FC = () => {
           </div>
         </div>
       </div>
-      {customizedColumn && customizedColumn?.[0]?.name ? (
+      {customizedColumn && (customizedColumn?.[0]?.name as { name: string; id: string })?.name ? (
         <div className="memberTable mt-1.8">
           <div className="py-2 overflow-x-auto mt-1.868">
             <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto sticky top-0 fixTableHead max-h-34 min-h-[31.25rem]">
@@ -436,9 +441,12 @@ const Members: React.FC = () => {
                                 </div>
                               </div>
                             ) : column === 'lastActivity' ? (
-                              <div className="flex ">
+                              <div className="flex flex-col">
                                 <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                                  {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'MM/dd/yyyy') : '--'}
+                                  {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'MMM dd yyyy') : '--'}
+                                </div>
+                                <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
+                                  {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'HH:MM') : '--'}
                                 </div>
                               </div>
                             ) : (

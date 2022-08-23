@@ -20,11 +20,9 @@ import {
   MembersColumnsListService,
   MembersTagFilterService,
   GetMembersActivityDataInfiniteScrollSaga,
-  GetMembersProfileCardService,
-  MembersPlatformFilterService
+  GetMembersProfileCardService
 } from 'modules/members/services/members.services';
 import { PayloadAction } from '@reduxjs/toolkit';
-import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
 import {
   GetMembersListQueryParams,
   GetMembersLocationListQueryParams,
@@ -33,10 +31,9 @@ import {
   MembersColumnsParams,
   MembersCountResponse,
   MembersListResponse,
-  MembersPlatformResponse,
+  PlatformResponse,
   MembersProfileActivityGraphData,
   MembersTagResponse,
-  PlatformsData,
   VerifyMembers,
   VerifyPlatform,
   workspaceId,
@@ -144,22 +141,6 @@ function* membersActivityGraphSaga(action: PayloadAction<VerifyMembers>) {
   }
 }
 
-function* membersPlatformFilter() {
-  try {
-    yield put(loaderSlice.actions.startLoadingAction());
-
-    const res: SuccessResponse<Array<MembersPlatformResponse>> = yield call(MembersPlatformFilterService);
-    if (res?.data) {
-      yield put(membersSlice.actions.getmembersPlatformFilterData(res?.data));
-    }
-  } catch (e) {
-    const error = e as AxiosError<unknown>;
-    showErrorToast(error?.response?.data?.message);
-  } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
-  }
-}
-
 function* membersLocationFilter(action: PayloadAction<Partial<GetMembersLocationListQueryParams>>) {
   try {
     yield put(loaderSlice.actions.startLoadingAction());
@@ -211,11 +192,16 @@ function* membersOrganizationFilter(action: PayloadAction<Partial<GetMembersOrga
 function* getPlatformsDataSaga() {
   try {
     yield put(loaderSlice.actions.startLoadingAction());
-    const res: SuccessResponse<PlatformsData[]> = yield call(PlatformsDataService);
-    yield put(membersSlice.actions.setPlatformsData({ platformsData: res?.data }));
+
+    const res: SuccessResponse<Array<PlatformResponse>> = yield call(PlatformsDataService);
+    if (res?.data) {
+      yield put(membersSlice.actions.getPlatformFilterData(res?.data));
+    }
   } catch (e) {
-    // const error = e as AxiosError<unknown>;
-    // throw error.response?.data?.message;
+    const error = e as AxiosError<unknown>;
+    showErrorToast(error?.response?.data?.message);
+  } finally {
+    yield put(loaderSlice.actions.stopLoadingAction());
   }
 }
 
@@ -272,7 +258,7 @@ function* membersListExport(action: PayloadAction<workspaceId>) {
   try {
     yield put(loaderSlice.actions.startLoadingAction());
 
-    const res: SuccessResponse<{type:string, data:Array<Buffer>}> = yield call(MembersListExportService, action.payload);
+    const res: SuccessResponse<{ type: string; data: Array<Buffer> }> = yield call(MembersListExportService, action.payload);
     if (res?.data) {
       yield put(membersSlice.actions.getmembersListExport(res?.data?.data));
     }
@@ -318,7 +304,6 @@ export default function* membersSaga(): SagaIterator {
   yield takeEvery(membersSlice.actions.platformData.type, getPlatformsDataSaga);
   yield takeEvery(membersSlice.actions.getMembersActivityGraphDataPerPlatform.type, getMembersActivityGraphDataPerPlatformSaga);
   yield takeEvery(membersSlice.actions.membersTagFilter.type, membersTagFilter);
-  yield takeEvery(membersSlice.actions.membersPlatformFilter.type, membersPlatformFilter);
   yield takeEvery(membersSlice.actions.membersLocationFilter.type, membersLocationFilter);
   yield takeEvery(membersSlice.actions.membersOrganizationFilter.type, membersOrganizationFilter);
   yield takeEvery(membersSlice.actions.membersColumnsList.type, membersColumnsList);

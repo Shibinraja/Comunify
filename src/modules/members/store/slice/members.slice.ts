@@ -1,9 +1,7 @@
 /* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   MembersProfileActivityGraphData,
-  PlatformsData,
   VerifyMembers,
   VerifyPlatform,
   MembersListResponse,
@@ -18,7 +16,7 @@ import {
   ActivityInfiniteScroll,
   MemberProfileCard,
   GetMembersListQueryParams,
-  MembersPlatformResponse
+  PlatformResponse
 } from 'modules/members/interface/members.interface';
 import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
 import { InitialState } from '../types/members.type';
@@ -84,7 +82,7 @@ export const customizedColumnProps = [
   }
 ];
 
-export const membersPlatformFilterResponse = [];
+export const PlatformFilterResponse = [];
 
 export const membersLocationFilterResponse = [];
 
@@ -103,10 +101,9 @@ const initialState: InitialState = {
   membersActiveCountData: countResponse,
   membersInActiveCountData: countResponse,
   membersProfileActivityGraphData: membersGraphResponse,
-  platformsData: [],
   membersListData: membersListResponse,
   customizedColumn: customizedColumnProps,
-  membersPlatformFilterResponse,
+  PlatformFilterResponse,
   membersLocationFilterResponse,
   membersOrganizationFilterResponse,
   membersTagFilterResponse,
@@ -128,8 +125,6 @@ const membersInActiveCount = (state: InitialState) => state;
 const platformData = (state: InitialState) => state;
 
 const membersList = (state: InitialState, action: PayloadAction<GetMembersListQueryParams>) => state;
-
-const membersPlatformFilter = (state: InitialState) => state;
 
 const membersTagFilter = (state: InitialState, action: PayloadAction<Partial<GetMembersTagListQueryParams>>) => state;
 
@@ -171,11 +166,6 @@ const setMembersActivityGraphData = (state: InitialState, action: PayloadAction<
   state.membersProfileActivityGraphData = action.payload;
 };
 
-const setPlatformsData = (state: InitialState, action: PayloadAction<{ platformsData: PlatformsData[] }>) => {
-  //   state.platformsData = state.platformsData.map((data: PlatformsData) => (data = action.payload));
-  state.platformsData = action.payload.platformsData;
-};
-
 const getMembersActivityGraphDataPerPlatform = (state: InitialState, action: PayloadAction<VerifyPlatform>) => state;
 
 const getMembersListData = (state: InitialState, action: PayloadAction<MembersListResponse>) => ({
@@ -188,9 +178,9 @@ const customizedColumnData = (state: InitialState, action: PayloadAction<Array<C
   customizedColumn: action.payload
 });
 
-const getmembersPlatformFilterData = (state: InitialState, action: PayloadAction<Array<MembersPlatformResponse>>) => ({
+const getPlatformFilterData = (state: InitialState, action: PayloadAction<Array<PlatformResponse>>) => ({
   ...state,
-  membersPlatformFilterResponse: action.payload
+  PlatformFilterResponse: action.payload
 });
 
 const getmembersTagFilterData = (state: InitialState, action: PayloadAction<Array<MembersTagResponse>>) => ({
@@ -246,7 +236,6 @@ const membersSlice = createSlice({
     setMembersActivityGraphData,
     getMembersActivityGraphDataPerPlatform,
     platformData,
-    setPlatformsData,
     membersTagFilter,
     membersLocationFilter,
     membersOrganizationFilter,
@@ -259,8 +248,7 @@ const membersSlice = createSlice({
     getMembersActivityDataInfiniteScroll,
     getMemberProfileCardData,
     setMemberProfileCardData,
-    membersPlatformFilter,
-    getmembersPlatformFilterData,
+    getPlatformFilterData,
     getmembersListExport
   }
 });
