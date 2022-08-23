@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { ChangeEvent, FC, Fragment, useEffect, useRef, useState } from 'react';
 import { ActivityStreamTypesProps } from './activity.types';
@@ -33,6 +34,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
   const { PlatformFilterResponse } = useAppSelector((state) => state.members);
 
   const debouncedTagValue = useDebounce(tagSearchText, 300);
+  const disableApplyBtn = (Object.values(checkedPlatform).concat(Object.values(checkedTags)));
 
   // Returns the debounced value of the search text.
   useEffect(() => {
@@ -49,9 +51,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
   }, []);
 
   const handleOutsideClick = (event: MouseEvent) => {
-    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target as Node)) {
-      setIsFilterDropdownActive(true);
-    } else {
+    if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
       setIsFilterDropdownActive(false);
     }
   };
@@ -143,6 +143,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
         workspaceId: workspaceId!
       })
     );
+    handleFilterDropdown();
   };
 
   return (
@@ -289,10 +290,11 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
 
             <div className="buttons px-3 ">
               <Button
+                disabled = {(startDate === undefined ? true : false) && (endDate === undefined ? true: false) && disableApplyBtn.includes(true) !== true ? true : false}
                 onClick={submitFilterChange}
                 type="button"
                 text="Apply"
-                className="border-none btn-save-modal rounded-0.31 h-2.063 w-full mt-1.56 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white"
+                className={`border-none btn-save-modal rounded-0.31 h-2.063 w-full mt-1.56 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${(disableApplyBtn.includes(true) !== true ? 'cursor-not-allowed': '') && (startDate === undefined ? 'cursor-not-allowed' : '') && (endDate === undefined ? 'cursor-not-allowed': '')}`}
               />
             </div>
           </div>
