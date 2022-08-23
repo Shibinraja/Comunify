@@ -118,7 +118,7 @@ export function* MembersListExportService(query: { workspaceId: string }): Gener
 
 export function* GetMembersActivityDataInfiniteScrollSaga(params: ActivityInfiniteScroll): GeneratorResponse<ActivityDataResponse> {
   const { data } = yield request.get(
-    `/v1/${params.workspaceId}/members/${params.memberId}/activity?${params?.nextCursor ? `&cursor=${params.nextCursor}` : ''}${
+    `/v1/${params.workspaceId}/members/${params.memberId}/activity?page=1&limit=10${params?.nextCursor ? `&cursor=${params.nextCursor}` : ''}${
       params?.platform ? `&platforms=${params?.platform}` : ''
     }
       ${params?.fromDate ? `&activity.gte=${params.fromDate}` : ''} ${params?.toDate ? `&activity.lte=${params.toDate}` : ''}`

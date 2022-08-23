@@ -38,7 +38,7 @@ const MembersProfile: React.FC = () => {
   const [toDate, setToDate] = useState<Date>();
   const [isFilterDropDownActive, setFilterDropdownActive] = useState<boolean>(false);
   const [activityNextCursor, setActivityNextCursor] = useState<string | null>('');
-  const [platform, setPlatform] = useState<string | null>('');
+  const [platform, setPlatform] = useState<string>();
   const {
     membersActivityData: activityData,
     membersProfileActivityGraphData: activityGraphData,
@@ -69,16 +69,18 @@ const MembersProfile: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(
-      membersSlice.actions.getMembersActivityDataInfiniteScroll({
-        workspaceId: workspaceId as string,
-        memberId: memberId as string,
-        nextCursor: activityNextCursor ? activityNextCursor : '',
-        platform: platform && platform,
-        fromDate: fromDate && format(fromDate, 'yyyy-MM-dd'),
-        toDate: toDate && format(toDate, 'yyyy-MM-dd')
-      })
-    );
+    if (activityNextCursor !== null) {
+      dispatch(
+        membersSlice.actions.getMembersActivityDataInfiniteScroll({
+          workspaceId: workspaceId as string,
+          memberId: memberId as string,
+          nextCursor: activityNextCursor ? activityNextCursor : '',
+          platform: platform && platform,
+          fromDate: fromDate && format(fromDate, 'yyyy-MM-dd'),
+          toDate: toDate && format(toDate, 'yyyy-MM-dd')
+        })
+      );
+    }
   }, [activityNextCursor, platform, fromDate && toDate]);
 
   const handleModal = (val: boolean) => {

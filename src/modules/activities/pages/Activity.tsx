@@ -260,10 +260,10 @@ const Activity: React.FC = () => {
                         <td className="px-6 pt-5 border-b">
                           <div className="flex flex-col">
                             <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                              {generateDateAndTime(`${data?.createdAt}`, 'MM-DD-YYYY')}
+                              {generateDateAndTime(`${data?.activityTime}`, 'MM-DD-YYYY')}
                             </div>
                             <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
-                              {generateDateAndTime(`${data?.createdAt}`, 'HH:MM')}
+                              {generateDateAndTime(`${data?.activityTime}`, 'HH:MM')}
                             </div>
                           </div>
                         </td>
@@ -294,7 +294,7 @@ const Activity: React.FC = () => {
                                 {data?.displayValue}
                               </div>
                               <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
-                                {generateDateAndTime(`${data?.createdAt}`, 'MM-DD')}
+                                {generateDateAndTime(`${data?.activityTime}`, 'MM-DD')}
                               </div>
                             </div>
                           </div>
