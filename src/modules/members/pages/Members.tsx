@@ -406,7 +406,7 @@ const Members: React.FC = () => {
                             </div>
                           ) : column === 'platforms' ? (
                             <div
-                              className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer h-1.375 w-1.375 flex"
+                              className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 h-1.375 w-1.375 flex"
                               key={index}
                             >
                               <img className="m-1 h-1.375 w-1.375 mt-0" src={slackIcon} title="Slack" />
@@ -424,7 +424,7 @@ const Members: React.FC = () => {
                           // </div>
                             column === 'tags' ? (
                               <div className="flex ">
-                                <div className="py-3 flex gap-2 items-center font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                                <div className="py-3 flex gap-2 items-center font-Poppins font-medium text-trial text-infoBlack leading-1.31">
                                   {(member?.tags as Array<{ tag: { name: '' } }>)?.slice(0, 2).map((tags: { tag: { name: string } }, index: number) => (
                                     <div className="bg-tagSection rounded w-5.25 h-8 flex justify-between px-3 items-center" key={index}>
                                       <div className="font-Poppins font-normal text-card text-profileBlack leading-5">{tags?.tag?.name}</div>
@@ -442,7 +442,7 @@ const Members: React.FC = () => {
                               </div>
                             ) : column === 'lastActivity' ? (
                               <div className="flex flex-col">
-                                <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                                <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
                                   {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'MMM dd yyyy') : '--'}
                                 </div>
                                 <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
@@ -451,7 +451,7 @@ const Members: React.FC = () => {
                               </div>
                             ) : (
                               <div className="flex ">
-                                <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                                <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
                                   {member[column] as ReactNode}
                                 </div>
                               </div>
