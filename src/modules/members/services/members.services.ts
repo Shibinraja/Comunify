@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
 import { GeneratorResponse } from '@/lib/api';
-import { members_module, platforms_module } from '@/lib/config';
+import { platforms_module } from '@/lib/config';
 import { request } from '@/lib/request';
+import { workspaceId } from 'modules/activities/interfaces/activities.interface';
 
 import {
-  MembersCountResponse,
   MembersProfileActivityGraphData,
   VerifyPlatform,
   GetMembersListQueryParams,
@@ -18,27 +18,19 @@ import {
   ActivityDataResponse,
   ActivityInfiniteScroll,
   MemberProfileCard,
-  PlatformResponse
+  PlatformResponse,
+  MemberCountAnalyticsResponse,
+  MemberActivityAnalyticsResponse
 } from '../interface/members.interface';
 
 //Members Module
-export function* ActiveCountService(): GeneratorResponse<MembersCountResponse> {
-  const { data } = yield request.get(`${members_module}/activecount`);
+export function* CountAnalyticsService(params: workspaceId): GeneratorResponse<MemberCountAnalyticsResponse> {
+  const { data } = yield request.get(`/v1/${params.workspaceId}/members/count-analytics`);
   return data;
 }
 
-export function* NewCountService(): GeneratorResponse<MembersCountResponse> {
-  const { data } = yield request.get(`${members_module}/newcount`);
-  return data;
-}
-
-export function* TotalCountService(): GeneratorResponse<MembersCountResponse> {
-  const { data } = yield request.get(`${members_module}/totalcount`);
-  return data;
-}
-
-export function* InactiveCountService(): GeneratorResponse<MembersCountResponse> {
-  const { data } = yield request.get(`${members_module}/inactivecount`);
+export function* ActivityAnalyticsService(params: workspaceId): GeneratorResponse<MemberActivityAnalyticsResponse> {
+  const { data } = yield request.get(`v1/${params.workspaceId}/members/activity-analytics`);
   return data;
 }
 

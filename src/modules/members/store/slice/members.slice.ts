@@ -5,7 +5,6 @@ import {
   VerifyMembers,
   VerifyPlatform,
   MembersListResponse,
-  MembersCountResponse,
   MembersColumnsParams,
   workspaceId,
   GetMembersLocationListQueryParams,
@@ -16,7 +15,8 @@ import {
   ActivityInfiniteScroll,
   MemberProfileCard,
   GetMembersListQueryParams,
-  PlatformResponse
+  PlatformResponse,
+  MemberCountAnalyticsResponse
 } from 'modules/members/interface/members.interface';
 import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
 import { InitialState } from '../types/members.type';
@@ -25,6 +25,16 @@ const countResponse = {
   count: 0,
   title: '',
   analyticMessage: ''
+};
+
+const CountAnalytics = {
+  totalMembers: countResponse,
+  newMembers: countResponse
+};
+
+const ActivityAnalytics = {
+  activeMembers: countResponse,
+  inActiveMembers: countResponse
 };
 
 const membersGraphResponse = {
@@ -96,10 +106,8 @@ const membersActivityInitialValue = {
 };
 
 const initialState: InitialState = {
-  membersTotalCountData: countResponse,
-  membersNewCountData: countResponse,
-  membersActiveCountData: countResponse,
-  membersInActiveCountData: countResponse,
+  membersCountAnalyticsData: CountAnalytics,
+  membersActivityAnalyticsData: ActivityAnalytics,
   membersProfileActivityGraphData: membersGraphResponse,
   membersListData: membersListResponse,
   customizedColumn: customizedColumnProps,
@@ -114,13 +122,9 @@ const initialState: InitialState = {
 
 //Saga Call
 
-const membersTotalCount = (state: InitialState) => state;
+const membersCountAnalytics = (state: InitialState, action:PayloadAction<workspaceId>) => state;
 
-const membersNewCount = (state: InitialState) => state;
-
-const membersActiveCount = (state: InitialState) => state;
-
-const membersInActiveCount = (state: InitialState) => state;
+const membersActivityAnalytics = (state: InitialState, action:PayloadAction<workspaceId>) => state;
 
 const platformData = (state: InitialState) => state;
 
@@ -140,24 +144,14 @@ const membersListExport = (state: InitialState, action: PayloadAction<workspaceI
 
 //Reducer Call
 
-const getMembersTotalCountData = (state: InitialState, action: PayloadAction<MembersCountResponse>) => ({
+const getMembersCountAnalytics = (state: InitialState, action: PayloadAction<MemberCountAnalyticsResponse>) => ({
   ...state,
-  membersTotalCountData: action.payload
+  membersCountAnalyticsData: action.payload
 });
 
-const getMembersNewCountData = (state: InitialState, action: PayloadAction<MembersCountResponse>) => ({
+const getMembersActivityAnalytics = (state: InitialState, action: PayloadAction<any>) => ({
   ...state,
-  membersNewCountData: action.payload
-});
-
-const getMembersActiveCountData = (state: InitialState, action: PayloadAction<MembersCountResponse>) => ({
-  ...state,
-  membersActiveCountData: action.payload
-});
-
-const getMembersInActiveCountData = (state: InitialState, action: PayloadAction<MembersCountResponse>) => ({
-  ...state,
-  membersInActiveCountData: action.payload
+  membersActivityAnalyticsData: action.payload
 });
 
 const getMembersActivityGraphData = (state: InitialState, action: PayloadAction<VerifyMembers>) => state;
@@ -220,14 +214,10 @@ const membersSlice = createSlice({
   name: 'members',
   initialState,
   reducers: {
-    membersTotalCount,
-    membersNewCount,
-    membersActiveCount,
-    membersInActiveCount,
-    getMembersTotalCountData,
-    getMembersNewCountData,
-    getMembersActiveCountData,
-    getMembersInActiveCountData,
+    membersCountAnalytics,
+    membersActivityAnalytics,
+    getMembersCountAnalytics,
+    getMembersActivityAnalytics,
     membersList,
     getMembersListData,
     customizedColumnData,
