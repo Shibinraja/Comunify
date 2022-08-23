@@ -64,7 +64,7 @@ module.exports = {
         toolTip: '#414141',
         workSpace: '#696C7D',
         manageTitle: ' #0C0E14',
-        slackStatus: ' #A9CE70'
+        slackStatus: ' #A9CE70',
         vanillaDescription: '#6F6C90'
       },
       margin: {
