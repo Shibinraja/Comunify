@@ -56,6 +56,10 @@ input {
   border-bottom: 1px solid #e6e6e6;
 }
 
+.border-top-card{
+  border-top: 1px solid #e6e6e6;
+}
+
 .border-fetching-card {
   border: 1px solid #dee2e6;
 }
