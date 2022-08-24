@@ -30,14 +30,18 @@ interface VanillaForumsData {
   workspaceId: string;
 }
 
+interface ModalState {
+  slack: boolean;
+  vanillaForums: boolean;
+}
+
 const Integration: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanillaForums: false });
   const navigate = useNavigate();
   const workspaceId = getLocalWorkspaceId();
   const [searchParams] = useSearchParams();
-  const [isVanillaModalOpen, setVanillaModalOpen] = useState<boolean>(false);
   const handleVanillaModal = (val: boolean) => {
-    setVanillaModalOpen(val);
+    setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: val }));
   };
   const [vanillaForumsData, setVanillaForumsData] = useState<VanillaForumsData>({ vanillaAccessToken: '', vanillaBaseUrl: '', workspaceId: '' });
 
@@ -53,7 +57,7 @@ const Integration: React.FC = () => {
   // eslint-disable-next-line space-before-function-paren
   const getData = async (codeParams: string | null) => {
     try {
-      setIsModalOpen(true);
+      setIsModalOpen((prevState) => ({ ...prevState, slack: true }));
       const body: SlackData = {
         code: codeParams,
         workspaceId
@@ -61,7 +65,7 @@ const Integration: React.FC = () => {
       const response: IntegrationResponse<PlatformConnectResponse> = await request.post(`${API_ENDPOINT}/v1/slack/connect`, body);
       localStorage.setItem('workspacePlatformSettingId', response?.data?.data?.id);
       if (response) {
-        setIsModalOpen(false);
+        setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
         navigate(`/${workspaceId}/settings/complete-setup`, { state: { workspacePlatformSettingId: response?.data?.data?.id } });
       } else {
         showErrorToast('Integration failed');
@@ -90,7 +94,7 @@ const Integration: React.FC = () => {
           });
           if (completeSetupResponse) {
             showSuccessToast('Successfully integrated');
-            setVanillaModalOpen((prevState) => !prevState);
+            setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: false }));
             navigate(`/${workspaceId}/settings`);
           }
         } catch (error) {
@@ -143,7 +147,7 @@ const Integration: React.FC = () => {
                         onClick={() => handleVanillaModal(true)}
                       />
                       <Modal
-                        isOpen={isVanillaModalOpen}
+                        isOpen={isModalOpen.vanillaForums}
                         shouldCloseOnOverlayClick={false}
                         onRequestClose={() => handleVanillaModal(false)}
                         className="w-24.31 pb-12 mx-auto rounded-lg border-integration-modal bg-white shadow-modal outline-none"
@@ -302,9 +306,9 @@ const Integration: React.FC = () => {
                       />
                     </div>
                     <Modal
-                      isOpen={isModalOpen}
+                      isOpen={isModalOpen.slack}
                       shouldCloseOnOverlayClick={true}
-                      onRequestClose={() => setIsModalOpen(false)}
+                      onRequestClose={() => setIsModalOpen((prevState) => ({ ...prevState, slack: false }))}
                       className="right-[400px] top-72 absolute  mt-24 rounded-lg modals-tag bg-white shadow-modal outline-none"
                     >
                       <div className="flex flex-col items-center justify-center  h-14.56 w-22.31 shadow-modal rounded-lg border-fetching-card">
