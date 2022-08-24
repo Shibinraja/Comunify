@@ -4,11 +4,17 @@ import ActivitiesTab from '../activitiesTab/pages/ActivitiesTab';
 import MembersTab from '../membersTab/pages/MembersTab';
 import brickIcon from '../../../assets/images/brick.svg';
 import dropDownIcon from '../../../assets/images/profile-dropdown.svg';
+import calendarIcon from '../../../assets/images/calandar.svg';
 import HealthCard from 'common/healthCard/HealthCard';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const Dashboard: React.FC = () => {
   const [isSelectDropDownActive, setSelectDropDownActive] = useState<boolean>(false);
   const [selected, setSelected] = useState<string>('');
+  const [dateRange, setDateRange] = useState([null, null]);
+  const datepickerRef = useRef<any>(null);
+  const [startDate, endDate] = dateRange;
   const handleDropDownActive = (): void => {
     setSelectDropDownActive((prev) => !prev);
   };
@@ -17,11 +23,14 @@ const Dashboard: React.FC = () => {
   const dropDownRef = useRef<HTMLDivElement>(null);
 
   const handleOutsideClick = (event: MouseEvent) => {
-    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target as Node)) {
-      setSelectDropDownActive(true);
-    } else {
+    if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
       setSelectDropDownActive(false);
     }
+  };
+
+  const handleClickDatepickerIcon = () => {
+    const datepickerElement = datepickerRef.current;
+    datepickerElement.setFocus(true);
   };
 
   useEffect(() => {
@@ -33,8 +42,8 @@ const Dashboard: React.FC = () => {
 
   return (
     <>
-      <div className=" flex justify-between mt-10">
-        <div className="flex relative">
+      <div className="flex justify-between mt-10">
+        <div className="flex relative items-center">
           <div
             className="flex items-center justify-between px-5 w-11.72 h-3.06 app-input-card-border rounded-0.6 shadow-shadowInput cursor-pointer "
             ref={dropDownRef}
@@ -56,6 +65,23 @@ const Dashboard: React.FC = () => {
               ))}
             </div>
           )}
+          <div className="flex flex-col pl-2.5">
+            <div className="relative flex items-center">
+              <DatePicker
+                selectsRange={true}
+                startDate={startDate}
+                endDate={endDate}
+                onChange={(update: any) => {
+                  setDateRange(update);
+                }}
+                className="export w-full h-3.06  shadow-shadowInput rounded-0.6 pl-3 font-Poppins font-semibold text-xs text-dropGray app-input-card-border leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-xs placeholder:text-dropGray placeholder:leading-1.12"
+                placeholderText="DD/MM/YYYY - DD/MM/YYYY"
+                isClearable={true}
+                ref={datepickerRef}
+              />
+              <img className="absolute icon-holder right-6 cursor-pointer" src={calendarIcon} alt="" onClick={() => handleClickDatepickerIcon()} />
+            </div>
+          </div>
         </div>
         <div className="flex justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow cursor-pointer">
           <div className="font-Poppins font-medium text-white leading-5 text-search ">Manage Widget</div>

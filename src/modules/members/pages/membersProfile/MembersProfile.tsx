@@ -49,12 +49,22 @@ const MembersProfile: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
 
   const dropDownRef = useRef<HTMLDivElement>(null);
+  const datepickerRefFrom = useRef<any>(null);
+  const datepickerRefTo = useRef<any>(null);
 
   const handleOutsideClick = (event: MouseEvent) => {
-    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target as Node)) {
-      setSelectDropDownActive(true);
-    } else {
+    if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
       setSelectDropDownActive(false);
+    }
+  };
+
+  const handleClickDatepickerIcon = (type: string) => {
+    if (type === 'start') {
+      const datepickerElement = datepickerRefFrom.current;
+      datepickerElement.setFocus(true);
+    } else {
+      const datepickerElement = datepickerRefTo.current;
+      datepickerElement.setFocus(true);
     }
   };
 
@@ -284,8 +294,14 @@ const MembersProfile: React.FC = () => {
                     onChange={(date: Date) => setFromDate(date)}
                     className=" h-3.06 app-result-card-border shadow-reportInput w-full rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                     placeholderText="From"
+                    ref={datepickerRefFrom}
                   />
-                  <img className="absolute icon-holder right-4 cursor-pointer" src={calendarIcon} alt="" />
+                  <img
+                    className="absolute icon-holder right-4 cursor-pointer"
+                    src={calendarIcon}
+                    alt=""
+                    onClick={() => handleClickDatepickerIcon('start')}
+                  />
                 </div>
                 <div className="relative flex items-center pt-1">
                   <DatePicker
@@ -293,8 +309,14 @@ const MembersProfile: React.FC = () => {
                     onChange={(date: Date) => setToDate(date)}
                     className=" h-3.06 app-result-card-border shadow-reportInput w-full rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                     placeholderText="To"
+                    ref={datepickerRefTo}
                   />
-                  <img className="absolute icon-holder right-4 cursor-pointer" src={calendarIcon} alt="" />
+                  <img
+                    className="absolute icon-holder right-4 cursor-pointer"
+                    src={calendarIcon}
+                    alt=""
+                    onClick={() => handleClickDatepickerIcon('end')}
+                  />
                 </div>
               </div>
             )}
@@ -390,20 +412,20 @@ const MembersProfile: React.FC = () => {
                       </label>
                       <input
                         type="text"
-                        className="mt-0.375 inputs box-border bg-white shadow-inputShadow rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-trial placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
+                        className="mt-0.375 inputs box-border bg-white shadow-inputShadow rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-sm placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
                         placeholder="Enter Tag Name"
                       />
                       <div className="flex absolute right-1 top-24 pr-6 items-center">
                         <Button
                           type="button"
                           text="CANCEL"
-                          className="mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel px-2 py-3  rounded border-none"
+                          className="mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel w-5.25 h-2.81 rounded border-none"
                           onClick={() => setTagModalOpen(false)}
                         />
                         <Button
                           type="button"
                           text="SAVE"
-                          className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn px-5 py-3  border-none btn-save-modal"
+                          className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-5.25 h-2.81  border-none btn-save-modal"
                         />
                       </div>
                     </form>

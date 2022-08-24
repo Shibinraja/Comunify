@@ -42,11 +42,11 @@ const Activity: React.FC = () => {
   });
   const [ActivityCard, setActivityCard] = useState<ActivityCard>();
   const [page, setpage] = useState<number>(1);
-  const [limit, setLimit] = useState<number>(10);
   const [searchText, setSearchText] = useState<string>('');
   const dropDownRef = useRef<HTMLDivElement>(null);
 
-  const { data, totalPages, previousPage, nextPage } = useAppSelector((state) => state.activities.activeStreamData);
+  const limit = 10;
+  const { data, totalPages } = useAppSelector((state) => state.activities.activeStreamData);
 
   const debouncedValue = useDebounce(searchText, 300);
 
@@ -78,6 +78,13 @@ const Activity: React.FC = () => {
     };
   }, []);
 
+  // Returns the debounced value of the search text.
+  useEffect(() => {
+    if (debouncedValue) {
+      getFilteredActiveStreamList(debouncedValue);
+    }
+  }, [debouncedValue]);
+
   // Function to close the popup modal of the member profile
   const handleOutsideClick = (event: MouseEvent) => {
     if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target as Node)) {
@@ -94,13 +101,6 @@ const Activity: React.FC = () => {
       });
     }
   };
-
-  // Returns the debounced value of the search text.
-  useEffect(() => {
-    if (debouncedValue) {
-      getFilteredActiveStreamList(debouncedValue);
-    }
-  }, [debouncedValue]);
 
   const handleModal = (data: ActivityCard) => {
     setModalOpen(data?.isOpen);
@@ -180,7 +180,8 @@ const Activity: React.FC = () => {
         <div className="relative mr-5">{ActiveStreamFilter}</div>
 
         <div className="">
-          <div className="app-input-card-border w-6.98 h-3.06 rounded-0.6 shadow-shadowInput box-border bg-white items-center justify-evenly flex ml-0.63 cursor-pointer"
+          <div
+            className="app-input-card-border w-6.98 h-3.06 rounded-0.6 shadow-shadowInput box-border bg-white items-center justify-evenly flex ml-0.63 cursor-pointer"
             onClick={fetchActiveStreamListExportData}
           >
             <h3 className="text-dropGray leading-1.12 font-Poppins font-semibld text-card">Export</h3>
@@ -268,7 +269,7 @@ const Activity: React.FC = () => {
                         </td>
                         <td className="px-6 pt-5 border-b">
                           <div className="flex flex-col">
-                            <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                            <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31">
                               {generateDateAndTime(`${data?.activityTime}`, 'MM-DD-YYYY')}
                             </div>
                             <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
@@ -319,9 +320,7 @@ const Activity: React.FC = () => {
                             {data?.sourceUrl === null ? 'www.slack.com/profile' : data?.sourceUrl}
                           </a>
                         </td>
-                        <td className="px-6 py-3 border-b font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                          {data?.type}
-                        </td>
+                        <td className="px-6 py-3 border-b font-Poppins font-medium text-trial text-infoBlack leading-1.31">{data?.type}</td>
                       </tr>
                     ))}
                 </tbody>
@@ -330,7 +329,7 @@ const Activity: React.FC = () => {
                 isOpen={isModalOpen}
                 shouldCloseOnOverlayClick={true}
                 onRequestClose={() => setModalOpen(false)}
-                className="mode w-32.5 mx-auto pb-10 border-none px-2.18 bg-white shadow-modal rounded"
+                className="mode w-32.5 mx-auto pb-10 border-none px-2.18 bg-white shadow-modal rounded outline-none"
                 style={{
                   overlay: {
                     display: 'flex',
@@ -343,7 +342,7 @@ const Activity: React.FC = () => {
                   }
                 }}
               >
-                <div className="pt-9 flex flex-col">
+                <div className="pt-9 flex flex-col activity-list-height">
                   <div className="flex justify-between">
                     <div className="font-Inter font-semibold text-black text-xl leading-6">Activity</div>
                     <div className="font-Poppins text-error leading-5 text-tag font-medium cursor-pointer" onClick={() => handleTagModal(true)}>
@@ -353,7 +352,7 @@ const Activity: React.FC = () => {
                       isOpen={isTagModalOpen}
                       shouldCloseOnOverlayClick={false}
                       onRequestClose={() => setModalOpen(false)}
-                      className="w-24.31 h-18.75 mx-auto  mt-32 rounded-lg modals-tag bg-white shadow-modal"
+                      className="w-24.31 h-18.75 mx-auto  mt-32 rounded-lg modals-tag bg-white shadow-modal outline-none"
                       style={{
                         overlay: {
                           display: 'flex',
@@ -374,20 +373,20 @@ const Activity: React.FC = () => {
                           </label>
                           <input
                             type="text"
-                            className="mt-0.375 inputs box-border bg-white shadow-shadowInput rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-trial placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
+                            className="mt-0.375 inputs box-border bg-white shadow-shadowInput rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-sm placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
                             placeholder="Enter Tag Name"
                           />
                           <div className="flex absolute right-1 top-24 pr-6 items-center">
                             <Button
                               type="button"
                               text="CANCEL"
-                              className="mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel px-2 py-3 rounded border-none"
+                              className="mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel w-5.25 h-2.81  rounded border-none"
                               onClick={() => setTagModalOpen(false)}
                             />
                             <Button
                               type="button"
                               text="SAVE"
-                              className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn px-5 py-3 border-none btn-save-modal"
+                              className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-5.25 h-2.81  border-none btn-save-modal"
                             />
                           </div>
                         </form>

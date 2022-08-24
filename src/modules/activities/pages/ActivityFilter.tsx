@@ -6,7 +6,7 @@ import downArrow from '../../../assets/images/filter-dropdown.svg';
 import searchIcon from '../../../assets/images/search.svg';
 import filterDownIcon from '../../../assets/images/report-dropdown.svg';
 import calendarIcon from '../../../assets/images/calandar.svg';
-import DatePicker from 'react-datepicker';
+import DatePicker, { ReactDatePicker } from 'react-datepicker';
 import Button from 'common/button';
 import { format } from 'date-fns';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
@@ -30,11 +30,14 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
   const [endDate, setEndDate] = useState<Date>();
 
   const dropDownRef = useRef<HTMLDivElement>(null);
-  const { activeStreamTagFilterResponse } = useAppSelector((state) => state.activities);
-  const { PlatformFilterResponse } = useAppSelector((state) => state.members);
+  const datePickerRefStart = useRef<ReactDatePicker>(null);
+  const datePickerRefEnd = useRef<ReactDatePicker>(null);
 
   const debouncedTagValue = useDebounce(tagSearchText, 300);
   const disableApplyBtn = (Object.values(checkedPlatform).concat(Object.values(checkedTags)));
+
+  const { activeStreamTagFilterResponse } = useAppSelector((state) => state.activities);
+  const { PlatformFilterResponse } = useAppSelector((state) => state.members);
 
   // Returns the debounced value of the search text.
   useEffect(() => {
@@ -97,6 +100,18 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
     }
     if (dateTime === 'end') {
       setEndDate(date);
+    }
+  };
+
+  const handleClickDatepickerIcon = (type: string) => {
+    if (type === 'start') {
+      const datePickerElement = datePickerRefStart.current;
+      datePickerElement!.setFocus();
+    }
+
+    if(type === 'end') {
+      const datePickerElement = datePickerRefEnd.current;
+      datePickerElement!.setFocus();
     }
   };
 
@@ -269,8 +284,14 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
                       onChange={(date: Date, event: ChangeEvent<Date>) => selectActiveBetweenDate(event, date, 'start')}
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
+                      ref={datePickerRefStart}
                     />
-                    <img className="absolute icon-holder right-6 cursor-pointer" src={calendarIcon} alt="" />
+                    <img
+                      className="absolute icon-holder right-6 cursor-pointer"
+                      src={calendarIcon}
+                      alt=""
+                      onClick={() => handleClickDatepickerIcon('start')}
+                    />
                   </div>
                 </div>
                 <div className="flex flex-col px-3 pb-4 pt-3">
@@ -281,8 +302,14 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
                       onChange={(date: Date, event: ChangeEvent<Date>) => selectActiveBetweenDate(event, date, 'end')}
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
+                      ref={datePickerRefEnd}
                     />
-                    <img className="absolute icon-holder right-6 cursor-pointer" src={calendarIcon} alt="" />
+                    <img
+                      className="absolute icon-holder right-6 cursor-pointer"
+                      src={calendarIcon}
+                      alt=""
+                      onClick={() => handleClickDatepickerIcon('end')}
+                    />
                   </div>
                 </div>
               </Fragment>

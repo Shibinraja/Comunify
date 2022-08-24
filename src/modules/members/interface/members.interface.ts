@@ -68,12 +68,21 @@ export interface MembersColumnsParams extends workspaceId {
 
 // Response Body
 
-export type MembersCountResponse = {
+export type MembersAnalyticsResponse = {
   count: number;
   title: string;
   analyticMessage: string;
 };
 
+export type MemberCountAnalyticsResponse = {
+  newMembers:MembersAnalyticsResponse;
+  totalMembers:MembersAnalyticsResponse
+}
+
+export type MemberActivityAnalyticsResponse = {
+  activeMembers:MembersAnalyticsResponse;
+  inActiveMembers:MembersAnalyticsResponse
+}
 export interface SeriesDataForMemberGraph {
   name: string;
   data: number[];

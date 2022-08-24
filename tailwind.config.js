@@ -15,7 +15,7 @@ module.exports = {
         grayBorder: ' #D9DBE9',
         listGray: '#6B7280',
         brightGray: '#F9F9F9;',
-        slimGray: '#8A8B9F;',
+        slimGray: '#8A8B9F',
         lightGreeny: '#AACF6F',
         success: '#A9CE70;',
         primary: '#6DB7DF;',
@@ -37,7 +37,7 @@ module.exports = {
         profileBlack: '#181818;',
         tableHeaderGray: '#F7F7F7;',
         tableDuration: ' #8A8B9F;',
-        tag: '#1E86E7;',
+        tag: '#1E86E7',
         tagEmail: '#181818;',
         tagChannel: '#4444F7;',
         tagSection: '#E9F0F8',
@@ -62,6 +62,9 @@ module.exports = {
         widgetSearch: '#ACACAC;',
         paginationArrowButton: '#337AB7',
         toolTip: '#414141',
+        workSpace: '#696C7D',
+        manageTitle: ' #0C0E14',
+        slackStatus: ' #A9CE70',
         vanillaDescription: '#6F6C90'
       },
       margin: {
@@ -338,7 +341,8 @@ module.exports = {
         pageNumber: '9.86548px',
         preview: '10.2899px;',
         activityHealth: '0.5521rem',
-        activityPercentage: '1.1042rem'
+        activityPercentage: '1.1042rem',
+        action: '23.467px'
       },
       fontFamily: {
         Inter: ['Inter', 'sans-serif'],
@@ -431,7 +435,9 @@ module.exports = {
         'background-pattern': "url('src/assets/images/background-pattern.svg')"
       },
       screens: {
-        '3xl': '2100px'
+        '1xl': '1100px',
+        '3xl': '2100px',
+        '4xl': '2400px'
       },
       variants: {
         extend: {

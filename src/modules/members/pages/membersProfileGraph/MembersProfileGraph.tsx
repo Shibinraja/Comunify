@@ -10,7 +10,7 @@ const MembersProfileGraph: React.FC<MemberGraphProps> = ({ activityGraphData }) 
   };
 
   return (
-    <div className="h-[18.75rem]">
+    <div className="h-[15rem]">
       <Chart options={options} type="line" series={activityGraphData?.series} width="100%" height="100%" />
     </div>
   );

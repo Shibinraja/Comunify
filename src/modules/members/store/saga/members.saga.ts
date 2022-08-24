@@ -12,15 +12,15 @@ import {
   MembersListService,
   MembersLocationFilterService,
   MembersOrganizationFilterService,
-  TotalCountService,
-  InactiveCountService,
   PlatformsDataService,
   MembersActivityGraphService,
   GetMembersActivityGraphDataPerPlatformService,
   MembersColumnsListService,
   MembersTagFilterService,
   GetMembersActivityDataInfiniteScrollSaga,
-  GetMembersProfileCardService
+  GetMembersProfileCardService,
+  ActivityAnalyticsService,
+  CountAnalyticsService
 } from 'modules/members/services/members.services';
 import { PayloadAction } from '@reduxjs/toolkit';
 import {
@@ -29,7 +29,6 @@ import {
   GetMembersOrganizationListQueryParams,
   GetMembersTagListQueryParams,
   MembersColumnsParams,
-  MembersCountResponse,
   MembersListResponse,
   PlatformResponse,
   MembersProfileActivityGraphData,
@@ -39,20 +38,23 @@ import {
   workspaceId,
   ActivityDataResponse,
   ActivityInfiniteScroll,
-  MemberProfileCard
+  MemberProfileCard,
+  MemberCountAnalyticsResponse,
+  MemberActivityAnalyticsResponse
 } from 'modules/members/interface/members.interface';
 
 // const forwardTo = (location: string) => {
 //     history.push(location);
 // };
 
-function* membersTotalCount() {
+function* membersCountAnalytics(action: PayloadAction<workspaceId>) {
+
   try {
     yield put(loaderSlice.actions.startLoadingAction());
 
-    const res: SuccessResponse<MembersCountResponse> = yield call(TotalCountService);
+    const res: SuccessResponse<MemberCountAnalyticsResponse> = yield call(CountAnalyticsService, action.payload);
     if (res?.data) {
-      yield put(membersSlice.actions.getMembersTotalCountData(res?.data));
+      yield put(membersSlice.actions.getMembersCountAnalytics(res?.data));
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
@@ -62,45 +64,13 @@ function* membersTotalCount() {
   }
 }
 
-function* membersNewCount() {
+function* membersActivityAnalytics(action: PayloadAction<workspaceId>) {
   try {
     yield put(loaderSlice.actions.startLoadingAction());
 
-    const res: SuccessResponse<MembersCountResponse> = yield call(TotalCountService);
+    const res: SuccessResponse<MemberActivityAnalyticsResponse> = yield call(ActivityAnalyticsService, action.payload);
     if (res?.data) {
-      yield put(membersSlice.actions.getMembersNewCountData(res?.data));
-    }
-  } catch (e) {
-    const error = e as AxiosError<unknown>;
-    showErrorToast(error?.response?.data?.message);
-  } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
-  }
-}
-
-function* membersActiveCount() {
-  try {
-    yield put(loaderSlice.actions.startLoadingAction());
-
-    const res: SuccessResponse<MembersCountResponse> = yield call(TotalCountService);
-    if (res?.data) {
-      yield put(membersSlice.actions.getMembersActiveCountData(res?.data));
-    }
-  } catch (e) {
-    const error = e as AxiosError<unknown>;
-    showErrorToast(error?.response?.data?.message);
-  } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
-  }
-}
-
-function* membersInActiveCount() {
-  try {
-    yield put(loaderSlice.actions.startLoadingAction());
-
-    const res: SuccessResponse<MembersCountResponse> = yield call(InactiveCountService);
-    if (res?.data) {
-      yield put(membersSlice.actions.getMembersInActiveCountData(res?.data));
+      yield put(membersSlice.actions.getMembersActivityAnalytics(res?.data));
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
@@ -295,10 +265,8 @@ function* getMemberProfileCardData(action: PayloadAction<VerifyMembers>) {
 }
 
 export default function* membersSaga(): SagaIterator {
-  yield takeEvery(membersSlice.actions.membersTotalCount.type, membersTotalCount);
-  yield takeEvery(membersSlice.actions.membersNewCount.type, membersNewCount);
-  yield takeEvery(membersSlice.actions.membersActiveCount.type, membersActiveCount);
-  yield takeEvery(membersSlice.actions.membersInActiveCount.type, membersInActiveCount);
+  yield takeEvery(membersSlice.actions.membersCountAnalytics.type, membersCountAnalytics);
+  yield takeEvery(membersSlice.actions.membersActivityAnalytics.type, membersActivityAnalytics);
   yield takeEvery(membersSlice.actions.membersList.type, membersList);
   yield takeEvery(membersSlice.actions.getMembersActivityGraphData.type, membersActivityGraphSaga);
   yield takeEvery(membersSlice.actions.platformData.type, getPlatformsDataSaga);

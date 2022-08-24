@@ -53,6 +53,9 @@ const Members: React.FC = () => {
     '7day': false,
     '1month': false
   });
+  const datepickerRefStart = useRef<any>(null);
+  const datepickerRefEnd = useRef<any>(null);
+
 
   const dispatch = useAppDispatch();
 
@@ -85,6 +88,8 @@ const Members: React.FC = () => {
   } = useAppSelector((state) => state.members);
 
   useEffect(() => {
+    dispatch(membersSlice.actions.membersCountAnalytics({ workspaceId: workspaceId! }));
+    dispatch(membersSlice.actions.membersActivityAnalytics({ workspaceId: workspaceId! }));
     dispatch(membersSlice.actions.platformData());
     dispatch(
       membersSlice.actions.membersTagFilter({
@@ -245,6 +250,16 @@ const Members: React.FC = () => {
 
   const MemberFilter = useMemo(() => <MembersFilter page={page} limit={limit} />, []);
 
+  const handleClickDatepickerIcon=(type : string) => {
+    if(type === 'start') {
+      const datepickerElement = datepickerRefStart.current;
+      datepickerElement.setFocus(true);
+    }else{
+      const datepickerElement = datepickerRefEnd.current;
+      datepickerElement.setFocus(true);
+    }
+  };
+
   return (
     <div className="flex flex-col mt-12">
       <h3 className="font-Poppins font-semibold text-infoBlack text-infoData leading-9">Members</h3>
@@ -255,7 +270,7 @@ const Members: React.FC = () => {
         <div className="flex relative items-center ">
           <input
             type="text"
-            className="focus:outline-none px-3 box-border w-19.06 h-3.06  rounded-0.6  placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray shadow-shadowInput"
+            className="focus:outline-none px-3 pr-8 box-border w-19.06 h-3.06  rounded-0.6  placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray shadow-shadowInput"
             placeholder="Search By Name or Email"
             onChange={handleSearchTextChange}
           />
@@ -315,8 +330,9 @@ const Members: React.FC = () => {
                       onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'start')}
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
+                      ref={datepickerRefStart}
                     />
-                    <img className="absolute icon-holder right-6 cursor-pointer" src={calendarIcon} alt="" />
+                    <img className="absolute icon-holder right-6 cursor-pointer" src={calendarIcon} alt="" onClick={() => handleClickDatepickerIcon('start')}/>
                   </div>
                 </div>
                 <div className="flex flex-col px-3 pb-4 pt-3">
@@ -327,8 +343,9 @@ const Members: React.FC = () => {
                       onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'end')}
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
+                      ref={datepickerRefEnd}
                     />
-                    <img className="absolute icon-holder right-6 cursor-pointer" src={calendarIcon} alt="" />
+                    <img className="absolute icon-holder right-6 cursor-pointer" src={calendarIcon} alt="" onClick={() => handleClickDatepickerIcon('end')}/>
                   </div>
                 </div>
               </>
@@ -383,7 +400,7 @@ const Members: React.FC = () => {
                             </div>
                           ) : column === 'platforms' ? (
                             <div
-                              className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer h-1.375 w-1.375 flex"
+                              className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 h-1.375 w-1.375 flex"
                               key={index}
                             >
                               <img className="m-1 h-1.375 w-1.375 mt-0" src={slackIcon} title="Slack" />
@@ -401,7 +418,7 @@ const Members: React.FC = () => {
                           // </div>
                             column === 'tags' ? (
                               <div className="flex ">
-                                <div className="py-3 flex gap-2 items-center font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                                <div className="py-3 flex gap-2 items-center font-Poppins font-medium text-trial text-infoBlack leading-1.31">
                                   {(member?.tags as Array<{ tag: { name: '' } }>)?.slice(0, 2).map((tags: { tag: { name: string } }, index: number) => (
                                     <div className="bg-tagSection rounded w-5.25 h-8 flex justify-between px-3 items-center" key={index}>
                                       <div className="font-Poppins font-normal text-card text-profileBlack leading-5">{tags?.tag?.name}</div>
@@ -419,7 +436,7 @@ const Members: React.FC = () => {
                               </div>
                             ) : column === 'lastActivity' ? (
                               <div className="flex flex-col">
-                                <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                                <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
                                   {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'MMM dd yyyy') : '--'}
                                 </div>
                                 <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
@@ -428,7 +445,7 @@ const Members: React.FC = () => {
                               </div>
                             ) : (
                               <div className="flex ">
-                                <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                                <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
                                   {member[column] as ReactNode}
                                 </div>
                               </div>
@@ -461,7 +478,7 @@ const Members: React.FC = () => {
               >
                 <div className="flex flex-col px-1.68 relative">
                   <h3 className="font-Inter font-semibold text-xl mt-1.8  leading-6">Customize Column</h3>
-                  <div className="pb-10">{membersColumn}</div>
+                  <div className="pb-10 members-list-height">{membersColumn}</div>
                   <div className="flex buttons absolute -bottom-16 right-[27px]">
                     <Button
                       text="Cancel"

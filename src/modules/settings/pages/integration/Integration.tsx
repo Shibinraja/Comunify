@@ -6,10 +6,13 @@ import { TabPanel } from 'common/tabs/TabPanel';
 import Modal from 'react-modal';
 import vanillaIcon from '../../../../assets/images/vanilla-forum.svg';
 import Input from 'common/input';
+import './Integration.css';
+
 Modal.setAppElement('#root');
 
 const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
   const [isButtonConnect] = useState<boolean>(true);
+  const [isLoadingModalOpen, setLoadingModalOpen] = useState<boolean>(false);
   const [isVanillaModalOpen, setVanillaModalOpen] = useState<boolean>(false);
   const handleVanillaModal = (val: boolean) => {
     setVanillaModalOpen(val);
@@ -51,10 +54,48 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
           <div className="flex mt-1.8 flex-wrap w-full">
             <div className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5">
               <div className="flex flex-wrap items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                <img src={unsplashIcon} alt="" className="h-2.31" />
+                <img src={slackIcon} alt="" className="h-2.31" />
               </div>
               <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">Khoros</div>
-              <Button type="button" text="Connect" className={!isButtonConnect ? disConnectedBtnClassName : connectedBtnClassName} />
+              <Button
+                type="button"
+                text="Connect"
+                className={!isButtonConnect ? disConnectedBtnClassName : connectedBtnClassName}
+                onClick={() => setLoadingModalOpen(true)}
+              />
+              <Modal
+                isOpen={isLoadingModalOpen}
+                shouldCloseOnOverlayClick={true}
+                onRequestClose={() => setLoadingModalOpen(false)}
+                className="h-14.56 w-22.31 shadow-modal flex items-center justify-center rounded-lg border-fetching-card mx-auto  bg-white outline-none"
+                style={{
+                  overlay: {
+                    display: 'flex',
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: 0,
+                    alignItems: 'center'
+                  }
+                }}
+              >
+                <div className="loading">
+                  <div className="flex flex-col items-center justify-center  ">
+                    <div className=" bg-no-repeat bg-center bg-contain ">
+                      <img src={slackIcon} alt="" className="rounded-full w-2.68 h-2.68" />
+                    </div>
+                    <div className="mt-4 text-integrationGray font-Poppins fomt-normal text-desc leadind-1.68">
+                      Fetching data from <span className="text-black font-normal">Slack</span>
+                    </div>
+                    <div className="mt-1.8">
+                      <div className="dot-pulse">
+                        <div className="dot-pulse__dot"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Modal>
             </div>
             <div className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5">
               <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
