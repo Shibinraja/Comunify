@@ -17,7 +17,6 @@ import { email_regex } from '../../../../constants/constants';
 import { AppDispatch } from '../../../../store/index';
 import authSlice from '../../store/slices/auth.slice';
 import './SignIn.css';
-import Footer from 'common/footer';
 
 const SignIn: React.FC = () => {
   const dispatch: AppDispatch = useAppDispatch();

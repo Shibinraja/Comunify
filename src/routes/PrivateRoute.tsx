@@ -15,6 +15,9 @@ const PrivateRoute: React.FC<Props> = ({ children }) => {
   const dispatch = useAppDispatch();
   const access_token = tokenData || cookie.load('x-auth-cookie');
   const decodedToken: DecodeToken = access_token && decodeToken(access_token);
+  if (!localStorage.getItem('workspaceId')) {
+    localStorage.setItem('workspaceId', decodedToken.workspaceId);
+  }
 
   const isExpired = decodedToken && isBefore(new Date(decodedToken?.exp * 1000), new Date());
 
