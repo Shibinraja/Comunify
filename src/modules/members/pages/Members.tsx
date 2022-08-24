@@ -464,7 +464,7 @@ const Members: React.FC = () => {
               </div>
               <div className="fixed bottom-10 right-32">
                 <div
-                  className="btn-drag w-3.375 h-3.375 flex items-center justify-center cursor-pointer shadow-dragButton rounded-0.6 "
+                  className="btn-drag p-3 flex items-center justify-center cursor-pointer shadow-dragButton rounded-0.6 "
                   onClick={() => setisModalOpen(true)}
                 >
                   <img src={editIcon} alt="" />
