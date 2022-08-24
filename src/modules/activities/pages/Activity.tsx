@@ -328,7 +328,7 @@ const Activity: React.FC = () => {
                 isOpen={isModalOpen}
                 shouldCloseOnOverlayClick={true}
                 onRequestClose={() => setModalOpen(false)}
-                className="mode w-32.5 mx-auto pb-10 border-none px-2.18 bg-white shadow-modal rounded"
+                className="mode w-32.5 mx-auto pb-10 border-none px-2.18 bg-white shadow-modal rounded outline-none"
                 style={{
                   overlay: {
                     display: 'flex',
@@ -341,7 +341,7 @@ const Activity: React.FC = () => {
                   }
                 }}
               >
-                <div className="pt-9 flex flex-col">
+                <div className="pt-9 flex flex-col activity-list-height">
                   <div className="flex justify-between">
                     <div className="font-Inter font-semibold text-black text-xl leading-6">Activity</div>
                     <div className="font-Poppins text-error leading-5 text-tag font-medium cursor-pointer" onClick={() => handleTagModal(true)}>
@@ -351,7 +351,7 @@ const Activity: React.FC = () => {
                       isOpen={isTagModalOpen}
                       shouldCloseOnOverlayClick={false}
                       onRequestClose={() => setModalOpen(false)}
-                      className="w-24.31 h-18.75 mx-auto  mt-32 rounded-lg modals-tag bg-white shadow-modal"
+                      className="w-24.31 h-18.75 mx-auto  mt-32 rounded-lg modals-tag bg-white shadow-modal outline-none"
                       style={{
                         overlay: {
                           display: 'flex',
