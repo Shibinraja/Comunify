@@ -301,6 +301,7 @@ input {
 .react-datepicker__header {
   border-bottom: none !important;
   padding: 15px 0 0 0 !important;
+  background-color: #ffff !important;
 }
 
 .react-datepicker__month {
