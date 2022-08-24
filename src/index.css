@@ -367,6 +367,12 @@ input {
   font-weight: 400;
 }
 
+.react-datepicker__close-icon::after {
+  background-color: transparent !important;
+  color: #55555C !important;
+  font-size: 22px !important;
+}
+
 /* Customradio button */
 
 .radio input[type='radio'] {
