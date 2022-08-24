@@ -149,7 +149,7 @@ const SignIn: React.FC = () => {
             </Formik>
           </div>
         </div>
-        <div className="w-3/5 2xl:w-1/2 bg-auth flex items-center justify-center pr-0  3xl:justify-start 3xl:pl-16">
+        <div className="w-3/5 2xl:w-1/2 auth-layout flex items-center justify-center pr-0  3xl:justify-start 3xl:pl-16">
           <div className="flex items-center justify-center">
             <img src={bgSignInImage} alt="" className="w-9/12 xl:w-10/12 3xl:w-full object-cover" />
           </div>
