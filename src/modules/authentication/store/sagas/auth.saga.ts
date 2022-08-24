@@ -33,7 +33,7 @@ import {
   verifyForgotEmailService,
   sendSubscriptionPlan,
   signOutService,
-  getworkspaceIdService
+  GetWorkspaceIdService
 } from 'modules/authentication/services/auth.service';
 import { AxiosResponse } from 'axios';
 import { AxiosError, SuccessResponse } from '@/lib/api';
@@ -246,7 +246,7 @@ function* chooseSubscription(action: PayloadAction<string>) {
 function* getWorkspaceId() {
   try {
     yield put(loaderSlice.actions.startLoadingAction());
-    const res: SuccessResponse<Array<GetWorkspaceIdResponse>> = yield call(getworkspaceIdService);
+    const res: SuccessResponse<Array<GetWorkspaceIdResponse>> = yield call(GetWorkspaceIdService);
     if (res) {
       const workspaceId = res?.data[0]?.id;
       localStorage.setItem('workspaceId', workspaceId);
