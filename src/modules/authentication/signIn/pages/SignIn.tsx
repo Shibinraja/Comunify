@@ -62,9 +62,9 @@ const SignIn: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-[100vh] xl:h-[85vh] 3xl:h-[93vh]">
+    <div className="flex flex-col h-auto 2xl:h-[80vh] 3xl:h-[93vh]">
       <div className=" flex h-full overflow-auto ">
-        <div className="w-2/5 2xl:w-1/2 flex items-center justify-center pr-4 3xl:justify-end 3xl:pr-16 pl-4 2xl:pl-0">
+        <div className="w-2/5 2xl:w-1/2 flex items-center justify-center pr-4 3xl:justify-end 3xl:pr-16 pl-4 2xl:pl-0 pb-24 pt-10">
           <div className=" flex flex-col justify-center items-center ">
             <div className=" flex flex-col ">
               <h3 className="font-Inter text-neutralBlack font-bold not-italic text-signIn  text-left">Sign In </h3>
