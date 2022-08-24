@@ -1,11 +1,10 @@
 /* eslint-disable space-before-function-paren */
-/* eslint-disable no-console */
-/* eslint-disable arrow-body-style */
 import { getLocalWorkspaceId } from '@/lib/helper';
 import React from 'react';
 import { Location, useLocation, useNavigate } from 'react-router';
 import Button from '../../../../common/button';
 import { showErrorToast, showSuccessToast } from '../../../../common/toast/toastFunctions';
+import { NetworkResponse } from '../../../../lib/api';
 import { API_ENDPOINT } from '../../../../lib/config';
 import { request } from '../../../../lib/request';
 
@@ -25,15 +24,15 @@ const CompleteSetup: React.FC = () => {
         workspacePlatformSettingsId: location?.state?.workspacePlatformSettingId || localStorage.getItem('workspacePlatformSettingId')
       };
       showSuccessToast('Integration in progress...');
-      const response = await request.post(`${API_ENDPOINT}/v1/slack/complete-setup`, body);
+      const response: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/slack/complete-setup`, body);
       if (response) {
         showSuccessToast('Successfully integrated');
         navigate(`/${workspaceId}/settings`);
       } else {
         showErrorToast('Integration failed');
       }
-    } catch (error) {
-      console.error(error);
+    } catch {
+      showErrorToast('Integration Failed');
     }
   };
   return (

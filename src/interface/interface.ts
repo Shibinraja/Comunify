@@ -44,3 +44,17 @@ export interface ActiveState {
   reports?: boolean;
   settings?: boolean;
 }
+
+export interface PlatformConnectResponse {
+  id: string;
+  workspacePlatformSettingsId: string;
+  type: string;
+  domain: string;
+  channelId: string | null;
+  auth_token: string;
+  clientSecret: null;
+  clientId: null;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+}
