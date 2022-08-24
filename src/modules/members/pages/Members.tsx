@@ -88,6 +88,8 @@ const Members: React.FC = () => {
   } = useAppSelector((state) => state.members);
 
   useEffect(() => {
+    dispatch(membersSlice.actions.membersCountAnalytics({ workspaceId: workspaceId! }));
+    dispatch(membersSlice.actions.membersActivityAnalytics({ workspaceId: workspaceId! }));
     dispatch(membersSlice.actions.platformData());
     dispatch(
       membersSlice.actions.membersTagFilter({
