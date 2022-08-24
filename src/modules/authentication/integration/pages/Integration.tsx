@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { useEffect, useState } from 'react';
 import unsplashIcon from '../../../../assets/images/unsplash.svg';
 import slackIcon from '../../../../assets/images/slack.svg';
@@ -15,10 +14,12 @@ import { showErrorToast, showSuccessToast } from '../../../../common/toast/toast
 import { API_ENDPOINT, SLACK_CONNECT_ENDPOINT } from '../../../../lib/config';
 import { getLocalWorkspaceId } from '@/lib/helper';
 import Input from 'common/input';
+import { IntegrationResponse, NetworkResponse } from '../../../../lib/api';
+import { PlatformConnectResponse } from '../../../../interface/interface';
 
 Modal.setAppElement('#root');
 
-interface Body {
+interface SlackData {
   code: string | null;
   workspaceId: string;
 }
@@ -27,22 +28,7 @@ interface VanillaForumsData {
   vanillaBaseUrl: string;
   vanillaAccessToken: string;
   workspaceId: string;
-  workspacePlatformSettingsId?: string;
 }
-
-// interface VanillaConnectResponse {
-//     id: string;
-//     workspacePlatformSettingsId: string;
-//     type: string;
-//     domain: string;
-//     channelId: string | null,
-//     auth_token: string;
-//     clientSecret: null,
-//     clientId: null,
-//     status: string;
-//     createdAt: string;
-//     updatedAt: string;
-// }
 
 const Integration: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -68,11 +54,11 @@ const Integration: React.FC = () => {
   const getData = async (codeParams: string | null) => {
     try {
       setIsModalOpen(true);
-      const body: Body = {
+      const body: SlackData = {
         code: codeParams,
         workspaceId
       };
-      const response = await request.post(`${API_ENDPOINT}/v1/slack/connect`, body);
+      const response: IntegrationResponse<PlatformConnectResponse> = await request.post(`${API_ENDPOINT}/v1/slack/connect`, body);
       localStorage.setItem('workspacePlatformSettingId', response?.data?.data?.id);
       if (response) {
         setIsModalOpen(false);
@@ -80,8 +66,9 @@ const Integration: React.FC = () => {
       } else {
         showErrorToast('Integration failed');
       }
-      // eslint-disable-next-line no-empty
-    } catch {}
+    } catch {
+      showErrorToast('Integration failed');
+    }
   };
 
   // eslint-disable-next-line space-before-function-paren
@@ -93,11 +80,11 @@ const Integration: React.FC = () => {
         vanillaAccessToken: vanillaForumsData.vanillaAccessToken,
         workspaceId
       };
-      const connectResponse = await request.post(`${API_ENDPOINT}/v1/vanilla/connect`, body);
+      const connectResponse: IntegrationResponse<PlatformConnectResponse> = await request.post(`${API_ENDPOINT}/v1/vanilla/connect`, body);
       if (connectResponse?.data?.data?.id) {
         showSuccessToast('Integration in progress');
         try {
-          const completeSetupResponse = await request.post(`${API_ENDPOINT}/v1/vanilla/complete-setup`, {
+          const completeSetupResponse: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/vanilla/complete-setup`, {
             workspaceId,
             workspacePlatformSettingsId: connectResponse?.data?.data?.id
           });

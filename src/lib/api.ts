@@ -19,6 +19,18 @@ export type NetworkResponse<T> = {
   data: SuccessResponse<T>;
   status: number;
   statusText: string;
+  request: T;
+  headers: T;
+  config: T;
+};
+
+export type IntegrationResponse<T> = {
+  data: {
+    data: T;
+  };
+  status: number;
+  statusText: string;
+  request: T;
   headers: T;
   config: T;
 };
