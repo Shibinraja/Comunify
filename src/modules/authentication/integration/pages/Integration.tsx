@@ -63,10 +63,10 @@ const Integration: React.FC = () => {
         workspaceId
       };
       const response: IntegrationResponse<PlatformConnectResponse> = await request.post(`${API_ENDPOINT}/v1/slack/connect`, body);
-      localStorage.setItem('workspacePlatformSettingId', response?.data?.data?.id);
+      localStorage.setItem('workspacePlatformSettingsId', response?.data?.data?.id);
       if (response) {
         setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
-        navigate(`/${workspaceId}/settings/complete-setup`, { state: { workspacePlatformSettingId: response?.data?.data?.id } });
+        navigate(`/${workspaceId}/settings/complete-setup`, { state: { workspacePlatformSettingsId: response?.data?.data?.id } });
       } else {
         showErrorToast('Integration failed');
       }
