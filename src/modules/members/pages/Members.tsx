@@ -5,7 +5,7 @@ import MembersCard from 'common/membersCard/MembersCard';
 import React, {
   ChangeEvent, Fragment, Key, ReactNode, useEffect, useMemo, useRef, useState
 } from 'react';
-import DatePicker from 'react-datepicker';
+import DatePicker, { ReactDatePicker } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Modal from 'react-modal';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -16,7 +16,6 @@ import searchIcon from '../../../assets/images/search.svg';
 import closeIcon from '../../../assets/images/tag-close.svg';
 import dropdownIcon from '../../../assets/images/Vector.svg';
 import './Members.css';
-// import { membersTableData } from './MembersTableData';
 import useDebounce from '@/hooks/useDebounce';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
@@ -43,8 +42,7 @@ const Members: React.FC = () => {
   const [isModalOpen, setisModalOpen] = useState<boolean>(false);
   const [columns, setColumns] = useState<Array<ColumnNameProps>>(ColumNames);
   const [customizedColumnBool, saveCustomizedColumn] = useState<boolean>(false);
-  const [page, setpage] = useState<number>(1);
-  const [limit, setLimit] = useState<number>(10);
+  const [page, setPage] = useState<number>(1);
   const [searchText, setSearchText] = useState<string>('');
   const [customStartDate, setCustomStartDate] = useState<Date>();
   const [customEndDate, setCustomEndDate] = useState<Date>();
@@ -53,24 +51,24 @@ const Members: React.FC = () => {
     '7day': false,
     '1month': false
   });
-  const datepickerRefStart = useRef<any>(null);
-  const datepickerRefEnd = useRef<any>(null);
+  const [isFilterDropdownActive, setisFilterDropdownActive] = useState<boolean>(false);
 
+  const datePickerRefStart = useRef<ReactDatePicker>(null);
+  const datePickerRefEnd = useRef<ReactDatePicker>(null);
+  const limit = 10;
 
   const dispatch = useAppDispatch();
 
   const debouncedValue = useDebounce(searchText, 300);
 
-  const [isFilterDropdownActive, setisFilterDropdownActive] = useState<boolean>(false);
   const dropDownRef = useRef<HTMLDivElement>(null);
 
   const handleFilterDropdown = (): void => {
     setisFilterDropdownActive((prev) => !prev);
   };
+
   const handleOutsideClick = (event: MouseEvent) => {
-    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target as Node)) {
-      setisFilterDropdownActive(true);
-    } else {
+    if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
       setisFilterDropdownActive(false);
     }
   };
@@ -83,7 +81,7 @@ const Members: React.FC = () => {
   }, []);
 
   const {
-    membersListData: { data, totalPages, previousPage, nextPage },
+    membersListData: { data, totalPages },
     customizedColumn: customizedColumnData
   } = useAppSelector((state) => state.members);
 
@@ -252,11 +250,12 @@ const Members: React.FC = () => {
 
   const handleClickDatepickerIcon=(type : string) => {
     if(type === 'start') {
-      const datepickerElement = datepickerRefStart.current;
-      datepickerElement.setFocus(true);
-    }else{
-      const datepickerElement = datepickerRefEnd.current;
-      datepickerElement.setFocus(true);
+      const datePickerElement = datePickerRefStart.current;
+      datePickerElement!.setFocus();
+    }
+    if(type === 'end') {
+      const datePickerElement = datePickerRefEnd.current;
+      datePickerElement!.setFocus();
     }
   };
 
@@ -330,7 +329,7 @@ const Members: React.FC = () => {
                       onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'start')}
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
-                      ref={datepickerRefStart}
+                      ref={datePickerRefStart}
                     />
                     <img className="absolute icon-holder right-6 cursor-pointer" src={calendarIcon} alt="" onClick={() => handleClickDatepickerIcon('start')}/>
                   </div>
@@ -343,7 +342,7 @@ const Members: React.FC = () => {
                       onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'end')}
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
-                      ref={datepickerRefEnd}
+                      ref={datePickerRefEnd}
                     />
                     <img className="absolute icon-holder right-6 cursor-pointer" src={calendarIcon} alt="" onClick={() => handleClickDatepickerIcon('end')}/>
                   </div>
@@ -460,7 +459,7 @@ const Members: React.FC = () => {
                 </tbody>
               </table>
               <div className="px-6 py-6 flex items-center gap-0.66 pl-[30%] w-full rounded-b-lg fixed bg-white bottom-0">
-                <Pagination currentPage={page} totalPages={totalPages} limit={limit} onPageChange={(page) => setpage(Number(page))} />
+                <Pagination currentPage={page} totalPages={totalPages} limit={limit} onPageChange={(page) => setPage(Number(page))} />
               </div>
               <div className="fixed bottom-10 right-32">
                 <div

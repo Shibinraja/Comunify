@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
@@ -16,7 +17,8 @@ import {
   MemberProfileCard,
   GetMembersListQueryParams,
   PlatformResponse,
-  MemberCountAnalyticsResponse
+  MemberCountAnalyticsResponse,
+  MemberActivityAnalyticsResponse
 } from 'modules/members/interface/members.interface';
 import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
 import { InitialState } from '../types/members.type';
@@ -149,7 +151,7 @@ const getMembersCountAnalytics = (state: InitialState, action: PayloadAction<Mem
   membersCountAnalyticsData: action.payload
 });
 
-const getMembersActivityAnalytics = (state: InitialState, action: PayloadAction<any>) => ({
+const getMembersActivityAnalytics = (state: InitialState, action: PayloadAction<MemberActivityAnalyticsResponse>) => ({
   ...state,
   membersActivityAnalyticsData: action.payload
 });
