@@ -43,7 +43,7 @@ const Dashboard: React.FC = () => {
   return (
     <>
       <div className="flex justify-between mt-10">
-        <div className="flex relative items-center">
+        <div className="flex relative items-center w-8/12">
           <div
             className="flex items-center justify-between px-5 w-11.72 h-3.06 app-input-card-border rounded-0.6 shadow-shadowInput cursor-pointer "
             ref={dropDownRef}
@@ -55,7 +55,7 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
           {isSelectDropDownActive && (
-            <div className="absolute top-12 w-11.72 app-input-card-border bg-white shadow-shadowInput rounded-0.6" onClick={handleDropDownActive}>
+            <div className="absolute top-12 w-11.72 app-input-card-border bg-white shadow-shadowInput rounded-0.6 " onClick={handleDropDownActive}>
               {selectOptions.map((options: string, index: number) => (
                 <div key={index} className="flex flex-col p-2 hover:bg-signUpDomain transition ease-in duration-300 cursor-pointer">
                   <div className="text-searchBlack font-Poppins font-normal text-trial leading-1.31" onClick={() => setSelected(options)}>
@@ -65,7 +65,7 @@ const Dashboard: React.FC = () => {
               ))}
             </div>
           )}
-          <div className="flex flex-col pl-2.5">
+          <div className="flex flex-col pl-2.5 w-[248px]">
             <div className="relative flex items-center">
               <DatePicker
                 selectsRange={true}
@@ -83,10 +83,12 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="flex justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow cursor-pointer">
-          <div className="font-Poppins font-medium text-white leading-5 text-search ">Manage Widget</div>
-          <div className="brick-icon bg-cover">
-            <img src={brickIcon} alt="" />
+        <div className="w-4/12 flex justify-end">
+          <div className="flex justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow cursor-pointer">
+            <div className="font-Poppins font-medium text-white leading-5 text-search ">Manage Widget</div>
+            <div className="brick-icon bg-cover">
+              <img src={brickIcon} alt="" />
+            </div>
           </div>
         </div>
       </div>
