@@ -86,7 +86,7 @@ const Activity: React.FC = () => {
   // Returns the debounced value of the search text.
   useEffect(() => {
     if (debouncedValue) {
-      getFilteredActiveStreamList(debouncedValue);
+      getFilteredActiveStreamList(1, debouncedValue);
     }
   }, [debouncedValue]);
 
@@ -142,17 +142,17 @@ const Activity: React.FC = () => {
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
     if (searchText === '') {
-      getFilteredActiveStreamList(searchText);
+      getFilteredActiveStreamList(1, searchText);
     }
     setSearchText(searchText);
   };
 
   // Function to dispatch the search text to hit api of member list.
-  const getFilteredActiveStreamList = (text: string) => {
+  const getFilteredActiveStreamList = (pageNumber:number, text: string) => {
     dispatch(
       activitiesSlice.actions.getActiveStreamData({
         activeStreamQuery: {
-          page,
+          page: pageNumber,
           limit,
           search: text
         },
