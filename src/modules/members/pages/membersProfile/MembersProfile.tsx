@@ -41,7 +41,7 @@ const MembersProfile: React.FC = () => {
   const [toDate, setToDate] = useState<Date>();
   const [isFilterDropDownActive, setFilterDropdownActive] = useState<boolean>(false);
   const [activityNextCursor, setActivityNextCursor] = useState<string | null>('');
-  const [platform, setPlatform] = useState<string>();
+  const [platform, setPlatform] = useState<string | undefined>();
   const {
     membersActivityData: activityData,
     membersProfileActivityGraphData: activityGraphData,
@@ -95,7 +95,7 @@ const MembersProfile: React.FC = () => {
         })
       );
     }
-  }, [activityNextCursor, platform, fromDate && toDate]);
+  }, [activityNextCursor, platform, fromDate, toDate, fromDate && toDate]);
 
   const handleModal = (val: boolean) => {
     setIsModalOpen(val);
@@ -128,7 +128,7 @@ const MembersProfile: React.FC = () => {
       case 'All':
         dispatch(membersSlice.actions.getMembersActivityGraphData({ workspaceId: workspaceId as string, memberId: memberId as string }));
         break;
-      case 'Slack':
+      case `${name !== undefined && name !== 'All' && name}`:
         dispatch(
           membersSlice.actions.getMembersActivityGraphDataPerPlatform({
             workspaceId: workspaceId as string,
@@ -147,6 +147,7 @@ const MembersProfile: React.FC = () => {
     setSelectedIntegration(name);
     switch (name) {
       case 'All Integration':
+        setPlatform(undefined);
         dispatch(
           membersSlice.actions.getMembersActivityDataInfiniteScroll({
             workspaceId: workspaceId as string,
@@ -157,7 +158,7 @@ const MembersProfile: React.FC = () => {
           })
         );
         break;
-      case 'Slack':
+      case `${name !== undefined && name !== 'All Integration' && name}`:
         setPlatform(name.toLocaleLowerCase().trim());
         dispatch(
           membersSlice.actions.getMembersActivityDataInfiniteScroll({
@@ -174,10 +175,11 @@ const MembersProfile: React.FC = () => {
         break;
     }
   };
-
   // function to listen for scroll event
   const handleScroll = (event: React.UIEvent<HTMLElement>) => {
-    if (event.currentTarget.scrollTop > event.currentTarget.offsetHeight) {
+    event.preventDefault();
+    const { clientHeight, scrollHeight, scrollTop } = event.currentTarget;
+    if (scrollHeight - scrollTop === clientHeight) {
       setActivityNextCursor(activityData?.nextCursor);
     }
   };
@@ -350,10 +352,10 @@ const MembersProfile: React.FC = () => {
 
           <div
             onScroll={handleScroll}
-            className="flex flex-col pt-8 gap-0.83 justify-center height-member-activity overflow-scroll mt-5 member-section"
+            className="flex flex-col pt-8 gap-0.83 justify-center height-member-activity overflow-scroll overflow-y-scroll mt-5 member-section"
           >
             {activityDataLoader ? (
-              <Skeleton width={width_90} />
+              <Skeleton width={500} className={'my-4'} count={6} />
             ) : (
               activityData.result.map((data: ActivityResult) => (
                 <div key={data?.id} className="flex items-center">
@@ -381,31 +383,27 @@ const MembersProfile: React.FC = () => {
             <div className="profile-card items-center btn-save-modal justify-center pro-bag rounded-t-0.6 w-18.125 shadow-contactBtn box-border h-6.438 "></div>
             <div className="flex flex-col profile-card items-center justify-center bg-white rounded-b-0.6 w-18.125 shadow-contactCard box-border h-11.06">
               <div className="-mt-24">
-                <Skeleton
-                  circle
-                  height="100%"
-                />
+                <Skeleton circle height="100%" />
               </div>
-              <div className="mt-0.688 text-profileBlack font-semibold font-Poppins leading-1.31 text-trial"><Skeleton width={width_90}/></div>
+              <div className="mt-0.688 text-profileBlack font-semibold font-Poppins leading-1.31 text-trial">
+                <Skeleton width={width_90} />
+              </div>
               <div className="text-center pt-0.125 font-Poppins text-profileBlack text-member">
-                <Skeleton width={width_90}/>
+                <Skeleton width={width_90} />
               </div>
               <div className="flex gap-1 pt-1.12  mt-2 loader-avatar">
                 <div>
-                  <Skeleton
-                    circle
-                    height="100%"
-                  />
+                  <Skeleton circle height="100%" />
                 </div>
               </div>
             </div>
           </div>
         ) : (
           memberProfileCardData?.map((data: MemberProfileCard) => (
-            <div key={data?.id + data?.createdAt} className=" flex flex-col ">
+            <div key={data?.id + data?.createdAt} className=" flex flex-col">
               <div className="profile-card items-center btn-save-modal justify-center pro-bag rounded-t-0.6 w-18.125 shadow-contactBtn box-border h-6.438 "></div>
               <div className="flex flex-col profile-card items-center justify-center bg-white rounded-b-0.6 w-18.125 shadow-contactCard box-border h-11.06">
-                <div className="-mt-24 ">
+                <div className="-mt-24 w-24 h-24">
                   <img src={data?.profileUrl} alt="profileImage" className="bg-cover " />
                 </div>
                 <div className="mt-0.688 text-profileBlack font-semibold font-Poppins leading-1.31 text-trial">{data?.name}</div>
@@ -419,7 +417,8 @@ const MembersProfile: React.FC = () => {
                 </div>
               </div>
             </div>
-          )))}
+          ))
+        )}
 
         <div className="mt-1.37 box-border w-18.125 rounded-0.6 shadow-profileCard app-input-card-border">
           <div className="flex flex-col p-5">

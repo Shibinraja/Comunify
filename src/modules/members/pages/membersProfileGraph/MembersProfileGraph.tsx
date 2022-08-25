@@ -4,7 +4,7 @@ import { MemberGraphProps } from '../../interface/members.interface';
 import Skeleton from 'react-loading-skeleton';
 import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 import membersSlice from 'modules/members/store/slice/members.slice';
-import { count_5, width_90 } from 'constants/constants';
+import { count_5 } from 'constants/constants';
 
 function InlineWrapperWithMargin({ children }: PropsWithChildren<unknown>) {
   return <span style={{ marginRight: '0.5rem' }}>{children}</span>;
@@ -20,8 +20,8 @@ const MembersProfileGraph: React.FC<MemberGraphProps> = ({ activityGraphData }) 
 
   return (
     <div className="h-[15rem]">
-      { graphDataLoader ? (
-        <Skeleton count={count_5} inline width={width_90} wrapper={InlineWrapperWithMargin} />
+      {graphDataLoader ? (
+        <Skeleton count={count_5} width={700} className={'m-4'} wrapper={InlineWrapperWithMargin} />
       ) : (
         <Chart options={options} type="line" series={activityGraphData?.series} width="100%" height="100%" />
       )}

@@ -193,7 +193,6 @@ function* membersColumnsList(action: PayloadAction<Omit<MembersColumnsParams, 'c
 function* getMembersActivityGraphDataPerPlatformSaga(action: PayloadAction<VerifyPlatform>) {
   try {
     yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.getMembersActivityGraphDataPerPlatform.type));
-
     const res: SuccessResponse<MembersProfileActivityGraphData> = yield call(GetMembersActivityGraphDataPerPlatformService, action.payload);
     yield put(membersSlice.actions.setMembersActivityGraphData(res?.data));
   } catch (e) {
