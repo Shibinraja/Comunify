@@ -69,7 +69,7 @@ input {
   border-bottom: 1px solid #e6e6e6;
 }
 
-.border-top-card{
+.border-top-card {
   border-top: 1px solid #e6e6e6;
 }
 
@@ -105,8 +105,8 @@ input {
   background-clip: content-box, border-box;
 }
 
-.border-integration-modal{
-  border: 1px solid #DEE2E6;;
+.border-integration-modal {
+  border: 1px solid #dee2e6;
 }
 
 .section::-webkit-scrollbar {
@@ -265,7 +265,7 @@ input {
 }
 
 .height-member-activity {
-  height: calc(100vh - 44rem);
+  height: calc(100vh - 44.5rem);
   /* min-height: 150px; */
   max-height: 300px;
 }
@@ -382,7 +382,7 @@ input {
 
 .react-datepicker__close-icon::after {
   background-color: transparent !important;
-  color: #55555C !important;
+  color: #55555c !important;
   font-size: 22px !important;
 }
 
@@ -450,13 +450,13 @@ input {
 .side-nav-layout {
   box-shadow: 0 -7px 0px rgb(0, 0, 0, 0.09), 0 1px 1px rgb(0, 0, 0, 0.2);
 }
-.members-list-height{
+.members-list-height {
   height: calc(100vh - 25rem);
   overflow: scroll;
   max-height: 521px;
 }
 
-.activity-list-height{
+.activity-list-height {
   height: calc(100vh - 25rem);
   overflow: scroll;
   max-height: 410px;
