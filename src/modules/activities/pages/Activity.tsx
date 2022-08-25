@@ -42,11 +42,11 @@ const Activity: React.FC = () => {
   });
   const [ActivityCard, setActivityCard] = useState<ActivityCard>();
   const [page, setpage] = useState<number>(1);
-  const [limit, setLimit] = useState<number>(10);
   const [searchText, setSearchText] = useState<string>('');
   const dropDownRef = useRef<HTMLDivElement>(null);
 
-  const { data, totalPages, previousPage, nextPage } = useAppSelector((state) => state.activities.activeStreamData);
+  const limit = 10;
+  const { data, totalPages } = useAppSelector((state) => state.activities.activeStreamData);
 
   const debouncedValue = useDebounce(searchText, 300);
 
@@ -78,6 +78,13 @@ const Activity: React.FC = () => {
     };
   }, []);
 
+  // Returns the debounced value of the search text.
+  useEffect(() => {
+    if (debouncedValue) {
+      getFilteredActiveStreamList(debouncedValue);
+    }
+  }, [debouncedValue]);
+
   // Function to close the popup modal of the member profile
   const handleOutsideClick = (event: MouseEvent) => {
     if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target as Node)) {
@@ -94,13 +101,6 @@ const Activity: React.FC = () => {
       });
     }
   };
-
-  // Returns the debounced value of the search text.
-  useEffect(() => {
-    if (debouncedValue) {
-      getFilteredActiveStreamList(debouncedValue);
-    }
-  }, [debouncedValue]);
 
   const handleModal = (data: ActivityCard) => {
     setModalOpen(data?.isOpen);
