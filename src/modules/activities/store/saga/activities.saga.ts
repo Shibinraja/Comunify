@@ -16,19 +16,19 @@ import { showErrorToast } from 'common/toast/toastFunctions';
 
 function* getActiveStreamDataSaga(action: PayloadAction<GetActiveStreamListQueryParams>) {
   try {
-    yield put(loaderSlice.actions.startLoadingAction());
+    yield put(loaderSlice.actions.startLoadingAction(activitiesSlice.actions.getActiveStreamData.type));
     const res: SuccessResponse<ActiveStreamResponse> = yield call(getActiveStreamDataService, action.payload);
     yield put(activitiesSlice.actions.setActiveStreamData(res?.data));
   } catch (e) {
     const error = e as AxiosError<unknown>;
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
+    yield put(loaderSlice.actions.stopLoadingAction(activitiesSlice.actions.getActiveStreamData.type));
   }
 }
 
 function* activeStreamTagFilter(action: PayloadAction<Partial<GetActiveStreamTagListQueryParams>>) {
   try {
-    yield put(loaderSlice.actions.startLoadingAction());
+    yield put(loaderSlice.actions.startLoadingAction(activitiesSlice.actions.activeStreamTagFilter.type));
 
     const res: SuccessResponse<Array<ActiveStreamTagResponse>> = yield call(ActiveStreamTagFilterService, action.payload);
     if (res?.data) {
@@ -38,7 +38,7 @@ function* activeStreamTagFilter(action: PayloadAction<Partial<GetActiveStreamTag
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
+    yield put(loaderSlice.actions.stopLoadingAction(activitiesSlice.actions.activeStreamTagFilter.type));
   }
 }
 

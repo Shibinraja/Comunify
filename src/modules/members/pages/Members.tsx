@@ -1,3 +1,4 @@
+/* eslint-disable no-constant-condition */
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import Button from 'common/button';
@@ -30,13 +31,16 @@ import { ColumNames } from './MembersTableData';
 import { customDateLinkProps } from './membertypes';
 import { CustomDateType } from '../interface/members.interface';
 import { API_ENDPOINT } from '@/lib/config';
-
+import Skeleton from 'react-loading-skeleton';
 import fetchExportList from '@/lib/fetchExport';
+import useSkeletonLoading from '@/hooks/useSkeletonLoading';
+import { width_90 } from 'constants/constants';
 
 
 Modal.setAppElement('#root');
 
 const Members: React.FC = () => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { workspaceId } = useParams();
   const [isModalOpen, setisModalOpen] = useState<boolean>(false);
@@ -52,12 +56,12 @@ const Members: React.FC = () => {
     '1month': false
   });
   const [isFilterDropdownActive, setisFilterDropdownActive] = useState<boolean>(false);
+  const memberColumnsloader = useSkeletonLoading(membersSlice.actions.membersList.type);
+
+  const limit = 10;
 
   const datePickerRefStart = useRef<ReactDatePicker>(null);
   const datePickerRefEnd = useRef<ReactDatePicker>(null);
-  const limit = 10;
-
-  const dispatch = useAppDispatch();
 
   const debouncedValue = useDebounce(searchText, 300);
 
@@ -146,7 +150,7 @@ const Members: React.FC = () => {
   }, [customStartDate, customEndDate]);
 
   // Function to dispatch the search text to hit api of member list.
-  const getFilteredMembersList = (text: string, date?: string, endDate?:string) => {
+  const getFilteredMembersList = (text: string, date?: string, endDate?: string) => {
     dispatch(
       membersSlice.actions.membersList({
         membersQuery: {
@@ -313,7 +317,9 @@ const Members: React.FC = () => {
         </div> */}
         <div className="box-border cursor-pointer rounded-0.6 shadow-contactCard app-input-card-border relative ml-5" ref={dropDownRef}>
           <div className="flex h-3.06 w-[11.25rem] items-center justify-between px-5 " onClick={handleFilterDropdown}>
-            <div className="box-border rounded-0.6 shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">Custom Date</div>
+            <div className="box-border rounded-0.6 shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">
+              Custom Date
+            </div>
             <div>
               <img src={dropdownIcon} alt="" className={isFilterDropdownActive ? 'rotate-180' : 'rotate-0'} />
             </div>
@@ -389,22 +395,27 @@ const Members: React.FC = () => {
                       {Object.keys(member).map((column: keyof typeof member, index) => (
                         <td className="px-6 py-4" key={index}>
                           {column === 'name' ? (
-                            <div className="flex ">
-                              <div
-                                className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer"
-                                onClick={() => navigateToProfile((member?.name as { name: string; id: string })?.id as string)}
-                              >
-                                {(member?.name as { name: string; id: string })?.name as string}
+                            memberColumnsloader ? (
+                              <Skeleton  width={width_90} />
+                            ) : (
+                              <div className="flex ">
+                                <div
+                                  className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer"
+                                  onClick={() => navigateToProfile((member?.name as { name: string; id: string })?.id as string)}
+                                >
+                                  {(member?.name as { name: string; id: string })?.name as string}
+                                </div>
                               </div>
-                            </div>
+                            )
                           ) : column === 'platforms' ? (
-                            <div
-                              className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 h-1.375 w-1.375 flex"
-                              key={index}
-                            >
-                              <img className="m-1 h-1.375 w-1.375 mt-0" src={slackIcon} title="Slack" />
-                              {/* <p className='h-1.375 w-1.375'>{'Slack'}</p> */}
-                            </div>
+                            memberColumnsloader ? (
+                              <Skeleton  width={width_90} />
+                            ) : (
+                              <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 h-1.375 w-1.375 flex" key={index}>
+                                <img className="m-1 h-1.375 w-1.375 mt-0" src={slackIcon} title="Slack" />
+                                {/* <p className='h-1.375 w-1.375'>{'Slack'}</p> */}
+                              </div>
+                            )
                           ) : //    <div className="flex gap-x-2">
                           //   {(member?.platforms as Array<{id:string, name:string}>)?.map((platforms: { name: string, id:string }, index: number) => (
                           //     <div
@@ -416,32 +427,44 @@ const Members: React.FC = () => {
                           //   ))}
                           // </div>
                             column === 'tags' ? (
-                              <div className="flex ">
-                                <div className="py-3 flex gap-2 items-center font-Poppins font-medium text-trial text-infoBlack leading-1.31">
-                                  {(member?.tags as Array<{ tag: { name: '' } }>)?.slice(0, 2).map((tags: { tag: { name: string } }, index: number) => (
-                                    <div className="bg-tagSection rounded w-5.25 h-8 flex justify-between px-3 items-center" key={index}>
-                                      <div className="font-Poppins font-normal text-card text-profileBlack leading-5">{tags?.tag?.name}</div>
-                                      <div>
-                                        <img src={closeIcon} alt="" />
-                                      </div>
+                              memberColumnsloader ? (
+                                <Skeleton  width={width_90} />
+                              ) : (
+                                <div className="flex ">
+                                  <div className="py-3 flex gap-2 items-center font-Poppins font-medium text-trial text-infoBlack leading-1.31">
+                                    {(member?.tags as Array<{ tag: { name: '' } }>)
+                                      ?.slice(0, 2)
+                                      .map((tags: { tag: { name: string } }, index: number) => (
+                                        <div className="bg-tagSection rounded w-5.25 h-8 flex justify-between px-3 items-center" key={index}>
+                                          <div className="font-Poppins font-normal text-card text-profileBlack leading-5">{tags?.tag?.name}</div>
+                                          <div>
+                                            <img src={closeIcon} alt="" />
+                                          </div>
+                                        </div>
+                                      ))}
+                                    <div className="font-Poppins font-semibold leading-5 text-tag text-card underline">
+                                      {(member?.tags as Array<Record<string, unknown>>)?.length > 2
+                                        ? `${(member?.tags as Array<Record<string, unknown>>)?.length - 2} more`
+                                        : ''}{' '}
                                     </div>
-                                  ))}
-                                  <div className="font-Poppins font-semibold leading-5 text-tag text-card underline">
-                                    {(member?.tags as Array<Record<string, unknown>>)?.length > 2
-                                      ? `${(member?.tags as Array<Record<string, unknown>>)?.length - 2} more`
-                                      : ''}{' '}
                                   </div>
                                 </div>
-                              </div>
+                              )
                             ) : column === 'lastActivity' ? (
-                              <div className="flex flex-col">
-                                <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
-                                  {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'MMM dd yyyy') : '--'}
+                              memberColumnsloader ? (
+                                <Skeleton  width={width_90} />
+                              ) : (
+                                <div className="flex flex-col">
+                                  <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
+                                    {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'MMM dd yyyy') : '--'}
+                                  </div>
+                                  <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
+                                    {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'HH:MM') : '--'}
+                                  </div>
                                 </div>
-                                <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
-                                  {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'HH:MM') : '--'}
-                                </div>
-                              </div>
+                              )
+                            ) : memberColumnsloader ? (
+                              <Skeleton  width={width_90} />
                             ) : (
                               <div className="flex ">
                                 <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">

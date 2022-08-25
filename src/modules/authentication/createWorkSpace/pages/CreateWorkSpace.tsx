@@ -10,6 +10,7 @@ import './CreateWorkSpace.css';
 
 const CreateWorkSpace: React.FC = () => {
   const dispatch: AppDispatch = useAppDispatch();
+
   const [workspaceName, setWorkspaceName] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string | unknown>('');
   const workspaceNameValidation = Yup.string().min(4, 'Workspace Name must be atleast 4 characters');

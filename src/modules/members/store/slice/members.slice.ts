@@ -144,6 +144,14 @@ const membersColumnsUpdateList = (state: InitialState, action: PayloadAction<Mem
 
 const membersListExport = (state: InitialState, action: PayloadAction<workspaceId>) => state;
 
+const getMembersActivityGraphData = (state: InitialState, action: PayloadAction<VerifyMembers>) => state;
+
+const getMembersActivityGraphDataPerPlatform = (state: InitialState, action: PayloadAction<VerifyPlatform>) => state;
+
+const getMembersActivityDataInfiniteScroll = (state: InitialState, action: PayloadAction<ActivityInfiniteScroll>) => state;
+
+const getMemberProfileCardData = (state: InitialState, action: PayloadAction<VerifyMembers>) => state;
+
 //Reducer Call
 
 const getMembersCountAnalytics = (state: InitialState, action: PayloadAction<MemberCountAnalyticsResponse>) => ({
@@ -156,13 +164,9 @@ const getMembersActivityAnalytics = (state: InitialState, action: PayloadAction<
   membersActivityAnalyticsData: action.payload
 });
 
-const getMembersActivityGraphData = (state: InitialState, action: PayloadAction<VerifyMembers>) => state;
-
 const setMembersActivityGraphData = (state: InitialState, action: PayloadAction<MembersProfileActivityGraphData>) => {
   state.membersProfileActivityGraphData = action.payload;
 };
-
-const getMembersActivityGraphDataPerPlatform = (state: InitialState, action: PayloadAction<VerifyPlatform>) => state;
 
 const getMembersListData = (state: InitialState, action: PayloadAction<MembersListResponse>) => ({
   ...state,
@@ -199,14 +203,10 @@ const getmembersListExport = (state: InitialState, action: PayloadAction<Array<B
   membersListExportData: action.payload
 });
 
-const getMembersActivityDataInfiniteScroll = (state: InitialState, action: PayloadAction<ActivityInfiniteScroll>) => state;
-
 const setMembersActivityData = (state: InitialState, action: PayloadAction<ActivityDataResponse>) => ({
   ...state,
   membersActivityData: { nextCursor: action.payload.nextCursor, result: [...state.membersActivityData.result, ...action.payload.result] }
 });
-
-const getMemberProfileCardData = (state: InitialState, action: PayloadAction<VerifyMembers>) => state;
 
 const setMemberProfileCardData = (state: InitialState, action: PayloadAction<MemberProfileCard[]>) => {
   state.memberProfileCardData = action.payload;
