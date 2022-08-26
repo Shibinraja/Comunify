@@ -36,9 +36,7 @@ const TopBar: React.FC = () => {
   };
 
   const handleOutsideClick = (event: MouseEvent) => {
-    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target as Node)) {
-      setIsDropdownActive(true);
-    } else {
+    if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
       setIsDropdownActive(false);
     }
   };

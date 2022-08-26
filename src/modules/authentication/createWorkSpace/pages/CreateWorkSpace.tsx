@@ -1,8 +1,8 @@
-import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
+import { useAppDispatch } from '@/hooks/useRedux';
 import Button from 'common/button/Button';
 import Input from 'common/input/Input';
 import authSlice from 'modules/authentication/store/slices/auth.slice';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import * as Yup from 'yup';
 import bgWorkSpaceImage from '../../../../assets/images/bg-sign.svg';
 import { AppDispatch } from '../../../../store/index';
@@ -10,16 +10,10 @@ import './CreateWorkSpace.css';
 
 const CreateWorkSpace: React.FC = () => {
   const dispatch: AppDispatch = useAppDispatch();
-  const { workspaceData } = useAppSelector((state) => state.auth);
 
   const [workspaceName, setWorkspaceName] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string | unknown>('');
-
   const workspaceNameValidation = Yup.string().min(4, 'Workspace Name must be atleast 4 characters');
-
-  useEffect(() => {
-    dispatch(authSlice.actions.getWorkspace());
-  }, []);
 
   const handleWorkspaceName = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const workspace_name = e.target.value;
@@ -70,7 +64,6 @@ const CreateWorkSpace: React.FC = () => {
                   />
                 </div>
                 <Button
-                  disabled={Boolean(workspaceData?.length !== 0) || Boolean(errorMessage) || !workspaceName}
                   text="Confirm"
                   type="submit"
                   className="font-Poppins rounded-lg text-base font-semibold text-white mt-1.8 h-3.6 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient"

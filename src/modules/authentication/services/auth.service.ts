@@ -64,7 +64,7 @@ export function* createWorkspaceService(body: CreateWorkspaceNameInput): Generat
   const { data } = yield request.post(`${workspace_module}/createworkspace`, body);
   return data;
 }
-export function* getworkspaceIdService(): GeneratorResponse<Array<GetWorkspaceIdResponse>> {
+export function* GetWorkspaceIdService(): GeneratorResponse<Array<GetWorkspaceIdResponse>> {
   const { data } = yield request.get(`${workspace_module}/getworkspaces`);
   return data;
 }

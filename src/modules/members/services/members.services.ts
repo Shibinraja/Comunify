@@ -1,13 +1,11 @@
-/* eslint-disable no-console */
 /* eslint-disable max-len */
 import { GeneratorResponse } from '@/lib/api';
-import { members_module, platforms_module } from '@/lib/config';
+import { platforms_module } from '@/lib/config';
 import { request } from '@/lib/request';
+import { workspaceId } from 'modules/activities/interfaces/activities.interface';
 
 import {
-  MembersCountResponse,
   MembersProfileActivityGraphData,
-  PlatformsData,
   VerifyPlatform,
   GetMembersListQueryParams,
   MembersListResponse,
@@ -20,37 +18,24 @@ import {
   ActivityDataResponse,
   ActivityInfiniteScroll,
   MemberProfileCard,
-  MembersPlatformResponse
+  PlatformResponse,
+  MemberCountAnalyticsResponse,
+  MemberActivityAnalyticsResponse
 } from '../interface/members.interface';
 
 //Members Module
-export function* ActiveCountService(): GeneratorResponse<MembersCountResponse> {
-  const { data } = yield request.get(`${members_module}/activecount`);
+export function* CountAnalyticsService(params: workspaceId): GeneratorResponse<MemberCountAnalyticsResponse> {
+  const { data } = yield request.get(`/v1/${params.workspaceId}/members/count-analytics`);
   return data;
 }
 
-export function* NewCountService(): GeneratorResponse<MembersCountResponse> {
-  const { data } = yield request.get(`${members_module}/newcount`);
-  return data;
-}
-
-export function* TotalCountService(): GeneratorResponse<MembersCountResponse> {
-  const { data } = yield request.get(`${members_module}/totalcount`);
-  return data;
-}
-
-export function* InactiveCountService(): GeneratorResponse<MembersCountResponse> {
-  const { data } = yield request.get(`${members_module}/inactivecount`);
+export function* ActivityAnalyticsService(params: workspaceId): GeneratorResponse<MemberActivityAnalyticsResponse> {
+  const { data } = yield request.get(`v1/${params.workspaceId}/members/activity-analytics`);
   return data;
 }
 
 export function* MembersActivityGraphService(params: VerifyMembers): GeneratorResponse<MembersProfileActivityGraphData> {
   const { data } = yield request.get(`/v1/${params.workspaceId}/members/${params.memberId}/activitygraph`);
-  return data;
-}
-
-export function* PlatformsDataService(): GeneratorResponse<PlatformsData[]> {
-  const { data } = yield request.get(`${platforms_module}`);
   return data;
 }
 
@@ -69,13 +54,14 @@ export function* MembersListService(query: Required<GetMembersListQueryParams>):
       query.membersQuery.organization?.checkedOrganization ? `&organization=${query.membersQuery.organization.checkedOrganization}` : ''
     }${query.membersQuery['lastActivity.gte'] ? `&lastActivity.gte=${query.membersQuery['lastActivity.gte']}` : ''}${
       query.membersQuery['lastActivity.lte'] ? `&lastActivity.lte=${query.membersQuery['lastActivity.lte']}` : ''
-    }${query.membersQuery['createdAT.lte'] ? `&createdAT.lte=${query.membersQuery['createdAT.lte']}` : ''}`
+    }${query.membersQuery['createdAT.gte'] ? `&createdAT.gte=${query.membersQuery['createdAT.gte']}` : ''}
+    ${query.membersQuery['createdAT.lte'] ? `&createdAT.lte=${query.membersQuery['createdAT.lte']}` : ''}`
   );
   return data;
 }
 
-export function* MembersPlatformFilterService(): GeneratorResponse<Array<MembersPlatformResponse>> {
-  const { data } = yield request.get(`/v1/platforms`);
+export function* PlatformsDataService(): GeneratorResponse<Array<PlatformResponse>> {
+  const { data } = yield request.get(`${platforms_module}`);
   return data;
 }
 
@@ -125,7 +111,7 @@ export function* MembersListExportService(query: { workspaceId: string }): Gener
 
 export function* GetMembersActivityDataInfiniteScrollSaga(params: ActivityInfiniteScroll): GeneratorResponse<ActivityDataResponse> {
   const { data } = yield request.get(
-    `/v1/${params.workspaceId}/members/${params.memberId}/activity?${params?.nextCursor ? `&cursor=${params.nextCursor}` : ''}${
+    `/v1/${params.workspaceId}/members/${params.memberId}/activity?page=1&limit=10${params?.nextCursor ? `&cursor=${params.nextCursor}` : ''}${
       params?.platform ? `&platforms=${params?.platform}` : ''
     }
       ${params?.fromDate ? `&activity.gte=${params.fromDate}` : ''} ${params?.toDate ? `&activity.lte=${params.toDate}` : ''}`

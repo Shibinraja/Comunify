@@ -1,4 +1,4 @@
-import useLoading from '@/hooks/useLoading';
+import useAuthLoading from '@/hooks/useAuthLoading';
 import { getResolution } from '@/lib/resolution';
 import Footer from 'common/footer';
 import Header from 'common/header';
@@ -10,14 +10,14 @@ import ResolutionLayout from './ResolutionLayout';
 
 const AuthLayout: React.FC = () => {
   const { width: screenWidth } = getResolution();
-  const loader = useLoading();
+  const loader = useAuthLoading();
 
   return (
     <Fragment>
       {screenWidth < maximum_screen_height ? (
         <ResolutionLayout />
       ) : (
-        <div>
+        <div className="flex flex-col">
           <Header />
           {loader && <Loader />}
           <Outlet />

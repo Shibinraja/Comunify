@@ -12,8 +12,6 @@ import {
   MembersListService,
   MembersLocationFilterService,
   MembersOrganizationFilterService,
-  TotalCountService,
-  InactiveCountService,
   PlatformsDataService,
   MembersActivityGraphService,
   GetMembersActivityGraphDataPerPlatformService,
@@ -21,101 +19,69 @@ import {
   MembersTagFilterService,
   GetMembersActivityDataInfiniteScrollSaga,
   GetMembersProfileCardService,
-  MembersPlatformFilterService
+  ActivityAnalyticsService,
+  CountAnalyticsService
 } from 'modules/members/services/members.services';
 import { PayloadAction } from '@reduxjs/toolkit';
-import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
 import {
   GetMembersListQueryParams,
   GetMembersLocationListQueryParams,
   GetMembersOrganizationListQueryParams,
   GetMembersTagListQueryParams,
   MembersColumnsParams,
-  MembersCountResponse,
   MembersListResponse,
-  MembersPlatformResponse,
+  PlatformResponse,
   MembersProfileActivityGraphData,
   MembersTagResponse,
-  PlatformsData,
   VerifyMembers,
   VerifyPlatform,
   workspaceId,
   ActivityDataResponse,
   ActivityInfiniteScroll,
-  MemberProfileCard
+  MemberProfileCard,
+  MemberCountAnalyticsResponse,
+  MemberActivityAnalyticsResponse
 } from 'modules/members/interface/members.interface';
 
 // const forwardTo = (location: string) => {
 //     history.push(location);
 // };
 
-function* membersTotalCount() {
+function* membersCountAnalytics(action: PayloadAction<workspaceId>) {
   try {
-    yield put(loaderSlice.actions.startLoadingAction());
+    yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.membersCountAnalytics.type));
 
-    const res: SuccessResponse<MembersCountResponse> = yield call(TotalCountService);
+    const res: SuccessResponse<MemberCountAnalyticsResponse> = yield call(CountAnalyticsService, action.payload);
     if (res?.data) {
-      yield put(membersSlice.actions.getMembersTotalCountData(res?.data));
+      yield put(membersSlice.actions.getMembersCountAnalytics(res?.data));
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
+    yield put(loaderSlice.actions.stopLoadingAction(membersSlice.actions.membersCountAnalytics.type));
   }
 }
 
-function* membersNewCount() {
+function* membersActivityAnalytics(action: PayloadAction<workspaceId>) {
   try {
-    yield put(loaderSlice.actions.startLoadingAction());
+    yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.membersActivityAnalytics.type));
 
-    const res: SuccessResponse<MembersCountResponse> = yield call(TotalCountService);
+    const res: SuccessResponse<MemberActivityAnalyticsResponse> = yield call(ActivityAnalyticsService, action.payload);
     if (res?.data) {
-      yield put(membersSlice.actions.getMembersNewCountData(res?.data));
+      yield put(membersSlice.actions.getMembersActivityAnalytics(res?.data));
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
-  }
-}
-
-function* membersActiveCount() {
-  try {
-    yield put(loaderSlice.actions.startLoadingAction());
-
-    const res: SuccessResponse<MembersCountResponse> = yield call(TotalCountService);
-    if (res?.data) {
-      yield put(membersSlice.actions.getMembersActiveCountData(res?.data));
-    }
-  } catch (e) {
-    const error = e as AxiosError<unknown>;
-    showErrorToast(error?.response?.data?.message);
-  } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
-  }
-}
-
-function* membersInActiveCount() {
-  try {
-    yield put(loaderSlice.actions.startLoadingAction());
-
-    const res: SuccessResponse<MembersCountResponse> = yield call(InactiveCountService);
-    if (res?.data) {
-      yield put(membersSlice.actions.getMembersInActiveCountData(res?.data));
-    }
-  } catch (e) {
-    const error = e as AxiosError<unknown>;
-    showErrorToast(error?.response?.data?.message);
-  } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
+    yield put(loaderSlice.actions.stopLoadingAction(membersSlice.actions.membersActivityAnalytics.type));
   }
 }
 
 function* membersList(action: PayloadAction<Required<GetMembersListQueryParams>>) {
   try {
-    yield put(loaderSlice.actions.startLoadingAction());
+    yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.membersList.type));
 
     const res: SuccessResponse<MembersListResponse> = yield call(MembersListService, action.payload);
     if (res?.data) {
@@ -125,13 +91,13 @@ function* membersList(action: PayloadAction<Required<GetMembersListQueryParams>>
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
+    yield put(loaderSlice.actions.stopLoadingAction(membersSlice.actions.membersList.type));
   }
 }
 
 function* membersActivityGraphSaga(action: PayloadAction<VerifyMembers>) {
   try {
-    yield put(loaderSlice.actions.startLoadingAction());
+    yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.getMembersActivityGraphData.type));
     const res: SuccessResponse<MembersProfileActivityGraphData> = yield call(MembersActivityGraphService, action.payload);
     yield put(membersSlice.actions.setMembersActivityGraphData(res?.data));
   } catch (e) {
@@ -140,29 +106,13 @@ function* membersActivityGraphSaga(action: PayloadAction<VerifyMembers>) {
       showErrorToast('Failed to load graph data');
     }
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
-  }
-}
-
-function* membersPlatformFilter() {
-  try {
-    yield put(loaderSlice.actions.startLoadingAction());
-
-    const res: SuccessResponse<Array<MembersPlatformResponse>> = yield call(MembersPlatformFilterService);
-    if (res?.data) {
-      yield put(membersSlice.actions.getmembersPlatformFilterData(res?.data));
-    }
-  } catch (e) {
-    const error = e as AxiosError<unknown>;
-    showErrorToast(error?.response?.data?.message);
-  } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
+    yield put(loaderSlice.actions.stopLoadingAction(membersSlice.actions.getMembersActivityGraphData.type));
   }
 }
 
 function* membersLocationFilter(action: PayloadAction<Partial<GetMembersLocationListQueryParams>>) {
   try {
-    yield put(loaderSlice.actions.startLoadingAction());
+    yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.membersLocationFilter.type));
 
     const res: SuccessResponse<Array<{ location: string }>> = yield call(MembersLocationFilterService, action.payload);
     if (res?.data) {
@@ -172,13 +122,13 @@ function* membersLocationFilter(action: PayloadAction<Partial<GetMembersLocation
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
+    yield put(loaderSlice.actions.stopLoadingAction(membersSlice.actions.membersLocationFilter.type));
   }
 }
 
 function* membersTagFilter(action: PayloadAction<Partial<GetMembersTagListQueryParams>>) {
   try {
-    yield put(loaderSlice.actions.startLoadingAction());
+    yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.membersTagFilter.type));
 
     const res: SuccessResponse<Array<MembersTagResponse>> = yield call(MembersTagFilterService, action.payload);
     if (res?.data) {
@@ -188,13 +138,13 @@ function* membersTagFilter(action: PayloadAction<Partial<GetMembersTagListQueryP
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
+    yield put(loaderSlice.actions.stopLoadingAction(membersSlice.actions.membersTagFilter.type));
   }
 }
 
 function* membersOrganizationFilter(action: PayloadAction<Partial<GetMembersOrganizationListQueryParams>>) {
   try {
-    yield put(loaderSlice.actions.startLoadingAction());
+    yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.membersOrganizationFilter.type));
 
     const res: SuccessResponse<Array<{ organization: string }>> = yield call(MembersOrganizationFilterService, action.payload);
     if (res?.data) {
@@ -204,24 +154,29 @@ function* membersOrganizationFilter(action: PayloadAction<Partial<GetMembersOrga
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
+    yield put(loaderSlice.actions.stopLoadingAction(membersSlice.actions.membersOrganizationFilter.type));
   }
 }
 
 function* getPlatformsDataSaga() {
   try {
-    yield put(loaderSlice.actions.startLoadingAction());
-    const res: SuccessResponse<PlatformsData[]> = yield call(PlatformsDataService);
-    yield put(membersSlice.actions.setPlatformsData({ platformsData: res?.data }));
+    yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.platformData.type));
+
+    const res: SuccessResponse<Array<PlatformResponse>> = yield call(PlatformsDataService);
+    if (res?.data) {
+      yield put(membersSlice.actions.getPlatformFilterData(res?.data));
+    }
   } catch (e) {
-    // const error = e as AxiosError<unknown>;
-    // throw error.response?.data?.message;
+    const error = e as AxiosError<unknown>;
+    showErrorToast(error?.response?.data?.message);
+  } finally {
+    yield put(loaderSlice.actions.stopLoadingAction(membersSlice.actions.platformData.type));
   }
 }
 
 function* membersColumnsList(action: PayloadAction<Omit<MembersColumnsParams, 'columnData'>>) {
   try {
-    yield put(loaderSlice.actions.startLoadingAction());
+    yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.membersColumnsList.type));
 
     const res: SuccessResponse<Pick<MembersColumnsParams, 'columnData'>> = yield call(MembersColumnsListService, action.payload);
     if (res?.data) {
@@ -231,14 +186,13 @@ function* membersColumnsList(action: PayloadAction<Omit<MembersColumnsParams, 'c
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
+    yield put(loaderSlice.actions.stopLoadingAction(membersSlice.actions.membersColumnsList.type));
   }
 }
 
 function* getMembersActivityGraphDataPerPlatformSaga(action: PayloadAction<VerifyPlatform>) {
   try {
-    yield put(loaderSlice.actions.startLoadingAction());
-
+    yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.getMembersActivityGraphDataPerPlatform.type));
     const res: SuccessResponse<MembersProfileActivityGraphData> = yield call(GetMembersActivityGraphDataPerPlatformService, action.payload);
     yield put(membersSlice.actions.setMembersActivityGraphData(res?.data));
   } catch (e) {
@@ -247,13 +201,13 @@ function* getMembersActivityGraphDataPerPlatformSaga(action: PayloadAction<Verif
       showErrorToast('Failed to load graph data');
     }
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
+    yield put(loaderSlice.actions.stopLoadingAction(membersSlice.actions.getMembersActivityGraphDataPerPlatform.type));
   }
 }
 
 function* membersColumnsUpdateList(action: PayloadAction<MembersColumnsParams>) {
   try {
-    yield put(loaderSlice.actions.startLoadingAction());
+    yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.membersColumnsUpdateList.type));
 
     const res: SuccessResponse<Pick<MembersColumnsParams, 'columnData'>> = yield call(MembersColumnsListUpdateService, action.payload);
     if (res?.data) {
@@ -264,15 +218,15 @@ function* membersColumnsUpdateList(action: PayloadAction<MembersColumnsParams>) 
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
+    yield put(loaderSlice.actions.stopLoadingAction(membersSlice.actions.membersColumnsUpdateList.type));
   }
 }
 
 function* membersListExport(action: PayloadAction<workspaceId>) {
   try {
-    yield put(loaderSlice.actions.startLoadingAction());
+    yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.membersListExport.type));
 
-    const res: SuccessResponse<{type:string, data:Array<Buffer>}> = yield call(MembersListExportService, action.payload);
+    const res: SuccessResponse<{ type: string; data: Array<Buffer> }> = yield call(MembersListExportService, action.payload);
     if (res?.data) {
       yield put(membersSlice.actions.getmembersListExport(res?.data?.data));
     }
@@ -280,45 +234,42 @@ function* membersListExport(action: PayloadAction<workspaceId>) {
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
+    yield put(loaderSlice.actions.stopLoadingAction(membersSlice.actions.membersListExport.type));
   }
 }
 
 function* getMembersActivityDataInfiniteScrollSaga(action: PayloadAction<ActivityInfiniteScroll>) {
   try {
-    yield put(loaderSlice.actions.startLoadingAction());
+    yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.getMembersActivityDataInfiniteScroll.type));
     const res: SuccessResponse<ActivityDataResponse> = yield call(GetMembersActivityDataInfiniteScrollSaga, action.payload);
     yield put(membersSlice.actions.setMembersActivityData(res?.data));
   } catch (e) {
     const error = e as AxiosError<unknown>;
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
+    yield put(loaderSlice.actions.stopLoadingAction(membersSlice.actions.getMembersActivityDataInfiniteScroll.type));
   }
 }
 
 function* getMemberProfileCardData(action: PayloadAction<VerifyMembers>) {
   try {
-    yield put(loaderSlice.actions.startLoadingAction());
+    yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.getMemberProfileCardData.type));
     const res: SuccessResponse<MemberProfileCard[]> = yield call(GetMembersProfileCardService, action.payload);
     yield put(membersSlice.actions.setMemberProfileCardData(res?.data));
   } catch (e) {
     const error = e as AxiosError<unknown>;
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
+    yield put(loaderSlice.actions.stopLoadingAction(membersSlice.actions.getMemberProfileCardData.type));
   }
 }
 
 export default function* membersSaga(): SagaIterator {
-  yield takeEvery(membersSlice.actions.membersTotalCount.type, membersTotalCount);
-  yield takeEvery(membersSlice.actions.membersNewCount.type, membersNewCount);
-  yield takeEvery(membersSlice.actions.membersActiveCount.type, membersActiveCount);
-  yield takeEvery(membersSlice.actions.membersInActiveCount.type, membersInActiveCount);
+  yield takeEvery(membersSlice.actions.membersCountAnalytics.type, membersCountAnalytics);
+  yield takeEvery(membersSlice.actions.membersActivityAnalytics.type, membersActivityAnalytics);
   yield takeEvery(membersSlice.actions.membersList.type, membersList);
   yield takeEvery(membersSlice.actions.getMembersActivityGraphData.type, membersActivityGraphSaga);
   yield takeEvery(membersSlice.actions.platformData.type, getPlatformsDataSaga);
   yield takeEvery(membersSlice.actions.getMembersActivityGraphDataPerPlatform.type, getMembersActivityGraphDataPerPlatformSaga);
   yield takeEvery(membersSlice.actions.membersTagFilter.type, membersTagFilter);
-  yield takeEvery(membersSlice.actions.membersPlatformFilter.type, membersPlatformFilter);
   yield takeEvery(membersSlice.actions.membersLocationFilter.type, membersLocationFilter);
   yield takeEvery(membersSlice.actions.membersOrganizationFilter.type, membersOrganizationFilter);
   yield takeEvery(membersSlice.actions.membersColumnsList.type, membersColumnsList);

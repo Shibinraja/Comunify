@@ -1,9 +1,9 @@
 import { useAppSelector } from './useRedux';
 
-const useLoading = (): boolean => {
+const useAuthLoading = (): boolean => {
   const loadingState = useAppSelector((state) => state.loader.loadingState);
 
   return loadingState;
 };
 
-export default useLoading;
+export default useAuthLoading;

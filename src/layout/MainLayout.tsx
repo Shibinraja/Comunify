@@ -1,16 +1,21 @@
-import useLoading from '@/hooks/useLoading';
 import { getResolution } from '@/lib/resolution';
-import Loader from 'common/Loader/Loader';
 import { maximum_screen_height } from 'constants/constants';
 import React, { Fragment } from 'react';
+import { useDispatch } from 'react-redux';
 import { Outlet } from 'react-router';
 import SideNav from '../common/sideNav/SideNav';
 import TopBar from '../common/topBar/TopBar';
+import settingsSlice from '../modules/settings/store/slice/settings.slice';
 import ResolutionLayout from './ResolutionLayout';
 
 const MainLayout: React.FC = () => {
   const { width: screenWidth } = getResolution();
-  const loader = useLoading();
+
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    dispatch(settingsSlice.actions.platformData());
+  }, []);
 
   return (
     <Fragment>
@@ -18,7 +23,6 @@ const MainLayout: React.FC = () => {
         <ResolutionLayout />
       ) : (
         <div className="flex h-screen">
-          {loader && <Loader />}
           <div className="w-1/4 xl:w-1/5">
             <SideNav />
           </div>

@@ -1,14 +1,18 @@
-.login-cover-bg {
-  /* background-image: url('../../../../assets/images/bg-line.svg'); */
-}
-
 ::-webkit-scrollbar {
   width: 0px;
 }
+
+@media screen and (min-width: 2000px) {
+  .layout-height {
+    height: calc(100vh - 13rem);
+  }
+}
+
 .auth-layout {
   background-image: url('../src/assets/images/login-bg.svg');
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: 50%;
   background-position: right;
+  background-color: #f6fdff;
 }

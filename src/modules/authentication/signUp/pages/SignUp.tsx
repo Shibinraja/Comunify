@@ -40,9 +40,7 @@ const SignUp: React.FC = () => {
   };
 
   const handleOutsideClick = (event: MouseEvent) => {
-    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target as Node)) {
-      setDropDownActive(true);
-    } else {
+    if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
       setDropDownActive(false);
     }
   };
@@ -202,7 +200,7 @@ const SignUp: React.FC = () => {
                         </div>
 
                         {isDropDownActive && (
-                          <div className="absolute w-full bg-white app-result-card-border box-border rounded-0.3 shadow-reportInput">
+                          <div className="absolute w-full bg-white app-result-card-border box-border rounded-0.3 shadow-reportInput z-10">
                             <ul id="domain" className="flex flex-col justify-center">
                               {options.map((options: string, index: number) => (
                                 <li

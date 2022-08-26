@@ -3,7 +3,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+body {
+  animation: fadeInAnimation ease 3s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
 
+@keyframes fadeInAnimation {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
 input {
   border: 1px solid #eff0f7;
   box-shadow: 8px 8px 24px rgba(2, 2, 70, 0.05);
@@ -56,6 +69,10 @@ input {
   border-bottom: 1px solid #e6e6e6;
 }
 
+.border-top-card {
+  border-top: 1px solid #e6e6e6;
+}
+
 .border-fetching-card {
   border: 1px solid #dee2e6;
 }
@@ -86,6 +103,10 @@ input {
   background-image: linear-gradient(white, white), linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
   background-origin: border-box;
   background-clip: content-box, border-box;
+}
+
+.border-integration-modal {
+  border: 1px solid #dee2e6;
 }
 
 .section::-webkit-scrollbar {
@@ -244,9 +265,9 @@ input {
 }
 
 .height-member-activity {
-  height: calc(100vh - 44rem);
-  min-height: 150px;
-  max-height: 150px;
+  height: calc(100vh - 44.5rem);
+  /* min-height: 150px; */
+  max-height: 300px;
 }
 
 .member-section::-webkit-scrollbar {
@@ -293,6 +314,7 @@ input {
 .react-datepicker__header {
   border-bottom: none !important;
   padding: 15px 0 0 0 !important;
+  background-color: #ffff !important;
 }
 
 .react-datepicker__month {
@@ -358,6 +380,12 @@ input {
   font-weight: 400;
 }
 
+.react-datepicker__close-icon::after {
+  background-color: transparent !important;
+  color: #55555c !important;
+  font-size: 22px !important;
+}
+
 /* Customradio button */
 
 .radio input[type='radio'] {
@@ -421,4 +449,15 @@ input {
 }
 .side-nav-layout {
   box-shadow: 0 -7px 0px rgb(0, 0, 0, 0.09), 0 1px 1px rgb(0, 0, 0, 0.2);
+}
+.members-list-height {
+  height: calc(100vh - 25rem);
+  overflow: scroll;
+  max-height: 521px;
+}
+
+.activity-list-height {
+  height: calc(100vh - 25rem);
+  overflow: scroll;
+  max-height: 410px;
 }

@@ -26,6 +26,7 @@ export interface GetMembersListQueryParams extends workspaceId {
     'lastActivity.lte'?: string;
     'lastActivity.gte'?: string;
     'createdAT.lte'?: string;
+    'createdAT.gte'?: string;
   };
 }
 
@@ -66,12 +67,21 @@ export interface MembersColumnsParams extends workspaceId {
 
 // Response Body
 
-export type MembersCountResponse = {
+export type MembersAnalyticsResponse = {
   count: number;
   title: string;
   analyticMessage: string;
 };
 
+export type MemberCountAnalyticsResponse = {
+  newMembers: MembersAnalyticsResponse;
+  totalMembers: MembersAnalyticsResponse;
+};
+
+export type MemberActivityAnalyticsResponse = {
+  activeMembers: MembersAnalyticsResponse;
+  inActiveMembers: MembersAnalyticsResponse;
+};
 export interface SeriesDataForMemberGraph {
   name: string;
   data: number[];
@@ -90,14 +100,6 @@ export interface VerifyMembers {
 export interface MemberGraphProps {
   activityGraphData: MembersProfileActivityGraphData;
 }
-export interface PlatformsData {
-  id: string;
-  name: string;
-  status?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
 export interface VerifyPlatform {
   workspaceId: string;
   memberId: string;
@@ -137,7 +139,7 @@ export type MembersListResponse = {
   nextPage: number;
 };
 
-export type MembersPlatformResponse = {
+export type PlatformResponse = {
   id: string;
   name: string;
   status: string;
@@ -197,6 +199,12 @@ export enum ActivitiesType {
   Thread = 'Thread',
   Reaction = 'Reaction',
   Member = 'Member'
+}
+
+export enum CustomDateType {
+  Day = '1day',
+  Week = '7day',
+  Month = '1month'
 }
 
 export interface ActivityResult {

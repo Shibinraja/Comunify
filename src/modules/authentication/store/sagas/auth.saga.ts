@@ -33,7 +33,7 @@ import {
   verifyForgotEmailService,
   sendSubscriptionPlan,
   signOutService,
-  getworkspaceIdService
+  GetWorkspaceIdService
 } from 'modules/authentication/services/auth.service';
 import { AxiosResponse } from 'axios';
 import { AxiosError, SuccessResponse } from '@/lib/api';
@@ -44,7 +44,7 @@ const forwardTo = (location: string) => {
 
 function* loginSaga(action: PayloadAction<SignInInput>) {
   try {
-    yield put(loaderSlice.actions.startLoadingAction());
+    yield put(loaderSlice.actions.startAuthLoadingAction());
 
     const res: SuccessResponse<TokenResponse> = yield call(signInService, action.payload);
     if (res?.data) {
@@ -56,13 +56,13 @@ function* loginSaga(action: PayloadAction<SignInInput>) {
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
+    yield put(loaderSlice.actions.stopAuthLoadingAction());
   }
 }
 
 function* signUp(action: PayloadAction<SignUpInput>) {
   try {
-    yield put(loaderSlice.actions.startLoadingAction());
+    yield put(loaderSlice.actions.startAuthLoadingAction());
     const res: SuccessResponse<SignUpResponse> = yield call(signUpService, action.payload);
 
     if (res?.data) {
@@ -74,13 +74,13 @@ function* signUp(action: PayloadAction<SignUpInput>) {
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
+    yield put(loaderSlice.actions.stopAuthLoadingAction());
   }
 }
 
 function* verifyEmail(action: PayloadAction<VerifyEmailInput>) {
   try {
-    yield put(loaderSlice.actions.startLoadingAction());
+    yield put(loaderSlice.actions.startAuthLoadingAction());
     const res: SuccessResponse<TokenResponse> = yield call(verifyEmailService, action.payload);
     if (res?.data) {
       localStorage.setItem('accessToken', res?.data?.token);
@@ -95,13 +95,13 @@ function* verifyEmail(action: PayloadAction<VerifyEmailInput>) {
     }
     showErrorToast(error?.response?.data?.message);
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
+    yield put(loaderSlice.actions.stopAuthLoadingAction());
   }
 }
 
 function* resendVerificationMail(action: PayloadAction<ResendVerificationMailInput>) {
   try {
-    yield put(loaderSlice.actions.startLoadingAction());
+    yield put(loaderSlice.actions.startAuthLoadingAction());
     const res: SuccessResponse<TokenResponse> = yield call(resendVerifyEmailService, action.payload);
     if (res?.message) {
       showSuccessToast(res.message);
@@ -111,13 +111,13 @@ function* resendVerificationMail(action: PayloadAction<ResendVerificationMailInp
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
+    yield put(loaderSlice.actions.stopAuthLoadingAction());
   }
 }
 
 function* forgotPassword(action: PayloadAction<ForgotPasswordInput>) {
   try {
-    yield put(loaderSlice.actions.startLoadingAction());
+    yield put(loaderSlice.actions.startAuthLoadingAction());
     const res: SuccessResponse<{}> = yield call(forgotPasswordService, action.payload);
     if (!res?.error) {
       yield call(forwardTo, '/resend-mail');
@@ -128,13 +128,13 @@ function* forgotPassword(action: PayloadAction<ForgotPasswordInput>) {
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
+    yield put(loaderSlice.actions.stopAuthLoadingAction());
   }
 }
 
 function* verifyForgotEmail(action: PayloadAction<VerifyEmailInput>) {
   try {
-    yield put(loaderSlice.actions.startLoadingAction());
+    yield put(loaderSlice.actions.startAuthLoadingAction());
     const res: SuccessResponse<TokenResponse> = yield call(verifyForgotEmailService, action.payload);
     if (res?.data) {
       // yield put(authSlice.actions.setIsAuthenticated(true));
@@ -144,13 +144,13 @@ function* verifyForgotEmail(action: PayloadAction<VerifyEmailInput>) {
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
+    yield put(loaderSlice.actions.stopAuthLoadingAction());
   }
 }
 
 function* resetPassword(action: PayloadAction<ResetPasswordInput>) {
   try {
-    yield put(loaderSlice.actions.startLoadingAction());
+    yield put(loaderSlice.actions.startAuthLoadingAction());
     const res: SuccessResponse<{}> = yield call(resetPasswordService, action.payload);
     if (res?.message) {
       yield put(authSlice.actions.formikValueReset(true));
@@ -161,26 +161,26 @@ function* resetPassword(action: PayloadAction<ResetPasswordInput>) {
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
+    yield put(loaderSlice.actions.stopAuthLoadingAction());
   }
 }
 
 function* getWorkspace() {
   try {
-    yield put(loaderSlice.actions.startLoadingAction());
+    yield put(loaderSlice.actions.startAuthLoadingAction());
     const res: SuccessResponse<WorkspaceResponse> = yield call(getWorkspaceService);
     yield put(authSlice.actions.getWorkspaceData(res?.data));
   } catch (e) {
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
+    yield put(loaderSlice.actions.stopAuthLoadingAction());
   }
 }
 
 function* createWorkspace(action: PayloadAction<CreateWorkspaceNameInput>) {
   try {
-    yield put(loaderSlice.actions.startLoadingAction());
+    yield put(loaderSlice.actions.startAuthLoadingAction());
     const res: SuccessResponse<GetWorkspaceIdResponse> = yield call(createWorkspaceService, action.payload);
     if (res) {
       const workspaceId = res?.data?.id;
@@ -192,13 +192,13 @@ function* createWorkspace(action: PayloadAction<CreateWorkspaceNameInput>) {
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
+    yield put(loaderSlice.actions.stopAuthLoadingAction());
   }
 }
 
 function* logout() {
   try {
-    yield put(loaderSlice.actions.startLoadingAction());
+    yield put(loaderSlice.actions.startAuthLoadingAction());
     yield call(signOutService);
     window.localStorage.clear();
     location.reload();
@@ -206,26 +206,26 @@ function* logout() {
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
+    yield put(loaderSlice.actions.stopAuthLoadingAction());
   }
 }
 
 function* getSubscriptions() {
   try {
-    yield put(loaderSlice.actions.startLoadingAction());
+    yield put(loaderSlice.actions.startAuthLoadingAction());
     const res: AxiosResponse = yield call(getSubscriptionPackagesService);
     yield put(authSlice.actions.setSubscriptions({ subscriptionData: res?.data }));
   } catch (e) {
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
+    yield put(loaderSlice.actions.stopAuthLoadingAction());
   }
 }
 
 function* chooseSubscription(action: PayloadAction<string>) {
   try {
-    yield put(loaderSlice.actions.startLoadingAction());
+    yield put(loaderSlice.actions.startAuthLoadingAction());
     const res: SuccessResponse<SubscriptionPackages> = yield call(sendSubscriptionPlan, action.payload);
     if (res) {
       if (res.data.viewName.toLocaleLowerCase().trim() === 'free trial') {
@@ -239,14 +239,14 @@ function* chooseSubscription(action: PayloadAction<string>) {
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
+    yield put(loaderSlice.actions.stopAuthLoadingAction());
   }
 }
 
 function* getWorkspaceId() {
   try {
-    yield put(loaderSlice.actions.startLoadingAction());
-    const res: SuccessResponse<Array<GetWorkspaceIdResponse>> = yield call(getworkspaceIdService);
+    yield put(loaderSlice.actions.startAuthLoadingAction());
+    const res: SuccessResponse<Array<GetWorkspaceIdResponse>> = yield call(GetWorkspaceIdService);
     if (res) {
       const workspaceId = res?.data[0]?.id;
       localStorage.setItem('workspaceId', workspaceId);
@@ -255,7 +255,7 @@ function* getWorkspaceId() {
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
   } finally {
-    yield put(loaderSlice.actions.stopLoadingAction());
+    yield put(loaderSlice.actions.stopAuthLoadingAction());
   }
 }
 

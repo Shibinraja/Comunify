@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { ChangeEvent, FC, Fragment, useEffect, useRef, useState } from 'react';
 import { ActivityStreamTypesProps } from './activity.types';
@@ -5,7 +6,7 @@ import downArrow from '../../../assets/images/filter-dropdown.svg';
 import searchIcon from '../../../assets/images/search.svg';
 import filterDownIcon from '../../../assets/images/report-dropdown.svg';
 import calendarIcon from '../../../assets/images/calandar.svg';
-import DatePicker from 'react-datepicker';
+import DatePicker, { ReactDatePicker } from 'react-datepicker';
 import Button from 'common/button';
 import { format } from 'date-fns';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
@@ -13,7 +14,8 @@ import { ActiveStreamTagResponse } from '../interfaces/activities.interface';
 import useDebounce from '@/hooks/useDebounce';
 import { useParams } from 'react-router-dom';
 import activitiesSlice from '../store/slice/activities.slice';
-import { MembersPlatformResponse } from 'modules/members/interface/members.interface';
+import { PlatformResponse } from 'modules/members/interface/members.interface';
+import usePlatform from '../../../hooks/usePlatform';
 
 const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
   const { workspaceId } = useParams();
@@ -29,10 +31,14 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
   const [endDate, setEndDate] = useState<Date>();
 
   const dropDownRef = useRef<HTMLDivElement>(null);
-  const { activeStreamTagFilterResponse } = useAppSelector((state) => state.activities);
-  const { membersPlatformFilterResponse } = useAppSelector((state) => state.members);
+  const datePickerRefStart = useRef<ReactDatePicker>(null);
+  const datePickerRefEnd = useRef<ReactDatePicker>(null);
 
   const debouncedTagValue = useDebounce(tagSearchText, 300);
+  const disableApplyBtn = Object.values(checkedPlatform).concat(Object.values(checkedTags));
+
+  const { activeStreamTagFilterResponse } = useAppSelector((state) => state.activities);
+  const PlatformFilterResponse = usePlatform();
 
   // Returns the debounced value of the search text.
   useEffect(() => {
@@ -49,9 +55,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
   }, []);
 
   const handleOutsideClick = (event: MouseEvent) => {
-    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target as Node)) {
-      setIsFilterDropdownActive(true);
-    } else {
+    if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
       setIsFilterDropdownActive(false);
     }
   };
@@ -100,6 +104,18 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
     }
   };
 
+  const handleClickDatepickerIcon = (type: string) => {
+    if (type === 'start') {
+      const datePickerElement = datePickerRefStart.current;
+      datePickerElement!.setFocus();
+    }
+
+    if (type === 'end') {
+      const datePickerElement = datePickerRefEnd.current;
+      datePickerElement!.setFocus();
+    }
+  };
+
   const getFilteredMembersTagList = (tagText: string) => {
     dispatch(
       activitiesSlice.actions.activeStreamTagFilter({
@@ -143,6 +159,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
         workspaceId: workspaceId!
       })
     );
+    handleFilterDropdown();
   };
 
   return (
@@ -173,10 +190,10 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
               </div>
             </div>
             {isPlatformActive && (
-              <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
-                {membersPlatformFilterResponse &&
-                  membersPlatformFilterResponse.map(
-                    (platform: MembersPlatformResponse, index: number) =>
+              <div className="flex flex-col gap-y-5 justify-center px-3 max-h-[10rem] overflow-scroll">
+                {PlatformFilterResponse &&
+                  PlatformFilterResponse.map(
+                    (platform: PlatformResponse, index: number) =>
                       platform.name !== null && (
                         <div className="flex items-center" key={index}>
                           <div className="mr-2">
@@ -224,7 +241,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
                     <img src={searchIcon} alt="" />
                   </div>
                 </div>
-                <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
+                <div className="flex flex-col gap-y-5 justify-center px-3 max-h-[12.5rem] overflow-scroll">
                   {activeStreamTagFilterResponse &&
                     activeStreamTagFilterResponse.map((tags: ActiveStreamTagResponse, index: number) => (
                       <div key={index} className="flex items-center mb-2">
@@ -268,8 +285,14 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
                       onChange={(date: Date, event: ChangeEvent<Date>) => selectActiveBetweenDate(event, date, 'start')}
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
+                      ref={datePickerRefStart}
                     />
-                    <img className="absolute icon-holder right-6 cursor-pointer" src={calendarIcon} alt="" />
+                    <img
+                      className="absolute icon-holder right-6 cursor-pointer"
+                      src={calendarIcon}
+                      alt=""
+                      onClick={() => handleClickDatepickerIcon('start')}
+                    />
                   </div>
                 </div>
                 <div className="flex flex-col px-3 pb-4 pt-3">
@@ -280,8 +303,14 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
                       onChange={(date: Date, event: ChangeEvent<Date>) => selectActiveBetweenDate(event, date, 'end')}
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
+                      ref={datePickerRefEnd}
                     />
-                    <img className="absolute icon-holder right-6 cursor-pointer" src={calendarIcon} alt="" />
+                    <img
+                      className="absolute icon-holder right-6 cursor-pointer"
+                      src={calendarIcon}
+                      alt=""
+                      onClick={() => handleClickDatepickerIcon('end')}
+                    />
                   </div>
                 </div>
               </Fragment>
@@ -289,10 +318,19 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
 
             <div className="buttons px-3 ">
               <Button
+                disabled={
+                  (startDate === undefined ? true : false) && (endDate === undefined ? true : false) && disableApplyBtn.includes(true) !== true
+                    ? true
+                    : false
+                }
                 onClick={submitFilterChange}
                 type="button"
                 text="Apply"
-                className="border-none btn-save-modal rounded-0.31 h-2.063 w-full mt-1.56 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white"
+                className={`border-none btn-save-modal rounded-0.31 h-2.063 w-full mt-1.56 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${
+                  (disableApplyBtn.includes(true) !== true ? 'cursor-not-allowed' : '') &&
+                  (startDate === undefined ? 'cursor-not-allowed' : '') &&
+                  (endDate === undefined ? 'cursor-not-allowed' : '')
+                }`}
               />
             </div>
           </div>

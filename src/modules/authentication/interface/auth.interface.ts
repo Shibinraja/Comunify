@@ -114,8 +114,8 @@ export interface SubscriptionPackages {
   viewName: string;
   description: string;
   features: {
-    comunifyFeature:{name:string},
-    value:string
+    comunifyFeature: { name: string };
+    value: string;
   }[];
   amount: number;
   type: Type;
@@ -142,13 +142,13 @@ export type WorkspaceResponse = {
 };
 
 export type GetWorkspaceIdResponse = {
-    id: string;
-    userId: string;
-    name: string;
-    isActive: boolean;
-    isDeleted: boolean;
-    subscriptionId: string;
-    subscriptionExpiry: Date;
-    createdAt: Date;
-    updatedAt: Date;
+  id: string;
+  userId: string;
+  name: string;
+  isActive: boolean;
+  isDeleted: boolean;
+  subscriptionId: string;
+  subscriptionExpiry: Date;
+  createdAt: Date;
+  updatedAt: Date;
 };
