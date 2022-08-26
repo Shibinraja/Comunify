@@ -8,13 +8,16 @@ import dropdownIcon from '../../../assets/images/Vector.svg';
 import searchIcon from '../../../assets/images/search.svg';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import { MemberTypesProps } from './membertypes';
-import DatePicker from 'react-datepicker';
+import DatePicker, { ReactDatePicker } from 'react-datepicker';
+import './Members.css';
+
 import 'react-datepicker/dist/react-datepicker.css';
 import calendarIcon from '../../../assets/images/calandar.svg';
 import { format } from 'date-fns';
 import { getLocalWorkspaceId } from '@/lib/helper';
 import useDebounce from '@/hooks/useDebounce';
 import { MembersTagResponse, PlatformResponse } from '../interface/members.interface';
+import usePlatform from '../../../hooks/usePlatform';
 
 const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
   const [isFilterDropdownActive, setisFilterDropdownActive] = useState<boolean>(false);
@@ -32,19 +35,21 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
   const [locationSearchText, setLocationSearchText] = useState<string>('');
   const [organizationSearchText, setOrganizationSearchText] = useState<string>('');
   const [isActiveBetween, setActiveBetween] = useState<boolean>(false);
-  const datepickerRefStart = useRef<any>(null);
-  const datepickerRefEnd = useRef<any>(null);
+  const datePickerRefStart = useRef<ReactDatePicker>(null);
+  const datePickerRefEnd = useRef<ReactDatePicker>(null);
 
   const workspaceId = getLocalWorkspaceId();
   const dispatch = useAppDispatch();
   const dropDownRef = useRef<HTMLDivElement>(null);
-  const { membersLocationFilterResponse, membersOrganizationFilterResponse, membersTagFilterResponse, PlatformFilterResponse } = useAppSelector(
-    (state) => state.members
-  );
-
+  const { membersLocationFilterResponse, membersOrganizationFilterResponse, membersTagFilterResponse } = useAppSelector((state) => state.members);
+  const PlatformFilterResponse = usePlatform();
   const debouncedLocationValue = useDebounce(locationSearchText, 300);
   const debouncedOrganizationValue = useDebounce(organizationSearchText, 300);
   const debouncedTagValue = useDebounce(tagSearchText, 300);
+  const disableApplyBtn = Object.values(checkedPlatform)
+    .concat(Object.values(checkedTags))
+    .concat(Object.values(checkedLocation))
+    .concat(Object.values(checkedOrganization));
 
   // Returns the debounced value of the search text.
   useEffect(() => {
@@ -75,9 +80,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
   }, []);
 
   const handleOutsideClick = (event: MouseEvent) => {
-    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target as Node)) {
-      setisFilterDropdownActive(true);
-    } else {
+    if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
       setisFilterDropdownActive(false);
     }
   };
@@ -174,11 +177,11 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
 
   const handleClickDatepickerIcon = (type: string) => {
     if (type === 'start') {
-      const datepickerElement = datepickerRefStart.current;
-      datepickerElement.setFocus(true);
+      const datepickerElement = datePickerRefStart.current;
+      datepickerElement!.setFocus();
     } else {
-      const datepickerElement = datepickerRefEnd.current;
-      datepickerElement.setFocus(true);
+      const datepickerElement = datePickerRefEnd.current;
+      datepickerElement!.setFocus();
     }
   };
 
@@ -257,12 +260,13 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
         workspaceId: workspaceId!
       })
     );
+    handleFilterDropdown();
   };
 
   return (
     <div className="box-border cursor-pointer rounded-0.6 shadow-contactCard app-input-card-border relative " ref={dropDownRef}>
       <div className="flex h-3.06  items-center justify-between px-5 " onClick={handleFilterDropdown}>
-        <div className="box-border rounded-0.6 shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">Filters</div>
+        <div className="box-border rounded-0.6 shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">Filters {''}</div>
         <div>
           <img src={dropdownIcon} alt="" className={isFilterDropdownActive ? 'rotate-180' : 'rotate-0'} />
         </div>
@@ -286,7 +290,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
               </div>
             </div>
             {isPlatformActive && (
-              <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125 pb-3">
+              <div className="flex flex-col gap-y-5 justify-center px-3 pb-3 max-h-[11.25rem] overflow-scroll">
                 {PlatformFilterResponse &&
                   PlatformFilterResponse.map(
                     (platform: PlatformResponse, index: number) =>
@@ -338,7 +342,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
                     <img src={searchIcon} alt="" />
                   </div>
                 </div>
-                <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
+                <div className="flex flex-col gap-y-5 justify-center px-3 max-h-[12.5rem] overflow-scroll">
                   {membersTagFilterResponse &&
                     membersTagFilterResponse.map((tags: MembersTagResponse, index: number) => (
                       <div key={index} className="flex items-center mb-2">
@@ -383,7 +387,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
                       onChange={(date: Date, event: ChangeEvent<Date>) => selectActiveBetweenDate(event, date, 'start')}
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
-                      ref={datepickerRefStart}
+                      ref={datePickerRefStart}
                     />
                     <img
                       className="absolute icon-holder right-6 cursor-pointer"
@@ -401,7 +405,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
                       onChange={(date: Date, event: ChangeEvent<Date>) => selectActiveBetweenDate(event, date, 'end')}
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
-                      ref={datepickerRefEnd}
+                      ref={datePickerRefEnd}
                     />
                     <img
                       className="absolute icon-holder right-6 cursor-pointer"
@@ -443,7 +447,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
                     <img src={searchIcon} alt="" />
                   </div>
                 </div>
-                <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125 bg-white">
+                <div className="flex flex-col gap-y-5 justify-center px-3 max-h-[12.5rem] overflow-scroll bg-white">
                   {membersLocationFilterResponse &&
                     membersLocationFilterResponse.map(
                       (location: { location: string }, index: number) =>
@@ -483,7 +487,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
               </div>
             </div>
             {isOrganizationActive && (
-              <div>
+              <div className="">
                 <div className="flex relative items-center pt-2 pb-3 ">
                   <input
                     type="text"
@@ -497,7 +501,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
                     <img src={searchIcon} alt="" />
                   </div>
                 </div>
-                <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125 bg-white">
+                <div className="flex flex-col gap-y-5 justify-center px-3  bg-white max-h-[12.5rem] overflow-scroll">
                   {membersOrganizationFilterResponse &&
                     membersOrganizationFilterResponse.map(
                       (organization: { organization: string }, index: number) =>
@@ -522,10 +526,19 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
             )}
             <div className="buttons px-2">
               <Button
+                disabled={
+                  (startDate === undefined ? true : false) && (endDate === undefined ? true : false) && disableApplyBtn.includes(true) !== true
+                    ? true
+                    : false
+                }
                 onClick={submitFilterChange}
                 type="button"
                 text="Apply"
-                className="border-none btn-save-modal rounded-0.31 h-2.063 w-full mt-1.56 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white transition ease-in duration-300 hover:shadow-buttonShadowHover"
+                className={`border-none btn-save-modal rounded-0.31 h-2.063 w-full mt-1.56 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white transition ease-in duration-300 hover:shadow-buttonShadowHover ${
+                  (disableApplyBtn.includes(true) !== true ? 'cursor-not-allowed' : '') &&
+                  (startDate === undefined ? 'cursor-not-allowed' : '') &&
+                  (endDate === undefined ? 'cursor-not-allowed' : '')
+                }`}
               />
             </div>
           </div>

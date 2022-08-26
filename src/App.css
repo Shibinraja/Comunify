@@ -36,3 +36,14 @@
 button {
   font-size: calc(10px + 2vmin);
 }
+
+.loader-avatar {
+  width: 55px;
+  height: 55px;
+  background-color: #eaeaea;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}

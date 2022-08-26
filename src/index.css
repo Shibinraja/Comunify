@@ -280,7 +280,7 @@ input {
 }
 
 .height-member-activity {
-  height: calc(100vh - 44rem);
+  height: calc(100vh - 44.5rem);
   /* min-height: 150px; */
   max-height: 300px;
 }

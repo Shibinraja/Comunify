@@ -15,7 +15,9 @@ const PrivateRoute: React.FC<Props> = ({ children }) => {
   const dispatch = useAppDispatch();
   const access_token = tokenData || cookie.load('x-auth-cookie');
   const decodedToken: DecodeToken = access_token && decodeToken(access_token);
-  if (!localStorage.getItem('workspaceId')) {
+  const workspaceId = localStorage.getItem('workspaceId');
+
+  if (!workspaceId && access_token) {
     localStorage.setItem('workspaceId', decodedToken.workspaceId);
   }
 

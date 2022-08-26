@@ -17,6 +17,8 @@ declare module 'redux' {
   }
 }
 
+export type State = ReturnType<typeof rootReducer>;
+
 // const makeStore = (preloadedState: RootState = {} as RootState) => {
 const sagaMiddleware = createSagaMiddleware();
 const middleware: Middleware[] = [sagaMiddleware];
@@ -24,11 +26,6 @@ const middleware: Middleware[] = [sagaMiddleware];
 if (import.meta.env.MODE === 'development') {
   middleware.push(logger as SagaMiddleware);
 }
-
-// Add enhancers here
-// const composedEnhancers: StoreEnhancer = composeEnhancers(...enhancers);
-
-// const store:Store = createStore(rootReducer, preloadedState, composedEnhancers);
 
 const store: Store = configureStore({
   reducer: rootReducer,
@@ -38,12 +35,6 @@ const store: Store = configureStore({
 
 store.sagaTask = sagaMiddleware.run(rootSaga);
 
-// return store;
-// };
-
-// Preloaded state is used to initialize the store with data possibly from localStorage
-// const preloadedState = {} as RootState;
-// const store = configureStore(preloadedState);
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof rootReducer>;
 

@@ -10,6 +10,7 @@ import { unstable_HistoryRouter as HistoryRouter } from 'react-router-dom';
 import history from './lib/history';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 function App() {
   return (

@@ -3,7 +3,7 @@
 import Button from 'common/button';
 import MembersCard from 'common/membersCard/MembersCard';
 import React, { ChangeEvent, Fragment, Key, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
-import DatePicker from 'react-datepicker';
+import DatePicker, { ReactDatePicker } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Modal from 'react-modal';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -14,7 +14,6 @@ import searchIcon from '../../../assets/images/search.svg';
 import closeIcon from '../../../assets/images/tag-close.svg';
 import dropdownIcon from '../../../assets/images/Vector.svg';
 import './Members.css';
-// import { membersTableData } from './MembersTableData';
 import useDebounce from '@/hooks/useDebounce';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
@@ -26,22 +25,25 @@ import membersSlice from '../store/slice/members.slice';
 import MembersFilter from './MembersFilter';
 import MembersDraggableColumn from './membersTableColumn/membersDraggableColumn';
 import { ColumNames } from './MembersTableData';
-import { customDateLinkProps } from './membertypes';
+import { customDateLinkProps, filterDateProps, memberFilterExportProps } from './membertypes';
 import { CustomDateType } from '../interface/members.interface';
 import { API_ENDPOINT } from '@/lib/config';
-
+import Skeleton from 'react-loading-skeleton';
 import fetchExportList from '@/lib/fetchExport';
+import useSkeletonLoading from '@/hooks/useSkeletonLoading';
+import { width_90 } from 'constants/constants';
 
 Modal.setAppElement('#root');
 
 const Members: React.FC = () => {
+  const limit = 10;
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { workspaceId } = useParams();
-  const [isModalOpen, setisModalOpen] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [columns, setColumns] = useState<Array<ColumnNameProps>>(ColumNames);
   const [customizedColumnBool, saveCustomizedColumn] = useState<boolean>(false);
-  const [page, setpage] = useState<number>(1);
-  const [limit, setLimit] = useState<number>(10);
+  const [page, setPage] = useState<number>(1);
   const [searchText, setSearchText] = useState<string>('');
   const [customStartDate, setCustomStartDate] = useState<Date>();
   const [customEndDate, setCustomEndDate] = useState<Date>();
@@ -50,24 +52,36 @@ const Members: React.FC = () => {
     '7day': false,
     '1month': false
   });
-  const datepickerRefStart = useRef<any>(null);
-  const datepickerRefEnd = useRef<any>(null);
+  const [filteredDate, setFilteredDate] = useState<filterDateProps>({
+    filterStartDate: '',
+    filterEndDate: ''
+  });
+  const [isFilterDropdownActive, setIsFilterDropdownActive] = useState<boolean>(false);
+  const [filterExportParams, setFilterExportParams] = useState<memberFilterExportProps>({
+    checkTags: '',
+    checkPlatform: '',
+    checkOrganization: '',
+    checkLocation: '',
+    endDate: '',
+    startDate: ''
+  });
 
-  const dispatch = useAppDispatch();
+  const memberColumnsLoader = useSkeletonLoading(membersSlice.actions.membersList.type);
+
+  const datePickerRefStart = useRef<ReactDatePicker>(null);
+  const datePickerRefEnd = useRef<ReactDatePicker>(null);
 
   const debouncedValue = useDebounce(searchText, 300);
 
-  const [isFilterDropdownActive, setisFilterDropdownActive] = useState<boolean>(false);
   const dropDownRef = useRef<HTMLDivElement>(null);
 
   const handleFilterDropdown = (): void => {
-    setisFilterDropdownActive((prev) => !prev);
+    setIsFilterDropdownActive((prev) => !prev);
   };
+
   const handleOutsideClick = (event: MouseEvent) => {
-    if (dropDownRef && dropDownRef.current && dropDownRef.current.contains(event.target as Node)) {
-      setisFilterDropdownActive(true);
-    } else {
-      setisFilterDropdownActive(false);
+    if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
+      setIsFilterDropdownActive(false);
     }
   };
 
@@ -79,14 +93,13 @@ const Members: React.FC = () => {
   }, []);
 
   const {
-    membersListData: { data, totalPages, previousPage, nextPage },
+    membersListData: { data, totalPages },
     customizedColumn: customizedColumnData
   } = useAppSelector((state) => state.members);
 
   useEffect(() => {
     dispatch(membersSlice.actions.membersCountAnalytics({ workspaceId: workspaceId! }));
     dispatch(membersSlice.actions.membersActivityAnalytics({ workspaceId: workspaceId! }));
-    dispatch(membersSlice.actions.platformData());
     dispatch(
       membersSlice.actions.membersTagFilter({
         membersQuery: { tags: { searchedTags: '', checkedTags: '' } },
@@ -131,24 +144,25 @@ const Members: React.FC = () => {
   // Returns the debounced value of the search text.
   useEffect(() => {
     if (debouncedValue) {
-      getFilteredMembersList(debouncedValue);
+      getFilteredMembersList(1, debouncedValue);
     }
   }, [debouncedValue]);
 
   // Custom Date filter member list
   useEffect(() => {
     if (customStartDate && customEndDate) {
-      getFilteredMembersList('', format(customStartDate as Date, 'yyyy-MM-dd'), format(customEndDate as Date, 'yyyy-MM-dd'));
+      getFilteredMembersList(1, '', format(customStartDate as Date, 'yyyy-MM-dd'), format(customEndDate as Date, 'yyyy-MM-dd'));
       setCustomDateLink({ '1day': false, '7day': false, '1month': false });
     }
   }, [customStartDate, customEndDate]);
 
   // Function to dispatch the search text to hit api of member list.
-  const getFilteredMembersList = (text: string, date?: string, endDate?: string) => {
+  const getFilteredMembersList = (pageNumber: number, text: string, date?: string, endDate?: string) => {
+    setFilteredDate((prevDate) => ({ ...prevDate, filterStartDate: date!, filterEndDate: endDate! }));
     dispatch(
       membersSlice.actions.membersList({
         membersQuery: {
-          page,
+          page: pageNumber,
           limit,
           search: text,
           'createdAT.gte': date,
@@ -164,7 +178,7 @@ const Members: React.FC = () => {
   };
 
   const handleModalClose = (): void => {
-    setisModalOpen(false);
+    setIsModalOpen(false);
     saveCustomizedColumn(false);
   };
 
@@ -178,15 +192,15 @@ const Members: React.FC = () => {
     setCustomStartDate(undefined);
     setCustomEndDate(undefined);
     if (date === CustomDateType.Day) {
-      getFilteredMembersList('', format(subDays(todayDate, 1), 'yyyy-MM-dd'));
+      getFilteredMembersList(1, '', format(subDays(todayDate, 1), 'yyyy-MM-dd'));
       setCustomDateLink({ [date]: true });
     }
     if (date === CustomDateType.Week) {
-      getFilteredMembersList('', format(subDays(todayDate, 7), 'yyyy-MM-dd'));
+      getFilteredMembersList(1, '', format(subDays(todayDate, 7), 'yyyy-MM-dd'));
       setCustomDateLink({ [date]: true });
     }
     if (date === CustomDateType.Month) {
-      getFilteredMembersList('', format(subMonths(todayDate, 1), 'yyyy-MM-dd'));
+      getFilteredMembersList(1, '', format(subMonths(todayDate, 1), 'yyyy-MM-dd'));
       setCustomDateLink({ [date]: true });
     }
   };
@@ -195,26 +209,39 @@ const Members: React.FC = () => {
     event.stopPropagation();
     if (dateTime === 'start') {
       setCustomStartDate(date);
-      setisFilterDropdownActive(true);
+      setIsFilterDropdownActive(true);
     }
 
     if (dateTime === 'end') {
       setCustomEndDate(date);
-      setisFilterDropdownActive(true);
+      setIsFilterDropdownActive(true);
     }
   };
 
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
     if (searchText === '') {
-      getFilteredMembersList(searchText);
+      getFilteredMembersList(1, searchText);
     }
     setSearchText(searchText);
   };
 
   // Fetch members list data in comma separated value
   const fetchMembersListExportData = () => {
-    fetchExportList(`${API_ENDPOINT}/v1/${workspaceId}/members/memberlistexport`, 'MembersListExport.xlsx');
+    fetchExportList(
+      `${API_ENDPOINT}/v1/${workspaceId}/members/memberlistexport`,
+      {
+        tags: filterExportParams.checkTags,
+        platforms: filterExportParams.checkPlatform,
+        location: filterExportParams.checkLocation,
+        organization: filterExportParams.checkOrganization,
+        'lastActivity.lte': filterExportParams.endDate,
+        'lastActivity.gte': filterExportParams.startDate,
+        'createdAT.gte': filteredDate.filterStartDate,
+        'createdAT.lte': filteredDate.filterEndDate
+      },
+      'MembersListExport.xlsx'
+    );
   };
 
   // Function to map customized column with api data response to create a new column array with index matching with customized column.
@@ -237,20 +264,21 @@ const Members: React.FC = () => {
     return acc;
   }, []);
 
-  // Memoized functionality to stop re-renderization.
+  // Memoized functionality to stop re-render.
   const membersColumn = useMemo(() => <MembersDraggableColumn MembersColumn={customizedColumnBool} handleModalClose={handleModalClose} />, [
     customizedColumnBool
   ]);
 
-  const MemberFilter = useMemo(() => <MembersFilter page={page} limit={limit} />, []);
+  const MemberFilter = useMemo(() => <MembersFilter page={page} limit={limit} memberFilterExport={setFilterExportParams} />, []);
 
-  const handleClickDatepickerIcon = (type: string) => {
+  const handleClickDatePickerIcon = (type: string) => {
     if (type === 'start') {
-      const datepickerElement = datepickerRefStart.current;
-      datepickerElement.setFocus(true);
-    } else {
-      const datepickerElement = datepickerRefEnd.current;
-      datepickerElement.setFocus(true);
+      const datePickerElement = datePickerRefStart.current;
+      datePickerElement!.setFocus();
+    }
+    if (type === 'end') {
+      const datePickerElement = datePickerRefEnd.current;
+      datePickerElement!.setFocus();
     }
   };
 
@@ -296,16 +324,6 @@ const Members: React.FC = () => {
         >
           1M
         </div>
-
-        {/* <div className="relative flex items-center  ml-0.653 ">
-          <DatePicker
-            selected={toDate}
-            onChange={(date: Date) => selectCustomDate('', date)}
-            className="export w-9.92 h-3.06  shadow-contactCard rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
-            placeholderText="Custom Date"
-          />
-          <img className="absolute icon-holder left-32 cursor-pointer" src={calendarIcon} alt="" />
-        </div> */}
         <div className="box-border cursor-pointer rounded-0.6 shadow-contactCard app-input-card-border relative ml-5" ref={dropDownRef}>
           <div className="flex h-3.06 w-[11.25rem] items-center justify-between px-5 " onClick={handleFilterDropdown}>
             <div className="box-border rounded-0.6 shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">
@@ -327,13 +345,13 @@ const Members: React.FC = () => {
                         onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'start')}
                         className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                         placeholderText="DD/MM/YYYY"
-                        ref={datepickerRefStart}
+                        ref={datePickerRefStart}
                       />
                       <img
                         className="absolute icon-holder right-6 cursor-pointer"
                         src={calendarIcon}
                         alt=""
-                        onClick={() => handleClickDatepickerIcon('start')}
+                        onClick={() => handleClickDatePickerIcon('start')}
                       />
                     </div>
                   </div>
@@ -345,13 +363,13 @@ const Members: React.FC = () => {
                         onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'end')}
                         className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                         placeholderText="DD/MM/YYYY"
-                        ref={datepickerRefEnd}
+                        ref={datePickerRefEnd}
                       />
                       <img
                         className="absolute icon-holder right-6 cursor-pointer"
                         src={calendarIcon}
                         alt=""
-                        onClick={() => handleClickDatepickerIcon('end')}
+                        onClick={() => handleClickDatePickerIcon('end')}
                       />
                     </div>
                   </div>
@@ -364,7 +382,7 @@ const Members: React.FC = () => {
         <div className="ml-1.30 w-[800px]">{MemberFilter}</div>
         <div className="ml-0.652">
           <div
-            className="export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex ml-0.63 cursor-pointer"
+            className="export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex ml-0.63 cursor-pointer hover:border-infoBlack transition ease-in-out duration-300"
             onClick={fetchMembersListExportData}
           >
             <h3 className="text-memberDay leading-1.12 font-Poppins font-semibold text-card">Export</h3>
@@ -398,19 +416,27 @@ const Members: React.FC = () => {
                       {Object.keys(member).map((column: keyof typeof member, index) => (
                         <td className="px-6 py-4" key={index}>
                           {column === 'name' ? (
-                            <div className="flex ">
-                              <div
-                                className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer"
-                                onClick={() => navigateToProfile((member?.name as { name: string; id: string })?.id as string)}
-                              >
-                                {(member?.name as { name: string; id: string })?.name as string}
+                            memberColumnsLoader ? (
+                              <Skeleton width={width_90} />
+                            ) : (
+                              <div className="flex ">
+                                <div
+                                  className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer"
+                                  onClick={() => navigateToProfile((member?.name as { name: string; id: string })?.id as string)}
+                                >
+                                  {(member?.name as { name: string; id: string })?.name as string}
+                                </div>
                               </div>
-                            </div>
+                            )
                           ) : column === 'platforms' ? (
-                            <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 h-1.375 w-1.375 flex" key={index}>
-                              <img className="m-1 h-1.375 w-1.375 mt-0" src={slackIcon} title="Slack" />
-                              {/* <p className='h-1.375 w-1.375'>{'Slack'}</p> */}
-                            </div>
+                            memberColumnsLoader ? (
+                              <Skeleton width={width_90} />
+                            ) : (
+                              <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 h-1.375 w-1.375 flex" key={index}>
+                                <img className="m-1 h-1.375 w-1.375 mt-0" src={slackIcon} title="Slack" />
+                                {/* <p className='h-1.375 w-1.375'>{'Slack'}</p> */}
+                              </div>
+                            )
                           ) : //    <div className="flex gap-x-2">
                           //   {(member?.platforms as Array<{id:string, name:string}>)?.map((platforms: { name: string, id:string }, index: number) => (
                           //     <div
@@ -422,32 +448,44 @@ const Members: React.FC = () => {
                           //   ))}
                           // </div>
                           column === 'tags' ? (
-                            <div className="flex ">
-                              <div className="py-3 flex gap-2 items-center font-Poppins font-medium text-trial text-infoBlack leading-1.31">
-                                {(member?.tags as Array<{ tag: { name: '' } }>)?.slice(0, 2).map((tags: { tag: { name: string } }, index: number) => (
-                                  <div className="bg-tagSection rounded w-5.25 h-8 flex justify-between px-3 items-center" key={index}>
-                                    <div className="font-Poppins font-normal text-card text-profileBlack leading-5">{tags?.tag?.name}</div>
-                                    <div>
-                                      <img src={closeIcon} alt="" />
-                                    </div>
+                            memberColumnsLoader ? (
+                              <Skeleton width={width_90} />
+                            ) : (
+                              <div className="flex ">
+                                <div className="py-3 flex gap-2 items-center font-Poppins font-medium text-trial text-infoBlack leading-1.31">
+                                  {(member?.tags as Array<{ tag: { name: '' } }>)
+                                    ?.slice(0, 2)
+                                    .map((tags: { tag: { name: string } }, index: number) => (
+                                      <div className="bg-tagSection rounded w-5.25 h-8 flex justify-between px-3 items-center" key={index}>
+                                        <div className="font-Poppins font-normal text-card text-profileBlack leading-5">{tags?.tag?.name}</div>
+                                        <div>
+                                          <img src={closeIcon} alt="" />
+                                        </div>
+                                      </div>
+                                    ))}
+                                  <div className="font-Poppins font-semibold leading-5 text-tag text-card underline">
+                                    {(member?.tags as Array<Record<string, unknown>>)?.length > 2
+                                      ? `${(member?.tags as Array<Record<string, unknown>>)?.length - 2} more`
+                                      : ''}{' '}
                                   </div>
-                                ))}
-                                <div className="font-Poppins font-semibold leading-5 text-tag text-card underline">
-                                  {(member?.tags as Array<Record<string, unknown>>)?.length > 2
-                                    ? `${(member?.tags as Array<Record<string, unknown>>)?.length - 2} more`
-                                    : ''}{' '}
                                 </div>
                               </div>
-                            </div>
+                            )
                           ) : column === 'lastActivity' ? (
-                            <div className="flex flex-col">
-                              <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
-                                {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'MMM dd yyyy') : '--'}
+                            memberColumnsLoader ? (
+                              <Skeleton width={width_90} />
+                            ) : (
+                              <div className="flex flex-col">
+                                <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
+                                  {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'MMM dd yyyy') : '--'}
+                                </div>
+                                <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
+                                  {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'HH:MM') : '--'}
+                                </div>
                               </div>
-                              <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
-                                {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'HH:MM') : '--'}
-                              </div>
-                            </div>
+                            )
+                          ) : memberColumnsLoader ? (
+                            <Skeleton width={width_90} />
                           ) : (
                             <div className="flex ">
                               <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
@@ -465,12 +503,12 @@ const Members: React.FC = () => {
                 </tbody>
               </table>
               <div className="px-6 py-6 flex items-center gap-0.66 pl-[30%] w-full rounded-b-lg fixed bg-white bottom-0">
-                <Pagination currentPage={page} totalPages={totalPages} limit={limit} onPageChange={(page) => setpage(Number(page))} />
+                <Pagination currentPage={page} totalPages={totalPages} limit={limit} onPageChange={(page) => setPage(Number(page))} />
               </div>
               <div className="fixed bottom-10 right-32">
                 <div
-                  className="btn-drag w-3.375 h-3.375 flex items-center justify-center cursor-pointer shadow-dragButton rounded-0.6 "
-                  onClick={() => setisModalOpen(true)}
+                  className="btn-drag p-3 flex items-center justify-center cursor-pointer shadow-dragButton rounded-0.6 "
+                  onClick={() => setIsModalOpen(true)}
                 >
                   <img src={editIcon} alt="" />
                 </div>
@@ -478,7 +516,7 @@ const Members: React.FC = () => {
               <Modal
                 isOpen={isModalOpen}
                 shouldCloseOnOverlayClick={true}
-                onRequestClose={() => setisModalOpen(false)}
+                onRequestClose={() => setIsModalOpen(false)}
                 className="w-24.31 mx-auto mt-9.18  pb-20 bg-white border-fetching-card rounded-lg shadow-modal outline-none"
               >
                 <div className="flex flex-col px-1.68 relative">

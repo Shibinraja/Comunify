@@ -1,7 +1,5 @@
 /* eslint-disable max-len */
-/* eslint-disable no-console */
 import React, { useEffect, useRef, useState } from 'react';
-// import profileImage from '../../../../assets/images/profile-member.svg';
 import Button from 'common/button';
 import { format } from 'date-fns';
 import DatePicker from 'react-datepicker';
@@ -22,10 +20,15 @@ import { AppDispatch } from '../../../../store';
 import { ActivityResult, MemberProfileCard, PlatformResponse } from '../../interface/members.interface';
 import membersSlice from '../../store/slice/members.slice';
 import MembersProfileGraph from '../membersProfileGraph/MembersProfileGraph';
+import Skeleton from 'react-loading-skeleton';
+import useSkeletonLoading from '@/hooks/useSkeletonLoading';
+import { count_5, width_90 } from 'constants/constants';
+import usePlatform from '../../../../hooks/usePlatform';
 
 Modal.setAppElement('#root');
 
 const MembersProfile: React.FC = () => {
+  const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const { workspaceId, memberId } = useParams();
   const [isSelectDropDownActive, setSelectDropDownActive] = useState<boolean>(false);
@@ -38,15 +41,16 @@ const MembersProfile: React.FC = () => {
   const [toDate, setToDate] = useState<Date>();
   const [isFilterDropDownActive, setFilterDropdownActive] = useState<boolean>(false);
   const [activityNextCursor, setActivityNextCursor] = useState<string | null>('');
-  const [platform, setPlatform] = useState<string>();
+  const [platform, setPlatform] = useState<string | undefined>();
   const {
     membersActivityData: activityData,
     membersProfileActivityGraphData: activityGraphData,
-    PlatformFilterResponse: platformData,
     memberProfileCardData
   } = useAppSelector((state) => state.members);
 
-  const dispatch: AppDispatch = useDispatch();
+  const memberProfileCardLoader = useSkeletonLoading(membersSlice.actions.getMembersActivityGraphData.type);
+  const activityDataLoader = useSkeletonLoading(membersSlice.actions.getMembersActivityDataInfiniteScroll.type);
+  const platformData = usePlatform();
 
   const dropDownRef = useRef<HTMLDivElement>(null);
   const datepickerRefFrom = useRef<any>(null);
@@ -70,7 +74,6 @@ const MembersProfile: React.FC = () => {
 
   useEffect(() => {
     dispatch(membersSlice.actions.getMembersActivityGraphData({ workspaceId: workspaceId as string, memberId: memberId as string }));
-    dispatch(membersSlice.actions.platformData());
     dispatch(membersSlice.actions.getMemberProfileCardData({ workspaceId: workspaceId as string, memberId: memberId as string }));
     document.addEventListener('click', handleOutsideClick);
     return () => {
@@ -91,7 +94,7 @@ const MembersProfile: React.FC = () => {
         })
       );
     }
-  }, [activityNextCursor, platform, fromDate && toDate]);
+  }, [activityNextCursor, platform, fromDate, toDate, fromDate && toDate]);
 
   const handleModal = (val: boolean) => {
     setIsModalOpen(val);
@@ -124,7 +127,7 @@ const MembersProfile: React.FC = () => {
       case 'All':
         dispatch(membersSlice.actions.getMembersActivityGraphData({ workspaceId: workspaceId as string, memberId: memberId as string }));
         break;
-      case 'Slack':
+      case `${name !== undefined && name !== 'All' && name}`:
         dispatch(
           membersSlice.actions.getMembersActivityGraphDataPerPlatform({
             workspaceId: workspaceId as string,
@@ -141,9 +144,9 @@ const MembersProfile: React.FC = () => {
   // switch case for member platforms
   const selectPlatformForActivityScroll = (name: string) => {
     setSelectedIntegration(name);
-    console.log('the dates are', fromDate, toDate);
     switch (name) {
       case 'All Integration':
+        setPlatform(undefined);
         dispatch(
           membersSlice.actions.getMembersActivityDataInfiniteScroll({
             workspaceId: workspaceId as string,
@@ -154,7 +157,7 @@ const MembersProfile: React.FC = () => {
           })
         );
         break;
-      case 'Slack':
+      case `${name !== undefined && name !== 'All Integration' && name}`:
         setPlatform(name.toLocaleLowerCase().trim());
         dispatch(
           membersSlice.actions.getMembersActivityDataInfiniteScroll({
@@ -171,10 +174,11 @@ const MembersProfile: React.FC = () => {
         break;
     }
   };
-
   // function to listen for scroll event
   const handleScroll = (event: React.UIEvent<HTMLElement>) => {
-    if (event.currentTarget.scrollTop > event.currentTarget.offsetHeight) {
+    event.preventDefault();
+    const { clientHeight, scrollHeight, scrollTop } = event.currentTarget;
+    if (scrollHeight - scrollTop === clientHeight) {
       setActivityNextCursor(activityData?.nextCursor);
     }
   };
@@ -229,16 +233,22 @@ const MembersProfile: React.FC = () => {
           </div>
         </div>
         <div className="flex pt-2.18 items-center">
-          {memberProfileCardData?.map((data: MemberProfileCard) => (
-            <div key={data?.id + data?.name} className="flex flex-col w-full">
-              <div className="font-Poppins font-normal text-card leading-4 text-renewalGray">Last Active Date</div>
-              <div className="font-Poppins font-semibold text-base leading-6 text-accountBlack">
-                {data?.lastActivity ? generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY') : 'Last active date not available'}
-              </div>
+          {memberProfileCardLoader ? (
+            <div className="flex flex-col w-full">
+              <Skeleton width={width_90} />
             </div>
-          ))}
+          ) : (
+            memberProfileCardData?.map((data: MemberProfileCard) => (
+              <div key={data?.id + data?.name} className="flex flex-col w-full">
+                <div className="font-Poppins font-normal text-card leading-4 text-renewalGray">Last Active Date</div>
+                <div className="font-Poppins font-semibold text-base leading-6 text-accountBlack">
+                  {data?.lastActivity ? generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY') : 'Last active date not available'}
+                </div>
+              </div>
+            ))
+          )}
 
-          <div className="select relative mr-2">
+          <div className="select relative mr-2 float-right">
             <div
               className="flex justify-around items-center cursor-pointer box-border w-9.59 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border"
               onClick={handleIntegrationDropDownActive}
@@ -323,61 +333,91 @@ const MembersProfile: React.FC = () => {
           </div>
         </div>
         <div className="mt-1.56 pt-8 px-1.62 box-border w-full rounded-0.6 shadow-contactCard app-input-card-border pb-5">
-          {memberProfileCardData?.map((data: MemberProfileCard) => (
-            <div key={data?.id + data?.name} className="flex justify-between ">
-              <div className="font-Poppins text-card leading-4 font-medium">
-                {' '}
-                {data?.lastActivity ? generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY') : 'Last active date not available'}
+          {memberProfileCardLoader ? (
+            <Skeleton width={width_90} count={count_5} />
+          ) : (
+            memberProfileCardData?.map((data: MemberProfileCard) => (
+              <div key={data?.id + data?.name} className="flex justify-between ">
+                <div className="font-Poppins text-card leading-4 font-medium">
+                  {' '}
+                  {data?.lastActivity ? generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY') : 'Last active date not available'}
+                </div>
+                <div onClick={navigateToActivities} className="font-Poppins font-normal leading-4 text-renewalGray text-preview cursor-pointer">
+                  Preview All
+                </div>
               </div>
-              <div onClick={navigateToActivities} className="font-Poppins font-normal leading-4 text-renewalGray text-preview cursor-pointer">
-                Preview All
-              </div>
-            </div>
-          ))}
+            ))
+          )}
 
           <div
             onScroll={handleScroll}
-            className="flex flex-col pt-8 gap-0.83 justify-center height-member-activity overflow-scroll mt-5 member-section"
+            className="flex flex-col pt-8 gap-0.83 justify-center height-member-activity overflow-scroll overflow-y-scroll mt-5 member-section"
           >
-            {activityData.result.map((data: ActivityResult) => (
-              <div key={data?.id} className="flex items-center">
-                <div>
-                  <img src={yellowDottedIcon} alt="" />
-                </div>
-                <div className="pl-0.68">
-                  <img src={slackIcon} alt="" />
-                </div>
-                <div className="flex flex-col pl-0.89">
-                  <div className="font-Poppins font-normal text-card leading-4">{data?.displayValue}</div>
-                  <div className="font-Poppins left-4 font-normal text-profileEmail text-duration">
-                    {new Date(`${data?.createdAt}`).getHours()} hours ago
+            {activityDataLoader ? (
+              <Skeleton width={500} className={'my-4'} count={6} />
+            ) : (
+              activityData.result.map((data: ActivityResult) => (
+                <div key={data?.id} className="flex items-center">
+                  <div>
+                    <img src={yellowDottedIcon} alt="" />
+                  </div>
+                  <div className="pl-0.68">
+                    <img src={slackIcon} alt="" />
+                  </div>
+                  <div className="flex flex-col pl-0.89">
+                    <div className="font-Poppins font-normal text-card leading-4">{data?.displayValue}</div>
+                    <div className="font-Poppins left-4 font-normal text-profileEmail text-duration">
+                      {new Date(`${data?.createdAt}`).getHours()} hours ago
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </div>
       <div className=" flex flex-col ml-1.8">
-        {memberProfileCardData?.map((data: MemberProfileCard) => (
-          <div key={data?.id + data?.createdAt} className=" flex flex-col ">
+        {memberProfileCardLoader ? (
+          <div className=" flex flex-col ">
             <div className="profile-card items-center btn-save-modal justify-center pro-bag rounded-t-0.6 w-18.125 shadow-contactBtn box-border h-6.438 "></div>
             <div className="flex flex-col profile-card items-center justify-center bg-white rounded-b-0.6 w-18.125 shadow-contactCard box-border h-11.06">
-              <div className="-mt-24 ">
-                <img src={data?.profileUrl} alt="profileImage" className="bg-cover " />
+              <div className="-mt-24">
+                <Skeleton circle height="100%" />
               </div>
-              <div className="mt-0.688 text-profileBlack font-semibold font-Poppins leading-1.31 text-trial">{data?.name}</div>
+              <div className="mt-0.688 text-profileBlack font-semibold font-Poppins leading-1.31 text-trial">
+                <Skeleton width={width_90} />
+              </div>
               <div className="text-center pt-0.125 font-Poppins text-profileBlack text-member">
-                {data?.email} | {data?.organization}
+                <Skeleton width={width_90} />
               </div>
-              <div className="flex gap-1 pt-1.12">
+              <div className="flex gap-1 pt-1.12  mt-2 loader-avatar">
                 <div>
-                  <img src={slackIcon} alt="" />
+                  <Skeleton circle height="100%" />
                 </div>
               </div>
             </div>
           </div>
-        ))}
+        ) : (
+          memberProfileCardData?.map((data: MemberProfileCard) => (
+            <div key={data?.id + data?.createdAt} className=" flex flex-col">
+              <div className="profile-card items-center btn-save-modal justify-center pro-bag rounded-t-0.6 w-18.125 shadow-contactBtn box-border h-6.438 "></div>
+              <div className="flex flex-col profile-card items-center justify-center bg-white rounded-b-0.6 w-18.125 shadow-contactCard box-border h-11.06">
+                <div className="-mt-24">
+                  <img src={data?.profileUrl} alt="profileImage" className="bg-cover bg-center border-8 border-white rounded-full w-24" />
+                </div>
+                <div className="mt-0.688 text-profileBlack font-semibold font-Poppins leading-1.31 text-trial">{data?.name}</div>
+                <div className="text-center pt-0.125 font-Poppins text-profileBlack text-member">
+                  {data?.email} | {data?.organization}
+                </div>
+                <div className="flex gap-1 pt-1.12">
+                  <div>
+                    <img src={slackIcon} alt="" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
 
         <div className="mt-1.37 box-border w-18.125 rounded-0.6 shadow-profileCard app-input-card-border">
           <div className="flex flex-col p-5">

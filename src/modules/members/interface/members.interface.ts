@@ -27,7 +27,6 @@ export interface GetMembersListQueryParams extends workspaceId {
     'lastActivity.gte'?: string;
     'createdAT.lte'?: string;
     'createdAT.gte'?: string;
-
   };
 }
 
@@ -75,14 +74,14 @@ export type MembersAnalyticsResponse = {
 };
 
 export type MemberCountAnalyticsResponse = {
-  newMembers:MembersAnalyticsResponse;
-  totalMembers:MembersAnalyticsResponse
-}
+  newMembers: MembersAnalyticsResponse;
+  totalMembers: MembersAnalyticsResponse;
+};
 
 export type MemberActivityAnalyticsResponse = {
-  activeMembers:MembersAnalyticsResponse;
-  inActiveMembers:MembersAnalyticsResponse
-}
+  activeMembers: MembersAnalyticsResponse;
+  inActiveMembers: MembersAnalyticsResponse;
+};
 export interface SeriesDataForMemberGraph {
   name: string;
   data: number[];

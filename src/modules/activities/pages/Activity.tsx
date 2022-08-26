@@ -23,6 +23,9 @@ import { ActiveStreamData, ActivityCard, ProfileModal } from '../interfaces/acti
 import activitiesSlice from '../store/slice/activities.slice';
 import './Activity.css';
 import ActivityFilter from './ActivityFilter';
+import Skeleton from 'react-loading-skeleton';
+import useSkeletonLoading from '@/hooks/useSkeletonLoading';
+import { width_90 } from 'constants/constants';
 
 Modal.setAppElement('#root');
 
@@ -42,11 +45,13 @@ const Activity: React.FC = () => {
   });
   const [ActivityCard, setActivityCard] = useState<ActivityCard>();
   const [page, setpage] = useState<number>(1);
-  const [limit, setLimit] = useState<number>(10);
   const [searchText, setSearchText] = useState<string>('');
   const dropDownRef = useRef<HTMLDivElement>(null);
 
-  const { data, totalPages, previousPage, nextPage } = useAppSelector((state) => state.activities.activeStreamData);
+  const limit = 10;
+  const loader = useSkeletonLoading(activitiesSlice.actions.getActiveStreamData.type);
+
+  const { data, totalPages } = useAppSelector((state) => state.activities.activeStreamData);
 
   const debouncedValue = useDebounce(searchText, 300);
 
@@ -60,9 +65,6 @@ const Activity: React.FC = () => {
         workspaceId: workspaceId!
       })
     );
-
-    dispatch(membersSlice.actions.platformData());
-
     dispatch(
       activitiesSlice.actions.activeStreamTagFilter({
         activeStreamQuery: { tags: { searchedTags: '', checkedTags: '' } },
@@ -77,6 +79,13 @@ const Activity: React.FC = () => {
       document.removeEventListener('click', handleOutsideClick);
     };
   }, []);
+
+  // Returns the debounced value of the search text.
+  useEffect(() => {
+    if (debouncedValue) {
+      getFilteredActiveStreamList(1, debouncedValue);
+    }
+  }, [debouncedValue]);
 
   // Function to close the popup modal of the member profile
   const handleOutsideClick = (event: MouseEvent) => {
@@ -94,13 +103,6 @@ const Activity: React.FC = () => {
       });
     }
   };
-
-  // Returns the debounced value of the search text.
-  useEffect(() => {
-    if (debouncedValue) {
-      getFilteredActiveStreamList(debouncedValue);
-    }
-  }, [debouncedValue]);
 
   const handleModal = (data: ActivityCard) => {
     setModalOpen(data?.isOpen);
@@ -137,17 +139,17 @@ const Activity: React.FC = () => {
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
     if (searchText === '') {
-      getFilteredActiveStreamList(searchText);
+      getFilteredActiveStreamList(1, searchText);
     }
     setSearchText(searchText);
   };
 
   // Function to dispatch the search text to hit api of member list.
-  const getFilteredActiveStreamList = (text: string) => {
+  const getFilteredActiveStreamList = (pageNumber: number, text: string) => {
     dispatch(
       activitiesSlice.actions.getActiveStreamData({
         activeStreamQuery: {
-          page,
+          page: pageNumber,
           limit,
           search: text
         },
@@ -181,7 +183,7 @@ const Activity: React.FC = () => {
 
         <div className="">
           <div
-            className="app-input-card-border w-6.98 h-3.06 rounded-0.6 shadow-shadowInput box-border bg-white items-center justify-evenly flex ml-0.63 cursor-pointer"
+            className="app-input-card-border w-6.98 h-3.06 rounded-0.6 shadow-shadowInput box-border bg-white items-center justify-evenly flex ml-0.63 cursor-pointer hover:border-infoBlack transition ease-in-out duration-300"
             onClick={fetchActiveStreamListExportData}
           >
             <h3 className="text-dropGray leading-1.12 font-Poppins font-semibld text-card">Export</h3>
@@ -212,115 +214,133 @@ const Activity: React.FC = () => {
                     data?.map((data: ActiveStreamData) => (
                       <tr className="h-4.06 " key={data?.id}>
                         <td className="px-6 py-3 border-b">
-                          <div className="flex ">
-                            <div className="py-3 mr-2">
-                              <input type="checkbox" className="checkbox" />
-                            </div>
-                            <div className="relative">
-                              <div
-                                ref={dropDownRef}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleProfileModal({
-                                    isOpen: true,
-                                    id: data?.id,
-                                    email: data?.email,
-                                    memberName: data?.memberName,
-                                    organization: 'NeoITO',
-                                    memberProfileUrl: `/${workspaceId}/members/${data.memberId}/profile`,
-                                    profilePictureUrl: data?.profilePictureUrl
-                                  });
-                                }}
-                                className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer capitalize"
-                              >
-                                {data?.memberName}
+                          {loader ? (
+                            <Skeleton width={width_90} />
+                          ) : (
+                            <div className="flex ">
+                              <div className="py-3 mr-2">
+                                <input type="checkbox" className="checkbox" />
                               </div>
-                              <div
-                                className={`mt-5 pl-5 absolute -top-10 z-10 ${
-                                  ProfileModal?.isOpen && ProfileModal?.id === data?.id ? '' : 'hidden'
-                                } `}
-                              >
-                                <div className="w-12.87 h-4.57 profile-card-header rounded-t-0.6"></div>
-                                <div className="w-12.87 pb-3 rounded-b-0.6 profile-card-body profile-inner shadow-profileCard flex flex-col items-center bg-white">
-                                  <div className="w-4.43 h-4.43 -mt-10 flex items-center justify-center">
-                                    <img src={ProfileModal?.profilePictureUrl === null ? profileImage : ProfileModal?.profilePictureUrl} alt="" />
-                                  </div>
-                                  <div className="font-semibold font-Poppins text-card text-profileBlack leading-1.12">
-                                    {ProfileModal?.memberName}
-                                  </div>
-                                  <div className="text-profileEmail font-Poppins font-normal text-profileBlack text-center w-6.875 mt-0.146">
-                                    {ProfileModal?.email} {ProfileModal?.organization}
-                                  </div>
-                                  <div className="flex mt-2.5">
-                                    <div className="bg-cover bg-center mr-1 w-0.92 h-0.92">
-                                      <img src={slackIcon} alt="" />
+                              <div className="relative">
+                                <div
+                                  ref={dropDownRef}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleProfileModal({
+                                      isOpen: true,
+                                      id: data?.id,
+                                      email: data?.email,
+                                      memberName: data?.memberName,
+                                      organization: 'NeoITO',
+                                      memberProfileUrl: `/${workspaceId}/members/${data.memberId}/profile`,
+                                      profilePictureUrl: data?.profilePictureUrl
+                                    });
+                                  }}
+                                  className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer capitalize"
+                                >
+                                  {data?.memberName}
+                                </div>
+                                <div
+                                  className={`mt-5 pl-5 absolute -top-10 z-10 ${
+                                    ProfileModal?.isOpen && ProfileModal?.id === data?.id ? '' : 'hidden'
+                                  } `}
+                                >
+                                  <div className="w-12.87 h-4.57 profile-card-header rounded-t-0.6"></div>
+                                  <div className="w-12.87 pb-3 rounded-b-0.6 profile-card-body profile-inner shadow-profileCard flex flex-col items-center bg-white">
+                                    <div className="w-4.43 h-4.43 -mt-10 flex items-center justify-center">
+                                      <img src={ProfileModal?.profilePictureUrl === null ? profileImage : ProfileModal?.profilePictureUrl} alt="" />
                                     </div>
+                                    <div className="font-semibold font-Poppins text-card text-profileBlack leading-1.12">
+                                      {ProfileModal?.memberName}
+                                    </div>
+                                    <div className="text-profileEmail font-Poppins font-normal text-profileBlack text-center w-6.875 mt-0.146">
+                                      {ProfileModal?.email} {ProfileModal?.organization}
+                                    </div>
+                                    <div className="flex mt-2.5">
+                                      <div className="bg-cover bg-center mr-1 w-0.92 h-0.92">
+                                        <img src={slackIcon} alt="" />
+                                      </div>
+                                    </div>
+                                    <NavLink
+                                      to={`${ProfileModal?.memberProfileUrl}`}
+                                      className="mt-0.84 font-normal font-Poppins text-card underline text-profileBlack leading-5 cursor-pointer"
+                                    >
+                                      VIEW PROFILE
+                                    </NavLink>
                                   </div>
-                                  <NavLink
-                                    to={`${ProfileModal?.memberProfileUrl}`}
-                                    className="mt-0.84 font-normal font-Poppins text-card underline text-profileBlack leading-5 cursor-pointer"
-                                  >
-                                    VIEW PROFILE
-                                  </NavLink>
                                 </div>
                               </div>
                             </div>
-                          </div>
+                          )}
                         </td>
                         <td className="px-6 pt-5 border-b">
-                          <div className="flex flex-col">
-                            <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31">
-                              {generateDateAndTime(`${data?.activityTime}`, 'MM-DD-YYYY')}
-                            </div>
-                            <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
-                              {generateDateAndTime(`${data?.activityTime}`, 'HH:MM')}
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 pt-5 border-b ">
-                          <div className="flex ">
-                            <div className="mr-2">
-                              <img src={slackIcon} alt="" />
-                            </div>
+                          {loader ? (
+                            <Skeleton width={width_90} />
+                          ) : (
                             <div className="flex flex-col">
-                              <div
-                                className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer"
-                                onClick={() =>
-                                  handleModal({
-                                    isOpen: true,
-                                    memberName: data?.memberName,
-                                    email: data?.email,
-                                    description: data?.description,
-                                    displayValue: data?.displayValue,
-                                    activityTime: data?.activityTime,
-                                    organization: 'NeoITO',
-                                    channelName: 'channel 1',
-                                    sourceUrl: data?.sourceUrl,
-                                    profilePictureUrl: data?.profilePictureUrl,
-                                    value: data?.value
-                                  })
-                                }
-                              >
-                                {data?.displayValue}
+                              <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31">
+                                {generateDateAndTime(`${data?.activityTime}`, 'MM-DD-YYYY')}
                               </div>
                               <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
-                                {generateDateAndTime(`${data?.activityTime}`, 'MM-DD')}
+                                {generateDateAndTime(`${data?.activityTime}`, 'HH:MM')}
                               </div>
                             </div>
-                          </div>
+                          )}
+                        </td>
+                        <td className="px-6 pt-5 border-b ">
+                          {loader ? (
+                            <Skeleton width={width_90} />
+                          ) : (
+                            <div className="flex ">
+                              <div className="mr-2">
+                                <img src={slackIcon} alt="" />
+                              </div>
+                              <div className="flex flex-col">
+                                <div
+                                  className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer"
+                                  onClick={() =>
+                                    handleModal({
+                                      isOpen: true,
+                                      memberName: data?.memberName,
+                                      email: data?.email,
+                                      description: data?.description,
+                                      displayValue: data?.displayValue,
+                                      activityTime: data?.activityTime,
+                                      organization: 'NeoITO',
+                                      channelName: 'channel 1',
+                                      sourceUrl: data?.sourceUrl,
+                                      profilePictureUrl: data?.profilePictureUrl,
+                                      value: data?.value
+                                    })
+                                  }
+                                >
+                                  {data?.displayValue}
+                                </div>
+                                <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
+                                  {generateDateAndTime(`${data?.activityTime}`, 'MM-DD')}
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </td>
 
                         <td className="px-6 py-3 border-b">
-                          <a
-                            href={`${data?.sourceUrl}`}
-                            target="_blank"
-                            rel="noreferrer noopener"
-                            className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 underline cursor-pointer"
-                          >
-                            {data?.sourceUrl === null ? 'www.slack.com/profile' : data?.sourceUrl}
-                          </a>
+                          {loader ? (
+                            <Skeleton width={width_90} />
+                          ) : (
+                            <a
+                              href={`${data?.sourceUrl}`}
+                              target="_blank"
+                              rel="noreferrer noopener"
+                              className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 underline cursor-pointer"
+                            >
+                              {data?.sourceUrl === null ? 'www.slack.com/profile' : data?.sourceUrl}
+                            </a>
+                          )}
                         </td>
-                        <td className="px-6 py-3 border-b font-Poppins font-medium text-trial text-infoBlack leading-1.31">{data?.type}</td>
+                        <td className="px-6 py-3 border-b font-Poppins font-medium text-trial text-infoBlack leading-1.31">
+                          {loader ? <Skeleton width={width_90} /> : data?.type}
+                        </td>
                       </tr>
                     ))}
                 </tbody>
