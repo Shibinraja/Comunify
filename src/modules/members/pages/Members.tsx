@@ -1,4 +1,3 @@
-/* eslint-disable no-constant-condition */
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import Button from 'common/button';
@@ -35,7 +34,6 @@ import Skeleton from 'react-loading-skeleton';
 import fetchExportList from '@/lib/fetchExport';
 import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 import { width_90 } from 'constants/constants';
-
 
 Modal.setAppElement('#root');
 
@@ -137,24 +135,24 @@ const Members: React.FC = () => {
   // Returns the debounced value of the search text.
   useEffect(() => {
     if (debouncedValue) {
-      getFilteredMembersList(debouncedValue);
+      getFilteredMembersList(1, debouncedValue);
     }
   }, [debouncedValue]);
 
   // Custom Date filter member list
   useEffect(() => {
     if (customStartDate && customEndDate) {
-      getFilteredMembersList('', format(customStartDate as Date, 'yyyy-MM-dd'), format(customEndDate as Date, 'yyyy-MM-dd'));
+      getFilteredMembersList(1, '', format(customStartDate as Date, 'yyyy-MM-dd'), format(customEndDate as Date, 'yyyy-MM-dd'));
       setCustomDateLink({ '1day': false, '7day': false, '1month': false });
     }
   }, [customStartDate, customEndDate]);
 
   // Function to dispatch the search text to hit api of member list.
-  const getFilteredMembersList = (text: string, date?: string, endDate?: string) => {
+  const getFilteredMembersList = (pageNumber: number, text: string, date?: string, endDate?: string) => {
     dispatch(
       membersSlice.actions.membersList({
         membersQuery: {
-          page,
+          page: pageNumber,
           limit,
           search: text,
           'createdAT.gte': date,
@@ -184,15 +182,15 @@ const Members: React.FC = () => {
     setCustomStartDate(undefined);
     setCustomEndDate(undefined);
     if (date === CustomDateType.Day) {
-      getFilteredMembersList('', format(subDays(todayDate, 1), 'yyyy-MM-dd'));
+      getFilteredMembersList(1, '', format(subDays(todayDate, 1), 'yyyy-MM-dd'));
       setCustomDateLink({ [date]: true });
     }
     if (date === CustomDateType.Week) {
-      getFilteredMembersList('', format(subDays(todayDate, 7), 'yyyy-MM-dd'));
+      getFilteredMembersList(1, '', format(subDays(todayDate, 7), 'yyyy-MM-dd'));
       setCustomDateLink({ [date]: true });
     }
     if (date === CustomDateType.Month) {
-      getFilteredMembersList('', format(subMonths(todayDate, 1), 'yyyy-MM-dd'));
+      getFilteredMembersList(1, '', format(subMonths(todayDate, 1), 'yyyy-MM-dd'));
       setCustomDateLink({ [date]: true });
     }
   };
@@ -213,7 +211,7 @@ const Members: React.FC = () => {
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
     if (searchText === '') {
-      getFilteredMembersList(searchText);
+      getFilteredMembersList(1, searchText);
     }
     setSearchText(searchText);
   };
@@ -252,12 +250,12 @@ const Members: React.FC = () => {
 
   const MemberFilter = useMemo(() => <MembersFilter page={page} limit={limit} />, []);
 
-  const handleClickDatepickerIcon=(type : string) => {
-    if(type === 'start') {
+  const handleClickDatepickerIcon = (type: string) => {
+    if (type === 'start') {
       const datePickerElement = datePickerRefStart.current;
       datePickerElement!.setFocus();
     }
-    if(type === 'end') {
+    if (type === 'end') {
       const datePickerElement = datePickerRefEnd.current;
       datePickerElement!.setFocus();
     }
@@ -324,38 +322,50 @@ const Members: React.FC = () => {
               <img src={dropdownIcon} alt="" className={isFilterDropdownActive ? 'rotate-180' : 'rotate-0'} />
             </div>
           </div>
-          {isFilterDropdownActive &&  <div className="absolute w-16.56 pb-0 bg-white border z-40 rounded-0.3">
-            <div className="flex flex-col pb-5">
-              <>
-                <div className="flex flex-col px-3 pt-4">
-                  <label htmlFor="Start Date p-1 font-Inter font-normal leading-4 text-trial text-searchBlack">Start Date</label>
-                  <div className="relative flex items-center">
-                    <DatePicker
-                      selected={customStartDate}
-                      onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'start')}
-                      className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
-                      placeholderText="DD/MM/YYYY"
-                      ref={datePickerRefStart}
-                    />
-                    <img className="absolute icon-holder right-6 cursor-pointer" src={calendarIcon} alt="" onClick={() => handleClickDatepickerIcon('start')}/>
+          {isFilterDropdownActive && (
+            <div className="absolute w-16.56 pb-0 bg-white border z-40 rounded-0.3">
+              <div className="flex flex-col pb-5">
+                <>
+                  <div className="flex flex-col px-3 pt-4">
+                    <label htmlFor="Start Date p-1 font-Inter font-normal leading-4 text-trial text-searchBlack">Start Date</label>
+                    <div className="relative flex items-center">
+                      <DatePicker
+                        selected={customStartDate}
+                        onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'start')}
+                        className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
+                        placeholderText="DD/MM/YYYY"
+                        ref={datePickerRefStart}
+                      />
+                      <img
+                        className="absolute icon-holder right-6 cursor-pointer"
+                        src={calendarIcon}
+                        alt=""
+                        onClick={() => handleClickDatepickerIcon('start')}
+                      />
+                    </div>
                   </div>
-                </div>
-                <div className="flex flex-col px-3 pb-4 pt-3">
-                  <label htmlFor="Start Date p-1 font-Inter font-Inter font-normal leading-4 text-trial text-searchBlack">End Date</label>
-                  <div className="relative flex items-center">
-                    <DatePicker
-                      selected={customEndDate}
-                      onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'end')}
-                      className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
-                      placeholderText="DD/MM/YYYY"
-                      ref={datePickerRefEnd}
-                    />
-                    <img className="absolute icon-holder right-6 cursor-pointer" src={calendarIcon} alt="" onClick={() => handleClickDatepickerIcon('end')}/>
+                  <div className="flex flex-col px-3 pb-4 pt-3">
+                    <label htmlFor="Start Date p-1 font-Inter font-Inter font-normal leading-4 text-trial text-searchBlack">End Date</label>
+                    <div className="relative flex items-center">
+                      <DatePicker
+                        selected={customEndDate}
+                        onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'end')}
+                        className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
+                        placeholderText="DD/MM/YYYY"
+                        ref={datePickerRefEnd}
+                      />
+                      <img
+                        className="absolute icon-holder right-6 cursor-pointer"
+                        src={calendarIcon}
+                        alt=""
+                        onClick={() => handleClickDatepickerIcon('end')}
+                      />
+                    </div>
                   </div>
-                </div>
-              </>
+                </>
+              </div>
             </div>
-          </div>}
+          )}
         </div>
 
         <div className="ml-1.30 w-[800px]">{MemberFilter}</div>
@@ -396,7 +406,7 @@ const Members: React.FC = () => {
                         <td className="px-6 py-4" key={index}>
                           {column === 'name' ? (
                             memberColumnsloader ? (
-                              <Skeleton  width={width_90} />
+                              <Skeleton width={width_90} />
                             ) : (
                               <div className="flex ">
                                 <div
@@ -409,7 +419,7 @@ const Members: React.FC = () => {
                             )
                           ) : column === 'platforms' ? (
                             memberColumnsloader ? (
-                              <Skeleton  width={width_90} />
+                              <Skeleton width={width_90} />
                             ) : (
                               <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 h-1.375 w-1.375 flex" key={index}>
                                 <img className="m-1 h-1.375 w-1.375 mt-0" src={slackIcon} title="Slack" />
@@ -428,7 +438,7 @@ const Members: React.FC = () => {
                           // </div>
                             column === 'tags' ? (
                               memberColumnsloader ? (
-                                <Skeleton  width={width_90} />
+                                <Skeleton width={width_90} />
                               ) : (
                                 <div className="flex ">
                                   <div className="py-3 flex gap-2 items-center font-Poppins font-medium text-trial text-infoBlack leading-1.31">
@@ -452,7 +462,7 @@ const Members: React.FC = () => {
                               )
                             ) : column === 'lastActivity' ? (
                               memberColumnsloader ? (
-                                <Skeleton  width={width_90} />
+                                <Skeleton width={width_90} />
                               ) : (
                                 <div className="flex flex-col">
                                   <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
@@ -464,7 +474,7 @@ const Members: React.FC = () => {
                                 </div>
                               )
                             ) : memberColumnsloader ? (
-                              <Skeleton  width={width_90} />
+                              <Skeleton width={width_90} />
                             ) : (
                               <div className="flex ">
                                 <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">

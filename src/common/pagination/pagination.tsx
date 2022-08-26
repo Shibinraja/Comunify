@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import React, { FC } from 'react';
+import React, { ChangeEvent, FC } from 'react';
 import { usePagination } from '../../hooks/usePagination';
 import { PaginationProps } from './paginationTypes';
 import nextIcon from '../../assets/images/next-page-icon.svg';
@@ -22,6 +22,11 @@ const Pagination: FC<PaginationProps> = (props) => {
 
   const onPrevious = () => {
     onPageChange(currentPage - 1);
+  };
+
+  const handlePageChange = (event:ChangeEvent<HTMLInputElement>) => {
+    const pageNumber = event.target.value;
+    onPageChange(pageNumber);
   };
 
   const lastPage = paginationRange![paginationRange!.length - 1];
@@ -64,7 +69,7 @@ const Pagination: FC<PaginationProps> = (props) => {
       </div>
       <div className="font-Lato font-normal text-pageNumber leading-4 text-pagination cursor-pointer">Go to page:</div>
       <div>
-        <Input name="pagination" id="page" type="text" className="page-input focus:outline-none px-0.5 rounded box-border w-1.47 h-1.51" />
+        <Input name="pagination" id="page" type="text" className="page-input focus:outline-none px-0.5 rounded box-border w-1.47 h-1.51" onChange={handlePageChange} />
       </div>
     </>
   );
