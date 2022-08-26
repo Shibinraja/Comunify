@@ -15,13 +15,14 @@ const PrivateRoute: React.FC<Props> = ({ children }) => {
   const dispatch = useAppDispatch();
   const access_token = tokenData || cookie.load('x-auth-cookie');
   const decodedToken: DecodeToken = access_token && decodeToken(access_token);
+
+  const isExpired = decodedToken && isBefore(new Date(decodedToken?.exp * 1000), new Date());
+
   const workspaceId = localStorage.getItem('workspaceId');
 
   if (!workspaceId && access_token) {
     localStorage.setItem('workspaceId', decodedToken.workspaceId);
   }
-
-  const isExpired = decodedToken && isBefore(new Date(decodedToken?.exp * 1000), new Date());
 
   if (isExpired !== undefined && !isExpired) {
     return children;

@@ -17,7 +17,7 @@ import activitiesSlice from '../store/slice/activities.slice';
 import { PlatformResponse } from 'modules/members/interface/members.interface';
 import usePlatform from '../../../hooks/usePlatform';
 
-const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
+const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFilterExport }) => {
   const { workspaceId } = useParams();
   const dispatch = useAppDispatch();
   const [isFilterDropdownActive, setIsFilterDropdownActive] = useState<boolean>(false);
@@ -104,7 +104,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
     }
   };
 
-  const handleClickDatepickerIcon = (type: string) => {
+  const handleClickDatePickerIcon = (type: string) => {
     if (type === 'start') {
       const datePickerElement = datePickerRefStart.current;
       datePickerElement!.setFocus();
@@ -144,6 +144,13 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
         }
       });
     }
+
+    activityFilterExport({
+      checkTags: checkTags.toString(),
+      checkPlatform: checkPlatform.toString(),
+      endDate: endDate && format(endDate!, 'yyyy-MM-dd'),
+      startDate: startDate && format(startDate!, 'yyyy-MM-dd')
+    });
 
     dispatch(
       activitiesSlice.actions.getActiveStreamData({
@@ -291,7 +298,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
                       className="absolute icon-holder right-6 cursor-pointer"
                       src={calendarIcon}
                       alt=""
-                      onClick={() => handleClickDatepickerIcon('start')}
+                      onClick={() => handleClickDatePickerIcon('start')}
                     />
                   </div>
                 </div>
@@ -309,7 +316,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
                       className="absolute icon-holder right-6 cursor-pointer"
                       src={calendarIcon}
                       alt=""
-                      onClick={() => handleClickDatepickerIcon('end')}
+                      onClick={() => handleClickDatePickerIcon('end')}
                     />
                   </div>
                 </div>

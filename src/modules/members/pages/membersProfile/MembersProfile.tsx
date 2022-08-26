@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable max-len */
 import React, { useEffect, useRef, useState } from 'react';
 import Button from 'common/button';
 import { format } from 'date-fns';
-import DatePicker from 'react-datepicker';
+import DatePicker, { ReactDatePicker } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Modal from 'react-modal';
 import { useDispatch } from 'react-redux';
@@ -53,24 +54,8 @@ const MembersProfile: React.FC = () => {
   const platformData = usePlatform();
 
   const dropDownRef = useRef<HTMLDivElement>(null);
-  const datepickerRefFrom = useRef<any>(null);
-  const datepickerRefTo = useRef<any>(null);
-
-  const handleOutsideClick = (event: MouseEvent) => {
-    if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
-      setSelectDropDownActive(false);
-    }
-  };
-
-  const handleClickDatepickerIcon = (type: string) => {
-    if (type === 'start') {
-      const datepickerElement = datepickerRefFrom.current;
-      datepickerElement.setFocus(true);
-    } else {
-      const datepickerElement = datepickerRefTo.current;
-      datepickerElement.setFocus(true);
-    }
-  };
+  const datePickerRefStart = useRef<ReactDatePicker>(null);
+  const datePickerRefEnd = useRef<ReactDatePicker>(null);
 
   useEffect(() => {
     dispatch(membersSlice.actions.getMembersActivityGraphData({ workspaceId: workspaceId as string, memberId: memberId as string }));
@@ -180,6 +165,23 @@ const MembersProfile: React.FC = () => {
     const { clientHeight, scrollHeight, scrollTop } = event.currentTarget;
     if (scrollHeight - scrollTop === clientHeight) {
       setActivityNextCursor(activityData?.nextCursor);
+    }
+  };
+
+  const handleOutsideClick = (event: MouseEvent) => {
+    if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
+      setSelectDropDownActive(false);
+    }
+  };
+
+  const handleClickDatePickerIcon = (type: string) => {
+    if (type === 'start') {
+      const datePickerElement = datePickerRefStart.current;
+      datePickerElement!.setFocus();
+    }
+    if (type === 'end') {
+      const datePickerElement = datePickerRefEnd.current;
+      datePickerElement!.setFocus();
     }
   };
 
@@ -304,13 +306,13 @@ const MembersProfile: React.FC = () => {
                     onChange={(date: Date) => setFromDate(date)}
                     className=" h-3.06 app-result-card-border shadow-reportInput w-full rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                     placeholderText="From"
-                    ref={datepickerRefFrom}
+                    ref={datePickerRefStart}
                   />
                   <img
                     className="absolute icon-holder right-4 cursor-pointer"
                     src={calendarIcon}
                     alt=""
-                    onClick={() => handleClickDatepickerIcon('start')}
+                    onClick={() => handleClickDatePickerIcon('start')}
                   />
                 </div>
                 <div className="relative flex items-center pt-1">
@@ -319,13 +321,13 @@ const MembersProfile: React.FC = () => {
                     onChange={(date: Date) => setToDate(date)}
                     className=" h-3.06 app-result-card-border shadow-reportInput w-full rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                     placeholderText="To"
-                    ref={datepickerRefTo}
+                    ref={datePickerRefEnd}
                   />
                   <img
                     className="absolute icon-holder right-4 cursor-pointer"
                     src={calendarIcon}
                     alt=""
-                    onClick={() => handleClickDatepickerIcon('end')}
+                    onClick={() => handleClickDatePickerIcon('end')}
                   />
                 </div>
               </div>

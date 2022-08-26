@@ -19,8 +19,8 @@ import useDebounce from '@/hooks/useDebounce';
 import { MembersTagResponse, PlatformResponse } from '../interface/members.interface';
 import usePlatform from '../../../hooks/usePlatform';
 
-const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
-  const [isFilterDropdownActive, setisFilterDropdownActive] = useState<boolean>(false);
+const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }) => {
+  const [isFilterDropdownActive, setIsFilterDropdownActive] = useState<boolean>(false);
   const [isPlatformActive, setPlatformActive] = useState<boolean>(true);
   const [isTagActive, setTagActive] = useState<boolean>(false);
   const [isLocationActive, setLocationActive] = useState<boolean>(false);
@@ -81,12 +81,12 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
 
   const handleOutsideClick = (event: MouseEvent) => {
     if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
-      setisFilterDropdownActive(false);
+      setIsFilterDropdownActive(false);
     }
   };
 
   const handleFilterDropdown = (): void => {
-    setisFilterDropdownActive((prev) => !prev);
+    setIsFilterDropdownActive((prev) => !prev);
   };
 
   const handlePlatformActive = (val: boolean) => {
@@ -166,22 +166,23 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
     event.stopPropagation();
     if (dateTime === 'start') {
       setStartDate(date);
-      setisFilterDropdownActive(true);
+      setIsFilterDropdownActive(true);
     }
 
     if (dateTime === 'end') {
       setEndDate(date);
-      setisFilterDropdownActive(true);
+      setIsFilterDropdownActive(true);
     }
   };
 
-  const handleClickDatepickerIcon = (type: string) => {
+  const handleClickDatePickerIcon = (type: string) => {
     if (type === 'start') {
-      const datepickerElement = datePickerRefStart.current;
-      datepickerElement!.setFocus();
-    } else {
-      const datepickerElement = datePickerRefEnd.current;
-      datepickerElement!.setFocus();
+      const datePickerElement = datePickerRefStart.current;
+      datePickerElement!.setFocus();
+    }
+    if (type === 'end') {
+      const datePickerElement = datePickerRefEnd.current;
+      datePickerElement!.setFocus();
     }
   };
 
@@ -243,6 +244,15 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
         }
       });
     }
+
+    memberFilterExport({
+      checkTags: checkTags.toString(),
+      checkPlatform: checkPlatform.toString(),
+      checkOrganization: checkOrganization.toString(),
+      checkLocation: checkLocation.toString(),
+      endDate: endDate && format(endDate!, 'yyyy-MM-dd'),
+      startDate: startDate && format(startDate!, 'yyyy-MM-dd')
+    });
 
     dispatch(
       membersSlice.actions.membersList({
@@ -393,7 +403,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
                       className="absolute icon-holder right-6 cursor-pointer"
                       src={calendarIcon}
                       alt=""
-                      onClick={() => handleClickDatepickerIcon('start')}
+                      onClick={() => handleClickDatePickerIcon('start')}
                     />
                   </div>
                 </div>
@@ -411,7 +421,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
                       className="absolute icon-holder right-6 cursor-pointer"
                       src={calendarIcon}
                       alt=""
-                      onClick={() => handleClickDatepickerIcon('end')}
+                      onClick={() => handleClickDatePickerIcon('end')}
                     />
                   </div>
                 </div>
@@ -492,7 +502,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
                   <input
                     type="text"
                     name="organization"
-                    id="orgaanizationId"
+                    id="organizationId"
                     className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-profileCard rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
                     placeholder="Search Organization"
                     onChange={handleOrganizationSearchTextChange}

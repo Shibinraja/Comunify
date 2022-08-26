@@ -27,7 +27,7 @@ import membersSlice from '../store/slice/members.slice';
 import MembersFilter from './MembersFilter';
 import MembersDraggableColumn from './membersTableColumn/membersDraggableColumn';
 import { ColumNames } from './MembersTableData';
-import { customDateLinkProps } from './membertypes';
+import { customDateLinkProps, filterDateProps, memberFilterExportProps } from './membertypes';
 import { CustomDateType } from '../interface/members.interface';
 import { API_ENDPOINT } from '@/lib/config';
 import Skeleton from 'react-loading-skeleton';
@@ -38,10 +38,11 @@ import { width_90 } from 'constants/constants';
 Modal.setAppElement('#root');
 
 const Members: React.FC = () => {
+  const limit = 10;
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { workspaceId } = useParams();
-  const [isModalOpen, setisModalOpen] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [columns, setColumns] = useState<Array<ColumnNameProps>>(ColumNames);
   const [customizedColumnBool, saveCustomizedColumn] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
@@ -53,10 +54,21 @@ const Members: React.FC = () => {
     '7day': false,
     '1month': false
   });
-  const [isFilterDropdownActive, setisFilterDropdownActive] = useState<boolean>(false);
-  const memberColumnsloader = useSkeletonLoading(membersSlice.actions.membersList.type);
+  const [filteredDate, setFilteredDate] = useState<filterDateProps>({
+    filterStartDate: '',
+    filterEndDate: ''
+  });
+  const [isFilterDropdownActive, setIsFilterDropdownActive] = useState<boolean>(false);
+  const [filterExportParams, setFilterExportParams] = useState<memberFilterExportProps>({
+    checkTags: '',
+    checkPlatform: '',
+    checkOrganization: '',
+    checkLocation: '',
+    endDate: '',
+    startDate: ''
+  });
 
-  const limit = 10;
+  const memberColumnsLoader = useSkeletonLoading(membersSlice.actions.membersList.type);
 
   const datePickerRefStart = useRef<ReactDatePicker>(null);
   const datePickerRefEnd = useRef<ReactDatePicker>(null);
@@ -66,12 +78,12 @@ const Members: React.FC = () => {
   const dropDownRef = useRef<HTMLDivElement>(null);
 
   const handleFilterDropdown = (): void => {
-    setisFilterDropdownActive((prev) => !prev);
+    setIsFilterDropdownActive((prev) => !prev);
   };
 
   const handleOutsideClick = (event: MouseEvent) => {
     if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
-      setisFilterDropdownActive(false);
+      setIsFilterDropdownActive(false);
     }
   };
 
@@ -148,6 +160,7 @@ const Members: React.FC = () => {
 
   // Function to dispatch the search text to hit api of member list.
   const getFilteredMembersList = (pageNumber: number, text: string, date?: string, endDate?: string) => {
+    setFilteredDate((prevDate) => ({ ...prevDate, filterStartDate: date!, filterEndDate: endDate! }));
     dispatch(
       membersSlice.actions.membersList({
         membersQuery: {
@@ -167,7 +180,7 @@ const Members: React.FC = () => {
   };
 
   const handleModalClose = (): void => {
-    setisModalOpen(false);
+    setIsModalOpen(false);
     saveCustomizedColumn(false);
   };
 
@@ -198,12 +211,12 @@ const Members: React.FC = () => {
     event.stopPropagation();
     if (dateTime === 'start') {
       setCustomStartDate(date);
-      setisFilterDropdownActive(true);
+      setIsFilterDropdownActive(true);
     }
 
     if (dateTime === 'end') {
       setCustomEndDate(date);
-      setisFilterDropdownActive(true);
+      setIsFilterDropdownActive(true);
     }
   };
 
@@ -217,7 +230,20 @@ const Members: React.FC = () => {
 
   // Fetch members list data in comma separated value
   const fetchMembersListExportData = () => {
-    fetchExportList(`${API_ENDPOINT}/v1/${workspaceId}/members/memberlistexport`, 'MembersListExport.xlsx');
+    fetchExportList(
+      `${API_ENDPOINT}/v1/${workspaceId}/members/memberlistexport`,
+      {
+        tags: filterExportParams.checkTags,
+        platforms: filterExportParams.checkPlatform,
+        location: filterExportParams.checkLocation,
+        organization: filterExportParams.checkOrganization,
+        'lastActivity.lte': filterExportParams.endDate,
+        'lastActivity.gte': filterExportParams.startDate,
+        'createdAT.gte': filteredDate.filterStartDate,
+        'createdAT.lte': filteredDate.filterEndDate
+      },
+      'MembersListExport.xlsx'
+    );
   };
 
   // Function to map customized column with api data response to create a new column array with index matching with customized column.
@@ -241,15 +267,15 @@ const Members: React.FC = () => {
     []
   );
 
-  // Memoized functionality to stop re-renderization.
+  // Memoized functionality to stop re-render.
   const membersColumn = useMemo(
     () => <MembersDraggableColumn MembersColumn={customizedColumnBool} handleModalClose={handleModalClose} />,
     [customizedColumnBool]
   );
 
-  const MemberFilter = useMemo(() => <MembersFilter page={page} limit={limit} />, []);
+  const MemberFilter = useMemo(() => <MembersFilter page={page} limit={limit} memberFilterExport={setFilterExportParams} />, []);
 
-  const handleClickDatepickerIcon = (type: string) => {
+  const handleClickDatePickerIcon = (type: string) => {
     if (type === 'start') {
       const datePickerElement = datePickerRefStart.current;
       datePickerElement!.setFocus();
@@ -302,16 +328,6 @@ const Members: React.FC = () => {
         >
           1M
         </div>
-
-        {/* <div className="relative flex items-center  ml-0.653 ">
-          <DatePicker
-            selected={toDate}
-            onChange={(date: Date) => selectCustomDate('', date)}
-            className="export w-9.92 h-3.06  shadow-contactCard rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
-            placeholderText="Custom Date"
-          />
-          <img className="absolute icon-holder left-32 cursor-pointer" src={calendarIcon} alt="" />
-        </div> */}
         <div className="box-border cursor-pointer rounded-0.6 shadow-contactCard app-input-card-border relative ml-5" ref={dropDownRef}>
           <div className="flex h-3.06 w-[11.25rem] items-center justify-between px-5 " onClick={handleFilterDropdown}>
             <div className="box-border rounded-0.6 shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">
@@ -339,7 +355,7 @@ const Members: React.FC = () => {
                         className="absolute icon-holder right-6 cursor-pointer"
                         src={calendarIcon}
                         alt=""
-                        onClick={() => handleClickDatepickerIcon('start')}
+                        onClick={() => handleClickDatePickerIcon('start')}
                       />
                     </div>
                   </div>
@@ -357,7 +373,7 @@ const Members: React.FC = () => {
                         className="absolute icon-holder right-6 cursor-pointer"
                         src={calendarIcon}
                         alt=""
-                        onClick={() => handleClickDatepickerIcon('end')}
+                        onClick={() => handleClickDatePickerIcon('end')}
                       />
                     </div>
                   </div>
@@ -404,7 +420,7 @@ const Members: React.FC = () => {
                       {Object.keys(member).map((column: keyof typeof member, index) => (
                         <td className="px-6 py-4" key={index}>
                           {column === 'name' ? (
-                            memberColumnsloader ? (
+                            memberColumnsLoader ? (
                               <Skeleton width={width_90} />
                             ) : (
                               <div className="flex ">
@@ -417,7 +433,7 @@ const Members: React.FC = () => {
                               </div>
                             )
                           ) : column === 'platforms' ? (
-                            memberColumnsloader ? (
+                            memberColumnsLoader ? (
                               <Skeleton width={width_90} />
                             ) : (
                               <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 h-1.375 w-1.375 flex" key={index}>
@@ -436,7 +452,7 @@ const Members: React.FC = () => {
                           //   ))}
                           // </div>
                             column === 'tags' ? (
-                              memberColumnsloader ? (
+                              memberColumnsLoader ? (
                                 <Skeleton width={width_90} />
                               ) : (
                                 <div className="flex ">
@@ -460,7 +476,7 @@ const Members: React.FC = () => {
                                 </div>
                               )
                             ) : column === 'lastActivity' ? (
-                              memberColumnsloader ? (
+                              memberColumnsLoader ? (
                                 <Skeleton width={width_90} />
                               ) : (
                                 <div className="flex flex-col">
@@ -472,7 +488,7 @@ const Members: React.FC = () => {
                                   </div>
                                 </div>
                               )
-                            ) : memberColumnsloader ? (
+                            ) : memberColumnsLoader ? (
                               <Skeleton width={width_90} />
                             ) : (
                               <div className="flex ">
@@ -496,7 +512,7 @@ const Members: React.FC = () => {
               <div className="fixed bottom-10 right-32">
                 <div
                   className="btn-drag p-3 flex items-center justify-center cursor-pointer shadow-dragButton rounded-0.6 "
-                  onClick={() => setisModalOpen(true)}
+                  onClick={() => setIsModalOpen(true)}
                 >
                   <img src={editIcon} alt="" />
                 </div>
@@ -504,7 +520,7 @@ const Members: React.FC = () => {
               <Modal
                 isOpen={isModalOpen}
                 shouldCloseOnOverlayClick={true}
-                onRequestClose={() => setisModalOpen(false)}
+                onRequestClose={() => setIsModalOpen(false)}
                 className="w-24.31 mx-auto mt-9.18  pb-20 bg-white border-fetching-card rounded-lg shadow-modal outline-none"
               >
                 <div className="flex flex-col px-1.68 relative">

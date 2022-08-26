@@ -26,6 +26,7 @@ import ActivityFilter from './ActivityFilter';
 import Skeleton from 'react-loading-skeleton';
 import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 import { width_90 } from 'constants/constants';
+import { activityFilterExportProps } from './activity.types';
 
 Modal.setAppElement('#root');
 
@@ -44,10 +45,16 @@ const Activity: React.FC = () => {
     profilePictureUrl: ''
   });
   const [ActivityCard, setActivityCard] = useState<ActivityCard>();
-  const [page, setpage] = useState<number>(1);
+  const [page, setPage] = useState<number>(1);
   const [searchText, setSearchText] = useState<string>('');
   const dropDownRef = useRef<HTMLDivElement>(null);
-
+  const [checkedActivityId, setCheckedActivityId] = useState<Record<string, unknown>>({});
+  const [filterExportParams, setFilterExportParams] = useState<activityFilterExportProps>({
+    checkTags: '',
+    checkPlatform: '',
+    endDate: '',
+    startDate: ''
+  });
   const limit = 10;
   const loader = useSkeletonLoading(activitiesSlice.actions.getActiveStreamData.type);
 
@@ -144,6 +151,11 @@ const Activity: React.FC = () => {
     setSearchText(searchText);
   };
 
+  const handleCheckBox = (event: ChangeEvent<HTMLInputElement>) => {
+    const checked_id: string = event.target.name;
+    setCheckedActivityId((prevValue) => ({ ...prevValue, [checked_id]: event.target.checked }));
+  };
+
   // Function to dispatch the search text to hit api of member list.
   const getFilteredActiveStreamList = (pageNumber: number, text: string) => {
     dispatch(
@@ -160,10 +172,29 @@ const Activity: React.FC = () => {
 
   // Fetch members list data in comma separated value
   const fetchActiveStreamListExportData = () => {
-    fetchExportList(`${API_ENDPOINT}/v1/${workspaceId}/activity/export`, 'ActiveStreamExport.xlsx');
+    const checkedIds: Array<string> = [];
+
+    if (Object.keys(checkedActivityId).length > 0) {
+      Object.keys(checkedActivityId).map((platform: string) => {
+        if (checkedActivityId[platform] === true) {
+          checkedIds.push(platform);
+        }
+      });
+    }
+    fetchExportList(
+      `${API_ENDPOINT}/v1/${workspaceId}/activity/export`,
+      {
+        tags: filterExportParams.checkTags,
+        platforms: filterExportParams.checkPlatform,
+        'activity.lte': filterExportParams.endDate,
+        'activity.gte': filterExportParams.startDate,
+        activityId: checkedIds.toString()
+      },
+      'ActiveStreamExport.xlsx'
+    );
   };
 
-  const ActiveStreamFilter = useMemo(() => <ActivityFilter page={page} limit={limit} />, []);
+  const ActiveStreamFilter = useMemo(() => <ActivityFilter page={page} limit={limit} activityFilterExport={setFilterExportParams} />, []);
 
   return (
     <div className="flex flex-col mt-1.8">
@@ -183,10 +214,10 @@ const Activity: React.FC = () => {
 
         <div className="">
           <div
-            className="app-input-card-border w-6.98 h-3.06 rounded-0.6 shadow-shadowInput box-border bg-white items-center justify-evenly flex ml-0.63 cursor-pointer hover:border-infoBlack transition ease-in-out duration-300"
+            className="app-input-card-border w-6.98 h-3.06 rounded-0.6 shadow-shadowInput box-border bg-white items-center justify-evenly flex ml-0.63 cursor-pointer"
             onClick={fetchActiveStreamListExportData}
           >
-            <h3 className="text-dropGray leading-1.12 font-Poppins font-semibld text-card">Export</h3>
+            <h3 className="text-dropGray leading-1.12 font-Poppins font-semibold text-card">Export</h3>
             <img src={exportImage} alt="" />
           </div>
         </div>
@@ -219,7 +250,14 @@ const Activity: React.FC = () => {
                           ) : (
                             <div className="flex ">
                               <div className="py-3 mr-2">
-                                <input type="checkbox" className="checkbox" />
+                                <input
+                                  type="checkbox"
+                                  className="checkbox"
+                                  id={data.id}
+                                  name={data.id}
+                                  checked={(checkedActivityId[data.id] as boolean) || false}
+                                  onChange={handleCheckBox}
+                                />
                               </div>
                               <div className="relative">
                                 <div
@@ -476,7 +514,7 @@ const Activity: React.FC = () => {
             </div>
           </div>
           <div className="px-6 py-6 flex items-center justify-center gap-0.66 w-full rounded-b-lg  bottom-0 bg-white">
-            <Pagination currentPage={page} totalPages={totalPages} limit={limit} onPageChange={(page) => setpage(Number(page))} />
+            <Pagination currentPage={page} totalPages={totalPages} limit={limit} onPageChange={(page) => setPage(Number(page))} />
           </div>
         </div>
       ) : (
