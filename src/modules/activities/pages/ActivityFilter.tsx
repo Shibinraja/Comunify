@@ -190,7 +190,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
               </div>
             </div>
             {isPlatformActive && (
-              <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
+              <div className="flex flex-col gap-y-5 justify-center px-3 max-h-[10rem] overflow-scroll">
                 {PlatformFilterResponse &&
                   PlatformFilterResponse.map(
                     (platform: PlatformResponse, index: number) =>
@@ -241,7 +241,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
                     <img src={searchIcon} alt="" />
                   </div>
                 </div>
-                <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
+                <div className="flex flex-col gap-y-5 justify-center px-3 max-h-[12.5rem] overflow-scroll">
                   {activeStreamTagFilterResponse &&
                     activeStreamTagFilterResponse.map((tags: ActiveStreamTagResponse, index: number) => (
                       <div key={index} className="flex items-center mb-2">
