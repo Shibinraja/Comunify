@@ -13,7 +13,7 @@ function MembersTab() {
           <TabSelector
             isActive={selectedTab === 'top_contributors'}
             onClick={() => setSelectedTab('top_contributors')}
-            style={'ml-1.625 mt-0.438 text-sm '}
+            style={'ml-1.625 mt-0.438 text-sm pb-2  border-transparent'}
             styleActive={'gradient-bottom-border'}
           >
             Top Contributors
@@ -27,7 +27,7 @@ function MembersTab() {
           <TabSelector
             isActive={selectedTab === 'active'}
             onClick={() => setSelectedTab('active')}
-            style={'ml-1.625 mt-0.438 text-sm '}
+            style={'ml-1.625 mt-0.438 text-sm pb-2  border-transparent'}
             styleActive={'gradient-bottom-border'}
           >
             Active
@@ -35,7 +35,7 @@ function MembersTab() {
           <TabSelector
             isActive={selectedTab === 'in-active'}
             onClick={() => setSelectedTab('in-active')}
-            style={'ml-1.625 mt-0.438 text-sm '}
+            style={'ml-1.625 mt-0.438 text-sm pb-2  border-transparent'}
             styleActive={'gradient-bottom-border'}
           >
             Inactive

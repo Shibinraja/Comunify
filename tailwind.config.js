@@ -8,6 +8,7 @@ module.exports = {
         primaryDark: '#2e323b',
         secondary: '#F9F9F9',
         secondaryDark: '#22252D',
+        thirdDark: '#1B1E25',
         borderDark: '#272727',
         inputText: '#7C8DB5',
         greyDark: '#8A8B9F',
