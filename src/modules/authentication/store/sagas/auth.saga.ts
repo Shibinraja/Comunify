@@ -201,7 +201,7 @@ function* logout() {
     yield put(loaderSlice.actions.startAuthLoadingAction());
     yield call(signOutService);
     window.localStorage.clear();
-    location.reload();
+    yield call(forwardTo, '/');
   } catch (e) {
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
