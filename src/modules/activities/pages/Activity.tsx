@@ -145,7 +145,7 @@ const Activity: React.FC = () => {
   };
 
   // Function to dispatch the search text to hit api of member list.
-  const getFilteredActiveStreamList = (pageNumber:number, text: string) => {
+  const getFilteredActiveStreamList = (pageNumber: number, text: string) => {
     dispatch(
       activitiesSlice.actions.getActiveStreamData({
         activeStreamQuery: {
