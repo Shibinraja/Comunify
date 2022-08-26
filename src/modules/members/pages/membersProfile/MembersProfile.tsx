@@ -403,8 +403,8 @@ const MembersProfile: React.FC = () => {
             <div key={data?.id + data?.createdAt} className=" flex flex-col">
               <div className="profile-card items-center btn-save-modal justify-center pro-bag rounded-t-0.6 w-18.125 shadow-contactBtn box-border h-6.438 "></div>
               <div className="flex flex-col profile-card items-center justify-center bg-white rounded-b-0.6 w-18.125 shadow-contactCard box-border h-11.06">
-                <div className="-mt-24 w-24 h-24">
-                  <img src={data?.profileUrl} alt="profileImage" className="bg-cover " />
+                <div className="-mt-24">
+                  <img src={data?.profileUrl} alt="profileImage" className="bg-cover bg-center border-8 border-white rounded-full w-24" />
                 </div>
                 <div className="mt-0.688 text-profileBlack font-semibold font-Poppins leading-1.31 text-trial">{data?.name}</div>
                 <div className="text-center pt-0.125 font-Poppins text-profileBlack text-member">
