@@ -7,8 +7,8 @@ import infoIcon from '../../../../assets/images/info.svg';
 function MembersTab() {
   const [selectedTab, setSelectedTab] = useTabs(['top_contributors', 'active', 'in-active']);
   return (
-    <div className="w-full h-full   box-border bg-white  rounded-0.6 mt-1.868 app-input-card-border shadow-profileCard ">
-      <div className="w-full mt-7 flex flex-col ">
+    <div className="w-full h-full   box-border bg-white dark:bg-secondaryDark dark:text-white rounded-0.6 mt-1.868 border  border-borderPrimary dark:border-borderDark shadow-profileCard ">
+      <div className="w-full mt-6 flex flex-col ">
         <nav>
           <TabSelector
             isActive={selectedTab === 'top_contributors'}
@@ -19,7 +19,7 @@ function MembersTab() {
             Top Contributors
             <span className="pl-2 group relative">
               <img src={infoIcon} alt="" />
-              <div className="absolute group-hover:visible invisible mt-4 bg-toolTip text-left p-5 text-white font-Poppins text-email font-normal leading-4 rounded-0.6">
+              <div className="absolute group-hover:visible invisible mt-4 bg-toolTip text-left p-5 text-white dark:text-white font-Poppins text-email font-normal leading-4 rounded-0.6">
                 Top contributors are the Members <br /> with most number of activities
               </div>
             </span>

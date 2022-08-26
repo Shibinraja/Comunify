@@ -69,7 +69,7 @@ input {
   border-bottom: 1px solid #e6e6e6;
 }
 
-.border-top-card{
+.border-top-card {
   border-top: 1px solid #e6e6e6;
 }
 
@@ -105,8 +105,8 @@ input {
   background-clip: content-box, border-box;
 }
 
-.border-integration-modal{
-  border: 1px solid #DEE2E6;;
+.border-integration-modal {
+  border: 1px solid #dee2e6;
 }
 
 .section::-webkit-scrollbar {
@@ -202,7 +202,9 @@ input {
 .checkbox:checked {
   background: linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
 }
-
+.bg-background-pattern {
+  background-image: url('../src/assets/images/background-pattern.svg');
+}
 .checkbox::before {
   content: '';
   height: 11px;
@@ -221,6 +223,19 @@ input {
   border-bottom: 2px solid transparent;
   border-image: linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
   border-image-slice: 1;
+}
+
+.active-list:after {
+  content: '';
+  width: 1px;
+  position: absolute;
+  left: 35px;
+  bottom: 25px;
+  height: 35px;
+  background: rgba(0, 0, 0, 0.12);
+}
+.active-list:first-child:after {
+  height: 0;
 }
 
 .app-input-card-border-selected {
@@ -314,7 +329,7 @@ input {
 .react-datepicker__header {
   border-bottom: none !important;
   padding: 15px 0 0 0 !important;
-  background-color: #ffff !important;
+  background-color: transparent !important;
 }
 
 .react-datepicker__month {
@@ -382,8 +397,11 @@ input {
 
 .react-datepicker__close-icon::after {
   background-color: transparent !important;
-  color: #55555C !important;
+  color: #55555c !important;
   font-size: 22px !important;
+  position: relative;
+  bottom: 2px;
+  left: 2px;
 }
 
 /* Customradio button */
@@ -441,7 +459,7 @@ input {
   background-color: #fff;
 }
 .platform-layout-open {
-  height: 250px;
+  height: 243px;
   overflow-y: auto;
   background-color: #fff;
   transition: height 1s;
@@ -450,14 +468,80 @@ input {
 .side-nav-layout {
   box-shadow: 0 -7px 0px rgb(0, 0, 0, 0.09), 0 1px 1px rgb(0, 0, 0, 0.2);
 }
-.members-list-height{
+.members-list-height {
   height: calc(100vh - 25rem);
   overflow: scroll;
   max-height: 521px;
 }
 
-.activity-list-height{
+.activity-list-height {
   height: calc(100vh - 25rem);
   overflow: scroll;
   max-height: 410px;
+}
+.notification-icon svg path {
+  fill: #000;
+}
+
+/* Theme Dark */
+.dark .react-datepicker {
+  background: #22252d !important;
+  border: 1.61935px solid #737488 !important;
+}
+
+.dark .react-datepicker__day,
+.dark .react-datepicker__month-text,
+.dark .react-datepicker__quarter-text,
+.dark .react-datepicker__year-text,
+.dark .react-datepicker__month {
+  border: none !important;
+}
+.dark .react-datepicker__current-month,
+.dark .react-datepicker-time__header,
+.dark .react-datepicker-year-header,
+.dark .dark .react-datepicker__day-name,
+.dark .react-datepicker__day,
+.dark .react-datepicker__time-name {
+  color: #fff;
+}
+.dark .react-datepicker__month .react-datepicker__day-name,
+.dark .react-datepicker__day,
+.dark .react-datepicker__time-name {
+  color: #7c8db5 !important;
+}
+.dark .react-datepicker__day--selected,
+.dark .react-datepicker__day--keyboard-selected,
+.dark .react-datepicker__day--in-selecting-range,
+.dark .react-datepicker__day--in-range,
+.dark .react-datepicker__month-text--selected,
+.dark .react-datepicker__month-text--in-selecting-range,
+.dark .react-datepicker__month-text--in-range,
+.dark .react-datepicker__quarter-text--selected,
+.dark .react-datepicker__quarter-text--in-selecting-range,
+.dark .react-datepicker__quarter-text--in-range,
+.dark .react-datepicker__year-text--selected,
+.dark .react-datepicker__year-text--in-selecting-range,
+.dark .react-datepicker__year-text--in-range,
+.dark .react-datepicker__day-name {
+  color: #fff !important;
+}
+.dark .CircularProgressbar-trail {
+  stroke: #fff !important;
+}
+.dark .notification-icon svg path {
+  fill: #fff;
+}
+.dark .icon-holder,
+.dark .drop-icon img {
+  filter: invert(61%) sepia(8%) saturate(680%) hue-rotate(199deg) brightness(90%) contrast(80%);
+}
+.dark .heathCard img {
+  filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(326deg) brightness(102%) contrast(101%);
+}
+
+.dark .inactive-menu img {
+  filter: invert(54%) sepia(14%) saturate(10%) hue-rotate(356deg) brightness(88%) contrast(82%);
+}
+.dark .active-menu img {
+  filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(326deg) brightness(102%) contrast(101%);
 }

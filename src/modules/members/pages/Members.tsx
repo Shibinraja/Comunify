@@ -2,9 +2,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import Button from 'common/button';
 import MembersCard from 'common/membersCard/MembersCard';
-import React, {
-  ChangeEvent, Fragment, Key, ReactNode, useEffect, useMemo, useRef, useState
-} from 'react';
+import React, { ChangeEvent, Fragment, Key, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Modal from 'react-modal';
@@ -34,7 +32,6 @@ import { API_ENDPOINT } from '@/lib/config';
 
 import fetchExportList from '@/lib/fetchExport';
 
-
 Modal.setAppElement('#root');
 
 const Members: React.FC = () => {
@@ -55,7 +52,6 @@ const Members: React.FC = () => {
   });
   const datepickerRefStart = useRef<any>(null);
   const datepickerRefEnd = useRef<any>(null);
-
 
   const dispatch = useAppDispatch();
 
@@ -148,7 +144,7 @@ const Members: React.FC = () => {
   }, [customStartDate, customEndDate]);
 
   // Function to dispatch the search text to hit api of member list.
-  const getFilteredMembersList = (text: string, date?: string, endDate?:string) => {
+  const getFilteredMembersList = (text: string, date?: string, endDate?: string) => {
     dispatch(
       membersSlice.actions.membersList({
         membersQuery: {
@@ -223,38 +219,36 @@ const Members: React.FC = () => {
 
   // Function to map customized column with api data response to create a new column array with index matching with customized column.
   // eslint-disable-next-line max-len
-  const customizedColumn = data?.reduce(
-    (acc: Array<Record<string, unknown>>, currentValue: Record<string, unknown>): Array<Record<string, unknown>> => {
-      const accumulatedColumn: Record<string, unknown> = {};
-      const memberValue = { ...currentValue };
-      columns.forEach((column: ColumnNameProps) => {
-        // eslint-disable-next-line no-prototype-builtins
-        if (memberValue.hasOwnProperty(column.id)) {
-          if (column.isDisplayed) {
-            accumulatedColumn[column.id] = memberValue[column.id];
-          }
+  const customizedColumn = data?.reduce((acc: Array<Record<string, unknown>>, currentValue: Record<string, unknown>): Array<
+    Record<string, unknown>
+  > => {
+    const accumulatedColumn: Record<string, unknown> = {};
+    const memberValue = { ...currentValue };
+    columns.forEach((column: ColumnNameProps) => {
+      // eslint-disable-next-line no-prototype-builtins
+      if (memberValue.hasOwnProperty(column.id)) {
+        if (column.isDisplayed) {
+          accumulatedColumn[column.id] = memberValue[column.id];
         }
-      });
-      accumulatedColumn['name'] = { name: accumulatedColumn['name'], id: currentValue.id };
-      acc.push(accumulatedColumn);
-      return acc;
-    },
-    []
-  );
+      }
+    });
+    accumulatedColumn['name'] = { name: accumulatedColumn['name'], id: currentValue.id };
+    acc.push(accumulatedColumn);
+    return acc;
+  }, []);
 
   // Memoized functionality to stop re-renderization.
-  const membersColumn = useMemo(
-    () => <MembersDraggableColumn MembersColumn={customizedColumnBool} handleModalClose={handleModalClose} />,
-    [customizedColumnBool]
-  );
+  const membersColumn = useMemo(() => <MembersDraggableColumn MembersColumn={customizedColumnBool} handleModalClose={handleModalClose} />, [
+    customizedColumnBool
+  ]);
 
   const MemberFilter = useMemo(() => <MembersFilter page={page} limit={limit} />, []);
 
-  const handleClickDatepickerIcon=(type : string) => {
-    if(type === 'start') {
+  const handleClickDatepickerIcon = (type: string) => {
+    if (type === 'start') {
       const datepickerElement = datepickerRefStart.current;
       datepickerElement.setFocus(true);
-    }else{
+    } else {
       const datepickerElement = datepickerRefEnd.current;
       datepickerElement.setFocus(true);
     }
@@ -262,7 +256,7 @@ const Members: React.FC = () => {
 
   return (
     <div className="flex flex-col mt-12">
-      <h3 className="font-Poppins font-semibold text-infoBlack text-infoData leading-9">Members</h3>
+      <h3 className="font-Poppins font-semibold text-infoBlack text-infoData leading-9 dark:text-white">Members</h3>
       <div className="member-card pt-10">
         <MembersCard />
       </div>
@@ -314,43 +308,57 @@ const Members: React.FC = () => {
         </div> */}
         <div className="box-border cursor-pointer rounded-0.6 shadow-contactCard app-input-card-border relative ml-5" ref={dropDownRef}>
           <div className="flex h-3.06 w-[11.25rem] items-center justify-between px-5 " onClick={handleFilterDropdown}>
-            <div className="box-border rounded-0.6 shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">Custom Date</div>
+            <div className="box-border rounded-0.6 shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">
+              Custom Date
+            </div>
             <div>
               <img src={dropdownIcon} alt="" className={isFilterDropdownActive ? 'rotate-180' : 'rotate-0'} />
             </div>
           </div>
-          {isFilterDropdownActive &&  <div className="absolute w-16.56 pb-0 bg-white border z-40 rounded-0.3">
-            <div className="flex flex-col pb-5">
-              <>
-                <div className="flex flex-col px-3 pt-4">
-                  <label htmlFor="Start Date p-1 font-Inter font-normal leading-4 text-trial text-searchBlack">Start Date</label>
-                  <div className="relative flex items-center">
-                    <DatePicker
-                      selected={customStartDate}
-                      onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'start')}
-                      className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
-                      placeholderText="DD/MM/YYYY"
-                      ref={datepickerRefStart}
-                    />
-                    <img className="absolute icon-holder right-6 cursor-pointer" src={calendarIcon} alt="" onClick={() => handleClickDatepickerIcon('start')}/>
+          {isFilterDropdownActive && (
+            <div className="absolute w-16.56 pb-0 bg-white border z-40 rounded-0.3">
+              <div className="flex flex-col pb-5">
+                <>
+                  <div className="flex flex-col px-3 pt-4">
+                    <label htmlFor="Start Date p-1 font-Inter font-normal leading-4 text-trial text-searchBlack">Start Date</label>
+                    <div className="relative flex items-center">
+                      <DatePicker
+                        selected={customStartDate}
+                        onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'start')}
+                        className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
+                        placeholderText="DD/MM/YYYY"
+                        ref={datepickerRefStart}
+                      />
+                      <img
+                        className="absolute icon-holder right-6 cursor-pointer"
+                        src={calendarIcon}
+                        alt=""
+                        onClick={() => handleClickDatepickerIcon('start')}
+                      />
+                    </div>
                   </div>
-                </div>
-                <div className="flex flex-col px-3 pb-4 pt-3">
-                  <label htmlFor="Start Date p-1 font-Inter font-Inter font-normal leading-4 text-trial text-searchBlack">End Date</label>
-                  <div className="relative flex items-center">
-                    <DatePicker
-                      selected={customEndDate}
-                      onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'end')}
-                      className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
-                      placeholderText="DD/MM/YYYY"
-                      ref={datepickerRefEnd}
-                    />
-                    <img className="absolute icon-holder right-6 cursor-pointer" src={calendarIcon} alt="" onClick={() => handleClickDatepickerIcon('end')}/>
+                  <div className="flex flex-col px-3 pb-4 pt-3">
+                    <label htmlFor="Start Date p-1 font-Inter font-Inter font-normal leading-4 text-trial text-searchBlack">End Date</label>
+                    <div className="relative flex items-center">
+                      <DatePicker
+                        selected={customEndDate}
+                        onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'end')}
+                        className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
+                        placeholderText="DD/MM/YYYY"
+                        ref={datepickerRefEnd}
+                      />
+                      <img
+                        className="absolute icon-holder right-6 cursor-pointer"
+                        src={calendarIcon}
+                        alt=""
+                        onClick={() => handleClickDatepickerIcon('end')}
+                      />
+                    </div>
                   </div>
-                </div>
-              </>
+                </>
+              </div>
             </div>
-          </div>}
+          )}
         </div>
 
         <div className="ml-1.30 w-[800px]">{MemberFilter}</div>
@@ -399,10 +407,7 @@ const Members: React.FC = () => {
                               </div>
                             </div>
                           ) : column === 'platforms' ? (
-                            <div
-                              className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 h-1.375 w-1.375 flex"
-                              key={index}
-                            >
+                            <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 h-1.375 w-1.375 flex" key={index}>
                               <img className="m-1 h-1.375 w-1.375 mt-0" src={slackIcon} title="Slack" />
                               {/* <p className='h-1.375 w-1.375'>{'Slack'}</p> */}
                             </div>
@@ -416,40 +421,40 @@ const Members: React.FC = () => {
                           //     </div>
                           //   ))}
                           // </div>
-                            column === 'tags' ? (
-                              <div className="flex ">
-                                <div className="py-3 flex gap-2 items-center font-Poppins font-medium text-trial text-infoBlack leading-1.31">
-                                  {(member?.tags as Array<{ tag: { name: '' } }>)?.slice(0, 2).map((tags: { tag: { name: string } }, index: number) => (
-                                    <div className="bg-tagSection rounded w-5.25 h-8 flex justify-between px-3 items-center" key={index}>
-                                      <div className="font-Poppins font-normal text-card text-profileBlack leading-5">{tags?.tag?.name}</div>
-                                      <div>
-                                        <img src={closeIcon} alt="" />
-                                      </div>
+                          column === 'tags' ? (
+                            <div className="flex ">
+                              <div className="py-3 flex gap-2 items-center font-Poppins font-medium text-trial text-infoBlack leading-1.31">
+                                {(member?.tags as Array<{ tag: { name: '' } }>)?.slice(0, 2).map((tags: { tag: { name: string } }, index: number) => (
+                                  <div className="bg-tagSection rounded w-5.25 h-8 flex justify-between px-3 items-center" key={index}>
+                                    <div className="font-Poppins font-normal text-card text-profileBlack leading-5">{tags?.tag?.name}</div>
+                                    <div>
+                                      <img src={closeIcon} alt="" />
                                     </div>
-                                  ))}
-                                  <div className="font-Poppins font-semibold leading-5 text-tag text-card underline">
-                                    {(member?.tags as Array<Record<string, unknown>>)?.length > 2
-                                      ? `${(member?.tags as Array<Record<string, unknown>>)?.length - 2} more`
-                                      : ''}{' '}
                                   </div>
+                                ))}
+                                <div className="font-Poppins font-semibold leading-5 text-tag text-card underline">
+                                  {(member?.tags as Array<Record<string, unknown>>)?.length > 2
+                                    ? `${(member?.tags as Array<Record<string, unknown>>)?.length - 2} more`
+                                    : ''}{' '}
                                 </div>
                               </div>
-                            ) : column === 'lastActivity' ? (
-                              <div className="flex flex-col">
-                                <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
-                                  {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'MMM dd yyyy') : '--'}
-                                </div>
-                                <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
-                                  {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'HH:MM') : '--'}
-                                </div>
+                            </div>
+                          ) : column === 'lastActivity' ? (
+                            <div className="flex flex-col">
+                              <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
+                                {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'MMM dd yyyy') : '--'}
                               </div>
-                            ) : (
-                              <div className="flex ">
-                                <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
-                                  {member[column] as ReactNode}
-                                </div>
+                              <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
+                                {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'HH:MM') : '--'}
                               </div>
-                            )}
+                            </div>
+                          ) : (
+                            <div className="flex ">
+                              <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
+                                {member[column] as ReactNode}
+                              </div>
+                            </div>
+                          )}
                         </td>
                       ))}
                     </tr>
