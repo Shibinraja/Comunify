@@ -34,7 +34,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
   const datePickerRefEnd = useRef<ReactDatePicker>(null);
 
   const debouncedTagValue = useDebounce(tagSearchText, 300);
-  const disableApplyBtn = (Object.values(checkedPlatform).concat(Object.values(checkedTags)));
+  const disableApplyBtn = Object.values(checkedPlatform).concat(Object.values(checkedTags));
 
   const { activeStreamTagFilterResponse } = useAppSelector((state) => state.activities);
   const { PlatformFilterResponse } = useAppSelector((state) => state.members);
@@ -109,7 +109,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
       datePickerElement!.setFocus();
     }
 
-    if(type === 'end') {
+    if (type === 'end') {
       const datePickerElement = datePickerRefEnd.current;
       datePickerElement!.setFocus();
     }
@@ -189,7 +189,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
               </div>
             </div>
             {isPlatformActive && (
-              <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
+              <div className="flex flex-col gap-y-5 justify-center px-3 max-h-[10rem] overflow-scroll">
                 {PlatformFilterResponse &&
                   PlatformFilterResponse.map(
                     (platform: PlatformResponse, index: number) =>
@@ -240,7 +240,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
                     <img src={searchIcon} alt="" />
                   </div>
                 </div>
-                <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
+                <div className="flex flex-col gap-y-5 justify-center px-3 max-h-[12.5rem] overflow-scroll">
                   {activeStreamTagFilterResponse &&
                     activeStreamTagFilterResponse.map((tags: ActiveStreamTagResponse, index: number) => (
                       <div key={index} className="flex items-center mb-2">
@@ -317,11 +317,19 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
 
             <div className="buttons px-3 ">
               <Button
-                disabled = {(startDate === undefined ? true : false) && (endDate === undefined ? true: false) && disableApplyBtn.includes(true) !== true ? true : false}
+                disabled={
+                  (startDate === undefined ? true : false) && (endDate === undefined ? true : false) && disableApplyBtn.includes(true) !== true
+                    ? true
+                    : false
+                }
                 onClick={submitFilterChange}
                 type="button"
                 text="Apply"
-                className={`border-none btn-save-modal rounded-0.31 h-2.063 w-full mt-1.56 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${(disableApplyBtn.includes(true) !== true ? 'cursor-not-allowed': '') && (startDate === undefined ? 'cursor-not-allowed' : '') && (endDate === undefined ? 'cursor-not-allowed': '')}`}
+                className={`border-none btn-save-modal rounded-0.31 h-2.063 w-full mt-1.56 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${
+                  (disableApplyBtn.includes(true) !== true ? 'cursor-not-allowed' : '') &&
+                  (startDate === undefined ? 'cursor-not-allowed' : '') &&
+                  (endDate === undefined ? 'cursor-not-allowed' : '')
+                }`}
               />
             </div>
           </div>
