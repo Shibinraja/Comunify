@@ -78,7 +78,6 @@ const TopBar: React.FC = () => {
         </div>
         <div className="flex items-center">
           <div className="cursor-pointer">
-            {/* <img src={sunIcon} alt="" /> */}
             {theme ? (
               <img src={sunIcon} alt="" onClick={handleToggleTheme} />
             ) : (
