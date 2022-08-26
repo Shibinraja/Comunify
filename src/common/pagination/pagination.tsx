@@ -24,9 +24,12 @@ const Pagination: FC<PaginationProps> = (props) => {
     onPageChange(currentPage - 1);
   };
 
-  const handlePageChange = (event:ChangeEvent<HTMLInputElement>) => {
+  const handlePageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const pageNumber = event.target.value;
     onPageChange(pageNumber);
+    if (pageNumber === '') {
+      onPageChange(1);
+    }
   };
 
   const lastPage = paginationRange![paginationRange!.length - 1];
@@ -69,7 +72,13 @@ const Pagination: FC<PaginationProps> = (props) => {
       </div>
       <div className="font-Lato font-normal text-pageNumber leading-4 text-pagination cursor-pointer">Go to page:</div>
       <div>
-        <Input name="pagination" id="page" type="text" className="page-input focus:outline-none px-0.5 rounded box-border w-1.47 h-1.51" onChange={handlePageChange} />
+        <Input
+          name="pagination"
+          id="page"
+          type="text"
+          className="page-input focus:outline-none px-0.5 rounded box-border w-1.47 h-1.51"
+          onChange={handlePageChange}
+        />
       </div>
     </>
   );

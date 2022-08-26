@@ -90,7 +90,6 @@ const Members: React.FC = () => {
   useEffect(() => {
     dispatch(membersSlice.actions.membersCountAnalytics({ workspaceId: workspaceId! }));
     dispatch(membersSlice.actions.membersActivityAnalytics({ workspaceId: workspaceId! }));
-    dispatch(membersSlice.actions.platformData());
     dispatch(
       membersSlice.actions.membersTagFilter({
         membersQuery: { tags: { searchedTags: '', checkedTags: '' } },

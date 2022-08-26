@@ -15,6 +15,7 @@ import useDebounce from '@/hooks/useDebounce';
 import { useParams } from 'react-router-dom';
 import activitiesSlice from '../store/slice/activities.slice';
 import { PlatformResponse } from 'modules/members/interface/members.interface';
+import usePlatform from '../../../hooks/usePlatform';
 
 const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
   const { workspaceId } = useParams();
@@ -34,10 +35,10 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
   const datePickerRefEnd = useRef<ReactDatePicker>(null);
 
   const debouncedTagValue = useDebounce(tagSearchText, 300);
-  const disableApplyBtn = (Object.values(checkedPlatform).concat(Object.values(checkedTags)));
+  const disableApplyBtn = Object.values(checkedPlatform).concat(Object.values(checkedTags));
 
   const { activeStreamTagFilterResponse } = useAppSelector((state) => state.activities);
-  const { PlatformFilterResponse } = useAppSelector((state) => state.members);
+  const PlatformFilterResponse = usePlatform();
 
   // Returns the debounced value of the search text.
   useEffect(() => {
@@ -109,7 +110,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
       datePickerElement!.setFocus();
     }
 
-    if(type === 'end') {
+    if (type === 'end') {
       const datePickerElement = datePickerRefEnd.current;
       datePickerElement!.setFocus();
     }
@@ -317,11 +318,19 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit }) => {
 
             <div className="buttons px-3 ">
               <Button
-                disabled = {(startDate === undefined ? true : false) && (endDate === undefined ? true: false) && disableApplyBtn.includes(true) !== true ? true : false}
+                disabled={
+                  (startDate === undefined ? true : false) && (endDate === undefined ? true : false) && disableApplyBtn.includes(true) !== true
+                    ? true
+                    : false
+                }
                 onClick={submitFilterChange}
                 type="button"
                 text="Apply"
-                className={`border-none btn-save-modal rounded-0.31 h-2.063 w-full mt-1.56 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${(disableApplyBtn.includes(true) !== true ? 'cursor-not-allowed': '') && (startDate === undefined ? 'cursor-not-allowed' : '') && (endDate === undefined ? 'cursor-not-allowed': '')}`}
+                className={`border-none btn-save-modal rounded-0.31 h-2.063 w-full mt-1.56 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${
+                  (disableApplyBtn.includes(true) !== true ? 'cursor-not-allowed' : '') &&
+                  (startDate === undefined ? 'cursor-not-allowed' : '') &&
+                  (endDate === undefined ? 'cursor-not-allowed' : '')
+                }`}
               />
             </div>
           </div>

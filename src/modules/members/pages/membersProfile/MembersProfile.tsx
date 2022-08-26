@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
 import React, { useEffect, useRef, useState } from 'react';
-// import profileImage from '../../../../assets/images/profile-member.svg';
 import Button from 'common/button';
 import { format } from 'date-fns';
 import DatePicker from 'react-datepicker';
@@ -24,6 +23,7 @@ import MembersProfileGraph from '../membersProfileGraph/MembersProfileGraph';
 import Skeleton from 'react-loading-skeleton';
 import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 import { count_5, width_90 } from 'constants/constants';
+import usePlatform from '../../../../hooks/usePlatform';
 
 Modal.setAppElement('#root');
 
@@ -45,12 +45,12 @@ const MembersProfile: React.FC = () => {
   const {
     membersActivityData: activityData,
     membersProfileActivityGraphData: activityGraphData,
-    PlatformFilterResponse: platformData,
     memberProfileCardData
   } = useAppSelector((state) => state.members);
 
   const memberProfileCardLoader = useSkeletonLoading(membersSlice.actions.getMembersActivityGraphData.type);
   const activityDataLoader = useSkeletonLoading(membersSlice.actions.getMembersActivityDataInfiniteScroll.type);
+  const platformData = usePlatform();
 
   const dropDownRef = useRef<HTMLDivElement>(null);
   const datepickerRefFrom = useRef<any>(null);
@@ -74,7 +74,6 @@ const MembersProfile: React.FC = () => {
 
   useEffect(() => {
     dispatch(membersSlice.actions.getMembersActivityGraphData({ workspaceId: workspaceId as string, memberId: memberId as string }));
-    dispatch(membersSlice.actions.platformData());
     dispatch(membersSlice.actions.getMemberProfileCardData({ workspaceId: workspaceId as string, memberId: memberId as string }));
     document.addEventListener('click', handleOutsideClick);
     return () => {

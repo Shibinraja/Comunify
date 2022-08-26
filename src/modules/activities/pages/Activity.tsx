@@ -65,9 +65,6 @@ const Activity: React.FC = () => {
         workspaceId: workspaceId!
       })
     );
-
-    dispatch(membersSlice.actions.platformData());
-
     dispatch(
       activitiesSlice.actions.activeStreamTagFilter({
         activeStreamQuery: { tags: { searchedTags: '', checkedTags: '' } },
