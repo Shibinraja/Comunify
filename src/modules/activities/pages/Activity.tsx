@@ -288,19 +288,27 @@ const Activity: React.FC = () => {
                                   } `}
                                 >
                                   <div className="w-12.87 h-4.57 profile-card-header rounded-t-0.6"></div>
-                                  <div className="w-12.87 pb-3 rounded-b-0.6 profile-card-body profile-inner shadow-profileCard flex flex-col items-center bg-white">
-                                    <div className="w-4.43 h-4.43 -mt-10 flex items-center justify-center">
-                                      <img src={ProfileModal?.profilePictureUrl === null ? profileImage : ProfileModal?.profilePictureUrl} alt="" />
+                                  <div className="w-12.87 pb-5 rounded-b-0.6 profile-card-body profile-inner shadow-profileCard flex flex-col items-center bg-white">
+                                    <div className="-mt-10 flex items-center justify-center">
+                                      <img
+                                        src={ProfileModal?.profilePictureUrl === null ? profileImage : ProfileModal?.profilePictureUrl}
+                                        alt=""
+                                        className="rounded-full w-4.43 h-4.43 bg-cover bg-center border-4 border-white"
+                                      />
                                     </div>
-                                    <div className="font-semibold font-Poppins text-card text-profileBlack leading-1.12">
+                                    <div className="font-semibold font-Poppins text-card text-profileBlack leading-1.12 pt-[0.2381rem]">
                                       {ProfileModal?.memberName}
                                     </div>
                                     <div className="text-profileEmail font-Poppins font-normal text-profileBlack text-center w-6.875 mt-0.146">
                                       {ProfileModal?.email} {ProfileModal?.organization}
                                     </div>
                                     <div className="flex mt-2.5">
-                                      <div className="bg-cover bg-center mr-1 w-0.92 h-0.92">
-                                        <img src={ProfileModal?.platformLogoUrl ? ProfileModal?.platformLogoUrl : ''} alt="" />
+                                      <div className="bg-cover bg-center mr-1 ">
+                                        <img
+                                          src={ProfileModal?.platformLogoUrl ? ProfileModal?.platformLogoUrl : ''}
+                                          alt=""
+                                          className="w-0.92 h-0.92"
+                                        />
                                       </div>
                                     </div>
                                     <NavLink
