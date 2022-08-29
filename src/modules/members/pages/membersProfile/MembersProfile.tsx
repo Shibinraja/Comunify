@@ -357,8 +357,8 @@ const MembersProfile: React.FC = () => {
                   <div>
                     <img src={yellowDottedIcon} alt="" />
                   </div>
-                  <div className="pl-0.68">
-                    <img src={slackIcon} alt="" />
+                  <div className="pl-0.68 w-10 h-10">
+                    <img src={data?.platforms?.platformLogoUrl} alt="" />
                   </div>
                   <div className="flex flex-col pl-0.89">
                     <div className="font-Poppins font-normal text-card leading-4">{data?.displayValue}</div>
@@ -406,9 +406,11 @@ const MembersProfile: React.FC = () => {
                   {data?.email} | {data?.organization}
                 </div>
                 <div className="flex gap-1 pt-1.12">
-                  <div>
-                    <img src={slackIcon} alt="" />
-                  </div>
+                  {data?.platforms?.map((data) => (
+                    <div key={`${data?.id + data?.platformLogoUrl}`} className="w-7 h-7">
+                      <img src={data?.platformLogoUrl} alt="" />
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
