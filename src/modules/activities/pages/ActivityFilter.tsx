@@ -14,7 +14,7 @@ import { ActiveStreamTagResponse } from '../interfaces/activities.interface';
 import useDebounce from '@/hooks/useDebounce';
 import { useParams } from 'react-router-dom';
 import activitiesSlice from '../store/slice/activities.slice';
-import { PlatformResponse } from 'modules/members/interface/members.interface';
+import { PlatformResponse } from '../../settings/interface/settings.interface';
 import usePlatform from '../../../hooks/usePlatform';
 
 const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFilterExport }) => {
@@ -201,7 +201,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                 {PlatformFilterResponse &&
                   PlatformFilterResponse.map(
                     (platform: PlatformResponse, index: number) =>
-                      platform.name !== null && (
+                      platform?.isConnected && (
                         <div className="flex items-center" key={index}>
                           <div className="mr-2">
                             <input
@@ -213,7 +213,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                               onChange={handlePlatformsCheckBox}
                             />
                           </div>
-                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">{platform.name}</div>
+                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">{platform?.name}</div>
                         </div>
                       )
                   )}

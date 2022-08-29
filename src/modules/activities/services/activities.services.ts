@@ -22,9 +22,7 @@ export function* getActiveStreamDataService(params: Required<GetActiveStreamList
 
 export function* ActiveStreamTagFilterService(query: Partial<GetActiveStreamTagListQueryParams>): GeneratorResponse<Array<ActiveStreamTagResponse>> {
   const { data } = yield request.get(
-    `/v1/${query.workspaceId}/tags/workspacetags?${
-      query.activeStreamQuery?.tags.searchedTags ? `search=${query.activeStreamQuery.tags.searchedTags}` : ''
-    }`
+    `/v1/${query.workspaceId}/tags?${query.activeStreamQuery?.tags.searchedTags ? `search=${query.activeStreamQuery.tags.searchedTags}` : ''}`
   );
   return data;
 }

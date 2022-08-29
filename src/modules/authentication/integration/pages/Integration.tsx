@@ -49,7 +49,7 @@ const Integration: React.FC = () => {
   });
 
   useEffect(() => {
-    dispatch(settingsSlice.actions.platformData());
+    dispatch(settingsSlice.actions.platformData({ workspaceId }));
     if (searchParams.get('code')) {
       const codeParams: null | string = searchParams.get('code');
       if (codeParams !== '') {
@@ -118,7 +118,7 @@ const Integration: React.FC = () => {
             workspacePlatformSettingsId: connectResponse?.data?.data?.id
           });
           if (completeSetupResponse) {
-            dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+            dispatch(settingsSlice.actions.platformData({ workspaceId }));
             showSuccessToast('Successfully integrated');
             setIsLoading(false);
             setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: false }));

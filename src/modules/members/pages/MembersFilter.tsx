@@ -16,7 +16,8 @@ import calendarIcon from '../../../assets/images/calandar.svg';
 import { format } from 'date-fns';
 import { getLocalWorkspaceId } from '@/lib/helper';
 import useDebounce from '@/hooks/useDebounce';
-import { MembersTagResponse, PlatformResponse } from '../interface/members.interface';
+import { MembersTagResponse } from '../interface/members.interface';
+import { PlatformResponse } from '../../settings/interface/settings.interface';
 import usePlatform from '../../../hooks/usePlatform';
 
 const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }) => {
@@ -304,7 +305,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
                 {PlatformFilterResponse &&
                   PlatformFilterResponse.map(
                     (platform: PlatformResponse, index: number) =>
-                      platform.name !== null && (
+                      platform?.isConnected && (
                         <div className="flex items-center" key={index}>
                           <div className="mr-2">
                             <input
@@ -316,7 +317,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
                               onChange={handlePlatformsCheckBox}
                             />
                           </div>
-                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">{platform.name}</div>
+                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">{platform?.name}</div>
                         </div>
                       )
                   )}

@@ -12,6 +12,7 @@ export type PlatformResponse = {
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
+  isConnected: boolean;
 };
 
 export interface ConnectedPlatforms {

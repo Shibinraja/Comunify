@@ -10,7 +10,7 @@ const initialState: InitialState = {
   PlatformsConnected: []
 };
 
-const platformData = (state: InitialState) => state;
+const platformData = (state: InitialState, action: PayloadAction<workspaceId>) => state;
 
 const getPlatformFilterData = (state: InitialState, action: PayloadAction<Array<PlatformResponse>>) => ({
   ...state,
