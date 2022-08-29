@@ -178,6 +178,8 @@ const MembersProfile: React.FC = () => {
     navigate(`/${workspaceId}/activity`);
   };
 
+  const tagOptions = ['op1', 'op2', 'op3', 'op4', 'op5', 'op1', 'op2', 'op3', 'op4', 'op5'];
+
   return (
     <div className="flex pt-3.93 w-full">
       <div className="flex flex-col w-full">
@@ -407,7 +409,7 @@ const MembersProfile: React.FC = () => {
                 </div>
                 <div className="flex gap-1 pt-1.12">
                   {data?.platforms?.map((data) => (
-                    <div key={`${data?.id + data?.platformLogoUrl}`} className="w-7 h-7">
+                    <div key={`${data?.id + data?.platformLogoUrl}`} className="w-[1.0012rem] h-[1.0012rem]">
                       <img src={data?.platformLogoUrl} alt="" />
                     </div>
                   ))}
@@ -429,7 +431,7 @@ const MembersProfile: React.FC = () => {
                   isOpen={isTagModalOpen}
                   shouldCloseOnOverlayClick={false}
                   onRequestClose={() => setIsModalOpen(false)}
-                  className="w-24.31 h-18.75 mx-auto  rounded-lg modals-tag bg-white shadow-modal"
+                  className="w-24.31 h-18.75 mx-auto  rounded-lg modals-tag bg-white shadow-modal outline-none"
                   style={{
                     overlay: {
                       display: 'flex',
@@ -453,7 +455,17 @@ const MembersProfile: React.FC = () => {
                         className="mt-0.375 inputs box-border bg-white shadow-inputShadow rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-sm placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
                         placeholder="Enter Tag Name"
                       />
-                      <div className="flex absolute right-1 top-24 pr-6 items-center">
+                      <div className="bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 hidden">
+                        {tagOptions.map((options: string) => (
+                          <div
+                            key={options}
+                            className="p-2 text-searchBlack cursor-pointer font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300"
+                          >
+                            {options}
+                          </div>
+                        ))}
+                      </div>
+                      <div className="flex  justify-end items-center pt-10">
                         <Button
                           type="button"
                           text="CANCEL"
