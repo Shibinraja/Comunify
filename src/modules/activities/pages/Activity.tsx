@@ -6,7 +6,6 @@ import fetchExportList from '@/lib/fetchExport';
 import Button from 'common/button';
 import Input from 'common/input';
 import Pagination from 'common/pagination/pagination';
-import membersSlice from 'modules/members/store/slice/members.slice';
 import React, { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import Modal from 'react-modal';
@@ -16,7 +15,6 @@ import closeIcon from '../../../assets/images/close.svg';
 import profileImage from '../../../assets/images/ellip.svg';
 import exportImage from '../../../assets/images/export.svg';
 import noActivityIcon from '../../../assets/images/no-reports.svg';
-import slackIcon from '../../../assets/images/slack.svg';
 import { useAppSelector } from '../../../hooks/useRedux';
 import { generateDateAndTime } from '../../../lib/helper';
 import { ActiveStreamData, ActivityCard, ProfileModal } from '../interfaces/activities.interface';
@@ -42,7 +40,8 @@ const Activity: React.FC = () => {
     memberName: '',
     memberProfileUrl: '',
     organization: '',
-    profilePictureUrl: ''
+    profilePictureUrl: '',
+    platformLogoUrl: ''
   });
   const [ActivityCard, setActivityCard] = useState<ActivityCard>();
   const [page, setPage] = useState<number>(1);
@@ -124,7 +123,8 @@ const Activity: React.FC = () => {
       channelName: data?.channelName,
       sourceUrl: data?.sourceUrl,
       profilePictureUrl: data?.profilePictureUrl,
-      value: data?.value
+      value: data?.value,
+      platformLogoUrl: data?.platformLogoUrl
     });
   };
   const handleTagModal = (val: boolean) => {
@@ -139,7 +139,8 @@ const Activity: React.FC = () => {
       email: data.email,
       organization: data.organization,
       memberProfileUrl: data.memberProfileUrl,
-      profilePictureUrl: data?.profilePictureUrl
+      profilePictureUrl: data?.profilePictureUrl,
+      platformLogoUrl: data?.platformLogoUrl
     });
   };
 
@@ -271,7 +272,8 @@ const Activity: React.FC = () => {
                                       memberName: data?.memberName,
                                       organization: 'NeoITO',
                                       memberProfileUrl: `/${workspaceId}/members/${data.memberId}/profile`,
-                                      profilePictureUrl: data?.profilePictureUrl
+                                      profilePictureUrl: data?.profilePictureUrl,
+                                      platformLogoUrl: data?.platformLogoUrl
                                     });
                                   }}
                                   className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer capitalize"
@@ -296,7 +298,7 @@ const Activity: React.FC = () => {
                                     </div>
                                     <div className="flex mt-2.5">
                                       <div className="bg-cover bg-center mr-1 w-0.92 h-0.92">
-                                        <img src={slackIcon} alt="" />
+                                        <img src={ProfileModal?.platformLogoUrl ? ProfileModal?.platformLogoUrl : ''} alt="" />
                                       </div>
                                     </div>
                                     <NavLink
@@ -330,8 +332,8 @@ const Activity: React.FC = () => {
                             <Skeleton width={width_90} />
                           ) : (
                             <div className="flex ">
-                              <div className="mr-2">
-                                <img src={slackIcon} alt="" />
+                              <div className="mr-2 w-10 h-10">
+                                <img src={data?.platformLogoUrl} alt="" />
                               </div>
                               <div className="flex flex-col">
                                 <div
@@ -345,10 +347,11 @@ const Activity: React.FC = () => {
                                       displayValue: data?.displayValue,
                                       activityTime: data?.activityTime,
                                       organization: 'NeoITO',
-                                      channelName: 'channel 1',
+                                      channelName: data?.channelId,
                                       sourceUrl: data?.sourceUrl,
                                       profilePictureUrl: data?.profilePictureUrl,
-                                      value: data?.value
+                                      value: data?.value,
+                                      platformLogoUrl: data?.platformLogoUrl
                                     })
                                   }
                                 >
@@ -464,8 +467,8 @@ const Activity: React.FC = () => {
                   </div>
                   <div className="bg-activitySubCard rounded flex flex-col pt-2.5 pl-0.81 pb-8 mt-5">
                     <div className="flex items-center">
-                      <div>
-                        <img src={slackIcon} alt="" />
+                      <div className="w-5 h-5">
+                        <img src={ActivityCard?.platformLogoUrl ? ActivityCard?.platformLogoUrl : ''} alt="" />
                       </div>
                       <div className="pl-0.563 font-Poppins font-medium text-infoBlack text-card leading-1.12">{ActivityCard?.displayValue}</div>
                       <div className="pl-2.5 text-tagChannel font-Poppins font-medium text-card leading-1.12">#{ActivityCard?.channelName}</div>

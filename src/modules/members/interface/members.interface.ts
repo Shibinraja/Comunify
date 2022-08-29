@@ -175,6 +175,9 @@ export interface ActivityResult {
   description: string;
   comunifyMemberId: string;
   profilePictureUrl: string;
+  platforms: {
+    platformLogoUrl: string;
+  };
   platformId: string;
   platformMemberId: string;
   activityTime: Date;
@@ -262,6 +265,7 @@ export interface MemberProfileCard {
   platforms: {
     id: string;
     name: string;
+    platformLogoUrl: string;
   }[];
   tags: string[] | null;
 }
