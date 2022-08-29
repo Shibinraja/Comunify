@@ -286,7 +286,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
               <Fragment>
                 <div className="flex flex-col px-3 pt-4">
                   <label htmlFor="Start Date p-1 font-Inter font-normal leading-4 text-trial text-searchBlack">Start Date</label>
-                  <div className="relative flex items-center z-40">
+                  <div className="relative flex items-center">
                     <DatePicker
                       selected={startDate}
                       onChange={(date: Date, event: ChangeEvent<Date>) => selectActiveBetweenDate(event, date, 'start')}
