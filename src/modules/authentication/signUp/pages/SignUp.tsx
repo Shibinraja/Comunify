@@ -161,7 +161,6 @@ const SignUp: React.FC = () => {
                         onChange={handleChange}
                         value={values.password}
                         errors={Boolean(touched.password && errors.password)}
-                        helperText={touched.password && errors.password}
                       />
                       <div onClick={togglePassword} className="absolute top-7 right-[26.87px]">
                         {passwordType === 'password' ? (
@@ -170,8 +169,17 @@ const SignUp: React.FC = () => {
                           <img className="cursor-pointer " src={closeEyeIcon} alt="" />
                         )}
                       </div>
+                      <div className="transition-all ease-in-out duration-300 delay-75 ">
+                        <p
+                          className={`text-lightRed font-normal text-error font-Inter pl-1 ${
+                            !errors.password?.includes('Password must have one uppercase, one lowercase') ? 'absolute' : ''
+                          }`}
+                        >
+                          {touched.password && errors.password}
+                        </p>
+                      </div>
                     </div>
-                    <div className="cname mt-1.258">
+                    <div className={`cname  ${!errors.password?.includes('Password must have one uppercase, one lowercase') ? 'mt-1.258' : ''}`}>
                       <Input
                         type="text"
                         placeholder="Company Name"
@@ -224,7 +232,7 @@ const SignUp: React.FC = () => {
                         )}
                       </div>
                       {Boolean(touched.domainSector && errors.domainSector) && (
-                        <p className="text-lightRed font-normal text-email absolute font-Inter mt-0.287  pl-1">{errors?.domainSector}</p>
+                        <p className="text-lightRed font-normal text-error absolute font-Inter mt-0.287  pl-1">{errors?.domainSector}</p>
                       )}
                     </div>
                     <Button
