@@ -49,7 +49,7 @@ const Integration: React.FC = () => {
   });
 
   useEffect(() => {
-    dispatch(settingsSlice.actions.platformData());
+    dispatch(settingsSlice.actions.platformData({ workspaceId }));
     if (searchParams.get('code')) {
       const codeParams: null | string = searchParams.get('code');
       if (codeParams !== '') {
@@ -107,18 +107,18 @@ const Integration: React.FC = () => {
       };
       const connectResponse: IntegrationResponse<PlatformConnectResponse> = await request.post(`${API_ENDPOINT}/v1/vanilla/connect`, body);
       if (connectResponse?.data?.message?.toLocaleLowerCase().trim() == 'already connected') {
-        showWarningToast('This platform is already connected to your workspace');
+        showWarningToast('Vanilla Forums is already connected to your workspace');
         setIsLoading(false);
       }
       if (connectResponse?.data?.data?.id) {
-        showSuccessToast('Integration in progress');
+        showSuccessToast('Integration in progress...');
         try {
           const completeSetupResponse: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/vanilla/complete-setup`, {
             workspaceId,
             workspacePlatformSettingsId: connectResponse?.data?.data?.id
           });
           if (completeSetupResponse) {
-            dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+            dispatch(settingsSlice.actions.platformData({ workspaceId }));
             showSuccessToast('Successfully integrated');
             setIsLoading(false);
             setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: false }));

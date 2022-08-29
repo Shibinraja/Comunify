@@ -9,10 +9,10 @@ import { ConnectedPlatformsDataService, PlatformsDataService } from '../../servi
 import { PayloadAction } from '@reduxjs/toolkit';
 import { workspaceId } from '../../../members/interface/members.interface';
 
-function* getPlatformsDataSaga() {
+function* getPlatformsDataSaga(action: PayloadAction<workspaceId>) {
   try {
     yield put(loaderSlice.actions.startLoadingAction(settingsSlice.actions.platformData.type));
-    const res: SuccessResponse<Array<PlatformResponse>> = yield call(PlatformsDataService);
+    const res: SuccessResponse<Array<PlatformResponse>> = yield call(PlatformsDataService, action.payload.workspaceId);
     if (res?.data) {
       yield put(settingsSlice.actions.getPlatformFilterData(res?.data));
     }

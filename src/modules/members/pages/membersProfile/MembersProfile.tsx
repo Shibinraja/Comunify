@@ -18,13 +18,14 @@ import yellowDottedIcon from '../../../../assets/images/yellow_dotted.svg';
 import { useAppSelector } from '../../../../hooks/useRedux';
 import { generateDateAndTime } from '../../../../lib/helper';
 import { AppDispatch } from '../../../../store';
-import { ActivityResult, MemberProfileCard, PlatformResponse } from '../../interface/members.interface';
+import { ActivityResult, MemberProfileCard } from '../../interface/members.interface';
 import membersSlice from '../../store/slice/members.slice';
 import MembersProfileGraph from '../membersProfileGraph/MembersProfileGraph';
 import Skeleton from 'react-loading-skeleton';
 import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 import { count_5, width_90 } from 'constants/constants';
 import usePlatform from '../../../../hooks/usePlatform';
+import { PlatformResponse } from '../../../settings/interface/settings.interface';
 
 Modal.setAppElement('#root');
 
@@ -206,12 +207,15 @@ const MembersProfile: React.FC = () => {
                     All
                   </div>
                   {platformData?.map((data: PlatformResponse) => (
-                    <div
-                      key={data?.id}
-                      className="rounded-0.3 h-1.93 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack hover:bg-signUpDomain transition ease-in duration-100"
-                      onClick={() => selectPlatformToDisplayOnGraph(data?.name)}
-                    >
-                      {data?.name}
+                    <div key={`${data?.id + data?.name}`}>
+                      {data?.isConnected && (
+                        <div
+                          className="rounded-0.3 h-1.93 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack hover:bg-signUpDomain transition ease-in duration-100"
+                          onClick={() => selectPlatformToDisplayOnGraph(data?.name)}
+                        >
+                          {data?.name}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -264,13 +268,15 @@ const MembersProfile: React.FC = () => {
                   </div>
                 </div>
                 {platformData.map((options: PlatformResponse) => (
-                  <div key={options.id} className="w-full hover:bg-signUpDomain rounded-0.3 transition ease-in duration-100">
-                    <div
-                      className="h-1.93 px-3 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack "
-                      onClick={() => selectPlatformForActivityScroll(options?.name)}
-                    >
-                      {options?.name}
-                    </div>
+                  <div key={`${options?.id + options?.name}`} className="w-full hover:bg-signUpDomain rounded-0.3 transition ease-in duration-100">
+                    {options?.isConnected && (
+                      <div
+                        className="h-1.93 px-3 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack "
+                        onClick={() => selectPlatformForActivityScroll(options?.name)}
+                      >
+                        {options?.name}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

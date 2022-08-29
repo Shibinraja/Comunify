@@ -67,7 +67,7 @@ export function* PlatformsDataService(): GeneratorResponse<Array<PlatformRespons
 
 export function* MembersTagFilterService(query: Partial<GetMembersTagListQueryParams>): GeneratorResponse<Array<MembersTagResponse>> {
   const { data } = yield request.get(
-    `/v1/${query.workspaceId}/tags/workspacetags?${query.membersQuery?.tags.searchedTags ? `search=${query.membersQuery.tags.searchedTags}` : ''}`
+    `/v1/${query.workspaceId}/tags?${query.membersQuery?.tags.searchedTags ? `search=${query.membersQuery.tags.searchedTags}` : ''}`
   );
   return data;
 }

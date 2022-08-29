@@ -56,6 +56,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
 
   React.useEffect(() => {
     dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+
     if (searchParams.get('code')) {
       const codeParams: null | string = searchParams.get('code');
       if (codeParams !== '') {
@@ -65,16 +66,36 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
   }, []);
 
   const { PlatformsConnected } = useAppSelector((state: State) => state.settings);
+  const checkForConnectedPlatform = (platformName: string) => {
+    const data = PlatformsConnected?.find(
+      (obj: ConnectedPlatforms) => obj?.platform.name.toLocaleLowerCase().trim() === `${platformName.toLocaleLowerCase().trim()}`
+    );
+    return data;
+  };
 
   const handleModals = (name: string, icon: string) => {
     switch (name) {
-      case 'slack':
-        setPlatformIcons((prevState) => ({ ...prevState, slack: icon }));
-        NavigateToConnectPage();
+      case 'Slack':
+        setIsLoading(true);
+        if (checkForConnectedPlatform(name) === undefined) {
+          setPlatformIcons((prevState) => ({ ...prevState, slack: icon }));
+          NavigateToConnectPage();
+          setIsLoading(false);
+        } else {
+          showWarningToast(`${name} is already connected to your workspace`);
+          setIsLoading(false);
+        }
         break;
-      case 'vanilla':
-        setPlatformIcons((prevState) => ({ ...prevState, vanillaForums: icon }));
-        setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: true }));
+      case 'Vanilla':
+        setIsLoading(true);
+        if (checkForConnectedPlatform(name) === undefined) {
+          setPlatformIcons((prevState) => ({ ...prevState, vanillaForums: icon }));
+          setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: true }));
+          setIsLoading(false);
+        } else {
+          showWarningToast(`${name} Forums is already connected to your workspace`);
+          setIsLoading(false);
+        }
         break;
       default:
         break;
@@ -114,17 +135,18 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
       };
       const connectResponse: IntegrationResponse<PlatformConnectResponse> = await request.post(`${API_ENDPOINT}/v1/vanilla/connect`, body);
       if (connectResponse?.data?.message?.toLocaleLowerCase().trim() == 'already connected') {
-        showWarningToast('This platform is already connected to your workspace');
+        showWarningToast('Vanilla Forums is already connected to your workspace');
         setIsLoading(false);
       }
       if (connectResponse?.data?.data?.id) {
-        showSuccessToast('Integration in progress');
+        showSuccessToast('Integration in progress...');
         try {
           const completeSetupResponse: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/vanilla/complete-setup`, {
             workspaceId,
             workspacePlatformSettingsId: connectResponse?.data?.data?.id
           });
           if (completeSetupResponse) {
+            dispatch(settingsSlice.actions.platformData({ workspaceId }));
             dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
             showSuccessToast('Successfully integrated');
             setIsLoading(false);
@@ -189,8 +211,9 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
                 <Button
                   type="button"
                   text="Connect"
+                  disabled={isLoading ? true : false}
                   className={!isButtonConnect ? disConnectedBtnClassName : connectedBtnClassName}
-                  onClick={() => handleModals(data?.name.toLocaleLowerCase().trim(), data?.platformLogoUrl)}
+                  onClick={() => handleModals(data?.name.trim(), data?.platformLogoUrl)}
                 />
               </div>
             ))}
