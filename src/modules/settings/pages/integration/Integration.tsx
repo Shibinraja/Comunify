@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable no-unused-vars */
 import Button from 'common/button';
 import React, { useState } from 'react';
@@ -140,14 +139,13 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
         setIsLoading(false);
       }
       if (connectResponse?.data?.data?.id) {
-        showSuccessToast('Integration in progress');
+        showSuccessToast('Integration in progress...');
         try {
           const completeSetupResponse: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/vanilla/complete-setup`, {
             workspaceId,
             workspacePlatformSettingsId: connectResponse?.data?.data?.id
           });
           if (completeSetupResponse) {
-            // dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
             dispatch(settingsSlice.actions.platformData({ workspaceId }));
             dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
             showSuccessToast('Successfully integrated');

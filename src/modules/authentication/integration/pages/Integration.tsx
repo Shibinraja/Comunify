@@ -107,11 +107,11 @@ const Integration: React.FC = () => {
       };
       const connectResponse: IntegrationResponse<PlatformConnectResponse> = await request.post(`${API_ENDPOINT}/v1/vanilla/connect`, body);
       if (connectResponse?.data?.message?.toLocaleLowerCase().trim() == 'already connected') {
-        showWarningToast('This platform is already connected to your workspace');
+        showWarningToast('Vanilla Forums is already connected to your workspace');
         setIsLoading(false);
       }
       if (connectResponse?.data?.data?.id) {
-        showSuccessToast('Integration in progress');
+        showSuccessToast('Integration in progress...');
         try {
           const completeSetupResponse: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/vanilla/complete-setup`, {
             workspaceId,
