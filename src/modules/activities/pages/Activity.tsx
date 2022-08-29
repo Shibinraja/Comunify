@@ -195,6 +195,8 @@ const Activity: React.FC = () => {
     );
   };
 
+  const tagOptions = ['op1', 'op2', 'op3', 'op4', 'op5', 'op1', 'op2', 'op3', 'op4', 'op5'];
+
   const ActiveStreamFilter = useMemo(() => <ActivityFilter page={page} limit={limit} activityFilterExport={setFilterExportParams} />, []);
 
   return (
@@ -437,7 +439,17 @@ const Activity: React.FC = () => {
                             className="mt-0.375 inputs box-border bg-white shadow-shadowInput rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-sm placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
                             placeholder="Enter Tag Name"
                           />
-                          <div className="flex absolute right-1 top-24 pr-6 items-center">
+                          <div className="bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 hidden">
+                            {tagOptions.map((options: string) => (
+                              <div
+                                key={options}
+                                className="p-2 text-searchBlack cursor-pointer font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300"
+                              >
+                                {options}
+                              </div>
+                            ))}
+                          </div>
+                          <div className="flex justify-end pt-10 items-center">
                             <Button
                               type="button"
                               text="CANCEL"
