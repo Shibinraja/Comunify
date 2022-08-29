@@ -65,7 +65,7 @@ const Dashboard: React.FC = () => {
               ))}
             </div>
           )}
-          <div className="flex items-center justify-between w-[15.5rem] pl-2.5">
+          <div className="flex items-center justify-between pl-2.5">
             <div>
               <DatePicker
                 selectsRange={true}
@@ -74,7 +74,7 @@ const Dashboard: React.FC = () => {
                 onChange={(update: any) => {
                   setDateRange(update);
                 }}
-                className="export w-full h-3.06  shadow-shadowInput rounded-0.6 pl-3 pr-10 font-Poppins font-semibold text-xs text-dropGray app-input-card-border focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-xs placeholder:text-dropGray"
+                className="export w-[15.5rem] h-3.06  shadow-shadowInput rounded-0.6 pl-3 pr-10 font-Poppins font-semibold text-xs text-dropGray app-input-card-border focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-xs placeholder:text-dropGray"
                 placeholderText="DD/MM/YYYY - DD/MM/YYYY"
                 isClearable={true}
                 ref={datepickerRef}
