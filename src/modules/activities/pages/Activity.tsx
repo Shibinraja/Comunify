@@ -488,21 +488,33 @@ const Activity: React.FC = () => {
                   </div>
                   <div className="mt-7">
                     <h3 className="text-profileBlack text-error font-Poppins font-medium leading-5">Tags</h3>
-                    <div className="flex pt-2.5 flex-wrap">
-                      <div className="flex  tags bg-tagSection items-center justify-evenly rounded w-6.563 py-1">
+                    <div className="flex pt-2.5 flex-wrap gap-1">
+                      <div className="flex  tags bg-tagSection items-center justify-evenly rounded w-6.563 p-1">
                         <div className="font-Poppins text-card font-normal leading-5 text-profileBlack">Influencer</div>
                         <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
                           <img src={closeIcon} alt="" />
                         </div>
                       </div>
-                      <div className="ml-0.313 flex items-center justify-evenly tags bg-tagSection rounded w-6.563 py-1">
+                      <div className="flex items-center justify-evenly tags bg-tagSection rounded w-6.563 p-1">
                         <div className="font-Poppins text-card font-normal leading-5 text-profileBlack">Admin</div>
                         <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
                           <img src={closeIcon} alt="" />
                         </div>
                       </div>
-                      <div className="ml-0.313 flex items-center justify-evenly tags bg-tagSection rounded w-6.563 py-1">
+                      <div className="flex items-center justify-evenly tags bg-tagSection rounded w-6.563 p-1">
                         <div className="font-Poppins text-card font-normal leading-5 text-profileBlack">Charity</div>
+                        <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
+                          <img src={closeIcon} alt="" />
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-evenly tags bg-tagSection rounded w-6.563 p-1">
+                        <div className="font-Poppins text-card font-normal leading-5 text-profileBlack">ok</div>
+                        <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
+                          <img src={closeIcon} alt="" />
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-evenly tags bg-tagSection rounded w-6.563 p-1">
+                        <div className="font-Poppins text-card font-normal leading-5 text-profileBlack">ok</div>
                         <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
                           <img src={closeIcon} alt="" />
                         </div>

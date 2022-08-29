@@ -521,7 +521,18 @@ const Members: React.FC = () => {
                 isOpen={isModalOpen}
                 shouldCloseOnOverlayClick={true}
                 onRequestClose={() => setIsModalOpen(false)}
-                className="w-24.31 mx-auto mt-9.18  pb-20 bg-white border-fetching-card rounded-lg shadow-modal outline-none"
+                className="w-24.31 mx-auto pb-20 bg-white border-fetching-card rounded-lg shadow-modal outline-none"
+                style={{
+                  overlay: {
+                    display: 'flex',
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: 0,
+                    alignItems: 'center'
+                  }
+                }}
               >
                 <div className="flex flex-col px-1.68 relative">
                   <h3 className="font-Inter font-semibold text-xl mt-1.8  leading-6">Customize Column</h3>
