@@ -208,6 +208,11 @@ const setMembersActivityData = (state: InitialState, action: PayloadAction<Activ
   membersActivityData: { nextCursor: action.payload.nextCursor, result: [...state.membersActivityData.result, ...action.payload.result] }
 });
 
+const clearMemberActivityData = (state: InitialState) => ({
+  ...state,
+  membersActivityData: { ...state.membersActivityData, result: [] }
+});
+
 const setMemberProfileCardData = (state: InitialState, action: PayloadAction<MemberProfileCard[]>) => {
   state.memberProfileCardData = action.payload;
 };
@@ -241,7 +246,8 @@ const membersSlice = createSlice({
     getMemberProfileCardData,
     setMemberProfileCardData,
     getPlatformFilterData,
-    getmembersListExport
+    getmembersListExport,
+    clearMemberActivityData
   }
 });
 

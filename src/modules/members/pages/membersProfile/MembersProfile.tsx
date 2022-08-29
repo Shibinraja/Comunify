@@ -67,20 +67,24 @@ const MembersProfile: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (activityNextCursor !== null) {
-      dispatch(
-        membersSlice.actions.getMembersActivityDataInfiniteScroll({
-          workspaceId: workspaceId as string,
-          memberId: memberId as string,
-          nextCursor: activityNextCursor ? activityNextCursor : '',
-          platform: platform && platform,
-          fromDate: fromDate && format(fromDate, 'yyyy-MM-dd'),
-          toDate: toDate && format(toDate, 'yyyy-MM-dd')
-        })
-      );
-    }
-  }, [activityNextCursor, platform, fromDate, toDate, fromDate && toDate]);
+    loadActivityData(true);
+  }, [platform, fromDate, toDate, fromDate && toDate]);
 
+  const loadActivityData = (needReload: boolean, cursor?: string) => {
+    if (needReload) {
+      dispatch(membersSlice.actions.clearMemberActivityData());
+    }
+    dispatch(
+      membersSlice.actions.getMembersActivityDataInfiniteScroll({
+        workspaceId: workspaceId as string,
+        memberId: memberId as string,
+        nextCursor: cursor ? cursor : activityNextCursor ? activityNextCursor : '',
+        platform: platform && platform,
+        fromDate: fromDate && format(fromDate, 'yyyy-MM-dd'),
+        toDate: toDate && format(toDate, 'yyyy-MM-dd')
+      })
+    );
+  };
   const handleModal = (val: boolean) => {
     setIsModalOpen(val);
   };
@@ -132,28 +136,9 @@ const MembersProfile: React.FC = () => {
     switch (name) {
       case 'All Integration':
         setPlatform(undefined);
-        dispatch(
-          membersSlice.actions.getMembersActivityDataInfiniteScroll({
-            workspaceId: workspaceId as string,
-            memberId: memberId as string,
-            nextCursor: activityNextCursor ? activityNextCursor : '',
-            fromDate: fromDate && format(fromDate, 'yyyy-MM-dd'),
-            toDate: toDate && format(toDate, 'yyyy-MM-dd')
-          })
-        );
         break;
       case `${name !== undefined && name !== 'All Integration' && name}`:
         setPlatform(name.toLocaleLowerCase().trim());
-        dispatch(
-          membersSlice.actions.getMembersActivityDataInfiniteScroll({
-            workspaceId: workspaceId as string,
-            memberId: memberId as string,
-            nextCursor: activityNextCursor ? activityNextCursor : '',
-            platform: name?.toLocaleLowerCase(),
-            fromDate: fromDate && format(fromDate, 'yyyy-MM-dd'),
-            toDate: toDate && format(toDate, 'yyyy-MM-dd')
-          })
-        );
         break;
       default:
         break;
@@ -165,6 +150,9 @@ const MembersProfile: React.FC = () => {
     const { clientHeight, scrollHeight, scrollTop } = event.currentTarget;
     if (scrollHeight - scrollTop === clientHeight) {
       setActivityNextCursor(activityData?.nextCursor);
+      if (activityData.nextCursor !== null && !activityDataLoader) {
+        loadActivityData(false, activityData.nextCursor);
+      }
     }
   };
 

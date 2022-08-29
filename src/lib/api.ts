@@ -28,6 +28,7 @@ export type NetworkResponse<T> = {
 export type IntegrationResponse<T> = {
   data: {
     data: T;
+    message?: string;
   };
   status: number;
   statusText: string;

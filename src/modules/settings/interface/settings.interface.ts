@@ -14,7 +14,32 @@ export type PlatformResponse = {
   updatedAt: Date;
 };
 
+export interface ConnectedPlatforms {
+  id: string;
+  workspaceId: string;
+  platformId: string;
+  name: string;
+  status: string;
+  lastFetched: string;
+  createdAt: Date;
+  updatedAt: Date;
+  platform: {
+    name: string;
+    platformLogoUrl: string;
+  };
+}
+
 export interface PlatformIcons {
   slack: string | undefined;
   vanillaForums: string | undefined;
+}
+export interface SlackConnectData {
+  code: string | null;
+  workspaceId: string;
+}
+
+export interface VanillaForumsConnectData {
+  vanillaBaseUrl: string;
+  vanillaAccessToken: string;
+  workspaceId: string;
 }
