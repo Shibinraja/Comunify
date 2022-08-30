@@ -618,8 +618,8 @@ const Activity: React.FC = () => {
                     <div className="flex pt-2.5 flex-wrap gap-1">
                       {memberProfileCardData?.map((data: MemberProfileCard) =>
                         data.tags?.map((tag: TagResponse) => (
-                          <div className="flex  tags bg-tagSection items-center justify-evenly rounded w-6.563 p-1" key={tag.id}>
-                            <div className="font-Poppins text-card font-normal leading-5 text-profileBlack">{tag.name}</div>
+                          <div className="flex  tags bg-tagSection items-center justify-evenly rounded p-1" key={tag.id}>
+                            <div className="font-Poppins text-card font-normal leading-5 pr-4 text-profileBlack">{tag.name}</div>
                             <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
                               <img src={closeIcon} alt="" onClick={() => handleUnAssignTagsName(tag.id)} />
                             </div>

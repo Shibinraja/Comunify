@@ -465,15 +465,14 @@ const Members: React.FC = () => {
                               <Skeleton width={width_90} />
                             ) : (
                               <div className="flex ">
-                                <div className="py-3 flex gap-2 items-center font-Poppins font-medium text-trial text-infoBlack leading-1.31">
+                                <div className="py-3 flex gap-2 items-center flex-wrap font-Poppins font-medium text-trial text-infoBlack leading-1.31">
                                   {(member?.tags as Array<{ id: string; name: string }>)
                                     ?.slice(0, 2)
                                     .map((tags: { name: string; id: string }, index: number) => (
-                                      <div
-                                        className="bg-tagSection rounded w-5.25 h-8 flex justify-between px-3 items-center cursor-pointer"
-                                        key={index}
-                                      >
-                                        <div className="font-Poppins font-normal text-card text-profileBlack leading-5">{tags?.name}</div>
+                                      <div className="bg-tagSection rounded h-8 flex justify-between px-3 items-center cursor-pointer" key={index}>
+                                        <div className="font-Poppins font-normal text-card text-profileBlack leading-5 pr-4 tags-ellipse">
+                                          {tags?.name}
+                                        </div>
                                         <div>
                                           <img
                                             src={closeIcon}
