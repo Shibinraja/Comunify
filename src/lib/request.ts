@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import axios, { AxiosResponse, default as Axios } from 'axios';
-import { AxiosError, ResponseMessage } from './api';
+import { ResponseMessage } from './api';
 import { API_ENDPOINT, auth_module } from './config';
 
 export function getLocalRefreshToken(): string {
@@ -27,24 +27,7 @@ const fetch_refresh_token = ():Promise<AxiosResponse<Record<string, unknown>>> =
     {
       withCredentials: true
     }
-  ).then((response) => response)
-    .catch((err) => {
-      const token = getLocalRefreshToken();
-      const error = err as AxiosError<unknown>;
-      if (Object.values<string>(ResponseMessage).includes(error?.response?.data?.message as ResponseMessage)) {
-        axios
-          .post(
-            `${API_ENDPOINT}${auth_module}/logout`,
-            {},
-            {
-              withCredentials: true,
-              headers: {
-                Authorization: `Bearer ${token}`
-              }
-            }
-          );
-      }
-    });
+  ).then((response) => response);
   return response as Promise<AxiosResponse<Record<string, unknown>>>;
 };
 
@@ -90,6 +73,7 @@ request.interceptors.response.use(
       } catch (err) {
         window.localStorage.clear();
         window.location.href = '/';
+        return Promise.reject(err);
       }
     }
     return Promise.reject(error);
