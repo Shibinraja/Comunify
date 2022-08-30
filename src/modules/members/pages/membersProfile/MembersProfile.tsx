@@ -582,7 +582,7 @@ const MembersProfile: React.FC = () => {
               {memberProfileCardData?.map((data: MemberProfileCard) =>
                 data.tags?.map((tag: TagResponse) => (
                   <div className="labels flex  items-center px-2  h-8 rounded bg-tagSection cursor-pointer" key={tag.id}>
-                    <div className="font-Poppins text-profileBlack font-normal text-card leading-4">{tag.name}</div>
+                    <div className="font-Poppins text-profileBlack font-normal text-card leading-4 pr-4 tags-ellipse">{tag.name}</div>
                     <div className="pl-2">
                       <img src={closeIcon} alt="" onClick={() => handleUnAssignTagsName(tag.id)} />
                     </div>

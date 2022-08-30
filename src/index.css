@@ -472,4 +472,6 @@ input {
   overflow: hidden; 
   white-space: nowrap; 
   text-overflow: ellipsis; 
+  min-width: 50px;
+  max-width: 200px;
 }
