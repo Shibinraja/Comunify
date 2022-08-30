@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable no-unused-vars */
 import Button from 'common/button';
 import React, { useState } from 'react';
@@ -149,7 +148,6 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
         workspaceId
       };
       const connectResponse: IntegrationResponse<PlatformConnectResponse> = await request.post(`${API_ENDPOINT}/v1/vanilla/connect`, body);
-      console.log(connectResponse);
       if (connectResponse?.data?.message?.toLocaleLowerCase().trim() == 'already connected') {
         showWarningToast('Vanilla Forums is already connected to your workspace');
         setIsLoading(false);
