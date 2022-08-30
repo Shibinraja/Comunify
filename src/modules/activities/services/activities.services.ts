@@ -1,11 +1,6 @@
 import { GeneratorResponse } from '../../../lib/api';
 import { request } from '../../../lib/request';
-import {
-  ActiveStreamResponse,
-  ActiveStreamTagResponse,
-  GetActiveStreamListQueryParams,
-  GetActiveStreamTagListQueryParams
-} from '../interfaces/activities.interface';
+import { ActiveStreamResponse, GetActiveStreamListQueryParams } from '../interfaces/activities.interface';
 
 export function* getActiveStreamDataService(params: Required<GetActiveStreamListQueryParams>): GeneratorResponse<ActiveStreamResponse> {
   const { data } = yield request.get(
@@ -16,13 +11,6 @@ export function* getActiveStreamDataService(params: Required<GetActiveStreamList
     }${params.activeStreamQuery['activity.gte'] ? `&activity.gte=${params.activeStreamQuery['activity.gte']}` : ''}${
       params.activeStreamQuery['activity.lte'] ? `&activity.lte=${params.activeStreamQuery['activity.lte']}` : ''
     }`
-  );
-  return data;
-}
-
-export function* ActiveStreamTagFilterService(query: Partial<GetActiveStreamTagListQueryParams>): GeneratorResponse<Array<ActiveStreamTagResponse>> {
-  const { data } = yield request.get(
-    `/v1/${query.workspaceId}/tags?${query.activeStreamQuery?.tags.searchedTags ? `search=${query.activeStreamQuery.tags.searchedTags}` : ''}`
   );
   return data;
 }

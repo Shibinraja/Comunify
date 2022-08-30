@@ -17,7 +17,6 @@ import {
   SlackConnectData,
   VanillaForumsConnectData
 } from '../../interface/settings.interface';
-import { NavigateToConnectPage } from '../../services/settings.services';
 import { getLocalWorkspaceId } from '../../../../lib/helper';
 import { PlatformConnectResponse } from '../../../../interface/interface';
 import { IntegrationResponse, NetworkResponse } from '../../../../lib/api';
@@ -30,6 +29,7 @@ import settingsSlice from '../../store/slice/settings.slice';
 import { useSearchParams } from 'react-router-dom';
 import { useAppSelector } from '../../../../hooks/useRedux';
 import { AppDispatch, State } from '../../../../store';
+import { NavigateToConnectPage } from 'modules/settings/services/settings.services';
 
 Modal.setAppElement('#root');
 

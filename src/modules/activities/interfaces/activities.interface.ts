@@ -1,6 +1,6 @@
 export interface ProfileModal {
   id: string;
-  isOpen: false | boolean;
+  isOpen: boolean;
   memberName: string;
   email: string;
   organization: string;
@@ -10,7 +10,7 @@ export interface ProfileModal {
 }
 
 export interface ActivityCard {
-  isOpen: false | boolean;
+  isOpen: boolean;
   memberName: string;
   email: string;
   organization: string;
@@ -22,6 +22,7 @@ export interface ActivityCard {
   profilePictureUrl: string | null;
   value: string | null;
   platformLogoUrl: string | null;
+  memberId:string
 }
 
 export interface workspaceId {
