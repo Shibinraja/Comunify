@@ -14,6 +14,7 @@ import {
   ModalState,
   PlatformIcons,
   PlatformResponse,
+  PlatformsStatus,
   SlackConnectData,
   VanillaForumsConnectData
 } from '../../interface/settings.interface';
@@ -33,11 +34,16 @@ import { NavigateToConnectPage } from 'modules/settings/services/settings.servic
 
 Modal.setAppElement('#root');
 
+interface PlatformDisconnect {
+  workspacePlatformSettingsId: string | null;
+}
+
 const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
   const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanillaForums: false });
   // eslint-disable-next-line no-unused-vars
   const [platformIcons, setPlatformIcons] = useState<PlatformIcons>({ slack: undefined, vanillaForums: undefined });
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  //   const [platformStatus, setPlatformStatus] = useState<PlatformsStatus>({ platform: undefined, status: undefined });
   const [vanillaForumsData, setVanillaForumsData] = useState<VanillaForumsConnectData>({
     vanillaAccessToken: '',
     vanillaBaseUrl: '',
@@ -56,7 +62,6 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
 
   React.useEffect(() => {
     dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
-
     if (searchParams.get('code')) {
       const codeParams: null | string = searchParams.get('code');
       if (codeParams !== '') {
@@ -73,14 +78,18 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
     return data;
   };
 
-  const handleModals = (name: string, icon: string) => {
+  const handleModals = (name: string, icon: string, isIntegrated: boolean) => {
     switch (name) {
       case 'Slack':
         setIsLoading(true);
         if (checkForConnectedPlatform(name) === undefined) {
           setPlatformIcons((prevState) => ({ ...prevState, slack: icon }));
-          NavigateToConnectPage();
-          setIsLoading(false);
+          if (isIntegrated === true) {
+            handlePlatformReconnectForSlack(name);
+          } else {
+            NavigateToConnectPage();
+            setIsLoading(false);
+          }
         } else {
           showWarningToast(`${name} is already connected to your workspace`);
           setIsLoading(false);
@@ -90,8 +99,12 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
         setIsLoading(true);
         if (checkForConnectedPlatform(name) === undefined) {
           setPlatformIcons((prevState) => ({ ...prevState, vanillaForums: icon }));
-          setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: true }));
-          setIsLoading(false);
+          if (isIntegrated === true) {
+            handlePlatformReconnectForVanilla(name);
+          } else {
+            setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: true }));
+            setIsLoading(false);
+          }
         } else {
           showWarningToast(`${name} Forums is already connected to your workspace`);
           setIsLoading(false);
@@ -111,10 +124,11 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
         workspaceId
       };
       const response: IntegrationResponse<PlatformConnectResponse> = await request.post(`${API_ENDPOINT}/v1/slack/connect`, body);
-      localStorage.setItem('workspacePlatformSettingsId', response?.data?.data?.id);
+      localStorage.setItem('workspacePlatformAuthSettingsId', response?.data?.data?.id);
+      localStorage.setItem('workspacePlatformSettingsId', response?.data?.data?.workspacePlatformSettingsId);
       if (response) {
         setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
-        navigate(`/${workspaceId}/settings/complete-setup`, { state: { workspacePlatformSettingsId: response?.data?.data?.id } });
+        navigate(`/${workspaceId}/settings/complete-setup`, { state: { workspacePlatformAuthSettingsId: response?.data?.data?.id } });
       } else {
         showErrorToast('Integration failed');
       }
@@ -143,7 +157,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
         try {
           const completeSetupResponse: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/vanilla/complete-setup`, {
             workspaceId,
-            workspacePlatformSettingsId: connectResponse?.data?.data?.id
+            workspacePlatformAuthSettingsId: connectResponse?.data?.data?.id
           });
           if (completeSetupResponse) {
             dispatch(settingsSlice.actions.platformData({ workspaceId }));
@@ -160,6 +174,71 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
     } catch (error) {
       showErrorToast('Integration Failed');
       setIsLoading(false);
+    }
+  };
+
+  // eslint-disable-next-line space-before-function-paren
+  const handleDisconnect = async (platformName: string, workspacePlatformSettingsId: string) => {
+    const body: PlatformDisconnect = {
+      workspacePlatformSettingsId
+    };
+    try {
+      const disconnectResponse: IntegrationResponse<PlatformsStatus> = await request.post(
+        `${API_ENDPOINT}/v1/${platformName.toLocaleLowerCase().trim()}/disconnect`,
+        body
+      );
+      if (disconnectResponse?.data?.data.status?.toLocaleLowerCase().trim() === 'disabled') {
+        if (disconnectResponse?.data?.data?.platform?.toLocaleLowerCase().trim() === 'vanilla') {
+          showSuccessToast(`${platformName} Forums was successfully disconnected from your workspace`);
+          dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+        } else {
+          showSuccessToast(`${platformName} was successfully disconnected from your workspace`);
+          dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+        }
+      }
+    } catch {
+      showErrorToast(`${platformName} disconnection failed`);
+    }
+  };
+
+  // eslint-disable-next-line space-before-function-paren
+  const handlePlatformReconnectForSlack = async (platform: string) => {
+    setIsModalOpen((prevState) => ({ ...prevState, slack: true }));
+    const body = {
+      workspaceId
+    };
+    try {
+      const response = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
+      if (response) {
+        setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
+        dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+        showSuccessToast(`${platform} was successfully connected`);
+        setIsLoading(false);
+      } else {
+        showErrorToast('Failed to connect to the platform');
+      }
+    } catch {
+      showErrorToast('Failed to connect to the platform');
+    }
+  };
+
+  // eslint-disable-next-line space-before-function-paren
+  const handlePlatformReconnectForVanilla = async (platform: string) => {
+    const body = {
+      workspaceId
+    };
+    showSuccessToast('Integration in progress...');
+    try {
+      const response = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
+      if (response) {
+        dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+        showSuccessToast(`${platform} Forums was successfully connected`);
+        setIsLoading(false);
+      } else {
+        showErrorToast('Failed to connect to the platform');
+      }
+    } catch {
+      showErrorToast('Failed to connect to the platform');
     }
   };
 
@@ -188,6 +267,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
                 type="button"
                 text={isButtonConnect ? 'Disconnect' : 'Connect'}
                 className={isButtonConnect ? disConnectedBtnClassName : connectedBtnClassName}
+                onClick={() => handleDisconnect(data?.platform?.name, data?.id)}
               />
             </div>
           ))}
@@ -213,7 +293,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
                   text="Connect"
                   disabled={isLoading ? true : false}
                   className={!isButtonConnect ? disConnectedBtnClassName : connectedBtnClassName}
-                  onClick={() => handleModals(data?.name.trim(), data?.platformLogoUrl)}
+                  onClick={() => handleModals(data?.name.trim(), data?.platformLogoUrl, data?.isConnected)}
                 />
               </div>
             ))}

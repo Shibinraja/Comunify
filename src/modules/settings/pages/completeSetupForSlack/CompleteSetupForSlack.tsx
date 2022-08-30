@@ -23,7 +23,7 @@ import settingsSlice from '../../store/slice/settings.slice';
 const CompleteSetup: React.FC = () => {
   interface Body {
     workspaceId: string;
-    workspacePlatformSettingsId: string | null;
+    workspacePlatformAuthSettingsId: string | null;
   }
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
@@ -34,7 +34,7 @@ const CompleteSetup: React.FC = () => {
     try {
       const body: Body = {
         workspaceId,
-        workspacePlatformSettingsId: location?.state?.workspacePlatformSettingsId || localStorage.getItem('workspacePlatformSettingsId')
+        workspacePlatformAuthSettingsId: location?.state?.workspacePlatformAuthSettingsId || localStorage.getItem('workspacePlatformAuthSettingsId')
       };
       showSuccessToast('Integration in progress...');
       const response: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/slack/complete-setup`, body);

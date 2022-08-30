@@ -83,10 +83,11 @@ const Integration: React.FC = () => {
         workspaceId
       };
       const response: IntegrationResponse<PlatformConnectResponse> = await request.post(`${API_ENDPOINT}/v1/slack/connect`, body);
-      localStorage.setItem('workspacePlatformSettingsId', response?.data?.data?.id);
+      localStorage.setItem('workspacePlatformAuthSettingsId', response?.data?.data?.id);
+      localStorage.setItem('workspacePlatformSettingsId', response?.data?.data?.workspacePlatformSettingsId);
       if (response) {
         setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
-        navigate(`/${workspaceId}/settings/complete-setup`, { state: { workspacePlatformSettingsId: response?.data?.data?.id } });
+        navigate(`/${workspaceId}/settings/complete-setup`, { state: { workspacePlatformAuthSettingsId: response?.data?.data?.id } });
       } else {
         showErrorToast('Integration failed');
       }
@@ -115,7 +116,7 @@ const Integration: React.FC = () => {
         try {
           const completeSetupResponse: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/vanilla/complete-setup`, {
             workspaceId,
-            workspacePlatformSettingsId: connectResponse?.data?.data?.id
+            workspacePlatformAuthSettingsId: connectResponse?.data?.data?.id
           });
           if (completeSetupResponse) {
             dispatch(settingsSlice.actions.platformData({ workspaceId }));

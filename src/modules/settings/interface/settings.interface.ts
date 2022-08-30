@@ -1,6 +1,8 @@
 /* eslint-disable no-unused-vars */
 // Input Body
 
+import { platform } from 'os';
+
 export interface workspaceId {
   workspaceId: string;
 }
@@ -14,14 +16,14 @@ export interface GetTagListQueryParams extends workspaceId {
 }
 
 export interface createTagProps extends workspaceId {
-  tagBody:{
-    name:string;
-    viewName:string
-  }
+  tagBody: {
+    name: string;
+    viewName: string;
+  };
 }
 
 export interface updateTagProps extends createTagProps {
-  tagId:string
+  tagId: string;
 }
 
 export enum AssignTypeEnum {
@@ -31,20 +33,20 @@ export enum AssignTypeEnum {
   Reactions = 'Reactions'
 }
 export interface assignTagProps extends workspaceId {
-  memberId:string;
-  assignTagBody:{
-    tagId: string,
-    type: AssignTypeEnum
-    activityId?: string
-  }
+  memberId: string;
+  assignTagBody: {
+    tagId: string;
+    type: AssignTypeEnum;
+    activityId?: string;
+  };
 }
 
 export interface unAssignTagProps extends workspaceId {
-  memberId:string;
-  unAssignTagBody:{
-    tagId: string,
-    activityId?: string
-  }
+  memberId: string;
+  unAssignTagBody: {
+    tagId: string;
+    activityId?: string;
+  };
 }
 export interface ModalState {
   slack: boolean;
@@ -93,6 +95,12 @@ export interface PlatformIcons {
   slack: string | undefined;
   vanillaForums: string | undefined;
 }
+
+export interface PlatformsStatus {
+  platform: string | undefined;
+  status: string | undefined;
+}
+
 export interface SlackConnectData {
   code: string | null;
   workspaceId: string;
