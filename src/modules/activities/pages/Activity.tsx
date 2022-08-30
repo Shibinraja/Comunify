@@ -25,6 +25,10 @@ import Skeleton from 'react-loading-skeleton';
 import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 import { width_90 } from 'constants/constants';
 import { activityFilterExportProps } from './activity.types';
+import settingsSlice from 'modules/settings/store/slice/settings.slice';
+import { AssignTypeEnum, TagResponse } from 'modules/settings/interface/settings.interface';
+import { MemberProfileCard } from 'modules/members/interface/members.interface';
+import membersSlice from 'modules/members/store/slice/members.slice';
 
 Modal.setAppElement('#root');
 
@@ -46,6 +50,7 @@ const Activity: React.FC = () => {
   const [ActivityCard, setActivityCard] = useState<ActivityCard>();
   const [page, setPage] = useState<number>(1);
   const [searchText, setSearchText] = useState<string>('');
+  const [searchTagText, setSearchTagText] = useState<string>('');
   const dropDownRef = useRef<HTMLDivElement>(null);
   const [checkedActivityId, setCheckedActivityId] = useState<Record<string, unknown>>({});
   const [filterExportParams, setFilterExportParams] = useState<activityFilterExportProps>({
@@ -54,12 +59,25 @@ const Activity: React.FC = () => {
     endDate: '',
     startDate: ''
   });
+  const [tags, setTags] = useState<{
+    tagName: string;
+    tagId: string;
+  }>({
+    tagName: '',
+    tagId: ''
+  });
   const limit = 10;
   const loader = useSkeletonLoading(activitiesSlice.actions.getActiveStreamData.type);
 
   const { data, totalPages } = useAppSelector((state) => state.activities.activeStreamData);
 
+  const { memberProfileCardData } = useAppSelector((state) => state.members);
+
+  const { TagFilterResponse, clearValue } = useAppSelector((state) => state.settings);
+
   const debouncedValue = useDebounce(searchText, 300);
+
+  const debouncedTagValue = useDebounce(searchTagText, 300);
 
   useEffect(() => {
     dispatch(
@@ -72,8 +90,8 @@ const Activity: React.FC = () => {
       })
     );
     dispatch(
-      activitiesSlice.actions.activeStreamTagFilter({
-        activeStreamQuery: { tags: { searchedTags: '', checkedTags: '' } },
+      settingsSlice.actions.tagFilterData({
+        settingsQuery: { tags: { searchedTags: '', checkedTags: '' } },
         workspaceId: workspaceId!
       })
     );
@@ -92,6 +110,36 @@ const Activity: React.FC = () => {
       getFilteredActiveStreamList(1, debouncedValue);
     }
   }, [debouncedValue]);
+
+  useEffect(() => {
+    if (debouncedTagValue) {
+      getTagsList(debouncedTagValue);
+    }
+  }, [debouncedTagValue]);
+
+  useEffect(() => {
+    if (clearValue) {
+      setTagModalOpen(false);
+      setTags({
+        tagId: '',
+        tagName: ''
+      });
+    }
+  }, [clearValue]);
+
+  const getTagsList = (text: string): void => {
+    dispatch(
+      settingsSlice.actions.tagFilterData({
+        settingsQuery: {
+          tags: {
+            checkedTags: '',
+            searchedTags: text
+          }
+        },
+        workspaceId: workspaceId!
+      })
+    );
+  };
 
   // Function to close the popup modal of the member profile
   const handleOutsideClick = (event: MouseEvent) => {
@@ -124,11 +172,20 @@ const Activity: React.FC = () => {
       sourceUrl: data?.sourceUrl,
       profilePictureUrl: data?.profilePictureUrl,
       value: data?.value,
-      platformLogoUrl: data?.platformLogoUrl
+      platformLogoUrl: data?.platformLogoUrl,
+      memberId: data?.memberId
     });
+    dispatch(membersSlice.actions.getMemberProfileCardData({ workspaceId: workspaceId!, memberId: data.memberId }));
   };
-  const handleTagModal = (val: boolean) => {
-    setTagModalOpen(val);
+
+  const handleTagModalOpen = (): void => {
+    setTagModalOpen((prev) => !prev);
+    setTags({
+      tagId: '',
+      tagName: ''
+    });
+    setSearchTagText('');
+    dispatch(settingsSlice.actions.getTagFilterData([]));
   };
 
   const handleProfileModal = (data: ProfileModal) => {
@@ -195,7 +252,45 @@ const Activity: React.FC = () => {
     );
   };
 
-  const tagOptions = ['op1', 'op2', 'op3', 'op4', 'op5', 'op1', 'op2', 'op3', 'op4', 'op5'];
+  const handleSelectTagName = (tagName: string, tagId: string) => {
+    setTags({
+      tagId,
+      tagName
+    });
+  };
+
+  const handleSearchTagTextChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const searchText: string = event.target.value;
+    if (searchText === '') {
+      getTagsList('');
+    }
+    setSearchTagText(searchText);
+  };
+
+  const handleAssignTagsName = (): void => {
+    dispatch(
+      settingsSlice.actions.assignTags({
+        memberId: ActivityCard?.memberId as string,
+        assignTagBody: {
+          tagId: tags.tagId,
+          type: 'Activity' as AssignTypeEnum.Activity
+        },
+        workspaceId: workspaceId!
+      })
+    );
+  };
+
+  const handleUnAssignTagsName = (id: string): void => {
+    dispatch(
+      settingsSlice.actions.unAssignTags({
+        memberId: ActivityCard?.memberId as string,
+        unAssignTagBody: {
+          tagId: id
+        },
+        workspaceId: workspaceId!
+      })
+    );
+  };
 
   const ActiveStreamFilter = useMemo(() => <ActivityFilter page={page} limit={limit} activityFilterExport={setFilterExportParams} />, []);
 
@@ -361,7 +456,8 @@ const Activity: React.FC = () => {
                                       sourceUrl: data?.sourceUrl,
                                       profilePictureUrl: data?.profilePictureUrl,
                                       value: data?.value,
-                                      platformLogoUrl: data?.platformLogoUrl
+                                      platformLogoUrl: data?.platformLogoUrl,
+                                      memberId: data?.memberId
                                     })
                                   }
                                 >
@@ -416,7 +512,7 @@ const Activity: React.FC = () => {
                 <div className="pt-9 flex flex-col activity-list-height">
                   <div className="flex justify-between">
                     <div className="font-Inter font-semibold text-black text-xl leading-6">Activity</div>
-                    <div className="font-Poppins text-error leading-5 text-tag font-medium cursor-pointer" onClick={() => handleTagModal(true)}>
+                    <div className="font-Poppins text-error leading-5 text-tag font-medium cursor-pointer" onClick={handleTagModalOpen}>
                       ADD TAG
                     </div>
                     <Modal
@@ -446,14 +542,21 @@ const Activity: React.FC = () => {
                             type="text"
                             className="mt-0.375 inputs box-border bg-white shadow-shadowInput rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-sm placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
                             placeholder="Enter Tag Name"
+                            onChange={handleSearchTagTextChange}
+                            value={tags.tagName || searchTagText}
                           />
-                          <div className="bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 hidden">
-                            {tagOptions.map((options: string) => (
+                          <div
+                            className={`bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 ${
+                              TagFilterResponse.length && !tags.tagId ? '' : 'hidden'
+                            }`}
+                          >
+                            {TagFilterResponse.map((data: TagResponse) => (
                               <div
-                                key={options}
+                                key={data.id}
                                 className="p-2 text-searchBlack cursor-pointer font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300"
+                                onClick={() => handleSelectTagName(data.name, data.id)}
                               >
-                                {options}
+                                {data.name}
                               </div>
                             ))}
                           </div>
@@ -462,12 +565,13 @@ const Activity: React.FC = () => {
                               type="button"
                               text="CANCEL"
                               className="mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel w-5.25 h-2.81  rounded border-none"
-                              onClick={() => setTagModalOpen(false)}
+                              onClick={handleTagModalOpen}
                             />
                             <Button
                               type="button"
                               text="SAVE"
                               className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-5.25 h-2.81  border-none btn-save-modal"
+                              onClick={handleAssignTagsName}
                             />
                           </div>
                         </form>
@@ -512,36 +616,16 @@ const Activity: React.FC = () => {
                   <div className="mt-7">
                     <h3 className="text-profileBlack text-error font-Poppins font-medium leading-5">Tags</h3>
                     <div className="flex pt-2.5 flex-wrap gap-1">
-                      <div className="flex  tags bg-tagSection items-center justify-evenly rounded w-6.563 p-1">
-                        <div className="font-Poppins text-card font-normal leading-5 text-profileBlack">Influencer</div>
-                        <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
-                          <img src={closeIcon} alt="" />
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-evenly tags bg-tagSection rounded w-6.563 p-1">
-                        <div className="font-Poppins text-card font-normal leading-5 text-profileBlack">Admin</div>
-                        <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
-                          <img src={closeIcon} alt="" />
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-evenly tags bg-tagSection rounded w-6.563 p-1">
-                        <div className="font-Poppins text-card font-normal leading-5 text-profileBlack">Charity</div>
-                        <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
-                          <img src={closeIcon} alt="" />
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-evenly tags bg-tagSection rounded w-6.563 p-1">
-                        <div className="font-Poppins text-card font-normal leading-5 text-profileBlack">ok</div>
-                        <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
-                          <img src={closeIcon} alt="" />
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-evenly tags bg-tagSection rounded w-6.563 p-1">
-                        <div className="font-Poppins text-card font-normal leading-5 text-profileBlack">ok</div>
-                        <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
-                          <img src={closeIcon} alt="" />
-                        </div>
-                      </div>
+                      {memberProfileCardData?.map((data: MemberProfileCard) =>
+                        data.tags.map((tag: TagResponse) => (
+                          <div className="flex  tags bg-tagSection items-center justify-evenly rounded w-6.563 p-1" key={tag.id}>
+                            <div className="font-Poppins text-card font-normal leading-5 text-profileBlack">{tag.name}</div>
+                            <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
+                              <img src={closeIcon} alt="" onClick={() => handleUnAssignTagsName(tag.id)} />
+                            </div>
+                          </div>
+                        ))
+                      )}
                     </div>
                   </div>
                 </div>

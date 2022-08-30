@@ -1,47 +1,42 @@
 /* eslint-disable no-unused-vars */
-import { call, put, takeEvery } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
+import { call, put, takeEvery } from 'redux-saga/effects';
 // import history from '@/lib/history';
 import { AxiosError, SuccessResponse } from '@/lib/api';
+import { PayloadAction } from '@reduxjs/toolkit';
 import { showErrorToast } from 'common/toast/toastFunctions';
 import loaderSlice from 'modules/authentication/store/slices/loader.slice';
-import membersSlice from '../slice/members.slice';
 import {
+  ActivityDataResponse,
+  ActivityInfiniteScroll,
+  GetMembersListQueryParams,
+  GetMembersLocationListQueryParams,
+  GetMembersOrganizationListQueryParams,
+  MemberActivityAnalyticsResponse,
+  MemberCountAnalyticsResponse,
+  MemberProfileCard,
+  MembersColumnsParams,
+  MembersListResponse,
+  MembersProfileActivityGraphData,
+  VerifyMembers,
+  VerifyPlatform,
+  workspaceId
+} from 'modules/members/interface/members.interface';
+import {
+  ActivityAnalyticsService,
+  CountAnalyticsService,
+  GetMembersActivityDataInfiniteScrollSaga,
+  GetMembersActivityGraphDataPerPlatformService,
+  GetMembersProfileCardService,
+  MembersActivityGraphService,
+  MembersColumnsListService,
   MembersColumnsListUpdateService,
   MembersListExportService,
   MembersListService,
   MembersLocationFilterService,
-  MembersOrganizationFilterService,
-  PlatformsDataService,
-  MembersActivityGraphService,
-  GetMembersActivityGraphDataPerPlatformService,
-  MembersColumnsListService,
-  MembersTagFilterService,
-  GetMembersActivityDataInfiniteScrollSaga,
-  GetMembersProfileCardService,
-  ActivityAnalyticsService,
-  CountAnalyticsService
+  MembersOrganizationFilterService
 } from 'modules/members/services/members.services';
-import { PayloadAction } from '@reduxjs/toolkit';
-import {
-  GetMembersListQueryParams,
-  GetMembersLocationListQueryParams,
-  GetMembersOrganizationListQueryParams,
-  GetMembersTagListQueryParams,
-  MembersColumnsParams,
-  MembersListResponse,
-  PlatformResponse,
-  MembersProfileActivityGraphData,
-  MembersTagResponse,
-  VerifyMembers,
-  VerifyPlatform,
-  workspaceId,
-  ActivityDataResponse,
-  ActivityInfiniteScroll,
-  MemberProfileCard,
-  MemberCountAnalyticsResponse,
-  MemberActivityAnalyticsResponse
-} from 'modules/members/interface/members.interface';
+import membersSlice from '../slice/members.slice';
 
 // const forwardTo = (location: string) => {
 //     history.push(location);
@@ -126,22 +121,6 @@ function* membersLocationFilter(action: PayloadAction<Partial<GetMembersLocation
   }
 }
 
-function* membersTagFilter(action: PayloadAction<Partial<GetMembersTagListQueryParams>>) {
-  try {
-    yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.membersTagFilter.type));
-
-    const res: SuccessResponse<Array<MembersTagResponse>> = yield call(MembersTagFilterService, action.payload);
-    if (res?.data) {
-      yield put(membersSlice.actions.getmembersTagFilterData(res.data));
-    }
-  } catch (e) {
-    const error = e as AxiosError<unknown>;
-    showErrorToast(error?.response?.data?.message);
-  } finally {
-    yield put(loaderSlice.actions.stopLoadingAction(membersSlice.actions.membersTagFilter.type));
-  }
-}
-
 function* membersOrganizationFilter(action: PayloadAction<Partial<GetMembersOrganizationListQueryParams>>) {
   try {
     yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.membersOrganizationFilter.type));
@@ -155,22 +134,6 @@ function* membersOrganizationFilter(action: PayloadAction<Partial<GetMembersOrga
     showErrorToast(error?.response?.data?.message);
   } finally {
     yield put(loaderSlice.actions.stopLoadingAction(membersSlice.actions.membersOrganizationFilter.type));
-  }
-}
-
-function* getPlatformsDataSaga() {
-  try {
-    yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.platformData.type));
-
-    const res: SuccessResponse<Array<PlatformResponse>> = yield call(PlatformsDataService);
-    if (res?.data) {
-      yield put(membersSlice.actions.getPlatformFilterData(res?.data));
-    }
-  } catch (e) {
-    const error = e as AxiosError<unknown>;
-    showErrorToast(error?.response?.data?.message);
-  } finally {
-    yield put(loaderSlice.actions.stopLoadingAction(membersSlice.actions.platformData.type));
   }
 }
 
@@ -267,9 +230,7 @@ export default function* membersSaga(): SagaIterator {
   yield takeEvery(membersSlice.actions.membersActivityAnalytics.type, membersActivityAnalytics);
   yield takeEvery(membersSlice.actions.membersList.type, membersList);
   yield takeEvery(membersSlice.actions.getMembersActivityGraphData.type, membersActivityGraphSaga);
-  yield takeEvery(membersSlice.actions.platformData.type, getPlatformsDataSaga);
   yield takeEvery(membersSlice.actions.getMembersActivityGraphDataPerPlatform.type, getMembersActivityGraphDataPerPlatformSaga);
-  yield takeEvery(membersSlice.actions.membersTagFilter.type, membersTagFilter);
   yield takeEvery(membersSlice.actions.membersLocationFilter.type, membersLocationFilter);
   yield takeEvery(membersSlice.actions.membersOrganizationFilter.type, membersOrganizationFilter);
   yield takeEvery(membersSlice.actions.membersColumnsList.type, membersColumnsList);

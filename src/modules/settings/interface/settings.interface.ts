@@ -1,7 +1,66 @@
+/* eslint-disable no-unused-vars */
+// Input Body
+
+export interface workspaceId {
+  workspaceId: string;
+}
+export interface GetTagListQueryParams extends workspaceId {
+  settingsQuery: {
+    tags: {
+      checkedTags: string;
+      searchedTags: string;
+    };
+  };
+}
+
+export interface createTagProps extends workspaceId {
+  tagBody:{
+    name:string;
+    viewName:string
+  }
+}
+
+export interface updateTagProps extends createTagProps {
+  tagId:string
+}
+
+export enum AssignTypeEnum {
+  Member = 'Member',
+  Activity = 'Activity',
+  Comments = 'Comments',
+  Reactions = 'Reactions'
+}
+export interface assignTagProps extends workspaceId {
+  memberId:string;
+  assignTagBody:{
+    tagId: string,
+    type: AssignTypeEnum
+    activityId?: string
+  }
+}
+
+export interface unAssignTagProps extends workspaceId {
+  memberId:string;
+  unAssignTagBody:{
+    tagId: string,
+    activityId?: string
+  }
+}
 export interface ModalState {
   slack: boolean;
   vanillaForums: boolean;
 }
+
+// Response Body
+
+export type TagResponse = {
+  createdAt: string;
+  id: string;
+  name: string;
+  updatedAt: Date;
+  viewName: string;
+  workspaceId: string;
+};
 
 export type PlatformResponse = {
   id: string;

@@ -1,24 +1,23 @@
 /* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import Button from 'common/button';
-import { ChangeEvent, useEffect, useRef, useState, type FC } from 'react';
-import membersSlice from '../store/slice/members.slice';
-import downArrow from '../../../assets/images/sub-down-arrow.svg';
-import dropdownIcon from '../../../assets/images/Vector.svg';
-import searchIcon from '../../../assets/images/search.svg';
+import useDebounce from '@/hooks/useDebounce';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
-import { MemberTypesProps } from './membertypes';
+import { getLocalWorkspaceId } from '@/lib/helper';
+import Button from 'common/button';
+import { format } from 'date-fns';
+import { PlatformResponse, TagResponse } from 'modules/settings/interface/settings.interface';
+import settingsSlice from 'modules/settings/store/slice/settings.slice';
+import { ChangeEvent, useEffect, useRef, useState, type FC } from 'react';
 import DatePicker, { ReactDatePicker } from 'react-datepicker';
-import './Members.css';
-
 import 'react-datepicker/dist/react-datepicker.css';
 import calendarIcon from '../../../assets/images/calandar.svg';
-import { format } from 'date-fns';
-import { getLocalWorkspaceId } from '@/lib/helper';
-import useDebounce from '@/hooks/useDebounce';
-import { MembersTagResponse } from '../interface/members.interface';
-import { PlatformResponse } from '../../settings/interface/settings.interface';
+import searchIcon from '../../../assets/images/search.svg';
+import downArrow from '../../../assets/images/sub-down-arrow.svg';
+import dropdownIcon from '../../../assets/images/Vector.svg';
 import usePlatform from '../../../hooks/usePlatform';
+import membersSlice from '../store/slice/members.slice';
+import './Members.css';
+import { MemberTypesProps } from './membertypes';
 
 const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }) => {
   const [isFilterDropdownActive, setIsFilterDropdownActive] = useState<boolean>(false);
@@ -42,7 +41,8 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
   const workspaceId = getLocalWorkspaceId();
   const dispatch = useAppDispatch();
   const dropDownRef = useRef<HTMLDivElement>(null);
-  const { membersLocationFilterResponse, membersOrganizationFilterResponse, membersTagFilterResponse } = useAppSelector((state) => state.members);
+  const { membersLocationFilterResponse, membersOrganizationFilterResponse } = useAppSelector((state) => state.members);
+  const { TagFilterResponse } = useAppSelector((state) => state.settings);
   const PlatformFilterResponse = usePlatform();
   const debouncedLocationValue = useDebounce(locationSearchText, 300);
   const debouncedOrganizationValue = useDebounce(organizationSearchText, 300);
@@ -156,8 +156,8 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
 
   const getFilteredMembersTagList = (tagText: string) => {
     dispatch(
-      membersSlice.actions.membersTagFilter({
-        membersQuery: { tags: { searchedTags: tagText, checkedTags: '' } },
+      settingsSlice.actions.tagFilterData({
+        settingsQuery: { tags: { searchedTags: tagText, checkedTags: '' } },
         workspaceId: workspaceId!
       })
     );
@@ -354,8 +354,8 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
                   </div>
                 </div>
                 <div className="flex flex-col gap-y-5 justify-center px-3 max-h-[12.5rem] overflow-scroll">
-                  {membersTagFilterResponse &&
-                    membersTagFilterResponse.map((tags: MembersTagResponse, index: number) => (
+                  {TagFilterResponse &&
+                    TagFilterResponse.map((tags: TagResponse, index: number) => (
                       <div key={index} className="flex items-center mb-2">
                         <div className="mr-2">
                           <input

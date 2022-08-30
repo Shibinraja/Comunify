@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
 import { GeneratorResponse } from '@/lib/api';
-import { platforms_module } from '@/lib/config';
 import { request } from '@/lib/request';
 import { workspaceId } from 'modules/activities/interfaces/activities.interface';
 
@@ -13,12 +12,9 @@ import {
   MembersColumnsParams,
   GetMembersOrganizationListQueryParams,
   GetMembersLocationListQueryParams,
-  GetMembersTagListQueryParams,
-  MembersTagResponse,
   ActivityDataResponse,
   ActivityInfiniteScroll,
   MemberProfileCard,
-  PlatformResponse,
   MemberCountAnalyticsResponse,
   MemberActivityAnalyticsResponse
 } from '../interface/members.interface';
@@ -56,18 +52,6 @@ export function* MembersListService(query: Required<GetMembersListQueryParams>):
       query.membersQuery['lastActivity.lte'] ? `&lastActivity.lte=${query.membersQuery['lastActivity.lte']}` : ''
     }${query.membersQuery['createdAT.gte'] ? `&createdAT.gte=${query.membersQuery['createdAT.gte']}` : ''}
     ${query.membersQuery['createdAT.lte'] ? `&createdAT.lte=${query.membersQuery['createdAT.lte']}` : ''}`
-  );
-  return data;
-}
-
-export function* PlatformsDataService(): GeneratorResponse<Array<PlatformResponse>> {
-  const { data } = yield request.get(`${platforms_module}`);
-  return data;
-}
-
-export function* MembersTagFilterService(query: Partial<GetMembersTagListQueryParams>): GeneratorResponse<Array<MembersTagResponse>> {
-  const { data } = yield request.get(
-    `/v1/${query.workspaceId}/tags?${query.membersQuery?.tags.searchedTags ? `search=${query.membersQuery.tags.searchedTags}` : ''}`
   );
   return data;
 }

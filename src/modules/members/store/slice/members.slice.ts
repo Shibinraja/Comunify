@@ -10,13 +10,10 @@ import {
   workspaceId,
   GetMembersLocationListQueryParams,
   GetMembersOrganizationListQueryParams,
-  GetMembersTagListQueryParams,
-  MembersTagResponse,
   ActivityDataResponse,
   ActivityInfiniteScroll,
   MemberProfileCard,
   GetMembersListQueryParams,
-  PlatformResponse,
   MemberCountAnalyticsResponse,
   MemberActivityAnalyticsResponse
 } from 'modules/members/interface/members.interface';
@@ -94,13 +91,9 @@ export const customizedColumnProps = [
   }
 ];
 
-export const PlatformFilterResponse = [];
-
 export const membersLocationFilterResponse = [];
 
 export const membersOrganizationFilterResponse = [];
-
-export const membersTagFilterResponse = [];
 
 const membersActivityInitialValue = {
   result: [],
@@ -113,10 +106,8 @@ const initialState: InitialState = {
   membersProfileActivityGraphData: membersGraphResponse,
   membersListData: membersListResponse,
   customizedColumn: customizedColumnProps,
-  PlatformFilterResponse,
   membersLocationFilterResponse,
   membersOrganizationFilterResponse,
-  membersTagFilterResponse,
   membersListExportData: [],
   membersActivityData: membersActivityInitialValue,
   memberProfileCardData: []
@@ -131,8 +122,6 @@ const membersActivityAnalytics = (state: InitialState, action: PayloadAction<wor
 const platformData = (state: InitialState) => state;
 
 const membersList = (state: InitialState, action: PayloadAction<GetMembersListQueryParams>) => state;
-
-const membersTagFilter = (state: InitialState, action: PayloadAction<Partial<GetMembersTagListQueryParams>>) => state;
 
 const membersLocationFilter = (state: InitialState, action: PayloadAction<Partial<GetMembersLocationListQueryParams>>) => state;
 
@@ -176,16 +165,6 @@ const getMembersListData = (state: InitialState, action: PayloadAction<MembersLi
 const customizedColumnData = (state: InitialState, action: PayloadAction<Array<ColumnNameProps>>) => ({
   ...state,
   customizedColumn: action.payload
-});
-
-const getPlatformFilterData = (state: InitialState, action: PayloadAction<Array<PlatformResponse>>) => ({
-  ...state,
-  PlatformFilterResponse: action.payload
-});
-
-const getmembersTagFilterData = (state: InitialState, action: PayloadAction<Array<MembersTagResponse>>) => ({
-  ...state,
-  membersTagFilterResponse: action.payload
 });
 
 const getmembersLocationFilterData = (state: InitialState, action: PayloadAction<Array<{ location: string }>>) => ({
@@ -233,10 +212,8 @@ const membersSlice = createSlice({
     setMembersActivityGraphData,
     getMembersActivityGraphDataPerPlatform,
     platformData,
-    membersTagFilter,
     membersLocationFilter,
     membersOrganizationFilter,
-    getmembersTagFilterData,
     getmembersLocationFilterData,
     getmembersOrganizationFilterData,
     membersColumnsList,
@@ -245,7 +222,6 @@ const membersSlice = createSlice({
     getMembersActivityDataInfiniteScroll,
     getMemberProfileCardData,
     setMemberProfileCardData,
-    getPlatformFilterData,
     getmembersListExport,
     clearMemberActivityData
   }

@@ -1,3 +1,5 @@
+import { TagResponse } from 'modules/settings/interface/settings.interface';
+
 /* eslint-disable no-unused-vars */
 export interface workspaceId {
   workspaceId: string;
@@ -30,14 +32,6 @@ export interface GetMembersListQueryParams extends workspaceId {
   };
 }
 
-export interface GetMembersTagListQueryParams extends workspaceId {
-  membersQuery: {
-    tags: {
-      checkedTags: string;
-      searchedTags: string;
-    };
-  };
-}
 export interface GetMembersLocationListQueryParams extends workspaceId {
   membersQuery: {
     location: {
@@ -137,25 +131,6 @@ export type MembersListResponse = {
   totalPages: number;
   previousPage: number;
   nextPage: number;
-};
-
-export type PlatformResponse = {
-  id: string;
-  name: string;
-  status: string;
-  errorMessage: string;
-  isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-};
-
-export type MembersTagResponse = {
-  createdAt: string;
-  id: string;
-  name: string;
-  updatedAt: Date;
-  viewName: string;
-  workspaceId: string;
 };
 export interface DraggableComponentsProps {
   MembersColumn?: boolean;
@@ -267,5 +242,5 @@ export interface MemberProfileCard {
     name: string;
     platformLogoUrl: string;
   }[];
-  tags: string[] | null;
+  tags: Array<TagResponse>;
 }
