@@ -49,7 +49,8 @@ export type AxiosError<T> = {
 export enum ResponseMessage {
   TokenExpired = 'Token expired',
   InvalidToken = 'Invalid Token',
-  JWTExpired = 'jwt expired'
+  JWTExpired = 'jwt expired',
+  NoAuthToken = 'No auth token'
 }
 
 export type ServerResponse<T extends unknown = unknown> = AxiosResponse<SuccessResponse<T>>;
