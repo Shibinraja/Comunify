@@ -312,7 +312,7 @@ const Activity: React.FC = () => {
 
         <div className="">
           <div
-            className="app-input-card-border w-6.98 h-3.06 rounded-0.6 shadow-shadowInput box-border bg-white items-center justify-evenly flex ml-0.63 cursor-pointer"
+            className="app-input-card-border w-6.98 h-3.06 rounded-0.6 shadow-shadowInput box-border bg-white items-center justify-evenly flex ml-0.63 cursor-pointer hover:border-infoBlack transition ease-in-out duration-300"
             onClick={fetchActiveStreamListExportData}
           >
             <h3 className="text-dropGray leading-1.12 font-Poppins font-semibold text-card">Export</h3>
@@ -437,8 +437,8 @@ const Activity: React.FC = () => {
                             <Skeleton width={width_90} />
                           ) : (
                             <div className="flex ">
-                              <div className="mr-2 w-10 h-10">
-                                <img src={data?.platformLogoUrl} alt="" />
+                              <div className="mr-2 w-[1.3419rem] h-[1.3419rem]">
+                                <img src={data?.platformLogoUrl} alt="" className="rounded-full" />
                               </div>
                               <div className="flex flex-col">
                                 <div

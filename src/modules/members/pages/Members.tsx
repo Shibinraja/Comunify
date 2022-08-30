@@ -451,10 +451,10 @@ const Members: React.FC = () => {
                                 {(member?.platforms as Array<{ id: string; name: string; platformLogoUrl: string }>)?.map(
                                   (platforms: { name: string; id: string; platformLogoUrl: string }, index: number) => (
                                     <div
-                                      className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer w-5 h-5"
+                                      className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer w-[1.3419rem] h-[1.3419rem] rounded-full"
                                       key={index}
                                     >
-                                      <img src={platforms?.platformLogoUrl} alt="" />
+                                      <img src={platforms?.platformLogoUrl} alt="" className="rounded-full" />
                                     </div>
                                   )
                                 )}
@@ -469,7 +469,10 @@ const Members: React.FC = () => {
                                   {(member?.tags as Array<{ id: string; name: string }>)
                                     ?.slice(0, 2)
                                     .map((tags: { name: string; id: string }, index: number) => (
-                                      <div className="bg-tagSection rounded w-5.25 h-8 flex justify-between px-3 items-center cursor-pointer" key={index}>
+                                      <div
+                                        className="bg-tagSection rounded w-5.25 h-8 flex justify-between px-3 items-center cursor-pointer"
+                                        key={index}
+                                      >
                                         <div className="font-Poppins font-normal text-card text-profileBlack leading-5">{tags?.name}</div>
                                         <div>
                                           <img
