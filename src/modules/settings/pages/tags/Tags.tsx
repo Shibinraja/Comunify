@@ -26,8 +26,8 @@ const Tags: React.FC<Props> = ({ hidden }) => {
   const [searchText, setSearchText] = useState<string>('');
   const [tagName, setTagName] = useState<string>('');
   const [edit, setEdit] = useState<{
-    isEdit:boolean,
-    tagId:string
+    isEdit: boolean;
+    tagId: string;
   }>({
     isEdit: false,
     tagId: ''
@@ -76,14 +76,14 @@ const Tags: React.FC<Props> = ({ hidden }) => {
     setTagName(tagsName);
   };
 
-  const handleTagModalOpen = (tagName?:string, id?:string) => {
+  const handleTagModalOpen = (tagName?: string, id?: string) => {
     setTagName(tagName as string);
     setEdit({ isEdit: true, tagId: id as string });
     setTagModalOpen((prev) => !prev);
   };
 
   const handleCreateTagsName = (): void => {
-    if(edit.isEdit && edit.tagId) {
+    if (edit.isEdit && edit.tagId) {
       dispatch(
         settingsSlice.actions.updateTags({
           tagId: edit.tagId,
@@ -94,7 +94,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
           workspaceId: workspaceId!
         })
       );
-    }else{
+    } else {
       dispatch(
         settingsSlice.actions.createTags({
           tagBody: {
@@ -103,7 +103,8 @@ const Tags: React.FC<Props> = ({ hidden }) => {
           },
           workspaceId: workspaceId!
         })
-      );}
+      );
+    }
     handleTagModalOpen();
   };
 
@@ -125,7 +126,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
         <div className="tagTable mt-[2.625rem] ">
           <div className="flex flex-col">
             <div className="flex items-center w-full">
-              <div className="font-Poppins font-semibold text-base text-infoBlack leading-1.43 w-full">Tags</div>
+              <div className="font-Poppins font-semibold text-base text-infoBlack leading-1.43 w-full dark:text-white">Tags</div>
               <div className="flex justify-end">
                 <div className="w-full">
                   <input
@@ -207,34 +208,32 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                   <table className="min-w-full relative  rounded-t-0.6 ">
                     <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
                       <tr className="min-w-full">
-                        <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white  bg-tableHeaderGray">
+                        <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  dark:bg-thirdDark  bg-tableHeaderGray">
                           Tag Name
                         </th>
-                        <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white  bg-tableHeaderGray">
+                        <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  dark:bg-thirdDark  bg-tableHeaderGray">
                           Type
                         </th>
-                        <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white  bg-tableHeaderGray">
+                        <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  dark:bg-thirdDark  bg-tableHeaderGray">
                           Action
                         </th>
                       </tr>
                     </thead>
                     <tbody>
                       {TagFilterResponse.map((data, i) => (
-                        <tr className="border" key={i}>
-                          <td className="px-6 py-3">
+                        <tr className="border dark:border-[#dbd8fc1a]" key={i}>
+                          <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
                             <div className="flex ">
-                              <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.name}</div>
+                              <div className="py-3 font-Poppins font-medium text-trial leading-1.31 cursor-pointer">{data.name}</div>
                             </div>
                           </td>
 
-                          <td className="px-6 py-3">
+                          <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
                             <div className="flex ">
-                              <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                                {data.viewName}
-                              </div>
+                              <div className="py-3 font-Poppins font-medium text-trial leading-1.31 cursor-pointer">{data.viewName}</div>
                             </div>
                           </td>
-                          <td>
+                          <td className="dark:bg-secondaryDark dark:text-white">
                             <div className="flex">
                               <Button
                                 type="submit"
@@ -256,7 +255,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
             </div>
           </div>
         </div>
-        <div className="px-6 py-6 flex items-center justify-center gap-0.66 w-full rounded-b-lg bg-white bottom-0">
+        <div className="px-6 py-6 flex items-center justify-center gap-0.66 w-full rounded-b-lg bg-white dark:bg-thirdDark bottom-0">
           <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
             <img src={prevIcon} alt="" />
           </div>
