@@ -438,7 +438,7 @@ const MembersProfile: React.FC = () => {
 
           <div
             onScroll={handleScroll}
-            className="flex flex-col pt-8 gap-0.83 justify-center height-member-activity overflow-scroll overflow-y-scroll mt-5 member-section"
+            className="flex flex-col pt-8 gap-0.83 height-member-activity overflow-scroll overflow-y-scroll member-section"
           >
             {activityDataLoader ? (
               <Skeleton width={500} className={'my-4'} count={6} />
@@ -449,7 +449,7 @@ const MembersProfile: React.FC = () => {
                     <img src={yellowDottedIcon} alt="" />
                   </div>
                   <div className="pl-0.68">
-                    <img src={slackIcon} alt="" />
+                    <img src={slackIcon} alt="" className="rounded-full w-[1.835rem] h-[1.835rem]" />
                   </div>
                   <div className="flex flex-col pl-0.89">
                     <div className="font-Poppins font-normal text-card leading-4">{data?.displayValue}</div>
@@ -498,7 +498,7 @@ const MembersProfile: React.FC = () => {
                 </div>
                 <div className="flex gap-1 pt-1.12">
                   <div>
-                    <img src={slackIcon} alt="" />
+                    <img src={slackIcon} alt="" className="rounded-full w-[1.0012rem] h-[1.0012rem]" />
                   </div>
                 </div>
               </div>

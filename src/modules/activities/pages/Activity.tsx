@@ -312,7 +312,7 @@ const Activity: React.FC = () => {
 
         <div className="">
           <div
-            className="app-input-card-border w-6.98 h-3.06 rounded-0.6 shadow-shadowInput box-border bg-white items-center justify-evenly flex ml-0.63 cursor-pointer"
+            className="app-input-card-border w-6.98 h-3.06 rounded-0.6 shadow-shadowInput box-border bg-white items-center justify-evenly flex ml-0.63 cursor-pointer hover:border-infoBlack transition ease-in-out duration-300"
             onClick={fetchActiveStreamListExportData}
           >
             <h3 className="text-dropGray leading-1.12 font-Poppins font-semibold text-card">Export</h3>
@@ -323,7 +323,7 @@ const Activity: React.FC = () => {
       {data?.length !== 0 ? (
         <div className="relative">
           <div className="py-2 overflow-x-auto mt-1.868">
-            <div className="inline-block min-w-full  align-middle w-61.68 rounded-0.6 border-table no-scroll-bar  overflow-y-auto h-screen sticky top-0 fixActivityTableHead min-h-[31.25rem]">
+            <div className="inline-block min-w-full align-middle rounded-0.6 border-table no-scroll-bar  overflow-y-auto h-screen sticky top-0 fixActivityTableHead min-h-[31.25rem]">
               <table className="min-w-full relative  rounded-t-0.6 ">
                 <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky z-10">
                   <tr className="min-w-full">
@@ -437,8 +437,8 @@ const Activity: React.FC = () => {
                             <Skeleton width={width_90} />
                           ) : (
                             <div className="flex ">
-                              <div className="mr-2 w-10 h-10">
-                                <img src={data?.platformLogoUrl} alt="" />
+                              <div className="mr-2 w-[1.3419rem] h-[1.3419rem]">
+                                <img src={data?.platformLogoUrl} alt="" className="rounded-full" />
                               </div>
                               <div className="flex flex-col">
                                 <div

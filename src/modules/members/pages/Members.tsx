@@ -406,7 +406,7 @@ const Members: React.FC = () => {
       {customizedColumn && (customizedColumn?.[0]?.name as { name: string; id: string })?.name ? (
         <div className="memberTable mt-1.8">
           <div className="py-2 overflow-x-auto mt-1.868">
-            <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto sticky top-0 fixTableHead max-h-34 min-h-[31.25rem]">
+            <div className="inline-block min-w-full overflow-hidden align-middle rounded-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto sticky top-0 fixTableHead max-h-34 min-h-[31.25rem]">
               <table className="min-w-full relative  rounded-t-0.6 ">
                 <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
                   <tr className="min-w-full">
@@ -449,10 +449,10 @@ const Members: React.FC = () => {
                                 {(member?.platforms as Array<{ id: string; name: string; platformLogoUrl: string }>)?.map(
                                   (platforms: { name: string; id: string; platformLogoUrl: string }, index: number) => (
                                     <div
-                                      className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer w-5 h-5"
+                                      className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer w-[1.3419rem] h-[1.3419rem] rounded-full"
                                       key={index}
                                     >
-                                      <img src={platforms?.platformLogoUrl} alt="" />
+                                      <img src={platforms?.platformLogoUrl} alt="" className="rounded-full" />
                                     </div>
                                   )
                                 )}
