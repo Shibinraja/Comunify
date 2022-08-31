@@ -9,34 +9,31 @@ import Modal from 'react-modal';
 import { useNavigate } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import { request } from '../../../../lib/request';
-import { showErrorToast, showSuccessToast } from '../../../../common/toast/toastFunctions';
-import { API_ENDPOINT, SLACK_CONNECT_ENDPOINT } from '../../../../lib/config';
+import { showErrorToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
+import { API_ENDPOINT } from '../../../../lib/config';
 import { getLocalWorkspaceId } from '@/lib/helper';
 import Input from 'common/input';
 import { IntegrationResponse, NetworkResponse } from '../../../../lib/api';
 import { PlatformConnectResponse } from '../../../../interface/interface';
-import { ModalState, PlatformResponse, PlatformIcons } from '../../../settings/interface/settings.interface';
+import {
+  ModalState,
+  PlatformResponse,
+  PlatformIcons,
+  VanillaForumsConnectData,
+  SlackConnectData
+} from '../../../settings/interface/settings.interface';
 import usePlatform from '../../../../hooks/usePlatform';
 import { useDispatch } from 'react-redux';
 import settingsSlice from '../../../settings/store/slice/settings.slice';
+import { NavigateToConnectPage } from '../../../settings/services/settings.services';
 
 Modal.setAppElement('#root');
-
-interface SlackData {
-  code: string | null;
-  workspaceId: string;
-}
-
-interface VanillaForumsData {
-  vanillaBaseUrl: string;
-  vanillaAccessToken: string;
-  workspaceId: string;
-}
 
 const Integration: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanillaForums: false });
   // eslint-disable-next-line no-unused-vars
   const [platformIcons, setPlatformIcons] = useState<PlatformIcons>({ slack: undefined, vanillaForums: undefined });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const dispatch = useDispatch();
   const platformData = usePlatform();
   const navigate = useNavigate();
@@ -45,10 +42,14 @@ const Integration: React.FC = () => {
   const handleVanillaModal = (val: boolean) => {
     setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: val }));
   };
-  const [vanillaForumsData, setVanillaForumsData] = useState<VanillaForumsData>({ vanillaAccessToken: '', vanillaBaseUrl: '', workspaceId: '' });
+  const [vanillaForumsData, setVanillaForumsData] = useState<VanillaForumsConnectData>({
+    vanillaAccessToken: '',
+    vanillaBaseUrl: '',
+    workspaceId: ''
+  });
 
   useEffect(() => {
-    dispatch(settingsSlice.actions.platformData());
+    dispatch(settingsSlice.actions.platformData({ workspaceId }));
     if (searchParams.get('code')) {
       const codeParams: null | string = searchParams.get('code');
       if (codeParams !== '') {
@@ -60,7 +61,7 @@ const Integration: React.FC = () => {
   const handleModals = (name: string, icon: string) => {
     switch (name) {
       case 'slack':
-        navigateToConnectPage();
+        NavigateToConnectPage();
         setPlatformIcons((prevState) => ({ ...prevState, slack: icon }));
         break;
       case 'vanilla':
@@ -77,15 +78,16 @@ const Integration: React.FC = () => {
   const getData = async (codeParams: string | null) => {
     try {
       setIsModalOpen((prevState) => ({ ...prevState, slack: true }));
-      const body: SlackData = {
+      const body: SlackConnectData = {
         code: codeParams,
         workspaceId
       };
       const response: IntegrationResponse<PlatformConnectResponse> = await request.post(`${API_ENDPOINT}/v1/slack/connect`, body);
-      localStorage.setItem('workspacePlatformSettingsId', response?.data?.data?.id);
+      localStorage.setItem('workspacePlatformAuthSettingsId', response?.data?.data?.id);
+      localStorage.setItem('workspacePlatformSettingsId', response?.data?.data?.workspacePlatformSettingsId);
       if (response) {
         setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
-        navigate(`/${workspaceId}/settings/complete-setup`, { state: { workspacePlatformSettingsId: response?.data?.data?.id } });
+        navigate(`/${workspaceId}/settings/complete-setup`, { state: { workspacePlatformAuthSettingsId: response?.data?.data?.id } });
       } else {
         showErrorToast('Integration failed');
       }
@@ -96,37 +98,42 @@ const Integration: React.FC = () => {
 
   // eslint-disable-next-line space-before-function-paren
   const sendVanillaData = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    setIsLoading(true);
     try {
       event.preventDefault();
-      const body: VanillaForumsData = {
+      const body: VanillaForumsConnectData = {
         vanillaBaseUrl: vanillaForumsData.vanillaBaseUrl,
         vanillaAccessToken: vanillaForumsData.vanillaAccessToken,
         workspaceId
       };
       const connectResponse: IntegrationResponse<PlatformConnectResponse> = await request.post(`${API_ENDPOINT}/v1/vanilla/connect`, body);
+      if (connectResponse?.data?.message?.toLocaleLowerCase().trim() == 'already connected') {
+        showWarningToast('Vanilla Forums is already connected to your workspace');
+        setIsLoading(false);
+      }
       if (connectResponse?.data?.data?.id) {
-        showSuccessToast('Integration in progress');
+        showSuccessToast('Integration in progress...');
         try {
           const completeSetupResponse: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/vanilla/complete-setup`, {
             workspaceId,
-            workspacePlatformSettingsId: connectResponse?.data?.data?.id
+            workspacePlatformAuthSettingsId: connectResponse?.data?.data?.id
           });
           if (completeSetupResponse) {
+            dispatch(settingsSlice.actions.platformData({ workspaceId }));
             showSuccessToast('Successfully integrated');
+            setIsLoading(false);
             setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: false }));
             navigate(`/${workspaceId}/settings`);
           }
         } catch (error) {
           showErrorToast('Integration Failed');
+          setIsLoading(false);
         }
       }
     } catch (error) {
       showErrorToast('Integration Failed');
+      setIsLoading(false);
     }
-  };
-
-  const navigateToConnectPage = () => {
-    window.location.href = SLACK_CONNECT_ENDPOINT;
   };
 
   return (
@@ -260,8 +267,10 @@ const Integration: React.FC = () => {
                           />
                           <Button
                             text="Save"
+                            disabled={isLoading ? true : false}
                             onClick={(e) => sendVanillaData(e)}
-                            className="text-white font-Poppins text-error font-medium leading-5 btn-save-modal cursor-pointer rounded shadow-contactBtn w-5.25 border-none h-2.81"
+                            className={`text-white font-Poppins text-error font-medium leading-5 btn-save-modal cursor-pointer rounded 
+                            shadow-contactBtn w-5.25 ${isLoading ? 'opacity-50 cursor-not-allowed ' : ''} border-none h-2.81`}
                           />
                         </div>
                       </form>

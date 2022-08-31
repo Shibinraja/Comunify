@@ -6,16 +6,19 @@ import { useDispatch } from 'react-redux';
 import { Outlet } from 'react-router';
 import SideNav from '../common/sideNav/SideNav';
 import TopBar from '../common/topBar/TopBar';
+import { getLocalWorkspaceId } from '../lib/helper';
 import settingsSlice from '../modules/settings/store/slice/settings.slice';
 import ResolutionLayout from './ResolutionLayout';
 
 const MainLayout: React.FC = () => {
   const { width: screenWidth } = getResolution();
 
+  const workspaceId = getLocalWorkspaceId();
+
   const dispatch = useDispatch();
 
   React.useEffect(() => {
-    dispatch(settingsSlice.actions.platformData());
+    dispatch(settingsSlice.actions.platformData({ workspaceId }));
   }, []);
 
   return (

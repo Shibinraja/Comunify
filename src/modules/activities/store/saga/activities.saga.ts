@@ -1,18 +1,12 @@
 /* eslint-disable no-unused-vars */
-import { call, put, takeEvery } from 'redux-saga/effects';
-import { SagaIterator } from 'redux-saga';
-import activitiesSlice from '../slice/activities.slice';
-import { ActiveStreamTagFilterService, getActiveStreamDataService } from '../../services/activities.services';
 import { PayloadAction } from '@reduxjs/toolkit';
-import {
-  ActiveStreamResponse,
-  ActiveStreamTagResponse,
-  GetActiveStreamListQueryParams,
-  GetActiveStreamTagListQueryParams
-} from '../../interfaces/activities.interface';
+import { SagaIterator } from 'redux-saga';
+import { call, put, takeEvery } from 'redux-saga/effects';
 import { AxiosError, SuccessResponse } from '../../../../lib/api';
 import loaderSlice from '../../../authentication/store/slices/loader.slice';
-import { showErrorToast } from 'common/toast/toastFunctions';
+import { ActiveStreamResponse, GetActiveStreamListQueryParams } from '../../interfaces/activities.interface';
+import { getActiveStreamDataService } from '../../services/activities.services';
+import activitiesSlice from '../slice/activities.slice';
 
 function* getActiveStreamDataSaga(action: PayloadAction<GetActiveStreamListQueryParams>) {
   try {
@@ -26,23 +20,6 @@ function* getActiveStreamDataSaga(action: PayloadAction<GetActiveStreamListQuery
   }
 }
 
-function* activeStreamTagFilter(action: PayloadAction<Partial<GetActiveStreamTagListQueryParams>>) {
-  try {
-    yield put(loaderSlice.actions.startLoadingAction(activitiesSlice.actions.activeStreamTagFilter.type));
-
-    const res: SuccessResponse<Array<ActiveStreamTagResponse>> = yield call(ActiveStreamTagFilterService, action.payload);
-    if (res?.data) {
-      yield put(activitiesSlice.actions.getActiveStreamTagFilterData(res.data));
-    }
-  } catch (e) {
-    const error = e as AxiosError<unknown>;
-    showErrorToast(error?.response?.data?.message);
-  } finally {
-    yield put(loaderSlice.actions.stopLoadingAction(activitiesSlice.actions.activeStreamTagFilter.type));
-  }
-}
-
 export default function* activitiesSaga(): SagaIterator {
   yield takeEvery(activitiesSlice.actions.getActiveStreamData.type, getActiveStreamDataSaga);
-  yield takeEvery(activitiesSlice.actions.activeStreamTagFilter.type, activeStreamTagFilter);
 }

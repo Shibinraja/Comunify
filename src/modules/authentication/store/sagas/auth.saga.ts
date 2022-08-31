@@ -37,6 +37,7 @@ import {
 } from 'modules/authentication/services/auth.service';
 import { AxiosResponse } from 'axios';
 import { AxiosError, SuccessResponse } from '@/lib/api';
+import { getLocalRefreshToken } from '@/lib/request';
 
 const forwardTo = (location: string) => {
   history.push(location);
@@ -85,13 +86,16 @@ function* verifyEmail(action: PayloadAction<VerifyEmailInput>) {
     if (res?.data) {
       localStorage.setItem('accessToken', res?.data?.token);
       yield put(authSlice.actions.formikValueReset(true));
-      // yield call(forwardTo, '/welcome');
       showSuccessToast(res.message);
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
     if (error?.response?.data?.message.toLocaleLowerCase().trim() === 'email already verified') {
-      yield put(authSlice.actions.formikValueReset(true));
+      if(getLocalRefreshToken()) {
+        yield call(logout);
+      }
+      yield call(forwardTo, '/');
+      // yield put(authSlice.actions.formikValueReset(false));
     }
     showErrorToast(error?.response?.data?.message);
   } finally {

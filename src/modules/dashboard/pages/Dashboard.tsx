@@ -71,8 +71,8 @@ const Dashboard: React.FC = () => {
               ))}
             </div>
           )}
-          <div className="flex flex-col pl-2.5 w-[248px]">
-            <div className="relative flex items-center">
+          <div className="flex items-center justify-between pl-2.5 relative">
+            <div>
               <DatePicker
                 selectsRange={true}
                 startDate={startDate}
@@ -80,12 +80,14 @@ const Dashboard: React.FC = () => {
                 onChange={(update: any) => {
                   setDateRange(update);
                 }}
-                className="export w-full h-3.06 bg-transparent dark:bg-primaryDark text-dropGray dark:text-inputText shadow-shadowInput rounded-0.6 pl-3 font-Poppins font-semibold text-xs border border-borderPrimary leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-xs placeholder:text-dropGray dark:placeholder:text-inputText placeholder:leading-1.12"
+                className="export w-[15.5rem] h-3.06  bg-transparent dark:bg-primaryDark text-dropGray dark:text-inputText shadow-shadowInput rounded-0.6 pl-3 font-Poppins font-semibold text-xs border border-borderPrimary leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-xs placeholder:text-dropGray dark:placeholder:text-inputText placeholder:leading-1.12"
                 placeholderText="DD/MM/YYYY - DD/MM/YYYY"
                 isClearable={true}
                 ref={datepickerRef}
               />
-              <img className="absolute icon-holder right-6 cursor-pointer" src={calendarIcon} alt="" onClick={() => handleClickDatepickerIcon()} />
+            </div>
+            <div className="absolute right-4 top-4 drop-icon">
+              <img className="right-6 cursor-pointer" src={calendarIcon} alt="" onClick={() => handleClickDatepickerIcon()} />
             </div>
           </div>
         </div>

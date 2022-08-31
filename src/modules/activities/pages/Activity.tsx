@@ -6,7 +6,6 @@ import fetchExportList from '@/lib/fetchExport';
 import Button from 'common/button';
 import Input from 'common/input';
 import Pagination from 'common/pagination/pagination';
-import membersSlice from 'modules/members/store/slice/members.slice';
 import React, { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import Modal from 'react-modal';
@@ -16,7 +15,6 @@ import closeIcon from '../../../assets/images/close.svg';
 import profileImage from '../../../assets/images/ellip.svg';
 import exportImage from '../../../assets/images/export.svg';
 import noActivityIcon from '../../../assets/images/no-reports.svg';
-import slackIcon from '../../../assets/images/slack.svg';
 import { useAppSelector } from '../../../hooks/useRedux';
 import { generateDateAndTime } from '../../../lib/helper';
 import { ActiveStreamData, ActivityCard, ProfileModal } from '../interfaces/activities.interface';
@@ -27,6 +25,10 @@ import Skeleton from 'react-loading-skeleton';
 import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 import { width_90 } from 'constants/constants';
 import { activityFilterExportProps } from './activity.types';
+import settingsSlice from 'modules/settings/store/slice/settings.slice';
+import { AssignTypeEnum, TagResponse } from 'modules/settings/interface/settings.interface';
+import { MemberProfileCard } from 'modules/members/interface/members.interface';
+import membersSlice from 'modules/members/store/slice/members.slice';
 
 Modal.setAppElement('#root');
 
@@ -42,11 +44,13 @@ const Activity: React.FC = () => {
     memberName: '',
     memberProfileUrl: '',
     organization: '',
-    profilePictureUrl: ''
+    profilePictureUrl: '',
+    platformLogoUrl: ''
   });
   const [ActivityCard, setActivityCard] = useState<ActivityCard>();
   const [page, setPage] = useState<number>(1);
   const [searchText, setSearchText] = useState<string>('');
+  const [searchTagText, setSearchTagText] = useState<string>('');
   const dropDownRef = useRef<HTMLDivElement>(null);
   const [checkedActivityId, setCheckedActivityId] = useState<Record<string, unknown>>({});
   const [filterExportParams, setFilterExportParams] = useState<activityFilterExportProps>({
@@ -55,12 +59,25 @@ const Activity: React.FC = () => {
     endDate: '',
     startDate: ''
   });
+  const [tags, setTags] = useState<{
+    tagName: string;
+    tagId: string;
+  }>({
+    tagName: '',
+    tagId: ''
+  });
   const limit = 10;
   const loader = useSkeletonLoading(activitiesSlice.actions.getActiveStreamData.type);
 
   const { data, totalPages } = useAppSelector((state) => state.activities.activeStreamData);
 
+  const { memberProfileCardData } = useAppSelector((state) => state.members);
+
+  const { TagFilterResponse, clearValue } = useAppSelector((state) => state.settings);
+
   const debouncedValue = useDebounce(searchText, 300);
+
+  const debouncedTagValue = useDebounce(searchTagText, 300);
 
   useEffect(() => {
     dispatch(
@@ -73,8 +90,8 @@ const Activity: React.FC = () => {
       })
     );
     dispatch(
-      activitiesSlice.actions.activeStreamTagFilter({
-        activeStreamQuery: { tags: { searchedTags: '', checkedTags: '' } },
+      settingsSlice.actions.tagFilterData({
+        settingsQuery: { tags: { searchedTags: '', checkedTags: '' } },
         workspaceId: workspaceId!
       })
     );
@@ -93,6 +110,36 @@ const Activity: React.FC = () => {
       getFilteredActiveStreamList(1, debouncedValue);
     }
   }, [debouncedValue]);
+
+  useEffect(() => {
+    if (debouncedTagValue) {
+      getTagsList(debouncedTagValue);
+    }
+  }, [debouncedTagValue]);
+
+  useEffect(() => {
+    if (clearValue) {
+      setTagModalOpen(false);
+      setTags({
+        tagId: '',
+        tagName: ''
+      });
+    }
+  }, [clearValue]);
+
+  const getTagsList = (text: string): void => {
+    dispatch(
+      settingsSlice.actions.tagFilterData({
+        settingsQuery: {
+          tags: {
+            checkedTags: '',
+            searchedTags: text
+          }
+        },
+        workspaceId: workspaceId!
+      })
+    );
+  };
 
   // Function to close the popup modal of the member profile
   const handleOutsideClick = (event: MouseEvent) => {
@@ -124,11 +171,21 @@ const Activity: React.FC = () => {
       channelName: data?.channelName,
       sourceUrl: data?.sourceUrl,
       profilePictureUrl: data?.profilePictureUrl,
-      value: data?.value
+      value: data?.value,
+      platformLogoUrl: data?.platformLogoUrl,
+      memberId: data?.memberId
     });
+    dispatch(membersSlice.actions.getMemberProfileCardData({ workspaceId: workspaceId!, memberId: data.memberId }));
   };
-  const handleTagModal = (val: boolean) => {
-    setTagModalOpen(val);
+
+  const handleTagModalOpen = (): void => {
+    setTagModalOpen((prev) => !prev);
+    setTags({
+      tagId: '',
+      tagName: ''
+    });
+    setSearchTagText('');
+    dispatch(settingsSlice.actions.getTagFilterData([]));
   };
 
   const handleProfileModal = (data: ProfileModal) => {
@@ -139,7 +196,8 @@ const Activity: React.FC = () => {
       email: data.email,
       organization: data.organization,
       memberProfileUrl: data.memberProfileUrl,
-      profilePictureUrl: data?.profilePictureUrl
+      profilePictureUrl: data?.profilePictureUrl,
+      platformLogoUrl: data?.platformLogoUrl
     });
   };
 
@@ -191,6 +249,46 @@ const Activity: React.FC = () => {
         activityId: checkedIds.toString()
       },
       'ActiveStreamExport.xlsx'
+    );
+  };
+
+  const handleSelectTagName = (tagName: string, tagId: string) => {
+    setTags({
+      tagId,
+      tagName
+    });
+  };
+
+  const handleSearchTagTextChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const searchText: string = event.target.value;
+    if (searchText === '') {
+      getTagsList('');
+    }
+    setSearchTagText(searchText);
+  };
+
+  const handleAssignTagsName = (): void => {
+    dispatch(
+      settingsSlice.actions.assignTags({
+        memberId: ActivityCard?.memberId as string,
+        assignTagBody: {
+          tagId: tags.tagId,
+          type: 'Activity' as AssignTypeEnum.Activity
+        },
+        workspaceId: workspaceId!
+      })
+    );
+  };
+
+  const handleUnAssignTagsName = (id: string): void => {
+    dispatch(
+      settingsSlice.actions.unAssignTags({
+        memberId: ActivityCard?.memberId as string,
+        unAssignTagBody: {
+          tagId: id
+        },
+        workspaceId: workspaceId!
+      })
     );
   };
 
@@ -271,7 +369,8 @@ const Activity: React.FC = () => {
                                       memberName: data?.memberName,
                                       organization: 'NeoITO',
                                       memberProfileUrl: `/${workspaceId}/members/${data.memberId}/profile`,
-                                      profilePictureUrl: data?.profilePictureUrl
+                                      profilePictureUrl: data?.profilePictureUrl,
+                                      platformLogoUrl: data?.platformLogoUrl
                                     });
                                   }}
                                   className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer capitalize"
@@ -284,19 +383,27 @@ const Activity: React.FC = () => {
                                   } `}
                                 >
                                   <div className="w-12.87 h-4.57 profile-card-header rounded-t-0.6"></div>
-                                  <div className="w-12.87 pb-3 rounded-b-0.6 profile-card-body profile-inner shadow-profileCard flex flex-col items-center bg-white">
-                                    <div className="w-4.43 h-4.43 -mt-10 flex items-center justify-center">
-                                      <img src={ProfileModal?.profilePictureUrl === null ? profileImage : ProfileModal?.profilePictureUrl} alt="" />
+                                  <div className="w-12.87 pb-5 rounded-b-0.6 profile-card-body profile-inner shadow-profileCard flex flex-col items-center bg-white">
+                                    <div className="-mt-10 flex items-center justify-center">
+                                      <img
+                                        src={ProfileModal?.profilePictureUrl === null ? profileImage : ProfileModal?.profilePictureUrl}
+                                        alt=""
+                                        className="rounded-full w-4.43 h-4.43 bg-cover bg-center border-4 border-white"
+                                      />
                                     </div>
-                                    <div className="font-semibold font-Poppins text-card text-profileBlack leading-1.12">
+                                    <div className="font-semibold font-Poppins text-card text-profileBlack leading-1.12 pt-[0.2381rem]">
                                       {ProfileModal?.memberName}
                                     </div>
                                     <div className="text-profileEmail font-Poppins font-normal text-profileBlack text-center w-6.875 mt-0.146">
                                       {ProfileModal?.email} {ProfileModal?.organization}
                                     </div>
                                     <div className="flex mt-2.5">
-                                      <div className="bg-cover bg-center mr-1 w-0.92 h-0.92">
-                                        <img src={slackIcon} alt="" />
+                                      <div className="bg-cover bg-center mr-1 ">
+                                        <img
+                                          src={ProfileModal?.platformLogoUrl ? ProfileModal?.platformLogoUrl : ''}
+                                          alt=""
+                                          className="w-0.92 h-0.92"
+                                        />
                                       </div>
                                     </div>
                                     <NavLink
@@ -330,8 +437,8 @@ const Activity: React.FC = () => {
                             <Skeleton width={width_90} />
                           ) : (
                             <div className="flex ">
-                              <div className="mr-2">
-                                <img src={slackIcon} alt="" />
+                              <div className="mr-2 w-10 h-10">
+                                <img src={data?.platformLogoUrl} alt="" />
                               </div>
                               <div className="flex flex-col">
                                 <div
@@ -345,10 +452,12 @@ const Activity: React.FC = () => {
                                       displayValue: data?.displayValue,
                                       activityTime: data?.activityTime,
                                       organization: 'NeoITO',
-                                      channelName: 'channel 1',
+                                      channelName: data?.channelId,
                                       sourceUrl: data?.sourceUrl,
                                       profilePictureUrl: data?.profilePictureUrl,
-                                      value: data?.value
+                                      value: data?.value,
+                                      platformLogoUrl: data?.platformLogoUrl,
+                                      memberId: data?.memberId
                                     })
                                   }
                                 >
@@ -403,7 +512,7 @@ const Activity: React.FC = () => {
                 <div className="pt-9 flex flex-col activity-list-height">
                   <div className="flex justify-between">
                     <div className="font-Inter font-semibold text-black text-xl leading-6">Activity</div>
-                    <div className="font-Poppins text-error leading-5 text-tag font-medium cursor-pointer" onClick={() => handleTagModal(true)}>
+                    <div className="font-Poppins text-error leading-5 text-tag font-medium cursor-pointer" onClick={handleTagModalOpen}>
                       ADD TAG
                     </div>
                     <Modal
@@ -433,18 +542,36 @@ const Activity: React.FC = () => {
                             type="text"
                             className="mt-0.375 inputs box-border bg-white shadow-shadowInput rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-sm placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
                             placeholder="Enter Tag Name"
+                            onChange={handleSearchTagTextChange}
+                            value={tags.tagName || searchTagText}
                           />
-                          <div className="flex absolute right-1 top-24 pr-6 items-center">
+                          <div
+                            className={`bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 ${
+                              TagFilterResponse.length && !tags.tagId ? '' : 'hidden'
+                            }`}
+                          >
+                            {TagFilterResponse.map((data: TagResponse) => (
+                              <div
+                                key={data.id}
+                                className="p-2 text-searchBlack cursor-pointer font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300"
+                                onClick={() => handleSelectTagName(data.name, data.id)}
+                              >
+                                {data.name}
+                              </div>
+                            ))}
+                          </div>
+                          <div className="flex justify-end pt-10 items-center">
                             <Button
                               type="button"
                               text="CANCEL"
                               className="mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel w-5.25 h-2.81  rounded border-none"
-                              onClick={() => setTagModalOpen(false)}
+                              onClick={handleTagModalOpen}
                             />
                             <Button
                               type="button"
                               text="SAVE"
                               className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-5.25 h-2.81  border-none btn-save-modal"
+                              onClick={handleAssignTagsName}
                             />
                           </div>
                         </form>
@@ -464,8 +591,8 @@ const Activity: React.FC = () => {
                   </div>
                   <div className="bg-activitySubCard rounded flex flex-col pt-2.5 pl-0.81 pb-8 mt-5">
                     <div className="flex items-center">
-                      <div>
-                        <img src={slackIcon} alt="" />
+                      <div className="w-5 h-5">
+                        <img src={ActivityCard?.platformLogoUrl ? ActivityCard?.platformLogoUrl : ''} alt="" />
                       </div>
                       <div className="pl-0.563 font-Poppins font-medium text-infoBlack text-card leading-1.12">{ActivityCard?.displayValue}</div>
                       <div className="pl-2.5 text-tagChannel font-Poppins font-medium text-card leading-1.12">#{ActivityCard?.channelName}</div>
@@ -488,25 +615,17 @@ const Activity: React.FC = () => {
                   </div>
                   <div className="mt-7">
                     <h3 className="text-profileBlack text-error font-Poppins font-medium leading-5">Tags</h3>
-                    <div className="flex pt-2.5 flex-wrap">
-                      <div className="flex  tags bg-tagSection items-center justify-evenly rounded w-6.563 py-1">
-                        <div className="font-Poppins text-card font-normal leading-5 text-profileBlack">Influencer</div>
-                        <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
-                          <img src={closeIcon} alt="" />
-                        </div>
-                      </div>
-                      <div className="ml-0.313 flex items-center justify-evenly tags bg-tagSection rounded w-6.563 py-1">
-                        <div className="font-Poppins text-card font-normal leading-5 text-profileBlack">Admin</div>
-                        <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
-                          <img src={closeIcon} alt="" />
-                        </div>
-                      </div>
-                      <div className="ml-0.313 flex items-center justify-evenly tags bg-tagSection rounded w-6.563 py-1">
-                        <div className="font-Poppins text-card font-normal leading-5 text-profileBlack">Charity</div>
-                        <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
-                          <img src={closeIcon} alt="" />
-                        </div>
-                      </div>
+                    <div className="flex pt-2.5 flex-wrap gap-1">
+                      {memberProfileCardData?.map((data: MemberProfileCard) =>
+                        data.tags?.map((tag: TagResponse) => (
+                          <div className="flex  tags bg-tagSection items-center justify-evenly rounded w-6.563 p-1" key={tag.id}>
+                            <div className="font-Poppins text-card font-normal leading-5 text-profileBlack">{tag.name}</div>
+                            <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
+                              <img src={closeIcon} alt="" onClick={() => handleUnAssignTagsName(tag.id)} />
+                            </div>
+                          </div>
+                        ))
+                      )}
                     </div>
                   </div>
                 </div>

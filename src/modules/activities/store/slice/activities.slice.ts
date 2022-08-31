@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ActiveStreamResponse, ActiveStreamTagResponse, GetActiveStreamListQueryParams, GetActiveStreamTagListQueryParams, workspaceId } from '../../interfaces/activities.interface';
+import { ActiveStreamResponse, GetActiveStreamListQueryParams } from '../../interfaces/activities.interface';
 import { InitialState } from '../types/activities.types';
 
 const activeStreamDataInitialValue = {
@@ -13,33 +13,23 @@ const activeStreamDataInitialValue = {
 export const activeStreamTagFilterResponse = [];
 
 const initialState: InitialState = {
-  activeStreamData: activeStreamDataInitialValue,
-  activeStreamTagFilterResponse
+  activeStreamData: activeStreamDataInitialValue
 };
 
 // Saga Call
 const getActiveStreamData = (state: InitialState, action: PayloadAction<GetActiveStreamListQueryParams>) => state;
-
-const activeStreamTagFilter = (state: InitialState, action: PayloadAction<GetActiveStreamTagListQueryParams>) => state;
 
 // Reducer Call
 const setActiveStreamData = (state: InitialState, action: PayloadAction<ActiveStreamResponse>) => {
   state.activeStreamData = action.payload;
 };
 
-const getActiveStreamTagFilterData = (state: InitialState, action: PayloadAction<Array<ActiveStreamTagResponse>>) => ({
-  ...state,
-  activeStreamTagFilterResponse: action.payload
-});
-
 const activitiesSlice = createSlice({
   name: 'activities',
   initialState,
   reducers: {
     getActiveStreamData,
-    setActiveStreamData,
-    activeStreamTagFilter,
-    getActiveStreamTagFilterData
+    setActiveStreamData
   }
 });
 

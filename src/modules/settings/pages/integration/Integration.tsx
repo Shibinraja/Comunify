@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import Button from 'common/button';
 import React, { useState } from 'react';
 import unsplashIcon from '../../../../assets/images/unsplash.svg';
@@ -8,62 +9,270 @@ import vanillaIcon from '../../../../assets/images/vanilla-forum.svg';
 import Input from 'common/input';
 import './Integration.css';
 import usePlatform from '../../../../hooks/usePlatform';
-import { ModalState, PlatformIcons, PlatformResponse } from '../../interface/settings.interface';
+import {
+  ConnectedPlatforms,
+  ModalState,
+  PlatformIcons,
+  PlatformResponse,
+  PlatformsStatus,
+  SlackConnectData,
+  VanillaForumsConnectData
+} from '../../interface/settings.interface';
+import { getLocalWorkspaceId } from '../../../../lib/helper';
+import { PlatformConnectResponse } from '../../../../interface/interface';
+import { IntegrationResponse, NetworkResponse } from '../../../../lib/api';
+import { showErrorToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
+import { useNavigate } from 'react-router';
+import { API_ENDPOINT } from '../../../../lib/config';
+import { request } from '../../../../lib/request';
+import { useDispatch } from 'react-redux';
+import settingsSlice from '../../store/slice/settings.slice';
+import { useSearchParams } from 'react-router-dom';
+import { useAppSelector } from '../../../../hooks/useRedux';
+import { AppDispatch, State } from '../../../../store';
+import { NavigateToConnectPage } from 'modules/settings/services/settings.services';
 
 Modal.setAppElement('#root');
+
+interface PlatformDisconnect {
+  workspacePlatformSettingsId: string | null;
+}
 
 const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
   const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanillaForums: false });
   // eslint-disable-next-line no-unused-vars
   const [platformIcons, setPlatformIcons] = useState<PlatformIcons>({ slack: undefined, vanillaForums: undefined });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  //   const [platformStatus, setPlatformStatus] = useState<PlatformsStatus>({ platform: undefined, status: undefined });
+  const [vanillaForumsData, setVanillaForumsData] = useState<VanillaForumsConnectData>({
+    vanillaAccessToken: '',
+    vanillaBaseUrl: '',
+    workspaceId: ''
+  });
+
   const platformData = usePlatform();
+  const dispatch: AppDispatch = useDispatch();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const workspaceId = getLocalWorkspaceId();
   const [isButtonConnect] = useState<boolean>(true);
   const handleVanillaModal = (val: boolean) => {
     setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: val }));
   };
-  const handleModals = (name: string, icon: string) => {
+
+  React.useEffect(() => {
+    dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+    if (searchParams.get('code')) {
+      const codeParams: null | string = searchParams.get('code');
+      if (codeParams !== '') {
+        getData(codeParams);
+      }
+    }
+  }, []);
+
+  const { PlatformsConnected } = useAppSelector((state: State) => state.settings);
+  const checkForConnectedPlatform = (platformName: string) => {
+    const data = PlatformsConnected?.find(
+      (obj: ConnectedPlatforms) => obj?.platform.name.toLocaleLowerCase().trim() === `${platformName.toLocaleLowerCase().trim()}`
+    );
+    return data;
+  };
+
+  const handleModals = (name: string, icon: string, isIntegrated: boolean) => {
     switch (name) {
-      case 'slack':
-        setPlatformIcons((prevState) => ({ ...prevState, slack: icon }));
-        setIsModalOpen((prevState) => ({ ...prevState, slack: true }));
+      case 'Slack':
+        setIsLoading(true);
+        if (checkForConnectedPlatform(name) === undefined) {
+          setPlatformIcons((prevState) => ({ ...prevState, slack: icon }));
+          if (isIntegrated === true) {
+            handlePlatformReconnectForSlack(name);
+          } else {
+            NavigateToConnectPage();
+            setIsLoading(false);
+          }
+        } else {
+          showWarningToast(`${name} is already connected to your workspace`);
+          setIsLoading(false);
+        }
         break;
-      case 'vanilla':
-        setPlatformIcons((prevState) => ({ ...prevState, vanillaForums: icon }));
-        setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: true }));
+      case 'Vanilla':
+        setIsLoading(true);
+        if (checkForConnectedPlatform(name) === undefined) {
+          setPlatformIcons((prevState) => ({ ...prevState, vanillaForums: icon }));
+          if (isIntegrated === true) {
+            handlePlatformReconnectForVanilla(name);
+          } else {
+            setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: true }));
+            setIsLoading(false);
+          }
+        } else {
+          showWarningToast(`${name} Forums is already connected to your workspace`);
+          setIsLoading(false);
+        }
         break;
       default:
         break;
     }
   };
 
-  const connectedBtnClassName =
-    'dark:bg-secondaryDark bg-connectButton dark:bg-secondaryDark shadow-contactCard font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient';
-  const disConnectedBtnClassName =
-    ' dark:bg-secondaryDark  btn-disconnect-gradient dark:border dark:border-[#9B9B9B] shadow-contactCard font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300';
+  // eslint-disable-next-line space-before-function-paren
+  const getData = async (codeParams: string | null) => {
+    try {
+      setIsModalOpen((prevState) => ({ ...prevState, slack: true }));
+      const body: SlackConnectData = {
+        code: codeParams,
+        workspaceId
+      };
+      const response: IntegrationResponse<PlatformConnectResponse> = await request.post(`${API_ENDPOINT}/v1/slack/connect`, body);
+      localStorage.setItem('workspacePlatformAuthSettingsId', response?.data?.data?.id);
+      localStorage.setItem('workspacePlatformSettingsId', response?.data?.data?.workspacePlatformSettingsId);
+      if (response) {
+        setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
+        navigate(`/${workspaceId}/settings/complete-setup`, { state: { workspacePlatformAuthSettingsId: response?.data?.data?.id } });
+      } else {
+        showErrorToast('Integration failed');
+      }
+    } catch {
+      showErrorToast('Integration failed');
+    }
+  };
+
+  // eslint-disable-next-line space-before-function-paren
+  const sendVanillaData = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    setIsLoading(true);
+    try {
+      event.preventDefault();
+      const body: VanillaForumsConnectData = {
+        vanillaBaseUrl: vanillaForumsData.vanillaBaseUrl,
+        vanillaAccessToken: vanillaForumsData.vanillaAccessToken,
+        workspaceId
+      };
+      const connectResponse: IntegrationResponse<PlatformConnectResponse> = await request.post(`${API_ENDPOINT}/v1/vanilla/connect`, body);
+      if (connectResponse?.data?.message?.toLocaleLowerCase().trim() == 'already connected') {
+        showWarningToast('Vanilla Forums is already connected to your workspace');
+        setIsLoading(false);
+      }
+      if (connectResponse?.data?.data?.id) {
+        showSuccessToast('Integration in progress...');
+        try {
+          const completeSetupResponse: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/vanilla/complete-setup`, {
+            workspaceId,
+            workspacePlatformAuthSettingsId: connectResponse?.data?.data?.id
+          });
+          if (completeSetupResponse) {
+            dispatch(settingsSlice.actions.platformData({ workspaceId }));
+            dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+            showSuccessToast('Successfully integrated');
+            setIsLoading(false);
+            setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: false }));
+          }
+        } catch (error) {
+          showErrorToast('Integration Failed');
+          setIsLoading(false);
+        }
+      }
+    } catch (error) {
+      showErrorToast('Integration Failed');
+      setIsLoading(false);
+    }
+  };
+
+  // eslint-disable-next-line space-before-function-paren
+  const handleDisconnect = async (platformName: string, workspacePlatformSettingsId: string) => {
+    const body: PlatformDisconnect = {
+      workspacePlatformSettingsId
+    };
+    try {
+      const disconnectResponse: IntegrationResponse<PlatformsStatus> = await request.post(
+        `${API_ENDPOINT}/v1/${platformName.toLocaleLowerCase().trim()}/disconnect`,
+        body
+      );
+      if (disconnectResponse?.data?.data.status?.toLocaleLowerCase().trim() === 'disabled') {
+        if (disconnectResponse?.data?.data?.platform?.toLocaleLowerCase().trim() === 'vanilla') {
+          showSuccessToast(`${platformName} Forums was successfully disconnected from your workspace`);
+          dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+        } else {
+          showSuccessToast(`${platformName} was successfully disconnected from your workspace`);
+          dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+        }
+      }
+    } catch {
+      showErrorToast(`${platformName} disconnection failed`);
+    }
+  };
+
+  // eslint-disable-next-line space-before-function-paren
+  const handlePlatformReconnectForSlack = async (platform: string) => {
+    setIsModalOpen((prevState) => ({ ...prevState, slack: true }));
+    const body = {
+      workspaceId
+    };
+    try {
+      const response = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
+      if (response) {
+        setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
+        dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+        showSuccessToast(`${platform} was successfully connected`);
+        setIsLoading(false);
+      } else {
+        showErrorToast('Failed to connect to the platform');
+      }
+    } catch {
+      showErrorToast('Failed to connect to the platform');
+    }
+  };
+
+  // eslint-disable-next-line space-before-function-paren
+  const handlePlatformReconnectForVanilla = async (platform: string) => {
+    const body = {
+      workspaceId
+    };
+    showSuccessToast('Integration in progress...');
+    try {
+      const response = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
+      if (response) {
+        dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+        showSuccessToast(`${platform} Forums was successfully connected`);
+        setIsLoading(false);
+      } else {
+        showErrorToast('Failed to connect to the platform');
+      }
+    } catch {
+      showErrorToast('Failed to connect to the platform');
+    }
+  };
+
+  const connectedBtnClassName = `dark:bg-secondaryDark bg-connectButton shadow-contactCard font-Poppins text-white font-medium leading-5 ${
+    isLoading ? 'opacity-50 cursor-not-allowed ' : ''
+  }
+  text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer
+   hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient dark:bg-secondaryDark`;
+  const disConnectedBtnClassName = `btn-disconnect-gradient shadow-contactCard font-Poppins text-white font-medium leading-5 text-error mt-0.81
+     rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in 
+     duration-300 dark:bg-secondaryDark dark:border dark:border-[#9B9B9B]`;
 
   return (
     <TabPanel hidden={hidden}>
       <div className="settings-integration container mt-2.62 pb-20">
         <h3 className="font-Poppins text-infoBlack font-semibold text-base leading-1.43 dark:text-white">Connected Integrations</h3>
         <div className="flex mt-1.8 flex-wrap w-full pb-1.68 border-b border-bottom-card">
-          <div className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white dark:bg-secondaryDark flex flex-col items-center justify-center mr-5">
-            <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-              <img src={unsplashIcon} alt="" className="h-2.31" />
+          {PlatformsConnected?.map((data: ConnectedPlatforms) => (
+            <div
+              key={`${data?.id + data?.name}`}
+              className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5"
+            >
+              <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
+                <img src={data?.platform?.platformLogoUrl} alt="" className="h-2.31" />
+              </div>
+              <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">{data?.platform?.name}</div>
+              <Button
+                type="button"
+                text={isButtonConnect ? 'Disconnect' : 'Connect'}
+                className={isButtonConnect ? disConnectedBtnClassName : connectedBtnClassName}
+                onClick={() => handleDisconnect(data?.platform?.name, data?.id)}
+              />
             </div>
-            <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2 dark:text-white">Khoros</div>
-            <Button
-              type="button"
-              text={isButtonConnect ? 'Disconnect' : 'Connect'}
-              className={isButtonConnect ? disConnectedBtnClassName : connectedBtnClassName}
-            />
-          </div>
-          <div className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white dark:bg-secondaryDark flex flex-col items-center justify-center mr-5">
-            <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-              <img src={slackIcon} alt="" className="h-2.31" />
-            </div>
-            <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2 dark:text-white">HIgher Logi</div>
-            <Button type="button" text="Disconnect" className={isButtonConnect ? disConnectedBtnClassName : connectedBtnClassName} />
-          </div>
+          ))}
         </div>
         <div className="pending-connect mt-1.8">
           <h3 className="font-Poppins text-infoBlack font-semibold text-base leading-1.43 dark:text-white">Integrations</h3>
@@ -72,10 +281,10 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
           </p>
 
           <div className="flex mt-1.8 flex-wrap w-full">
-            {platformData.map((data: PlatformResponse) => (
+            {platformData?.map((data: PlatformResponse) => (
               <div
-                key={data?.id}
-                className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white dark:bg-secondaryDark flex flex-col items-center justify-center mr-5"
+                key={`${data?.id + data?.name}`}
+                className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5"
               >
                 <div className="flex flex-wrap items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
                   <img src={data?.platformLogoUrl} alt="" className="h-2.31" />
@@ -84,8 +293,9 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
                 <Button
                   type="button"
                   text="Connect"
+                  disabled={isLoading ? true : false}
                   className={!isButtonConnect ? disConnectedBtnClassName : connectedBtnClassName}
-                  onClick={() => handleModals(data?.name.toLocaleLowerCase().trim(), data?.platformLogoUrl)}
+                  onClick={() => handleModals(data?.name.trim(), data?.platformLogoUrl, data?.isConnected)}
                 />
               </div>
             ))}
@@ -96,6 +306,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
               </div>
               <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2 dark:text-white">Khoros</div>
               <Button
+                disabled={isLoading ? true : false}
                 type="button"
                 text="Coming soon"
                 className="bg-black shadow-contactCard font-Poppins cursor-none text-white font-medium leading-5 text-error mt-0.81 rounded-full h-6 w-6.56"
@@ -174,6 +385,8 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
                       label="Site URL"
                       id="siteUrlId"
                       name="SiteUrl"
+                      value={vanillaForumsData?.vanillaBaseUrl}
+                      onChange={(e) => setVanillaForumsData((prevState) => ({ ...prevState, vanillaBaseUrl: e.target.value }))}
                       className="h-2.81 pr-3.12 rounded-md border-app-result-card-border mt-[0.4375rem] bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-thinGray placeholder:text-sm placeholder:leading-6 placeholder:font-Poppins font-Poppins box-border"
                     />
                   </div>
@@ -190,6 +403,8 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
                       label="Access Token"
                       id="accessTokenId"
                       name="accessToken"
+                      value={vanillaForumsData?.vanillaAccessToken}
+                      onChange={(e) => setVanillaForumsData((prevState) => ({ ...prevState, vanillaAccessToken: e.target.value }))}
                       className="h-2.81 pr-3.12 rounded-md border-app-result-card-border mt-[0.4375rem] bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-thinGray placeholder:text-sm placeholder:leading-6 placeholder:font-Poppins font-Poppins box-border"
                     />
                   </div>
@@ -203,7 +418,12 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
                     <Button
                       text="Save"
                       type="submit"
-                      className="text-white font-Poppins text-error font-medium leading-5 btn-save-modal cursor-pointer rounded shadow-contactBtn w-5.25 border-none h-2.81"
+                      disabled={isLoading ? true : false}
+                      onClick={(e) => sendVanillaData(e)}
+                      className={`text-white ${
+                        isLoading ? 'opacity-50 cursor-not-allowed' : ''
+                      } font-Poppins text-error font-medium leading-5 btn-save-modal
+                       cursor-pointer rounded shadow-contactBtn w-5.25 border-none h-2.81`}
                     />
                   </div>
                 </form>

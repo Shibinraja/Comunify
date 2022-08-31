@@ -469,13 +469,13 @@ input {
   box-shadow: 0 -7px 0px rgb(0, 0, 0, 0.09), 0 1px 1px rgb(0, 0, 0, 0.2);
 }
 .members-list-height {
-  height: calc(100vh - 25rem);
+  height: calc(100vh - 16rem);
   overflow: scroll;
   max-height: 521px;
 }
 
 .activity-list-height {
-  height: calc(100vh - 25rem);
+  height: calc(100vh - 2rem);
   overflow: scroll;
   max-height: 410px;
 }

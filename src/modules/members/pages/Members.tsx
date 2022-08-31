@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import Button from 'common/button';
 import MembersCard from 'common/membersCard/MembersCard';
+// eslint-disable-next-line object-curly-newline
 import React, { ChangeEvent, Fragment, Key, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import DatePicker, { ReactDatePicker } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -20,7 +21,6 @@ import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
 import Pagination from 'common/pagination/pagination';
 import { format, parseISO, subDays, subMonths } from 'date-fns';
 import noMemberIcon from '../../../assets/images/no-member.svg';
-import slackIcon from '../../../assets/images/slack.svg';
 import membersSlice from '../store/slice/members.slice';
 import MembersFilter from './MembersFilter';
 import MembersDraggableColumn from './membersTableColumn/membersDraggableColumn';
@@ -32,6 +32,7 @@ import Skeleton from 'react-loading-skeleton';
 import fetchExportList from '@/lib/fetchExport';
 import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 import { width_90 } from 'constants/constants';
+import settingsSlice from 'modules/settings/store/slice/settings.slice';
 
 Modal.setAppElement('#root');
 
@@ -101,8 +102,8 @@ const Members: React.FC = () => {
     dispatch(membersSlice.actions.membersCountAnalytics({ workspaceId: workspaceId! }));
     dispatch(membersSlice.actions.membersActivityAnalytics({ workspaceId: workspaceId! }));
     dispatch(
-      membersSlice.actions.membersTagFilter({
-        membersQuery: { tags: { searchedTags: '', checkedTags: '' } },
+      settingsSlice.actions.tagFilterData({
+        settingsQuery: { tags: { searchedTags: '', checkedTags: '' } },
         workspaceId: workspaceId!
       })
     );
@@ -282,6 +283,18 @@ const Members: React.FC = () => {
     }
   };
 
+  const handleUnAssignTagsName = (memberId: string, id: string): void => {
+    dispatch(
+      settingsSlice.actions.unAssignTags({
+        memberId: memberId!,
+        unAssignTagBody: {
+          tagId: id
+        },
+        workspaceId: workspaceId!
+      })
+    );
+  };
+
   return (
     <div className="flex flex-col mt-12">
       <h3 className="font-Poppins font-semibold text-infoBlack text-infoData leading-9 dark:text-white">Members</h3>
@@ -432,34 +445,41 @@ const Members: React.FC = () => {
                             memberColumnsLoader ? (
                               <Skeleton width={width_90} />
                             ) : (
-                              <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 h-1.375 w-1.375 flex" key={index}>
-                                <img className="m-1 h-1.375 w-1.375 mt-0" src={slackIcon} title="Slack" />
-                                {/* <p className='h-1.375 w-1.375'>{'Slack'}</p> */}
+                              <div className="flex gap-x-2">
+                                {(member?.platforms as Array<{ id: string; name: string; platformLogoUrl: string }>)?.map(
+                                  (platforms: { name: string; id: string; platformLogoUrl: string }, index: number) => (
+                                    <div
+                                      className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer w-5 h-5"
+                                      key={index}
+                                    >
+                                      <img src={platforms?.platformLogoUrl} alt="" />
+                                    </div>
+                                  )
+                                )}
                               </div>
                             )
-                          ) : //    <div className="flex gap-x-2">
-                          //   {(member?.platforms as Array<{id:string, name:string}>)?.map((platforms: { name: string, id:string }, index: number) => (
-                          //     <div
-                          //       className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer h-1.375 w-1.375"
-                          //       key={index}
-                          //     >
-                          //       {'Slack'}
-                          //     </div>
-                          //   ))}
-                          // </div>
-                          column === 'tags' ? (
+                          ) : column === 'tags' ? (
                             memberColumnsLoader ? (
                               <Skeleton width={width_90} />
                             ) : (
                               <div className="flex ">
                                 <div className="py-3 flex gap-2 items-center font-Poppins font-medium text-trial text-infoBlack leading-1.31">
-                                  {(member?.tags as Array<{ tag: { name: '' } }>)
+                                  {(member?.tags as Array<{ id: string; name: string }>)
                                     ?.slice(0, 2)
-                                    .map((tags: { tag: { name: string } }, index: number) => (
-                                      <div className="bg-tagSection rounded w-5.25 h-8 flex justify-between px-3 items-center" key={index}>
-                                        <div className="font-Poppins font-normal text-card text-profileBlack leading-5">{tags?.tag?.name}</div>
+                                    .map((tags: { name: string; id: string }, index: number) => (
+                                      <div
+                                        className="bg-tagSection rounded w-5.25 h-8 flex justify-between px-3 items-center cursor-pointer"
+                                        key={index}
+                                      >
+                                        <div className="font-Poppins font-normal text-card text-profileBlack leading-5">{tags?.name}</div>
                                         <div>
-                                          <img src={closeIcon} alt="" />
+                                          <img
+                                            src={closeIcon}
+                                            alt=""
+                                            onClick={() =>
+                                              handleUnAssignTagsName((member?.name as { name: string; id: string })?.id as string, tags.id)
+                                            }
+                                          />
                                         </div>
                                       </div>
                                     ))}
@@ -517,7 +537,18 @@ const Members: React.FC = () => {
                 isOpen={isModalOpen}
                 shouldCloseOnOverlayClick={true}
                 onRequestClose={() => setIsModalOpen(false)}
-                className="w-24.31 mx-auto mt-9.18  pb-20 bg-white border-fetching-card rounded-lg shadow-modal outline-none"
+                className="w-24.31 mx-auto pb-20 bg-white border-fetching-card rounded-lg shadow-modal outline-none"
+                style={{
+                  overlay: {
+                    display: 'flex',
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: 0,
+                    alignItems: 'center'
+                  }
+                }}
               >
                 <div className="flex flex-col px-1.68 relative">
                   <h3 className="font-Inter font-semibold text-xl mt-1.8  leading-6">Customize Column</h3>

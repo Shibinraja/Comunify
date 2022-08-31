@@ -14,8 +14,9 @@ import { ActiveStreamTagResponse } from '../interfaces/activities.interface';
 import useDebounce from '@/hooks/useDebounce';
 import { useParams } from 'react-router-dom';
 import activitiesSlice from '../store/slice/activities.slice';
-import { PlatformResponse } from 'modules/members/interface/members.interface';
+import { PlatformResponse } from '../../settings/interface/settings.interface';
 import usePlatform from '../../../hooks/usePlatform';
+import settingsSlice from 'modules/settings/store/slice/settings.slice';
 
 const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFilterExport }) => {
   const { workspaceId } = useParams();
@@ -37,7 +38,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
   const debouncedTagValue = useDebounce(tagSearchText, 300);
   const disableApplyBtn = Object.values(checkedPlatform).concat(Object.values(checkedTags));
 
-  const { activeStreamTagFilterResponse } = useAppSelector((state) => state.activities);
+  const { TagFilterResponse } = useAppSelector((state) => state.settings);
   const PlatformFilterResponse = usePlatform();
 
   // Returns the debounced value of the search text.
@@ -118,8 +119,8 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
 
   const getFilteredMembersTagList = (tagText: string) => {
     dispatch(
-      activitiesSlice.actions.activeStreamTagFilter({
-        activeStreamQuery: { tags: { searchedTags: tagText, checkedTags: '' } },
+      settingsSlice.actions.tagFilterData({
+        settingsQuery: { tags: { searchedTags: tagText, checkedTags: '' } },
         workspaceId: workspaceId!
       })
     );
@@ -201,7 +202,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                 {PlatformFilterResponse &&
                   PlatformFilterResponse.map(
                     (platform: PlatformResponse, index: number) =>
-                      platform.name !== null && (
+                      platform?.isConnected && (
                         <div className="flex items-center" key={index}>
                           <div className="mr-2">
                             <input
@@ -213,7 +214,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                               onChange={handlePlatformsCheckBox}
                             />
                           </div>
-                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">{platform.name}</div>
+                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">{platform?.name}</div>
                         </div>
                       )
                   )}
@@ -249,8 +250,8 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                   </div>
                 </div>
                 <div className="flex flex-col gap-y-5 justify-center px-3 max-h-[12.5rem] overflow-scroll">
-                  {activeStreamTagFilterResponse &&
-                    activeStreamTagFilterResponse.map((tags: ActiveStreamTagResponse, index: number) => (
+                  {TagFilterResponse &&
+                    TagFilterResponse.map((tags: ActiveStreamTagResponse, index: number) => (
                       <div key={index} className="flex items-center mb-2">
                         <div className="mr-2">
                           <input
@@ -286,7 +287,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
               <Fragment>
                 <div className="flex flex-col px-3 pt-4">
                   <label htmlFor="Start Date p-1 font-Inter font-normal leading-4 text-trial text-searchBlack">Start Date</label>
-                  <div className="relative flex items-center z-40">
+                  <div className="relative flex items-center">
                     <DatePicker
                       selected={startDate}
                       onChange={(date: Date, event: ChangeEvent<Date>) => selectActiveBetweenDate(event, date, 'start')}

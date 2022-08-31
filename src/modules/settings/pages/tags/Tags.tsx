@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import Button from 'common/button';
 import Input from 'common/input';
 import { TabPanel } from 'common/tabs/TabPanel';
@@ -6,8 +7,13 @@ import nextIcon from '../../../../assets/images/next-page-icon.svg';
 import prevIcon from '../../../../assets/images/previous-page-icon.svg';
 import deleteBtn from '../../../../assets/images/delete.svg';
 import './Tags.css';
-import { tagData } from './TagData';
 import Modal from 'react-modal';
+import { useDispatch } from 'react-redux';
+import settingsSlice from 'modules/settings/store/slice/settings.slice';
+import { useParams } from 'react-router';
+import { useAppSelector } from '@/hooks/useRedux';
+import useDebounce from '@/hooks/useDebounce';
+// import { TagResponse } from 'modules/settings/interface/settings.interface';
 Modal.setAppElement('#root');
 
 type Props = {
@@ -15,7 +21,103 @@ type Props = {
 };
 
 const Tags: React.FC<Props> = ({ hidden }) => {
+  const dispatch = useDispatch();
+  const { workspaceId } = useParams();
+  const [searchText, setSearchText] = useState<string>('');
+  const [tagName, setTagName] = useState<string>('');
+  const [edit, setEdit] = useState<{
+    isEdit:boolean,
+    tagId:string
+  }>({
+    isEdit: false,
+    tagId: ''
+  });
   const [isTagModalOpen, setTagModalOpen] = useState<boolean>(false);
+
+  const { TagFilterResponse } = useAppSelector((state) => state.settings);
+
+  const debouncedValue = useDebounce(searchText, 300);
+
+  useEffect(() => {
+    getTagsList('');
+  }, []);
+
+  // Returns the debounced value of the search text.
+  useEffect(() => {
+    if (debouncedValue) {
+      getTagsList(debouncedValue);
+    }
+  }, [debouncedValue]);
+
+  const getTagsList = (text: string): void => {
+    dispatch(
+      settingsSlice.actions.tagFilterData({
+        settingsQuery: {
+          tags: {
+            checkedTags: '',
+            searchedTags: text
+          }
+        },
+        workspaceId: workspaceId!
+      })
+    );
+  };
+
+  const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const searchText: string = event.target.value;
+    if (searchText === '') {
+      getTagsList('');
+    }
+    setSearchText(searchText);
+  };
+
+  const createTags = (event: ChangeEvent<HTMLInputElement>) => {
+    const tagsName = event.target.value;
+    setTagName(tagsName);
+  };
+
+  const handleTagModalOpen = (tagName?:string, id?:string) => {
+    setTagName(tagName as string);
+    setEdit({ isEdit: true, tagId: id as string });
+    setTagModalOpen((prev) => !prev);
+  };
+
+  const handleCreateTagsName = (): void => {
+    if(edit.isEdit && edit.tagId) {
+      dispatch(
+        settingsSlice.actions.updateTags({
+          tagId: edit.tagId,
+          tagBody: {
+            name: tagName,
+            viewName: tagName
+          },
+          workspaceId: workspaceId!
+        })
+      );
+    }else{
+      dispatch(
+        settingsSlice.actions.createTags({
+          tagBody: {
+            name: tagName,
+            viewName: tagName
+          },
+          workspaceId: workspaceId!
+        })
+      );}
+    handleTagModalOpen();
+  };
+
+  const handleDeleteTagName = (tagId: string): void => {
+    dispatch(
+      settingsSlice.actions.deleteTags({
+        tagId,
+        workspaceId: workspaceId!
+      })
+    );
+  };
+
+  // const tagOptions = ['op1', 'op2', 'op3', 'op4', 'op5', 'op1', 'op2', 'op3', 'op4', 'op5'];
+
   return (
     <TabPanel hidden={hidden}>
       {' '}
@@ -30,6 +132,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                     type="text"
                     className="input-search  h-3.06 box-border focus:outline-none px-3 rounded-0.6 shadow-profileCard placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray"
                     placeholder="Search By Name"
+                    onChange={handleSearchTextChange}
                   />
                 </div>
                 <div className="pl-6 ">
@@ -37,7 +140,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                     type="button"
                     text="Add Tag"
                     className="h-3.06 w-7.68 border-none btn-save-modal  rounded font-Poppins font-medium text-white shadow-contactBtn text-error leading-1.31 cursor-pointer"
-                    onClick={() => setTagModalOpen(true)}
+                    onClick={() => handleTagModalOpen()}
                   />
                 </div>
                 <Modal
@@ -66,18 +169,31 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                         type="text"
                         className="mt-0.375 inputs box-border bg-white shadow-inputShadow rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-sm placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
                         placeholder="Enter Tag Name"
+                        onChange={createTags}
+                        value={tagName}
                       />
-                      <div className="flex absolute right-1 top-24 pr-6 items-center">
+                      {/* <div className="bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 hidden">
+                        {TagFilterResponse.map((data:TagResponse) => (
+                          <div
+                            key={data.id}
+                            className="p-2 text-searchBlack cursor-pointer font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300"
+                          >
+                            {data.name}
+                          </div>
+                        ))}
+                      </div> */}
+                      <div className="flex justify-end pt-10 items-center">
                         <Button
                           type="button"
                           text="CANCEL"
                           className="mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  w-5.25 h-2.81  rounded border-none"
-                          onClick={() => setTagModalOpen(false)}
+                          onClick={() => handleTagModalOpen()}
                         />
                         <Button
                           type="button"
                           text="SAVE"
                           className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-5.25 h-2.81  border-none btn-save-modal"
+                          onClick={handleCreateTagsName}
                         />
                       </div>
                     </form>
@@ -103,35 +219,34 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {tagData.map((data, i) => (
+                      {TagFilterResponse.map((data, i) => (
                         <tr className="border" key={i}>
                           <td className="px-6 py-3">
                             <div className="flex ">
-                              <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                                {data.tagName}
-                              </div>
+                              <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.name}</div>
                             </div>
                           </td>
 
                           <td className="px-6 py-3">
                             <div className="flex ">
-                              <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.type}</div>
+                              <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                                {data.viewName}
+                              </div>
                             </div>
                           </td>
-                          {data.type === 'Custom' && (
-                            <td>
-                              <div className="flex">
-                                <Button
-                                  type="button"
-                                  text="Edit"
-                                  className="edit-btn w-6.25 h-2.87 mr-2.5 cursor-pointer text-masterCard font-Poppins font-medium text-trial leading-1.31 rounded box-border shadow-deleteButton"
-                                />
-                                <div className="flex items-center justify-center delete-btn cursor-pointer w-3.12 h-2.87 rounded box-border shadow-deleteButton">
-                                  <img src={deleteBtn} alt="" />
-                                </div>
+                          <td>
+                            <div className="flex">
+                              <Button
+                                type="submit"
+                                text="Edit"
+                                className="edit-btn w-6.25 h-2.87 mr-2.5 cursor-pointer text-masterCard font-Poppins font-medium text-trial leading-1.31 rounded box-border shadow-deleteButton"
+                                onClick={() => handleTagModalOpen(data.name, data.id)}
+                              />
+                              <div className="flex items-center justify-center delete-btn cursor-pointer w-3.12 h-2.87 rounded box-border shadow-deleteButton">
+                                <img src={deleteBtn} alt="" onClick={() => handleDeleteTagName(data.id)} />
                               </div>
-                            </td>
-                          )}
+                            </div>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
