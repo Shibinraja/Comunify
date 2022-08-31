@@ -26,8 +26,8 @@ const Tags: React.FC<Props> = ({ hidden }) => {
   const [searchText, setSearchText] = useState<string>('');
   const [tagName, setTagName] = useState<string>('');
   const [edit, setEdit] = useState<{
-    isEdit:boolean,
-    tagId:string
+    isEdit: boolean;
+    tagId: string;
   }>({
     isEdit: false,
     tagId: ''
@@ -76,14 +76,14 @@ const Tags: React.FC<Props> = ({ hidden }) => {
     setTagName(tagsName);
   };
 
-  const handleTagModalOpen = (tagName?:string, id?:string) => {
+  const handleTagModalOpen = (tagName?: string, id?: string) => {
     setTagName(tagName as string);
     setEdit({ isEdit: true, tagId: id as string });
     setTagModalOpen((prev) => !prev);
   };
 
   const handleCreateTagsName = (): void => {
-    if(edit.isEdit && edit.tagId) {
+    if (edit.isEdit && edit.tagId) {
       dispatch(
         settingsSlice.actions.updateTags({
           tagId: edit.tagId,
@@ -94,7 +94,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
           workspaceId: workspaceId!
         })
       );
-    }else{
+    } else {
       dispatch(
         settingsSlice.actions.createTags({
           tagBody: {
@@ -103,7 +103,8 @@ const Tags: React.FC<Props> = ({ hidden }) => {
           },
           workspaceId: workspaceId!
         })
-      );}
+      );
+    }
     handleTagModalOpen();
   };
 
@@ -171,6 +172,9 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                         placeholder="Enter Tag Name"
                         onChange={createTags}
                         value={tagName}
+                        minLength={2}
+                        maxLength={50}
+                        required
                       />
                       {/* <div className="bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 hidden">
                         {TagFilterResponse.map((data:TagResponse) => (

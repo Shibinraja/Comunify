@@ -467,3 +467,11 @@ input {
   overflow: scroll;
   max-height: 410px;
 }
+
+.tags-ellipse{
+  overflow: hidden; 
+  white-space: nowrap; 
+  text-overflow: ellipsis; 
+  min-width: 50px;
+  max-width: 200px;
+}
