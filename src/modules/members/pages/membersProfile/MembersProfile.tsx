@@ -438,7 +438,7 @@ const MembersProfile: React.FC = () => {
 
           <div
             onScroll={handleScroll}
-            className="flex flex-col pt-8 gap-0.83 justify-center height-member-activity overflow-scroll overflow-y-scroll mt-5 member-section"
+            className="flex flex-col pt-8 gap-0.83 height-member-activity overflow-scroll overflow-y-scroll member-section"
           >
             {activityDataLoader ? (
               <Skeleton width={500} className={'my-4'} count={6} />
