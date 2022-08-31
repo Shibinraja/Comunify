@@ -33,6 +33,7 @@ import fetchExportList from '@/lib/fetchExport';
 import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 import { width_90 } from 'constants/constants';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
+import ReactTooltip from 'react-tooltip';
 
 Modal.setAppElement('#root');
 
@@ -469,20 +470,30 @@ const Members: React.FC = () => {
                                   {(member?.tags as Array<{ id: string; name: string }>)
                                     ?.slice(0, 2)
                                     .map((tags: { name: string; id: string }, index: number) => (
-                                      <div className="bg-tagSection rounded h-8 flex justify-between px-3 items-center cursor-pointer" key={index}>
-                                        <div className="font-Poppins font-normal text-card text-profileBlack leading-5 pr-4 tags-ellipse">
-                                          {tags?.name}
+                                      <>
+                                        <div
+                                          data-tip
+                                          data-for={tags.name}
+                                          className="bg-tagSection rounded h-8 flex justify-between px-3 items-center cursor-pointer"
+                                          key={index}
+                                        >
+                                          <div className="font-Poppins font-normal text-card text-profileBlack leading-5 pr-4 tags-ellipse">
+                                            {tags?.name}
+                                          </div>
+                                          <div>
+                                            <img
+                                              src={closeIcon}
+                                              alt=""
+                                              onClick={() =>
+                                                handleUnAssignTagsName((member?.name as { name: string; id: string })?.id as string, tags.id)
+                                              }
+                                            />
+                                          </div>
                                         </div>
-                                        <div>
-                                          <img
-                                            src={closeIcon}
-                                            alt=""
-                                            onClick={() =>
-                                              handleUnAssignTagsName((member?.name as { name: string; id: string })?.id as string, tags.id)
-                                            }
-                                          />
-                                        </div>
-                                      </div>
+                                        <ReactTooltip id={tags.name} textColor="" backgroundColor="" effect="solid">
+                                          <span className="font-Poppins text-card font-normal leading-5 pr-4 text-profileBlack">{tags.name}</span>
+                                        </ReactTooltip>
+                                      </>
                                     ))}
                                   <div className="font-Poppins font-semibold leading-5 text-tag text-card underline">
                                     {(member?.tags as Array<Record<string, unknown>>)?.length > 2
