@@ -451,10 +451,10 @@ const Members: React.FC = () => {
                                 {(member?.platforms as Array<{ id: string; name: string; platformLogoUrl: string }>)?.map(
                                   (platforms: { name: string; id: string; platformLogoUrl: string }, index: number) => (
                                     <div
-                                      className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer w-5 h-5"
+                                      className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer w-[1.3419rem] h-[1.3419rem] rounded-full"
                                       key={index}
                                     >
-                                      <img src={platforms?.platformLogoUrl} alt="" />
+                                      <img src={platforms?.platformLogoUrl} alt="" className="rounded-full" />
                                     </div>
                                   )
                                 )}

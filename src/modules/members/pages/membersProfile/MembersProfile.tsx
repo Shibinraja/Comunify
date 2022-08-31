@@ -449,7 +449,7 @@ const MembersProfile: React.FC = () => {
                     <img src={yellowDottedIcon} alt="" />
                   </div>
                   <div className="pl-0.68">
-                    <img src={slackIcon} alt="" />
+                    <img src={slackIcon} alt="" className="rounded-full w-[1.835rem] h-[1.835rem]" />
                   </div>
                   <div className="flex flex-col pl-0.89">
                     <div className="font-Poppins font-normal text-card leading-4">{data?.displayValue}</div>
@@ -498,7 +498,7 @@ const MembersProfile: React.FC = () => {
                 </div>
                 <div className="flex gap-1 pt-1.12">
                   <div>
-                    <img src={slackIcon} alt="" />
+                    <img src={slackIcon} alt="" className="rounded-full w-[1.0012rem] h-[1.0012rem]" />
                   </div>
                 </div>
               </div>
