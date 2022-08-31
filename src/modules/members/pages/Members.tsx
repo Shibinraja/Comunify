@@ -408,7 +408,7 @@ const Members: React.FC = () => {
       {customizedColumn && (customizedColumn?.[0]?.name as { name: string; id: string })?.name ? (
         <div className="memberTable mt-1.8">
           <div className="py-2 overflow-x-auto mt-1.868">
-            <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto sticky top-0 fixTableHead max-h-34 min-h-[31.25rem]">
+            <div className="inline-block min-w-full overflow-hidden align-middle rounded-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto sticky top-0 fixTableHead max-h-34 min-h-[31.25rem]">
               <table className="min-w-full relative  rounded-t-0.6 ">
                 <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
                   <tr className="min-w-full">
@@ -469,7 +469,10 @@ const Members: React.FC = () => {
                                   {(member?.tags as Array<{ id: string; name: string }>)
                                     ?.slice(0, 2)
                                     .map((tags: { name: string; id: string }, index: number) => (
-                                      <div className="bg-tagSection rounded w-5.25 h-8 flex justify-between px-3 items-center cursor-pointer" key={index}>
+                                      <div
+                                        className="bg-tagSection rounded w-5.25 h-8 flex justify-between px-3 items-center cursor-pointer"
+                                        key={index}
+                                      >
                                         <div className="font-Poppins font-normal text-card text-profileBlack leading-5">{tags?.name}</div>
                                         <div>
                                           <img
