@@ -475,3 +475,9 @@ input {
   min-width: 50px;
   max-width: 200px;
 }
+.fixReportHistoryTableHead {
+  height: calc(100vh - 21rem);
+}
+.border-download{
+  border:  1px solid #EAEDF3;
+}
