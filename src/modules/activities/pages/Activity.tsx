@@ -544,6 +544,9 @@ const Activity: React.FC = () => {
                             placeholder="Enter Tag Name"
                             onChange={handleSearchTagTextChange}
                             value={tags.tagName || searchTagText}
+                            minLength={2}
+                            maxLength={50}
+                            required
                           />
                           <div
                             className={`bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 ${
