@@ -35,7 +35,8 @@ export enum AssignTypeEnum {
 export interface assignTagProps extends workspaceId {
   memberId: string;
   assignTagBody: {
-    tagId: string;
+    name: string;
+    viewName: string;
     type: AssignTypeEnum;
     activityId?: string;
   };

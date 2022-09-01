@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable no-unused-vars */
 import { PayloadAction } from '@reduxjs/toolkit';
 import { SagaIterator } from 'redux-saga';
 import { call, put, takeEvery } from 'redux-saga/effects';
-import { showErrorToast } from '../../../../common/toast/toastFunctions';
+import { showErrorToast, showSuccessToast } from '../../../../common/toast/toastFunctions';
 import { AxiosError, SuccessResponse } from '../../../../lib/api';
 import loaderSlice from '../../../authentication/store/slices/loader.slice';
 import {
@@ -75,18 +76,19 @@ function* getTagDataSaga(action: PayloadAction<Partial<GetTagListQueryParams>>) 
 function* createTagDataSaga(action: PayloadAction<createTagProps>) {
   try {
     yield put(loaderSlice.actions.startLoadingAction(settingsSlice.actions.createTags.type));
-
     const res: SuccessResponse<TagResponse> = yield call(CreateTagDataService, action.payload);
     if (res?.data) {
-      yield put(settingsSlice.actions.tagFilterData({
-        settingsQuery: { tags: { searchedTags: '', checkedTags: '' } },
-        workspaceId: action.payload.workspaceId
-      }));
-
+      yield put(
+        settingsSlice.actions.tagFilterData({
+          settingsQuery: { tags: { searchedTags: '', checkedTags: '' } },
+          workspaceId: action.payload.workspaceId
+        })
+      );
     }
+    showSuccessToast('Tag created successfully');
   } catch (e) {
     const error = e as AxiosError<unknown>;
-    showErrorToast(error?.response?.data?.message);
+    showErrorToast('Failed to create tag');
   } finally {
     yield put(loaderSlice.actions.stopLoadingAction(settingsSlice.actions.createTags.type));
   }
@@ -98,11 +100,12 @@ function* updateTagDataSaga(action: PayloadAction<updateTagProps>) {
 
     const res: SuccessResponse<TagResponse> = yield call(UpdateTagDataService, action.payload);
     if (res?.data) {
-      yield put(settingsSlice.actions.tagFilterData({
-        settingsQuery: { tags: { searchedTags: '', checkedTags: '' } },
-        workspaceId: action.payload.workspaceId
-      }));
-
+      yield put(
+        settingsSlice.actions.tagFilterData({
+          settingsQuery: { tags: { searchedTags: '', checkedTags: '' } },
+          workspaceId: action.payload.workspaceId
+        })
+      );
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
@@ -115,18 +118,20 @@ function* updateTagDataSaga(action: PayloadAction<updateTagProps>) {
 function* deleteTagDataSaga(action: PayloadAction<Omit<updateTagProps, 'settingsQuery'>>) {
   try {
     yield put(loaderSlice.actions.startLoadingAction(settingsSlice.actions.deleteTags.type));
-
     const res: SuccessResponse<TagResponse> = yield call(DeleteTagDataService, action.payload);
     if (res?.data) {
-      yield put(settingsSlice.actions.tagFilterData({
-        settingsQuery: { tags: { searchedTags: '', checkedTags: '' } },
-        workspaceId: action.payload.workspaceId
-      }));
-
+      yield put(
+        settingsSlice.actions.tagFilterData({
+          settingsQuery: { tags: { searchedTags: '', checkedTags: '' } },
+          workspaceId: action.payload.workspaceId
+        })
+      );
     }
+    showSuccessToast('Tag was successfully deleted');
   } catch (e) {
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
+    showErrorToast('Failed to delete tag');
   } finally {
     yield put(loaderSlice.actions.stopLoadingAction(settingsSlice.actions.deleteTags.type));
   }
@@ -154,11 +159,12 @@ function* unAssignTagDataSaga(action: PayloadAction<unAssignTagProps>) {
 
     const res: SuccessResponse<{}> = yield call(UnAssignTagDataService, action.payload);
     if (res?.data) {
-      yield put(settingsSlice.actions.tagFilterData({
-        settingsQuery: { tags: { searchedTags: '', checkedTags: '' } },
-        workspaceId: action.payload.workspaceId
-      }));
-
+      yield put(
+        settingsSlice.actions.tagFilterData({
+          settingsQuery: { tags: { searchedTags: '', checkedTags: '' } },
+          workspaceId: action.payload.workspaceId
+        })
+      );
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
