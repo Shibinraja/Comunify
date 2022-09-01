@@ -635,7 +635,7 @@ const Activity: React.FC = () => {
                               </div>
                             </div>
                             <ReactTooltip id={tag.name} textColor="" backgroundColor="" effect="solid">
-                              <span className="font-Poppins text-card font-normal leading-5 pr-4 text-profileBlack">{tag.name}</span>
+                              <span className="font-Poppins text-card font-normal leading-5 pr-4">{tag.name}</span>
                             </ReactTooltip>
                           </>
                         ))

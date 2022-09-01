@@ -491,7 +491,7 @@ const Members: React.FC = () => {
                                           </div>
                                         </div>
                                         <ReactTooltip id={tags.name} textColor="" backgroundColor="" effect="solid">
-                                          <span className="font-Poppins text-card font-normal leading-5 pr-4 text-profileBlack">{tags.name}</span>
+                                          <span className="font-Poppins text-card font-normal leading-5 pr-4">{tags.name}</span>
                                         </ReactTooltip>
                                       </>
                                     ))}
