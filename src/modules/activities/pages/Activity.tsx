@@ -273,7 +273,9 @@ const Activity: React.FC = () => {
       settingsSlice.actions.assignTags({
         memberId: ActivityCard?.memberId as string,
         assignTagBody: {
-          tagId: tags.tagId,
+          name: searchTagText,
+          viewName: searchTagText,
+          activityId: tags.tagId,
           type: 'Activity' as AssignTypeEnum.Activity
         },
         workspaceId: workspaceId!
