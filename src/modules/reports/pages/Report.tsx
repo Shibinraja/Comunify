@@ -10,27 +10,28 @@ import Button from 'common/button';
 import { useNavigate } from 'react-router';
 import nextIcon from '../../../assets/images/next-page-icon.svg';
 import prevIcon from '../../../assets/images/previous-page-icon.svg';
-// import closeIcon from '../../../assets/images/close.svg';
+import { getLocalWorkspaceId } from '@/lib/helper';
 
 const Report: React.FC = () => {
   const navigate = useNavigate();
-  const [isDropdownActive, setisDropdownActive] = useState<number>(0);
-  const [isFilterDropdownActive, setisFilterDropdownActive] = useState<boolean>(false);
+  const [isDropdownActive, setIsDropdownActive] = useState<number>(0);
+  const [isFilterDropdownActive, setIsFilterDropdownActive] = useState<boolean>(false);
   const [isPlatformActive, setPlatformActive] = useState<boolean>(true);
   const [isStatusActive, setStatusActive] = useState<boolean>(false);
 
   const options = ['Edit', 'Generate', 'Remove', 'Schedule Off'];
+  const workSpaceId = getLocalWorkspaceId() !== null && getLocalWorkspaceId();
 
   const handleDropDownActive = (value: number): void => {
-    setisDropdownActive(value);
+    setIsDropdownActive(value);
   };
 
   const handleFilterDropdown = (val: boolean): void => {
-    setisFilterDropdownActive(val);
+    setIsFilterDropdownActive(val);
   };
 
   const navigateToCreateReport = () => {
-    navigate('/reports/create-report');
+    navigate(`/${workSpaceId}/reports/create-report`);
   };
 
   const handlePlatformActive = (val: boolean) => {
@@ -45,7 +46,7 @@ const Report: React.FC = () => {
 
   const handleOutsideClick = (event: MouseEvent) => {
     if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
-      setisFilterDropdownActive(false);
+      setIsFilterDropdownActive(false);
     }
   };
 
