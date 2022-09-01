@@ -3,14 +3,16 @@ import Button from 'common/button';
 import Pagination from 'common/pagination/pagination';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { getLocalWorkspaceId } from '@/lib/helper';
 
 const ReportHistory: React.FC = () => {
   const navigate = useNavigate();
 
   const [page, setPage] = useState<number>(1);
 
+  const workSpaceId = getLocalWorkspaceId() !== null && getLocalWorkspaceId();
   const navigateToCreateReport = () => {
-    navigate('/reports/create-report');
+    navigate(`/${workSpaceId}/reports/create-report`);
   };
   return (
     <div className="report-history pt-[71.12px]">
