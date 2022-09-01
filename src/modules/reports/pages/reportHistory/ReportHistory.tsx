@@ -15,7 +15,7 @@ const ReportHistory: React.FC = () => {
     navigate(`/${workSpaceId}/reports/create-report`);
   };
   return (
-    <div className="report-history pt-[71.12px]">
+    <div className="report-history pt-[4.445rem]">
       <div className="flex flex-col">
         <div className="flex justify-between">
           <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 w-full">History</h3>
