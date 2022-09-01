@@ -129,7 +129,16 @@ const Members: React.FC = () => {
       membersSlice.actions.membersList({
         membersQuery: {
           page,
-          limit
+          limit,
+          search: '',
+          'createdAT.gte': filterExportParams.startDate && filterExportParams.startDate,
+          'createdAT.lte': filterExportParams.endDate && filterExportParams.endDate,
+          tags: { searchedTags: '', checkedTags: filterExportParams.checkTags.toString() },
+          platforms: filterExportParams.checkPlatform.toString(),
+          organization: { searchedOrganization: '', checkedOrganization: filterExportParams.checkOrganization.toString() },
+          location: { searchedLocation: '', checkedLocation: filterExportParams.checkLocation.toString() },
+          'lastActivity.lte': filterExportParams.endDate && filterExportParams.endDate,
+          'lastActivity.gte': filterExportParams.startDate && filterExportParams.startDate
         },
         workspaceId: workspaceId!
       })
@@ -168,7 +177,13 @@ const Members: React.FC = () => {
           limit,
           search: text,
           'createdAT.gte': date,
-          'createdAT.lte': endDate
+          'createdAT.lte': endDate,
+          tags: { searchedTags: '', checkedTags: filterExportParams.checkTags.toString() },
+          platforms: filterExportParams.checkPlatform.toString(),
+          organization: { searchedOrganization: '', checkedOrganization: filterExportParams.checkOrganization.toString() },
+          location: { searchedLocation: '', checkedLocation: filterExportParams.checkLocation.toString() },
+          'lastActivity.lte': filterExportParams.endDate && filterExportParams.endDate,
+          'lastActivity.gte': filterExportParams.startDate && filterExportParams.startDate
         },
         workspaceId: workspaceId!
       })

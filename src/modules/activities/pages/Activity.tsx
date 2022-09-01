@@ -85,7 +85,12 @@ const Activity: React.FC = () => {
       activitiesSlice.actions.getActiveStreamData({
         activeStreamQuery: {
           page,
-          limit
+          limit,
+          search: '',
+          tags: { searchedTags: '', checkedTags: filterExportParams.checkTags.toString() },
+          platforms: filterExportParams.checkPlatform.toString(),
+          'activity.lte': filterExportParams.endDate,
+          'activity.gte': filterExportParams.startDate
         },
         workspaceId: workspaceId!
       })
