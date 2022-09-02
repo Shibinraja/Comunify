@@ -1,18 +1,19 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import useDebounce from '@/hooks/useDebounce';
+import { useAppSelector } from '@/hooks/useRedux';
 import Button from 'common/button';
 import Input from 'common/input';
 import { TabPanel } from 'common/tabs/TabPanel';
-import nextIcon from '../../../../assets/images/next-page-icon.svg';
-import prevIcon from '../../../../assets/images/previous-page-icon.svg';
-import deleteBtn from '../../../../assets/images/delete.svg';
-import './Tags.css';
+import settingsSlice from 'modules/settings/store/slice/settings.slice';
+import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { useDispatch } from 'react-redux';
-import settingsSlice from 'modules/settings/store/slice/settings.slice';
 import { useParams } from 'react-router';
-import { useAppSelector } from '@/hooks/useRedux';
-import useDebounce from '@/hooks/useDebounce';
+import * as Yup from 'yup';
+import deleteBtn from '../../../../assets/images/delete.svg';
+import nextIcon from '../../../../assets/images/next-page-icon.svg';
+import prevIcon from '../../../../assets/images/previous-page-icon.svg';
+import './Tags.css';
 // import { TagResponse } from 'modules/settings/interface/settings.interface';
 Modal.setAppElement('#root');
 
@@ -33,10 +34,16 @@ const Tags: React.FC<Props> = ({ hidden }) => {
     tagId: ''
   });
   const [isTagModalOpen, setTagModalOpen] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | unknown>('');
 
   const { TagFilterResponse } = useAppSelector((state) => state.settings);
 
   const debouncedValue = useDebounce(searchText, 300);
+  const TagNameValidation = Yup.string()
+    .min(2, 'Tag Name must be atleast 2 characters')
+    .max(50, 'Tag Name should not exceed above 50 characters')
+    .required('Tag Name is a required field')
+    .nullable(true);
 
   useEffect(() => {
     getTagsList('');
@@ -74,38 +81,50 @@ const Tags: React.FC<Props> = ({ hidden }) => {
   const createTags = (event: ChangeEvent<HTMLInputElement>) => {
     const tagsName = event.target.value;
     setTagName(tagsName);
+    try {
+      TagNameValidation.validateSync(tagsName);
+      setErrorMessage('');
+    } catch ({ message }) {
+      setErrorMessage(message);
+    }
   };
 
   const handleTagModalOpen = (tagName?: string, id?: string) => {
     setTagName(tagName as string);
     setEdit({ isEdit: true, tagId: id as string });
     setTagModalOpen((prev) => !prev);
+    setErrorMessage('');
   };
 
-  const handleCreateTagsName = (): void => {
-    if (edit.isEdit && edit.tagId) {
-      dispatch(
-        settingsSlice.actions.updateTags({
-          tagId: edit.tagId,
-          tagBody: {
-            name: tagName,
-            viewName: tagName
-          },
-          workspaceId: workspaceId!
-        })
-      );
+  const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
+    e.preventDefault();
+    if (errorMessage) {
+      //
     } else {
-      dispatch(
-        settingsSlice.actions.createTags({
-          tagBody: {
-            name: tagName,
-            viewName: tagName
-          },
-          workspaceId: workspaceId!
-        })
-      );
+      if (edit.isEdit && edit.tagId) {
+        dispatch(
+          settingsSlice.actions.updateTags({
+            tagId: edit.tagId,
+            tagBody: {
+              name: tagName,
+              viewName: tagName
+            },
+            workspaceId: workspaceId!
+          })
+        );
+      } else {
+        dispatch(
+          settingsSlice.actions.createTags({
+            tagBody: {
+              name: tagName,
+              viewName: tagName
+            },
+            workspaceId: workspaceId!
+          })
+        );
+      }
+      handleTagModalOpen();
     }
-    handleTagModalOpen();
   };
 
   const handleDeleteTagName = (tagId: string): void => {
@@ -162,19 +181,21 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                 >
                   <div className="flex flex-col">
                     <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Add Tag</h3>
-                    <form className="flex flex-col relative px-1.93 mt-9">
+                    <form className="flex flex-col relative px-1.93 mt-9" onSubmit={(e) => handleSubmit(e)}>
                       <label htmlFor="billingName " className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack ">
                         Tag Name
                       </label>
-                      <input
+                      <Input
                         type="text"
                         className="mt-0.375 inputs box-border bg-white shadow-inputShadow rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-sm placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
                         placeholder="Enter Tag Name"
+                        id="tags"
+                        name="tags"
+                        label="Tags"
                         onChange={createTags}
                         value={tagName}
-                        minLength={2}
-                        maxLength={50}
-                        required
+                        errors={Boolean(errorMessage)}
+                        helperText={errorMessage}
                       />
                       {/* <div className="bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 hidden">
                         {TagFilterResponse.map((data:TagResponse) => (
@@ -194,10 +215,9 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                           onClick={() => handleTagModalOpen()}
                         />
                         <Button
-                          type="button"
+                          type="submit"
                           text="SAVE"
                           className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-5.25 h-2.81  border-none btn-save-modal"
-                          onClick={handleCreateTagsName}
                         />
                       </div>
                     </form>
