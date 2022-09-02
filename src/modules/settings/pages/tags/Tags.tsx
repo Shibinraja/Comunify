@@ -4,7 +4,9 @@ import { useAppSelector } from '@/hooks/useRedux';
 import Button from 'common/button';
 import Input from 'common/input';
 import { TabPanel } from 'common/tabs/TabPanel';
+import { showErrorToast } from 'common/toast/toastFunctions';
 import { whiteSpace_regex } from 'constants/constants';
+import { TagResponse } from 'modules/settings/interface/settings.interface';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import Modal from 'react-modal';
@@ -15,7 +17,6 @@ import deleteBtn from '../../../../assets/images/delete.svg';
 import nextIcon from '../../../../assets/images/next-page-icon.svg';
 import prevIcon from '../../../../assets/images/previous-page-icon.svg';
 import './Tags.css';
-// import { TagResponse } from 'modules/settings/interface/settings.interface';
 Modal.setAppElement('#root');
 
 type Props = {
@@ -91,11 +92,16 @@ const Tags: React.FC<Props> = ({ hidden }) => {
     }
   };
 
-  const handleTagModalOpen = (tagName?: string, id?: string) => {
-    setTagName(tagName as string);
-    setEdit({ isEdit: true, tagId: id as string });
-    setTagModalOpen((prev) => !prev);
-    setErrorMessage('');
+  const handleTagModalOpen = (tagName?: string, id?: string, isEditable?: boolean) => {
+    if (isEditable) {
+      showErrorToast('Not authorized to edit the tag');
+    }
+    if (!isEditable) {
+      setTagName(tagName as string);
+      setEdit({ isEdit: true, tagId: id as string });
+      setTagModalOpen((prev) => !prev);
+      setErrorMessage('');
+    }
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
@@ -129,16 +135,19 @@ const Tags: React.FC<Props> = ({ hidden }) => {
     }
   };
 
-  const handleDeleteTagName = (tagId: string): void => {
-    dispatch(
-      settingsSlice.actions.deleteTags({
-        tagId,
-        workspaceId: workspaceId!
-      })
-    );
+  const handleDeleteTagName = (tagId: string, isEditable?: boolean): void => {
+    if (isEditable) {
+      showErrorToast('Not authorized to delete the tag');
+    }
+    if (!isEditable) {
+      dispatch(
+        settingsSlice.actions.deleteTags({
+          tagId,
+          workspaceId: workspaceId!
+        })
+      );
+    }
   };
-
-  // const tagOptions = ['op1', 'op2', 'op3', 'op4', 'op5', 'op1', 'op2', 'op3', 'op4', 'op5'];
 
   return (
     <TabPanel hidden={hidden}>
@@ -245,7 +254,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {TagFilterResponse.map((data, i) => (
+                      {TagFilterResponse.map((data: TagResponse, i) => (
                         <tr className="border" key={i}>
                           <td className="px-6 py-3">
                             <div className="flex ">
@@ -266,10 +275,10 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                                 type="submit"
                                 text="Edit"
                                 className="edit-btn w-6.25 h-2.87 mr-2.5 cursor-pointer text-masterCard font-Poppins font-medium text-trial leading-1.31 rounded box-border shadow-deleteButton"
-                                onClick={() => handleTagModalOpen(data.name, data.id)}
+                                onClick={() => handleTagModalOpen(data.name, data.id, data.isEditable)}
                               />
                               <div className="flex items-center justify-center delete-btn cursor-pointer w-3.12 h-2.87 rounded box-border shadow-deleteButton">
-                                <img src={deleteBtn} alt="" onClick={() => handleDeleteTagName(data.id)} />
+                                <img src={deleteBtn} alt="" onClick={() => handleDeleteTagName(data.id, data.isEditable)} />
                               </div>
                             </div>
                           </td>
