@@ -91,7 +91,7 @@ function* verifyEmail(action: PayloadAction<VerifyEmailInput>) {
   } catch (e) {
     const error = e as AxiosError<unknown>;
     if (error?.response?.data?.message.toLocaleLowerCase().trim() === 'email already verified') {
-      if(getLocalRefreshToken()) {
+      if (getLocalRefreshToken()) {
         yield call(logout);
       }
       yield call(forwardTo, '/');
@@ -159,7 +159,7 @@ function* resetPassword(action: PayloadAction<ResetPasswordInput>) {
     if (res?.message) {
       yield put(authSlice.actions.formikValueReset(true));
       showSuccessToast('Password updated');
-      yield call(forwardTo, '/welcome');
+      yield call(forwardTo, '/');
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
