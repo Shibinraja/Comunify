@@ -28,7 +28,11 @@ const CreateWorkSpace: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    dispatch(authSlice.actions.createWorkspace({ workspaceName }));
+    if (errorMessage) {
+      //
+    } else {
+      dispatch(authSlice.actions.createWorkspace({ workspaceName }));
+    }
   };
 
   return (
