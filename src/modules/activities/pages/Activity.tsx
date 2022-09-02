@@ -29,6 +29,8 @@ import settingsSlice from 'modules/settings/store/slice/settings.slice';
 import { AssignTypeEnum, TagResponse } from 'modules/settings/interface/settings.interface';
 import { MemberProfileCard } from 'modules/members/interface/members.interface';
 import membersSlice from 'modules/members/store/slice/members.slice';
+import ReactTooltip from 'react-tooltip';
+import { format, parseISO } from 'date-fns';
 
 Modal.setAppElement('#root');
 
@@ -84,7 +86,12 @@ const Activity: React.FC = () => {
       activitiesSlice.actions.getActiveStreamData({
         activeStreamQuery: {
           page,
-          limit
+          limit,
+          search: '',
+          tags: { searchedTags: '', checkedTags: filterExportParams.checkTags.toString() },
+          platforms: filterExportParams.checkPlatform.toString(),
+          'activity.lte': filterExportParams.endDate,
+          'activity.gte': filterExportParams.startDate
         },
         workspaceId: workspaceId!
       })
@@ -173,7 +180,8 @@ const Activity: React.FC = () => {
       profilePictureUrl: data?.profilePictureUrl,
       value: data?.value,
       platformLogoUrl: data?.platformLogoUrl,
-      memberId: data?.memberId
+      memberId: data?.memberId,
+      activityId: data?.activityId
     });
     dispatch(membersSlice.actions.getMemberProfileCardData({ workspaceId: workspaceId!, memberId: data.memberId }));
   };
@@ -272,7 +280,9 @@ const Activity: React.FC = () => {
       settingsSlice.actions.assignTags({
         memberId: ActivityCard?.memberId as string,
         assignTagBody: {
-          tagId: tags.tagId,
+          name: tags.tagName,
+          viewName: tags.tagName,
+          activityId: ActivityCard?.activityId,
           type: 'Activity' as AssignTypeEnum.Activity
         },
         workspaceId: workspaceId!
@@ -424,10 +434,11 @@ const Activity: React.FC = () => {
                           ) : (
                             <div className="flex flex-col">
                               <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31">
-                                {generateDateAndTime(`${data?.activityTime}`, 'MM-DD-YYYY')}
+                                {data?.activityTime ? format(parseISO(data?.activityTime as unknown as string), 'MMM dd yyyy') : '--'}
+
                               </div>
                               <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
-                                {generateDateAndTime(`${data?.activityTime}`, 'HH:MM')}
+                                {data?.activityTime ? format(parseISO(data?.activityTime as unknown as string), 'HH:MM') : '--'}
                               </div>
                             </div>
                           )}
@@ -457,7 +468,8 @@ const Activity: React.FC = () => {
                                       profilePictureUrl: data?.profilePictureUrl,
                                       value: data?.value,
                                       platformLogoUrl: data?.platformLogoUrl,
-                                      memberId: data?.memberId
+                                      memberId: data?.memberId,
+                                      activityId: data?.activityId
                                     })
                                   }
                                 >
@@ -544,6 +556,9 @@ const Activity: React.FC = () => {
                             placeholder="Enter Tag Name"
                             onChange={handleSearchTagTextChange}
                             value={tags.tagName || searchTagText}
+                            minLength={2}
+                            maxLength={50}
+                            required
                           />
                           <div
                             className={`bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 ${
@@ -618,12 +633,22 @@ const Activity: React.FC = () => {
                     <div className="flex pt-2.5 flex-wrap gap-1">
                       {memberProfileCardData?.map((data: MemberProfileCard) =>
                         data.tags?.map((tag: TagResponse) => (
-                          <div className="flex  tags bg-tagSection items-center justify-evenly rounded w-6.563 p-1" key={tag.id}>
-                            <div className="font-Poppins text-card font-normal leading-5 text-profileBlack">{tag.name}</div>
-                            <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
-                              <img src={closeIcon} alt="" onClick={() => handleUnAssignTagsName(tag.id)} />
+                          <>
+                            <div
+                              data-tip
+                              data-for={tag.name}
+                              className="flex  tags bg-tagSection items-center justify-evenly rounded p-1"
+                              key={tag.id}
+                            >
+                              <div className="font-Poppins text-card font-normal leading-5 pr-4 text-profileBlack">{tag.name}</div>
+                              <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
+                                <img src={closeIcon} alt="" onClick={() => handleUnAssignTagsName(tag.id)} />
+                              </div>
                             </div>
-                          </div>
+                            <ReactTooltip id={tag.name} textColor="" backgroundColor="" effect="solid">
+                              <span className="font-Poppins text-card font-normal leading-5 pr-4">{tag.name}</span>
+                            </ReactTooltip>
+                          </>
                         ))
                       )}
                     </div>

@@ -198,7 +198,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
               </div>
             </div>
             {isPlatformActive && (
-              <div className="flex flex-col gap-y-5 justify-center px-3 max-h-[10rem] overflow-scroll">
+              <div className="flex flex-col gap-y-5 justify-center p-3 max-h-[10rem] overflow-scroll">
                 {PlatformFilterResponse &&
                   PlatformFilterResponse.map(
                     (platform: PlatformResponse, index: number) =>

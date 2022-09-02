@@ -301,7 +301,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
               </div>
             </div>
             {isPlatformActive && (
-              <div className="flex flex-col gap-y-5 justify-center px-3 pb-3 max-h-[11.25rem] overflow-scroll">
+              <div className="flex flex-col gap-y-5 justify-center p-3 max-h-[11.25rem] overflow-scroll">
                 {PlatformFilterResponse &&
                   PlatformFilterResponse.map(
                     (platform: PlatformResponse, index: number) =>

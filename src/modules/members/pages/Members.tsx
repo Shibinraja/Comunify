@@ -33,6 +33,7 @@ import fetchExportList from '@/lib/fetchExport';
 import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 import { width_90 } from 'constants/constants';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
+import ReactTooltip from 'react-tooltip';
 
 Modal.setAppElement('#root');
 
@@ -128,7 +129,16 @@ const Members: React.FC = () => {
       membersSlice.actions.membersList({
         membersQuery: {
           page,
-          limit
+          limit,
+          search: '',
+          'createdAT.gte': filterExportParams.startDate && filterExportParams.startDate,
+          'createdAT.lte': filterExportParams.endDate && filterExportParams.endDate,
+          tags: { searchedTags: '', checkedTags: filterExportParams.checkTags.toString() },
+          platforms: filterExportParams.checkPlatform.toString(),
+          organization: { searchedOrganization: '', checkedOrganization: filterExportParams.checkOrganization.toString() },
+          location: { searchedLocation: '', checkedLocation: filterExportParams.checkLocation.toString() },
+          'lastActivity.lte': filterExportParams.endDate && filterExportParams.endDate,
+          'lastActivity.gte': filterExportParams.startDate && filterExportParams.startDate
         },
         workspaceId: workspaceId!
       })
@@ -167,7 +177,13 @@ const Members: React.FC = () => {
           limit,
           search: text,
           'createdAT.gte': date,
-          'createdAT.lte': endDate
+          'createdAT.lte': endDate,
+          tags: { searchedTags: '', checkedTags: filterExportParams.checkTags.toString() },
+          platforms: filterExportParams.checkPlatform.toString(),
+          organization: { searchedOrganization: '', checkedOrganization: filterExportParams.checkOrganization.toString() },
+          location: { searchedLocation: '', checkedLocation: filterExportParams.checkLocation.toString() },
+          'lastActivity.lte': filterExportParams.endDate && filterExportParams.endDate,
+          'lastActivity.gte': filterExportParams.startDate && filterExportParams.startDate
         },
         workspaceId: workspaceId!
       })
@@ -463,25 +479,34 @@ const Members: React.FC = () => {
                               <Skeleton width={width_90} />
                             ) : (
                               <div className="flex ">
-                                <div className="py-3 flex gap-2 items-center font-Poppins font-medium text-trial text-infoBlack leading-1.31">
+                                <div className="py-3 flex gap-2 items-center flex-wrap font-Poppins font-medium text-trial text-infoBlack leading-1.31">
                                   {(member?.tags as Array<{ id: string; name: string }>)
                                     ?.slice(0, 2)
                                     .map((tags: { name: string; id: string }, index: number) => (
-                                      <div
-                                        className="bg-tagSection rounded w-5.25 h-8 flex justify-between px-3 items-center cursor-pointer"
-                                        key={index}
-                                      >
-                                        <div className="font-Poppins font-normal text-card text-profileBlack leading-5">{tags?.name}</div>
-                                        <div>
-                                          <img
-                                            src={closeIcon}
-                                            alt=""
-                                            onClick={() =>
-                                              handleUnAssignTagsName((member?.name as { name: string; id: string })?.id as string, tags.id)
-                                            }
-                                          />
+                                      <>
+                                        <div
+                                          data-tip
+                                          data-for={tags.name}
+                                          className="bg-tagSection rounded h-8 flex justify-between px-3 items-center cursor-pointer"
+                                          key={index}
+                                        >
+                                          <div className="font-Poppins font-normal text-card text-profileBlack leading-5 pr-4 tags-ellipse">
+                                            {tags?.name}
+                                          </div>
+                                          <div>
+                                            <img
+                                              src={closeIcon}
+                                              alt=""
+                                              onClick={() =>
+                                                handleUnAssignTagsName((member?.name as { name: string; id: string })?.id as string, tags.id)
+                                              }
+                                            />
+                                          </div>
                                         </div>
-                                      </div>
+                                        <ReactTooltip id={tags.name} textColor="" backgroundColor="" effect="solid">
+                                          <span className="font-Poppins text-card font-normal leading-5 pr-4">{tags.name}</span>
+                                        </ReactTooltip>
+                                      </>
                                     ))}
                                   <div className="font-Poppins font-semibold leading-5 text-tag text-card underline">
                                     {(member?.tags as Array<Record<string, unknown>>)?.length > 2

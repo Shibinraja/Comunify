@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable no-unused-vars */
 import { PayloadAction } from '@reduxjs/toolkit';
 import { SagaIterator } from 'redux-saga';
 import { call, put, takeEvery } from 'redux-saga/effects';
-import { showErrorToast } from '../../../../common/toast/toastFunctions';
+import { showErrorToast, showSuccessToast } from '../../../../common/toast/toastFunctions';
 import { AxiosError, SuccessResponse } from '../../../../lib/api';
 import loaderSlice from '../../../authentication/store/slices/loader.slice';
 import {
@@ -28,6 +29,7 @@ import {
 } from '../../services/settings.services';
 import settingsSlice from '../slice/settings.slice';
 import { workspaceId } from '../../../members/interface/members.interface';
+import membersSlice from 'modules/members/store/slice/members.slice';
 
 function* getPlatformsDataSaga(action: PayloadAction<workspaceId>) {
   try {
@@ -75,18 +77,19 @@ function* getTagDataSaga(action: PayloadAction<Partial<GetTagListQueryParams>>) 
 function* createTagDataSaga(action: PayloadAction<createTagProps>) {
   try {
     yield put(loaderSlice.actions.startLoadingAction(settingsSlice.actions.createTags.type));
-
     const res: SuccessResponse<TagResponse> = yield call(CreateTagDataService, action.payload);
     if (res?.data) {
-      yield put(settingsSlice.actions.tagFilterData({
-        settingsQuery: { tags: { searchedTags: '', checkedTags: '' } },
-        workspaceId: action.payload.workspaceId
-      }));
-
+      yield put(
+        settingsSlice.actions.tagFilterData({
+          settingsQuery: { tags: { searchedTags: '', checkedTags: '' } },
+          workspaceId: action.payload.workspaceId
+        })
+      );
     }
+    showSuccessToast('Tag created successfully');
   } catch (e) {
     const error = e as AxiosError<unknown>;
-    showErrorToast(error?.response?.data?.message);
+    showErrorToast('Failed to create tag');
   } finally {
     yield put(loaderSlice.actions.stopLoadingAction(settingsSlice.actions.createTags.type));
   }
@@ -98,11 +101,12 @@ function* updateTagDataSaga(action: PayloadAction<updateTagProps>) {
 
     const res: SuccessResponse<TagResponse> = yield call(UpdateTagDataService, action.payload);
     if (res?.data) {
-      yield put(settingsSlice.actions.tagFilterData({
-        settingsQuery: { tags: { searchedTags: '', checkedTags: '' } },
-        workspaceId: action.payload.workspaceId
-      }));
-
+      yield put(
+        settingsSlice.actions.tagFilterData({
+          settingsQuery: { tags: { searchedTags: '', checkedTags: '' } },
+          workspaceId: action.payload.workspaceId
+        })
+      );
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
@@ -115,18 +119,20 @@ function* updateTagDataSaga(action: PayloadAction<updateTagProps>) {
 function* deleteTagDataSaga(action: PayloadAction<Omit<updateTagProps, 'settingsQuery'>>) {
   try {
     yield put(loaderSlice.actions.startLoadingAction(settingsSlice.actions.deleteTags.type));
-
     const res: SuccessResponse<TagResponse> = yield call(DeleteTagDataService, action.payload);
     if (res?.data) {
-      yield put(settingsSlice.actions.tagFilterData({
-        settingsQuery: { tags: { searchedTags: '', checkedTags: '' } },
-        workspaceId: action.payload.workspaceId
-      }));
-
+      yield put(
+        settingsSlice.actions.tagFilterData({
+          settingsQuery: { tags: { searchedTags: '', checkedTags: '' } },
+          workspaceId: action.payload.workspaceId
+        })
+      );
     }
+    showSuccessToast('Tag was successfully deleted');
   } catch (e) {
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
+    showErrorToast('Failed to delete tag');
   } finally {
     yield put(loaderSlice.actions.stopLoadingAction(settingsSlice.actions.deleteTags.type));
   }
@@ -139,10 +145,17 @@ function* assignTagDataSaga(action: PayloadAction<assignTagProps>) {
     const res: SuccessResponse<{}> = yield call(AssignTagDataService, action.payload);
     if (res.message.toLocaleLowerCase() === 'tag assigned') {
       yield put(settingsSlice.actions.resetValue(true));
+      yield put(
+        membersSlice.actions.getMemberProfileCardData({
+          workspaceId: action.payload.workspaceId,
+          memberId: action.payload.memberId
+        })
+      );
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
+    yield put(settingsSlice.actions.resetValue(true));
   } finally {
     yield put(loaderSlice.actions.stopLoadingAction(settingsSlice.actions.assignTags.type));
   }
@@ -153,16 +166,18 @@ function* unAssignTagDataSaga(action: PayloadAction<unAssignTagProps>) {
     yield put(loaderSlice.actions.startLoadingAction(settingsSlice.actions.unAssignTags.type));
 
     const res: SuccessResponse<{}> = yield call(UnAssignTagDataService, action.payload);
-    if (res?.data) {
-      yield put(settingsSlice.actions.tagFilterData({
-        settingsQuery: { tags: { searchedTags: '', checkedTags: '' } },
-        workspaceId: action.payload.workspaceId
-      }));
-
+    if (res.message.toLocaleLowerCase() === 'tag unassigned') {
+      yield put(
+        membersSlice.actions.getMemberProfileCardData({
+          workspaceId: action.payload.workspaceId,
+          memberId: action.payload.memberId
+        })
+      );
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
+    yield put(settingsSlice.actions.resetValue(true));
   } finally {
     yield put(loaderSlice.actions.stopLoadingAction(settingsSlice.actions.unAssignTags.type));
   }

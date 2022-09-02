@@ -23,6 +23,7 @@ export interface ActivityCard {
   value: string | null;
   platformLogoUrl: string | null;
   memberId:string
+  activityId:string
 }
 
 export interface workspaceId {

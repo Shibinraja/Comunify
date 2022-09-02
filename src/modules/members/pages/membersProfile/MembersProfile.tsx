@@ -28,6 +28,7 @@ import usePlatform from '../../../../hooks/usePlatform';
 import { AssignTypeEnum, PlatformResponse, TagResponse } from '../../../settings/interface/settings.interface';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
 import useDebounce from '@/hooks/useDebounce';
+import ReactTooltip from 'react-tooltip';
 
 Modal.setAppElement('#root');
 
@@ -249,7 +250,8 @@ const MembersProfile: React.FC = () => {
       settingsSlice.actions.assignTags({
         memberId: memberId!,
         assignTagBody: {
-          tagId: tags.tagId,
+          name: tags.tagName,
+          viewName: tags.tagName,
           type: 'Member' as AssignTypeEnum.Member
         },
         workspaceId: workspaceId!
@@ -543,6 +545,9 @@ const MembersProfile: React.FC = () => {
                         placeholder="Enter Tag Name"
                         onChange={handleSearchTextChange}
                         value={tags.tagName || searchText}
+                        minLength={2}
+                        maxLength={50}
+                        required
                       />
                       <div
                         className={`bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 ${
@@ -581,12 +586,22 @@ const MembersProfile: React.FC = () => {
             <div className="flex flex-wrap pt-1.56 gap-2">
               {memberProfileCardData?.map((data: MemberProfileCard) =>
                 data.tags?.map((tag: TagResponse) => (
-                  <div className="labels flex  items-center px-2  h-8 rounded bg-tagSection cursor-pointer" key={tag.id}>
-                    <div className="font-Poppins text-profileBlack font-normal text-card leading-4">{tag.name}</div>
-                    <div className="pl-2">
-                      <img src={closeIcon} alt="" onClick={() => handleUnAssignTagsName(tag.id)} />
+                  <>
+                    <div
+                      data-tip
+                      data-for={tag.name}
+                      className="labels flex  items-center px-2  h-8 rounded bg-tagSection cursor-pointer"
+                      key={tag.id}
+                    >
+                      <div className="font-Poppins text-profileBlack font-normal text-card leading-4 pr-4 tags-ellipse">{tag.name}</div>
+                      <div className="pl-2">
+                        <img src={closeIcon} alt="" onClick={() => handleUnAssignTagsName(tag.id)} />
+                      </div>
                     </div>
-                  </div>
+                    <ReactTooltip id={tag.name} textColor="" backgroundColor="" effect="solid">
+                      <span className="font-Poppins text-card font-normal leading-5 pr-4">{tag.name}</span>
+                    </ReactTooltip>
+                  </>
                 ))
               )}
             </div>

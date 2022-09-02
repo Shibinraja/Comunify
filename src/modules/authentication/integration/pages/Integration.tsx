@@ -181,7 +181,18 @@ const Integration: React.FC = () => {
                   isOpen={isModalOpen.slack}
                   shouldCloseOnOverlayClick={true}
                   onRequestClose={() => setIsModalOpen((prevState) => ({ ...prevState, slack: false }))}
-                  className="right-[400px] top-72 absolute  mt-24 rounded-lg modals-tag bg-white shadow-modal outline-none"
+                  className="rounded-lg modals-tag bg-white shadow-modal  flex justify-center outline-none"
+                  style={{
+                    overlay: {
+                      display: 'flex',
+                      position: 'fixed',
+                      top: 0,
+                      left: '60%',
+                      bottom: 0,
+                      right: 0,
+                      alignItems: 'center'
+                    }
+                  }}
                 >
                   <div className="flex flex-col items-center justify-center  h-14.56 w-22.31 shadow-modal rounded-lg border-fetching-card">
                     <div className=" bg-no-repeat bg-center bg-contain ">
