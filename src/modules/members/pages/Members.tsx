@@ -377,6 +377,7 @@ const Members: React.FC = () => {
                         className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                         placeholderText="DD/MM/YYYY"
                         ref={datePickerRefStart}
+                        dateFormat='dd/MM/yyyy'
                       />
                       <img
                         className="absolute icon-holder right-6 cursor-pointer"
@@ -395,6 +396,7 @@ const Members: React.FC = () => {
                         className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                         placeholderText="DD/MM/YYYY"
                         ref={datePickerRefEnd}
+                        dateFormat='dd/MM/yyyy'
                       />
                       <img
                         className="absolute icon-holder right-6 cursor-pointer"
