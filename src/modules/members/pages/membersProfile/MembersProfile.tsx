@@ -250,8 +250,8 @@ const MembersProfile: React.FC = () => {
       settingsSlice.actions.assignTags({
         memberId: memberId!,
         assignTagBody: {
-          name: debouncedValue,
-          viewName: debouncedValue,
+          name: tags.tagName,
+          viewName: tags.tagName,
           type: 'Member' as AssignTypeEnum.Member
         },
         workspaceId: workspaceId!

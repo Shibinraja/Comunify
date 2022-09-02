@@ -29,6 +29,7 @@ import {
 } from '../../services/settings.services';
 import settingsSlice from '../slice/settings.slice';
 import { workspaceId } from '../../../members/interface/members.interface';
+import membersSlice from 'modules/members/store/slice/members.slice';
 
 function* getPlatformsDataSaga(action: PayloadAction<workspaceId>) {
   try {
@@ -144,10 +145,17 @@ function* assignTagDataSaga(action: PayloadAction<assignTagProps>) {
     const res: SuccessResponse<{}> = yield call(AssignTagDataService, action.payload);
     if (res.message.toLocaleLowerCase() === 'tag assigned') {
       yield put(settingsSlice.actions.resetValue(true));
+      yield put(
+        membersSlice.actions.getMemberProfileCardData({
+          workspaceId: action.payload.workspaceId,
+          memberId: action.payload.memberId
+        })
+      );
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
+    yield put(settingsSlice.actions.resetValue(true));
   } finally {
     yield put(loaderSlice.actions.stopLoadingAction(settingsSlice.actions.assignTags.type));
   }
@@ -158,17 +166,18 @@ function* unAssignTagDataSaga(action: PayloadAction<unAssignTagProps>) {
     yield put(loaderSlice.actions.startLoadingAction(settingsSlice.actions.unAssignTags.type));
 
     const res: SuccessResponse<{}> = yield call(UnAssignTagDataService, action.payload);
-    if (res?.data) {
+    if (res.message.toLocaleLowerCase() === 'tag unassigned') {
       yield put(
-        settingsSlice.actions.tagFilterData({
-          settingsQuery: { tags: { searchedTags: '', checkedTags: '' } },
-          workspaceId: action.payload.workspaceId
+        membersSlice.actions.getMemberProfileCardData({
+          workspaceId: action.payload.workspaceId,
+          memberId: action.payload.memberId
         })
       );
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
     showErrorToast(error?.response?.data?.message);
+    yield put(settingsSlice.actions.resetValue(true));
   } finally {
     yield put(loaderSlice.actions.stopLoadingAction(settingsSlice.actions.unAssignTags.type));
   }

@@ -30,6 +30,7 @@ import { AssignTypeEnum, TagResponse } from 'modules/settings/interface/settings
 import { MemberProfileCard } from 'modules/members/interface/members.interface';
 import membersSlice from 'modules/members/store/slice/members.slice';
 import ReactTooltip from 'react-tooltip';
+import { format, parseISO } from 'date-fns';
 
 Modal.setAppElement('#root');
 
@@ -179,7 +180,8 @@ const Activity: React.FC = () => {
       profilePictureUrl: data?.profilePictureUrl,
       value: data?.value,
       platformLogoUrl: data?.platformLogoUrl,
-      memberId: data?.memberId
+      memberId: data?.memberId,
+      activityId: data?.activityId
     });
     dispatch(membersSlice.actions.getMemberProfileCardData({ workspaceId: workspaceId!, memberId: data.memberId }));
   };
@@ -278,9 +280,9 @@ const Activity: React.FC = () => {
       settingsSlice.actions.assignTags({
         memberId: ActivityCard?.memberId as string,
         assignTagBody: {
-          name: searchTagText,
-          viewName: searchTagText,
-          activityId: tags.tagId,
+          name: tags.tagName,
+          viewName: tags.tagName,
+          activityId: ActivityCard?.activityId,
           type: 'Activity' as AssignTypeEnum.Activity
         },
         workspaceId: workspaceId!
@@ -432,10 +434,11 @@ const Activity: React.FC = () => {
                           ) : (
                             <div className="flex flex-col">
                               <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31">
-                                {generateDateAndTime(`${data?.activityTime}`, 'MM-DD-YYYY')}
+                                {data?.activityTime ? format(parseISO(data?.activityTime as unknown as string), 'MMM dd yyyy') : '--'}
+
                               </div>
                               <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
-                                {generateDateAndTime(`${data?.activityTime}`, 'HH:MM')}
+                                {data?.activityTime ? format(parseISO(data?.activityTime as unknown as string), 'HH:MM') : '--'}
                               </div>
                             </div>
                           )}
@@ -465,7 +468,8 @@ const Activity: React.FC = () => {
                                       profilePictureUrl: data?.profilePictureUrl,
                                       value: data?.value,
                                       platformLogoUrl: data?.platformLogoUrl,
-                                      memberId: data?.memberId
+                                      memberId: data?.memberId,
+                                      activityId: data?.activityId
                                     })
                                   }
                                 >
