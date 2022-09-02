@@ -4,6 +4,7 @@ import { useAppSelector } from '@/hooks/useRedux';
 import Button from 'common/button';
 import Input from 'common/input';
 import { TabPanel } from 'common/tabs/TabPanel';
+import { whiteSpace_regex } from 'constants/constants';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import Modal from 'react-modal';
@@ -42,6 +43,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
   const TagNameValidation = Yup.string()
     .min(2, 'Tag Name must be atleast 2 characters')
     .max(50, 'Tag Name should not exceed above 50 characters')
+    .matches(whiteSpace_regex, 'Whitespaces are not allowed')
     .required('Tag Name is a required field')
     .nullable(true);
 
