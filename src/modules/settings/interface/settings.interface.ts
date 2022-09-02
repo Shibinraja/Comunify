@@ -57,13 +57,13 @@ export interface ModalState {
 // Response Body
 
 export type TagResponse = {
-    id:string,
-    name:string,
-    viewName:string,
-    type:string,
-    createdAt:string,
-    createdBy:string,
-    isEditable:boolean
+  id: string;
+  name: string;
+  viewName: string;
+  type: string;
+  createdAt: string;
+  createdBy: string;
+  isEditable: boolean;
 };
 
 export type PlatformResponse = {

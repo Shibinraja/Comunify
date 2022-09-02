@@ -57,10 +57,9 @@ input {
   display: none;
 }
 
-
 .no-scrollbar-firefox {
-  -ms-overflow-style: none; 
-  scrollbar-width: none; 
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .app-input-card-border {
@@ -468,16 +467,16 @@ input {
   max-height: 410px;
 }
 
-.tags-ellipse{
-  overflow: hidden; 
-  white-space: nowrap; 
-  text-overflow: ellipsis; 
+.tags-ellipse {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   min-width: 50px;
   max-width: 200px;
 }
 .fixReportHistoryTableHead {
   height: calc(100vh - 21rem);
 }
-.border-download{
-  border:  1px solid #EAEDF3;
+.border-download {
+  border: 1px solid #eaedf3;
 }

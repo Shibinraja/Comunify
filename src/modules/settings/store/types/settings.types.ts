@@ -4,5 +4,5 @@ export interface InitialState {
   PlatformFilterResponse: Array<PlatformResponse>;
   TagFilterResponse: Array<TagResponse>;
   PlatformsConnected: Array<ConnectedPlatforms>;
-  clearValue:boolean
+  clearValue: boolean;
 }

@@ -435,7 +435,6 @@ const Activity: React.FC = () => {
                             <div className="flex flex-col">
                               <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31">
                                 {data?.activityTime ? format(parseISO(data?.activityTime as unknown as string), 'MMM dd yyyy') : '--'}
-
                               </div>
                               <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
                                 {data?.activityTime ? format(parseISO(data?.activityTime as unknown as string), 'HH:MM') : '--'}
