@@ -100,8 +100,8 @@ const Tags: React.FC<Props> = ({ hidden }) => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    if (errorMessage) {
-      //
+    if (errorMessage || !tagName) {
+      setErrorMessage(errorMessage || 'TagName is a required field');
     } else {
       if (edit.isEdit && edit.tagId) {
         dispatch(
@@ -137,8 +137,6 @@ const Tags: React.FC<Props> = ({ hidden }) => {
       })
     );
   };
-
-  // const tagOptions = ['op1', 'op2', 'op3', 'op4', 'op5', 'op1', 'op2', 'op3', 'op4', 'op5'];
 
   return (
     <TabPanel hidden={hidden}>
