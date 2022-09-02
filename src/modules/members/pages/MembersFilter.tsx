@@ -1,26 +1,26 @@
 /* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import Button from 'common/button';
-import { ChangeEvent, useEffect, useRef, useState, type FC } from 'react';
-import membersSlice from '../store/slice/members.slice';
-import downArrow from '../../../assets/images/sub-down-arrow.svg';
-import dropdownIcon from '../../../assets/images/Vector.svg';
-import searchIcon from '../../../assets/images/search.svg';
+import useDebounce from '@/hooks/useDebounce';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
-import { MemberTypesProps } from './membertypes';
+import { getLocalWorkspaceId } from '@/lib/helper';
+import Button from 'common/button';
+import { format } from 'date-fns';
+import { PlatformResponse, TagResponse } from 'modules/settings/interface/settings.interface';
+import settingsSlice from 'modules/settings/store/slice/settings.slice';
+import { ChangeEvent, useEffect, useRef, useState, type FC } from 'react';
 import DatePicker, { ReactDatePicker } from 'react-datepicker';
-import './Members.css';
-
 import 'react-datepicker/dist/react-datepicker.css';
 import calendarIcon from '../../../assets/images/calandar.svg';
-import { format } from 'date-fns';
-import { getLocalWorkspaceId } from '@/lib/helper';
-import useDebounce from '@/hooks/useDebounce';
-import { MembersTagResponse, PlatformResponse } from '../interface/members.interface';
+import searchIcon from '../../../assets/images/search.svg';
+import downArrow from '../../../assets/images/sub-down-arrow.svg';
+import dropdownIcon from '../../../assets/images/Vector.svg';
 import usePlatform from '../../../hooks/usePlatform';
+import membersSlice from '../store/slice/members.slice';
+import './Members.css';
+import { MemberTypesProps } from './membertypes';
 
-const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
-  const [isFilterDropdownActive, setisFilterDropdownActive] = useState<boolean>(false);
+const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }) => {
+  const [isFilterDropdownActive, setIsFilterDropdownActive] = useState<boolean>(false);
   const [isPlatformActive, setPlatformActive] = useState<boolean>(true);
   const [isTagActive, setTagActive] = useState<boolean>(false);
   const [isLocationActive, setLocationActive] = useState<boolean>(false);
@@ -41,7 +41,8 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
   const workspaceId = getLocalWorkspaceId();
   const dispatch = useAppDispatch();
   const dropDownRef = useRef<HTMLDivElement>(null);
-  const { membersLocationFilterResponse, membersOrganizationFilterResponse, membersTagFilterResponse } = useAppSelector((state) => state.members);
+  const { membersLocationFilterResponse, membersOrganizationFilterResponse } = useAppSelector((state) => state.members);
+  const { TagFilterResponse } = useAppSelector((state) => state.settings);
   const PlatformFilterResponse = usePlatform();
   const debouncedLocationValue = useDebounce(locationSearchText, 300);
   const debouncedOrganizationValue = useDebounce(organizationSearchText, 300);
@@ -81,12 +82,12 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
 
   const handleOutsideClick = (event: MouseEvent) => {
     if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
-      setisFilterDropdownActive(false);
+      setIsFilterDropdownActive(false);
     }
   };
 
   const handleFilterDropdown = (): void => {
-    setisFilterDropdownActive((prev) => !prev);
+    setIsFilterDropdownActive((prev) => !prev);
   };
 
   const handlePlatformActive = (val: boolean) => {
@@ -155,8 +156,8 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
 
   const getFilteredMembersTagList = (tagText: string) => {
     dispatch(
-      membersSlice.actions.membersTagFilter({
-        membersQuery: { tags: { searchedTags: tagText, checkedTags: '' } },
+      settingsSlice.actions.tagFilterData({
+        settingsQuery: { tags: { searchedTags: tagText, checkedTags: '' } },
         workspaceId: workspaceId!
       })
     );
@@ -166,22 +167,23 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
     event.stopPropagation();
     if (dateTime === 'start') {
       setStartDate(date);
-      setisFilterDropdownActive(true);
+      setIsFilterDropdownActive(true);
     }
 
     if (dateTime === 'end') {
       setEndDate(date);
-      setisFilterDropdownActive(true);
+      setIsFilterDropdownActive(true);
     }
   };
 
-  const handleClickDatepickerIcon = (type: string) => {
+  const handleClickDatePickerIcon = (type: string) => {
     if (type === 'start') {
-      const datepickerElement = datePickerRefStart.current;
-      datepickerElement!.setFocus();
-    } else {
-      const datepickerElement = datePickerRefEnd.current;
-      datepickerElement!.setFocus();
+      const datePickerElement = datePickerRefStart.current;
+      datePickerElement!.setFocus();
+    }
+    if (type === 'end') {
+      const datePickerElement = datePickerRefEnd.current;
+      datePickerElement!.setFocus();
     }
   };
 
@@ -244,6 +246,15 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
       });
     }
 
+    memberFilterExport({
+      checkTags: checkTags.toString(),
+      checkPlatform: checkPlatform.toString(),
+      checkOrganization: checkOrganization.toString(),
+      checkLocation: checkLocation.toString(),
+      endDate: endDate && format(endDate!, 'yyyy-MM-dd'),
+      startDate: startDate && format(startDate!, 'yyyy-MM-dd')
+    });
+
     dispatch(
       membersSlice.actions.membersList({
         membersQuery: {
@@ -290,11 +301,11 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
               </div>
             </div>
             {isPlatformActive && (
-              <div className="flex flex-col gap-y-5 justify-center px-3 pb-3 max-h-[11.25rem] overflow-scroll">
+              <div className="flex flex-col gap-y-5 justify-center p-3 max-h-[11.25rem] overflow-scroll">
                 {PlatformFilterResponse &&
                   PlatformFilterResponse.map(
                     (platform: PlatformResponse, index: number) =>
-                      platform.name !== null && (
+                      platform?.isConnected && (
                         <div className="flex items-center" key={index}>
                           <div className="mr-2">
                             <input
@@ -306,7 +317,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
                               onChange={handlePlatformsCheckBox}
                             />
                           </div>
-                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">{platform.name}</div>
+                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">{platform?.name}</div>
                         </div>
                       )
                   )}
@@ -343,8 +354,8 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
                   </div>
                 </div>
                 <div className="flex flex-col gap-y-5 justify-center px-3 max-h-[12.5rem] overflow-scroll">
-                  {membersTagFilterResponse &&
-                    membersTagFilterResponse.map((tags: MembersTagResponse, index: number) => (
+                  {TagFilterResponse &&
+                    TagFilterResponse.map((tags: TagResponse, index: number) => (
                       <div key={index} className="flex items-center mb-2">
                         <div className="mr-2">
                           <input
@@ -388,12 +399,13 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
                       ref={datePickerRefStart}
+                      dateFormat="dd/MM/yyyy"
                     />
                     <img
                       className="absolute icon-holder right-6 cursor-pointer"
                       src={calendarIcon}
                       alt=""
-                      onClick={() => handleClickDatepickerIcon('start')}
+                      onClick={() => handleClickDatePickerIcon('start')}
                     />
                   </div>
                 </div>
@@ -406,12 +418,13 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
                       ref={datePickerRefEnd}
+                      dateFormat="dd/MM/yyyy"
                     />
                     <img
                       className="absolute icon-holder right-6 cursor-pointer"
                       src={calendarIcon}
                       alt=""
-                      onClick={() => handleClickDatepickerIcon('end')}
+                      onClick={() => handleClickDatePickerIcon('end')}
                     />
                   </div>
                 </div>
@@ -492,7 +505,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit }) => {
                   <input
                     type="text"
                     name="organization"
-                    id="orgaanizationId"
+                    id="organizationId"
                     className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-profileCard rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
                     placeholder="Search Organization"
                     onChange={handleOrganizationSearchTextChange}

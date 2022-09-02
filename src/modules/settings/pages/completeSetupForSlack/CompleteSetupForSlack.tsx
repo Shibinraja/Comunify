@@ -16,13 +16,17 @@ import step6Image from '../../../../assets/images/slack-step-6.svg';
 import step7Image from '../../../../assets/images/slack-step-7.svg';
 import step8Image from '../../../../assets/images/slack-step-8.svg';
 import step9Image from '../../../../assets/images/slack-step-9.svg';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../../../store';
+import settingsSlice from '../../store/slice/settings.slice';
 
 const CompleteSetup: React.FC = () => {
   interface Body {
     workspaceId: string;
-    workspacePlatformSettingsId: string | null;
+    workspacePlatformAuthSettingsId: string | null;
   }
   const navigate = useNavigate();
+  const dispatch: AppDispatch = useDispatch();
   const location: Location | any = useLocation();
   const workspaceId = getLocalWorkspaceId();
 
@@ -30,11 +34,12 @@ const CompleteSetup: React.FC = () => {
     try {
       const body: Body = {
         workspaceId,
-        workspacePlatformSettingsId: location?.state?.workspacePlatformSettingsId || localStorage.getItem('workspacePlatformSettingsId')
+        workspacePlatformAuthSettingsId: location?.state?.workspacePlatformAuthSettingsId || localStorage.getItem('workspacePlatformAuthSettingsId')
       };
       showSuccessToast('Integration in progress...');
       const response: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/slack/complete-setup`, body);
       if (response) {
+        dispatch(settingsSlice.actions.platformData({ workspaceId }));
         showSuccessToast('Successfully integrated');
         navigate(`/${workspaceId}/settings`);
       } else {

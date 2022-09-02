@@ -1,13 +1,22 @@
-import React, { useState } from 'react';
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import useDebounce from '@/hooks/useDebounce';
+import { useAppSelector } from '@/hooks/useRedux';
 import Button from 'common/button';
 import Input from 'common/input';
 import { TabPanel } from 'common/tabs/TabPanel';
+import { showErrorToast } from 'common/toast/toastFunctions';
+import { whiteSpace_regex } from 'constants/constants';
+import { TagResponse } from 'modules/settings/interface/settings.interface';
+import settingsSlice from 'modules/settings/store/slice/settings.slice';
+import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import Modal from 'react-modal';
+import { useDispatch } from 'react-redux';
+import { useParams } from 'react-router';
+import * as Yup from 'yup';
+import deleteBtn from '../../../../assets/images/delete.svg';
 import nextIcon from '../../../../assets/images/next-page-icon.svg';
 import prevIcon from '../../../../assets/images/previous-page-icon.svg';
-import deleteBtn from '../../../../assets/images/delete.svg';
 import './Tags.css';
-import { tagData } from './TagData';
-import Modal from 'react-modal';
 Modal.setAppElement('#root');
 
 type Props = {
@@ -15,7 +24,131 @@ type Props = {
 };
 
 const Tags: React.FC<Props> = ({ hidden }) => {
+  const dispatch = useDispatch();
+  const { workspaceId } = useParams();
+  const [searchText, setSearchText] = useState<string>('');
+  const [tagName, setTagName] = useState<string>('');
+  const [edit, setEdit] = useState<{
+    isEdit: boolean;
+    tagId: string;
+  }>({
+    isEdit: false,
+    tagId: ''
+  });
   const [isTagModalOpen, setTagModalOpen] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | unknown>('');
+
+  const { TagFilterResponse } = useAppSelector((state) => state.settings);
+
+  const debouncedValue = useDebounce(searchText, 300);
+  const TagNameValidation = Yup.string()
+    .min(2, 'Tag Name must be atleast 2 characters')
+    .max(50, 'Tag Name should not exceed above 50 characters')
+    .matches(whiteSpace_regex, 'Whitespaces are not allowed')
+    .required('Tag Name is a required field')
+    .nullable(true);
+
+  useEffect(() => {
+    getTagsList('');
+  }, []);
+
+  // Returns the debounced value of the search text.
+  useEffect(() => {
+    if (debouncedValue) {
+      getTagsList(debouncedValue);
+    }
+  }, [debouncedValue]);
+
+  const getTagsList = (text: string): void => {
+    dispatch(
+      settingsSlice.actions.tagFilterData({
+        settingsQuery: {
+          tags: {
+            checkedTags: '',
+            searchedTags: text
+          }
+        },
+        workspaceId: workspaceId!
+      })
+    );
+  };
+
+  const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const searchText: string = event.target.value;
+    if (searchText === '') {
+      getTagsList('');
+    }
+    setSearchText(searchText);
+  };
+
+  const createTags = (event: ChangeEvent<HTMLInputElement>) => {
+    const tagsName = event.target.value;
+    setTagName(tagsName);
+    try {
+      TagNameValidation.validateSync(tagsName);
+      setErrorMessage('');
+    } catch ({ message }) {
+      setErrorMessage(message);
+    }
+  };
+
+  const handleTagModalOpen = (tagName?: string, id?: string, isEditable?: boolean) => {
+    if (isEditable) {
+      showErrorToast('Not authorized to edit the tag');
+    }
+    if (!isEditable) {
+      setTagName(tagName as string);
+      setEdit({ isEdit: true, tagId: id as string });
+      setTagModalOpen((prev) => !prev);
+      setErrorMessage('');
+    }
+  };
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
+    e.preventDefault();
+    if (errorMessage || !tagName) {
+      setErrorMessage(errorMessage || 'TagName is a required field');
+    } else {
+      if (edit.isEdit && edit.tagId) {
+        dispatch(
+          settingsSlice.actions.updateTags({
+            tagId: edit.tagId,
+            tagBody: {
+              name: tagName,
+              viewName: tagName
+            },
+            workspaceId: workspaceId!
+          })
+        );
+      } else {
+        dispatch(
+          settingsSlice.actions.createTags({
+            tagBody: {
+              name: tagName,
+              viewName: tagName
+            },
+            workspaceId: workspaceId!
+          })
+        );
+      }
+      handleTagModalOpen();
+    }
+  };
+
+  const handleDeleteTagName = (tagId: string, isEditable?: boolean): void => {
+    if (isEditable) {
+      showErrorToast('Not authorized to delete the tag');
+    }
+    if (!isEditable) {
+      dispatch(
+        settingsSlice.actions.deleteTags({
+          tagId,
+          workspaceId: workspaceId!
+        })
+      );
+    }
+  };
+
   return (
     <TabPanel hidden={hidden}>
       {' '}
@@ -30,6 +163,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                     type="text"
                     className="input-search  h-3.06 box-border focus:outline-none px-3 rounded-0.6 shadow-profileCard placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray"
                     placeholder="Search By Name"
+                    onChange={handleSearchTextChange}
                   />
                 </div>
                 <div className="pl-6 ">
@@ -37,7 +171,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                     type="button"
                     text="Add Tag"
                     className="h-3.06 w-7.68 border-none btn-save-modal  rounded font-Poppins font-medium text-white shadow-contactBtn text-error leading-1.31 cursor-pointer"
-                    onClick={() => setTagModalOpen(true)}
+                    onClick={() => handleTagModalOpen()}
                   />
                 </div>
                 <Modal
@@ -58,24 +192,41 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                 >
                   <div className="flex flex-col">
                     <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Add Tag</h3>
-                    <form className="flex flex-col relative px-1.93 mt-9">
+                    <form className="flex flex-col relative px-1.93 mt-9" onSubmit={(e) => handleSubmit(e)}>
                       <label htmlFor="billingName " className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack ">
                         Tag Name
                       </label>
-                      <input
+                      <Input
                         type="text"
                         className="mt-0.375 inputs box-border bg-white shadow-inputShadow rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-sm placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
                         placeholder="Enter Tag Name"
+                        id="tags"
+                        name="tags"
+                        label="Tags"
+                        onChange={createTags}
+                        value={tagName}
+                        errors={Boolean(errorMessage)}
+                        helperText={errorMessage}
                       />
-                      <div className="flex absolute right-1 top-24 pr-6 items-center">
+                      {/* <div className="bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 hidden">
+                        {TagFilterResponse.map((data:TagResponse) => (
+                          <div
+                            key={data.id}
+                            className="p-2 text-searchBlack cursor-pointer font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300"
+                          >
+                            {data.name}
+                          </div>
+                        ))}
+                      </div> */}
+                      <div className="flex justify-end pt-10 items-center">
                         <Button
                           type="button"
                           text="CANCEL"
                           className="mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  w-5.25 h-2.81  rounded border-none"
-                          onClick={() => setTagModalOpen(false)}
+                          onClick={() => handleTagModalOpen()}
                         />
                         <Button
-                          type="button"
+                          type="submit"
                           text="SAVE"
                           className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-5.25 h-2.81  border-none btn-save-modal"
                         />
@@ -103,35 +254,34 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {tagData.map((data, i) => (
+                      {TagFilterResponse.map((data: TagResponse, i) => (
                         <tr className="border" key={i}>
                           <td className="px-6 py-3">
                             <div className="flex ">
-                              <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                                {data.tagName}
-                              </div>
+                              <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.name}</div>
                             </div>
                           </td>
 
                           <td className="px-6 py-3">
                             <div className="flex ">
-                              <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.type}</div>
+                              <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                                {data.viewName}
+                              </div>
                             </div>
                           </td>
-                          {data.type === 'Custom' && (
-                            <td>
-                              <div className="flex">
-                                <Button
-                                  type="button"
-                                  text="Edit"
-                                  className="edit-btn w-6.25 h-2.87 mr-2.5 cursor-pointer text-masterCard font-Poppins font-medium text-trial leading-1.31 rounded box-border shadow-deleteButton"
-                                />
-                                <div className="flex items-center justify-center delete-btn cursor-pointer w-3.12 h-2.87 rounded box-border shadow-deleteButton">
-                                  <img src={deleteBtn} alt="" />
-                                </div>
+                          <td>
+                            <div className="flex">
+                              <Button
+                                type="submit"
+                                text="Edit"
+                                className="edit-btn w-6.25 h-2.87 mr-2.5 cursor-pointer text-masterCard font-Poppins font-medium text-trial leading-1.31 rounded box-border shadow-deleteButton"
+                                onClick={() => handleTagModalOpen(data.name, data.id, data.isEditable)}
+                              />
+                              <div className="flex items-center justify-center delete-btn cursor-pointer w-3.12 h-2.87 rounded box-border shadow-deleteButton">
+                                <img src={deleteBtn} alt="" onClick={() => handleDeleteTagName(data.id, data.isEditable)} />
                               </div>
-                            </td>
-                          )}
+                            </div>
+                          </td>
                         </tr>
                       ))}
                     </tbody>

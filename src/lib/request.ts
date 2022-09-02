@@ -1,10 +1,8 @@
+/* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { default as Axios, default as axios } from 'axios';
-import { showErrorToast } from 'common/toast/toastFunctions';
-import { isBefore } from 'date-fns';
-import { DecodeToken } from 'modules/authentication/interface/auth.interface';
+import axios, { AxiosResponse, default as Axios } from 'axios';
+import { ResponseMessage } from './api';
 import { API_ENDPOINT, auth_module } from './config';
-import { decodeToken } from './decodeToken';
 
 export function getLocalRefreshToken(): string {
   const refreshToken: string | null = localStorage.getItem('accessToken')!;
@@ -19,6 +17,20 @@ const request = Axios.create({
   withCredentials: true
 });
 
+let refresh_token: Promise<AxiosResponse<Record<string, unknown>>> | null = null;
+
+// refresh-token
+const fetch_refresh_token = ():Promise<AxiosResponse<Record<string, unknown>>> => {
+  const response = axios.post(
+    `${API_ENDPOINT}${auth_module}/refreshtoken`,
+    {},
+    {
+      withCredentials: true
+    }
+  ).then((response) => response);
+  return response as Promise<AxiosResponse<Record<string, unknown>>>;
+};
+
 // For Request
 request.interceptors.request.use(
   async(config) => {
@@ -26,25 +38,6 @@ request.interceptors.request.use(
     if (token) {
       config.headers = {
         Authorization: `Bearer ${token}`
-      };
-    }
-    const user: DecodeToken | null = decodeToken(token);
-    const isExpired = user && isBefore(new Date(user?.exp * 1000), new Date());
-    if (!isExpired) {
-      return config;
-    }
-
-    const response = await axios.post(
-      `${API_ENDPOINT}${auth_module}/refreshtoken`,
-      {},
-      {
-        withCredentials: true
-      }
-    );
-    if (response) {
-      localStorage.setItem('accessToken', response?.data?.data?.token);
-      config.headers = {
-        Authorization: `Bearer ${response?.data?.data?.token}`
       };
     }
     return config;
@@ -55,31 +48,33 @@ request.interceptors.request.use(
 // For Response
 request.interceptors.response.use(
   (response) => response,
-  (error) => {
-    const token = getLocalRefreshToken();
+  async(error) => {
+    const config = error.config;
     if (error.response.status === 410) {
       window.location.href = '/subscription/expired';
     }
-    if (error.response.data.message === 'Token expired') {
-      axios
-        .post(
-          `${API_ENDPOINT}${auth_module}/logout`,
-          {},
-          {
-            withCredentials: true,
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }
-        )
-        .then(() => {
-          //
-        })
-        .catch((err) => {
-          showErrorToast(err?.response?.data?.message);
-          window.localStorage.clear();
-          window.location.href = '/';
-        });
+    if(error.response && error.response.status === 401 && !(Object.values<string>(ResponseMessage).includes(error?.response?.data?.message as ResponseMessage))) {
+      return Promise.reject(error);
+    }
+    if (error.response && error.response.status === 401 && !config._retry) {
+      config._retry = true;
+      try {
+        refresh_token = refresh_token ? refresh_token : fetch_refresh_token();
+        const response = await refresh_token;
+        refresh_token = null;
+        const responseData = (response?.data as {data:{token:string}}).data.token;
+        if (responseData) {
+          localStorage.setItem('accessToken', responseData);
+          config.headers = {
+            Authorization: `Bearer ${responseData}`
+          };
+        }
+        return request(config);
+      } catch (err) {
+        window.localStorage.clear();
+        window.location.href = '/';
+        return Promise.reject(err);
+      }
     }
     return Promise.reject(error);
   }

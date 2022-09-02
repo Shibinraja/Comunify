@@ -2,9 +2,8 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import Button from 'common/button';
 import MembersCard from 'common/membersCard/MembersCard';
-import React, {
-  ChangeEvent, Fragment, Key, ReactNode, useEffect, useMemo, useRef, useState
-} from 'react';
+// eslint-disable-next-line object-curly-newline
+import React, { ChangeEvent, Fragment, Key, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import DatePicker, { ReactDatePicker } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Modal from 'react-modal';
@@ -22,26 +21,28 @@ import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
 import Pagination from 'common/pagination/pagination';
 import { format, parseISO, subDays, subMonths } from 'date-fns';
 import noMemberIcon from '../../../assets/images/no-member.svg';
-import slackIcon from '../../../assets/images/slack.svg';
 import membersSlice from '../store/slice/members.slice';
 import MembersFilter from './MembersFilter';
 import MembersDraggableColumn from './membersTableColumn/membersDraggableColumn';
 import { ColumNames } from './MembersTableData';
-import { customDateLinkProps } from './membertypes';
+import { customDateLinkProps, filterDateProps, memberFilterExportProps } from './membertypes';
 import { CustomDateType } from '../interface/members.interface';
 import { API_ENDPOINT } from '@/lib/config';
 import Skeleton from 'react-loading-skeleton';
 import fetchExportList from '@/lib/fetchExport';
 import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 import { width_90 } from 'constants/constants';
+import settingsSlice from 'modules/settings/store/slice/settings.slice';
+import ReactTooltip from 'react-tooltip';
 
 Modal.setAppElement('#root');
 
 const Members: React.FC = () => {
+  const limit = 10;
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { workspaceId } = useParams();
-  const [isModalOpen, setisModalOpen] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [columns, setColumns] = useState<Array<ColumnNameProps>>(ColumNames);
   const [customizedColumnBool, saveCustomizedColumn] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
@@ -53,10 +54,21 @@ const Members: React.FC = () => {
     '7day': false,
     '1month': false
   });
-  const [isFilterDropdownActive, setisFilterDropdownActive] = useState<boolean>(false);
-  const memberColumnsloader = useSkeletonLoading(membersSlice.actions.membersList.type);
+  const [filteredDate, setFilteredDate] = useState<filterDateProps>({
+    filterStartDate: '',
+    filterEndDate: ''
+  });
+  const [isFilterDropdownActive, setIsFilterDropdownActive] = useState<boolean>(false);
+  const [filterExportParams, setFilterExportParams] = useState<memberFilterExportProps>({
+    checkTags: '',
+    checkPlatform: '',
+    checkOrganization: '',
+    checkLocation: '',
+    endDate: '',
+    startDate: ''
+  });
 
-  const limit = 10;
+  const memberColumnsLoader = useSkeletonLoading(membersSlice.actions.membersList.type);
 
   const datePickerRefStart = useRef<ReactDatePicker>(null);
   const datePickerRefEnd = useRef<ReactDatePicker>(null);
@@ -66,12 +78,12 @@ const Members: React.FC = () => {
   const dropDownRef = useRef<HTMLDivElement>(null);
 
   const handleFilterDropdown = (): void => {
-    setisFilterDropdownActive((prev) => !prev);
+    setIsFilterDropdownActive((prev) => !prev);
   };
 
   const handleOutsideClick = (event: MouseEvent) => {
     if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
-      setisFilterDropdownActive(false);
+      setIsFilterDropdownActive(false);
     }
   };
 
@@ -91,8 +103,8 @@ const Members: React.FC = () => {
     dispatch(membersSlice.actions.membersCountAnalytics({ workspaceId: workspaceId! }));
     dispatch(membersSlice.actions.membersActivityAnalytics({ workspaceId: workspaceId! }));
     dispatch(
-      membersSlice.actions.membersTagFilter({
-        membersQuery: { tags: { searchedTags: '', checkedTags: '' } },
+      settingsSlice.actions.tagFilterData({
+        settingsQuery: { tags: { searchedTags: '', checkedTags: '' } },
         workspaceId: workspaceId!
       })
     );
@@ -117,7 +129,16 @@ const Members: React.FC = () => {
       membersSlice.actions.membersList({
         membersQuery: {
           page,
-          limit
+          limit,
+          search: '',
+          'createdAT.gte': filterExportParams.startDate && filterExportParams.startDate,
+          'createdAT.lte': filterExportParams.endDate && filterExportParams.endDate,
+          tags: { searchedTags: '', checkedTags: filterExportParams.checkTags.toString() },
+          platforms: filterExportParams.checkPlatform.toString(),
+          organization: { searchedOrganization: '', checkedOrganization: filterExportParams.checkOrganization.toString() },
+          location: { searchedLocation: '', checkedLocation: filterExportParams.checkLocation.toString() },
+          'lastActivity.lte': filterExportParams.endDate && filterExportParams.endDate,
+          'lastActivity.gte': filterExportParams.startDate && filterExportParams.startDate
         },
         workspaceId: workspaceId!
       })
@@ -148,6 +169,7 @@ const Members: React.FC = () => {
 
   // Function to dispatch the search text to hit api of member list.
   const getFilteredMembersList = (pageNumber: number, text: string, date?: string, endDate?: string) => {
+    setFilteredDate((prevDate) => ({ ...prevDate, filterStartDate: date!, filterEndDate: endDate! }));
     dispatch(
       membersSlice.actions.membersList({
         membersQuery: {
@@ -155,7 +177,13 @@ const Members: React.FC = () => {
           limit,
           search: text,
           'createdAT.gte': date,
-          'createdAT.lte': endDate
+          'createdAT.lte': endDate,
+          tags: { searchedTags: '', checkedTags: filterExportParams.checkTags.toString() },
+          platforms: filterExportParams.checkPlatform.toString(),
+          organization: { searchedOrganization: '', checkedOrganization: filterExportParams.checkOrganization.toString() },
+          location: { searchedLocation: '', checkedLocation: filterExportParams.checkLocation.toString() },
+          'lastActivity.lte': filterExportParams.endDate && filterExportParams.endDate,
+          'lastActivity.gte': filterExportParams.startDate && filterExportParams.startDate
         },
         workspaceId: workspaceId!
       })
@@ -167,7 +195,7 @@ const Members: React.FC = () => {
   };
 
   const handleModalClose = (): void => {
-    setisModalOpen(false);
+    setIsModalOpen(false);
     saveCustomizedColumn(false);
   };
 
@@ -198,12 +226,12 @@ const Members: React.FC = () => {
     event.stopPropagation();
     if (dateTime === 'start') {
       setCustomStartDate(date);
-      setisFilterDropdownActive(true);
+      setIsFilterDropdownActive(true);
     }
 
     if (dateTime === 'end') {
       setCustomEndDate(date);
-      setisFilterDropdownActive(true);
+      setIsFilterDropdownActive(true);
     }
   };
 
@@ -217,7 +245,20 @@ const Members: React.FC = () => {
 
   // Fetch members list data in comma separated value
   const fetchMembersListExportData = () => {
-    fetchExportList(`${API_ENDPOINT}/v1/${workspaceId}/members/memberlistexport`, 'MembersListExport.xlsx');
+    fetchExportList(
+      `${API_ENDPOINT}/v1/${workspaceId}/members/memberlistexport`,
+      {
+        tags: filterExportParams.checkTags,
+        platforms: filterExportParams.checkPlatform,
+        location: filterExportParams.checkLocation,
+        organization: filterExportParams.checkOrganization,
+        'lastActivity.lte': filterExportParams.endDate,
+        'lastActivity.gte': filterExportParams.startDate,
+        'createdAT.gte': filteredDate.filterStartDate,
+        'createdAT.lte': filteredDate.filterEndDate
+      },
+      'MembersListExport.xlsx'
+    );
   };
 
   // Function to map customized column with api data response to create a new column array with index matching with customized column.
@@ -241,15 +282,15 @@ const Members: React.FC = () => {
     []
   );
 
-  // Memoized functionality to stop re-renderization.
+  // Memoized functionality to stop re-render.
   const membersColumn = useMemo(
     () => <MembersDraggableColumn MembersColumn={customizedColumnBool} handleModalClose={handleModalClose} />,
     [customizedColumnBool]
   );
 
-  const MemberFilter = useMemo(() => <MembersFilter page={page} limit={limit} />, []);
+  const MemberFilter = useMemo(() => <MembersFilter page={page} limit={limit} memberFilterExport={setFilterExportParams} />, []);
 
-  const handleClickDatepickerIcon = (type: string) => {
+  const handleClickDatePickerIcon = (type: string) => {
     if (type === 'start') {
       const datePickerElement = datePickerRefStart.current;
       datePickerElement!.setFocus();
@@ -258,6 +299,18 @@ const Members: React.FC = () => {
       const datePickerElement = datePickerRefEnd.current;
       datePickerElement!.setFocus();
     }
+  };
+
+  const handleUnAssignTagsName = (memberId: string, id: string): void => {
+    dispatch(
+      settingsSlice.actions.unAssignTags({
+        memberId: memberId!,
+        unAssignTagBody: {
+          tagId: id
+        },
+        workspaceId: workspaceId!
+      })
+    );
   };
 
   return (
@@ -302,16 +355,6 @@ const Members: React.FC = () => {
         >
           1M
         </div>
-
-        {/* <div className="relative flex items-center  ml-0.653 ">
-          <DatePicker
-            selected={toDate}
-            onChange={(date: Date) => selectCustomDate('', date)}
-            className="export w-9.92 h-3.06  shadow-contactCard rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
-            placeholderText="Custom Date"
-          />
-          <img className="absolute icon-holder left-32 cursor-pointer" src={calendarIcon} alt="" />
-        </div> */}
         <div className="box-border cursor-pointer rounded-0.6 shadow-contactCard app-input-card-border relative ml-5" ref={dropDownRef}>
           <div className="flex h-3.06 w-[11.25rem] items-center justify-between px-5 " onClick={handleFilterDropdown}>
             <div className="box-border rounded-0.6 shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">
@@ -334,12 +377,13 @@ const Members: React.FC = () => {
                         className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                         placeholderText="DD/MM/YYYY"
                         ref={datePickerRefStart}
+                        dateFormat="dd/MM/yyyy"
                       />
                       <img
                         className="absolute icon-holder right-6 cursor-pointer"
                         src={calendarIcon}
                         alt=""
-                        onClick={() => handleClickDatepickerIcon('start')}
+                        onClick={() => handleClickDatePickerIcon('start')}
                       />
                     </div>
                   </div>
@@ -352,12 +396,13 @@ const Members: React.FC = () => {
                         className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                         placeholderText="DD/MM/YYYY"
                         ref={datePickerRefEnd}
+                        dateFormat="dd/MM/yyyy"
                       />
                       <img
                         className="absolute icon-holder right-6 cursor-pointer"
                         src={calendarIcon}
                         alt=""
-                        onClick={() => handleClickDatepickerIcon('end')}
+                        onClick={() => handleClickDatePickerIcon('end')}
                       />
                     </div>
                   </div>
@@ -381,7 +426,7 @@ const Members: React.FC = () => {
       {customizedColumn && (customizedColumn?.[0]?.name as { name: string; id: string })?.name ? (
         <div className="memberTable mt-1.8">
           <div className="py-2 overflow-x-auto mt-1.868">
-            <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto sticky top-0 fixTableHead max-h-34 min-h-[31.25rem]">
+            <div className="inline-block min-w-full overflow-hidden align-middle rounded-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto sticky top-0 fixTableHead max-h-34 min-h-[31.25rem]">
               <table className="min-w-full relative  rounded-t-0.6 ">
                 <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
                   <tr className="min-w-full">
@@ -404,7 +449,7 @@ const Members: React.FC = () => {
                       {Object.keys(member).map((column: keyof typeof member, index) => (
                         <td className="px-6 py-4" key={index}>
                           {column === 'name' ? (
-                            memberColumnsloader ? (
+                            memberColumnsLoader ? (
                               <Skeleton width={width_90} />
                             ) : (
                               <div className="flex ">
@@ -417,70 +462,86 @@ const Members: React.FC = () => {
                               </div>
                             )
                           ) : column === 'platforms' ? (
-                            memberColumnsloader ? (
+                            memberColumnsLoader ? (
                               <Skeleton width={width_90} />
                             ) : (
-                              <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 h-1.375 w-1.375 flex" key={index}>
-                                <img className="m-1 h-1.375 w-1.375 mt-0" src={slackIcon} title="Slack" />
-                                {/* <p className='h-1.375 w-1.375'>{'Slack'}</p> */}
+                              <div className="flex gap-x-2">
+                                {(member?.platforms as Array<{ id: string; name: string; platformLogoUrl: string }>)?.map(
+                                  (platforms: { name: string; id: string; platformLogoUrl: string }, index: number) => (
+                                    <div
+                                      className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer w-[1.3419rem] h-[1.3419rem] rounded-full"
+                                      key={index}
+                                    >
+                                      <img src={platforms?.platformLogoUrl} alt="" className="rounded-full" />
+                                    </div>
+                                  )
+                                )}
                               </div>
                             )
-                          ) : //    <div className="flex gap-x-2">
-                          //   {(member?.platforms as Array<{id:string, name:string}>)?.map((platforms: { name: string, id:string }, index: number) => (
-                          //     <div
-                          //       className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer h-1.375 w-1.375"
-                          //       key={index}
-                          //     >
-                          //       {'Slack'}
-                          //     </div>
-                          //   ))}
-                          // </div>
-                            column === 'tags' ? (
-                              memberColumnsloader ? (
-                                <Skeleton width={width_90} />
-                              ) : (
-                                <div className="flex ">
-                                  <div className="py-3 flex gap-2 items-center font-Poppins font-medium text-trial text-infoBlack leading-1.31">
-                                    {(member?.tags as Array<{ tag: { name: '' } }>)
-                                      ?.slice(0, 2)
-                                      .map((tags: { tag: { name: string } }, index: number) => (
-                                        <div className="bg-tagSection rounded w-5.25 h-8 flex justify-between px-3 items-center" key={index}>
-                                          <div className="font-Poppins font-normal text-card text-profileBlack leading-5">{tags?.tag?.name}</div>
-                                          <div>
-                                            <img src={closeIcon} alt="" />
-                                          </div>
-                                        </div>
-                                      ))}
-                                    <div className="font-Poppins font-semibold leading-5 text-tag text-card underline">
-                                      {(member?.tags as Array<Record<string, unknown>>)?.length > 2
-                                        ? `${(member?.tags as Array<Record<string, unknown>>)?.length - 2} more`
-                                        : ''}{' '}
-                                    </div>
-                                  </div>
-                                </div>
-                              )
-                            ) : column === 'lastActivity' ? (
-                              memberColumnsloader ? (
-                                <Skeleton width={width_90} />
-                              ) : (
-                                <div className="flex flex-col">
-                                  <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
-                                    {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'MMM dd yyyy') : '--'}
-                                  </div>
-                                  <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
-                                    {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'HH:MM') : '--'}
-                                  </div>
-                                </div>
-                              )
-                            ) : memberColumnsloader ? (
+                          ) : column === 'tags' ? (
+                            memberColumnsLoader ? (
                               <Skeleton width={width_90} />
                             ) : (
                               <div className="flex ">
-                                <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
-                                  {member[column] as ReactNode}
+                                <div className="py-3 flex gap-2 items-center flex-wrap font-Poppins font-medium text-trial text-infoBlack leading-1.31">
+                                  {(member?.tags as Array<{ id: string; name: string }>)
+                                    ?.slice(0, 2)
+                                    .map((tags: { name: string; id: string }, index: number) => (
+                                      <>
+                                        <div
+                                          data-tip
+                                          data-for={tags.name}
+                                          className="bg-tagSection rounded h-8 flex justify-between px-3 items-center cursor-pointer"
+                                          key={index}
+                                        >
+                                          <div className="font-Poppins font-normal text-card text-profileBlack leading-5 pr-4 tags-ellipse">
+                                            {tags?.name}
+                                          </div>
+                                          <div>
+                                            <img
+                                              src={closeIcon}
+                                              alt=""
+                                              onClick={() =>
+                                                handleUnAssignTagsName((member?.name as { name: string; id: string })?.id as string, tags.id)
+                                              }
+                                            />
+                                          </div>
+                                        </div>
+                                        <ReactTooltip id={tags.name} textColor="" backgroundColor="" effect="solid">
+                                          <span className="font-Poppins text-card font-normal leading-5 pr-4">{tags.name}</span>
+                                        </ReactTooltip>
+                                      </>
+                                    ))}
+                                  <div className="font-Poppins font-semibold leading-5 text-tag text-card underline">
+                                    {(member?.tags as Array<Record<string, unknown>>)?.length > 2
+                                      ? `${(member?.tags as Array<Record<string, unknown>>)?.length - 2} more`
+                                      : ''}{' '}
+                                  </div>
                                 </div>
                               </div>
-                            )}
+                            )
+                          ) : column === 'lastActivity' ? (
+                            memberColumnsLoader ? (
+                              <Skeleton width={width_90} />
+                            ) : (
+                              <div className="flex flex-col">
+                                <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
+                                  {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'MMM dd yyyy') : '--'}
+                                </div>
+                                <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
+                                  {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'HH:MM') : '--'}
+                                </div>
+                              </div>
+                            )
+                          ) : memberColumnsLoader ? (
+                            <Skeleton width={width_90} />
+                          ) : (
+                            <div className="flex ">
+                              <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
+                                {member[column] as ReactNode}
+                              </div>
+                            </div>
+                          )}
                         </td>
                       ))}
                     </tr>
@@ -496,7 +557,7 @@ const Members: React.FC = () => {
               <div className="fixed bottom-10 right-32">
                 <div
                   className="btn-drag p-3 flex items-center justify-center cursor-pointer shadow-dragButton rounded-0.6 "
-                  onClick={() => setisModalOpen(true)}
+                  onClick={() => setIsModalOpen(true)}
                 >
                   <img src={editIcon} alt="" />
                 </div>
@@ -504,8 +565,19 @@ const Members: React.FC = () => {
               <Modal
                 isOpen={isModalOpen}
                 shouldCloseOnOverlayClick={true}
-                onRequestClose={() => setisModalOpen(false)}
-                className="w-24.31 mx-auto mt-9.18  pb-20 bg-white border-fetching-card rounded-lg shadow-modal outline-none"
+                onRequestClose={() => setIsModalOpen(false)}
+                className="w-24.31 mx-auto pb-20 bg-white border-fetching-card rounded-lg shadow-modal outline-none"
+                style={{
+                  overlay: {
+                    display: 'flex',
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: 0,
+                    alignItems: 'center'
+                  }
+                }}
               >
                 <div className="flex flex-col px-1.68 relative">
                   <h3 className="font-Inter font-semibold text-xl mt-1.8  leading-6">Customize Column</h3>

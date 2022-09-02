@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unnecessary-type-constraint */
 import type { AxiosResponse } from 'axios';
 
@@ -27,6 +28,7 @@ export type NetworkResponse<T> = {
 export type IntegrationResponse<T> = {
   data: {
     data: T;
+    message?: string;
   };
   status: number;
   statusText: string;
@@ -43,6 +45,13 @@ export type AxiosError<T> = {
   request: XMLHttpRequest;
   response: NetworkResponse<T>;
 };
+
+export enum ResponseMessage {
+  TokenExpired = 'Token expired',
+  InvalidToken = 'Invalid Token',
+  JWTExpired = 'jwt expired',
+  NoAuthToken = 'No auth token'
+}
 
 export type ServerResponse<T extends unknown = unknown> = AxiosResponse<SuccessResponse<T>>;
 

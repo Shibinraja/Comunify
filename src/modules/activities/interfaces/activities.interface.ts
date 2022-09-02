@@ -1,15 +1,16 @@
 export interface ProfileModal {
   id: string;
-  isOpen: false | boolean;
+  isOpen: boolean;
   memberName: string;
   email: string;
   organization: string;
   memberProfileUrl: string;
   profilePictureUrl: string | null;
+  platformLogoUrl: string | null;
 }
 
 export interface ActivityCard {
-  isOpen: false | boolean;
+  isOpen: boolean;
   memberName: string;
   email: string;
   organization: string;
@@ -20,6 +21,9 @@ export interface ActivityCard {
   activityTime: Date;
   profilePictureUrl: string | null;
   value: string | null;
+  platformLogoUrl: string | null;
+  memberId:string
+  activityId:string
 }
 
 export interface workspaceId {
@@ -69,8 +73,10 @@ export interface ActiveStreamData {
   platform: string;
   type: string;
   value: string;
+  channelId: string;
   displayValue: string;
   sourceUrl: null | string;
+  platformLogoUrl: string;
   description: string;
   comunifyMemberId: string;
   profilePictureUrl: string;
@@ -96,10 +102,11 @@ export interface ActiveStreamResponse {
 }
 
 export type ActiveStreamTagResponse = {
-  createdAt: string;
-  id: string;
-  name: string;
-  updatedAt: Date;
-  viewName: string;
-  workspaceId: string;
+  id:string,
+  name:string,
+  viewName:string,
+  type:string,
+  createdAt:string,
+  createdBy:string,
+  isEditable:boolean
 };

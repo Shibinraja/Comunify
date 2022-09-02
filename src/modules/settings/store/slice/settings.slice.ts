@@ -1,25 +1,76 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { PlatformResponse } from '../../interface/settings.interface';
+import { workspaceId } from '../../../members/interface/members.interface';
+import {
+  assignTagProps,
+  ConnectedPlatforms,
+  createTagProps,
+  GetTagListQueryParams,
+  PlatformResponse,
+  TagResponse,
+  unAssignTagProps,
+  updateTagProps
+} from '../../interface/settings.interface';
 import { InitialState } from '../types/settings.types';
 
 const initialState: InitialState = {
-  PlatformFilterResponse: []
+  PlatformFilterResponse: [],
+  PlatformsConnected: [],
+  TagFilterResponse: [],
+  clearValue: false
 };
 
-const platformData = (state: InitialState) => state;
+//Saga Call
+const platformData = (state: InitialState, action: PayloadAction<workspaceId>) => state;
+const tagFilterData = (state: InitialState, action: PayloadAction<Partial<GetTagListQueryParams>>) => state;
+const createTags = (state: InitialState, action: PayloadAction<createTagProps>) => state;
+const updateTags = (state: InitialState, action: PayloadAction<updateTagProps>) => state;
+const deleteTags = (state: InitialState, action: PayloadAction<Omit<updateTagProps, 'tagBody'>>) => state;
+const assignTags = (state: InitialState, action: PayloadAction<assignTagProps>) => state;
+const unAssignTags = (state: InitialState, action: PayloadAction<unAssignTagProps>) => state;
 
+//Reducer Call
+
+//Reducer Call
 const getPlatformFilterData = (state: InitialState, action: PayloadAction<Array<PlatformResponse>>) => ({
   ...state,
   PlatformFilterResponse: action.payload
+});
+
+const connectedPlatforms = (state: InitialState, action: PayloadAction<workspaceId>) => state;
+
+const getConnectedPlatformsData = (state: InitialState, action: PayloadAction<Array<ConnectedPlatforms>>) => ({
+  ...state,
+  PlatformsConnected: action.payload
+});
+
+const getTagFilterData = (state: InitialState, action: PayloadAction<Array<TagResponse>>) => ({
+  ...state,
+  TagFilterResponse: action.payload
+});
+
+const resetValue = (state: InitialState, action: PayloadAction<boolean>) => ({
+  ...state,
+  clearValue: action.payload
 });
 
 const settingsSlice = createSlice({
   name: 'activities',
   initialState,
   reducers: {
+    resetValue,
     platformData,
-    getPlatformFilterData
+    tagFilterData,
+    getPlatformFilterData,
+    getTagFilterData,
+    createTags,
+    updateTags,
+    deleteTags,
+    assignTags,
+    unAssignTags,
+    connectedPlatforms,
+    getConnectedPlatformsData
   }
 });
 

@@ -57,6 +57,11 @@ input {
   display: none;
 }
 
+.no-scrollbar-firefox {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 .app-input-card-border {
   border: 1px solid #dbd8fc;
 }
@@ -267,7 +272,7 @@ input {
 .height-member-activity {
   height: calc(100vh - 44.5rem);
   /* min-height: 150px; */
-  max-height: 300px;
+  max-height: 241px;
 }
 
 .member-section::-webkit-scrollbar {
@@ -451,13 +456,27 @@ input {
   box-shadow: 0 -7px 0px rgb(0, 0, 0, 0.09), 0 1px 1px rgb(0, 0, 0, 0.2);
 }
 .members-list-height {
-  height: calc(100vh - 25rem);
+  height: calc(100vh - 16rem);
   overflow: scroll;
   max-height: 521px;
 }
 
 .activity-list-height {
-  height: calc(100vh - 25rem);
+  height: calc(100vh - 2rem);
   overflow: scroll;
   max-height: 410px;
+}
+
+.tags-ellipse {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  min-width: 50px;
+  max-width: 200px;
+}
+.fixReportHistoryTableHead {
+  height: calc(100vh - 21rem);
+}
+.border-download {
+  border: 1px solid #eaedf3;
 }
