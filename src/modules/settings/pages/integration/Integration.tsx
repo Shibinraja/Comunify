@@ -273,7 +273,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
                   />
                 </div>
               ) : (
-                <Skeleton width={300} count={8} />
+                <Skeleton width={150} count={8} />
               )}
             </div>
           ))}
