@@ -180,7 +180,8 @@ const Activity: React.FC = () => {
       profilePictureUrl: data?.profilePictureUrl,
       value: data?.value,
       platformLogoUrl: data?.platformLogoUrl,
-      memberId: data?.memberId
+      memberId: data?.memberId,
+      activityId: data?.activityId
     });
     dispatch(membersSlice.actions.getMemberProfileCardData({ workspaceId: workspaceId!, memberId: data.memberId }));
   };
@@ -281,7 +282,7 @@ const Activity: React.FC = () => {
         assignTagBody: {
           name: tags.tagName,
           viewName: tags.tagName,
-          activityId: tags.tagId,
+          activityId: ActivityCard?.activityId,
           type: 'Activity' as AssignTypeEnum.Activity
         },
         workspaceId: workspaceId!
@@ -467,7 +468,8 @@ const Activity: React.FC = () => {
                                       profilePictureUrl: data?.profilePictureUrl,
                                       value: data?.value,
                                       platformLogoUrl: data?.platformLogoUrl,
-                                      memberId: data?.memberId
+                                      memberId: data?.memberId,
+                                      activityId: data?.activityId
                                     })
                                   }
                                 >
