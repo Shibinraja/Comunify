@@ -95,6 +95,7 @@ const CreateReport = () => {
                   className="w-9.92 2xl:w-full h-3.06 app-result-card-border shadow-reportInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                   placeholderText="From"
                   ref={datepickerRefFrom}
+                  dateFormat='dd/MM/yyyy'
                 />
                 <img
                   className="absolute icon-holder right-4 cursor-pointer"
@@ -110,6 +111,7 @@ const CreateReport = () => {
                   className="w-9.92 2xl:w-full h-3.06 app-result-card-border shadow-reportInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                   placeholderText="To"
                   ref={datepickerRefTo}
+                  dateFormat='dd/MM/yyyy'
                 />
                 <img
                   className="absolute icon-holder right-4 cursor-pointer"
