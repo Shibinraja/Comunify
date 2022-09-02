@@ -469,7 +469,7 @@ const Activity: React.FC = () => {
                                       value: data?.value,
                                       platformLogoUrl: data?.platformLogoUrl,
                                       memberId: data?.memberId,
-                                      activityId: data?.activityId
+                                      activityId: data?.id
                                     })
                                   }
                                 >
