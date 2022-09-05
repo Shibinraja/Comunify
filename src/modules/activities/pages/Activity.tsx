@@ -448,8 +448,8 @@ const Activity: React.FC = () => {
                             <Skeleton width={width_90} />
                           ) : (
                             <div className="flex ">
-                              <div className="mr-2 w-[1.3419rem] h-[1.3419rem]">
-                                <img src={data?.platformLogoUrl} alt="" className="rounded-full" />
+                              <div className="mr-2 w-[2.3419rem] 2xl:w-[1.3419rem] h-4">
+                                <img src={data?.platformLogoUrl} alt="" className="rounded-full w-[1.3419rem] h-[1.3419rem]" />
                               </div>
                               <div className="flex flex-col">
                                 <div
