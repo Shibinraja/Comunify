@@ -22,8 +22,8 @@ export interface ActivityCard {
   profilePictureUrl: string | null;
   value: string | null;
   platformLogoUrl: string | null;
-  memberId:string
-  activityId:string
+  memberId: string;
+  activityId: string;
 }
 
 export interface workspaceId {
@@ -79,6 +79,7 @@ export interface ActiveStreamData {
   platformLogoUrl: string;
   description: string;
   comunifyMemberId: string;
+  organization: string;
   profilePictureUrl: string;
   platformId: string;
   createdAt: Date;
@@ -102,11 +103,11 @@ export interface ActiveStreamResponse {
 }
 
 export type ActiveStreamTagResponse = {
-  id:string,
-  name:string,
-  viewName:string,
-  type:string,
-  createdAt:string,
-  createdBy:string,
-  isEditable:boolean
+  id: string;
+  name: string;
+  viewName: string;
+  type: string;
+  createdAt: string;
+  createdBy: string;
+  isEditable: boolean;
 };
