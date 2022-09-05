@@ -301,7 +301,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
               </div>
             </div>
             {isPlatformActive && (
-              <div className="flex flex-col gap-y-5 justify-center p-3 max-h-[11.25rem] overflow-scroll">
+              <div className="flex flex-col gap-y-5 p-3 max-h-[11.25rem] overflow-scroll">
                 {PlatformFilterResponse &&
                   PlatformFilterResponse.map(
                     (platform: PlatformResponse, index: number) =>
@@ -353,7 +353,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
                     <img src={searchIcon} alt="" />
                   </div>
                 </div>
-                <div className="flex flex-col gap-y-5 justify-center px-3 max-h-[12.5rem] overflow-scroll">
+                <div className="flex flex-col gap-y-5 px-3 max-h-[12.5rem] overflow-scroll">
                   {TagFilterResponse &&
                     TagFilterResponse.map((tags: TagResponse, index: number) => (
                       <div key={index} className="flex items-center mb-2">
@@ -460,7 +460,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
                     <img src={searchIcon} alt="" />
                   </div>
                 </div>
-                <div className="flex flex-col gap-y-5 justify-center px-3 max-h-[12.5rem] overflow-scroll bg-white">
+                <div className="flex flex-col gap-y-5 px-3 max-h-[12.5rem] overflow-scroll bg-white">
                   {membersLocationFilterResponse &&
                     membersLocationFilterResponse.map(
                       (location: { location: string }, index: number) =>
@@ -514,7 +514,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
                     <img src={searchIcon} alt="" />
                   </div>
                 </div>
-                <div className="flex flex-col gap-y-5 justify-center px-3  bg-white max-h-[12.5rem] overflow-scroll">
+                <div className="flex flex-col gap-y-5 px-3  bg-white max-h-[12.5rem] overflow-scroll">
                   {membersOrganizationFilterResponse &&
                     membersOrganizationFilterResponse.map(
                       (organization: { organization: string }, index: number) =>
