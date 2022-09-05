@@ -236,77 +236,88 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                 </Modal>
               </div>
             </div>
-            <div className="billingTable mt-1.8">
-              <div className="py-2 overflow-x-auto mt-1.868">
-                <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-t-0.6  no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixTagsTableHead min-h-[31.25rem]">
-                  <table className="min-w-full relative  rounded-t-0.6 ">
-                    <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
-                      <tr className="min-w-full">
-                        <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white  bg-tableHeaderGray">
-                          Tag Name
-                        </th>
-                        <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white  bg-tableHeaderGray">
-                          Type
-                        </th>
-                        <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white  bg-tableHeaderGray">
-                          Action
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {TagFilterResponse.map((data: TagResponse, i) => (
-                        <tr className="border" key={i}>
-                          <td className="px-6 py-3">
-                            <div className="flex ">
-                              <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.name}</div>
-                            </div>
-                          </td>
-
-                          <td className="px-6 py-3">
-                            <div className="flex ">
-                              <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                                {data.viewName}
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div className="flex">
-                              <Button
-                                type="submit"
-                                text="Edit"
-                                className="edit-btn w-6.25 h-2.87 mr-2.5 cursor-pointer text-masterCard font-Poppins font-medium text-trial leading-1.31 rounded box-border shadow-deleteButton"
-                                onClick={() => handleTagModalOpen(data.name, data.id, data.isEditable)}
-                              />
-                              <div className="flex items-center justify-center delete-btn cursor-pointer w-3.12 h-2.87 rounded box-border shadow-deleteButton">
-                                <img src={deleteBtn} alt="" onClick={() => handleDeleteTagName(data.id, data.isEditable)} />
-                              </div>
-                            </div>
-                          </td>
+            {TagFilterResponse.length > 0 ? (
+              <div className="billingTable mt-1.8">
+                <div className="py-2 overflow-x-auto mt-1.868">
+                  <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-t-0.6  no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixTagsTableHead min-h-[31.25rem]">
+                    <table className="min-w-full relative  rounded-t-0.6 ">
+                      <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
+                        <tr className="min-w-full">
+                          <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white  bg-tableHeaderGray">
+                            Tag Name
+                          </th>
+                          <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white  bg-tableHeaderGray">
+                            Type
+                          </th>
+                          <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white  bg-tableHeaderGray">
+                            Action
+                          </th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {TagFilterResponse.map((data: TagResponse, i) => (
+                          <tr className="border" key={i}>
+                            <td className="px-6 py-3">
+                              <div className="flex ">
+                                <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.name}</div>
+                              </div>
+                            </td>
+
+                            <td className="px-6 py-3">
+                              <div className="flex ">
+                                <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                                  {data.viewName}
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                              <div className="flex">
+                                <Button
+                                  type="submit"
+                                  text="Edit"
+                                  className="edit-btn w-6.25 h-2.87 mr-2.5 cursor-pointer text-masterCard font-Poppins font-medium text-trial leading-1.31 rounded box-border shadow-deleteButton"
+                                  onClick={() => handleTagModalOpen(data.name, data.id, data.isEditable)}
+                                />
+                                <div className="flex items-center justify-center delete-btn cursor-pointer w-3.12 h-2.87 rounded box-border shadow-deleteButton">
+                                  <img src={deleteBtn} alt="" onClick={() => handleDeleteTagName(data.id, data.isEditable)} />
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div className="px-6 py-6 flex items-center justify-center gap-0.66 w-full rounded-b-lg bg-white bottom-0">
+                  <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
+                    <img src={prevIcon} alt="" />
+                  </div>
+                  <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">1</div>
+                  <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">2</div>
+                  <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">3</div>
+                  <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">4</div>
+                  <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">...</div>
+                  <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">10</div>
+                  <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
+                    <img src={nextIcon} alt="" />
+                  </div>
+                  <div className="font-Lato font-normal text-pageNumber leading-4 text-pagination cursor-pointer">Go to page:</div>
+                  <div>
+                    <Input
+                      name="pagination"
+                      id="page"
+                      type="text"
+                      className="page-input focus:outline-none px-0.5 rounded box-border w-1.47 h-1.51"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-        <div className="px-6 py-6 flex items-center justify-center gap-0.66 w-full rounded-b-lg bg-white bottom-0">
-          <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
-            <img src={prevIcon} alt="" />
-          </div>
-          <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">1</div>
-          <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">2</div>
-          <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">3</div>
-          <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">4</div>
-          <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">...</div>
-          <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">10</div>
-          <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
-            <img src={nextIcon} alt="" />
-          </div>
-          <div className="font-Lato font-normal text-pageNumber leading-4 text-pagination cursor-pointer">Go to page:</div>
-          <div>
-            <Input name="pagination" id="page" type="text" className="page-input focus:outline-none px-0.5 rounded box-border w-1.47 h-1.51" />
+            ) : (
+              <div className="flex flex-col items-center justify-center w-full fixTagsTableHead">
+                <div className="pt-5 font-Poppins font-medium text-tableDuration text-lg leading-10">No data found</div>
+              </div>
+            )}
           </div>
         </div>
       </div>
