@@ -377,7 +377,7 @@ const Activity: React.FC = () => {
                                       id: data?.id,
                                       email: data?.email,
                                       memberName: data?.memberName,
-                                      organization: 'NeoITO',
+                                      organization: data?.organization,
                                       memberProfileUrl: `/${workspaceId}/members/${data.memberId}/profile`,
                                       profilePictureUrl: data?.profilePictureUrl,
                                       platformLogoUrl: data?.platformLogoUrl

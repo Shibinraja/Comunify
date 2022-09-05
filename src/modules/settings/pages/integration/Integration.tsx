@@ -39,9 +39,20 @@ Modal.setAppElement('#root');
 interface PlatformDisconnect {
   workspacePlatformSettingsId: string | null;
 }
+interface ConfirmPlatformToDisconnect {
+  platform: string;
+  workspacePlatformSettingsId: string;
+  platformIcon: string;
+}
 
 const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
   const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanillaForums: false });
+  const [isWarningModalOpen, setIsWarningModalOpen] = useState<boolean>(false);
+  const [confirmPlatformToDisconnect, setConfirmPlatformToDisconnect] = useState<ConfirmPlatformToDisconnect>({
+    platform: '',
+    workspacePlatformSettingsId: '',
+    platformIcon: ''
+  });
   // eslint-disable-next-line no-unused-vars
   const [platformIcons, setPlatformIcons] = useState<PlatformIcons>({ slack: undefined, vanillaForums: undefined });
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -180,26 +191,37 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
   };
 
   // eslint-disable-next-line space-before-function-paren
-  const handleDisconnect = async (platformName: string, workspacePlatformSettingsId: string) => {
+  const handleDisconnect = async (platform: string, workspacePlatformSettingsId: string, platformIcon: string) => {
+    setConfirmPlatformToDisconnect({ platform, workspacePlatformSettingsId, platformIcon });
+    setIsWarningModalOpen(true);
+  };
+
+  // eslint-disable-next-line space-before-function-paren
+  const handleConfirmation = async (state: boolean) => {
     const body: PlatformDisconnect = {
-      workspacePlatformSettingsId
+      workspacePlatformSettingsId: confirmPlatformToDisconnect.workspacePlatformSettingsId
     };
-    try {
-      const disconnectResponse: IntegrationResponse<PlatformsStatus> = await request.post(
-        `${API_ENDPOINT}/v1/${platformName.toLocaleLowerCase().trim()}/disconnect`,
-        body
-      );
-      if (disconnectResponse?.data?.data.status?.toLocaleLowerCase().trim() === 'disabled') {
-        if (disconnectResponse?.data?.data?.platform?.toLocaleLowerCase().trim() === 'vanilla') {
-          showSuccessToast(`${platformName} Forums was successfully disconnected from your workspace`);
-          dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
-        } else {
-          showSuccessToast(`${platformName} was successfully disconnected from your workspace`);
-          dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+    if (!state) {
+      setIsWarningModalOpen(false);
+    } else {
+      try {
+        const disconnectResponse: IntegrationResponse<PlatformsStatus> = await request.post(
+          `${API_ENDPOINT}/v1/${confirmPlatformToDisconnect.platform.toLocaleLowerCase().trim()}/disconnect`,
+          body
+        );
+        if (disconnectResponse?.data?.data.status?.toLocaleLowerCase().trim() === 'disabled') {
+          setIsWarningModalOpen(false);
+          if (disconnectResponse?.data?.data?.platform?.toLocaleLowerCase().trim() === 'vanilla') {
+            showSuccessToast(`${confirmPlatformToDisconnect.platform} Forums was successfully disconnected from your workspace`);
+            dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+          } else {
+            showSuccessToast(`${confirmPlatformToDisconnect.platform} was successfully disconnected from your workspace`);
+            dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+          }
         }
+      } catch {
+        showErrorToast(`${confirmPlatformToDisconnect.platform} disconnection failed`);
       }
-    } catch {
-      showErrorToast(`${platformName} disconnection failed`);
     }
   };
 
@@ -269,7 +291,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
                     type="button"
                     text={isButtonConnect ? 'Disconnect' : 'Connect'}
                     className={isButtonConnect ? disConnectedBtnClassName : connectedBtnClassName}
-                    onClick={() => handleDisconnect(data?.platform?.name, data?.id)}
+                    onClick={() => handleDisconnect(data?.platform?.name, data?.id, data?.platform?.platformLogoUrl)}
                   />
                 </div>
               ) : (
@@ -432,6 +454,46 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
                     />
                   </div>
                 </form>
+              </div>
+            </div>
+          </Modal>
+          <Modal
+            isOpen={isWarningModalOpen}
+            shouldCloseOnOverlayClick={false}
+            onRequestClose={() => setIsWarningModalOpen(false)}
+            className="w-24.31 h-18.43 mx-auto rounded-lg modals-tag bg-white shadow-modal flex items-center justify-center"
+            style={{
+              overlay: {
+                display: 'flex',
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0,
+                alignItems: 'center'
+              }
+            }}
+          >
+            <div className="flex flex-col items-center justify-center ">
+              <div className="bg-cover w-12">
+                <img src={confirmPlatformToDisconnect.platformIcon} alt="" />
+              </div>
+              <div className="mt-5 leading-6 text-black font-Inter font-semibold text-xl w-2/3 text-center">
+                {`Are you sure you want to disconnect ${confirmPlatformToDisconnect.platform} from your workspace?`}
+              </div>
+              <div className="flex mt-1.8">
+                <Button
+                  type="button"
+                  text="NO"
+                  className="border-none border-cancel h-2.81 w-5.25 box-border rounded cursor-pointer font-Poppins font-medium text-error leading-5 text-thinGray "
+                  onClick={() => handleConfirmation(false)}
+                />
+                <Button
+                  type="button"
+                  text="YES"
+                  className="border-none ml-2.5 yes-btn h-2.81 w-5.25 box-border rounded shadow-contactBtn cursor-pointer font-Poppins font-medium text-error leading-5 text-white btn-save-modal"
+                  onClick={() => handleConfirmation(true)}
+                />
               </div>
             </div>
           </Modal>
