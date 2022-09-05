@@ -22,6 +22,7 @@ export interface ActivityCard {
   profilePictureUrl: string | null;
   value: string | null;
   platformLogoUrl: string | null;
+  platform: string;
   memberId: string;
   activityId: string;
 }

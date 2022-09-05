@@ -181,7 +181,8 @@ const Activity: React.FC = () => {
       value: data?.value,
       platformLogoUrl: data?.platformLogoUrl,
       memberId: data?.memberId,
-      activityId: data?.activityId
+      activityId: data?.activityId,
+      platform: data?.platform
     });
     dispatch(membersSlice.actions.getMemberProfileCardData({ workspaceId: workspaceId!, memberId: data.memberId }));
   };
@@ -461,14 +462,15 @@ const Activity: React.FC = () => {
                                       description: data?.description,
                                       displayValue: data?.displayValue,
                                       activityTime: data?.activityTime,
-                                      organization: 'NeoITO',
+                                      organization: data?.organization,
                                       channelName: data?.channelId,
                                       sourceUrl: data?.sourceUrl,
                                       profilePictureUrl: data?.profilePictureUrl,
                                       value: data?.value,
                                       platformLogoUrl: data?.platformLogoUrl,
                                       memberId: data?.memberId,
-                                      activityId: data?.id
+                                      activityId: data?.id,
+                                      platform: data?.platform
                                     })
                                   }
                                 >
@@ -608,10 +610,16 @@ const Activity: React.FC = () => {
                       <div className="w-5 h-5">
                         <img src={ActivityCard?.platformLogoUrl ? ActivityCard?.platformLogoUrl : ''} alt="" />
                       </div>
-                      <div className="pl-0.563 font-Poppins font-medium text-infoBlack text-card leading-1.12">{ActivityCard?.displayValue}</div>
+                      <div
+                        className="pl-0.563 font-Poppins font-medium text-infoBlack text-card leading-1.12"
+                        dangerouslySetInnerHTML={{ __html: ActivityCard?.displayValue ? ActivityCard?.displayValue : '--' }}
+                      ></div>
                       <div className="pl-2.5 text-tagChannel font-Poppins font-medium text-card leading-1.12">#{ActivityCard?.channelName}</div>
                     </div>
-                    <div className="mt-5 font-Poppins font-medium text-infoBlack text-card leading-1.12">{ActivityCard?.value}</div>
+                    <div
+                      className="mt-5 font-Poppins font-medium text-infoBlack text-card leading-1.12"
+                      dangerouslySetInnerHTML={{ __html: ActivityCard?.value ? ActivityCard?.value : '--' }}
+                    ></div>
                     <div className="mt-1.18 flex relative">
                       <a
                         href={`${ActivityCard?.sourceUrl}`}
@@ -619,7 +627,7 @@ const Activity: React.FC = () => {
                         rel="noreferrer noopener"
                         className="font-Poppins font-medium text-card leading-1.12 text-tag underline cursor-pointer"
                       >
-                        VIEW ON SLACK
+                        {`VIEW ON ${ActivityCard?.platform.toLocaleUpperCase()}`}
                       </a>
                       <div className="absolute right-3 top-5 font-Poppins font-medium text-card leading-1.12 text-slimGray">
                         {generateDateAndTime(`${ActivityCard?.activityTime}`, 'HH:MM')} |{' '}
