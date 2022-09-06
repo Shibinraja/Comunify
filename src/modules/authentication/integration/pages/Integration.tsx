@@ -11,7 +11,7 @@ import { useSearchParams } from 'react-router-dom';
 import { request } from '../../../../lib/request';
 import { showErrorToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
 import { API_ENDPOINT } from '../../../../lib/config';
-import { getLocalWorkspaceId } from '@/lib/helper';
+import { getLocalWorkspaceId, setRefreshToken } from '@/lib/helper';
 import Input from 'common/input';
 import { IntegrationResponse, NetworkResponse } from '../../../../lib/api';
 import { PlatformConnectResponse } from '../../../../interface/interface';
@@ -49,6 +49,7 @@ const Integration: React.FC = () => {
   });
 
   useEffect(() => {
+    setRefreshToken();
     dispatch(settingsSlice.actions.platformData({ workspaceId }));
     if (searchParams.get('code')) {
       const codeParams: null | string = searchParams.get('code');

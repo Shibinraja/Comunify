@@ -1,4 +1,8 @@
 /* eslint-disable no-empty */
+
+import axios from 'axios';
+import { API_ENDPOINT, auth_module } from './config';
+
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 export const formatDate = (date: Date | string): string =>
   new Date(date).toLocaleDateString('en-US', {
@@ -39,3 +43,20 @@ export function getLocalWorkspaceId(): string {
   const workspaceId: string | null = localStorage.getItem('workspaceId')!;
   return workspaceId;
 }
+
+// eslint-disable-next-line space-before-function-paren
+export const setRefreshToken = async () => {
+  const response = await axios.post(
+    `${API_ENDPOINT}${auth_module}/refreshtoken`,
+    {},
+    {
+      withCredentials: true
+    }
+  );
+  if (response?.data?.data?.token) {
+    localStorage.setItem('accessToken', response?.data?.data?.token);
+  } else {
+    // eslint-disable-next-line no-console
+    console.log('Could not refresh token');
+  }
+};

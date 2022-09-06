@@ -4,12 +4,22 @@ import successIcon from '../../assets/images/tostr.png';
 import { SubscriptionProps } from 'interface/interface';
 import { useDispatch } from 'react-redux';
 import authSlice from '../../modules/authentication/store/slices/auth.slice';
+import { DecodeToken } from '../../modules/authentication/interface/auth.interface';
+import { decodeToken } from '../../lib/decodeToken';
+import cookie from 'react-cookies';
 
 const SubscriptionCard: React.FC<SubscriptionProps> = ({ subscriptionData }) => {
   const dispatch = useDispatch();
 
+  const accessToken = localStorage.getItem('accessToken') || cookie.load('x-auth-cookie');
+  const decodedToken: DecodeToken = accessToken && decodeToken(accessToken);
+
   const selectPlan = (): void => {
-    dispatch(authSlice.actions.chooseSubscription(subscriptionData?.id));
+    if (decodedToken?.isWorkSpaceCreated) {
+      dispatch(authSlice.actions.chooseSubscriptionAfterExpiry(subscriptionData?.id));
+    } else {
+      dispatch(authSlice.actions.chooseSubscription(subscriptionData?.id));
+    }
   };
 
   return (

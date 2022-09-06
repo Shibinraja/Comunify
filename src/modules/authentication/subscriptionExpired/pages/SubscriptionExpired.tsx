@@ -5,9 +5,14 @@ import { SubscriptionPackages } from '../../interface/auth.interface';
 import { useDispatch } from 'react-redux';
 import authSlice from '../../store/slices/auth.slice';
 import { useAppSelector } from '@/hooks/useRedux';
+import { setRefreshToken } from '../../../../lib/helper';
 
 const SubscriptionExpired: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
+
+  useEffect(() => {
+    setRefreshToken();
+  });
 
   const subscriptionData = useAppSelector((state) => state.auth.subscriptionData);
 

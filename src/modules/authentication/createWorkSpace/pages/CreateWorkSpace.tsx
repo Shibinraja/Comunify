@@ -2,9 +2,10 @@ import { useAppDispatch } from '@/hooks/useRedux';
 import Button from 'common/button/Button';
 import Input from 'common/input/Input';
 import authSlice from 'modules/authentication/store/slices/auth.slice';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import bgWorkSpaceImage from '../../../../assets/images/bg-sign.svg';
+import { setRefreshToken } from '../../../../lib/helper';
 import { AppDispatch } from '../../../../store/index';
 import './CreateWorkSpace.css';
 
@@ -14,6 +15,10 @@ const CreateWorkSpace: React.FC = () => {
   const [workspaceName, setWorkspaceName] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string | unknown>('');
   const workspaceNameValidation = Yup.string().min(4, 'Workspace Name must be atleast 4 characters');
+
+  useEffect(() => {
+    setRefreshToken();
+  });
 
   const handleWorkspaceName = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const workspace_name = e.target.value;
