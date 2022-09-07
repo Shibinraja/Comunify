@@ -22,6 +22,7 @@ export type DecodeToken = {
   id: string;
   userName: string;
   isAdmin: boolean;
+  isExpired: boolean;
   isSubscribed: boolean;
   isWorkSpaceCreated: boolean;
   isVerified: boolean;

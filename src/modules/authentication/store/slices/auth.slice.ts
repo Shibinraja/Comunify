@@ -43,7 +43,7 @@ const createWorkspace = (state: InitialState, action: PayloadAction<CreateWorksp
 
 const getWorkspace = (state: InitialState) => state;
 
-const getWorkspaceId = (state:InitialState) => state;
+const getWorkspaceId = (state: InitialState) => state;
 
 const getSubscriptions = (state: InitialState) => state;
 
@@ -55,10 +55,10 @@ const formikValueReset = (state: InitialState, action: PayloadAction<boolean>) =
   ...state,
   clearFormikValue: action.payload
 });
-const getWorkspaceData = (state: InitialState, action: PayloadAction<any>) => ({
-  ...state,
-  workspaceData: action.payload
-});
+// const getWorkspaceData = (state: InitialState, action: PayloadAction<any>) => ({
+//   ...state,
+//   workspaceData: action.payload
+// });
 
 const setIsAuthenticated = (state: InitialState, action: PayloadAction<InitialState['isAuthenticated']>) => ({
   ...state,
@@ -88,7 +88,6 @@ const authSlice = createSlice({
     resetPassword,
     createWorkspace,
     getWorkspace,
-    getWorkspaceData,
     formikValueReset,
     signOut,
     getSubscriptions,

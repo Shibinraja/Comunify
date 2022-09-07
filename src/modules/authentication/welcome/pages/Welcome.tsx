@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { useEffect } from 'react';
 import SubscriptionCard from 'common/subscriptionCard/SubscriptionCard';
 import bgWelcomeImage from '../../../../assets/images/bg-sign.svg';
@@ -7,11 +8,14 @@ import { AppDispatch } from '../../../../store';
 import { SubscriptionPackages } from '../../interface/auth.interface';
 import authSlice from '../../store/slices/auth.slice';
 import { useAppSelector } from '@/hooks/useRedux';
+import { setRefreshToken } from '../../../../lib/helper';
 
 const Welcome: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
+  //   const [accessTokenResponse, setAccessTokenResponse] = React.useState<any>();
 
   useEffect(() => {
+    setRefreshToken();
     dispatch(authSlice.actions.getSubscriptions());
   }, []);
 
