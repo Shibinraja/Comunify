@@ -58,7 +58,7 @@ request.interceptors.response.use(
   (response) => response,
   async (error) => {
     const config = error.config;
-    if (error.response.status === 410 || decodedToken?.isExpired) {
+    if (error.response.status === 403 || decodedToken?.isExpired) {
       window.location.href = '/subscription/expired';
     }
     if (

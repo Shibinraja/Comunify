@@ -8,6 +8,7 @@ import history from '@/lib/history';
 import { showErrorToast, showSuccessToast } from 'common/toast/toastFunctions';
 import {
   CreateWorkspaceNameInput,
+  DecodeToken,
   ForgotPasswordInput,
   GetWorkspaceIdResponse,
   ResendVerificationMailInput,
@@ -36,12 +37,15 @@ import {
 import { AxiosResponse } from 'axios';
 import { AxiosError, SuccessResponse } from '@/lib/api';
 import { getLocalRefreshToken } from '@/lib/request';
+import { decodeToken } from '../../../../lib/decodeToken';
+import cookie from 'react-cookies';
 
 const forwardTo = (location: string) => {
   history.push(location);
 };
 
-const workspaceId = localStorage.getItem('workspaceId');
+const accessToken = localStorage.getItem('accessToken') || cookie.load('x-auth-cookie');
+const decodedToken: DecodeToken = accessToken && decodeToken(accessToken);
 
 function* loginSaga(action: PayloadAction<SignInInput>) {
   try {
@@ -51,7 +55,9 @@ function* loginSaga(action: PayloadAction<SignInInput>) {
     if (res?.data) {
       localStorage.setItem('accessToken', res?.data?.token);
       yield put(authSlice.actions.setIsAuthenticated(true));
-      yield call(getWorkspaceId);
+      if (decodedToken?.isSubscribed) {
+        yield call(getWorkspaceId);
+      }
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
@@ -247,22 +253,6 @@ function* chooseSubscription(action: PayloadAction<string>) {
   }
 }
 
-function* chooseSubscriptionAfterExpiry(action: PayloadAction<string>) {
-  try {
-    yield put(loaderSlice.actions.startAuthLoadingAction());
-    const res: SuccessResponse<SubscriptionPackages> = yield call(sendSubscriptionPlan, action.payload);
-    if (res?.data) {
-      showSuccessToast('Subscription active');
-      yield call(forwardTo, `${workspaceId}/dashboard`);
-    }
-  } catch (e) {
-    const error = e as AxiosError<unknown>;
-    showErrorToast(error?.response?.data?.message);
-  } finally {
-    yield put(loaderSlice.actions.stopAuthLoadingAction());
-  }
-}
-
 function* getWorkspaceId() {
   try {
     yield put(loaderSlice.actions.startAuthLoadingAction());
@@ -291,6 +281,5 @@ export default function* authSaga(): SagaIterator {
   yield takeEvery(authSlice.actions.createWorkspace.type, createWorkspace);
   yield takeEvery(authSlice.actions.signOut.type, logout);
   yield takeEvery(authSlice.actions.chooseSubscription.type, chooseSubscription);
-  yield takeEvery(authSlice.actions.chooseSubscriptionAfterExpiry, chooseSubscriptionAfterExpiry);
   yield takeEvery(authSlice.actions.getWorkspaceId.type, getWorkspaceId);
 }

@@ -49,8 +49,6 @@ const getSubscriptions = (state: InitialState) => state;
 
 const chooseSubscription = (state: InitialState, action: PayloadAction<string>) => state;
 
-const chooseSubscriptionAfterExpiry = (state: InitialState, action: PayloadAction<string>) => state;
-
 // Data Props returned from saga_module
 
 const formikValueReset = (state: InitialState, action: PayloadAction<boolean>) => ({
@@ -95,7 +93,6 @@ const authSlice = createSlice({
     getSubscriptions,
     setSubscriptions,
     chooseSubscription,
-    chooseSubscriptionAfterExpiry,
     getWorkspaceId
   }
 });
