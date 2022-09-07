@@ -27,9 +27,11 @@ export function* ConnectedPlatformsDataService(workspaceId: string): GeneratorRe
   return data;
 }
 
-export function* TagDataService(query: Partial<GetTagListQueryParams>): GeneratorResponse<Array<TagResponse>> {
+export function* TagDataService(query: Partial<GetTagListQueryParams>): GeneratorResponse<TagResponse> {
   const { data } = yield request.get(
-    `/v1/${query.workspaceId}/tags?${query.settingsQuery?.tags.searchedTags ? `search=${query.settingsQuery.tags.searchedTags}` : ''}`
+    `/v1/${query.workspaceId}/tags?page=${query.settingsQuery?.page}&limit=${query.settingsQuery?.limit}${
+      query.settingsQuery?.tags.searchedTags ? `&search=${query.settingsQuery?.tags.searchedTags}` : ''
+    }`
   );
   return data;
 }

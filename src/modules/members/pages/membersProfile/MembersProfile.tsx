@@ -25,7 +25,7 @@ import Skeleton from 'react-loading-skeleton';
 import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 import { count_5, width_90 } from 'constants/constants';
 import usePlatform from '../../../../hooks/usePlatform';
-import { AssignTypeEnum, PlatformResponse, TagResponse } from '../../../settings/interface/settings.interface';
+import { AssignTypeEnum, PlatformResponse, TagResponseData } from '../../../settings/interface/settings.interface';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
 import useDebounce from '@/hooks/useDebounce';
 import ReactTooltip from 'react-tooltip';
@@ -33,6 +33,7 @@ import ReactTooltip from 'react-tooltip';
 Modal.setAppElement('#root');
 
 const MembersProfile: React.FC = () => {
+  const limit = 10;
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const { workspaceId, memberId } = useParams();
@@ -69,7 +70,7 @@ const MembersProfile: React.FC = () => {
   const datePickerRefStart = useRef<ReactDatePicker>(null);
   const datePickerRefEnd = useRef<ReactDatePicker>(null);
 
-  const { TagFilterResponse, clearValue } = useAppSelector((state) => state.settings);
+  const { TagFilterResponse: { data: TagFilterResponseData }, clearValue } = useAppSelector((state) => state.settings);
 
   const debouncedValue = useDebounce(searchText, 300);
 
@@ -89,7 +90,7 @@ const MembersProfile: React.FC = () => {
   // Returns the debounced value of the search text.
   useEffect(() => {
     if (debouncedValue) {
-      getTagsList(debouncedValue);
+      getTagsList(1, debouncedValue);
     }
   }, [debouncedValue]);
 
@@ -129,7 +130,12 @@ const MembersProfile: React.FC = () => {
       tagName: ''
     });
     setSearchText('');
-    dispatch(settingsSlice.actions.getTagFilterData([]));
+    dispatch(settingsSlice.actions.getTagFilterData({
+      data: [],
+      totalPages: 0,
+      previousPage: 0,
+      nextPage: 0
+    }));
   };
 
   const handleDropDownActive = (): void => {
@@ -145,7 +151,7 @@ const MembersProfile: React.FC = () => {
   };
 
   const navigateToReviewMerge = () => {
-    navigate('/members/members-review');
+    navigate(`${workspaceId}/members/${memberId}/members-review`);
   };
 
   // switch case for member graph
@@ -216,10 +222,12 @@ const MembersProfile: React.FC = () => {
     navigate(`/${workspaceId}/activity`);
   };
 
-  const getTagsList = (text: string): void => {
+  const getTagsList = (pageNumber: number, text: string): void => {
     dispatch(
       settingsSlice.actions.tagFilterData({
         settingsQuery: {
+          page: pageNumber,
+          limit,
           tags: {
             checkedTags: '',
             searchedTags: text
@@ -240,7 +248,8 @@ const MembersProfile: React.FC = () => {
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
     if (searchText === '') {
-      getTagsList('');
+      getTagsList(1, '');
+      handleSelectTagName('', '');
     }
     setSearchText(searchText);
   };
@@ -553,10 +562,10 @@ const MembersProfile: React.FC = () => {
                       />
                       <div
                         className={`bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 ${
-                          TagFilterResponse.length && !tags.tagId ? '' : 'hidden'
+                          TagFilterResponseData?.length && !tags.tagId ? '' : 'hidden'
                         }`}
                       >
-                        {TagFilterResponse.map((data: TagResponse) => (
+                        {TagFilterResponseData?.map((data: TagResponseData) => (
                           <div
                             key={data.id}
                             className="p-2 text-searchBlack cursor-pointer font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300"
@@ -587,7 +596,7 @@ const MembersProfile: React.FC = () => {
             </div>
             <div className="flex flex-wrap pt-1.56 gap-2">
               {memberProfileCardData?.map((data: MemberProfileCard) =>
-                data.tags?.map((tag: TagResponse) => (
+                data.tags?.map((tag: TagResponseData) => (
                   <>
                     <div
                       data-tip

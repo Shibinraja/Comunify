@@ -26,7 +26,7 @@ import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 import { width_90 } from 'constants/constants';
 import { activityFilterExportProps } from './activity.types';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
-import { AssignTypeEnum, TagResponse } from 'modules/settings/interface/settings.interface';
+import { AssignTypeEnum, TagResponseData } from 'modules/settings/interface/settings.interface';
 import { MemberProfileCard } from 'modules/members/interface/members.interface';
 import membersSlice from 'modules/members/store/slice/members.slice';
 import ReactTooltip from 'react-tooltip';
@@ -75,7 +75,10 @@ const Activity: React.FC = () => {
 
   const { memberProfileCardData } = useAppSelector((state) => state.members);
 
-  const { TagFilterResponse, clearValue } = useAppSelector((state) => state.settings);
+  const {
+    TagFilterResponse: { data: TagFilterResponseData },
+    clearValue
+  } = useAppSelector((state) => state.settings);
 
   const debouncedValue = useDebounce(searchText, 300);
 
@@ -98,7 +101,7 @@ const Activity: React.FC = () => {
     );
     dispatch(
       settingsSlice.actions.tagFilterData({
-        settingsQuery: { tags: { searchedTags: '', checkedTags: '' } },
+        settingsQuery: { page: 1, limit, tags: { searchedTags: '', checkedTags: '' } },
         workspaceId: workspaceId!
       })
     );
@@ -120,7 +123,7 @@ const Activity: React.FC = () => {
 
   useEffect(() => {
     if (debouncedTagValue) {
-      getTagsList(debouncedTagValue);
+      getTagsList(1, debouncedTagValue);
     }
   }, [debouncedTagValue]);
 
@@ -134,10 +137,12 @@ const Activity: React.FC = () => {
     }
   }, [clearValue]);
 
-  const getTagsList = (text: string): void => {
+  const getTagsList = (pageNumber: number, text: string): void => {
     dispatch(
       settingsSlice.actions.tagFilterData({
         settingsQuery: {
+          page: pageNumber,
+          limit,
           tags: {
             checkedTags: '',
             searchedTags: text
@@ -194,7 +199,14 @@ const Activity: React.FC = () => {
       tagName: ''
     });
     setSearchTagText('');
-    dispatch(settingsSlice.actions.getTagFilterData([]));
+    dispatch(
+      settingsSlice.actions.getTagFilterData({
+        data: [],
+        totalPages: 0,
+        previousPage: 0,
+        nextPage: 0
+      })
+    );
   };
 
   const handleProfileModal = (data: ProfileModal) => {
@@ -271,7 +283,8 @@ const Activity: React.FC = () => {
   const handleSearchTagTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
     if (searchText === '') {
-      getTagsList('');
+      getTagsList(1, '');
+      handleSelectTagName('', '');
     }
     setSearchTagText(searchText);
   };
@@ -563,10 +576,10 @@ const Activity: React.FC = () => {
                           />
                           <div
                             className={`bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 ${
-                              TagFilterResponse.length && !tags.tagId ? '' : 'hidden'
+                              TagFilterResponseData?.length && !tags.tagId ? '' : 'hidden'
                             }`}
                           >
-                            {TagFilterResponse.map((data: TagResponse) => (
+                            {TagFilterResponseData?.map((data: TagResponseData) => (
                               <div
                                 key={data.id}
                                 className="p-2 text-searchBlack cursor-pointer font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300"
@@ -639,7 +652,7 @@ const Activity: React.FC = () => {
                     <h3 className="text-profileBlack text-error font-Poppins font-medium leading-5">Tags</h3>
                     <div className="flex pt-2.5 flex-wrap gap-1">
                       {memberProfileCardData?.map((data: MemberProfileCard) =>
-                        data.tags?.map((tag: TagResponse) => (
+                        data.tags.map((tag: TagResponseData) => (
                           <>
                             <div
                               data-tip

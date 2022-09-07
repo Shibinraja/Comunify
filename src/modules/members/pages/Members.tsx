@@ -104,7 +104,8 @@ const Members: React.FC = () => {
     dispatch(membersSlice.actions.membersActivityAnalytics({ workspaceId: workspaceId! }));
     dispatch(
       settingsSlice.actions.tagFilterData({
-        settingsQuery: { tags: { searchedTags: '', checkedTags: '' } },
+        settingsQuery: {      page: 1,
+          limit, tags: { searchedTags: '', checkedTags: '' } },
         workspaceId: workspaceId!
       })
     );

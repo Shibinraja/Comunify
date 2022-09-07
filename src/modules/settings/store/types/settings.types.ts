@@ -2,7 +2,7 @@ import { PlatformResponse, TagResponse, ConnectedPlatforms } from '../../interfa
 
 export interface InitialState {
   PlatformFilterResponse: Array<PlatformResponse>;
-  TagFilterResponse: Array<TagResponse>;
+  TagFilterResponse: TagResponse;
   PlatformsConnected: Array<ConnectedPlatforms>;
   clearValue: boolean;
 }

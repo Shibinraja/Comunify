@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import { getLocalWorkspaceId } from '@/lib/helper';
 import Button from 'common/button';
 import { format } from 'date-fns';
-import { PlatformResponse, TagResponse } from 'modules/settings/interface/settings.interface';
+import { PlatformResponse, TagResponseData } from 'modules/settings/interface/settings.interface';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
 import { ChangeEvent, useEffect, useRef, useState, type FC } from 'react';
 import DatePicker, { ReactDatePicker } from 'react-datepicker';
@@ -42,7 +42,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
   const dispatch = useAppDispatch();
   const dropDownRef = useRef<HTMLDivElement>(null);
   const { membersLocationFilterResponse, membersOrganizationFilterResponse } = useAppSelector((state) => state.members);
-  const { TagFilterResponse } = useAppSelector((state) => state.settings);
+  const { data: TagFilterResponse } = useAppSelector((state) => state.settings.TagFilterResponse);
   const PlatformFilterResponse = usePlatform();
   const debouncedLocationValue = useDebounce(locationSearchText, 300);
   const debouncedOrganizationValue = useDebounce(organizationSearchText, 300);
@@ -67,7 +67,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
 
   useEffect(() => {
     if (debouncedTagValue) {
-      getFilteredMembersTagList(debouncedTagValue);
+      getFilteredMembersTagList(1, debouncedTagValue);
     }
   }, [debouncedTagValue]);
 
@@ -133,7 +133,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
   const handleTagSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
     if (searchText === '') {
-      getFilteredMembersTagList('');
+      getFilteredMembersTagList(1, '');
     }
     setTagSearchText(searchText);
   };
@@ -154,10 +154,14 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
     setOrganizationSearchText(searchText);
   };
 
-  const getFilteredMembersTagList = (tagText: string) => {
+  const getFilteredMembersTagList = (pageNumber: number, tagText: string) => {
     dispatch(
       settingsSlice.actions.tagFilterData({
-        settingsQuery: { tags: { searchedTags: tagText, checkedTags: '' } },
+        settingsQuery: {
+          page: pageNumber,
+          limit,
+          tags: { searchedTags: tagText, checkedTags: '' }
+        },
         workspaceId: workspaceId!
       })
     );
@@ -355,7 +359,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
                 </div>
                 <div className="flex flex-col gap-y-5 px-3 max-h-[12.5rem] overflow-scroll">
                   {TagFilterResponse &&
-                    TagFilterResponse.map((tags: TagResponse, index: number) => (
+                    TagFilterResponse.map((tags: TagResponseData, index: number) => (
                       <div key={index} className="flex items-center mb-2">
                         <div className="mr-2">
                           <input
