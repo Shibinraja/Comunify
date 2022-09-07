@@ -8,9 +8,18 @@ import bgWorkSpaceImage from '../../../../assets/images/bg-sign.svg';
 import { setRefreshToken } from '../../../../lib/helper';
 import { AppDispatch } from '../../../../store/index';
 import './CreateWorkSpace.css';
+import cookie from 'react-cookies';
+import { DecodeToken } from '../../interface/auth.interface';
+import { decodeToken } from '../../../../lib/decodeToken';
+import { useNavigate } from 'react-router';
 
 const CreateWorkSpace: React.FC = () => {
   const dispatch: AppDispatch = useAppDispatch();
+
+  const accessToken = localStorage.getItem('accessToken') || cookie.load('x-auth-cookie');
+  const decodedToken: DecodeToken = accessToken && decodeToken(accessToken);
+  const workspaceId = localStorage.getItem('workspaceId') !== null && localStorage.getItem('workspaceId');
+  const navigate = useNavigate();
 
   const [workspaceName, setWorkspaceName] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string | unknown>('');
@@ -18,6 +27,9 @@ const CreateWorkSpace: React.FC = () => {
 
   useEffect(() => {
     setRefreshToken();
+    if (decodedToken?.isWorkSpaceCreated) {
+      navigate(`/${workspaceId}/dashboard`);
+    }
   });
 
   const handleWorkspaceName = (e: React.ChangeEvent<HTMLInputElement>): void => {
