@@ -58,7 +58,7 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
           <div className="flex mt-1.8">
             <div className="bg-paymentSubscription box-border w-13.31 pb-5 shadow-paymentSubscriptionCard flex flex-col items-center justify-center border-gradient-rounded">
               <h5 className="flex items-center justify-center">
-                <span className="price font-Poppins font-semibold leading-2.8 text-renewalPrice ">$29</span>
+                <span className="price font-Poppins font-semibold leading-2.8 text-renewalPrice ">$49</span>
                 <span className="text-renewalPlan font-medium font-Poppins leading-1.43">/month</span>
               </h5>
               <div className="font-semibold font-Poppins leading-1.56 text-infoBlack text-base">Comunify Plus</div>
