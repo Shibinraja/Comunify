@@ -96,11 +96,7 @@ const MembersProfile: React.FC = () => {
 
   useEffect(() => {
     if (clearValue) {
-      setTagModalOpen(false);
-      setTags({
-        tagId: '',
-        tagName: ''
-      });
+      handleTagModalOpen();
     }
   }, [clearValue]);
 
@@ -136,6 +132,7 @@ const MembersProfile: React.FC = () => {
       previousPage: 0,
       nextPage: 0
     }));
+    dispatch(settingsSlice.actions.resetValue(false));
   };
 
   const handleDropDownActive = (): void => {

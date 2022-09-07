@@ -129,11 +129,7 @@ const Activity: React.FC = () => {
 
   useEffect(() => {
     if (clearValue) {
-      setTagModalOpen(false);
-      setTags({
-        tagId: '',
-        tagName: ''
-      });
+      handleTagModalOpen();
     }
   }, [clearValue]);
 
@@ -207,6 +203,7 @@ const Activity: React.FC = () => {
         nextPage: 0
       })
     );
+    dispatch(settingsSlice.actions.resetValue(false));
   };
 
   const handleProfileModal = (data: ProfileModal) => {
