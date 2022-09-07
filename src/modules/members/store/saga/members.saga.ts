@@ -52,7 +52,7 @@ function* membersCountAnalytics(action: PayloadAction<workspaceId>) {
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
-    showErrorToast(error?.response?.data?.message);
+    // showErrorToast(error?.response?.data?.message);
   } finally {
     yield put(loaderSlice.actions.stopLoadingAction(membersSlice.actions.membersCountAnalytics.type));
   }
@@ -68,7 +68,7 @@ function* membersActivityAnalytics(action: PayloadAction<workspaceId>) {
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
-    showErrorToast(error?.response?.data?.message);
+    // showErrorToast(error?.response?.data?.message);
   } finally {
     yield put(loaderSlice.actions.stopLoadingAction(membersSlice.actions.membersActivityAnalytics.type));
   }
