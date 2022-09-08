@@ -5,6 +5,7 @@ import { PaginationProps } from './paginationTypes';
 import nextIcon from '../../assets/images/next-page-icon.svg';
 import prevIcon from '../../assets/images/previous-page-icon.svg';
 import Input from '../input';
+import { alphabet_regex } from 'constants/constants';
 
 const Pagination: FC<PaginationProps> = (props) => {
   const { onPageChange, totalPages, skipCount = 2, currentPage, limit } = props;
@@ -26,9 +27,12 @@ const Pagination: FC<PaginationProps> = (props) => {
 
   const handlePageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const pageNumber = event.target.value;
-    onPageChange(pageNumber);
-    if (pageNumber === '') {
-      onPageChange(1);
+    const checkAlphabet = alphabet_regex.test(pageNumber);
+    if(!checkAlphabet) {
+      onPageChange(pageNumber);
+      if (pageNumber === '') {
+        onPageChange(1);
+      }
     }
   };
 
