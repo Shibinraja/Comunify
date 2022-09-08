@@ -321,7 +321,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
                               onChange={handlePlatformsCheckBox}
                             />
                           </div>
-                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">{platform?.name}</div>
+                          <label className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer" htmlFor={platform.id as string}>{platform?.name}</label>
                         </div>
                       )
                   )}
@@ -371,7 +371,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
                             onChange={handleTagsCheckBox}
                           />
                         </div>
-                        <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">{tags.name}</div>
+                        <label className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer" htmlFor={tags.id as string}>{tags.name}</label>
                       </div>
                     ))}
                 </div>
@@ -480,7 +480,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
                                 onChange={handleLocationCheckBox}
                               />
                             </div>
-                            <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">{location.location}</div>
+                            <label className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer" htmlFor={location.location}>{location.location}</label>
                           </div>
                         )
                     )}
@@ -534,7 +534,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
                                 onChange={handleOrganizationCheckBox}
                               />
                             </div>
-                            <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">{organization.organization}</div>
+                            <label className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer" htmlFor={organization.organization}>{organization.organization}</label>
                           </div>
                         )
                     )}
