@@ -1,4 +1,4 @@
-import { TagResponse } from 'modules/settings/interface/settings.interface';
+import { TagResponseData } from 'modules/settings/interface/settings.interface';
 
 /* eslint-disable no-unused-vars */
 export interface workspaceId {
@@ -242,5 +242,5 @@ export interface MemberProfileCard {
     name: string;
     platformLogoUrl: string;
   }[];
-  tags: Array<TagResponse>;
+  tags: TagResponseData[];
 }

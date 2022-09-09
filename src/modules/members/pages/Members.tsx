@@ -104,7 +104,8 @@ const Members: React.FC = () => {
     dispatch(membersSlice.actions.membersActivityAnalytics({ workspaceId: workspaceId! }));
     dispatch(
       settingsSlice.actions.tagFilterData({
-        settingsQuery: { tags: { searchedTags: '', checkedTags: '' } },
+        settingsQuery: {      page: 1,
+          limit, tags: { searchedTags: '', checkedTags: '' } },
         workspaceId: workspaceId!
       })
     );
@@ -237,7 +238,7 @@ const Members: React.FC = () => {
 
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
-    if (searchText === '') {
+    if (!searchText) {
       getFilteredMembersList(1, searchText);
     }
     setSearchText(searchText);

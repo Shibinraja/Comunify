@@ -9,6 +9,7 @@ import {
   GetTagListQueryParams,
   PlatformResponse,
   TagResponse,
+  TagType,
   unAssignTagProps,
   updateTagProps
 } from '../../interface/settings.interface';
@@ -17,7 +18,23 @@ import { InitialState } from '../types/settings.types';
 const initialState: InitialState = {
   PlatformFilterResponse: [],
   PlatformsConnected: [],
-  TagFilterResponse: [],
+  TagFilterResponse: {
+    data: [
+      {
+        id: '',
+        name: '',
+        viewName: '',
+        createdAt: new Date(),
+        createdBy: '',
+        type: TagType.Default,
+        totalCount: 0
+
+      }
+    ],
+    totalPages: 0,
+    previousPage: 0,
+    nextPage: 0
+  },
   clearValue: false
 };
 
@@ -45,7 +62,7 @@ const getConnectedPlatformsData = (state: InitialState, action: PayloadAction<Ar
   PlatformsConnected: action.payload
 });
 
-const getTagFilterData = (state: InitialState, action: PayloadAction<Array<TagResponse>>) => ({
+const getTagFilterData = (state: InitialState, action: PayloadAction<TagResponse>) => ({
   ...state,
   TagFilterResponse: action.payload
 });

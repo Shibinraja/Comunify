@@ -31,6 +31,9 @@ import settingsSlice from '../slice/settings.slice';
 import { workspaceId } from '../../../members/interface/members.interface';
 import membersSlice from 'modules/members/store/slice/members.slice';
 
+const pageNumber = 1;
+const limit = 10;
+
 function* getPlatformsDataSaga(action: PayloadAction<workspaceId>) {
   try {
     yield put(loaderSlice.actions.startLoadingAction(settingsSlice.actions.platformData.type));
@@ -62,7 +65,7 @@ function* getTagDataSaga(action: PayloadAction<Partial<GetTagListQueryParams>>) 
   try {
     yield put(loaderSlice.actions.startLoadingAction(settingsSlice.actions.tagFilterData.type));
 
-    const res: SuccessResponse<Array<TagResponse>> = yield call(TagDataService, action.payload);
+    const res: SuccessResponse<TagResponse> = yield call(TagDataService, action.payload);
     if (res?.data) {
       yield put(settingsSlice.actions.getTagFilterData(res.data));
     }
@@ -81,7 +84,14 @@ function* createTagDataSaga(action: PayloadAction<createTagProps>) {
     if (res?.data) {
       yield put(
         settingsSlice.actions.tagFilterData({
-          settingsQuery: { tags: { searchedTags: '', checkedTags: '' } },
+          settingsQuery: {
+            page: pageNumber,
+            limit,
+            tags: {
+              checkedTags: '',
+              searchedTags: ''
+            }
+          },
           workspaceId: action.payload.workspaceId
         })
       );
@@ -103,7 +113,14 @@ function* updateTagDataSaga(action: PayloadAction<updateTagProps>) {
     if (res?.data) {
       yield put(
         settingsSlice.actions.tagFilterData({
-          settingsQuery: { tags: { searchedTags: '', checkedTags: '' } },
+          settingsQuery: {
+            page: pageNumber,
+            limit,
+            tags: {
+              checkedTags: '',
+              searchedTags: ''
+            }
+          },
           workspaceId: action.payload.workspaceId
         })
       );
@@ -121,9 +138,17 @@ function* deleteTagDataSaga(action: PayloadAction<Omit<updateTagProps, 'settings
     yield put(loaderSlice.actions.startLoadingAction(settingsSlice.actions.deleteTags.type));
     const res: SuccessResponse<TagResponse> = yield call(DeleteTagDataService, action.payload);
     if (res?.data) {
+      yield put(settingsSlice.actions.resetValue(true));
       yield put(
         settingsSlice.actions.tagFilterData({
-          settingsQuery: { tags: { searchedTags: '', checkedTags: '' } },
+          settingsQuery: {
+            page: pageNumber,
+            limit,
+            tags: {
+              checkedTags: '',
+              searchedTags: ''
+            }
+          },
           workspaceId: action.payload.workspaceId
         })
       );
