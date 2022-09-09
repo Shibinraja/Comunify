@@ -1,0 +1,26 @@
+.subscription-cover-bg {
+  /* background-image: url('../../../../assets/images/signup-line.svg'); */
+}
+@media (min-width: 1200px) {
+  .subscription-wrapper {
+    padding-bottom: 850px;
+  }
+}
+
+@media (min-width: 1500px) {
+  .subscription-wrapper {
+    padding-bottom: 0px;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+}
+
+.auth-layout-subscription {
+  background-image: url('../../../../assets/images/sign-up-bg.svg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: 50%;
+  background-position: left;
+}

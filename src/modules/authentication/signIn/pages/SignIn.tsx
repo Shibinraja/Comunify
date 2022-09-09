@@ -1,162 +1,177 @@
-import { useForm, SubmitHandler } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import Button from "common/button/Button";
-import Input from "common/input/Input";
-import { useAppDispatch } from "@/hooks/useRedux";
-import useLoading from "@/hooks/useLoading";
-import { LOGIN } from "../../store/actions/auth.actions";
-import authSlice from "../../store/slices/auth.slice";
-import { signInInput } from "../interface/signIn.interface";
-import { loginSchema } from "@/lib/validation";
-import socialLogo from "../../../../assets/images/Social.svg";
-import bgSignInImage from "../../../../assets/images/bg-sign.svg";
-import eyeIcon from "../../../../assets/images/eye.svg";
-import closeeye from '../../../../assets/images/closeeye.png';
-import { Link } from "react-router-dom";
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
-import "./SignIn.css";
-import { useState } from "react";
+/* eslint-disable react/no-unescaped-entities */
+import React, { useState, useEffect } from 'react';
+import { useAppDispatch } from '@/hooks/useRedux';
+import { API_ENDPOINT, auth_module } from '@/lib/config';
+import Button from 'common/button/Button';
+import Input from 'common/input/Input';
+import { showErrorToast, showSuccessToast } from 'common/toast/toastFunctions';
+import { Form, Formik } from 'formik';
+import { FormValues } from 'modules/authentication/interface/auth.interface';
+import { Link, useSearchParams } from 'react-router-dom';
+import * as Yup from 'yup';
+import bgSignInImage from '../../../../assets/images/bg-sign.svg';
+import closeEyeIcon from '../../../../assets/images/closeEyeIcon.svg';
+import eyeIcon from '../../../../assets/images/eye.svg';
+import socialLogo from '../../../../assets/images/Social.svg';
+import { email_regex } from '../../../../constants/constants';
+import { AppDispatch } from '../../../../store/index';
+import authSlice from '../../store/slices/auth.slice';
+import './SignIn.css';
 
-const SignIn = () => {
-  //   const dispatch = useAppDispatch();
-  //   const isLoading = useLoading(LOGIN);
-  //   const {
-  //     register,
-  //     handleSubmit,
-  //     formState: { errors },
-  //   } = useForm<LoginBody>({ resolver: yupResolver(loginSchema) });
-
-  //   const onSubmit: SubmitHandler<LoginBody> = (data) => {
-  //     dispatch(authSlice.actions.login(data));
-  //   };
-  interface FormValues {
-    username: string;
-  }
+const SignIn: React.FC = () => {
+  const dispatch: AppDispatch = useAppDispatch();
+  const [searchParams] = useSearchParams();
+  const google_signIn_error: string = searchParams.get('err') || '';
+  const google_signUp_success: string = searchParams.get('success') || '';
 
   const initialValues: FormValues = {
-    username: "",
+    userName: '',
+    password: ''
   };
+
+  const [passwordType, setPasswordType] = useState<string>('password');
+
+  useEffect(() => {
+    if (google_signIn_error) {
+      showErrorToast('Signin failed, please try again');
+    }
+  }, [google_signIn_error]);
+
+  useEffect(() => {
+    if (google_signUp_success) {
+      showSuccessToast('Account created successfully');
+    }
+  }, [google_signUp_success]);
 
   const handleSubmit = (values: FormValues): void => {
-    console.log(JSON.stringify(values));
+    const newValues = { ...values };
+    newValues['userName'] = values.userName.includes('@') ? values.userName.toLocaleLowerCase() : values.userName;
+    dispatch(authSlice.actions.login(newValues));
   };
 
-  const signInSchema = Yup.object().shape({
-    username: Yup.string()
-      .required("Username is required")
-      .min(5, "Username should be more than 5 character long")
-      .max(30, "Username should not exceed 30 characters")
-      .trim(),
-  });
-
-  const [passwordType, setPasswordType] = useState("password");
   const togglePassword = () => {
-    if (passwordType === "password") {
-      setPasswordType("text");
+    if (passwordType === 'password') {
+      setPasswordType('text');
       return;
     }
-    setPasswordType("password");
+    setPasswordType('password');
+  };
+
+  const navigateToGoogleSignIn = () => {
+    window.open(`${API_ENDPOINT}${auth_module}/google/`, '_self');
   };
 
   return (
-    <div className="w-full flex flex-col justify-between  relative overflow-y-auto no-scroll-bar">
-      <div className="flex w-full container mx-auto ">
-        <div className="w-full md:w-2/5  mt-5.2 flex flex-col pl-10 ">
-          {" "}
-          <h3 className="font-Inter text-neutralBlack font-bold not-italic text-signIn leading-2.8">
-            Sign in{" "}
-          </h3>{" "}
-          <p className="text-lightGray font-Inter  max-w-sm font-normal not-italic mt-0.78 text-desc">
-            Welcome back to Comunify. Let's get you know your communities better{" "}
-          </p>
-          <Formik
-            initialValues={initialValues}
-            onSubmit={handleSubmit}
-            validationSchema={signInSchema}
-          >
-            {(formik) => (
-              <Form
-                className="flex flex-col  mt-1.8 w-25.9 "
-                autoComplete="off"
-              >
-                <div className="username">
-                  <Input
-                    type="text"
-                    placeholder="User Name/Email"
-                    label="Username"
-                    id="username"
-                    name="username"
-                    className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
-                  />
-                </div>
-                <div className="password mt-1.13 relative ">
-                  <Input
-                    type={passwordType}
-                    placeholder="Password"
-                    label="Password"
-                    id="password"
-                    name="password"
-                    className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border"
-                  />
-                  <div onClick={togglePassword} className="m-0 p-0">
-                    {passwordType === "password" ? (
-                      <img
-                        className="absolute icon-holder left-96 cursor-pointer "
-                        src={eyeIcon}
-                        alt=""
-                      />
-                    ) : (
-                      <img
-                        className="absolute icon-holder left-96 cursor-pointer "
-                        src={closeeye}
-                        alt=""
-                      />
-                    )}
+    <div className="flex flex-col h-auto layout-height">
+      <div className=" flex h-full overflow-auto ">
+        <div className="w-2/5 2xl:w-1/2 flex items-center justify-center pr-4 3xl:justify-end 3xl:pr-16 pl-4 2xl:pl-0 pb-24 pt-10">
+          <div className=" flex flex-col justify-center items-center ">
+            <div className=" flex flex-col ">
+              <h3 className="font-Inter text-neutralBlack font-bold not-italic text-signIn  text-left">Sign In </h3>
+
+              <p className="text-lightGray font-Inter  max-w-sm font-normal not-italic mt-0.78 text-desc">
+                Welcome back to Comunify. Let's get you know your communities better{' '}
+              </p>
+            </div>
+
+            <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={signInSchema}>
+              {({ errors, handleBlur, handleChange, touched, values }): JSX.Element => (
+                <Form className="flex flex-col  mt-1.8 w-25.9 " autoComplete="off">
+                  <div className="username">
+                    <Input
+                      type="text"
+                      placeholder="Username/Email"
+                      label="Username"
+                      id="userName"
+                      name="userName"
+                      className="h-4.5 pr-3.12 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.userName}
+                      errors={Boolean(touched.userName && errors.userName)}
+                      helperText={touched.userName && errors.userName}
+                    />
                   </div>
-                </div>
-                <Button
-                  text="Sign In"
-                  type="button"
-                  className="font-Poppins rounded-lg text-base text-white mt-1.8 h-3.6 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient"
-                />
-                <div className="relative flex items-center pt-2.4">
-                  <div className="borders flex-grow border-t"></div>
-                  <span className="font-Inter text-secondaryGray mx-6 flex-shrink">
-                    or
-                  </span>
-                  <div className="borders flex-grow border-t"></div>
-                </div>
-                <div className="google-signin h-3.3 mt-2.47 font-Inter text-lightBlue box-border flex text-desc  cursor-pointer items-center justify-center rounded-lg font-normal leading-2.8">
-                  <img src={socialLogo} alt="" className="pr-0.781" />
-                  Continue with Google
-                </div>
-                <div className="font-Inter text-secondaryGray text-center text-base font-normal mt-1.8 leading-2.8 text-signLink">
-                  <Link to="forgot-password">
-                    <h3>Forgot your password?</h3>
-                  </Link>
-                </div>
-                <div className="font-Inter text-secondaryGray text-center text-base font-normal mt-5  text-signLink ">
-                  Don’t have an account yet?{" "}
-                  <Link to="signup" className="text-blue-500 underline">
-                    {" "}
-                    Let’s Sign Up
-                  </Link>
-                </div>
-              </Form>
-            )}
-          </Formik>
+                  <div className="password mt-1.13 relative ">
+                    <Input
+                      type={passwordType}
+                      placeholder="Password"
+                      label="Password"
+                      id="password"
+                      name="password"
+                      className="h-4.5 rounded-lg bg-white p-2.5 pr-3.12 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.password}
+                      errors={Boolean(touched.password && errors.password)}
+                      helperText={touched.password && errors.password}
+                    />
+                    <div onClick={togglePassword} className="absolute top-7 right-[28.87px]">
+                      {passwordType === 'password' ? (
+                        <img className="cursor-pointer " src={eyeIcon} alt="" />
+                      ) : (
+                        <img className="cursor-pointer " src={closeEyeIcon} alt="" />
+                      )}
+                    </div>
+                  </div>
+                  <Button
+                    text="Sign In"
+                    type="submit"
+                    className="font-Poppins rounded-lg text-base font-semibold text-white mt-1.8 h-3.6 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient"
+                  />
+                  <div className="relative flex items-center pt-2.4">
+                    <div className="borders flex-grow border-t"></div>
+                    <span className="font-Inter text-secondaryGray mx-6 flex-shrink">or</span>
+                    <div className="borders flex-grow border-t"></div>
+                  </div>
+                  <div
+                    className="google-signin h-3.3 mt-2.47 font-Inter text-lightBlue box-border flex text-desc  cursor-pointer items-center justify-center rounded-lg font-normal leading-2.8"
+                    onClick={navigateToGoogleSignIn}
+                  >
+                    <img src={socialLogo} alt="" className="pr-0.781" />
+                    Continue with Google
+                  </div>
+                  <div className="font-Inter text-secondaryGray text-center text-base font-normal mt-1.8 leading-2.8 text-signLink hover:underline transition ease-in duration-300">
+                    <Link to="forgot-password">Forgot your password?</Link>
+                  </div>
+                  <div className="font-Poppins text-secondaryGray text-center text-base font-normal mt-5  text-signLink ">
+                    <h3>
+                      Don’t have an account yet?{' '}
+                      <Link to="signup">
+                        {' '}
+                        <span className="text-letsSignInSignUp underline">Let’s Sign Up</span>
+                      </Link>{' '}
+                    </h3>
+                  </div>
+                </Form>
+              )}
+            </Formik>
+          </div>
+        </div>
+        <div className="w-3/5 2xl:w-1/2 auth-layout flex items-center justify-center pr-0  3xl:justify-start 3xl:pl-16">
+          <div className="flex items-center justify-center">
+            <img src={bgSignInImage} alt="" className="w-9/12 xl:w-10/12 3xl:w-full object-cover" />
+          </div>
         </div>
       </div>
-      <div className="container mx-auto fixed right-0 flex items-center justify-center top-0 bg-no-repeat">
-        <div className="pb-80 w-full md:w-3/5 login-cover-bg bg-no-repeat bg-right rounded-lg  bg-thinBlue flex items-center justify-center absolute top-20 right-0 mt-5 py-20 ">
-          <img src={bgSignInImage} alt="signin-image" />
-        </div>
-      </div>
-      <div className="py-1.9"></div>
-      <div className="footer"></div>
+      {/* <Footer /> */}
     </div>
   );
 };
+
+const signInSchema = Yup.object().shape({
+  userName: Yup.lazy((value: string) => {
+    if (value?.includes('@')) {
+      return Yup.string().email('Must be a valid email').max(255).matches(email_regex, 'Must be a valid email').required('Email is required');
+    }
+
+    return Yup.string()
+      .required('Username/Email is required')
+      .min(5, 'Username should be more than 5 character long')
+      .max(30, 'Username should not exceed 30 characters')
+      .trim();
+  }),
+  password: Yup.string().required('Password is required')
+});
 
 export default SignIn;
