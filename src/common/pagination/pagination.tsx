@@ -10,10 +10,10 @@ import { alphabet_regex } from 'constants/constants';
 const Pagination: FC<PaginationProps> = (props) => {
   const { onPageChange, totalPages, skipCount = 2, currentPage, limit } = props;
 
-  const paginationRange = usePagination({ currentPage, totalPages, skipCount, limit });
+  const paginationRange = usePagination({ currentPage, totalPages, skipCount, limit }) ?? [1];
 
   // If there are less than 2 times in pagination range we shall not render the component
-  if (currentPage === 0 || paginationRange!.length < 1) {
+  if (currentPage === 0 || paginationRange &&  paginationRange!.length < 1) {
     return null;
   }
 
@@ -30,13 +30,13 @@ const Pagination: FC<PaginationProps> = (props) => {
     const checkAlphabet = alphabet_regex.test(pageNumber);
     if(!checkAlphabet) {
       onPageChange(pageNumber);
-      if (pageNumber === '') {
+      if (!pageNumber) {
         onPageChange(1);
       }
     }
   };
 
-  const lastPage = paginationRange![paginationRange!.length - 1];
+  const lastPage = paginationRange && paginationRange![paginationRange!.length - 1];
 
   return (
     <>
@@ -48,7 +48,7 @@ const Pagination: FC<PaginationProps> = (props) => {
       >
         <img src={prevIcon} alt="" />
       </div>
-      {paginationRange!.map((pageNumber, index) => {
+      {paginationRange && paginationRange!.map((pageNumber, index) => {
         // If the pageItem is a DOT, render the DOTS unicode character
         if (pageNumber === '...') {
           return <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">...</div>;

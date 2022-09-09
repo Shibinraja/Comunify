@@ -649,7 +649,7 @@ const Activity: React.FC = () => {
                     <h3 className="text-profileBlack text-error font-Poppins font-medium leading-5">Tags</h3>
                     <div className="flex pt-2.5 flex-wrap gap-1">
                       {memberProfileCardData?.map((data: MemberProfileCard) =>
-                        data.tags.map((tag: TagResponseData) => (
+                        data?.tags?.map((tag: TagResponseData) => (
                           <>
                             <div
                               data-tip
