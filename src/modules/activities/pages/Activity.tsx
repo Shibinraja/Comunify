@@ -390,7 +390,7 @@ const Activity: React.FC = () => {
                                       memberName: data?.memberName,
                                       organization: data?.organization,
                                       memberProfileUrl: `/${workspaceId}/members/${data.memberId}/profile`,
-                                      profilePictureUrl: data?.profilePictureUrl,
+                                      profilePictureUrl: data?.memberProfile,
                                       platformLogoUrl: data?.platformLogoUrl
                                     });
                                   }}
