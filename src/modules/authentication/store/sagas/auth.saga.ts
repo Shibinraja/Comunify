@@ -8,6 +8,7 @@ import history from '@/lib/history';
 import { showErrorToast, showSuccessToast } from 'common/toast/toastFunctions';
 import {
   CreateWorkspaceNameInput,
+  DecodeToken,
   ForgotPasswordInput,
   GetWorkspaceIdResponse,
   ResendVerificationMailInput,
@@ -17,14 +18,12 @@ import {
   SignUpResponse,
   SubscriptionPackages,
   TokenResponse,
-  VerifyEmailInput,
-  WorkspaceResponse
+  VerifyEmailInput
 } from 'modules/authentication/interface/auth.interface';
 import {
   createWorkspaceService,
   forgotPasswordService,
   getSubscriptionPackagesService,
-  getWorkspaceService,
   resendVerifyEmailService,
   resetPasswordService,
   signInService,
@@ -38,10 +37,15 @@ import {
 import { AxiosResponse } from 'axios';
 import { AxiosError, SuccessResponse } from '@/lib/api';
 import { getLocalRefreshToken } from '@/lib/request';
+import { decodeToken } from '../../../../lib/decodeToken';
+import cookie from 'react-cookies';
 
 const forwardTo = (location: string) => {
   history.push(location);
 };
+
+const accessToken = localStorage.getItem('accessToken') || cookie.load('x-auth-cookie');
+const decodedToken: DecodeToken = accessToken && decodeToken(accessToken);
 
 function* loginSaga(action: PayloadAction<SignInInput>) {
   try {
@@ -51,7 +55,9 @@ function* loginSaga(action: PayloadAction<SignInInput>) {
     if (res?.data) {
       localStorage.setItem('accessToken', res?.data?.token);
       yield put(authSlice.actions.setIsAuthenticated(true));
-      yield call(getWorkspaceId);
+      if (decodedToken?.isSubscribed) {
+        yield call(getWorkspaceId);
+      }
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
@@ -124,8 +130,8 @@ function* forgotPassword(action: PayloadAction<ForgotPasswordInput>) {
     yield put(loaderSlice.actions.startAuthLoadingAction());
     const res: SuccessResponse<{}> = yield call(forgotPasswordService, action.payload);
     if (!res?.error) {
-      yield call(forwardTo, '/resend-mail');
-      // yield put(authSlice.actions.formikValueReset(true));
+      // yield call(forwardTo, '/resend-mail');
+      yield put(authSlice.actions.formikValueReset(true));
       showSuccessToast('Password reset mail sent');
     }
   } catch (e) {
@@ -169,18 +175,18 @@ function* resetPassword(action: PayloadAction<ResetPasswordInput>) {
   }
 }
 
-function* getWorkspace() {
-  try {
-    yield put(loaderSlice.actions.startAuthLoadingAction());
-    const res: SuccessResponse<WorkspaceResponse> = yield call(getWorkspaceService);
-    yield put(authSlice.actions.getWorkspaceData(res?.data));
-  } catch (e) {
-    const error = e as AxiosError<unknown>;
-    showErrorToast(error?.response?.data?.message);
-  } finally {
-    yield put(loaderSlice.actions.stopAuthLoadingAction());
-  }
-}
+// function* getWorkspace() {
+//   try {
+//     yield put(loaderSlice.actions.startAuthLoadingAction());
+//     const res: SuccessResponse<WorkspaceResponse> = yield call(getWorkspaceService);
+//     yield put(authSlice.actions.getWorkspaceData(res?.data));
+//   } catch (e) {
+//     const error = e as AxiosError<unknown>;
+//     showErrorToast(error?.response?.data?.message);
+//   } finally {
+//     yield put(loaderSlice.actions.stopAuthLoadingAction());
+//   }
+// }
 
 function* createWorkspace(action: PayloadAction<CreateWorkspaceNameInput>) {
   try {
@@ -231,7 +237,7 @@ function* chooseSubscription(action: PayloadAction<string>) {
   try {
     yield put(loaderSlice.actions.startAuthLoadingAction());
     const res: SuccessResponse<SubscriptionPackages> = yield call(sendSubscriptionPlan, action.payload);
-    if (res) {
+    if (res?.data) {
       if (res.data.viewName.toLocaleLowerCase().trim() === 'free trial') {
         showSuccessToast('Free trial plan activated');
       } else {
@@ -256,8 +262,8 @@ function* getWorkspaceId() {
       localStorage.setItem('workspaceId', workspaceId);
     }
   } catch (e) {
-    const error = e as AxiosError<unknown>;
-    showErrorToast(error?.response?.data?.message);
+    // const error = e as AxiosError<unknown>;
+    // showErrorToast(error?.response?.data?.message);
   } finally {
     yield put(loaderSlice.actions.stopAuthLoadingAction());
   }
@@ -273,7 +279,6 @@ export default function* authSaga(): SagaIterator {
   yield takeEvery(authSlice.actions.resetPassword.type, resetPassword);
   yield takeEvery(authSlice.actions.getSubscriptions.type, getSubscriptions);
   yield takeEvery(authSlice.actions.createWorkspace.type, createWorkspace);
-  yield takeEvery(authSlice.actions.getWorkspace.type, getWorkspace);
   yield takeEvery(authSlice.actions.signOut.type, logout);
   yield takeEvery(authSlice.actions.chooseSubscription.type, chooseSubscription);
   yield takeEvery(authSlice.actions.getWorkspaceId.type, getWorkspaceId);

@@ -104,7 +104,8 @@ const Members: React.FC = () => {
     dispatch(membersSlice.actions.membersActivityAnalytics({ workspaceId: workspaceId! }));
     dispatch(
       settingsSlice.actions.tagFilterData({
-        settingsQuery: { tags: { searchedTags: '', checkedTags: '' } },
+        settingsQuery: {      page: 1,
+          limit, tags: { searchedTags: '', checkedTags: '' } },
         workspaceId: workspaceId!
       })
     );
@@ -237,7 +238,7 @@ const Members: React.FC = () => {
 
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
-    if (searchText === '') {
+    if (!searchText) {
       getFilteredMembersList(1, searchText);
     }
     setSearchText(searchText);
@@ -433,11 +434,14 @@ const Members: React.FC = () => {
                     {columns.map(
                       (columnName: ColumnNameProps) =>
                         columnName.isDisplayed && (
-                          <Fragment key={columnName.id}>
-                            <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray ">
-                              {columnName.name}
-                            </th>
-                          </Fragment>
+                          memberColumnsLoader ? (
+                            <Skeleton width={width_90} />
+                          ) :
+                            <Fragment key={columnName.id}>
+                              <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray ">
+                                {columnName.name}
+                              </th>
+                            </Fragment>
                         )
                     )}
                   </tr>
@@ -469,7 +473,7 @@ const Members: React.FC = () => {
                                 {(member?.platforms as Array<{ id: string; name: string; platformLogoUrl: string }>)?.map(
                                   (platforms: { name: string; id: string; platformLogoUrl: string }, index: number) => (
                                     <div
-                                      className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer w-[1.3419rem] h-[1.3419rem] rounded-full"
+                                      className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 w-[1.3419rem] h-[1.3419rem] rounded-full"
                                       key={index}
                                     >
                                       <img src={platforms?.platformLogoUrl} alt="" className="rounded-full" />
@@ -512,7 +516,8 @@ const Members: React.FC = () => {
                                         </ReactTooltip>
                                       </>
                                     ))}
-                                  <div className="font-Poppins font-semibold leading-5 text-tag text-card underline">
+                                  <div className="font-Poppins font-semibold leading-5 text-tag text-card underline cursor-pointer"
+                                    onClick={() => navigateToProfile((member?.name as { name: string; id: string })?.id as string)}>
                                     {(member?.tags as Array<Record<string, unknown>>)?.length > 2
                                       ? `${(member?.tags as Array<Record<string, unknown>>)?.length - 2} more`
                                       : ''}{' '}

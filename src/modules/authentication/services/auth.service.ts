@@ -55,10 +55,10 @@ export function* resetPasswordService(body: ResetPasswordInput): GeneratorRespon
 }
 
 // Workspace Module
-export function* getWorkspaceService(): GeneratorResponse<WorkspaceResponse> {
-  const { data } = yield request.get(`${workspace_module}/getworkspaces`);
-  return data;
-}
+// export function* getWorkspaceService(): GeneratorResponse<WorkspaceResponse> {
+//   const { data } = yield request.get(`${workspace_module}/getworkspaces`);
+//   return data;
+// }
 
 export function* createWorkspaceService(body: CreateWorkspaceNameInput): GeneratorResponse<WorkspaceResponse> {
   const { data } = yield request.post(`${workspace_module}/createworkspace`, body);

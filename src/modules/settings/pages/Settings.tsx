@@ -18,10 +18,10 @@ const Settings = () => {
             isActive={selectedTab === 'integrations'}
             onClick={() => setSelectedTab('integrations')}
             style={
-              'text-center justify-center text-xs font-Poppins not-italic font-normal text-profileBlack leading-4 font-medium w-12.87 h-2.68 border-solid border border-settingsTabBorder'
+              'text-center justify-center text-xs not-italic font-normal text-profileBlack font-medium w-[12.5rem] h-[40px] border-solid border border-settingsTabBorder rounded-tl-sm'
             }
-            styleActive={'h-3.12 border-b-2 border-b-solid border-b-settingsTabActive'}
-            styleInActive={'text-profileBlack '}
+            styleActive={'h-[50px] border-b-2 border-b-solid border-b-settingsTabActive rounded-t-sm'}
+            styleInActive={'text-profileBlack'}
           >
             INTEGRATIONS
           </TabSelector>
@@ -29,9 +29,9 @@ const Settings = () => {
             isActive={selectedTab === 'subscription'}
             onClick={() => setSelectedTab('subscription')}
             style={
-              'text-center justify-center text-xs font-Poppins not-italic font-normal text-profileBlack leading-4 font-medium w-12.87 h-2.68 border border-solid border-settingsTabBorder'
+              'text-center justify-center text-xs not-italic font-normal text-profileBlack font-medium w-[12.5rem] h-[40px] border border-solid border-settingsTabBorder dark:border-[#E6E6E6]'
             }
-            styleActive={'h-3.12 border-b-2 border-b-solid border-b-settingsTabActive'}
+            styleActive={'h-[50px] border-b-2 border-b-solid border-b-settingsTabActive rounded-t-sm'}
             styleInActive={'text-profileBlack'}
           >
             SUBSCRIPTION
@@ -40,9 +40,9 @@ const Settings = () => {
             isActive={selectedTab === 'billing_history'}
             onClick={() => setSelectedTab('billing_history')}
             style={
-              'text-center justify-center text-xs font-Poppins not-italic font-normal text-profileBlack leading-4 font-medium w-12.87 h-2.68 border border-solid border-settingsTabBorder'
+              'text-center justify-center text-xs not-italic font-normal text-profileBlack font-medium w-[12.5rem] h-[40px] border border-solid border-settingsTabBorder dark:border-[#E6E6E6]'
             }
-            styleActive={'h-3.12 border-b-2 border-b-solid border-b-settingsTabActive'}
+            styleActive={'h-[50px] border-b-2 border-b-solid border-b-settingsTabActive rounded-t-sm'}
             styleInActive={'text-profileBlack'}
           >
             BILLING HISTORY
@@ -51,9 +51,9 @@ const Settings = () => {
             isActive={selectedTab === 'tags'}
             onClick={() => setSelectedTab('tags')}
             style={
-              'text-center justify-center text-xs font-Poppins not-italic font-normal text-profileBlack leading-4 font-medium w-12.87 h-2.68 border border-solid border-settingsTabBorder'
+              'text-center justify-center text-xs not-italic font-normal text-profileBlack font-medium w-[12.5rem] h-[40px] border border-solid border-settingsTabBorder rounded-tr-sm dark:border-[#E6E6E6]'
             }
-            styleActive={'h-3.12 border-b-2 border-b-solid border-b-settingsTabActive'}
+            styleActive={'h-[50px] border-b-2 border-b-solid border-b-settingsTabActive rounded-t-sm'}
             styleInActive={'text-profileBlack'}
           >
             TAGS

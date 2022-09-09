@@ -11,7 +11,7 @@ import { useSearchParams } from 'react-router-dom';
 import { request } from '../../../../lib/request';
 import { showErrorToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
 import { API_ENDPOINT } from '../../../../lib/config';
-import { getLocalWorkspaceId } from '@/lib/helper';
+import { getLocalWorkspaceId, setRefreshToken } from '@/lib/helper';
 import Input from 'common/input';
 import { IntegrationResponse, NetworkResponse } from '../../../../lib/api';
 import { PlatformConnectResponse } from '../../../../interface/interface';
@@ -49,6 +49,7 @@ const Integration: React.FC = () => {
   });
 
   useEffect(() => {
+    setRefreshToken();
     dispatch(settingsSlice.actions.platformData({ workspaceId }));
     if (searchParams.get('code')) {
       const codeParams: null | string = searchParams.get('code');
@@ -155,7 +156,7 @@ const Integration: React.FC = () => {
                         className="integration shadow-integrationCardShadow app-input-card-border border-integrationBorder w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center"
                       >
                         <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                          <img src={data?.platformLogoUrl} alt="" className="h-2.31" />
+                          <img src={data?.platformLogoUrl} alt="" className="h-2.31 rounded-full w-[2.3125rem]" />
                         </div>
                         <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">{data?.name}</div>
                         <Button

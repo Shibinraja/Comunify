@@ -56,7 +56,7 @@ const PublicRoute: React.FC<Props> = ({ children }) => {
       dispatch(authSlice.actions.setIsAuthenticated(true));
       return false;
     }
-    if (!decodedToken?.isSubscribed) {
+    if (!decodedToken?.isSubscribed && decodedToken?.isVerified) {
       dispatchReducer({ type: 'SET_WELCOME_ROUTE', payload: '/welcome' });
       dispatch(authSlice.actions.setIsAuthenticated(true));
       return false;
