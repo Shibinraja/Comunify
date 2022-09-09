@@ -108,7 +108,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
 
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
-    if (searchText === '') {
+    if (!searchText) {
       getTagsList(1, '');
     }
     setSearchText(searchText);

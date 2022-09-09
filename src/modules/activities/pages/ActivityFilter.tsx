@@ -88,7 +88,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
 
   const handleTagSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
-    if (searchText === '') {
+    if (!searchText) {
       getFilteredMembersTagList(1, '');
     }
     setTagSearchText(searchText);

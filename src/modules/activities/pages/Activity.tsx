@@ -221,7 +221,7 @@ const Activity: React.FC = () => {
 
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
-    if (searchText === '') {
+    if (!searchText) {
       getFilteredActiveStreamList(1, searchText);
     }
     setSearchText(searchText);
@@ -279,7 +279,7 @@ const Activity: React.FC = () => {
 
   const handleSearchTagTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
-    if (searchText === '') {
+    if (!searchText) {
       getTagsList(1, '');
       handleSelectTagName('', '');
     }

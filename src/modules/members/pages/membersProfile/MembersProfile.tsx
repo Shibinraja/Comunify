@@ -244,7 +244,7 @@ const MembersProfile: React.FC = () => {
 
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
-    if (searchText === '') {
+    if (!searchText) {
       getTagsList(1, '');
       handleSelectTagName('', '');
     }

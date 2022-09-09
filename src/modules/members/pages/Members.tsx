@@ -238,7 +238,7 @@ const Members: React.FC = () => {
 
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
-    if (searchText === '') {
+    if (!searchText) {
       getFilteredMembersList(1, searchText);
     }
     setSearchText(searchText);

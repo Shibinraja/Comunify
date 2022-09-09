@@ -132,7 +132,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
 
   const handleTagSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
-    if (searchText === '') {
+    if (!searchText) {
       getFilteredMembersTagList(1, '');
     }
     setTagSearchText(searchText);
@@ -140,7 +140,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
 
   const handleLocationSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
-    if (searchText === '') {
+    if (!searchText) {
       getFilteredMembersFilterList(searchText);
     }
     setLocationSearchText(searchText);
@@ -148,7 +148,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
 
   const handleOrganizationSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
-    if (searchText === '') {
+    if (!searchText) {
       getFilteredMembersFilterList('', searchText);
     }
     setOrganizationSearchText(searchText);
