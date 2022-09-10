@@ -86,7 +86,7 @@ const MembersProfile: React.FC = () => {
   const TagNameValidation = Yup.string()
     .trim('WhiteSpaces are not allowed')
     .min(2, 'Tag Name must be atleast 2 characters')
-    .max(20, 'Tag Name should not exceed above 20 characters')
+    .max(15, 'Tag Name should not exceed above 15 characters')
     .required('Tag Name is a required field')
     .nullable(true);
 
@@ -294,7 +294,7 @@ const MembersProfile: React.FC = () => {
   const handleAssignTagsName = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     if (errorMessage || !searchText) {
-      setErrorMessage(errorMessage || 'TagName is a required field');
+      setErrorMessage(errorMessage || 'Tag Name is a required field');
     } else {
       dispatch(
         settingsSlice.actions.assignTags({
