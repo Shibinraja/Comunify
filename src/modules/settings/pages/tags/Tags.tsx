@@ -80,6 +80,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
     if (tagId !== '') {
       setIsDeleteModalOpen(true);
       dispatch(settingsSlice.actions.resetValue(false));
+      setPage(1);
     }
   }, [tagId]);
 
