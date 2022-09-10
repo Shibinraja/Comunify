@@ -35,6 +35,7 @@ import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 import { width_90 } from 'constants/constants';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
 import ReactTooltip from 'react-tooltip';
+import { AssignTypeEnum } from 'modules/settings/interface/settings.interface';
 
 Modal.setAppElement('#root');
 
@@ -310,7 +311,8 @@ const Members: React.FC = () => {
       settingsSlice.actions.unAssignTags({
         memberId: memberId!,
         unAssignTagBody: {
-          tagId: id
+          tagId: id,
+          type: 'Member' as AssignTypeEnum.Member
         },
         workspaceId: workspaceId!
       })

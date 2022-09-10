@@ -315,7 +315,8 @@ const MembersProfile: React.FC = () => {
       settingsSlice.actions.unAssignTags({
         memberId: memberId!,
         unAssignTagBody: {
-          tagId: id
+          tagId: id,
+          type: 'Member' as AssignTypeEnum.Member
         },
         workspaceId: workspaceId!
       })
