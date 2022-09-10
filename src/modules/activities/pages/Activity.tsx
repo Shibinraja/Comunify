@@ -667,7 +667,7 @@ const Activity: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="bg-activitySubCard rounded flex flex-col pt-2.5 pl-0.81 pb-8 mt-5">
+                  <div className="bg-activitySubCard rounded flex flex-col pt-2.5 pl-0.81 pb-[0.5625rem] mt-5">
                     <div className="flex items-center">
                       <div className="w-5 h-5">
                         <img src={ActivityCard?.platformLogoUrl ? ActivityCard?.platformLogoUrl : ''} alt="" />
@@ -682,7 +682,7 @@ const Activity: React.FC = () => {
                       className="mt-5 font-Poppins font-medium text-infoBlack text-card leading-1.12"
                       dangerouslySetInnerHTML={{ __html: ActivityCard?.value ? ActivityCard?.value : '--' }}
                     ></div>
-                    <div className="mt-1.18 flex relative">
+                    <div className="mt-1.18 flex justify-between">
                       <a
                         href={`${ActivityCard?.sourceUrl}`}
                         target="_blank"
@@ -691,7 +691,7 @@ const Activity: React.FC = () => {
                       >
                         {`VIEW ON ${ActivityCard?.platform.toLocaleUpperCase()}`}
                       </a>
-                      <div className="absolute right-3 top-5 font-Poppins font-medium text-card leading-1.12 text-slimGray">
+                      <div className="top-5 font-Poppins font-medium pr-3 text-card leading-1.12 text-slimGray">
                         {generateDateAndTime(`${ActivityCard?.activityTime}`, 'HH:MM')} |{' '}
                         {generateDateAndTime(`${ActivityCard?.activityTime}`, 'MM-DD')}
                       </div>
