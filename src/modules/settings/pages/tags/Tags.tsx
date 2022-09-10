@@ -79,6 +79,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
   useEffect(() => {
     if (tagId !== '') {
       setIsDeleteModalOpen(true);
+      dispatch(settingsSlice.actions.resetValue(false));
     }
   }, [tagId]);
 
