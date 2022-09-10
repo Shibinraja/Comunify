@@ -70,7 +70,10 @@ const MembersProfile: React.FC = () => {
   const datePickerRefStart = useRef<ReactDatePicker>(null);
   const datePickerRefEnd = useRef<ReactDatePicker>(null);
 
-  const { TagFilterResponse: { data: TagFilterResponseData }, clearValue } = useAppSelector((state) => state.settings);
+  const {
+    TagFilterResponse: { data: TagFilterResponseData },
+    clearValue
+  } = useAppSelector((state) => state.settings);
 
   const debouncedValue = useDebounce(searchText, 300);
 
@@ -126,12 +129,14 @@ const MembersProfile: React.FC = () => {
       tagName: ''
     });
     setSearchText('');
-    dispatch(settingsSlice.actions.getTagFilterData({
-      data: [],
-      totalPages: 0,
-      previousPage: 0,
-      nextPage: 0
-    }));
+    dispatch(
+      settingsSlice.actions.getTagFilterData({
+        data: [],
+        totalPages: 0,
+        previousPage: 0,
+        nextPage: 0
+      })
+    );
     dispatch(settingsSlice.actions.resetValue(false));
   };
 
@@ -464,7 +469,7 @@ const MembersProfile: React.FC = () => {
                   <div className="flex flex-col pl-0.89">
                     <div className="font-Poppins font-normal text-card leading-4">{data?.displayValue}</div>
                     <div className="font-Poppins left-4 font-normal text-profileEmail text-duration">
-                      {new Date(`${data?.createdAt}`).getHours()} hours ago
+                      {new Date(`${data?.activityTime}`).getHours()} hours ago
                     </div>
                   </div>
                 </div>
