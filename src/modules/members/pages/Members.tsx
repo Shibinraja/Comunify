@@ -560,17 +560,21 @@ const Members: React.FC = () => {
                   </tr>
                 </tbody>
               </table>
-              <div className="px-6 py-6 flex items-center gap-0.66 pl-[30%] w-full rounded-b-lg fixed bg-white bottom-0">
-                <Pagination currentPage={page} totalPages={totalPages} limit={limit} onPageChange={(page) => setPage(Number(page))} />
-              </div>
-              <div className="fixed bottom-10 right-32">
-                <div
-                  className="btn-drag p-3 flex items-center justify-center cursor-pointer shadow-dragButton rounded-0.6 "
-                  onClick={() => setIsModalOpen(true)}
-                >
-                  <img src={editIcon} alt="" />
+              {memberColumnsLoader && (
+                <div className="px-6 py-6 flex items-center gap-0.66 pl-[30%] w-full rounded-b-lg fixed bg-white bottom-0">
+                  <Pagination currentPage={page} totalPages={totalPages} limit={limit} onPageChange={(page) => setPage(Number(page))} />
                 </div>
-              </div>
+              )}
+              {memberColumnsLoader && (
+                <div className="fixed bottom-10 right-32">
+                  <div
+                    className="btn-drag p-3 flex items-center justify-center cursor-pointer shadow-dragButton rounded-0.6 "
+                    onClick={() => setIsModalOpen(true)}
+                  >
+                    <img src={editIcon} alt="" />
+                  </div>
+                </div>
+              )}
               <Modal
                 isOpen={isModalOpen}
                 shouldCloseOnOverlayClick={true}
