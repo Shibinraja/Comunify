@@ -349,7 +349,7 @@ const Activity: React.FC = () => {
         memberId: ActivityCard?.memberId as string,
         unAssignTagBody: {
           tagId: id,
-          type: 'Activity' as AssignTypeEnum.Member
+          type: 'Activity' as AssignTypeEnum.Activity
         },
         workspaceId: workspaceId!
       })
