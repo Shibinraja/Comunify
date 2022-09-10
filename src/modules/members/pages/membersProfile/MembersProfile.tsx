@@ -103,7 +103,7 @@ const MembersProfile: React.FC = () => {
 
   useEffect(() => {
     loadActivityData(true);
-  }, [platform, fromDate && toDate]);
+  }, [platform, fromDate && toDate, toDate && fromDate]);
 
   // Returns the debounced value of the search text.
   useEffect(() => {
