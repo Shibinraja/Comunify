@@ -46,6 +46,7 @@ export interface unAssignTagProps extends workspaceId {
   memberId: string;
   unAssignTagBody: {
     tagId: string;
+    type: AssignTypeEnum;
     activityId?: string;
   };
 }
@@ -58,16 +59,16 @@ export interface ModalState {
 
 export type TagResponseData = {
   id: string;
-  name: string,
-  viewName: string,
-  createdAt: Date,
-  createdBy: string,
-  type: string,
-  totalCount: number
+  name: string;
+  viewName: string;
+  createdAt: Date;
+  createdBy: string;
+  type: string;
+  totalCount: number;
 };
 
 export enum TagType {
-  Default = 'Default',
+  Default = 'Default'
 }
 
 export type TagResponse = {

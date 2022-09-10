@@ -7,9 +7,7 @@ import fetchExportList from '@/lib/fetchExport';
 import Button from 'common/button';
 import Input from 'common/input';
 import Pagination from 'common/pagination/pagination';
-import React, {
-  ChangeEvent, FormEvent, Fragment, useEffect, useMemo, useRef, useState
-} from 'react';
+import React, { ChangeEvent, FormEvent, Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import Modal from 'react-modal';
 import { useDispatch } from 'react-redux';
@@ -329,7 +327,7 @@ const Activity: React.FC = () => {
     e.preventDefault();
     if (errorMessage || !searchTagText) {
       setErrorMessage(errorMessage || 'TagName is a required field');
-    } else{
+    } else {
       dispatch(
         settingsSlice.actions.assignTags({
           memberId: ActivityCard?.memberId as string,
@@ -350,7 +348,8 @@ const Activity: React.FC = () => {
       settingsSlice.actions.unAssignTags({
         memberId: ActivityCard?.memberId as string,
         unAssignTagBody: {
-          tagId: id
+          tagId: id,
+          type: 'Activity' as AssignTypeEnum.Member
         },
         workspaceId: workspaceId!
       })
@@ -654,8 +653,11 @@ const Activity: React.FC = () => {
                   </div>
                   <div className="mt-8 flex items-center">
                     <div className="bg-cover">
-                      <img src={ActivityCard?.profilePictureUrl === null ? profileImage : ActivityCard?.profilePictureUrl} alt=""
-                        className="rounded-full w-4.43 h-4.43 bg-cover bg-center border-4 border-white"/>
+                      <img
+                        src={ActivityCard?.profilePictureUrl === null ? profileImage : ActivityCard?.profilePictureUrl}
+                        alt=""
+                        className="rounded-full w-4.43 h-4.43 bg-cover bg-center border-4 border-white"
+                      />
                     </div>
                     <div className="flex flex-col pl-0.563">
                       <div className="font-medium text-trial text-infoBlack font-Poppins leading-1.31">{ActivityCard?.memberName}</div>
