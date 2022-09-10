@@ -217,7 +217,12 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                               onChange={handlePlatformsCheckBox}
                             />
                           </div>
-                          <label className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer" htmlFor={platform.id as string}>{platform?.name}</label>
+                          <label
+                            className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer"
+                            htmlFor={platform.id as string}
+                          >
+                            {platform?.name}
+                          </label>
                         </div>
                       )
                   )}
@@ -266,7 +271,12 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                             onChange={handleTagsCheckBox}
                           />
                         </div>
-                        <label className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer" htmlFor={tags.id as string}>{tags.name}</label>
+                        <label
+                          className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer"
+                          htmlFor={tags.id as string}
+                        >
+                          {tags.name}
+                        </label>
                       </div>
                     ))}
                 </div>

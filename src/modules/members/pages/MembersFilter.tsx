@@ -321,7 +321,12 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                               onChange={handlePlatformsCheckBox}
                             />
                           </div>
-                          <label className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer" htmlFor={platform.id as string}>{platform?.name}</label>
+                          <label
+                            className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer"
+                            htmlFor={platform.id as string}
+                          >
+                            {platform?.name}
+                          </label>
                         </div>
                       )
                   )}
@@ -371,7 +376,12 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                             onChange={handleTagsCheckBox}
                           />
                         </div>
-                        <label className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer" htmlFor={tags.id as string}>{tags.name}</label>
+                        <label
+                          className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer"
+                          htmlFor={tags.id as string}
+                        >
+                          {tags.name}
+                        </label>
                       </div>
                     ))}
                 </div>
@@ -480,7 +490,12 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                                 onChange={handleLocationCheckBox}
                               />
                             </div>
-                            <label className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer" htmlFor={location.location}>{location.location}</label>
+                            <label
+                              className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer"
+                              htmlFor={location.location}
+                            >
+                              {location.location}
+                            </label>
                           </div>
                         )
                     )}
@@ -534,7 +549,12 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                                 onChange={handleOrganizationCheckBox}
                               />
                             </div>
-                            <label className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer" htmlFor={organization.organization}>{organization.organization}</label>
+                            <label
+                              className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer"
+                              htmlFor={organization.organization}
+                            >
+                              {organization.organization}
+                            </label>
                           </div>
                         )
                     )}
