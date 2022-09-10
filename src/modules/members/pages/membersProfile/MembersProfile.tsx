@@ -143,7 +143,7 @@ const MembersProfile: React.FC = () => {
     setIsModalOpen(val);
   };
 
-  const handleTagModalOpen = (value:boolean): void => {
+  const handleTagModalOpen = (value: boolean): void => {
     setErrorMessage('');
     setTagModalOpen(value);
     setTags({
@@ -291,11 +291,11 @@ const MembersProfile: React.FC = () => {
     }
   };
 
-  const handleAssignTagsName =  (e: FormEvent<HTMLFormElement>): void => {
+  const handleAssignTagsName = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     if (errorMessage || !searchText) {
       setErrorMessage(errorMessage || 'TagName is a required field');
-    } else{
+    } else {
       dispatch(
         settingsSlice.actions.assignTags({
           memberId: memberId!,

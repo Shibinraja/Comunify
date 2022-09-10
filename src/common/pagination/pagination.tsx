@@ -13,7 +13,7 @@ const Pagination: FC<PaginationProps> = (props) => {
   const paginationRange = usePagination({ currentPage, totalPages, skipCount, limit }) ?? [1];
 
   // If there are less than 2 times in pagination range we shall not render the component
-  if (currentPage === 0 || paginationRange &&  paginationRange!.length < 1) {
+  if (currentPage === 0 || (paginationRange && paginationRange!.length < 1)) {
     return null;
   }
 
@@ -28,12 +28,11 @@ const Pagination: FC<PaginationProps> = (props) => {
   const handlePageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const pageNumber = event.target.value;
     const checkAlphabet = alphabet_regex.test(pageNumber);
-    if(!checkAlphabet) {
-      if(Number(pageNumber) === 0 || totalPages < Number(pageNumber) ||!pageNumber)  {
+    if (!checkAlphabet) {
+      if (Number(pageNumber) === 0 || totalPages < Number(pageNumber) || !pageNumber) {
         onPageChange(1);
-      } else{
+      } else {
         onPageChange(pageNumber);
-
       }
     }
   };
@@ -50,23 +49,24 @@ const Pagination: FC<PaginationProps> = (props) => {
       >
         <img src={prevIcon} alt="" />
       </div>
-      {paginationRange.length > 2 && paginationRange!.map((pageNumber, index) => {
-        // If the pageItem is a DOT, render the DOTS unicode character
-        if (pageNumber === '...') {
-          return <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">...</div>;
-        }
-        return (
-          <div
-            key={index}
-            className={`font-Lato font-normal text-error leading-4 cursor-pointer ${
-              currentPage === pageNumber ? 'text-paginationArrowButton font-extrabold' : 'text-pagination'
-            }`}
-            onClick={() => onPageChange(pageNumber)}
-          >
-            {pageNumber}
-          </div>
-        );
-      })}
+      {paginationRange.length > 2 &&
+        paginationRange!.map((pageNumber, index) => {
+          // If the pageItem is a DOT, render the DOTS unicode character
+          if (pageNumber === '...') {
+            return <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">...</div>;
+          }
+          return (
+            <div
+              key={index}
+              className={`font-Lato font-normal text-error leading-4 cursor-pointer ${
+                currentPage === pageNumber ? 'text-paginationArrowButton font-extrabold' : 'text-pagination'
+              }`}
+              onClick={() => onPageChange(pageNumber)}
+            >
+              {pageNumber}
+            </div>
+          );
+        })}
 
       <div
         className={`pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer ${

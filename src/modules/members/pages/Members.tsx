@@ -289,7 +289,10 @@ const Members: React.FC = () => {
     [customizedColumnBool]
   );
 
-  const MemberFilter = useMemo(() => <MembersFilter page={page} limit={limit} memberFilterExport={setFilterExportParams} searchText={debouncedValue}/>, [debouncedValue]);
+  const MemberFilter = useMemo(
+    () => <MembersFilter page={page} limit={limit} memberFilterExport={setFilterExportParams} searchText={debouncedValue} />,
+    [debouncedValue]
+  );
 
   const handleClickDatePickerIcon = (type: string) => {
     if (type === 'start') {
@@ -413,9 +416,7 @@ const Members: React.FC = () => {
           )}
         </div>
 
-        <div className="ml-1.30 w-[800px]">
-          {MemberFilter}
-        </div>
+        <div className="ml-1.30 w-[800px]">{MemberFilter}</div>
         <div className="ml-0.652">
           <div
             className="export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex ml-0.63 cursor-pointer hover:border-infoBlack transition ease-in-out duration-300"
