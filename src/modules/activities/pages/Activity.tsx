@@ -522,7 +522,7 @@ const Activity: React.FC = () => {
                                       organization: data?.organization,
                                       channelName: data?.channelId,
                                       sourceUrl: data?.sourceUrl,
-                                      profilePictureUrl: data?.profilePictureUrl,
+                                      profilePictureUrl: data?.memberProfile as string,
                                       value: data?.value,
                                       platformLogoUrl: data?.platformLogoUrl,
                                       memberId: data?.memberId,
@@ -654,7 +654,8 @@ const Activity: React.FC = () => {
                   </div>
                   <div className="mt-8 flex items-center">
                     <div className="bg-cover">
-                      <img src={ActivityCard?.profilePictureUrl === null ? profileImage : ActivityCard?.profilePictureUrl} alt="" />
+                      <img src={ActivityCard?.profilePictureUrl === null ? profileImage : ActivityCard?.profilePictureUrl} alt=""
+                        className="rounded-full w-4.43 h-4.43 bg-cover bg-center border-4 border-white"/>
                     </div>
                     <div className="flex flex-col pl-0.563">
                       <div className="font-medium text-trial text-infoBlack font-Poppins leading-1.31">{ActivityCard?.memberName}</div>
