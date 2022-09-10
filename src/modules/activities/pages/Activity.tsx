@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import useDebounce from '@/hooks/useDebounce';
@@ -6,7 +7,9 @@ import fetchExportList from '@/lib/fetchExport';
 import Button from 'common/button';
 import Input from 'common/input';
 import Pagination from 'common/pagination/pagination';
-import React, { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  ChangeEvent, FormEvent, Fragment, useEffect, useMemo, useRef, useState
+} from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import Modal from 'react-modal';
 import { useDispatch } from 'react-redux';
@@ -27,10 +30,10 @@ import { width_90 } from 'constants/constants';
 import { activityFilterExportProps } from './activity.types';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
 import { AssignTypeEnum, TagResponseData } from 'modules/settings/interface/settings.interface';
-import { MemberProfileCard } from 'modules/members/interface/members.interface';
 import membersSlice from 'modules/members/store/slice/members.slice';
 import ReactTooltip from 'react-tooltip';
 import { format, parseISO } from 'date-fns';
+import * as Yup from 'yup';
 
 Modal.setAppElement('#root');
 
@@ -53,7 +56,6 @@ const Activity: React.FC = () => {
   const [page, setPage] = useState<number>(1);
   const [searchText, setSearchText] = useState<string>('');
   const [searchTagText, setSearchTagText] = useState<string>('');
-  const dropDownRef = useRef<HTMLDivElement>(null);
   const [checkedActivityId, setCheckedActivityId] = useState<Record<string, unknown>>({});
   const [filterExportParams, setFilterExportParams] = useState<activityFilterExportProps>({
     checkTags: '',
@@ -68,12 +70,16 @@ const Activity: React.FC = () => {
     tagName: '',
     tagId: ''
   });
+  const [tagDropDownOption, setTagDropDownOption] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | unknown>('');
+
+  const dropDownRef = useRef<HTMLDivElement>(null);
+  const tagDropDownRef = useRef<HTMLDivElement>(null);
+
   const limit = 10;
   const loader = useSkeletonLoading(activitiesSlice.actions.getActiveStreamData.type);
 
   const { data, totalPages } = useAppSelector((state) => state.activities.activeStreamData);
-
-  const { memberProfileCardData } = useAppSelector((state) => state.members);
 
   const {
     TagFilterResponse: { data: TagFilterResponseData },
@@ -81,6 +87,13 @@ const Activity: React.FC = () => {
   } = useAppSelector((state) => state.settings);
 
   const debouncedValue = useDebounce(searchText, 300);
+
+  const TagNameValidation = Yup.string()
+    .trim('WhiteSpaces are not allowed')
+    .min(2, 'Tag Name must be atleast 2 characters')
+    .max(20, 'Tag Name should not exceed above 20 characters')
+    .required('Tag Name is a required field')
+    .nullable(true);
 
   const debouncedTagValue = useDebounce(searchTagText, 300);
 
@@ -108,9 +121,17 @@ const Activity: React.FC = () => {
   }, [page]);
 
   useEffect(() => {
+    if (TagFilterResponseData?.length && searchTagText) {
+      setTagDropDownOption(true);
+    }
+  }, [TagFilterResponseData]);
+
+  useEffect(() => {
     document.addEventListener('click', handleOutsideClick);
+    document.addEventListener('click', handleDropDownClick);
     return () => {
       document.removeEventListener('click', handleOutsideClick);
+      document.addEventListener('click', handleDropDownClick);
     };
   }, []);
 
@@ -129,7 +150,7 @@ const Activity: React.FC = () => {
 
   useEffect(() => {
     if (clearValue) {
-      handleTagModalOpen();
+      handleTagModalOpen(false);
     }
   }, [clearValue]);
 
@@ -147,6 +168,12 @@ const Activity: React.FC = () => {
         workspaceId: workspaceId!
       })
     );
+  };
+
+  const handleDropDownClick = (event: MouseEvent) => {
+    if (tagDropDownRef && tagDropDownRef.current && !tagDropDownRef.current.contains(event.target as Node)) {
+      setTagDropDownOption(false);
+    }
   };
 
   // Function to close the popup modal of the member profile
@@ -188,8 +215,9 @@ const Activity: React.FC = () => {
     dispatch(membersSlice.actions.getMemberProfileCardData({ workspaceId: workspaceId!, memberId: data.memberId }));
   };
 
-  const handleTagModalOpen = (): void => {
-    setTagModalOpen((prev) => !prev);
+  const handleTagModalOpen = (value: boolean): void => {
+    setErrorMessage('');
+    setTagModalOpen(value);
     setTags({
       tagId: '',
       tagName: ''
@@ -239,7 +267,11 @@ const Activity: React.FC = () => {
         activeStreamQuery: {
           page: pageNumber,
           limit,
-          search: text
+          search: text,
+          tags: { searchedTags: '', checkedTags: filterExportParams.checkTags.toString() },
+          platforms: filterExportParams.checkPlatform.toString(),
+          'activity.lte': filterExportParams.endDate,
+          'activity.gte': filterExportParams.startDate
         },
         workspaceId: workspaceId!
       })
@@ -271,6 +303,7 @@ const Activity: React.FC = () => {
   };
 
   const handleSelectTagName = (tagName: string, tagId: string) => {
+    setTagDropDownOption(false);
     setTags({
       tagId,
       tagName
@@ -279,26 +312,37 @@ const Activity: React.FC = () => {
 
   const handleSearchTagTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
-    if (!searchText) {
-      getTagsList(1, '');
-      handleSelectTagName('', '');
-    }
     setSearchTagText(searchText);
+    try {
+      TagNameValidation.validateSync(searchText);
+      setErrorMessage('');
+      if (!searchText) {
+        getTagsList(1, '');
+        handleSelectTagName('', '');
+      }
+    } catch ({ message }) {
+      setErrorMessage(message);
+    }
   };
 
-  const handleAssignTagsName = (): void => {
-    dispatch(
-      settingsSlice.actions.assignTags({
-        memberId: ActivityCard?.memberId as string,
-        assignTagBody: {
-          name: tags.tagName,
-          viewName: tags.tagName,
-          activityId: ActivityCard?.activityId,
-          type: 'Activity' as AssignTypeEnum.Activity
-        },
-        workspaceId: workspaceId!
-      })
-    );
+  const handleAssignTagsName = (e: FormEvent<HTMLFormElement>): void => {
+    e.preventDefault();
+    if (errorMessage || !searchTagText) {
+      setErrorMessage(errorMessage || 'TagName is a required field');
+    } else{
+      dispatch(
+        settingsSlice.actions.assignTags({
+          memberId: ActivityCard?.memberId as string,
+          assignTagBody: {
+            name: tags.tagName || searchTagText,
+            viewName: tags.tagName || searchTagText,
+            activityId: ActivityCard?.activityId,
+            type: 'Activity' as AssignTypeEnum.Activity
+          },
+          workspaceId: workspaceId!
+        })
+      );
+    }
   };
 
   const handleUnAssignTagsName = (id: string): void => {
@@ -313,7 +357,10 @@ const Activity: React.FC = () => {
     );
   };
 
-  const ActiveStreamFilter = useMemo(() => <ActivityFilter page={page} limit={limit} activityFilterExport={setFilterExportParams} />, []);
+  const ActiveStreamFilter = useMemo(
+    () => <ActivityFilter page={page} limit={limit} activityFilterExport={setFilterExportParams} searchText={debouncedValue} />,
+    [debouncedValue]
+  );
 
   return (
     <div className="flex flex-col mt-1.8">
@@ -390,7 +437,7 @@ const Activity: React.FC = () => {
                                       memberName: data?.memberName,
                                       organization: data?.organization,
                                       memberProfileUrl: `/${workspaceId}/members/${data.memberId}/profile`,
-                                      profilePictureUrl: data?.profilePictureUrl,
+                                      profilePictureUrl: data?.memberProfile,
                                       platformLogoUrl: data?.platformLogoUrl
                                     });
                                   }}
@@ -475,7 +522,7 @@ const Activity: React.FC = () => {
                                       organization: data?.organization,
                                       channelName: data?.channelId,
                                       sourceUrl: data?.sourceUrl,
-                                      profilePictureUrl: data?.profilePictureUrl,
+                                      profilePictureUrl: data?.memberProfile as string,
                                       value: data?.value,
                                       platformLogoUrl: data?.platformLogoUrl,
                                       memberId: data?.memberId,
@@ -535,7 +582,7 @@ const Activity: React.FC = () => {
                 <div className="pt-9 flex flex-col activity-list-height">
                   <div className="flex justify-between">
                     <div className="font-Inter font-semibold text-black text-xl leading-6">Activity</div>
-                    <div className="font-Poppins text-error leading-5 text-tag font-medium cursor-pointer" onClick={handleTagModalOpen}>
+                    <div className="font-Poppins text-error leading-5 text-tag font-medium cursor-pointer" onClick={() => handleTagModalOpen(true)}>
                       ADD TAG
                     </div>
                     <Modal
@@ -557,27 +604,29 @@ const Activity: React.FC = () => {
                     >
                       <div className="flex flex-col">
                         <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Add Tag</h3>
-                        <form className="flex flex-col relative px-1.93 mt-9">
+                        <form className="flex flex-col relative px-1.93 mt-9" onSubmit={(e) => handleAssignTagsName(e)}>
                           <label htmlFor="billingName " className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack ">
                             Tag Name
                           </label>
-                          <input
+                          <Input
+                            id="tags"
+                            name="tags"
                             type="text"
                             className="mt-0.375 inputs box-border bg-white shadow-shadowInput rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-sm placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
                             placeholder="Enter Tag Name"
                             onChange={handleSearchTagTextChange}
                             value={tags.tagName || searchTagText}
-                            minLength={2}
-                            maxLength={50}
-                            required
+                            errors={Boolean(errorMessage)}
+                            helperText={errorMessage}
                           />
                           <div
                             className={`bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 ${
-                              TagFilterResponseData?.length && !tags.tagId ? '' : 'hidden'
+                              tagDropDownOption ? '' : 'hidden'
                             }`}
                           >
                             {TagFilterResponseData?.map((data: TagResponseData) => (
                               <div
+                                ref={tagDropDownRef}
                                 key={data.id}
                                 className="p-2 text-searchBlack cursor-pointer font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300"
                                 onClick={() => handleSelectTagName(data.name, data.id)}
@@ -591,13 +640,12 @@ const Activity: React.FC = () => {
                               type="button"
                               text="CANCEL"
                               className="mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel w-5.25 h-2.81  rounded border-none"
-                              onClick={handleTagModalOpen}
+                              onClick={() => handleTagModalOpen(false)}
                             />
                             <Button
-                              type="button"
+                              type="submit"
                               text="SAVE"
                               className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-5.25 h-2.81  border-none btn-save-modal"
-                              onClick={handleAssignTagsName}
                             />
                           </div>
                         </form>
@@ -606,7 +654,8 @@ const Activity: React.FC = () => {
                   </div>
                   <div className="mt-8 flex items-center">
                     <div className="bg-cover">
-                      <img src={ActivityCard?.profilePictureUrl === null ? profileImage : ActivityCard?.profilePictureUrl} alt="" />
+                      <img src={ActivityCard?.profilePictureUrl === null ? profileImage : ActivityCard?.profilePictureUrl} alt=""
+                        className="rounded-full w-4.43 h-4.43 bg-cover bg-center border-4 border-white"/>
                     </div>
                     <div className="flex flex-col pl-0.563">
                       <div className="font-medium text-trial text-infoBlack font-Poppins leading-1.31">{ActivityCard?.memberName}</div>
@@ -648,26 +697,27 @@ const Activity: React.FC = () => {
                   <div className="mt-7">
                     <h3 className="text-profileBlack text-error font-Poppins font-medium leading-5">Tags</h3>
                     <div className="flex pt-2.5 flex-wrap gap-1">
-                      {memberProfileCardData?.map((data: MemberProfileCard) =>
-                        data?.tags?.map((tag: TagResponseData) => (
-                          <>
-                            <div
-                              data-tip
-                              data-for={tag.name}
-                              className="flex  tags bg-tagSection items-center justify-evenly rounded p-1"
-                              key={tag.id}
-                            >
-                              <div className="font-Poppins text-card font-normal leading-5 pr-4 text-profileBlack">{tag.name}</div>
-                              <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
-                                <img src={closeIcon} alt="" onClick={() => handleUnAssignTagsName(tag.id)} />
+                      {data &&
+                        data?.map((activity: ActiveStreamData) =>
+                          activity?.tags?.map((tag: Partial<TagResponseData>) => (
+                            <Fragment key={tag.id}>
+                              <div
+                                data-tip
+                                data-for={tag.name}
+                                className="flex  tags bg-tagSection items-center justify-evenly rounded p-1"
+                                key={tag.id}
+                              >
+                                <div className="font-Poppins text-card font-normal leading-5 pr-4 text-profileBlack">{tag.name as string}</div>
+                                <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
+                                  <img src={closeIcon} alt="" onClick={() => handleUnAssignTagsName(tag.id as string)} />
+                                </div>
                               </div>
-                            </div>
-                            <ReactTooltip id={tag.name} textColor="" backgroundColor="" effect="solid">
-                              <span className="font-Poppins text-card font-normal leading-5 pr-4">{tag.name}</span>
-                            </ReactTooltip>
-                          </>
-                        ))
-                      )}
+                              <ReactTooltip id={tag.name} textColor="" backgroundColor="" effect="solid">
+                                <span className="font-Poppins text-card font-normal leading-5 pr-4">{tag.name as string}</span>
+                              </ReactTooltip>
+                            </Fragment>
+                          ))
+                        )}
                     </div>
                   </div>
                 </div>

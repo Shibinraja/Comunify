@@ -6,7 +6,6 @@ import Input from 'common/input';
 import Pagination from 'common/pagination/pagination';
 import { TabPanel } from 'common/tabs/TabPanel';
 import { showErrorToast } from 'common/toast/toastFunctions';
-import { whiteSpace_regex } from 'constants/constants';
 import { TagResponseData, TagType } from 'modules/settings/interface/settings.interface';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
@@ -48,9 +47,9 @@ const Tags: React.FC<Props> = ({ hidden }) => {
 
   const debouncedValue = useDebounce(searchText, 300);
   const TagNameValidation = Yup.string()
+    .trim('WhiteSpaces are not allowed')
     .min(2, 'Tag Name must be atleast 2 characters')
-    .max(50, 'Tag Name should not exceed above 50 characters')
-    .matches(whiteSpace_regex, 'Whitespaces are not allowed')
+    .max(20, 'Tag Name should not exceed above 20 characters')
     .required('Tag Name is a required field')
     .nullable(true);
 
@@ -80,6 +79,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
   useEffect(() => {
     if (tagId !== '') {
       setIsDeleteModalOpen(true);
+      dispatch(settingsSlice.actions.resetValue(false));
     }
   }, [tagId]);
 
@@ -245,16 +245,6 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                           errors={Boolean(errorMessage)}
                           helperText={errorMessage}
                         />
-                        {/* <div className="bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 hidden">
-      {TagFilterResponse.map((data:TagResponse) => (
-        <div
-          key={data.id}
-          className="p-2 text-searchBlack cursor-pointer font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300"
-        >
-          {data.name}
-        </div>
-      ))}
-    </div> */}
                         <div className="flex justify-end pt-10 items-center">
                           <Button
                             type="button"
@@ -306,7 +296,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                                 <td className="px-6 py-3">
                                   <div className="flex ">
                                     <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                                      {data.viewName}
+                                      {data.type}
                                     </div>
                                   </div>
                                 </td>

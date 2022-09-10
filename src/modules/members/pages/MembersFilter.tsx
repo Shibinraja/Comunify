@@ -19,7 +19,7 @@ import membersSlice from '../store/slice/members.slice';
 import './Members.css';
 import { MemberTypesProps } from './membertypes';
 
-const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }) => {
+const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, searchText }) => {
   const [isFilterDropdownActive, setIsFilterDropdownActive] = useState<boolean>(false);
   const [isPlatformActive, setPlatformActive] = useState<boolean>(true);
   const [isTagActive, setTagActive] = useState<boolean>(false);
@@ -264,7 +264,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
         membersQuery: {
           page,
           limit,
-          search: '',
+          search: searchText,
           tags: { searchedTags: '', checkedTags: checkTags.toString() },
           platforms: checkPlatform.toString(),
           organization: { searchedOrganization: '', checkedOrganization: checkOrganization.toString() },
@@ -321,7 +321,12 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
                               onChange={handlePlatformsCheckBox}
                             />
                           </div>
-                          <label className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer" htmlFor={platform.id as string}>{platform?.name}</label>
+                          <label
+                            className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer"
+                            htmlFor={platform.id as string}
+                          >
+                            {platform?.name}
+                          </label>
                         </div>
                       )
                   )}
@@ -371,7 +376,12 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
                             onChange={handleTagsCheckBox}
                           />
                         </div>
-                        <label className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer" htmlFor={tags.id as string}>{tags.name}</label>
+                        <label
+                          className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer"
+                          htmlFor={tags.id as string}
+                        >
+                          {tags.name}
+                        </label>
                       </div>
                     ))}
                 </div>
@@ -480,7 +490,12 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
                                 onChange={handleLocationCheckBox}
                               />
                             </div>
-                            <label className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer" htmlFor={location.location}>{location.location}</label>
+                            <label
+                              className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer"
+                              htmlFor={location.location}
+                            >
+                              {location.location}
+                            </label>
                           </div>
                         )
                     )}
@@ -534,7 +549,12 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
                                 onChange={handleOrganizationCheckBox}
                               />
                             </div>
-                            <label className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer" htmlFor={organization.organization}>{organization.organization}</label>
+                            <label
+                              className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer"
+                              htmlFor={organization.organization}
+                            >
+                              {organization.organization}
+                            </label>
                           </div>
                         )
                     )}
