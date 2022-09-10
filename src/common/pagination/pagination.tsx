@@ -29,9 +29,11 @@ const Pagination: FC<PaginationProps> = (props) => {
     const pageNumber = event.target.value;
     const checkAlphabet = alphabet_regex.test(pageNumber);
     if(!checkAlphabet) {
-      onPageChange(pageNumber);
-      if (!pageNumber) {
+      if(Number(pageNumber) === 0 || totalPages < Number(pageNumber) ||!pageNumber)  {
         onPageChange(1);
+      } else{
+        onPageChange(pageNumber);
+
       }
     }
   };
@@ -48,7 +50,7 @@ const Pagination: FC<PaginationProps> = (props) => {
       >
         <img src={prevIcon} alt="" />
       </div>
-      {paginationRange && paginationRange!.map((pageNumber, index) => {
+      {paginationRange.length > 2 && paginationRange!.map((pageNumber, index) => {
         // If the pageItem is a DOT, render the DOTS unicode character
         if (pageNumber === '...') {
           return <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">...</div>;

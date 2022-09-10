@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable max-len */
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 import Button from 'common/button';
 import { format } from 'date-fns';
 import DatePicker, { ReactDatePicker } from 'react-datepicker';
@@ -29,6 +29,8 @@ import { AssignTypeEnum, PlatformResponse, TagResponseData } from '../../../sett
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
 import useDebounce from '@/hooks/useDebounce';
 import ReactTooltip from 'react-tooltip';
+import * as Yup from 'yup';
+import Input from 'common/input';
 
 Modal.setAppElement('#root');
 
@@ -56,6 +58,9 @@ const MembersProfile: React.FC = () => {
   const [isFilterDropDownActive, setFilterDropdownActive] = useState<boolean>(false);
   const [activityNextCursor, setActivityNextCursor] = useState<string | null>('');
   const [platform, setPlatform] = useState<string | undefined>();
+  const [tagDropDownOption, setTagDropDownOption] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | unknown>('');
+
   const {
     membersActivityData: activityData,
     membersProfileActivityGraphData: activityGraphData,
@@ -66,6 +71,7 @@ const MembersProfile: React.FC = () => {
   const activityDataLoader = useSkeletonLoading(membersSlice.actions.getMembersActivityDataInfiniteScroll.type);
   const platformData = usePlatform();
 
+  const tagDropDownRef = useRef<HTMLDivElement>(null);
   const dropDownRef = useRef<HTMLDivElement>(null);
   const datePickerRefStart = useRef<ReactDatePicker>(null);
   const datePickerRefEnd = useRef<ReactDatePicker>(null);
@@ -74,12 +80,21 @@ const MembersProfile: React.FC = () => {
 
   const debouncedValue = useDebounce(searchText, 300);
 
+  const TagNameValidation = Yup.string()
+    .trim('WhiteSpaces are not allowed')
+    .min(2, 'Tag Name must be atleast 2 characters')
+    .max(20, 'Tag Name should not exceed above 20 characters')
+    .required('Tag Name is a required field')
+    .nullable(true);
+
   useEffect(() => {
     dispatch(membersSlice.actions.getMembersActivityGraphData({ workspaceId: workspaceId as string, memberId: memberId as string }));
     dispatch(membersSlice.actions.getMemberProfileCardData({ workspaceId: workspaceId as string, memberId: memberId as string }));
     document.addEventListener('click', handleOutsideClick);
+    document.addEventListener('click', handleDropDownClick);
     return () => {
       document.removeEventListener('click', handleOutsideClick);
+      document.addEventListener('click', handleDropDownClick);
     };
   }, []);
 
@@ -96,9 +111,15 @@ const MembersProfile: React.FC = () => {
 
   useEffect(() => {
     if (clearValue) {
-      handleTagModalOpen();
+      handleTagModalOpen(false);
     }
   }, [clearValue]);
+
+  useEffect(() => {
+    if (TagFilterResponseData?.length && searchText) {
+      setTagDropDownOption(true);
+    }
+  }, [TagFilterResponseData]);
 
   const loadActivityData = (needReload: boolean, cursor?: string) => {
     if (needReload) {
@@ -119,8 +140,9 @@ const MembersProfile: React.FC = () => {
     setIsModalOpen(val);
   };
 
-  const handleTagModalOpen = (): void => {
-    setTagModalOpen((prev) => !prev);
+  const handleTagModalOpen = (value:boolean): void => {
+    setErrorMessage('');
+    setTagModalOpen(value);
     setTags({
       tagId: '',
       tagName: ''
@@ -204,6 +226,12 @@ const MembersProfile: React.FC = () => {
     }
   };
 
+  const handleDropDownClick = (event: MouseEvent) => {
+    if (tagDropDownRef && tagDropDownRef.current && !tagDropDownRef.current.contains(event.target as Node)) {
+      setTagDropDownOption(false);
+    }
+  };
+
   const handleClickDatePickerIcon = (type: string) => {
     if (type === 'start') {
       const datePickerElement = datePickerRefStart.current;
@@ -236,6 +264,7 @@ const MembersProfile: React.FC = () => {
   };
 
   const handleSelectTagName = (tagName: string, tagId: string) => {
+    setTagDropDownOption(false);
     setTags({
       tagId,
       tagName
@@ -244,25 +273,36 @@ const MembersProfile: React.FC = () => {
 
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
-    if (!searchText) {
-      getTagsList(1, '');
-      handleSelectTagName('', '');
-    }
     setSearchText(searchText);
+    try {
+      TagNameValidation.validateSync(searchText);
+      setErrorMessage('');
+      if (!searchText) {
+        getTagsList(1, '');
+        handleSelectTagName('', '');
+      }
+    } catch ({ message }) {
+      setErrorMessage(message);
+    }
   };
 
-  const handleAssignTagsName = (): void => {
-    dispatch(
-      settingsSlice.actions.assignTags({
-        memberId: memberId!,
-        assignTagBody: {
-          name: tags.tagName,
-          viewName: tags.tagName,
-          type: 'Member' as AssignTypeEnum.Member
-        },
-        workspaceId: workspaceId!
-      })
-    );
+  const handleAssignTagsName =  (e: FormEvent<HTMLFormElement>): void => {
+    e.preventDefault();
+    if (errorMessage || !searchText) {
+      setErrorMessage(errorMessage || 'TagName is a required field');
+    } else{
+      dispatch(
+        settingsSlice.actions.assignTags({
+          memberId: memberId!,
+          assignTagBody: {
+            name: tags.tagName || searchText,
+            viewName: tags.tagName || searchText,
+            type: 'Member' as AssignTypeEnum.Member
+          },
+          workspaceId: workspaceId!
+        })
+      );
+    }
   };
 
   const handleUnAssignTagsName = (id: string): void => {
@@ -520,7 +560,7 @@ const MembersProfile: React.FC = () => {
           <div className="flex flex-col p-5">
             <div className="flex items-center justify-between border-b pb-2">
               <div className="font-Poppins font-medium text-error leading-5 text-profileBlack">Tags</div>
-              <div className="font-Poppins font-medium text-error leading-5 text-addTag cursor-pointer" onClick={handleTagModalOpen}>
+              <div className="font-Poppins font-medium text-error leading-5 text-addTag cursor-pointer" onClick={() => handleTagModalOpen(true)}>
                 ADD TAG
               </div>
               <div className="flex items-center justify-center">
@@ -543,27 +583,29 @@ const MembersProfile: React.FC = () => {
                 >
                   <div className="flex flex-col">
                     <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Add Tag</h3>
-                    <form className="flex flex-col relative px-1.93 mt-9">
+                    <form className="flex flex-col relative px-1.93 mt-9" onSubmit={(e) => handleAssignTagsName(e)}>
                       <label htmlFor="billingName " className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack ">
                         Tag Name
                       </label>
-                      <input
+                      <Input
+                        id="tags"
+                        name="tags"
                         type="text"
                         className="mt-0.375 inputs box-border bg-white shadow-inputShadow rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-sm placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
                         placeholder="Enter Tag Name"
                         onChange={handleSearchTextChange}
                         value={tags.tagName || searchText}
-                        minLength={2}
-                        maxLength={50}
-                        required
+                        errors={Boolean(errorMessage)}
+                        helperText={errorMessage}
                       />
                       <div
                         className={`bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 ${
-                          TagFilterResponseData?.length && !tags.tagId ? '' : 'hidden'
+                          tagDropDownOption ? '' : 'hidden'
                         }`}
                       >
                         {TagFilterResponseData?.map((data: TagResponseData) => (
                           <div
+                            ref={tagDropDownRef}
                             key={data.id}
                             className="p-2 text-searchBlack cursor-pointer font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300"
                             onClick={() => handleSelectTagName(data.name, data.id)}
@@ -577,13 +619,12 @@ const MembersProfile: React.FC = () => {
                           type="button"
                           text="CANCEL"
                           className="mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel w-5.25 h-2.81 rounded border-none"
-                          onClick={handleTagModalOpen}
+                          onClick={() => handleTagModalOpen(false)}
                         />
                         <Button
-                          type="button"
+                          type="submit"
                           text="SAVE"
                           className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-5.25 h-2.81  border-none btn-save-modal"
-                          onClick={handleAssignTagsName}
                         />
                       </div>
                     </form>
