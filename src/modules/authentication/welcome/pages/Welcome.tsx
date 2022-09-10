@@ -12,7 +12,6 @@ import { setRefreshToken } from '../../../../lib/helper';
 
 const Welcome: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
-  //   const [accessTokenResponse, setAccessTokenResponse] = React.useState<any>();
 
   useEffect(() => {
     setRefreshToken();

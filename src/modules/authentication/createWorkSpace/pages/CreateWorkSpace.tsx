@@ -30,7 +30,7 @@ const CreateWorkSpace: React.FC = () => {
     if (decodedToken?.isWorkSpaceCreated) {
       navigate(`/${workspaceId}/dashboard`);
     }
-  });
+  }, []);
 
   const handleWorkspaceName = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const workspace_name = e.target.value;

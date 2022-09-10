@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import Button from 'common/button';
@@ -104,8 +105,7 @@ const Members: React.FC = () => {
     dispatch(membersSlice.actions.membersActivityAnalytics({ workspaceId: workspaceId! }));
     dispatch(
       settingsSlice.actions.tagFilterData({
-        settingsQuery: {      page: 1,
-          limit, tags: { searchedTags: '', checkedTags: '' } },
+        settingsQuery: { page: 1, limit, tags: { searchedTags: '', checkedTags: '' } },
         workspaceId: workspaceId!
       })
     );
@@ -289,7 +289,10 @@ const Members: React.FC = () => {
     [customizedColumnBool]
   );
 
-  const MemberFilter = useMemo(() => <MembersFilter page={page} limit={limit} memberFilterExport={setFilterExportParams} />, []);
+  const MemberFilter = useMemo(
+    () => <MembersFilter page={page} limit={limit} memberFilterExport={setFilterExportParams} searchText={debouncedValue} />,
+    [debouncedValue]
+  );
 
   const handleClickDatePickerIcon = (type: string) => {
     if (type === 'start') {
@@ -434,14 +437,11 @@ const Members: React.FC = () => {
                     {columns.map(
                       (columnName: ColumnNameProps) =>
                         columnName.isDisplayed && (
-                          memberColumnsLoader ? (
-                            <Skeleton width={width_90} />
-                          ) :
-                            <Fragment key={columnName.id}>
-                              <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray ">
-                                {columnName.name}
-                              </th>
-                            </Fragment>
+                          <Fragment key={columnName.id}>
+                            <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray ">
+                              {columnName.name}
+                            </th>
+                          </Fragment>
                         )
                     )}
                   </tr>
@@ -516,8 +516,10 @@ const Members: React.FC = () => {
                                         </ReactTooltip>
                                       </>
                                     ))}
-                                  <div className="font-Poppins font-semibold leading-5 text-tag text-card underline cursor-pointer"
-                                    onClick={() => navigateToProfile((member?.name as { name: string; id: string })?.id as string)}>
+                                  <div
+                                    className="font-Poppins font-semibold leading-5 text-tag text-card underline cursor-pointer"
+                                    onClick={() => navigateToProfile((member?.name as { name: string; id: string })?.id as string)}
+                                  >
                                     {(member?.tags as Array<Record<string, unknown>>)?.length > 2
                                       ? `${(member?.tags as Array<Record<string, unknown>>)?.length - 2} more`
                                       : ''}{' '}

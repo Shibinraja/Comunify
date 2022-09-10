@@ -17,7 +17,7 @@ import { PlatformResponse, TagResponseData } from '../../settings/interface/sett
 import usePlatform from '../../../hooks/usePlatform';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
 
-const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFilterExport }) => {
+const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFilterExport, searchText }) => {
   const { workspaceId } = useParams();
   const dispatch = useAppDispatch();
   const [isFilterDropdownActive, setIsFilterDropdownActive] = useState<boolean>(false);
@@ -161,7 +161,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
         activeStreamQuery: {
           page,
           limit,
-          search: '',
+          search: searchText,
           tags: { searchedTags: '', checkedTags: checkTags.toString() },
           platforms: checkPlatform.toString(),
           'activity.lte': endDate && format(endDate!, 'yyyy-MM-dd'),
