@@ -75,6 +75,9 @@ const MembersProfile: React.FC = () => {
   const dropDownRef = useRef<HTMLDivElement>(null);
   const datePickerRefStart = useRef<ReactDatePicker>(null);
   const datePickerRefEnd = useRef<ReactDatePicker>(null);
+  const integrationDropDownRef = useRef<HTMLDivElement>(null);
+  const dateFilterDropDownRef = useRef<HTMLDivElement>(null);
+
 
   const {
     TagFilterResponse: { data: TagFilterResponseData },
@@ -95,9 +98,13 @@ const MembersProfile: React.FC = () => {
     dispatch(membersSlice.actions.getMemberProfileCardData({ workspaceId: workspaceId as string, memberId: memberId as string }));
     document.addEventListener('click', handleOutsideClick);
     document.addEventListener('click', handleDropDownClick);
+    document.addEventListener('click', handleIntegrationDropDownClick);
+    document.addEventListener('click', handleDateFilterDropDownClick);
     return () => {
       document.removeEventListener('click', handleOutsideClick);
       document.addEventListener('click', handleDropDownClick);
+      document.addEventListener('click', handleIntegrationDropDownClick);
+      document.addEventListener('click', handleDateFilterDropDownClick);
     };
   }, []);
 
@@ -234,6 +241,18 @@ const MembersProfile: React.FC = () => {
   const handleDropDownClick = (event: MouseEvent) => {
     if (tagDropDownRef && tagDropDownRef.current && !tagDropDownRef.current.contains(event.target as Node)) {
       setTagDropDownOption(false);
+    }
+  };
+
+  const handleIntegrationDropDownClick = (event: MouseEvent) => {
+    if (integrationDropDownRef && integrationDropDownRef.current && !integrationDropDownRef.current.contains(event.target as Node)) {
+      setIntegrationDropDownActive(false);
+    }
+  };
+
+  const handleDateFilterDropDownClick = (event: MouseEvent) => {
+    if (dateFilterDropDownRef && dateFilterDropDownRef.current && !dateFilterDropDownRef.current.contains(event.target as Node)) {
+      setFilterDropdownActive(false);
     }
   };
 
@@ -390,6 +409,7 @@ const MembersProfile: React.FC = () => {
           <div className="select relative mr-2 float-right">
             <div
               className="flex justify-around items-center cursor-pointer box-border w-9.59 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border"
+              ref={integrationDropDownRef}
               onClick={handleIntegrationDropDownActive}
             >
               <div className="font-Poppins font-semibold text-card text-memberDay leading-4">
@@ -430,6 +450,7 @@ const MembersProfile: React.FC = () => {
           <div className="select relative">
             <div
               className="flex justify-around items-center cursor-pointer box-border w-9.59 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border"
+              ref={dateFilterDropDownRef}
               onClick={handleFilterDropDownActive}
             >
               <div className="font-Poppins font-semibold text-card text-memberDay leading-4">Filters</div>
