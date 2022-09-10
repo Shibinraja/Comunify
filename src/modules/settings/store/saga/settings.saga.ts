@@ -30,6 +30,7 @@ import {
 import settingsSlice from '../slice/settings.slice';
 import { workspaceId } from '../../../members/interface/members.interface';
 import membersSlice from 'modules/members/store/slice/members.slice';
+import activitiesSlice from 'modules/activities/store/slice/activities.slice';
 
 const pageNumber = 1;
 const limit = 10;
@@ -174,6 +175,15 @@ function* assignTagDataSaga(action: PayloadAction<assignTagProps>) {
         membersSlice.actions.getMemberProfileCardData({
           workspaceId: action.payload.workspaceId,
           memberId: action.payload.memberId
+        })
+      );
+      yield put(
+        activitiesSlice.actions.getActiveStreamData({
+          activeStreamQuery: {
+            page: 1,
+            limit: 10
+          },
+          workspaceId: action.payload.workspaceId
         })
       );
     }
