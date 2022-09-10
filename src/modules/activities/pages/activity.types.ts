@@ -10,5 +10,6 @@ export type activityFilterExportProps = {
 export type ActivityStreamTypesProps = {
   page: number;
   limit: number;
+  searchText:string;
   activityFilterExport: (arg0: activityFilterExportProps) => void;
 };
