@@ -103,7 +103,7 @@ const MembersProfile: React.FC = () => {
 
   useEffect(() => {
     loadActivityData(true);
-  }, [platform, fromDate, toDate, fromDate && toDate]);
+  }, [platform, fromDate && toDate]);
 
   // Returns the debounced value of the search text.
   useEffect(() => {
@@ -553,9 +553,11 @@ const MembersProfile: React.FC = () => {
                   {data?.email} || {data?.organization}
                 </div>
                 <div className="flex gap-1 pt-1.12">
-                  <div>
-                    <img src={slackIcon} alt="" className="rounded-full w-[1.0012rem] h-[1.0012rem]" />
-                  </div>
+                  {data?.platforms.map((platformData) => (
+                    <div key={`${platformData?.id + platformData?.name}`}>
+                      <img src={platformData?.platformLogoUrl} alt="" className="rounded-full w-[1.0012rem] h-[1.0012rem]" />
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>

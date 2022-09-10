@@ -7,6 +7,7 @@ import fetchExportList from '@/lib/fetchExport';
 import Button from 'common/button';
 import Input from 'common/input';
 import Pagination from 'common/pagination/pagination';
+// eslint-disable-next-line object-curly-newline
 import React, { ChangeEvent, FormEvent, Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import Modal from 'react-modal';
