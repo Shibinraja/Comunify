@@ -504,10 +504,8 @@ const Activity: React.FC = () => {
                           {loader ? (
                             <Skeleton width={width_90} />
                           ) : (
-                            <div className="flex ">
-                              <div className="mr-2 w-[2.3419rem] 2xl:w-[1.3419rem] h-4">
-                                <img src={data?.platformLogoUrl} alt="" className="rounded-full w-[1.3419rem] h-[1.3419rem]" />
-                              </div>
+                            <div className="flex gap-2">
+                              <img src={data?.platformLogoUrl} alt="" className="rounded-full w-[1.3419rem] h-[1.3419rem]" />
                               <div className="flex flex-col">
                                 <div
                                   className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer"
