@@ -100,7 +100,7 @@ function* createTagDataSaga(action: PayloadAction<createTagProps>) {
     showSuccessToast('Tag created successfully');
   } catch (e) {
     const error = e as AxiosError<unknown>;
-    showErrorToast('Failed to create tag');
+    showErrorToast(error?.response?.data?.message);
   } finally {
     yield put(loaderSlice.actions.stopLoadingAction(settingsSlice.actions.createTags.type));
   }
@@ -125,6 +125,7 @@ function* updateTagDataSaga(action: PayloadAction<updateTagProps>) {
           workspaceId: action.payload.workspaceId
         })
       );
+      showSuccessToast('Tag updated successfully');
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
@@ -186,6 +187,7 @@ function* assignTagDataSaga(action: PayloadAction<assignTagProps>) {
           workspaceId: action.payload.workspaceId
         })
       );
+      showSuccessToast('Tag Assigned');
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
@@ -208,6 +210,16 @@ function* unAssignTagDataSaga(action: PayloadAction<unAssignTagProps>) {
           memberId: action.payload.memberId
         })
       );
+      yield put(
+        membersSlice.actions.membersList({
+          workspaceId: action.payload.workspaceId,
+          membersQuery: {
+            page: 1,
+            limit: 10
+          }
+        })
+      );
+      showSuccessToast('Tag Unassigned');
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;

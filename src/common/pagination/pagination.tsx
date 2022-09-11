@@ -1,19 +1,22 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import React, { ChangeEvent, FC } from 'react';
+import React, { ChangeEvent, FC, useState } from 'react';
 import { usePagination } from '../../hooks/usePagination';
 import { PaginationProps } from './paginationTypes';
 import nextIcon from '../../assets/images/next-page-icon.svg';
 import prevIcon from '../../assets/images/previous-page-icon.svg';
 import Input from '../input';
-import { alphabet_regex } from 'constants/constants';
+import * as Yup from 'yup';
 
 const Pagination: FC<PaginationProps> = (props) => {
   const { onPageChange, totalPages, skipCount = 2, currentPage, limit } = props;
 
+  const [errorMessage, setErrorMessage] = useState<string | unknown>('');
+  const [pageNumber, setPageNumber] = useState<string>('');
+
   const paginationRange = usePagination({ currentPage, totalPages, skipCount, limit }) ?? [1];
 
   // If there are less than 2 times in pagination range we shall not render the component
-  if (currentPage === 0 || (paginationRange && paginationRange!.length < 1)) {
+  if (currentPage === 0 || (paginationRange && paginationRange!.length < 2)) {
     return null;
   }
 
@@ -27,17 +30,23 @@ const Pagination: FC<PaginationProps> = (props) => {
 
   const handlePageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const pageNumber = event.target.value;
-    const checkAlphabet = alphabet_regex.test(pageNumber);
-    if (!checkAlphabet) {
+    setPageNumber(pageNumber);
+    try {
+      PaginationValidation.validateSync(pageNumber);
+      setErrorMessage('');
       if (Number(pageNumber) === 0 || totalPages < Number(pageNumber) || !pageNumber) {
         onPageChange(1);
       } else {
         onPageChange(pageNumber);
       }
+    } catch ({ message }) {
+      setErrorMessage(message);
     }
   };
 
   const lastPage = paginationRange && paginationRange![paginationRange!.length - 1];
+
+  const PaginationValidation = Yup.number().positive();
 
   return (
     <>
@@ -49,7 +58,7 @@ const Pagination: FC<PaginationProps> = (props) => {
       >
         <img src={prevIcon} alt="" />
       </div>
-      {paginationRange.length > 2 &&
+      {paginationRange &&
         paginationRange!.map((pageNumber, index) => {
           // If the pageItem is a DOT, render the DOTS unicode character
           if (pageNumber === '...') {
@@ -84,6 +93,8 @@ const Pagination: FC<PaginationProps> = (props) => {
           type="text"
           className="page-input focus:outline-none px-0.5 rounded box-border w-1.47 h-1.51"
           onChange={handlePageChange}
+          value={pageNumber}
+          errors={Boolean(errorMessage)}
         />
       </div>
     </>

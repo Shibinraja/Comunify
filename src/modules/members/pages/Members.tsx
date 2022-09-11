@@ -35,6 +35,7 @@ import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 import { width_90 } from 'constants/constants';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
 import ReactTooltip from 'react-tooltip';
+import { AssignTypeEnum } from 'modules/settings/interface/settings.interface';
 
 Modal.setAppElement('#root');
 
@@ -132,8 +133,8 @@ const Members: React.FC = () => {
           page,
           limit,
           search: '',
-          'createdAT.gte': filterExportParams.startDate && filterExportParams.startDate,
-          'createdAT.lte': filterExportParams.endDate && filterExportParams.endDate,
+          'createdAT.gte': filterExportParams.startDate && filterExportParams.startDate || filteredDate.filterStartDate,
+          'createdAT.lte': filterExportParams.endDate && filterExportParams.endDate || filteredDate.filterEndDate,
           tags: { searchedTags: '', checkedTags: filterExportParams.checkTags.toString() },
           platforms: filterExportParams.checkPlatform.toString(),
           organization: { searchedOrganization: '', checkedOrganization: filterExportParams.checkOrganization.toString() },
@@ -310,7 +311,8 @@ const Members: React.FC = () => {
       settingsSlice.actions.unAssignTags({
         memberId: memberId!,
         unAssignTagBody: {
-          tagId: id
+          tagId: id,
+          type: 'Member' as AssignTypeEnum.Member
         },
         workspaceId: workspaceId!
       })
@@ -558,17 +560,21 @@ const Members: React.FC = () => {
                   </tr>
                 </tbody>
               </table>
-              <div className="px-6 py-6 flex items-center gap-0.66 pl-[30%] w-full rounded-b-lg fixed bg-white bottom-0">
-                <Pagination currentPage={page} totalPages={totalPages} limit={limit} onPageChange={(page) => setPage(Number(page))} />
-              </div>
-              <div className="fixed bottom-10 right-32">
-                <div
-                  className="btn-drag p-3 flex items-center justify-center cursor-pointer shadow-dragButton rounded-0.6 "
-                  onClick={() => setIsModalOpen(true)}
-                >
-                  <img src={editIcon} alt="" />
+              {memberColumnsLoader && (
+                <div className="px-6 py-6 flex items-center gap-0.66 pl-[30%] w-full rounded-b-lg fixed bg-white bottom-0">
+                  <Pagination currentPage={page} totalPages={totalPages} limit={limit} onPageChange={(page) => setPage(Number(page))} />
                 </div>
-              </div>
+              )}
+              {memberColumnsLoader && (
+                <div className="fixed bottom-10 right-32">
+                  <div
+                    className="btn-drag p-3 flex items-center justify-center cursor-pointer shadow-dragButton rounded-0.6 "
+                    onClick={() => setIsModalOpen(true)}
+                  >
+                    <img src={editIcon} alt="" />
+                  </div>
+                </div>
+              )}
               <Modal
                 isOpen={isModalOpen}
                 shouldCloseOnOverlayClick={true}

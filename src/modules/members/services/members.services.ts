@@ -97,8 +97,7 @@ export function* GetMembersActivityDataInfiniteScrollSaga(params: ActivityInfini
   const { data } = yield request.get(
     `/v1/${params.workspaceId}/members/${params.memberId}/activity?page=1&limit=10${params?.nextCursor ? `&cursor=${params.nextCursor}` : ''}${
       params?.platform ? `&platforms=${params?.platform}` : ''
-    }
-      ${params?.fromDate ? `&activity.gte=${params.fromDate}` : ''} ${params?.toDate ? `&activity.lte=${params.toDate}` : ''}`
+    }${params?.fromDate ? `&activity.gte=${params.fromDate}` : ''}${params?.toDate ? `&activity.lte=${params.toDate}` : ''}`
   );
   return data;
 }
