@@ -22,6 +22,6 @@ export type customDateLinkProps = {
 };
 
 export type filterDateProps = {
-  filterStartDate:string,
-  filterEndDate:string
+  filterStartDate: string;
+  filterEndDate: string;
 };
