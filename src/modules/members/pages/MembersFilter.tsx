@@ -7,7 +7,7 @@ import Button from 'common/button';
 import { format } from 'date-fns';
 import { PlatformResponse, TagResponseData } from 'modules/settings/interface/settings.interface';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
-import { ChangeEvent, useEffect, useRef, useState, type FC } from 'react';
+import { ChangeEvent, useEffect, useRef, useState, FC } from 'react';
 import DatePicker, { ReactDatePicker } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import calendarIcon from '../../../assets/images/calandar.svg';

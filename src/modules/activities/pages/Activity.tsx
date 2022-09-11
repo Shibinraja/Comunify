@@ -7,9 +7,8 @@ import fetchExportList from '@/lib/fetchExport';
 import Button from 'common/button';
 import Input from 'common/input';
 import Pagination from 'common/pagination/pagination';
-import React, {
-  ChangeEvent, FormEvent, Fragment, useEffect, useMemo, useRef, useState
-} from 'react';
+// eslint-disable-next-line object-curly-newline
+import React, { ChangeEvent, FormEvent, Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import Modal from 'react-modal';
 import { useDispatch } from 'react-redux';
@@ -91,7 +90,7 @@ const Activity: React.FC = () => {
   const TagNameValidation = Yup.string()
     .trim('WhiteSpaces are not allowed')
     .min(2, 'Tag Name must be atleast 2 characters')
-    .max(20, 'Tag Name should not exceed above 20 characters')
+    .max(15, 'Tag Name should not exceed above 15 characters')
     .required('Tag Name is a required field')
     .nullable(true);
 
@@ -328,8 +327,8 @@ const Activity: React.FC = () => {
   const handleAssignTagsName = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     if (errorMessage || !searchTagText) {
-      setErrorMessage(errorMessage || 'TagName is a required field');
-    } else{
+      setErrorMessage(errorMessage || 'Tag Name is a required field');
+    } else {
       dispatch(
         settingsSlice.actions.assignTags({
           memberId: ActivityCard?.memberId as string,
@@ -350,7 +349,8 @@ const Activity: React.FC = () => {
       settingsSlice.actions.unAssignTags({
         memberId: ActivityCard?.memberId as string,
         unAssignTagBody: {
-          tagId: id
+          tagId: id,
+          type: 'Activity' as AssignTypeEnum.Activity
         },
         workspaceId: workspaceId!
       })
@@ -504,10 +504,8 @@ const Activity: React.FC = () => {
                           {loader ? (
                             <Skeleton width={width_90} />
                           ) : (
-                            <div className="flex ">
-                              <div className="mr-2 w-[2.3419rem] 2xl:w-[1.3419rem] h-4">
-                                <img src={data?.platformLogoUrl} alt="" className="rounded-full w-[1.3419rem] h-[1.3419rem]" />
-                              </div>
+                            <div className="flex gap-2">
+                              <img src={data?.platformLogoUrl} alt="" className="rounded-full w-[1.3419rem] h-[1.3419rem]" />
                               <div className="flex flex-col">
                                 <div
                                   className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer"
@@ -654,8 +652,11 @@ const Activity: React.FC = () => {
                   </div>
                   <div className="mt-8 flex items-center">
                     <div className="bg-cover">
-                      <img src={ActivityCard?.profilePictureUrl === null ? profileImage : ActivityCard?.profilePictureUrl} alt=""
-                        className="rounded-full w-4.43 h-4.43 bg-cover bg-center border-4 border-white"/>
+                      <img
+                        src={ActivityCard?.profilePictureUrl === null ? profileImage : ActivityCard?.profilePictureUrl}
+                        alt=""
+                        className="rounded-full w-4.43 h-4.43 bg-cover bg-center border-4 border-white"
+                      />
                     </div>
                     <div className="flex flex-col pl-0.563">
                       <div className="font-medium text-trial text-infoBlack font-Poppins leading-1.31">{ActivityCard?.memberName}</div>
@@ -664,7 +665,7 @@ const Activity: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="bg-activitySubCard rounded flex flex-col pt-2.5 pl-0.81 pb-8 mt-5">
+                  <div className="bg-activitySubCard rounded flex flex-col pt-2.5 pl-0.81 pb-[0.5625rem] mt-5">
                     <div className="flex items-center">
                       <div className="w-5 h-5">
                         <img src={ActivityCard?.platformLogoUrl ? ActivityCard?.platformLogoUrl : ''} alt="" />
@@ -679,7 +680,7 @@ const Activity: React.FC = () => {
                       className="mt-5 font-Poppins font-medium text-infoBlack text-card leading-1.12"
                       dangerouslySetInnerHTML={{ __html: ActivityCard?.value ? ActivityCard?.value : '--' }}
                     ></div>
-                    <div className="mt-1.18 flex relative">
+                    <div className="mt-1.18 flex justify-between">
                       <a
                         href={`${ActivityCard?.sourceUrl}`}
                         target="_blank"
@@ -688,7 +689,7 @@ const Activity: React.FC = () => {
                       >
                         {`VIEW ON ${ActivityCard?.platform.toLocaleUpperCase()}`}
                       </a>
-                      <div className="absolute right-3 top-5 font-Poppins font-medium text-card leading-1.12 text-slimGray">
+                      <div className="top-5 font-Poppins font-medium pr-3 text-card leading-1.12 text-slimGray">
                         {generateDateAndTime(`${ActivityCard?.activityTime}`, 'HH:MM')} |{' '}
                         {generateDateAndTime(`${ActivityCard?.activityTime}`, 'MM-DD')}
                       </div>

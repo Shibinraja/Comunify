@@ -49,7 +49,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
   const TagNameValidation = Yup.string()
     .trim('WhiteSpaces are not allowed')
     .min(2, 'Tag Name must be atleast 2 characters')
-    .max(20, 'Tag Name should not exceed above 20 characters')
+    .max(15, 'Tag Name should not exceed above 15 characters')
     .required('Tag Name is a required field')
     .nullable(true);
 
@@ -80,6 +80,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
     if (tagId !== '') {
       setIsDeleteModalOpen(true);
       dispatch(settingsSlice.actions.resetValue(false));
+      setPage(1);
     }
   }, [tagId]);
 
@@ -140,7 +141,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     if (errorMessage || !tagName) {
-      setErrorMessage(errorMessage || 'TagName is a required field');
+      setErrorMessage(errorMessage || 'Tag Name is a required field');
     } else {
       if (edit.isEdit && edit.tagId) {
         dispatch(
