@@ -220,7 +220,6 @@ function* unAssignTagDataSaga(action: PayloadAction<unAssignTagProps>) {
         })
       );
       showSuccessToast('Tag Unassigned');
-
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
