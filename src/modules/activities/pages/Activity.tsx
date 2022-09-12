@@ -51,7 +51,7 @@ const Activity: React.FC = () => {
     profilePictureUrl: '',
     platformLogoUrl: ''
   });
-  const [ActivityCard, setActivityCard] = useState<ActivityCard>();
+  const [ActivityCard, setActivityCard] = useState<Partial<ActivityCard>>();
   const [page, setPage] = useState<number>(1);
   const [searchText, setSearchText] = useState<string>('');
   const [searchTagText, setSearchTagText] = useState<string>('');
@@ -123,6 +123,10 @@ const Activity: React.FC = () => {
     if (TagFilterResponseData?.length && searchTagText) {
       setTagDropDownOption(true);
     }
+
+    if(TagFilterResponseData?.length === 0) {
+      setTagDropDownOption(false);
+    }
   }, [TagFilterResponseData]);
 
   useEffect(() => {
@@ -152,6 +156,20 @@ const Activity: React.FC = () => {
       handleTagModalOpen(false);
     }
   }, [clearValue]);
+
+  useEffect(() => {
+    if(ActivityCard?.activityId) {
+      filterTags();
+    }
+  }, [data]);
+
+  const filterTags = () => {
+    data?.find((activity:ActiveStreamData) => {
+      if(activity.id === ActivityCard?.activityId) {
+        setActivityCard((prevState) =>  ({ ...prevState, tags: activity.tags }));
+      }
+    });
+  };
 
   const getTagsList = (pageNumber: number, text: string): void => {
     dispatch(
@@ -209,7 +227,8 @@ const Activity: React.FC = () => {
       platformLogoUrl: data?.platformLogoUrl,
       memberId: data?.memberId,
       activityId: data?.activityId,
-      platform: data?.platform
+      platform: data?.platform,
+      tags: data?.tags
     });
     dispatch(membersSlice.actions.getMemberProfileCardData({ workspaceId: workspaceId!, memberId: data.memberId }));
   };
@@ -302,11 +321,17 @@ const Activity: React.FC = () => {
   };
 
   const handleSelectTagName = (tagName: string, tagId: string) => {
-    setTagDropDownOption(false);
-    setTags({
-      tagId,
-      tagName
-    });
+    try {
+      TagNameValidation.validateSync(tagName);
+      setErrorMessage('');
+      setTagDropDownOption(false);
+      setTags({
+        tagId,
+        tagName
+      });
+    } catch ({ message }) {
+      setErrorMessage(message);
+    }
   };
 
   const handleSearchTagTextChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -318,6 +343,9 @@ const Activity: React.FC = () => {
       if (!searchText) {
         getTagsList(1, '');
         handleSelectTagName('', '');
+      }
+      if(tags.tagName) {
+        setTags({ tagId: '', tagName: '' });
       }
     } catch ({ message }) {
       setErrorMessage(message);
@@ -355,6 +383,7 @@ const Activity: React.FC = () => {
         workspaceId: workspaceId!
       })
     );
+    filterTags();
   };
 
   const ActiveStreamFilter = useMemo(
@@ -525,7 +554,8 @@ const Activity: React.FC = () => {
                                       platformLogoUrl: data?.platformLogoUrl,
                                       memberId: data?.memberId,
                                       activityId: data?.id,
-                                      platform: data?.platform
+                                      platform: data?.platform,
+                                      tags: data?.tags || []
                                     })
                                   }
                                 >
@@ -687,7 +717,7 @@ const Activity: React.FC = () => {
                         rel="noreferrer noopener"
                         className="font-Poppins font-medium text-card leading-1.12 text-tag underline cursor-pointer"
                       >
-                        {`VIEW ON ${ActivityCard?.platform.toLocaleUpperCase()}`}
+                        {`VIEW ON ${ActivityCard?.platform?.toLocaleUpperCase()}`}
                       </a>
                       <div className="top-5 font-Poppins font-medium pr-3 text-card leading-1.12 text-slimGray">
                         {generateDateAndTime(`${ActivityCard?.activityTime}`, 'HH:MM')} |{' '}
@@ -698,27 +728,25 @@ const Activity: React.FC = () => {
                   <div className="mt-7">
                     <h3 className="text-profileBlack text-error font-Poppins font-medium leading-5">Tags</h3>
                     <div className="flex pt-2.5 flex-wrap gap-1">
-                      {data &&
-                        data?.map((activity: ActiveStreamData) =>
-                          activity?.tags?.map((tag: Partial<TagResponseData>) => (
-                            <Fragment key={tag.id}>
-                              <div
-                                data-tip
-                                data-for={tag.name}
-                                className="flex  tags bg-tagSection items-center justify-evenly rounded p-1"
-                                key={tag.id}
-                              >
-                                <div className="font-Poppins text-card font-normal leading-5 pr-4 text-profileBlack">{tag.name as string}</div>
-                                <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
-                                  <img src={closeIcon} alt="" onClick={() => handleUnAssignTagsName(tag.id as string)} />
-                                </div>
-                              </div>
-                              <ReactTooltip id={tag.name} textColor="" backgroundColor="" effect="solid">
-                                <span className="font-Poppins text-card font-normal leading-5 pr-4">{tag.name as string}</span>
-                              </ReactTooltip>
-                            </Fragment>
-                          ))
-                        )}
+                      {(ActivityCard?.tags as Array<{ id: string; name: string }>)?.map((tag: Partial<TagResponseData>) => (
+                        <Fragment key={tag.id}>
+                          <div
+                            data-tip
+                            data-for={tag.name}
+                            className="flex  tags bg-tagSection items-center justify-evenly rounded p-1"
+                            key={tag.id}
+                          >
+                            <div className="font-Poppins text-card font-normal leading-5 pr-4 text-profileBlack">{tag.name as string}</div>
+                            <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
+                              <img src={closeIcon} alt="" onClick={() => handleUnAssignTagsName(tag.id as string)} />
+                            </div>
+                          </div>
+                          <ReactTooltip id={tag.name} textColor="" backgroundColor="" effect="solid">
+                            <span className="font-Poppins text-card font-normal leading-5 pr-4">{tag.name as string}</span>
+                          </ReactTooltip>
+                        </Fragment>
+                      ))
+                      }
                     </div>
                   </div>
                 </div>

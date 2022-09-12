@@ -19,7 +19,7 @@ import membersSlice from '../store/slice/members.slice';
 import './Members.css';
 import { MemberTypesProps } from './membertypes';
 
-const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, searchText }) => {
+const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, searchText, filteredDate }) => {
   const [isFilterDropdownActive, setIsFilterDropdownActive] = useState<boolean>(false);
   const [isPlatformActive, setPlatformActive] = useState<boolean>(true);
   const [isTagActive, setTagActive] = useState<boolean>(false);
@@ -270,7 +270,9 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
           organization: { searchedOrganization: '', checkedOrganization: checkOrganization.toString() },
           location: { searchedLocation: '', checkedLocation: checkLocation.toString() },
           'lastActivity.lte': endDate && format(endDate!, 'yyyy-MM-dd'),
-          'lastActivity.gte': startDate && format(startDate!, 'yyyy-MM-dd')
+          'lastActivity.gte': startDate && format(startDate!, 'yyyy-MM-dd'),
+          'createdAT.gte': filteredDate.filterStartDate,
+          'createdAT.lte': filteredDate.filterEndDate
         },
         workspaceId: workspaceId!
       })

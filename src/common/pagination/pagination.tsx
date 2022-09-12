@@ -1,17 +1,19 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import React, { ChangeEvent, FC, useState } from 'react';
+import React, { ChangeEvent, FC, useEffect, useState } from 'react';
 import { usePagination } from '../../hooks/usePagination';
 import { PaginationProps } from './paginationTypes';
 import nextIcon from '../../assets/images/next-page-icon.svg';
 import prevIcon from '../../assets/images/previous-page-icon.svg';
 import Input from '../input';
 import * as Yup from 'yup';
+import useDebounce from '@/hooks/useDebounce';
 
 const Pagination: FC<PaginationProps> = (props) => {
   const { onPageChange, totalPages, skipCount = 2, currentPage, limit } = props;
 
   const [errorMessage, setErrorMessage] = useState<string | unknown>('');
   const [pageNumber, setPageNumber] = useState<string>('');
+  const debouncedValue = useDebounce(pageNumber, 700);
 
   const paginationRange = usePagination({ currentPage, totalPages, skipCount, limit }) ?? [1];
 
@@ -28,17 +30,23 @@ const Pagination: FC<PaginationProps> = (props) => {
     onPageChange(currentPage - 1);
   };
 
-  const handlePageChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const pageNumber = event.target.value;
-    setPageNumber(pageNumber);
-    try {
-      PaginationValidation.validateSync(pageNumber);
-      setErrorMessage('');
-      if (Number(pageNumber) === 0 || totalPages < Number(pageNumber) || !pageNumber) {
+  // Returns the debounced value of the pageNumber.
+  useEffect(() => {
+    if (debouncedValue) {
+      if (Number(debouncedValue) === 0 || totalPages < Number(debouncedValue) || !debouncedValue) {
         onPageChange(1);
       } else {
-        onPageChange(pageNumber);
+        onPageChange(debouncedValue);
       }
+    }
+  }, [debouncedValue]);
+
+  const handlePageChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const pageNumberValue = event.target.value;
+    setPageNumber(pageNumberValue);
+    try {
+      PaginationValidation.validateSync(pageNumberValue);
+      setErrorMessage('');
     } catch ({ message }) {
       setErrorMessage(message);
     }
