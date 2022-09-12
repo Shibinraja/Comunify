@@ -309,6 +309,7 @@ const Activity: React.FC = () => {
     fetchExportList(
       `${API_ENDPOINT}/v1/${workspaceId}/activity/export`,
       {
+        search: debouncedValue,
         tags: filterExportParams.checkTags,
         platforms: filterExportParams.checkPlatform,
         'activity.lte': filterExportParams.endDate,
