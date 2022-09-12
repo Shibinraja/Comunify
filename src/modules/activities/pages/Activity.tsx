@@ -524,7 +524,8 @@ const Activity: React.FC = () => {
                                 {data?.activityTime ? format(parseISO(data?.activityTime as unknown as string), 'MMM dd yyyy') : '--'}
                               </div>
                               <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
-                                {data?.activityTime ? format(parseISO(data?.activityTime as unknown as string), 'HH:MM') : '--'}
+                                {/* {data?.activityTime ? format(parseISO(data?.activityTime as unknown as string), 'HH:MM') : '--'} */}
+                                {generateDateAndTime(`${ActivityCard?.activityTime}`, 'HH:MM')}
                               </div>
                             </div>
                           )}
