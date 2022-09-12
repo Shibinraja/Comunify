@@ -265,6 +265,7 @@ const Members: React.FC = () => {
     fetchExportList(
       `${API_ENDPOINT}/v1/${workspaceId}/members/memberlistexport`,
       {
+        search: debouncedValue,
         tags: filterExportParams.checkTags,
         platforms: filterExportParams.checkPlatform,
         location: filterExportParams.checkLocation,
