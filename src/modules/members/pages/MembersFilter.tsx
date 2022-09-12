@@ -2,12 +2,13 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import useDebounce from '@/hooks/useDebounce';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
+import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 import { getLocalWorkspaceId } from '@/lib/helper';
 import Button from 'common/button';
 import { format } from 'date-fns';
 import { PlatformResponse, TagResponseData } from 'modules/settings/interface/settings.interface';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
-import { ChangeEvent, useEffect, useRef, useState, FC } from 'react';
+import { ChangeEvent, useEffect, useRef, useState, FC, useMemo } from 'react';
 import DatePicker, { ReactDatePicker } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import calendarIcon from '../../../assets/images/calandar.svg';
@@ -43,11 +44,13 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
   const dropDownRef = useRef<HTMLDivElement>(null);
   const { membersLocationFilterResponse, membersOrganizationFilterResponse } = useAppSelector((state) => state.members);
   const { data: TagFilterResponse } = useAppSelector((state) => state.settings.TagFilterResponse);
+  const memberColumnsLoader = useSkeletonLoading(membersSlice.actions.membersList.type);
   const PlatformFilterResponse = usePlatform();
   const debouncedLocationValue = useDebounce(locationSearchText, 300);
   const debouncedOrganizationValue = useDebounce(organizationSearchText, 300);
   const debouncedTagValue = useDebounce(tagSearchText, 300);
-  const disableApplyBtn = Object.values(checkedPlatform)
+
+  const MemberFilterList = Object.values(checkedPlatform)
     .concat(Object.values(checkedTags))
     .concat(Object.values(checkedLocation))
     .concat(Object.values(checkedOrganization));
@@ -212,11 +215,34 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
     }
   };
 
+  const disableApplyBtn = useMemo(() => {
+    if (startDate === undefined && endDate === undefined && MemberFilterList.length === 0) {
+      return true;
+    }
+
+    if(startDate && endDate) {
+      return false;
+    }
+
+    if(startDate || endDate) {
+      return true;
+    }
+
+    return false;
+  }, [startDate, endDate, MemberFilterList]);
+
   const submitFilterChange = (): void => {
     const checkPlatform: Array<string> = [];
     const checkTags: Array<string> = [];
     const checkOrganization: Array<string> = [];
     const checkLocation: Array<string> = [];
+
+    if (MemberFilterList[0] === Boolean(false)) {
+      setCheckedPlatform({});
+      setCheckedTags({});
+      setCheckedLocation({});
+      setCheckedOrganization({});
+    }
 
     if (Object.keys(checkedPlatform).length > 0) {
       Object.keys(checkedPlatform).map((platform: string) => {
@@ -259,24 +285,26 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
       startDate: startDate && format(startDate!, 'yyyy-MM-dd')
     });
 
-    dispatch(
-      membersSlice.actions.membersList({
-        membersQuery: {
-          page,
-          limit,
-          search: searchText,
-          tags: { searchedTags: '', checkedTags: checkTags.toString() },
-          platforms: checkPlatform.toString(),
-          organization: { searchedOrganization: '', checkedOrganization: checkOrganization.toString() },
-          location: { searchedLocation: '', checkedLocation: checkLocation.toString() },
-          'lastActivity.lte': endDate && format(endDate!, 'yyyy-MM-dd'),
-          'lastActivity.gte': startDate && format(startDate!, 'yyyy-MM-dd'),
-          'createdAT.gte': filteredDate.filterStartDate,
-          'createdAT.lte': filteredDate.filterEndDate
-        },
-        workspaceId: workspaceId!
-      })
-    );
+    if (!disableApplyBtn) {
+      dispatch(
+        membersSlice.actions.membersList({
+          membersQuery: {
+            page,
+            limit,
+            search: searchText,
+            tags: { searchedTags: '', checkedTags: checkTags.toString() },
+            platforms: checkPlatform.toString(),
+            organization: { searchedOrganization: '', checkedOrganization: checkOrganization.toString() },
+            location: { searchedLocation: '', checkedLocation: checkLocation.toString() },
+            'lastActivity.lte': endDate && format(endDate!, 'yyyy-MM-dd'),
+            'lastActivity.gte': startDate && format(startDate!, 'yyyy-MM-dd'),
+            'createdAT.gte': filteredDate.filterStartDate,
+            'createdAT.lte': filteredDate.filterEndDate
+          },
+          workspaceId: workspaceId!
+        })
+      );
+    }
     handleFilterDropdown();
   };
 
@@ -565,18 +593,12 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
             )}
             <div className="buttons px-2">
               <Button
-                disabled={
-                  (startDate === undefined ? true : false) && (endDate === undefined ? true : false) && disableApplyBtn.includes(true) !== true
-                    ? true
-                    : false
-                }
+                disabled={memberColumnsLoader ? true : false}
                 onClick={submitFilterChange}
                 type="button"
                 text="Apply"
-                className={`border-none btn-save-modal rounded-0.31 h-2.063 w-full mt-1.56 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white transition ease-in duration-300 hover:shadow-buttonShadowHover ${
-                  (disableApplyBtn.includes(true) !== true ? 'cursor-not-allowed' : '') &&
-                  (startDate === undefined ? 'cursor-not-allowed' : '') &&
-                  (endDate === undefined ? 'cursor-not-allowed' : '')
+                className={`border-none btn-save-modal rounded-0.31 h-2.063 w-full mt-1.56 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${
+                  memberColumnsLoader ? 'cursor-not-allowed' : ''
                 }`}
               />
             </div>
