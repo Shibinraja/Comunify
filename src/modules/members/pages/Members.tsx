@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import Button from 'common/button';
@@ -34,6 +35,7 @@ import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 import { width_90 } from 'constants/constants';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
 import ReactTooltip from 'react-tooltip';
+import { AssignTypeEnum } from 'modules/settings/interface/settings.interface';
 
 Modal.setAppElement('#root');
 
@@ -104,7 +106,7 @@ const Members: React.FC = () => {
     dispatch(membersSlice.actions.membersActivityAnalytics({ workspaceId: workspaceId! }));
     dispatch(
       settingsSlice.actions.tagFilterData({
-        settingsQuery: { tags: { searchedTags: '', checkedTags: '' } },
+        settingsQuery: { page: 1, limit, tags: { searchedTags: '', checkedTags: '' } },
         workspaceId: workspaceId!
       })
     );
@@ -131,8 +133,8 @@ const Members: React.FC = () => {
           page,
           limit,
           search: '',
-          'createdAT.gte': filterExportParams.startDate && filterExportParams.startDate,
-          'createdAT.lte': filterExportParams.endDate && filterExportParams.endDate,
+          'createdAT.gte': filterExportParams.startDate && filterExportParams.startDate || filteredDate.filterStartDate,
+          'createdAT.lte': filterExportParams.endDate && filterExportParams.endDate || filteredDate.filterEndDate,
           tags: { searchedTags: '', checkedTags: filterExportParams.checkTags.toString() },
           platforms: filterExportParams.checkPlatform.toString(),
           organization: { searchedOrganization: '', checkedOrganization: filterExportParams.checkOrganization.toString() },
@@ -237,7 +239,7 @@ const Members: React.FC = () => {
 
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
-    if (searchText === '') {
+    if (!searchText) {
       getFilteredMembersList(1, searchText);
     }
     setSearchText(searchText);
@@ -286,7 +288,10 @@ const Members: React.FC = () => {
     customizedColumnBool
   ]);
 
-  const MemberFilter = useMemo(() => <MembersFilter page={page} limit={limit} memberFilterExport={setFilterExportParams} />, []);
+  const MemberFilter = useMemo(
+    () => <MembersFilter page={page} limit={limit} memberFilterExport={setFilterExportParams} searchText={debouncedValue} />,
+    [debouncedValue]
+  );
 
   const handleClickDatePickerIcon = (type: string) => {
     if (type === 'start') {
@@ -304,7 +309,8 @@ const Members: React.FC = () => {
       settingsSlice.actions.unAssignTags({
         memberId: memberId!,
         unAssignTagBody: {
-          tagId: id
+          tagId: id,
+          type: 'Member' as AssignTypeEnum.Member
         },
         workspaceId: workspaceId!
       })
@@ -375,6 +381,7 @@ const Members: React.FC = () => {
                         className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                         placeholderText="DD/MM/YYYY"
                         ref={datePickerRefStart}
+                        dateFormat="dd/MM/yyyy"
                       />
                       <img
                         className="absolute icon-holder right-6 cursor-pointer"
@@ -393,6 +400,7 @@ const Members: React.FC = () => {
                         className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                         placeholderText="DD/MM/YYYY"
                         ref={datePickerRefEnd}
+                        dateFormat="dd/MM/yyyy"
                       />
                       <img
                         className="absolute icon-holder right-6 cursor-pointer"
@@ -465,7 +473,7 @@ const Members: React.FC = () => {
                                 {(member?.platforms as Array<{ id: string; name: string; platformLogoUrl: string }>)?.map(
                                   (platforms: { name: string; id: string; platformLogoUrl: string }, index: number) => (
                                     <div
-                                      className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer w-[1.3419rem] h-[1.3419rem] rounded-full"
+                                      className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 w-[1.3419rem] h-[1.3419rem] rounded-full"
                                       key={index}
                                     >
                                       <img src={platforms?.platformLogoUrl} alt="" className="rounded-full" />
@@ -508,7 +516,10 @@ const Members: React.FC = () => {
                                         </ReactTooltip>
                                       </>
                                     ))}
-                                  <div className="font-Poppins font-semibold leading-5 text-tag text-card underline">
+                                  <div
+                                    className="font-Poppins font-semibold leading-5 text-tag text-card underline cursor-pointer"
+                                    onClick={() => navigateToProfile((member?.name as { name: string; id: string })?.id as string)}
+                                  >
                                     {(member?.tags as Array<Record<string, unknown>>)?.length > 2
                                       ? `${(member?.tags as Array<Record<string, unknown>>)?.length - 2} more`
                                       : ''}{' '}
@@ -547,17 +558,21 @@ const Members: React.FC = () => {
                   </tr>
                 </tbody>
               </table>
-              <div className="px-6 py-6 flex items-center gap-0.66 pl-[30%] w-full rounded-b-lg fixed bg-white bottom-0">
-                <Pagination currentPage={page} totalPages={totalPages} limit={limit} onPageChange={(page) => setPage(Number(page))} />
-              </div>
-              <div className="fixed bottom-10 right-32">
-                <div
-                  className="btn-drag p-3 flex items-center justify-center cursor-pointer shadow-dragButton rounded-0.6 "
-                  onClick={() => setIsModalOpen(true)}
-                >
-                  <img src={editIcon} alt="" />
+              {memberColumnsLoader && (
+                <div className="px-6 py-6 flex items-center gap-0.66 pl-[30%] w-full rounded-b-lg fixed bg-white bottom-0">
+                  <Pagination currentPage={page} totalPages={totalPages} limit={limit} onPageChange={(page) => setPage(Number(page))} />
                 </div>
-              </div>
+              )}
+              {memberColumnsLoader && (
+                <div className="fixed bottom-10 right-32">
+                  <div
+                    className="btn-drag p-3 flex items-center justify-center cursor-pointer shadow-dragButton rounded-0.6 "
+                    onClick={() => setIsModalOpen(true)}
+                  >
+                    <img src={editIcon} alt="" />
+                  </div>
+                </div>
+              )}
               <Modal
                 isOpen={isModalOpen}
                 shouldCloseOnOverlayClick={true}

@@ -286,7 +286,7 @@ input {
 
 .height-member-activity {
   height: calc(100vh - 44.5rem);
-  /* min-height: 150px; */
+  min-height: 200px;
   max-height: 241px;
 }
 

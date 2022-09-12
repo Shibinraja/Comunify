@@ -5,9 +5,9 @@ import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import { getLocalWorkspaceId } from '@/lib/helper';
 import Button from 'common/button';
 import { format } from 'date-fns';
-import { PlatformResponse, TagResponse } from 'modules/settings/interface/settings.interface';
+import { PlatformResponse, TagResponseData } from 'modules/settings/interface/settings.interface';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
-import { ChangeEvent, useEffect, useRef, useState, type FC } from 'react';
+import { ChangeEvent, useEffect, useRef, useState, FC } from 'react';
 import DatePicker, { ReactDatePicker } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import calendarIcon from '../../../assets/images/calandar.svg';
@@ -19,7 +19,7 @@ import membersSlice from '../store/slice/members.slice';
 import './Members.css';
 import { MemberTypesProps } from './membertypes';
 
-const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }) => {
+const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, searchText }) => {
   const [isFilterDropdownActive, setIsFilterDropdownActive] = useState<boolean>(false);
   const [isPlatformActive, setPlatformActive] = useState<boolean>(true);
   const [isTagActive, setTagActive] = useState<boolean>(false);
@@ -42,7 +42,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
   const dispatch = useAppDispatch();
   const dropDownRef = useRef<HTMLDivElement>(null);
   const { membersLocationFilterResponse, membersOrganizationFilterResponse } = useAppSelector((state) => state.members);
-  const { TagFilterResponse } = useAppSelector((state) => state.settings);
+  const { data: TagFilterResponse } = useAppSelector((state) => state.settings.TagFilterResponse);
   const PlatformFilterResponse = usePlatform();
   const debouncedLocationValue = useDebounce(locationSearchText, 300);
   const debouncedOrganizationValue = useDebounce(organizationSearchText, 300);
@@ -67,7 +67,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
 
   useEffect(() => {
     if (debouncedTagValue) {
-      getFilteredMembersTagList(debouncedTagValue);
+      getFilteredMembersTagList(1, debouncedTagValue);
     }
   }, [debouncedTagValue]);
 
@@ -132,15 +132,15 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
 
   const handleTagSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
-    if (searchText === '') {
-      getFilteredMembersTagList('');
+    if (!searchText) {
+      getFilteredMembersTagList(1, '');
     }
     setTagSearchText(searchText);
   };
 
   const handleLocationSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
-    if (searchText === '') {
+    if (!searchText) {
       getFilteredMembersFilterList(searchText);
     }
     setLocationSearchText(searchText);
@@ -148,16 +148,20 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
 
   const handleOrganizationSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
-    if (searchText === '') {
+    if (!searchText) {
       getFilteredMembersFilterList('', searchText);
     }
     setOrganizationSearchText(searchText);
   };
 
-  const getFilteredMembersTagList = (tagText: string) => {
+  const getFilteredMembersTagList = (pageNumber: number, tagText: string) => {
     dispatch(
       settingsSlice.actions.tagFilterData({
-        settingsQuery: { tags: { searchedTags: tagText, checkedTags: '' } },
+        settingsQuery: {
+          page: pageNumber,
+          limit,
+          tags: { searchedTags: tagText, checkedTags: '' }
+        },
         workspaceId: workspaceId!
       })
     );
@@ -260,7 +264,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
         membersQuery: {
           page,
           limit,
-          search: '',
+          search: searchText,
           tags: { searchedTags: '', checkedTags: checkTags.toString() },
           platforms: checkPlatform.toString(),
           organization: { searchedOrganization: '', checkedOrganization: checkOrganization.toString() },
@@ -301,7 +305,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
               </div>
             </div>
             {isPlatformActive && (
-              <div className="flex flex-col gap-y-5 justify-center p-3 max-h-[11.25rem] overflow-scroll">
+              <div className="flex flex-col gap-y-5 p-3 max-h-[11.25rem] overflow-scroll">
                 {PlatformFilterResponse &&
                   PlatformFilterResponse.map(
                     (platform: PlatformResponse, index: number) =>
@@ -317,7 +321,12 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
                               onChange={handlePlatformsCheckBox}
                             />
                           </div>
-                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">{platform?.name}</div>
+                          <label
+                            className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer"
+                            htmlFor={platform.id as string}
+                          >
+                            {platform?.name}
+                          </label>
                         </div>
                       )
                   )}
@@ -353,9 +362,9 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
                     <img src={searchIcon} alt="" />
                   </div>
                 </div>
-                <div className="flex flex-col gap-y-5 justify-center px-3 max-h-[12.5rem] overflow-scroll">
+                <div className="flex flex-col gap-y-5 px-3 max-h-[12.5rem] overflow-scroll">
                   {TagFilterResponse &&
-                    TagFilterResponse.map((tags: TagResponse, index: number) => (
+                    TagFilterResponse.map((tags: TagResponseData, index: number) => (
                       <div key={index} className="flex items-center mb-2">
                         <div className="mr-2">
                           <input
@@ -367,7 +376,12 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
                             onChange={handleTagsCheckBox}
                           />
                         </div>
-                        <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">{tags.name}</div>
+                        <label
+                          className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer"
+                          htmlFor={tags.id as string}
+                        >
+                          {tags.name}
+                        </label>
                       </div>
                     ))}
                 </div>
@@ -399,6 +413,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
                       ref={datePickerRefStart}
+                      dateFormat="dd/MM/yyyy"
                     />
                     <img
                       className="absolute icon-holder right-6 cursor-pointer"
@@ -417,6 +432,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
                       ref={datePickerRefEnd}
+                      dateFormat="dd/MM/yyyy"
                     />
                     <img
                       className="absolute icon-holder right-6 cursor-pointer"
@@ -458,7 +474,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
                     <img src={searchIcon} alt="" />
                   </div>
                 </div>
-                <div className="flex flex-col gap-y-5 justify-center px-3 max-h-[12.5rem] overflow-scroll bg-white">
+                <div className="flex flex-col gap-y-5 px-3 max-h-[12.5rem] overflow-scroll bg-white">
                   {membersLocationFilterResponse &&
                     membersLocationFilterResponse.map(
                       (location: { location: string }, index: number) =>
@@ -474,7 +490,12 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
                                 onChange={handleLocationCheckBox}
                               />
                             </div>
-                            <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">{location.location}</div>
+                            <label
+                              className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer"
+                              htmlFor={location.location}
+                            >
+                              {location.location}
+                            </label>
                           </div>
                         )
                     )}
@@ -512,7 +533,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
                     <img src={searchIcon} alt="" />
                   </div>
                 </div>
-                <div className="flex flex-col gap-y-5 justify-center px-3  bg-white max-h-[12.5rem] overflow-scroll">
+                <div className="flex flex-col gap-y-5 px-3  bg-white max-h-[12.5rem] overflow-scroll">
                   {membersOrganizationFilterResponse &&
                     membersOrganizationFilterResponse.map(
                       (organization: { organization: string }, index: number) =>
@@ -528,7 +549,12 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport }
                                 onChange={handleOrganizationCheckBox}
                               />
                             </div>
-                            <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">{organization.organization}</div>
+                            <label
+                              className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer"
+                              htmlFor={organization.organization}
+                            >
+                              {organization.organization}
+                            </label>
                           </div>
                         )
                     )}

@@ -10,15 +10,14 @@ import DatePicker, { ReactDatePicker } from 'react-datepicker';
 import Button from 'common/button';
 import { format } from 'date-fns';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
-import { ActiveStreamTagResponse } from '../interfaces/activities.interface';
 import useDebounce from '@/hooks/useDebounce';
 import { useParams } from 'react-router-dom';
 import activitiesSlice from '../store/slice/activities.slice';
-import { PlatformResponse } from '../../settings/interface/settings.interface';
+import { PlatformResponse, TagResponseData } from '../../settings/interface/settings.interface';
 import usePlatform from '../../../hooks/usePlatform';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
 
-const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFilterExport }) => {
+const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFilterExport, searchText }) => {
   const { workspaceId } = useParams();
   const dispatch = useAppDispatch();
   const [isFilterDropdownActive, setIsFilterDropdownActive] = useState<boolean>(false);
@@ -38,13 +37,13 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
   const debouncedTagValue = useDebounce(tagSearchText, 300);
   const disableApplyBtn = Object.values(checkedPlatform).concat(Object.values(checkedTags));
 
-  const { TagFilterResponse } = useAppSelector((state) => state.settings);
+  const { data: TagFilterResponse } = useAppSelector((state) => state.settings.TagFilterResponse);
   const PlatformFilterResponse = usePlatform();
 
   // Returns the debounced value of the search text.
   useEffect(() => {
     if (debouncedTagValue) {
-      getFilteredMembersTagList(debouncedTagValue);
+      getFilteredMembersTagList(1, debouncedTagValue);
     }
   }, [debouncedTagValue]);
 
@@ -89,8 +88,8 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
 
   const handleTagSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
-    if (searchText === '') {
-      getFilteredMembersTagList('');
+    if (!searchText) {
+      getFilteredMembersTagList(1, '');
     }
     setTagSearchText(searchText);
   };
@@ -117,10 +116,14 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
     }
   };
 
-  const getFilteredMembersTagList = (tagText: string) => {
+  const getFilteredMembersTagList = (pageNumber: number, tagText: string) => {
     dispatch(
       settingsSlice.actions.tagFilterData({
-        settingsQuery: { tags: { searchedTags: tagText, checkedTags: '' } },
+        settingsQuery: {
+          page: pageNumber,
+          limit,
+          tags: { searchedTags: tagText, checkedTags: '' }
+        },
         workspaceId: workspaceId!
       })
     );
@@ -158,7 +161,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
         activeStreamQuery: {
           page,
           limit,
-          search: '',
+          search: searchText,
           tags: { searchedTags: '', checkedTags: checkTags.toString() },
           platforms: checkPlatform.toString(),
           'activity.lte': endDate && format(endDate!, 'yyyy-MM-dd'),
@@ -198,7 +201,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
               </div>
             </div>
             {isPlatformActive && (
-              <div className="flex flex-col gap-y-5 justify-center p-3 max-h-[10rem] overflow-scroll">
+              <div className="flex flex-col gap-y-5 p-3 max-h-[10rem] overflow-scroll">
                 {PlatformFilterResponse &&
                   PlatformFilterResponse.map(
                     (platform: PlatformResponse, index: number) =>
@@ -214,7 +217,12 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                               onChange={handlePlatformsCheckBox}
                             />
                           </div>
-                          <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">{platform?.name}</div>
+                          <label
+                            className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer"
+                            htmlFor={platform.id as string}
+                          >
+                            {platform?.name}
+                          </label>
                         </div>
                       )
                   )}
@@ -249,9 +257,9 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                     <img src={searchIcon} alt="" />
                   </div>
                 </div>
-                <div className="flex flex-col gap-y-5 justify-center px-3 max-h-[12.5rem] overflow-scroll">
+                <div className="flex flex-col gap-y-5 px-3 max-h-[12.5rem] overflow-scroll">
                   {TagFilterResponse &&
-                    TagFilterResponse.map((tags: ActiveStreamTagResponse, index: number) => (
+                    TagFilterResponse.map((tags: TagResponseData, index: number) => (
                       <div key={index} className="flex items-center mb-2">
                         <div className="mr-2">
                           <input
@@ -263,7 +271,12 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                             onChange={handleTagsCheckBox}
                           />
                         </div>
-                        <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">{tags.name}</div>
+                        <label
+                          className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer"
+                          htmlFor={tags.id as string}
+                        >
+                          {tags.name}
+                        </label>
                       </div>
                     ))}
                 </div>
@@ -294,6 +307,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
                       ref={datePickerRefStart}
+                      dateFormat="dd/MM/yyyy"
                     />
                     <img
                       className="absolute icon-holder right-6 cursor-pointer"
@@ -312,6 +326,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
                       ref={datePickerRefEnd}
+                      dateFormat="dd/MM/yyyy"
                     />
                     <img
                       className="absolute icon-holder right-6 cursor-pointer"

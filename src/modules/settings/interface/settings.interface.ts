@@ -1,13 +1,13 @@
 /* eslint-disable no-unused-vars */
 // Input Body
 
-import { platform } from 'os';
-
 export interface workspaceId {
   workspaceId: string;
 }
 export interface GetTagListQueryParams extends workspaceId {
   settingsQuery: {
+    page: number;
+    limit: number;
     tags: {
       checkedTags: string;
       searchedTags: string;
@@ -46,6 +46,7 @@ export interface unAssignTagProps extends workspaceId {
   memberId: string;
   unAssignTagBody: {
     tagId: string;
+    type: AssignTypeEnum;
     activityId?: string;
   };
 }
@@ -56,13 +57,25 @@ export interface ModalState {
 
 // Response Body
 
-export type TagResponse = {
-  createdAt: string;
+export type TagResponseData = {
   id: string;
   name: string;
-  updatedAt: Date;
   viewName: string;
-  workspaceId: string;
+  createdAt: Date;
+  createdBy: string;
+  type: string;
+  totalCount: number;
+};
+
+export enum TagType {
+  Default = 'Default'
+}
+
+export type TagResponse = {
+  data: Array<TagResponseData>;
+  totalPages: number;
+  previousPage: number;
+  nextPage: number;
 };
 
 export type PlatformResponse = {

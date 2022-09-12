@@ -1,62 +1,32 @@
+import { getLocalWorkspaceId } from '@/lib/helper';
+import Button from 'common/button';
+import Input from 'common/input';
+import QuickInfo from 'common/quickInfo/QuickInfo';
 import React, { useState } from 'react';
-import comunifyLogo from '../../assets/images/Group 2 (1).svg';
+import { NavLink, useLocation } from 'react-router-dom';
 import dashboardIcon from '../../assets/images/dashboard.svg';
-import dashboardDarkIcon from '../../assets/images/svg/dashboard_black_icon.svg';
+import dropdownIcon from '../../assets/images/dropdown.svg';
+import comunifyLogo from '../../assets/images/Group 2 (1).svg';
 import memberIcon from '../../assets/images/members.svg';
-import memberDarkIcon from '../../assets/images/svg/members_black_icon.svg';
+import chartIcon from '../../assets/images/pie_chart.svg';
 import settingsIcon from '../../assets/images/settings.svg';
-import settingsDarkIcon from '../../assets/images/svg/settings_black_icon.svg';
+import slackIcon from '../../assets/images/slack.svg';
 import streamIcon from '../../assets/images/stream.svg';
 import activeStreamDarkIcon from '../../assets/images/svg/activities_black_icon.svg';
-import chartIcon from '../../assets/images/pie_chart.svg';
+import dashboardDarkIcon from '../../assets/images/svg/dashboard_black_icon.svg';
+import memberDarkIcon from '../../assets/images/svg/members_black_icon.svg';
 import reportsDarkIcon from '../../assets/images/svg/reports_black_icon.svg';
-import dropdownIcon from '../../assets/images/dropdown.svg';
+import settingsDarkIcon from '../../assets/images/svg/settings_black_icon.svg';
 import unsplashIcon from '../../assets/images/unsplash.svg';
 import unsplashMGIcon from '../../assets/images/unsplash_mj.svg';
-import slackIcon from '../../assets/images/slack.svg';
-import Button from 'common/button';
-import { useNavigate } from 'react-router-dom';
-import { ActiveState } from '../../interface/interface';
-import Input from 'common/input';
 import widgetSearchIcon from '../../assets/images/widget-search.svg';
-import QuickInfo from 'common/quickInfo/QuickInfo';
-import { getLocalWorkspaceId } from '@/lib/helper';
 
 const SideNav: React.FC = () => {
-  const navigate = useNavigate();
-  const [active, setActive] = useState<ActiveState>({ dashboard: false, members: false, activity: false, reports: false, settings: false });
+  const location = useLocation();
   const [isDrawerOpen, setDrawerOpen] = useState<boolean>(false);
   const workspaceId = getLocalWorkspaceId();
 
   const [cls, setCls] = useState('platform-layout-close');
-
-  const navigateRoute = (route: string): void => {
-    switch (route) {
-      case '/dashboard':
-        setActive({ dashboard: true });
-        navigate(`${workspaceId}/dashboard`);
-        break;
-      case '/members':
-        setActive({ members: true });
-        navigate(`${workspaceId}/members`);
-        break;
-      case '/activity':
-        setActive({ activity: true });
-        navigate(`${workspaceId}/activity`);
-        break;
-      case '/reports':
-        setActive({ reports: true });
-        navigate(`${workspaceId}/reports`);
-        break;
-      case '/settings':
-        setActive({ settings: true });
-        navigate(`${workspaceId}/settings`);
-        break;
-
-      default:
-        break;
-    }
-  };
 
   return (
     <nav className="h-screen bg-secondary dark:bg-secondaryDark relative overflow-y-hidden side-nav-layout">
@@ -97,90 +67,62 @@ const SideNav: React.FC = () => {
           <div className="pl-0.66 font-Outfit font-bold text-dashboardLogo text-lightBlack dark:text-white leading-1.43">COMUNIFY</div>
         </div>
         <div className="flex flex-col mt-5.8 menu-box overflow-y-auto">
-          <div
-            className={
-              active.dashboard || window.location.href.includes('/dashboard') ? 'flex flex-center active-menu' : 'flex flex-center inactive-menu'
-            }
-          >
+          <div className={window.location.href.includes('/dashboard') ? 'flex flex-center active-menu' : 'flex flex-center inactive-menu'}>
             <div>
-              <img src={active.dashboard || window.location.href.includes('/dashboard') ? dashboardDarkIcon : dashboardIcon} alt="" />
+              <img src={location.pathname === `/${workspaceId}/dashboard` ? dashboardDarkIcon : dashboardIcon} alt="" />
             </div>
-            <div
-              className={`pl-1.24 font-Poppins font-medium text-base  xl:text-lg  leading-1.68 cursor-pointer ${
-                active.dashboard || window.location.href.includes('/dashboard') ? 'text-black dark:text-white' : 'text-slimGray'
-              }`}
-              onClick={() => navigateRoute('/dashboard')}
+            <NavLink
+              to={`${workspaceId}/dashboard`}
+              className={({ isActive }) =>
+                `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${isActive ? 'text-black' : 'text-slimGray'}`
+              }
             >
               Dashboard
-            </div>
+            </NavLink>
           </div>
-          <div
-            className={
-              active.members || window.location.href.includes('/members')
-                ? 'flex mt-2.18 items-center active-menu'
-                : 'flex mt-2.18 items-center inactive-menu'
-            }
-          >
-            <img src={active.members || window.location.href.includes('/members') ? memberDarkIcon : memberIcon} alt="" />
-            <div
-              className={`pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${
-                active.members || window.location.href.includes('/members') ? 'text-black dark:text-white' : 'text-slimGray'
-              }`}
-              onClick={() => navigateRoute('/members')}
+          <div className="flex mt-2.18 items-center">
+            <img src={location.pathname === `/${workspaceId}/members` ? memberDarkIcon : memberIcon} alt="" />
+            <NavLink
+              to={`${workspaceId}/members`}
+              className={({ isActive }) =>
+                `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${isActive ? 'text-black' : 'text-slimGray'}`
+              }
             >
               Members
-            </div>
+            </NavLink>
           </div>
-          <div
-            className={
-              active.activity || window.location.href.includes('/activity')
-                ? 'flex mt-2.18 items-center active-menu'
-                : 'flex mt-2.18 items-center inactive-menu'
-            }
-          >
-            <img src={active.activity || window.location.href.includes('/activity') ? activeStreamDarkIcon : streamIcon} alt="" />
-            <div
-              className={`pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${
-                active.activity || window.location.href.includes('/activity') ? 'text-black dark:text-white' : 'text-slimGray'
-              }`}
-              onClick={() => navigateRoute('/activity')}
+          <div className="flex mt-2.18 items-center">
+            <img src={location.pathname === `/${workspaceId}/activity` ? activeStreamDarkIcon : streamIcon} alt="" />
+            <NavLink
+              to={`${workspaceId}/activity`}
+              className={({ isActive }) =>
+                `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${isActive ? 'text-black' : 'text-slimGray'}`
+              }
             >
               Active Stream
-            </div>
+            </NavLink>
           </div>
-          <div
-            className={
-              active.reports || window.location.href.includes('/reports')
-                ? 'flex mt-2.18 items-center active-menu'
-                : 'flex mt-2.18 items-center inactive-menu'
-            }
-          >
-            <img src={active.reports || window.location.href.includes('/reports') ? reportsDarkIcon : chartIcon} alt="" />
-            <div
-              className={`pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${
-                active.reports || window.location.href.includes('/reports') ? 'text-black dark:text-white' : 'text-slimGray'
-              }`}
-              onClick={() => navigateRoute('/reports')}
+          <div className="flex mt-2.18 items-center">
+            <img src={location.pathname === `/${workspaceId}/reports` ? reportsDarkIcon : chartIcon} alt="" />
+            <NavLink
+              to={`${workspaceId}/reports`}
+              className={({ isActive }) =>
+                `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${isActive ? 'text-black' : 'text-slimGray'}`
+              }
             >
               Reports
-            </div>
+            </NavLink>
           </div>
-          <div
-            className={
-              active.settings || window.location.href.includes('/settings')
-                ? 'flex mt-2.18 items-center active-menu'
-                : 'flex mt-2.18 items-center inactive-menu'
-            }
-            onClick={() => navigateRoute('/settings')}
-          >
-            <img src={active.settings || window.location.href.includes('/settings') ? settingsDarkIcon : settingsIcon} alt="" />
-            <div
-              className={`pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${
-                active.settings || window.location.href.includes('/settings') ? 'text-black dark:text-white' : 'text-slimGray'
-              }`}
+          <div className="flex mt-2.18 items-center">
+            <img src={location.pathname === `/${workspaceId}/settings` ? settingsDarkIcon : settingsIcon} alt="" />
+            <NavLink
+              to={`${workspaceId}/settings`}
+              className={({ isActive }) =>
+                `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${isActive ? 'text-black' : 'text-slimGray'}`
+              }
             >
               Settings
-            </div>
+            </NavLink>
           </div>
         </div>
       </div>
@@ -271,3 +213,31 @@ const SideNav: React.FC = () => {
 };
 
 export default SideNav;
+
+{
+  /* <div
+className={
+  active.members || window.location.href.includes('/members')
+    ? 'flex mt-2.18 items-center active-menu'
+    : 'flex mt-2.18 items-center inactive-menu'
+}
+>
+<img src={active.members || window.location.href.includes('/members') ? memberDarkIcon : memberIcon} alt="" />
+<div
+  className={`pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${
+    active.members || window.location.href.includes('/members') ? 'text-black dark:text-white' : 'text-slimGray'
+  }`}
+  onClick={() => navigateRoute('/members')}
+<div className="flex mt-2.18 items-center">
+<img src={location.pathname === `/${workspaceId}/members` ? memberDarkIcon : memberIcon} alt="" />
+<NavLink
+  to={`${workspaceId}/members`}
+  className={({ isActive }) =>
+    `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${isActive ? 'text-black' : 'text-slimGray'}`
+  }
+
+>
+  Members
+</NavLink>
+</div> */
+}

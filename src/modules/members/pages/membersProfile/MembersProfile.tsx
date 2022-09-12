@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable max-len */
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 import Button from 'common/button';
 import { format } from 'date-fns';
 import DatePicker, { ReactDatePicker } from 'react-datepicker';
@@ -25,14 +25,17 @@ import Skeleton from 'react-loading-skeleton';
 import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 import { count_5, width_90 } from 'constants/constants';
 import usePlatform from '../../../../hooks/usePlatform';
-import { AssignTypeEnum, PlatformResponse, TagResponse } from '../../../settings/interface/settings.interface';
+import { AssignTypeEnum, PlatformResponse, TagResponseData } from '../../../settings/interface/settings.interface';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
 import useDebounce from '@/hooks/useDebounce';
 import ReactTooltip from 'react-tooltip';
+import * as Yup from 'yup';
+import Input from 'common/input';
 
 Modal.setAppElement('#root');
 
 const MembersProfile: React.FC = () => {
+  const limit = 10;
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const { workspaceId, memberId } = useParams();
@@ -55,6 +58,9 @@ const MembersProfile: React.FC = () => {
   const [isFilterDropDownActive, setFilterDropdownActive] = useState<boolean>(false);
   const [activityNextCursor, setActivityNextCursor] = useState<string | null>('');
   const [platform, setPlatform] = useState<string | undefined>();
+  const [tagDropDownOption, setTagDropDownOption] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | unknown>('');
+
   const {
     membersActivityData: activityData,
     membersProfileActivityGraphData: activityGraphData,
@@ -65,43 +71,64 @@ const MembersProfile: React.FC = () => {
   const activityDataLoader = useSkeletonLoading(membersSlice.actions.getMembersActivityDataInfiniteScroll.type);
   const platformData = usePlatform();
 
+  const tagDropDownRef = useRef<HTMLDivElement>(null);
   const dropDownRef = useRef<HTMLDivElement>(null);
   const datePickerRefStart = useRef<ReactDatePicker>(null);
   const datePickerRefEnd = useRef<ReactDatePicker>(null);
+  const integrationDropDownRef = useRef<HTMLDivElement>(null);
+  const dateFilterDropDownRef = useRef<HTMLDivElement>(null);
 
-  const { TagFilterResponse, clearValue } = useAppSelector((state) => state.settings);
+  const {
+    TagFilterResponse: { data: TagFilterResponseData },
+    clearValue
+  } = useAppSelector((state) => state.settings);
 
   const debouncedValue = useDebounce(searchText, 300);
+
+  const TagNameValidation = Yup.string()
+    .trim('WhiteSpaces are not allowed')
+    .min(2, 'Tag Name must be atleast 2 characters')
+    .max(15, 'Tag Name should not exceed above 15 characters')
+    .required('Tag Name is a required field')
+    .nullable(true);
 
   useEffect(() => {
     dispatch(membersSlice.actions.getMembersActivityGraphData({ workspaceId: workspaceId as string, memberId: memberId as string }));
     dispatch(membersSlice.actions.getMemberProfileCardData({ workspaceId: workspaceId as string, memberId: memberId as string }));
     document.addEventListener('click', handleOutsideClick);
+    document.addEventListener('click', handleDropDownClick);
+    document.addEventListener('click', handleIntegrationDropDownClick);
+    document.addEventListener('click', handleDateFilterDropDownClick);
     return () => {
       document.removeEventListener('click', handleOutsideClick);
+      document.addEventListener('click', handleDropDownClick);
+      document.addEventListener('click', handleIntegrationDropDownClick);
+      document.addEventListener('click', handleDateFilterDropDownClick);
     };
   }, []);
 
   useEffect(() => {
     loadActivityData(true);
-  }, [platform, fromDate, toDate, fromDate && toDate]);
+  }, [platform, fromDate && toDate, toDate && fromDate]);
 
   // Returns the debounced value of the search text.
   useEffect(() => {
     if (debouncedValue) {
-      getTagsList(debouncedValue);
+      getTagsList(1, debouncedValue);
     }
   }, [debouncedValue]);
 
   useEffect(() => {
     if (clearValue) {
-      setTagModalOpen(false);
-      setTags({
-        tagId: '',
-        tagName: ''
-      });
+      handleTagModalOpen(false);
     }
   }, [clearValue]);
+
+  useEffect(() => {
+    if (TagFilterResponseData?.length && searchText) {
+      setTagDropDownOption(true);
+    }
+  }, [TagFilterResponseData]);
 
   const loadActivityData = (needReload: boolean, cursor?: string) => {
     if (needReload) {
@@ -122,14 +149,23 @@ const MembersProfile: React.FC = () => {
     setIsModalOpen(val);
   };
 
-  const handleTagModalOpen = (): void => {
-    setTagModalOpen((prev) => !prev);
+  const handleTagModalOpen = (value: boolean): void => {
+    setErrorMessage('');
+    setTagModalOpen(value);
     setTags({
       tagId: '',
       tagName: ''
     });
     setSearchText('');
-    dispatch(settingsSlice.actions.getTagFilterData([]));
+    dispatch(
+      settingsSlice.actions.getTagFilterData({
+        data: [],
+        totalPages: 0,
+        previousPage: 0,
+        nextPage: 0
+      })
+    );
+    dispatch(settingsSlice.actions.resetValue(false));
   };
 
   const handleDropDownActive = (): void => {
@@ -145,7 +181,7 @@ const MembersProfile: React.FC = () => {
   };
 
   const navigateToReviewMerge = () => {
-    navigate('/members/members-review');
+    navigate(`${workspaceId}/members/${memberId}/members-review`);
   };
 
   // switch case for member graph
@@ -201,6 +237,28 @@ const MembersProfile: React.FC = () => {
     }
   };
 
+  const handleDropDownClick = (event: MouseEvent) => {
+    if (tagDropDownRef && tagDropDownRef.current && !tagDropDownRef.current.contains(event.target as Node)) {
+      setTagDropDownOption(false);
+    }
+  };
+
+  const handleIntegrationDropDownClick = (event: MouseEvent) => {
+    if (integrationDropDownRef && integrationDropDownRef.current && !integrationDropDownRef.current.contains(event.target as Node)) {
+      setIntegrationDropDownActive(false);
+    }
+  };
+
+  const handleDateFilterDropDownClick = (event: MouseEvent) => {
+    if (dateFilterDropDownRef && dateFilterDropDownRef.current) {
+      if ((event?.target as Element)?.className.includes('react-datepicker__day')) {
+        setFilterDropdownActive(true);
+      } else if (!dateFilterDropDownRef.current.contains(event.target as Node)) {
+        setFilterDropdownActive(false);
+      }
+    }
+  };
+
   const handleClickDatePickerIcon = (type: string) => {
     if (type === 'start') {
       const datePickerElement = datePickerRefStart.current;
@@ -216,10 +274,12 @@ const MembersProfile: React.FC = () => {
     navigate(`/${workspaceId}/activity`);
   };
 
-  const getTagsList = (text: string): void => {
+  const getTagsList = (pageNumber: number, text: string): void => {
     dispatch(
       settingsSlice.actions.tagFilterData({
         settingsQuery: {
+          page: pageNumber,
+          limit,
           tags: {
             checkedTags: '',
             searchedTags: text
@@ -231,6 +291,7 @@ const MembersProfile: React.FC = () => {
   };
 
   const handleSelectTagName = (tagName: string, tagId: string) => {
+    setTagDropDownOption(false);
     setTags({
       tagId,
       tagName
@@ -239,24 +300,36 @@ const MembersProfile: React.FC = () => {
 
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
-    if (searchText === '') {
-      getTagsList('');
-    }
     setSearchText(searchText);
+    try {
+      TagNameValidation.validateSync(searchText);
+      setErrorMessage('');
+      if (!searchText) {
+        getTagsList(1, '');
+        handleSelectTagName('', '');
+      }
+    } catch ({ message }) {
+      setErrorMessage(message);
+    }
   };
 
-  const handleAssignTagsName = (): void => {
-    dispatch(
-      settingsSlice.actions.assignTags({
-        memberId: memberId!,
-        assignTagBody: {
-          name: tags.tagName,
-          viewName: tags.tagName,
-          type: 'Member' as AssignTypeEnum.Member
-        },
-        workspaceId: workspaceId!
-      })
-    );
+  const handleAssignTagsName = (e: FormEvent<HTMLFormElement>): void => {
+    e.preventDefault();
+    if (errorMessage || !searchText) {
+      setErrorMessage(errorMessage || 'Tag Name is a required field');
+    } else {
+      dispatch(
+        settingsSlice.actions.assignTags({
+          memberId: memberId!,
+          assignTagBody: {
+            name: tags.tagName || searchText,
+            viewName: tags.tagName || searchText,
+            type: 'Member' as AssignTypeEnum.Member
+          },
+          workspaceId: workspaceId!
+        })
+      );
+    }
   };
 
   const handleUnAssignTagsName = (id: string): void => {
@@ -264,7 +337,8 @@ const MembersProfile: React.FC = () => {
       settingsSlice.actions.unAssignTags({
         memberId: memberId!,
         unAssignTagBody: {
-          tagId: id
+          tagId: id,
+          type: 'Member' as AssignTypeEnum.Member
         },
         workspaceId: workspaceId!
       })
@@ -329,7 +403,7 @@ const MembersProfile: React.FC = () => {
               <div key={data?.id + data?.name} className="flex flex-col w-full">
                 <div className="font-Poppins font-normal text-card leading-4 text-renewalGray">Last Active Date</div>
                 <div className="font-Poppins font-semibold text-base leading-6 text-accountBlack">
-                  {data?.lastActivity ? generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY') : 'Last active date not available'}
+                  {data?.lastActivity ? generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY') : 'Last active date is not available'}
                 </div>
               </div>
             ))
@@ -338,6 +412,7 @@ const MembersProfile: React.FC = () => {
           <div className="select relative mr-2 float-right">
             <div
               className="flex justify-around items-center cursor-pointer box-border w-9.59 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border"
+              ref={integrationDropDownRef}
               onClick={handleIntegrationDropDownActive}
             >
               <div className="font-Poppins font-semibold text-card text-memberDay leading-4">
@@ -375,7 +450,7 @@ const MembersProfile: React.FC = () => {
               </div>
             )}
           </div>
-          <div className="select relative">
+          <div className="select relative" ref={dateFilterDropDownRef}>
             <div
               className="flex justify-around items-center cursor-pointer box-border w-9.59 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border"
               onClick={handleFilterDropDownActive}
@@ -387,13 +462,14 @@ const MembersProfile: React.FC = () => {
             </div>
             {isFilterDropDownActive && (
               <div className="absolute flex flex-col text-left px-2 pt-2  cursor-pointer box-border w-full bg-white z-40 rounded-0.6 shadow-contactCard pb-2 app-input-card-border">
-                <div className="relative flex items-center ">
+                <div className="relative flex items-center">
                   <DatePicker
+                    ref={datePickerRefStart}
                     selected={fromDate}
                     onChange={(date: Date) => setFromDate(date)}
                     className=" h-3.06 app-result-card-border shadow-reportInput w-full rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                     placeholderText="From"
-                    ref={datePickerRefStart}
+                    dateFormat="dd/MM/yyyy"
                   />
                   <img
                     className="absolute icon-holder right-4 cursor-pointer"
@@ -405,10 +481,11 @@ const MembersProfile: React.FC = () => {
                 <div className="relative flex items-center pt-1">
                   <DatePicker
                     selected={toDate}
+                    ref={datePickerRefEnd}
                     onChange={(date: Date) => setToDate(date)}
                     className=" h-3.06 app-result-card-border shadow-reportInput w-full rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                     placeholderText="To"
-                    ref={datePickerRefEnd}
+                    dateFormat="dd/MM/yyyy"
                   />
                   <img
                     className="absolute icon-holder right-4 cursor-pointer"
@@ -429,7 +506,7 @@ const MembersProfile: React.FC = () => {
               <div key={data?.id + data?.name} className="flex justify-between ">
                 <div className="font-Poppins text-card leading-4 font-medium">
                   {' '}
-                  {data?.lastActivity ? generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY') : 'Last active date not available'}
+                  {data?.lastActivity ? generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY') : 'Last active date is not available'}
                 </div>
                 <div onClick={navigateToActivities} className="font-Poppins font-normal leading-4 text-renewalGray text-preview cursor-pointer">
                   Preview All
@@ -444,23 +521,25 @@ const MembersProfile: React.FC = () => {
           >
             {activityDataLoader ? (
               <Skeleton width={500} className={'my-4'} count={6} />
-            ) : (
+            ) : activityData?.result.length !== 0 ? (
               activityData.result.map((data: ActivityResult) => (
                 <div key={data?.id} className="flex items-center">
                   <div>
                     <img src={yellowDottedIcon} alt="" />
                   </div>
                   <div className="pl-0.68">
-                    <img src={slackIcon} alt="" className="rounded-full w-[1.835rem] h-[1.835rem]" />
+                    <img src={data?.platforms?.platformLogoUrl} alt="" className="rounded-full w-[1.835rem] h-[1.835rem]" />
                   </div>
                   <div className="flex flex-col pl-0.89">
                     <div className="font-Poppins font-normal text-card leading-4">{data?.displayValue}</div>
                     <div className="font-Poppins left-4 font-normal text-profileEmail text-duration">
-                      {new Date(`${data?.createdAt}`).getHours()} hours ago
+                      {new Date(`${data?.activityTime}`).getHours()} hours ago
                     </div>
                   </div>
                 </div>
               ))
+            ) : (
+              <div className="font-Poppins font-semibold text-base leading-9 text-accountBlack">Member activity is not available</div>
             )}
           </div>
         </div>
@@ -499,9 +578,11 @@ const MembersProfile: React.FC = () => {
                   {data?.email} || {data?.organization}
                 </div>
                 <div className="flex gap-1 pt-1.12">
-                  <div>
-                    <img src={slackIcon} alt="" className="rounded-full w-[1.0012rem] h-[1.0012rem]" />
-                  </div>
+                  {data?.platforms.map((platformData) => (
+                    <div key={`${platformData?.id + platformData?.name}`}>
+                      <img src={platformData?.platformLogoUrl} alt="" className="rounded-full w-[1.0012rem] h-[1.0012rem]" />
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -512,7 +593,7 @@ const MembersProfile: React.FC = () => {
           <div className="flex flex-col p-5">
             <div className="flex items-center justify-between border-b pb-2">
               <div className="font-Poppins font-medium text-error leading-5 text-profileBlack">Tags</div>
-              <div className="font-Poppins font-medium text-error leading-5 text-addTag cursor-pointer" onClick={handleTagModalOpen}>
+              <div className="font-Poppins font-medium text-error leading-5 text-addTag cursor-pointer" onClick={() => handleTagModalOpen(true)}>
                 ADD TAG
               </div>
               <div className="flex items-center justify-center">
@@ -535,27 +616,29 @@ const MembersProfile: React.FC = () => {
                 >
                   <div className="flex flex-col">
                     <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Add Tag</h3>
-                    <form className="flex flex-col relative px-1.93 mt-9">
+                    <form className="flex flex-col relative px-1.93 mt-9" onSubmit={(e) => handleAssignTagsName(e)}>
                       <label htmlFor="billingName " className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack ">
                         Tag Name
                       </label>
-                      <input
+                      <Input
+                        id="tags"
+                        name="tags"
                         type="text"
                         className="mt-0.375 inputs box-border bg-white shadow-inputShadow rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-sm placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
                         placeholder="Enter Tag Name"
                         onChange={handleSearchTextChange}
                         value={tags.tagName || searchText}
-                        minLength={2}
-                        maxLength={50}
-                        required
+                        errors={Boolean(errorMessage)}
+                        helperText={errorMessage}
                       />
                       <div
                         className={`bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 ${
-                          TagFilterResponse.length && !tags.tagId ? '' : 'hidden'
+                          tagDropDownOption ? '' : 'hidden'
                         }`}
                       >
-                        {TagFilterResponse.map((data: TagResponse) => (
+                        {TagFilterResponseData?.map((data: TagResponseData) => (
                           <div
+                            ref={tagDropDownRef}
                             key={data.id}
                             className="p-2 text-searchBlack cursor-pointer font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300"
                             onClick={() => handleSelectTagName(data.name, data.id)}
@@ -569,13 +652,12 @@ const MembersProfile: React.FC = () => {
                           type="button"
                           text="CANCEL"
                           className="mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel w-5.25 h-2.81 rounded border-none"
-                          onClick={handleTagModalOpen}
+                          onClick={() => handleTagModalOpen(false)}
                         />
                         <Button
-                          type="button"
+                          type="submit"
                           text="SAVE"
                           className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-5.25 h-2.81  border-none btn-save-modal"
-                          onClick={handleAssignTagsName}
                         />
                       </div>
                     </form>
@@ -585,7 +667,7 @@ const MembersProfile: React.FC = () => {
             </div>
             <div className="flex flex-wrap pt-1.56 gap-2">
               {memberProfileCardData?.map((data: MemberProfileCard) =>
-                data.tags?.map((tag: TagResponse) => (
+                data.tags?.map((tag: TagResponseData) => (
                   <>
                     <div
                       data-tip

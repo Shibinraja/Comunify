@@ -39,9 +39,20 @@ Modal.setAppElement('#root');
 interface PlatformDisconnect {
   workspacePlatformSettingsId: string | null;
 }
+interface ConfirmPlatformToDisconnect {
+  platform: string;
+  workspacePlatformSettingsId: string;
+  platformIcon: string;
+}
 
 const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
   const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanillaForums: false });
+  const [isWarningModalOpen, setIsWarningModalOpen] = useState<boolean>(false);
+  const [confirmPlatformToDisconnect, setConfirmPlatformToDisconnect] = useState<ConfirmPlatformToDisconnect>({
+    platform: '',
+    workspacePlatformSettingsId: '',
+    platformIcon: ''
+  });
   // eslint-disable-next-line no-unused-vars
   const [platformIcons, setPlatformIcons] = useState<PlatformIcons>({ slack: undefined, vanillaForums: undefined });
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -75,7 +86,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
   const { PlatformsConnected } = useAppSelector((state: State) => state.settings);
   const checkForConnectedPlatform = (platformName: string) => {
     const data = PlatformsConnected?.find(
-      (obj: ConnectedPlatforms) => obj?.platform.name.toLocaleLowerCase().trim() === `${platformName.toLocaleLowerCase().trim()}`
+      (obj: ConnectedPlatforms) => obj?.platform?.name.toLocaleLowerCase().trim() === `${platformName.toLocaleLowerCase().trim()}`
     );
     return data;
   };
@@ -84,7 +95,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
     switch (name) {
       case 'Slack':
         setIsLoading(true);
-        if (checkForConnectedPlatform(name) === undefined) {
+        if (!checkForConnectedPlatform(name)) {
           setPlatformIcons((prevState) => ({ ...prevState, slack: icon }));
           if (isIntegrated === true) {
             handlePlatformReconnectForSlack(name);
@@ -99,7 +110,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
         break;
       case 'Vanilla':
         setIsLoading(true);
-        if (checkForConnectedPlatform(name) === undefined) {
+        if (!checkForConnectedPlatform(name)) {
           setPlatformIcons((prevState) => ({ ...prevState, vanillaForums: icon }));
           if (isIntegrated === true) {
             handlePlatformReconnectForVanilla(name);
@@ -180,26 +191,37 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
   };
 
   // eslint-disable-next-line space-before-function-paren
-  const handleDisconnect = async (platformName: string, workspacePlatformSettingsId: string) => {
+  const handleDisconnect = async (platform: string, workspacePlatformSettingsId: string, platformIcon: string) => {
+    setConfirmPlatformToDisconnect({ platform, workspacePlatformSettingsId, platformIcon });
+    setIsWarningModalOpen(true);
+  };
+
+  // eslint-disable-next-line space-before-function-paren
+  const handleConfirmation = async (state: boolean) => {
     const body: PlatformDisconnect = {
-      workspacePlatformSettingsId
+      workspacePlatformSettingsId: confirmPlatformToDisconnect.workspacePlatformSettingsId
     };
-    try {
-      const disconnectResponse: IntegrationResponse<PlatformsStatus> = await request.post(
-        `${API_ENDPOINT}/v1/${platformName.toLocaleLowerCase().trim()}/disconnect`,
-        body
-      );
-      if (disconnectResponse?.data?.data.status?.toLocaleLowerCase().trim() === 'disabled') {
-        if (disconnectResponse?.data?.data?.platform?.toLocaleLowerCase().trim() === 'vanilla') {
-          showSuccessToast(`${platformName} Forums was successfully disconnected from your workspace`);
-          dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
-        } else {
-          showSuccessToast(`${platformName} was successfully disconnected from your workspace`);
-          dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+    if (!state) {
+      setIsWarningModalOpen(false);
+    } else {
+      try {
+        const disconnectResponse: IntegrationResponse<PlatformsStatus> = await request.post(
+          `${API_ENDPOINT}/v1/${confirmPlatformToDisconnect.platform.toLocaleLowerCase().trim()}/disconnect`,
+          body
+        );
+        if (disconnectResponse?.data?.data.status?.toLocaleLowerCase().trim() === 'disabled') {
+          setIsWarningModalOpen(false);
+          if (disconnectResponse?.data?.data?.platform?.toLocaleLowerCase().trim() === 'vanilla') {
+            showSuccessToast(`${confirmPlatformToDisconnect.platform} Forums was successfully disconnected from your workspace`);
+            dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+          } else {
+            showSuccessToast(`${confirmPlatformToDisconnect.platform} was successfully disconnected from your workspace`);
+            dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+          }
         }
+      } catch {
+        showErrorToast(`${confirmPlatformToDisconnect.platform} disconnection failed`);
       }
-    } catch {
-      showErrorToast(`${platformName} disconnection failed`);
     }
   };
 
@@ -257,72 +279,69 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
     <TabPanel hidden={hidden}>
       <div className="settings-integration container mt-2.62 pb-20">
         <h3 className="font-Poppins text-infoBlack font-semibold text-base leading-1.43">Connected Integrations</h3>
-        {PlatformsConnected.length == 0 ? (
-          <Skeleton count={8} width={300} />
-        ) : (
-          <div className="flex mt-1.8 flex-wrap w-full pb-1.68 border-b border-bottom-card">
-            {PlatformsConnected?.map((data: ConnectedPlatforms) => (
-              <div
-                key={`${data?.id + data?.name}`}
-                className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5"
-              >
-                <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                  <img src={data?.platform?.platformLogoUrl} alt="" className="h-2.31" />
+
+        <div className="flex mt-1.8 flex-wrap w-full pb-1.68 border-b border-bottom-card">
+          {PlatformsConnected?.map((data: ConnectedPlatforms) => (
+            <div key={`${data?.id + data?.name}`}>
+              {data?.name !== undefined ? (
+                <div className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5">
+                  <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
+                    <img src={data?.platform?.platformLogoUrl} alt="" className="h-2.31" />
+                  </div>
+                  <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">{data?.platform?.name}</div>
+                  <Button
+                    type="button"
+                    text={isButtonConnect ? 'Disconnect' : 'Connect'}
+                    className={isButtonConnect ? disConnectedBtnClassName : connectedBtnClassName}
+                    onClick={() => handleDisconnect(data?.platform?.name, data?.id, data?.platform?.platformLogoUrl)}
+                  />
                 </div>
-                <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">{data?.platform?.name}</div>
-                <Button
-                  type="button"
-                  text={isButtonConnect ? 'Disconnect' : 'Connect'}
-                  className={isButtonConnect ? disConnectedBtnClassName : connectedBtnClassName}
-                  onClick={() => handleDisconnect(data?.platform?.name, data?.id)}
-                />
-              </div>
-            ))}
-          </div>
-        )}
+              ) : (
+                <Skeleton width={150} count={8} />
+              )}
+            </div>
+          ))}
+        </div>
 
         <div className="pending-connect mt-1.8">
           <h3 className="font-Poppins text-infoBlack font-semibold text-base leading-1.43">Integrations</h3>
           <p className="font-Poppins font-normal text-error leading-1.43 mt-0.5">
             Choose from any of the following data sources to connect with and see what your community members are up to!
           </p>
-          {platformData?.length === 0 ? (
-            <Skeleton count={8} width={300} />
-          ) : (
-            <div className="flex mt-1.8 flex-wrap w-full">
-              {platformData?.map((data: PlatformResponse) => (
-                <div
-                  key={`${data?.id + data?.name}`}
-                  className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5"
-                >
-                  <div className="flex flex-wrap items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                    <img src={data?.platformLogoUrl} alt="" className="h-2.31" />
-                  </div>
-                  <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">{data?.name}</div>
-                  <Button
-                    type="button"
-                    text="Connect"
-                    disabled={isLoading ? true : false}
-                    className={!isButtonConnect ? disConnectedBtnClassName : connectedBtnClassName}
-                    onClick={() => handleModals(data?.name.trim(), data?.platformLogoUrl, data?.isConnected)}
-                  />
-                </div>
-              ))}
 
-              <div className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5">
-                <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                  <img src={unsplashIcon} alt="" className="h-2.31" />
+          <div className="flex mt-1.8 flex-wrap w-full">
+            {platformData?.map((data: PlatformResponse) => (
+              <div
+                key={`${data?.id + data?.name}`}
+                className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5"
+              >
+                <div className="flex flex-wrap items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
+                  <img src={data?.platformLogoUrl} alt="" className="h-2.31" />
                 </div>
-                <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">Khoros</div>
+                <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">{data?.name}</div>
                 <Button
-                  disabled={isLoading ? true : false}
                   type="button"
-                  text="Coming soon"
-                  className="bg-black shadow-contactCard font-Poppins cursor-none text-white font-medium leading-5 text-error mt-0.81 rounded-full h-6 w-6.56"
+                  text="Connect"
+                  disabled={isLoading ? true : false}
+                  className={!isButtonConnect ? disConnectedBtnClassName : connectedBtnClassName}
+                  onClick={() => handleModals(data?.name.trim(), data?.platformLogoUrl, data?.isConnected)}
                 />
               </div>
+            ))}
+
+            <div className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5">
+              <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
+                <img src={unsplashIcon} alt="" className="h-2.31" />
+              </div>
+              <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">Khoros</div>
+              <Button
+                disabled={isLoading ? true : false}
+                type="button"
+                text="Coming soon"
+                className="bg-black shadow-contactCard font-Poppins cursor-none text-white font-medium leading-5 text-error mt-0.81 rounded-full h-6 w-6.56"
+              />
             </div>
-          )}
+          </div>
 
           <Modal
             isOpen={isModalOpen.slack}
@@ -437,6 +456,46 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
                     />
                   </div>
                 </form>
+              </div>
+            </div>
+          </Modal>
+          <Modal
+            isOpen={isWarningModalOpen}
+            shouldCloseOnOverlayClick={false}
+            onRequestClose={() => setIsWarningModalOpen(false)}
+            className="w-24.31 h-18.43 mx-auto rounded-lg modals-tag bg-white shadow-modal flex items-center justify-center"
+            style={{
+              overlay: {
+                display: 'flex',
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0,
+                alignItems: 'center'
+              }
+            }}
+          >
+            <div className="flex flex-col items-center justify-center ">
+              <div className="bg-cover w-12">
+                <img src={confirmPlatformToDisconnect.platformIcon} alt="" />
+              </div>
+              <div className="mt-5 leading-6 text-black font-Inter font-semibold text-xl w-2/3 text-center">
+                {`Are you sure you want to disconnect ${confirmPlatformToDisconnect.platform} from your workspace?`}
+              </div>
+              <div className="flex mt-1.8">
+                <Button
+                  type="button"
+                  text="NO"
+                  className="border-none border-cancel h-2.81 w-5.25 box-border rounded cursor-pointer font-Poppins font-medium text-error leading-5 text-thinGray "
+                  onClick={() => handleConfirmation(false)}
+                />
+                <Button
+                  type="button"
+                  text="YES"
+                  className="border-none ml-2.5 yes-btn h-2.81 w-5.25 box-border rounded shadow-contactBtn cursor-pointer font-Poppins font-medium text-error leading-5 text-white btn-save-modal"
+                  onClick={() => handleConfirmation(true)}
+                />
               </div>
             </div>
           </Modal>

@@ -2,18 +2,35 @@ import { useAppDispatch } from '@/hooks/useRedux';
 import Button from 'common/button/Button';
 import Input from 'common/input/Input';
 import authSlice from 'modules/authentication/store/slices/auth.slice';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import bgWorkSpaceImage from '../../../../assets/images/bg-sign.svg';
+import { setRefreshToken } from '../../../../lib/helper';
 import { AppDispatch } from '../../../../store/index';
 import './CreateWorkSpace.css';
+import cookie from 'react-cookies';
+import { DecodeToken } from '../../interface/auth.interface';
+import { decodeToken } from '../../../../lib/decodeToken';
+import { useNavigate } from 'react-router';
 
 const CreateWorkSpace: React.FC = () => {
   const dispatch: AppDispatch = useAppDispatch();
 
+  const accessToken = localStorage.getItem('accessToken') || cookie.load('x-auth-cookie');
+  const decodedToken: DecodeToken = accessToken && decodeToken(accessToken);
+  const workspaceId = localStorage.getItem('workspaceId') !== null && localStorage.getItem('workspaceId');
+  const navigate = useNavigate();
+
   const [workspaceName, setWorkspaceName] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string | unknown>('');
   const workspaceNameValidation = Yup.string().min(4, 'Workspace Name must be atleast 4 characters');
+
+  useEffect(() => {
+    setRefreshToken();
+    if (decodedToken?.isWorkSpaceCreated) {
+      navigate(`/${workspaceId}/dashboard`);
+    }
+  }, []);
 
   const handleWorkspaceName = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const workspace_name = e.target.value;

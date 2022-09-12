@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import useDebounce from '@/hooks/useDebounce';
@@ -6,7 +7,8 @@ import fetchExportList from '@/lib/fetchExport';
 import Button from 'common/button';
 import Input from 'common/input';
 import Pagination from 'common/pagination/pagination';
-import React, { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
+// eslint-disable-next-line object-curly-newline
+import React, { ChangeEvent, FormEvent, Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import Modal from 'react-modal';
 import { useDispatch } from 'react-redux';
@@ -26,11 +28,11 @@ import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 import { width_90 } from 'constants/constants';
 import { activityFilterExportProps } from './activity.types';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
-import { AssignTypeEnum, TagResponse } from 'modules/settings/interface/settings.interface';
-import { MemberProfileCard } from 'modules/members/interface/members.interface';
+import { AssignTypeEnum, TagResponseData } from 'modules/settings/interface/settings.interface';
 import membersSlice from 'modules/members/store/slice/members.slice';
 import ReactTooltip from 'react-tooltip';
 import { format, parseISO } from 'date-fns';
+import * as Yup from 'yup';
 
 Modal.setAppElement('#root');
 
@@ -53,7 +55,6 @@ const Activity: React.FC = () => {
   const [page, setPage] = useState<number>(1);
   const [searchText, setSearchText] = useState<string>('');
   const [searchTagText, setSearchTagText] = useState<string>('');
-  const dropDownRef = useRef<HTMLDivElement>(null);
   const [checkedActivityId, setCheckedActivityId] = useState<Record<string, unknown>>({});
   const [filterExportParams, setFilterExportParams] = useState<activityFilterExportProps>({
     checkTags: '',
@@ -68,16 +69,30 @@ const Activity: React.FC = () => {
     tagName: '',
     tagId: ''
   });
+  const [tagDropDownOption, setTagDropDownOption] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | unknown>('');
+
+  const dropDownRef = useRef<HTMLDivElement>(null);
+  const tagDropDownRef = useRef<HTMLDivElement>(null);
+
   const limit = 10;
   const loader = useSkeletonLoading(activitiesSlice.actions.getActiveStreamData.type);
 
   const { data, totalPages } = useAppSelector((state) => state.activities.activeStreamData);
 
-  const { memberProfileCardData } = useAppSelector((state) => state.members);
-
-  const { TagFilterResponse, clearValue } = useAppSelector((state) => state.settings);
+  const {
+    TagFilterResponse: { data: TagFilterResponseData },
+    clearValue
+  } = useAppSelector((state) => state.settings);
 
   const debouncedValue = useDebounce(searchText, 300);
+
+  const TagNameValidation = Yup.string()
+    .trim('WhiteSpaces are not allowed')
+    .min(2, 'Tag Name must be atleast 2 characters')
+    .max(15, 'Tag Name should not exceed above 15 characters')
+    .required('Tag Name is a required field')
+    .nullable(true);
 
   const debouncedTagValue = useDebounce(searchTagText, 300);
 
@@ -98,16 +113,24 @@ const Activity: React.FC = () => {
     );
     dispatch(
       settingsSlice.actions.tagFilterData({
-        settingsQuery: { tags: { searchedTags: '', checkedTags: '' } },
+        settingsQuery: { page: 1, limit, tags: { searchedTags: '', checkedTags: '' } },
         workspaceId: workspaceId!
       })
     );
   }, [page]);
 
   useEffect(() => {
+    if (TagFilterResponseData?.length && searchTagText) {
+      setTagDropDownOption(true);
+    }
+  }, [TagFilterResponseData]);
+
+  useEffect(() => {
     document.addEventListener('click', handleOutsideClick);
+    document.addEventListener('click', handleDropDownClick);
     return () => {
       document.removeEventListener('click', handleOutsideClick);
+      document.addEventListener('click', handleDropDownClick);
     };
   }, []);
 
@@ -120,24 +143,22 @@ const Activity: React.FC = () => {
 
   useEffect(() => {
     if (debouncedTagValue) {
-      getTagsList(debouncedTagValue);
+      getTagsList(1, debouncedTagValue);
     }
   }, [debouncedTagValue]);
 
   useEffect(() => {
     if (clearValue) {
-      setTagModalOpen(false);
-      setTags({
-        tagId: '',
-        tagName: ''
-      });
+      handleTagModalOpen(false);
     }
   }, [clearValue]);
 
-  const getTagsList = (text: string): void => {
+  const getTagsList = (pageNumber: number, text: string): void => {
     dispatch(
       settingsSlice.actions.tagFilterData({
         settingsQuery: {
+          page: pageNumber,
+          limit,
           tags: {
             checkedTags: '',
             searchedTags: text
@@ -146,6 +167,12 @@ const Activity: React.FC = () => {
         workspaceId: workspaceId!
       })
     );
+  };
+
+  const handleDropDownClick = (event: MouseEvent) => {
+    if (tagDropDownRef && tagDropDownRef.current && !tagDropDownRef.current.contains(event.target as Node)) {
+      setTagDropDownOption(false);
+    }
   };
 
   // Function to close the popup modal of the member profile
@@ -181,19 +208,29 @@ const Activity: React.FC = () => {
       value: data?.value,
       platformLogoUrl: data?.platformLogoUrl,
       memberId: data?.memberId,
-      activityId: data?.activityId
+      activityId: data?.activityId,
+      platform: data?.platform
     });
     dispatch(membersSlice.actions.getMemberProfileCardData({ workspaceId: workspaceId!, memberId: data.memberId }));
   };
 
-  const handleTagModalOpen = (): void => {
-    setTagModalOpen((prev) => !prev);
+  const handleTagModalOpen = (value: boolean): void => {
+    setErrorMessage('');
+    setTagModalOpen(value);
     setTags({
       tagId: '',
       tagName: ''
     });
     setSearchTagText('');
-    dispatch(settingsSlice.actions.getTagFilterData([]));
+    dispatch(
+      settingsSlice.actions.getTagFilterData({
+        data: [],
+        totalPages: 0,
+        previousPage: 0,
+        nextPage: 0
+      })
+    );
+    dispatch(settingsSlice.actions.resetValue(false));
   };
 
   const handleProfileModal = (data: ProfileModal) => {
@@ -211,7 +248,7 @@ const Activity: React.FC = () => {
 
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
-    if (searchText === '') {
+    if (!searchText) {
       getFilteredActiveStreamList(1, searchText);
     }
     setSearchText(searchText);
@@ -229,7 +266,11 @@ const Activity: React.FC = () => {
         activeStreamQuery: {
           page: pageNumber,
           limit,
-          search: text
+          search: text,
+          tags: { searchedTags: '', checkedTags: filterExportParams.checkTags.toString() },
+          platforms: filterExportParams.checkPlatform.toString(),
+          'activity.lte': filterExportParams.endDate,
+          'activity.gte': filterExportParams.startDate
         },
         workspaceId: workspaceId!
       })
@@ -261,6 +302,7 @@ const Activity: React.FC = () => {
   };
 
   const handleSelectTagName = (tagName: string, tagId: string) => {
+    setTagDropDownOption(false);
     setTags({
       tagId,
       tagName
@@ -269,25 +311,37 @@ const Activity: React.FC = () => {
 
   const handleSearchTagTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
-    if (searchText === '') {
-      getTagsList('');
-    }
     setSearchTagText(searchText);
+    try {
+      TagNameValidation.validateSync(searchText);
+      setErrorMessage('');
+      if (!searchText) {
+        getTagsList(1, '');
+        handleSelectTagName('', '');
+      }
+    } catch ({ message }) {
+      setErrorMessage(message);
+    }
   };
 
-  const handleAssignTagsName = (): void => {
-    dispatch(
-      settingsSlice.actions.assignTags({
-        memberId: ActivityCard?.memberId as string,
-        assignTagBody: {
-          name: tags.tagName,
-          viewName: tags.tagName,
-          activityId: ActivityCard?.activityId,
-          type: 'Activity' as AssignTypeEnum.Activity
-        },
-        workspaceId: workspaceId!
-      })
-    );
+  const handleAssignTagsName = (e: FormEvent<HTMLFormElement>): void => {
+    e.preventDefault();
+    if (errorMessage || !searchTagText) {
+      setErrorMessage(errorMessage || 'Tag Name is a required field');
+    } else {
+      dispatch(
+        settingsSlice.actions.assignTags({
+          memberId: ActivityCard?.memberId as string,
+          assignTagBody: {
+            name: tags.tagName || searchTagText,
+            viewName: tags.tagName || searchTagText,
+            activityId: ActivityCard?.activityId,
+            type: 'Activity' as AssignTypeEnum.Activity
+          },
+          workspaceId: workspaceId!
+        })
+      );
+    }
   };
 
   const handleUnAssignTagsName = (id: string): void => {
@@ -295,14 +349,18 @@ const Activity: React.FC = () => {
       settingsSlice.actions.unAssignTags({
         memberId: ActivityCard?.memberId as string,
         unAssignTagBody: {
-          tagId: id
+          tagId: id,
+          type: 'Activity' as AssignTypeEnum.Activity
         },
         workspaceId: workspaceId!
       })
     );
   };
 
-  const ActiveStreamFilter = useMemo(() => <ActivityFilter page={page} limit={limit} activityFilterExport={setFilterExportParams} />, []);
+  const ActiveStreamFilter = useMemo(
+    () => <ActivityFilter page={page} limit={limit} activityFilterExport={setFilterExportParams} searchText={debouncedValue} />,
+    [debouncedValue]
+  );
 
   return (
     <div className="flex flex-col mt-1.8">
@@ -377,9 +435,9 @@ const Activity: React.FC = () => {
                                       id: data?.id,
                                       email: data?.email,
                                       memberName: data?.memberName,
-                                      organization: 'NeoITO',
+                                      organization: data?.organization,
                                       memberProfileUrl: `/${workspaceId}/members/${data.memberId}/profile`,
-                                      profilePictureUrl: data?.profilePictureUrl,
+                                      profilePictureUrl: data?.memberProfile,
                                       platformLogoUrl: data?.platformLogoUrl
                                     });
                                   }}
@@ -435,7 +493,6 @@ const Activity: React.FC = () => {
                             <div className="flex flex-col">
                               <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31">
                                 {data?.activityTime ? format(parseISO(data?.activityTime as unknown as string), 'MMM dd yyyy') : '--'}
-
                               </div>
                               <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
                                 {data?.activityTime ? format(parseISO(data?.activityTime as unknown as string), 'HH:MM') : '--'}
@@ -447,10 +504,8 @@ const Activity: React.FC = () => {
                           {loader ? (
                             <Skeleton width={width_90} />
                           ) : (
-                            <div className="flex ">
-                              <div className="mr-2 w-[1.3419rem] h-[1.3419rem]">
-                                <img src={data?.platformLogoUrl} alt="" className="rounded-full" />
-                              </div>
+                            <div className="flex gap-2">
+                              <img src={data?.platformLogoUrl} alt="" className="rounded-full w-[1.3419rem] h-[1.3419rem]" />
                               <div className="flex flex-col">
                                 <div
                                   className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer"
@@ -462,14 +517,15 @@ const Activity: React.FC = () => {
                                       description: data?.description,
                                       displayValue: data?.displayValue,
                                       activityTime: data?.activityTime,
-                                      organization: 'NeoITO',
+                                      organization: data?.organization,
                                       channelName: data?.channelId,
                                       sourceUrl: data?.sourceUrl,
-                                      profilePictureUrl: data?.profilePictureUrl,
+                                      profilePictureUrl: data?.memberProfile as string,
                                       value: data?.value,
                                       platformLogoUrl: data?.platformLogoUrl,
                                       memberId: data?.memberId,
-                                      activityId: data?.activityId
+                                      activityId: data?.id,
+                                      platform: data?.platform
                                     })
                                   }
                                 >
@@ -524,7 +580,7 @@ const Activity: React.FC = () => {
                 <div className="pt-9 flex flex-col activity-list-height">
                   <div className="flex justify-between">
                     <div className="font-Inter font-semibold text-black text-xl leading-6">Activity</div>
-                    <div className="font-Poppins text-error leading-5 text-tag font-medium cursor-pointer" onClick={handleTagModalOpen}>
+                    <div className="font-Poppins text-error leading-5 text-tag font-medium cursor-pointer" onClick={() => handleTagModalOpen(true)}>
                       ADD TAG
                     </div>
                     <Modal
@@ -546,27 +602,29 @@ const Activity: React.FC = () => {
                     >
                       <div className="flex flex-col">
                         <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Add Tag</h3>
-                        <form className="flex flex-col relative px-1.93 mt-9">
+                        <form className="flex flex-col relative px-1.93 mt-9" onSubmit={(e) => handleAssignTagsName(e)}>
                           <label htmlFor="billingName " className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack ">
                             Tag Name
                           </label>
-                          <input
+                          <Input
+                            id="tags"
+                            name="tags"
                             type="text"
                             className="mt-0.375 inputs box-border bg-white shadow-shadowInput rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-sm placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
                             placeholder="Enter Tag Name"
                             onChange={handleSearchTagTextChange}
                             value={tags.tagName || searchTagText}
-                            minLength={2}
-                            maxLength={50}
-                            required
+                            errors={Boolean(errorMessage)}
+                            helperText={errorMessage}
                           />
                           <div
                             className={`bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 ${
-                              TagFilterResponse.length && !tags.tagId ? '' : 'hidden'
+                              tagDropDownOption ? '' : 'hidden'
                             }`}
                           >
-                            {TagFilterResponse.map((data: TagResponse) => (
+                            {TagFilterResponseData?.map((data: TagResponseData) => (
                               <div
+                                ref={tagDropDownRef}
                                 key={data.id}
                                 className="p-2 text-searchBlack cursor-pointer font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300"
                                 onClick={() => handleSelectTagName(data.name, data.id)}
@@ -580,13 +638,12 @@ const Activity: React.FC = () => {
                               type="button"
                               text="CANCEL"
                               className="mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel w-5.25 h-2.81  rounded border-none"
-                              onClick={handleTagModalOpen}
+                              onClick={() => handleTagModalOpen(false)}
                             />
                             <Button
-                              type="button"
+                              type="submit"
                               text="SAVE"
                               className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-5.25 h-2.81  border-none btn-save-modal"
-                              onClick={handleAssignTagsName}
                             />
                           </div>
                         </form>
@@ -595,7 +652,11 @@ const Activity: React.FC = () => {
                   </div>
                   <div className="mt-8 flex items-center">
                     <div className="bg-cover">
-                      <img src={ActivityCard?.profilePictureUrl === null ? profileImage : ActivityCard?.profilePictureUrl} alt="" />
+                      <img
+                        src={ActivityCard?.profilePictureUrl === null ? profileImage : ActivityCard?.profilePictureUrl}
+                        alt=""
+                        className="rounded-full w-4.43 h-4.43 bg-cover bg-center border-4 border-white"
+                      />
                     </div>
                     <div className="flex flex-col pl-0.563">
                       <div className="font-medium text-trial text-infoBlack font-Poppins leading-1.31">{ActivityCard?.memberName}</div>
@@ -604,25 +665,31 @@ const Activity: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="bg-activitySubCard rounded flex flex-col pt-2.5 pl-0.81 pb-8 mt-5">
+                  <div className="bg-activitySubCard rounded flex flex-col pt-2.5 pl-0.81 pb-[0.5625rem] mt-5">
                     <div className="flex items-center">
                       <div className="w-5 h-5">
                         <img src={ActivityCard?.platformLogoUrl ? ActivityCard?.platformLogoUrl : ''} alt="" />
                       </div>
-                      <div className="pl-0.563 font-Poppins font-medium text-infoBlack text-card leading-1.12">{ActivityCard?.displayValue}</div>
+                      <div
+                        className="pl-0.563 font-Poppins font-medium text-infoBlack text-card leading-1.12"
+                        dangerouslySetInnerHTML={{ __html: ActivityCard?.displayValue ? ActivityCard?.displayValue : '--' }}
+                      ></div>
                       <div className="pl-2.5 text-tagChannel font-Poppins font-medium text-card leading-1.12">#{ActivityCard?.channelName}</div>
                     </div>
-                    <div className="mt-5 font-Poppins font-medium text-infoBlack text-card leading-1.12">{ActivityCard?.value}</div>
-                    <div className="mt-1.18 flex relative">
+                    <div
+                      className="mt-5 font-Poppins font-medium text-infoBlack text-card leading-1.12"
+                      dangerouslySetInnerHTML={{ __html: ActivityCard?.value ? ActivityCard?.value : '--' }}
+                    ></div>
+                    <div className="mt-1.18 flex justify-between">
                       <a
                         href={`${ActivityCard?.sourceUrl}`}
                         target="_blank"
                         rel="noreferrer noopener"
                         className="font-Poppins font-medium text-card leading-1.12 text-tag underline cursor-pointer"
                       >
-                        VIEW ON SLACK
+                        {`VIEW ON ${ActivityCard?.platform.toLocaleUpperCase()}`}
                       </a>
-                      <div className="absolute right-3 top-5 font-Poppins font-medium text-card leading-1.12 text-slimGray">
+                      <div className="top-5 font-Poppins font-medium pr-3 text-card leading-1.12 text-slimGray">
                         {generateDateAndTime(`${ActivityCard?.activityTime}`, 'HH:MM')} |{' '}
                         {generateDateAndTime(`${ActivityCard?.activityTime}`, 'MM-DD')}
                       </div>
@@ -631,26 +698,27 @@ const Activity: React.FC = () => {
                   <div className="mt-7">
                     <h3 className="text-profileBlack text-error font-Poppins font-medium leading-5">Tags</h3>
                     <div className="flex pt-2.5 flex-wrap gap-1">
-                      {memberProfileCardData?.map((data: MemberProfileCard) =>
-                        data.tags?.map((tag: TagResponse) => (
-                          <>
-                            <div
-                              data-tip
-                              data-for={tag.name}
-                              className="flex  tags bg-tagSection items-center justify-evenly rounded p-1"
-                              key={tag.id}
-                            >
-                              <div className="font-Poppins text-card font-normal leading-5 pr-4 text-profileBlack">{tag.name}</div>
-                              <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
-                                <img src={closeIcon} alt="" onClick={() => handleUnAssignTagsName(tag.id)} />
+                      {data &&
+                        data?.map((activity: ActiveStreamData) =>
+                          activity?.tags?.map((tag: Partial<TagResponseData>) => (
+                            <Fragment key={tag.id}>
+                              <div
+                                data-tip
+                                data-for={tag.name}
+                                className="flex  tags bg-tagSection items-center justify-evenly rounded p-1"
+                                key={tag.id}
+                              >
+                                <div className="font-Poppins text-card font-normal leading-5 pr-4 text-profileBlack">{tag.name as string}</div>
+                                <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
+                                  <img src={closeIcon} alt="" onClick={() => handleUnAssignTagsName(tag.id as string)} />
+                                </div>
                               </div>
-                            </div>
-                            <ReactTooltip id={tag.name} textColor="" backgroundColor="" effect="solid">
-                              <span className="font-Poppins text-card font-normal leading-5 pr-4">{tag.name}</span>
-                            </ReactTooltip>
-                          </>
-                        ))
-                      )}
+                              <ReactTooltip id={tag.name} textColor="" backgroundColor="" effect="solid">
+                                <span className="font-Poppins text-card font-normal leading-5 pr-4">{tag.name as string}</span>
+                              </ReactTooltip>
+                            </Fragment>
+                          ))
+                        )}
                     </div>
                   </div>
                 </div>

@@ -1,10 +1,10 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Button from 'common/button';
 import Input from 'common/input';
 import './ForgotPassword.css';
 import bgForgotImage from '../../../../assets/images/bg-sign.svg';
 import { AppDispatch } from '../../../../store/index';
-import { useAppDispatch } from '@/hooks/useRedux';
+import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { EmailFormValues } from 'modules/authentication/interface/auth.interface';
@@ -13,16 +13,18 @@ import { email_regex } from 'constants/constants';
 
 const ForgotPassword: React.FC = () => {
   const dispatch: AppDispatch = useAppDispatch();
+  const { clearFormikValue: resetValue } = useAppSelector((state) => state.auth);
   const formikRef: any = useRef();
 
   const initialValues: EmailFormValues = {
     email: ''
   };
 
-  //-----Redundant code as of now-------
-  // useEffect(() => {
-  //     if (resetValue) formikRef?.current?.resetForm({ values: initialValues });
-  // }, [resetValue]);
+  useEffect(() => {
+    if (resetValue) {
+      formikRef?.current?.resetForm({ values: initialValues });
+    }
+  }, [resetValue]);
 
   const handleSubmit = (values: EmailFormValues): void => {
     const newValues = { ...values };

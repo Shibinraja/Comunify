@@ -18,10 +18,10 @@ const Settings = () => {
             isActive={selectedTab === 'integrations'}
             onClick={() => setSelectedTab('integrations')}
             style={
-              'text-center justify-center text-xs not-italic font-normal text-profileBlack dark:text-white leading-4 dark:bg-thirdDark font-medium w-12.87 h-[40px] border-solid border border-settingsTabBorder dark:border-[#E6E6E6] rounded-tl-sm'
+              'text-center justify-center text-xs not-italic font-normal text-profileBlack font-medium w-[12.5rem] h-[40px] border-solid border border-settingsTabBorder rounded-tl-sm'
             }
             styleActive={'h-[50px] border-b-2 border-b-solid border-b-settingsTabActive rounded-t-sm'}
-            styleInActive={'text-profileBlack dark:text-white '}
+            styleInActive={'text-profileBlack'}
           >
             INTEGRATIONS
           </TabSelector>
@@ -29,10 +29,10 @@ const Settings = () => {
             isActive={selectedTab === 'subscription'}
             onClick={() => setSelectedTab('subscription')}
             style={
-              'text-center justify-center text-xs not-italic font-normal text-profileBlack dark:text-white leading-4 dark:bg-thirdDark font-medium w-12.87 h-[40px] border border-solid border-settingsTabBorder dark:border-[#E6E6E6]'
+              'text-center justify-center text-xs not-italic font-normal text-profileBlack font-medium w-[12.5rem] h-[40px] border border-solid border-settingsTabBorder dark:border-[#E6E6E6]'
             }
             styleActive={'h-[50px] border-b-2 border-b-solid border-b-settingsTabActive rounded-t-sm'}
-            styleInActive={'text-profileBlack dark:text-white'}
+            styleInActive={'text-profileBlack'}
           >
             SUBSCRIPTION
           </TabSelector>
@@ -40,10 +40,10 @@ const Settings = () => {
             isActive={selectedTab === 'billing_history'}
             onClick={() => setSelectedTab('billing_history')}
             style={
-              'text-center justify-center text-xs not-italic font-normal text-profileBlack dark:text-white leading-4 dark:bg-thirdDark font-medium w-12.87 h-[40px] border border-solid border-settingsTabBorder dark:border-[#E6E6E6]'
+              'text-center justify-center text-xs not-italic font-normal text-profileBlack font-medium w-[12.5rem] h-[40px] border border-solid border-settingsTabBorder dark:border-[#E6E6E6]'
             }
             styleActive={'h-[50px] border-b-2 border-b-solid border-b-settingsTabActive rounded-t-sm'}
-            styleInActive={'text-profileBlack dark:text-white'}
+            styleInActive={'text-profileBlack'}
           >
             BILLING HISTORY
           </TabSelector>
@@ -51,10 +51,10 @@ const Settings = () => {
             isActive={selectedTab === 'tags'}
             onClick={() => setSelectedTab('tags')}
             style={
-              'text-center justify-center text-xs not-italic font-normal text-profileBlack dark:text-white leading-4 dark:bg-thirdDark font-medium w-12.87 h-[40px] border border-solid border-settingsTabBorder rounded-tr-sm dark:border-[#E6E6E6]'
+              'text-center justify-center text-xs not-italic font-normal text-profileBlack font-medium w-[12.5rem] h-[40px] border border-solid border-settingsTabBorder rounded-tr-sm dark:border-[#E6E6E6]'
             }
             styleActive={'h-[50px] border-b-2 border-b-solid border-b-settingsTabActive rounded-t-sm'}
-            styleInActive={'text-profileBlack dark:text-white'}
+            styleInActive={'text-profileBlack'}
           >
             TAGS
           </TabSelector>

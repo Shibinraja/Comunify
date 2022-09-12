@@ -11,6 +11,7 @@ export type memberFilterExportProps = {
 export type MemberTypesProps = {
   page: number;
   limit: number;
+  searchText: string;
   memberFilterExport: (arg0: memberFilterExportProps) => void;
 };
 
@@ -21,6 +22,6 @@ export type customDateLinkProps = {
 };
 
 export type filterDateProps = {
-  filterStartDate:string,
-  filterEndDate:string
+  filterStartDate: string;
+  filterEndDate: string;
 };

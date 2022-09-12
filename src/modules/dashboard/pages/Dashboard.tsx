@@ -84,6 +84,7 @@ const Dashboard: React.FC = () => {
                 placeholderText="DD/MM/YYYY - DD/MM/YYYY"
                 isClearable={true}
                 ref={datepickerRef}
+                dateFormat="dd/MM/yyyy"
               />
             </div>
             <div className="absolute right-4 top-4 drop-icon">
