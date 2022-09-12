@@ -133,8 +133,8 @@ const Members: React.FC = () => {
           page,
           limit,
           search: '',
-          'createdAT.gte': filterExportParams.startDate && filterExportParams.startDate || filteredDate.filterStartDate,
-          'createdAT.lte': filterExportParams.endDate && filterExportParams.endDate || filteredDate.filterEndDate,
+          'createdAT.gte': (filterExportParams.startDate && filterExportParams.startDate) || filteredDate.filterStartDate,
+          'createdAT.lte': (filterExportParams.endDate && filterExportParams.endDate) || filteredDate.filterEndDate,
           tags: { searchedTags: '', checkedTags: filterExportParams.checkTags.toString() },
           platforms: filterExportParams.checkPlatform.toString(),
           organization: { searchedOrganization: '', checkedOrganization: filterExportParams.checkOrganization.toString() },
@@ -157,14 +157,24 @@ const Members: React.FC = () => {
   // Returns the debounced value of the search text.
   useEffect(() => {
     if (debouncedValue) {
-      getFilteredMembersList(1, debouncedValue, customStartDate && format(customStartDate as Date, 'yyyy-MM-dd'), customEndDate && format(customEndDate as Date, 'yyyy-MM-dd'));
+      getFilteredMembersList(
+        1,
+        debouncedValue,
+        customStartDate && format(customStartDate as Date, 'yyyy-MM-dd'),
+        customEndDate && format(customEndDate as Date, 'yyyy-MM-dd')
+      );
     }
   }, [debouncedValue]);
 
   // Custom Date filter member list
   useEffect(() => {
     if (customStartDate && customEndDate) {
-      getFilteredMembersList(1, searchText, customStartDate && format(customStartDate as Date, 'yyyy-MM-dd'), customEndDate && format(customEndDate as Date, 'yyyy-MM-dd'));
+      getFilteredMembersList(
+        1,
+        searchText,
+        customStartDate && format(customStartDate as Date, 'yyyy-MM-dd'),
+        customEndDate && format(customEndDate as Date, 'yyyy-MM-dd')
+      );
       setCustomDateLink({ '1day': false, '7day': false, '1month': false });
     }
   }, [customStartDate, customEndDate]);
@@ -240,7 +250,12 @@ const Members: React.FC = () => {
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
     if (!searchText) {
-      getFilteredMembersList(1, searchText, customStartDate && format(customStartDate as Date, 'yyyy-MM-dd'), customEndDate && format(customEndDate as Date, 'yyyy-MM-dd'));
+      getFilteredMembersList(
+        1,
+        searchText,
+        customStartDate && format(customStartDate as Date, 'yyyy-MM-dd'),
+        customEndDate && format(customEndDate as Date, 'yyyy-MM-dd')
+      );
     }
     setSearchText(searchText);
   };
@@ -291,7 +306,9 @@ const Members: React.FC = () => {
   );
 
   const MemberFilter = useMemo(
-    () => <MembersFilter page={page} limit={limit} memberFilterExport={setFilterExportParams} searchText={debouncedValue} filteredDate={filteredDate}/>,
+    () => (
+      <MembersFilter page={page} limit={limit} memberFilterExport={setFilterExportParams} searchText={debouncedValue} filteredDate={filteredDate} />
+    ),
     [debouncedValue, filteredDate]
   );
 
