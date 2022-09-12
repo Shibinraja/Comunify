@@ -219,6 +219,15 @@ function* unAssignTagDataSaga(action: PayloadAction<unAssignTagProps>) {
           }
         })
       );
+      yield put(
+        activitiesSlice.actions.getActiveStreamData({
+          activeStreamQuery: {
+            page: 1,
+            limit: 10
+          },
+          workspaceId: action.payload.workspaceId
+        })
+      );
       showSuccessToast('Tag Unassigned');
     }
   } catch (e) {

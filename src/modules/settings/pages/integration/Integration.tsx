@@ -140,14 +140,17 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
       const response: IntegrationResponse<PlatformConnectResponse> = await request.post(`${API_ENDPOINT}/v1/slack/connect`, body);
       localStorage.setItem('workspacePlatformAuthSettingsId', response?.data?.data?.id);
       localStorage.setItem('workspacePlatformSettingsId', response?.data?.data?.workspacePlatformSettingsId);
-      if (response) {
+      if (response?.data?.data?.id) {
         setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
         navigate(`/${workspaceId}/settings/complete-setup`, { state: { workspacePlatformAuthSettingsId: response?.data?.data?.id } });
+        showSuccessToast('Authenticated successfully');
       } else {
         showErrorToast('Integration failed');
+        setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
       }
     } catch {
       showErrorToast('Integration failed');
+      setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
     }
   };
 
@@ -173,7 +176,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
             workspaceId,
             workspacePlatformAuthSettingsId: connectResponse?.data?.data?.id
           });
-          if (completeSetupResponse) {
+          if (completeSetupResponse?.data?.message) {
             dispatch(settingsSlice.actions.platformData({ workspaceId }));
             dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
             showSuccessToast('Successfully integrated');
@@ -210,7 +213,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
           `${API_ENDPOINT}/v1/${confirmPlatformToDisconnect.platform.toLocaleLowerCase().trim()}/disconnect`,
           body
         );
-        if (disconnectResponse?.data?.data.status?.toLocaleLowerCase().trim() === 'disabled') {
+        if (disconnectResponse?.data?.data?.status?.toLocaleLowerCase().trim() === 'disabled') {
           setIsWarningModalOpen(false);
           if (disconnectResponse?.data?.data?.platform?.toLocaleLowerCase().trim() === 'vanilla') {
             showSuccessToast(`${confirmPlatformToDisconnect.platform} Forums was successfully disconnected from your workspace`);
@@ -233,8 +236,8 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
       workspaceId
     };
     try {
-      const response = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
-      if (response) {
+      const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
+      if (response?.data?.message) {
         setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
         showSuccessToast(`${platform} was successfully connected`);
@@ -254,8 +257,8 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
     };
     showSuccessToast('Integration in progress...');
     try {
-      const response = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
-      if (response) {
+      const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
+      if (response?.data?.message) {
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
         showSuccessToast(`${platform} Forums was successfully connected`);
         setIsLoading(false);

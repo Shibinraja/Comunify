@@ -86,14 +86,17 @@ const Integration: React.FC = () => {
       const response: IntegrationResponse<PlatformConnectResponse> = await request.post(`${API_ENDPOINT}/v1/slack/connect`, body);
       localStorage.setItem('workspacePlatformAuthSettingsId', response?.data?.data?.id);
       localStorage.setItem('workspacePlatformSettingsId', response?.data?.data?.workspacePlatformSettingsId);
-      if (response) {
+      if (response?.data?.data?.id) {
         setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
         navigate(`/${workspaceId}/settings/complete-setup`, { state: { workspacePlatformAuthSettingsId: response?.data?.data?.id } });
+        showSuccessToast('Authenticated successfully');
       } else {
         showErrorToast('Integration failed');
+        setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
       }
     } catch {
       showErrorToast('Integration failed');
+      setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
     }
   };
 
@@ -119,7 +122,7 @@ const Integration: React.FC = () => {
             workspaceId,
             workspacePlatformAuthSettingsId: connectResponse?.data?.data?.id
           });
-          if (completeSetupResponse) {
+          if (completeSetupResponse?.data?.message) {
             dispatch(settingsSlice.actions.platformData({ workspaceId }));
             showSuccessToast('Successfully integrated');
             setIsLoading(false);
@@ -259,7 +262,9 @@ const Integration: React.FC = () => {
                           <h1 className="font-Inter font-normal text-error leading-7 text-vanillaDescription">
                             You can learn how to create an access Token
                             <span className="text-tag cursor-pointer hover:underline pl-1">
-                              <a href="https://success.vanillaforums.com/kb/articles/41">here.</a>{' '}
+                              <a href="https://success.vanillaforums.com/kb/articles/41" target={'_blank'} rel="noreferrer">
+                                here.
+                              </a>{' '}
                             </span>
                           </h1>
                           <Input
