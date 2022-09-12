@@ -25,6 +25,7 @@ export interface ActivityCard {
   platform: string;
   memberId: string;
   activityId: string;
+  tags: Array<{ id: string; name: string }> | null;
 }
 
 export interface workspaceId {
@@ -89,7 +90,7 @@ export interface ActiveStreamData {
   activityId: string;
   activityTime: Date;
   memberId: string;
-  tags: WorkspaceTags[];
+  tags: Array<{ id: string; name: string }> | null;
   memberName: string;
   email: string;
   memberProfile: string;

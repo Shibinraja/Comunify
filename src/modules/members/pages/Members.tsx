@@ -133,8 +133,8 @@ const Members: React.FC = () => {
           page,
           limit,
           search: '',
-          'createdAT.gte': filterExportParams.startDate && filterExportParams.startDate || filteredDate.filterStartDate,
-          'createdAT.lte': filterExportParams.endDate && filterExportParams.endDate || filteredDate.filterEndDate,
+          'createdAT.gte': (filterExportParams.startDate && filterExportParams.startDate) || filteredDate.filterStartDate,
+          'createdAT.lte': (filterExportParams.endDate && filterExportParams.endDate) || filteredDate.filterEndDate,
           tags: { searchedTags: '', checkedTags: filterExportParams.checkTags.toString() },
           platforms: filterExportParams.checkPlatform.toString(),
           organization: { searchedOrganization: '', checkedOrganization: filterExportParams.checkOrganization.toString() },
@@ -157,14 +157,24 @@ const Members: React.FC = () => {
   // Returns the debounced value of the search text.
   useEffect(() => {
     if (debouncedValue) {
-      getFilteredMembersList(1, debouncedValue);
+      getFilteredMembersList(
+        1,
+        debouncedValue,
+        customStartDate && format(customStartDate as Date, 'yyyy-MM-dd'),
+        customEndDate && format(customEndDate as Date, 'yyyy-MM-dd')
+      );
     }
   }, [debouncedValue]);
 
   // Custom Date filter member list
   useEffect(() => {
     if (customStartDate && customEndDate) {
-      getFilteredMembersList(1, '', format(customStartDate as Date, 'yyyy-MM-dd'), format(customEndDate as Date, 'yyyy-MM-dd'));
+      getFilteredMembersList(
+        1,
+        searchText,
+        customStartDate && format(customStartDate as Date, 'yyyy-MM-dd'),
+        customEndDate && format(customEndDate as Date, 'yyyy-MM-dd')
+      );
       setCustomDateLink({ '1day': false, '7day': false, '1month': false });
     }
   }, [customStartDate, customEndDate]);
@@ -211,15 +221,15 @@ const Members: React.FC = () => {
     setCustomStartDate(undefined);
     setCustomEndDate(undefined);
     if (date === CustomDateType.Day) {
-      getFilteredMembersList(1, '', format(subDays(todayDate, 1), 'yyyy-MM-dd'));
+      getFilteredMembersList(1, searchText, format(subDays(todayDate, 1), 'yyyy-MM-dd'));
       setCustomDateLink({ [date]: true });
     }
     if (date === CustomDateType.Week) {
-      getFilteredMembersList(1, '', format(subDays(todayDate, 7), 'yyyy-MM-dd'));
+      getFilteredMembersList(1, searchText, format(subDays(todayDate, 7), 'yyyy-MM-dd'));
       setCustomDateLink({ [date]: true });
     }
     if (date === CustomDateType.Month) {
-      getFilteredMembersList(1, '', format(subMonths(todayDate, 1), 'yyyy-MM-dd'));
+      getFilteredMembersList(1, searchText, format(subMonths(todayDate, 1), 'yyyy-MM-dd'));
       setCustomDateLink({ [date]: true });
     }
   };
@@ -240,7 +250,12 @@ const Members: React.FC = () => {
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
     if (!searchText) {
-      getFilteredMembersList(1, searchText);
+      getFilteredMembersList(
+        1,
+        searchText,
+        customStartDate && format(customStartDate as Date, 'yyyy-MM-dd'),
+        customEndDate && format(customEndDate as Date, 'yyyy-MM-dd')
+      );
     }
     setSearchText(searchText);
   };
@@ -291,8 +306,10 @@ const Members: React.FC = () => {
   );
 
   const MemberFilter = useMemo(
-    () => <MembersFilter page={page} limit={limit} memberFilterExport={setFilterExportParams} searchText={debouncedValue} />,
-    [debouncedValue]
+    () => (
+      <MembersFilter page={page} limit={limit} memberFilterExport={setFilterExportParams} searchText={debouncedValue} filteredDate={filteredDate} />
+    ),
+    [debouncedValue, filteredDate]
   );
 
   const handleClickDatePickerIcon = (type: string) => {
@@ -474,11 +491,8 @@ const Members: React.FC = () => {
                               <div className="flex gap-x-2">
                                 {(member?.platforms as Array<{ id: string; name: string; platformLogoUrl: string }>)?.map(
                                   (platforms: { name: string; id: string; platformLogoUrl: string }, index: number) => (
-                                    <div
-                                      className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 w-[1.3419rem] h-[1.3419rem] rounded-full"
-                                      key={index}
-                                    >
-                                      <img src={platforms?.platformLogoUrl} alt="" className="rounded-full" />
+                                    <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31  rounded-full" key={index}>
+                                      <img src={platforms?.platformLogoUrl} alt="" className="rounded-full w-[1.3419rem] h-[1.3419rem]" />
                                     </div>
                                   )
                                 )}
@@ -560,12 +574,12 @@ const Members: React.FC = () => {
                   </tr>
                 </tbody>
               </table>
-              {memberColumnsLoader && (
+              {!memberColumnsLoader && (
                 <div className="px-6 py-6 flex items-center gap-0.66 pl-[30%] w-full rounded-b-lg fixed bg-white bottom-0">
                   <Pagination currentPage={page} totalPages={totalPages} limit={limit} onPageChange={(page) => setPage(Number(page))} />
                 </div>
               )}
-              {memberColumnsLoader && (
+              {!memberColumnsLoader && (
                 <div className="fixed bottom-10 right-32">
                   <div
                     className="btn-drag p-3 flex items-center justify-center cursor-pointer shadow-dragButton rounded-0.6 "
