@@ -200,6 +200,7 @@ const Members: React.FC = () => {
         workspaceId: workspaceId!
       })
     );
+    setPage(1);
   };
 
   const handleCustomizeColumnSave = () => {

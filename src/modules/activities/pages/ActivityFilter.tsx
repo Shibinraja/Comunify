@@ -1,6 +1,8 @@
 /* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { ChangeEvent, FC, Fragment, useEffect, useRef, useState } from 'react';
+import {
+  ChangeEvent, FC, Fragment, useEffect, useMemo, useRef, useState
+} from 'react';
 import { ActivityStreamTypesProps } from './activity.types';
 import downArrow from '../../../assets/images/filter-dropdown.svg';
 import searchIcon from '../../../assets/images/search.svg';
@@ -16,6 +18,7 @@ import activitiesSlice from '../store/slice/activities.slice';
 import { PlatformResponse, TagResponseData } from '../../settings/interface/settings.interface';
 import usePlatform from '../../../hooks/usePlatform';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
+import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 
 const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFilterExport, searchText }) => {
   const { workspaceId } = useParams();
@@ -35,10 +38,13 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
   const datePickerRefEnd = useRef<ReactDatePicker>(null);
 
   const debouncedTagValue = useDebounce(tagSearchText, 300);
-  const disableApplyBtn = Object.values(checkedPlatform).concat(Object.values(checkedTags));
 
   const { data: TagFilterResponse } = useAppSelector((state) => state.settings.TagFilterResponse);
   const PlatformFilterResponse = usePlatform();
+
+  const ActivityFilterList = Object.values(checkedPlatform).concat(Object.values(checkedTags));
+
+  const loader = useSkeletonLoading(activitiesSlice.actions.getActiveStreamData.type);
 
   // Returns the debounced value of the search text.
   useEffect(() => {
@@ -129,9 +135,29 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
     );
   };
 
+  const disableApplyBtn = useMemo(() => {
+    if (startDate === undefined && endDate === undefined && ActivityFilterList.length === 0) {
+      return true;
+    }
+
+    if(startDate && endDate) {
+      return false;
+    }
+
+    if(startDate || endDate) {
+      return true;
+    }
+    return false;
+  }, [startDate, endDate, ActivityFilterList]);
+
   const submitFilterChange = (): void => {
     const checkPlatform: Array<string> = [];
     const checkTags: Array<string> = [];
+
+    if (ActivityFilterList[0] === Boolean(false)) {
+      setCheckedPlatform({});
+      setCheckedTags({});
+    }
 
     if (Object.keys(checkedPlatform).length > 0) {
       Object.keys(checkedPlatform).map((platform: string) => {
@@ -156,20 +182,22 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
       startDate: startDate && format(startDate!, 'yyyy-MM-dd')
     });
 
-    dispatch(
-      activitiesSlice.actions.getActiveStreamData({
-        activeStreamQuery: {
-          page,
-          limit,
-          search: searchText,
-          tags: { searchedTags: '', checkedTags: checkTags.toString() },
-          platforms: checkPlatform.toString(),
-          'activity.lte': endDate && format(endDate!, 'yyyy-MM-dd'),
-          'activity.gte': startDate && format(startDate!, 'yyyy-MM-dd')
-        },
-        workspaceId: workspaceId!
-      })
-    );
+    if (!disableApplyBtn) {
+      dispatch(
+        activitiesSlice.actions.getActiveStreamData({
+          activeStreamQuery: {
+            page,
+            limit,
+            search: searchText,
+            tags: { searchedTags: '', checkedTags: checkTags.toString() },
+            platforms: checkPlatform.toString(),
+            'activity.lte': endDate && format(endDate!, 'yyyy-MM-dd'),
+            'activity.gte': startDate && format(startDate!, 'yyyy-MM-dd')
+          },
+          workspaceId: workspaceId!
+        })
+      );
+    }
     handleFilterDropdown();
   };
 
@@ -341,18 +369,12 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
 
             <div className="buttons px-3 ">
               <Button
-                disabled={
-                  (startDate === undefined ? true : false) && (endDate === undefined ? true : false) && disableApplyBtn.includes(true) !== true
-                    ? true
-                    : false
-                }
+                disabled={loader ? true : false}
                 onClick={submitFilterChange}
                 type="button"
                 text="Apply"
                 className={`border-none btn-save-modal rounded-0.31 h-2.063 w-full mt-1.56 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${
-                  (disableApplyBtn.includes(true) !== true ? 'cursor-not-allowed' : '') &&
-                  (startDate === undefined ? 'cursor-not-allowed' : '') &&
-                  (endDate === undefined ? 'cursor-not-allowed' : '')
+                  loader ? 'cursor-not-allowed' : ''
                 }`}
               />
             </div>
