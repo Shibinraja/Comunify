@@ -474,11 +474,8 @@ const Members: React.FC = () => {
                               <div className="flex gap-x-2">
                                 {(member?.platforms as Array<{ id: string; name: string; platformLogoUrl: string }>)?.map(
                                   (platforms: { name: string; id: string; platformLogoUrl: string }, index: number) => (
-                                    <div
-                                      className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 w-[1.3419rem] h-[1.3419rem] rounded-full"
-                                      key={index}
-                                    >
-                                      <img src={platforms?.platformLogoUrl} alt="" className="rounded-full" />
+                                    <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31  rounded-full" key={index}>
+                                      <img src={platforms?.platformLogoUrl} alt="" className="rounded-full w-[1.3419rem] h-[1.3419rem]" />
                                     </div>
                                   )
                                 )}

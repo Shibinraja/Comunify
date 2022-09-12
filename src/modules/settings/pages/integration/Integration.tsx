@@ -3,6 +3,7 @@ import Button from 'common/button';
 import React, { useState } from 'react';
 import unsplashIcon from '../../../../assets/images/unsplash.svg';
 import slackIcon from '../../../../assets/images/slack.svg';
+import discordIcon from '../../../../assets/images/discord.svg';
 import { TabPanel } from 'common/tabs/TabPanel';
 import Modal from 'react-modal';
 import vanillaIcon from '../../../../assets/images/vanilla-forum.svg';
@@ -329,9 +330,9 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
 
             <div className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5">
               <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                <img src={unsplashIcon} alt="" className="h-2.31" />
+                <img src={discordIcon} alt="" className="h-2.31" />
               </div>
-              <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">Khoros</div>
+              <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">Discord</div>
               <Button
                 disabled={isLoading ? true : false}
                 type="button"
@@ -404,7 +405,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
                       Site URL*
                     </label>
                     <h1 className="font-Inter font-normal text-error leading-7 text-vanillaDescription">
-                      Enter the full URL to your Vanilla site.<span className="text-tag cursor-pointer hover:underline"> Learn more.</span>
+                      Enter the full URL to your Vanilla site in this format: https://{`yourdomain`}.com
                     </h1>
                     <Input
                       type="text"
@@ -422,7 +423,12 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
                       Access Token*
                     </label>
                     <h1 className="font-Inter font-normal text-error leading-7 text-vanillaDescription">
-                      You can learn how to create an access Token<span className="text-tag cursor-pointer hover:underline"> here.</span>
+                      You can learn how to create an access Token
+                      <span className="text-tag cursor-pointer hover:underline pl-1">
+                        <a href="https://success.vanillaforums.com/kb/articles/41" target={'_blank'} rel="noreferrer">
+                          here.
+                        </a>{' '}
+                      </span>
                     </h1>
                     <Input
                       type="text"
