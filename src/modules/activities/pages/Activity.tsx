@@ -76,6 +76,9 @@ const Activity: React.FC = () => {
   const tagDropDownRef = useRef<HTMLDivElement>(null);
 
   const limit = 10;
+  const debouncedValue = useDebounce(searchText, 300);
+  const debouncedTagValue = useDebounce(searchTagText, 300);
+
   const loader = useSkeletonLoading(activitiesSlice.actions.getActiveStreamData.type);
 
   const { data, totalPages } = useAppSelector((state) => state.activities.activeStreamData);
@@ -85,16 +88,12 @@ const Activity: React.FC = () => {
     clearValue
   } = useAppSelector((state) => state.settings);
 
-  const debouncedValue = useDebounce(searchText, 300);
-
   const TagNameValidation = Yup.string()
     .trim('WhiteSpaces are not allowed')
     .min(2, 'Tag Name must be atleast 2 characters')
     .max(15, 'Tag Name should not exceed above 15 characters')
     .required('Tag Name is a required field')
     .nullable(true);
-
-  const debouncedTagValue = useDebounce(searchTagText, 300);
 
   useEffect(() => {
     dispatch(
@@ -129,15 +128,6 @@ const Activity: React.FC = () => {
     }
   }, [TagFilterResponseData]);
 
-  useEffect(() => {
-    document.addEventListener('click', handleOutsideClick);
-    document.addEventListener('click', handleDropDownClick);
-    return () => {
-      document.removeEventListener('click', handleOutsideClick);
-      document.addEventListener('click', handleDropDownClick);
-    };
-  }, []);
-
   // Returns the debounced value of the search text.
   useEffect(() => {
     if (debouncedValue) {
@@ -162,6 +152,15 @@ const Activity: React.FC = () => {
       filterTags();
     }
   }, [data]);
+
+  useEffect(() => {
+    document.addEventListener('click', handleOutsideClick);
+    document.addEventListener('click', handleDropDownClick);
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+      document.addEventListener('click', handleDropDownClick);
+    };
+  }, []);
 
   const filterTags = () => {
     data?.find((activity: ActiveStreamData) => {
