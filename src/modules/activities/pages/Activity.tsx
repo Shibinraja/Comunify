@@ -124,7 +124,7 @@ const Activity: React.FC = () => {
       setTagDropDownOption(true);
     }
 
-    if(TagFilterResponseData?.length === 0) {
+    if (TagFilterResponseData?.length === 0) {
       setTagDropDownOption(false);
     }
   }, [TagFilterResponseData]);
@@ -158,15 +158,15 @@ const Activity: React.FC = () => {
   }, [clearValue]);
 
   useEffect(() => {
-    if(ActivityCard?.activityId) {
+    if (ActivityCard?.activityId) {
       filterTags();
     }
   }, [data]);
 
   const filterTags = () => {
-    data?.find((activity:ActiveStreamData) => {
-      if(activity.id === ActivityCard?.activityId) {
-        setActivityCard((prevState) =>  ({ ...prevState, tags: activity.tags }));
+    data?.find((activity: ActiveStreamData) => {
+      if (activity.id === ActivityCard?.activityId) {
+        setActivityCard((prevState) => ({ ...prevState, tags: activity.tags }));
       }
     });
   };
@@ -344,7 +344,7 @@ const Activity: React.FC = () => {
         getTagsList(1, '');
         handleSelectTagName('', '');
       }
-      if(tags.tagName) {
+      if (tags.tagName) {
         setTags({ tagId: '', tagName: '' });
       }
     } catch ({ message }) {
@@ -525,7 +525,7 @@ const Activity: React.FC = () => {
                               </div>
                               <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
                                 {/* {data?.activityTime ? format(parseISO(data?.activityTime as unknown as string), 'HH:MM') : '--'} */}
-                                {generateDateAndTime(`${ActivityCard?.activityTime}`, 'HH:MM')}
+                                {generateDateAndTime(`${data?.activityTime}`, 'HH:MM')}
                               </div>
                             </div>
                           )}
@@ -731,12 +731,7 @@ const Activity: React.FC = () => {
                     <div className="flex pt-2.5 flex-wrap gap-1">
                       {(ActivityCard?.tags as Array<{ id: string; name: string }>)?.map((tag: Partial<TagResponseData>) => (
                         <Fragment key={tag.id}>
-                          <div
-                            data-tip
-                            data-for={tag.name}
-                            className="flex  tags bg-tagSection items-center justify-evenly rounded p-1"
-                            key={tag.id}
-                          >
+                          <div data-tip data-for={tag.name} className="flex  tags bg-tagSection items-center justify-evenly rounded p-1" key={tag.id}>
                             <div className="font-Poppins text-card font-normal leading-5 pr-4 text-profileBlack">{tag.name as string}</div>
                             <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
                               <img src={closeIcon} alt="" onClick={() => handleUnAssignTagsName(tag.id as string)} />
@@ -746,8 +741,7 @@ const Activity: React.FC = () => {
                             <span className="font-Poppins text-card font-normal leading-5 pr-4">{tag.name as string}</span>
                           </ReactTooltip>
                         </Fragment>
-                      ))
-                      }
+                      ))}
                     </div>
                   </div>
                 </div>
