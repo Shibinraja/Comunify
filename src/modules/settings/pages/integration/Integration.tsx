@@ -404,7 +404,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
                       Site URL*
                     </label>
                     <h1 className="font-Inter font-normal text-error leading-7 text-vanillaDescription">
-                      Enter the full URL to your Vanilla site.<span className="text-tag cursor-pointer hover:underline"> Learn more.</span>
+                      Enter the full URL to your Vanilla site in this format: https://{`yourdomain`}.com
                     </h1>
                     <Input
                       type="text"
@@ -422,7 +422,10 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
                       Access Token*
                     </label>
                     <h1 className="font-Inter font-normal text-error leading-7 text-vanillaDescription">
-                      You can learn how to create an access Token<span className="text-tag cursor-pointer hover:underline"> here.</span>
+                      You can learn how to create an access Token
+                      <span className="text-tag cursor-pointer hover:underline pl-1">
+                        <a href="https://success.vanillaforums.com/kb/articles/41">here.</a>{' '}
+                      </span>
                     </h1>
                     <Input
                       type="text"
