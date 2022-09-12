@@ -128,6 +128,10 @@ const MembersProfile: React.FC = () => {
     if (TagFilterResponseData?.length && searchText) {
       setTagDropDownOption(true);
     }
+
+    if(TagFilterResponseData?.length === 0) {
+      setTagDropDownOption(false);
+    }
   }, [TagFilterResponseData]);
 
   const loadActivityData = (needReload: boolean, cursor?: string) => {
@@ -291,11 +295,17 @@ const MembersProfile: React.FC = () => {
   };
 
   const handleSelectTagName = (tagName: string, tagId: string) => {
-    setTagDropDownOption(false);
-    setTags({
-      tagId,
-      tagName
-    });
+    try {
+      TagNameValidation.validateSync(tagName);
+      setErrorMessage('');
+      setTagDropDownOption(false);
+      setTags({
+        tagId,
+        tagName
+      });
+    } catch ({ message }) {
+      setErrorMessage(message);
+    }
   };
 
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -307,6 +317,9 @@ const MembersProfile: React.FC = () => {
       if (!searchText) {
         getTagsList(1, '');
         handleSelectTagName('', '');
+      }
+      if(tags.tagName) {
+        setTags({ tagId: '', tagName: '' });
       }
     } catch ({ message }) {
       setErrorMessage(message);
