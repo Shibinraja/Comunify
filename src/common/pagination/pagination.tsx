@@ -17,6 +17,17 @@ const Pagination: FC<PaginationProps> = (props) => {
 
   const paginationRange = usePagination({ currentPage, totalPages, skipCount, limit }) ?? [1];
 
+  // Returns the debounced value of the pageNumber.
+  useEffect(() => {
+    if (debouncedValue) {
+      if (Number(debouncedValue) === 0 || totalPages < Number(debouncedValue) || !debouncedValue) {
+        onPageChange(1);
+      } else {
+        onPageChange(debouncedValue);
+      }
+    }
+  }, [debouncedValue]);
+
   // If there are less than 2 times in pagination range we shall not render the component
   if (currentPage === 0 || (paginationRange && paginationRange!.length < 2)) {
     return null;
@@ -29,17 +40,6 @@ const Pagination: FC<PaginationProps> = (props) => {
   const onPrevious = () => {
     onPageChange(currentPage - 1);
   };
-
-  // Returns the debounced value of the pageNumber.
-  useEffect(() => {
-    if (debouncedValue) {
-      if (Number(debouncedValue) === 0 || totalPages < Number(debouncedValue) || !debouncedValue) {
-        onPageChange(1);
-      } else {
-        onPageChange(debouncedValue);
-      }
-    }
-  }, [debouncedValue]);
 
   const handlePageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const pageNumberValue = event.target.value;

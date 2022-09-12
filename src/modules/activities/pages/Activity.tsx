@@ -88,13 +88,6 @@ const Activity: React.FC = () => {
     clearValue
   } = useAppSelector((state) => state.settings);
 
-  const TagNameValidation = Yup.string()
-    .trim('WhiteSpaces are not allowed')
-    .min(2, 'Tag Name must be atleast 2 characters')
-    .max(15, 'Tag Name should not exceed above 15 characters')
-    .required('Tag Name is a required field')
-    .nullable(true);
-
   useEffect(() => {
     dispatch(
       activitiesSlice.actions.getActiveStreamData({
@@ -161,6 +154,13 @@ const Activity: React.FC = () => {
       document.addEventListener('click', handleDropDownClick);
     };
   }, []);
+
+  const TagNameValidation = Yup.string()
+    .trim('WhiteSpaces are not allowed')
+    .min(2, 'Tag Name must be atleast 2 characters')
+    .max(15, 'Tag Name should not exceed above 15 characters')
+    .required('Tag Name is a required field')
+    .nullable(true);
 
   const filterTags = () => {
     data?.find((activity: ActiveStreamData) => {
@@ -309,6 +309,7 @@ const Activity: React.FC = () => {
     fetchExportList(
       `${API_ENDPOINT}/v1/${workspaceId}/activity/export`,
       {
+        search: debouncedValue,
         tags: filterExportParams.checkTags,
         platforms: filterExportParams.checkPlatform,
         'activity.lte': filterExportParams.endDate,
