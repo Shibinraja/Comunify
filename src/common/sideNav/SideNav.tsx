@@ -74,51 +74,69 @@ const SideNav: React.FC = () => {
             <NavLink
               to={`${workspaceId}/dashboard`}
               className={({ isActive }) =>
-                `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${isActive ? 'text-black' : 'text-slimGray'}`
+                `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${
+                  isActive ? 'text-black dark:text-white' : 'text-slimGray'
+                }`
               }
             >
               Dashboard
             </NavLink>
           </div>
-          <div className="flex mt-2.18 items-center">
+          <div
+            className={window.location.href.includes('/members') ? 'flex flex-center active-menu mt-2.18' : 'flex flex-center inactive-menu mt-2.18'}
+          >
             <img src={location.pathname === `/${workspaceId}/members` ? memberDarkIcon : memberIcon} alt="" />
             <NavLink
               to={`${workspaceId}/members`}
               className={({ isActive }) =>
-                `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${isActive ? 'text-black' : 'text-slimGray'}`
+                `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${
+                  isActive ? 'text-black dark:text-white' : 'text-slimGray'
+                }`
               }
             >
               Members
             </NavLink>
           </div>
-          <div className="flex mt-2.18 items-center">
+          <div
+            className={window.location.href.includes('/activity') ? 'flex flex-center active-menu mt-2.18' : 'flex flex-center inactive-menu mt-2.18'}
+          >
             <img src={location.pathname === `/${workspaceId}/activity` ? activeStreamDarkIcon : streamIcon} alt="" />
             <NavLink
               to={`${workspaceId}/activity`}
               className={({ isActive }) =>
-                `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${isActive ? 'text-black' : 'text-slimGray'}`
+                `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${
+                  isActive ? 'text-black dark:text-white' : 'text-slimGray'
+                }`
               }
             >
               Active Stream
             </NavLink>
           </div>
-          <div className="flex mt-2.18 items-center">
+          <div
+            className={window.location.href.includes('/reports') ? 'flex flex-center active-menu mt-2.18' : 'flex flex-center inactive-menu mt-2.18'}
+          >
             <img src={location.pathname === `/${workspaceId}/reports` ? reportsDarkIcon : chartIcon} alt="" />
             <NavLink
               to={`${workspaceId}/reports`}
               className={({ isActive }) =>
-                `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${isActive ? 'text-black' : 'text-slimGray'}`
+                `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${
+                  isActive ? 'text-black dark:text-white' : 'text-slimGray'
+                }`
               }
             >
               Reports
             </NavLink>
           </div>
-          <div className="flex mt-2.18 items-center">
+          <div
+            className={window.location.href.includes('/settings') ? 'flex flex-center active-menu mt-2.18' : 'flex flex-center inactive-menu mt-2.18'}
+          >
             <img src={location.pathname === `/${workspaceId}/settings` ? settingsDarkIcon : settingsIcon} alt="" />
             <NavLink
               to={`${workspaceId}/settings`}
               className={({ isActive }) =>
-                `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${isActive ? 'text-black' : 'text-slimGray'}`
+                `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${
+                  isActive ? 'text-black dark:text-white' : 'text-slimGray'
+                }`
               }
             >
               Settings
