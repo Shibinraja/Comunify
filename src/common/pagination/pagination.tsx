@@ -1,19 +1,32 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import React, { ChangeEvent, FC, useState } from 'react';
+import React, { ChangeEvent, FC, useEffect, useState } from 'react';
 import { usePagination } from '../../hooks/usePagination';
 import { PaginationProps } from './paginationTypes';
 import nextIcon from '../../assets/images/next-page-icon.svg';
 import prevIcon from '../../assets/images/previous-page-icon.svg';
 import Input from '../input';
 import * as Yup from 'yup';
+import useDebounce from '@/hooks/useDebounce';
 
 const Pagination: FC<PaginationProps> = (props) => {
   const { onPageChange, totalPages, skipCount = 2, currentPage, limit } = props;
 
   const [errorMessage, setErrorMessage] = useState<string | unknown>('');
   const [pageNumber, setPageNumber] = useState<string>('');
+  const debouncedValue = useDebounce(pageNumber, 700);
 
   const paginationRange = usePagination({ currentPage, totalPages, skipCount, limit }) ?? [1];
+
+  // Returns the debounced value of the pageNumber.
+  useEffect(() => {
+    if (debouncedValue) {
+      if (Number(debouncedValue) === 0 || totalPages < Number(debouncedValue) || !debouncedValue) {
+        onPageChange(1);
+      } else {
+        onPageChange(debouncedValue);
+      }
+    }
+  }, [debouncedValue]);
 
   // If there are less than 2 times in pagination range we shall not render the component
   if (currentPage === 0 || (paginationRange && paginationRange!.length < 2)) {
@@ -29,16 +42,11 @@ const Pagination: FC<PaginationProps> = (props) => {
   };
 
   const handlePageChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const pageNumber = event.target.value;
-    setPageNumber(pageNumber);
+    const pageNumberValue = event.target.value;
+    setPageNumber(pageNumberValue);
     try {
-      PaginationValidation.validateSync(pageNumber);
+      PaginationValidation.validateSync(pageNumberValue);
       setErrorMessage('');
-      if (Number(pageNumber) === 0 || totalPages < Number(pageNumber) || !pageNumber) {
-        onPageChange(1);
-      } else {
-        onPageChange(pageNumber);
-      }
     } catch ({ message }) {
       setErrorMessage(message);
     }

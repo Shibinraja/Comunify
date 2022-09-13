@@ -12,6 +12,7 @@ export type MemberTypesProps = {
   page: number;
   limit: number;
   searchText: string;
+  filteredDate: filterDateProps;
   memberFilterExport: (arg0: memberFilterExportProps) => void;
 };
 

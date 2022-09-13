@@ -3,6 +3,7 @@ import Button from 'common/button';
 import React, { useState } from 'react';
 import unsplashIcon from '../../../../assets/images/unsplash.svg';
 import slackIcon from '../../../../assets/images/slack.svg';
+import discordIcon from '../../../../assets/images/discord.svg';
 import { TabPanel } from 'common/tabs/TabPanel';
 import Modal from 'react-modal';
 import vanillaIcon from '../../../../assets/images/vanilla-forum.svg';
@@ -139,14 +140,17 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
       const response: IntegrationResponse<PlatformConnectResponse> = await request.post(`${API_ENDPOINT}/v1/slack/connect`, body);
       localStorage.setItem('workspacePlatformAuthSettingsId', response?.data?.data?.id);
       localStorage.setItem('workspacePlatformSettingsId', response?.data?.data?.workspacePlatformSettingsId);
-      if (response) {
+      if (response?.data?.data?.id) {
         setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
         navigate(`/${workspaceId}/settings/complete-setup`, { state: { workspacePlatformAuthSettingsId: response?.data?.data?.id } });
+        showSuccessToast('Authenticated successfully');
       } else {
         showErrorToast('Integration failed');
+        setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
       }
     } catch {
       showErrorToast('Integration failed');
+      setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
     }
   };
 
@@ -172,7 +176,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
             workspaceId,
             workspacePlatformAuthSettingsId: connectResponse?.data?.data?.id
           });
-          if (completeSetupResponse) {
+          if (completeSetupResponse?.data?.message) {
             dispatch(settingsSlice.actions.platformData({ workspaceId }));
             dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
             showSuccessToast('Successfully integrated');
@@ -209,7 +213,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
           `${API_ENDPOINT}/v1/${confirmPlatformToDisconnect.platform.toLocaleLowerCase().trim()}/disconnect`,
           body
         );
-        if (disconnectResponse?.data?.data.status?.toLocaleLowerCase().trim() === 'disabled') {
+        if (disconnectResponse?.data?.data?.status?.toLocaleLowerCase().trim() === 'disabled') {
           setIsWarningModalOpen(false);
           if (disconnectResponse?.data?.data?.platform?.toLocaleLowerCase().trim() === 'vanilla') {
             showSuccessToast(`${confirmPlatformToDisconnect.platform} Forums was successfully disconnected from your workspace`);
@@ -232,8 +236,8 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
       workspaceId
     };
     try {
-      const response = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
-      if (response) {
+      const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
+      if (response?.data?.message) {
         setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
         showSuccessToast(`${platform} was successfully connected`);
@@ -253,8 +257,8 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
     };
     showSuccessToast('Integration in progress...');
     try {
-      const response = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
-      if (response) {
+      const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
+      if (response?.data?.message) {
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
         showSuccessToast(`${platform} Forums was successfully connected`);
         setIsLoading(false);
@@ -331,9 +335,9 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
 
             <div className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5">
               <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                <img src={unsplashIcon} alt="" className="h-2.31" />
+                <img src={discordIcon} alt="" className="h-2.31" />
               </div>
-              <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">Khoros</div>
+              <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">Discord</div>
               <Button
                 disabled={isLoading ? true : false}
                 type="button"
@@ -406,7 +410,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
                       Site URL*
                     </label>
                     <h1 className="font-Inter font-normal text-error leading-7 text-vanillaDescription">
-                      Enter the full URL to your Vanilla site.<span className="text-tag cursor-pointer hover:underline"> Learn more.</span>
+                      Enter the full URL to your Vanilla site in this format: https://{`yourdomain`}.com
                     </h1>
                     <Input
                       type="text"
@@ -424,7 +428,12 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
                       Access Token*
                     </label>
                     <h1 className="font-Inter font-normal text-error leading-7 text-vanillaDescription">
-                      You can learn how to create an access Token<span className="text-tag cursor-pointer hover:underline"> here.</span>
+                      You can learn how to create an access Token
+                      <span className="text-tag cursor-pointer hover:underline pl-1">
+                        <a href="https://success.vanillaforums.com/kb/articles/41" target={'_blank'} rel="noreferrer">
+                          here.
+                        </a>{' '}
+                      </span>
                     </h1>
                     <Input
                       type="text"

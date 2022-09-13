@@ -38,7 +38,7 @@ const CompleteSetup: React.FC = () => {
       };
       showSuccessToast('Integration in progress...');
       const response: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/slack/complete-setup`, body);
-      if (response) {
+      if (response?.data?.message) {
         dispatch(settingsSlice.actions.platformData({ workspaceId }));
         showSuccessToast('Successfully integrated');
         navigate(`/${workspaceId}/settings`);

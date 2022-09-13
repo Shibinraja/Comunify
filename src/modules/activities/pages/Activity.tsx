@@ -51,7 +51,7 @@ const Activity: React.FC = () => {
     profilePictureUrl: '',
     platformLogoUrl: ''
   });
-  const [ActivityCard, setActivityCard] = useState<ActivityCard>();
+  const [ActivityCard, setActivityCard] = useState<Partial<ActivityCard>>();
   const [page, setPage] = useState<number>(1);
   const [searchText, setSearchText] = useState<string>('');
   const [searchTagText, setSearchTagText] = useState<string>('');
@@ -76,6 +76,9 @@ const Activity: React.FC = () => {
   const tagDropDownRef = useRef<HTMLDivElement>(null);
 
   const limit = 10;
+  const debouncedValue = useDebounce(searchText, 300);
+  const debouncedTagValue = useDebounce(searchTagText, 300);
+
   const loader = useSkeletonLoading(activitiesSlice.actions.getActiveStreamData.type);
 
   const { data, totalPages } = useAppSelector((state) => state.activities.activeStreamData);
@@ -84,17 +87,6 @@ const Activity: React.FC = () => {
     TagFilterResponse: { data: TagFilterResponseData },
     clearValue
   } = useAppSelector((state) => state.settings);
-
-  const debouncedValue = useDebounce(searchText, 300);
-
-  const TagNameValidation = Yup.string()
-    .trim('WhiteSpaces are not allowed')
-    .min(2, 'Tag Name must be atleast 2 characters')
-    .max(15, 'Tag Name should not exceed above 15 characters')
-    .required('Tag Name is a required field')
-    .nullable(true);
-
-  const debouncedTagValue = useDebounce(searchTagText, 300);
 
   useEffect(() => {
     dispatch(
@@ -123,16 +115,11 @@ const Activity: React.FC = () => {
     if (TagFilterResponseData?.length && searchTagText) {
       setTagDropDownOption(true);
     }
-  }, [TagFilterResponseData]);
 
-  useEffect(() => {
-    document.addEventListener('click', handleOutsideClick);
-    document.addEventListener('click', handleDropDownClick);
-    return () => {
-      document.removeEventListener('click', handleOutsideClick);
-      document.addEventListener('click', handleDropDownClick);
-    };
-  }, []);
+    if (TagFilterResponseData?.length === 0) {
+      setTagDropDownOption(false);
+    }
+  }, [TagFilterResponseData]);
 
   // Returns the debounced value of the search text.
   useEffect(() => {
@@ -152,6 +139,36 @@ const Activity: React.FC = () => {
       handleTagModalOpen(false);
     }
   }, [clearValue]);
+
+  useEffect(() => {
+    if (ActivityCard?.activityId) {
+      filterTags();
+    }
+  }, [data]);
+
+  useEffect(() => {
+    document.addEventListener('click', handleOutsideClick);
+    document.addEventListener('click', handleDropDownClick);
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+      document.addEventListener('click', handleDropDownClick);
+    };
+  }, []);
+
+  const TagNameValidation = Yup.string()
+    .trim('WhiteSpaces are not allowed')
+    .min(2, 'Tag Name must be atleast 2 characters')
+    .max(15, 'Tag Name should not exceed above 15 characters')
+    .required('Tag Name is a required field')
+    .nullable(true);
+
+  const filterTags = () => {
+    data?.find((activity: ActiveStreamData) => {
+      if (activity.id === ActivityCard?.activityId) {
+        setActivityCard((prevState) => ({ ...prevState, tags: activity.tags }));
+      }
+    });
+  };
 
   const getTagsList = (pageNumber: number, text: string): void => {
     dispatch(
@@ -209,7 +226,8 @@ const Activity: React.FC = () => {
       platformLogoUrl: data?.platformLogoUrl,
       memberId: data?.memberId,
       activityId: data?.activityId,
-      platform: data?.platform
+      platform: data?.platform,
+      tags: data?.tags
     });
     dispatch(membersSlice.actions.getMemberProfileCardData({ workspaceId: workspaceId!, memberId: data.memberId }));
   };
@@ -291,6 +309,7 @@ const Activity: React.FC = () => {
     fetchExportList(
       `${API_ENDPOINT}/v1/${workspaceId}/activity/export`,
       {
+        search: debouncedValue,
         tags: filterExportParams.checkTags,
         platforms: filterExportParams.checkPlatform,
         'activity.lte': filterExportParams.endDate,
@@ -302,11 +321,17 @@ const Activity: React.FC = () => {
   };
 
   const handleSelectTagName = (tagName: string, tagId: string) => {
-    setTagDropDownOption(false);
-    setTags({
-      tagId,
-      tagName
-    });
+    try {
+      TagNameValidation.validateSync(tagName);
+      setErrorMessage('');
+      setTagDropDownOption(false);
+      setTags({
+        tagId,
+        tagName
+      });
+    } catch ({ message }) {
+      setErrorMessage(message);
+    }
   };
 
   const handleSearchTagTextChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -318,6 +343,9 @@ const Activity: React.FC = () => {
       if (!searchText) {
         getTagsList(1, '');
         handleSelectTagName('', '');
+      }
+      if (tags.tagName) {
+        setTags({ tagId: '', tagName: '' });
       }
     } catch ({ message }) {
       setErrorMessage(message);
@@ -350,11 +378,13 @@ const Activity: React.FC = () => {
         memberId: ActivityCard?.memberId as string,
         unAssignTagBody: {
           tagId: id,
-          type: 'Activity' as AssignTypeEnum.Activity
+          type: 'Activity' as AssignTypeEnum.Activity,
+          activityId: ActivityCard?.activityId
         },
         workspaceId: workspaceId!
       })
     );
+    filterTags();
   };
 
   const ActiveStreamFilter = useMemo(
@@ -495,7 +525,8 @@ const Activity: React.FC = () => {
                                 {data?.activityTime ? format(parseISO(data?.activityTime as unknown as string), 'MMM dd yyyy') : '--'}
                               </div>
                               <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
-                                {data?.activityTime ? format(parseISO(data?.activityTime as unknown as string), 'HH:MM') : '--'}
+                                {/* {data?.activityTime ? format(parseISO(data?.activityTime as unknown as string), 'HH:MM') : '--'} */}
+                                {generateDateAndTime(`${data?.activityTime}`, 'HH:MM')}
                               </div>
                             </div>
                           )}
@@ -525,7 +556,8 @@ const Activity: React.FC = () => {
                                       platformLogoUrl: data?.platformLogoUrl,
                                       memberId: data?.memberId,
                                       activityId: data?.id,
-                                      platform: data?.platform
+                                      platform: data?.platform,
+                                      tags: data?.tags || []
                                     })
                                   }
                                 >
@@ -687,7 +719,7 @@ const Activity: React.FC = () => {
                         rel="noreferrer noopener"
                         className="font-Poppins font-medium text-card leading-1.12 text-tag underline cursor-pointer"
                       >
-                        {`VIEW ON ${ActivityCard?.platform.toLocaleUpperCase()}`}
+                        {`VIEW ON ${ActivityCard?.platform?.toLocaleUpperCase()}`}
                       </a>
                       <div className="top-5 font-Poppins font-medium pr-3 text-card leading-1.12 text-slimGray">
                         {generateDateAndTime(`${ActivityCard?.activityTime}`, 'HH:MM')} |{' '}
@@ -698,27 +730,19 @@ const Activity: React.FC = () => {
                   <div className="mt-7">
                     <h3 className="text-profileBlack text-error font-Poppins font-medium leading-5">Tags</h3>
                     <div className="flex pt-2.5 flex-wrap gap-1">
-                      {data &&
-                        data?.map((activity: ActiveStreamData) =>
-                          activity?.tags?.map((tag: Partial<TagResponseData>) => (
-                            <Fragment key={tag.id}>
-                              <div
-                                data-tip
-                                data-for={tag.name}
-                                className="flex  tags bg-tagSection items-center justify-evenly rounded p-1"
-                                key={tag.id}
-                              >
-                                <div className="font-Poppins text-card font-normal leading-5 pr-4 text-profileBlack">{tag.name as string}</div>
-                                <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
-                                  <img src={closeIcon} alt="" onClick={() => handleUnAssignTagsName(tag.id as string)} />
-                                </div>
-                              </div>
-                              <ReactTooltip id={tag.name} textColor="" backgroundColor="" effect="solid">
-                                <span className="font-Poppins text-card font-normal leading-5 pr-4">{tag.name as string}</span>
-                              </ReactTooltip>
-                            </Fragment>
-                          ))
-                        )}
+                      {(ActivityCard?.tags as Array<{ id: string; name: string }>)?.map((tag: Partial<TagResponseData>) => (
+                        <Fragment key={tag.id}>
+                          <div data-tip data-for={tag.name} className="flex  tags bg-tagSection items-center justify-evenly rounded p-1" key={tag.id}>
+                            <div className="font-Poppins text-card font-normal leading-5 pr-4 text-profileBlack">{tag.name as string}</div>
+                            <div className="font-Poppins text-card font-normal leading-5 text-profileBlack cursor-pointer">
+                              <img src={closeIcon} alt="" onClick={() => handleUnAssignTagsName(tag.id as string)} />
+                            </div>
+                          </div>
+                          <ReactTooltip id={tag.name} textColor="" backgroundColor="" effect="solid">
+                            <span className="font-Poppins text-card font-normal leading-5 pr-4">{tag.name as string}</span>
+                          </ReactTooltip>
+                        </Fragment>
+                      ))}
                     </div>
                   </div>
                 </div>
