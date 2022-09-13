@@ -1,6 +1,7 @@
 /* eslint-disable no-empty */
 
 import axios from 'axios';
+import { endOfDay, startOfDay } from 'date-fns';
 import { API_ENDPOINT, auth_module } from './config';
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
@@ -60,3 +61,11 @@ export const setRefreshToken = async () => {
     console.log('Could not refresh token');
   }
 };
+
+export const convertStartDate = (fromDate:Date):string => (
+  startOfDay(fromDate).toISOString()
+);
+
+export const convertEndDate = (endDate:Date):string => (
+  endOfDay(endDate).toISOString()
+);

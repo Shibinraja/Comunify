@@ -61,38 +61,38 @@ const Report: React.FC = () => {
     <div className="mt-2.62 w-full">
       <div className="flex flex-col">
         <div className="flex items-center ">
-          <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 w-full">Reports</h3>
+          <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 w-full dark:text-white">Reports</h3>
           <div>
             <Input
               type="text"
               name="search"
               id="searchId"
-              className="app-input-card-border focus:outline-none px-4 mr-0.76 box-border h-3.06 w-19.06 bg-white shadow-shadowInput rounded-0.6 placeholder:text-reportSearch placeholder:text-card placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.12 font-Poppins"
+              className="app-input-card-border focus:outline-none px-4 mr-0.76 box-border h-3.06 w-19.06 dark:bg-secondaryDark text-dropGray bg-white  dark:text-inputText dark:placeholder:text-inputText shadow-shadowInput rounded-0.6 placeholder:text-dropGray placeholder:text-card placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.12 font-Poppins"
               placeholder="Search By Name or Email"
             />
           </div>
           <div className="relative mr-5" ref={dropDownRef}>
             <div
-              className="flex justify-between items-center px-1.08 app-input-card-border rounded-0.6 box-border w-9.59 h-3.06 cursor-pointer bg-white shadow-shadowInput"
+              className="flex justify-between items-center px-1.08 app-input-card-border rounded-0.6 box-border w-9.59 h-3.06 cursor-pointer bg-white dark:bg-secondaryDark  shadow-shadowInput"
               onClick={() => handleFilterDropdown(isFilterDropdownActive ? false : true)}
             >
-              <div className="font-Poppins font-normal text-card text-dropGray leading-1.12">Filters</div>
-              <div>
+              <div className="font-Poppins font-normal text-card text-dropGray leading-1.12  dark:text-inputText">Filters</div>
+              <div className="drop-icon">
                 <img src={filterDownIcon} alt="" className={isFilterDropdownActive ? 'rotate-180' : 'rotate-0'} />
               </div>
             </div>
             {isFilterDropdownActive && (
-              <div className="absolute app-result-card-border box-border bg-white rounded-0.3 w-16.56 shadow-shadowInput z-40 pb-1.56 ">
+              <div className="absolute app-result-card-border box-border bg-white dark:bg-secondaryDark  rounded-0.3 w-16.56 shadow-shadowInput z-40 pb-1.56 ">
                 <div className="flex flex-col mt-1.43">
                   <div className="flex relative items-center mx-auto">
                     <Input
                       type="text"
                       name="reportName"
                       id="report"
-                      className="mx-auto focus:outline-none px-3 box-border bg-white shadow-shadowInput rounded-0.6 app-input-card-border h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
+                      className="mx-auto focus:outline-none px-3 box-border dark:bg-secondaryDark bg-white shadow-shadowInput rounded-0.6 app-input-card-border h-2.81 w-15.06 dark:text-inputText dark:palceholder:text-inputText placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal dark:palceholder:text-inputText placeholder:text-card placeholder:leading-1.12"
                       placeholder="Report Name"
                     />
-                    <div className="absolute right-5 top-4 w-0.78 h-3 z-40">
+                    <div className="absolute right-5 top-4 w-0.78 h-3 z-40 drop-icon">
                       <img src={searchIcon} alt="" />
                     </div>
                   </div>
@@ -104,29 +104,29 @@ const Report: React.FC = () => {
                     }}
                   >
                     <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">Choose platform</div>
-                    <div>
+                    <div className="drop-icon">
                       <img src={downArrow} alt="" className={isPlatformActive ? 'rotate-0' : 'rotate-180'} />
                     </div>
                   </div>
                   {isPlatformActive && (
-                    <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125">
+                    <div className="flex flex-col gap-y-5 justify-center px-3 mt-1.125 ">
                       <div className="flex items-center">
                         <div className="mr-2">
                           <input type="checkbox" className="checkbox" />
                         </div>
-                        <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">All</div>
+                        <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial dark:text-white ">All</div>
                       </div>
                       <div className="flex items-center">
                         <div className="mr-2">
                           <input type="checkbox" className="checkbox" />
                         </div>
-                        <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Salesforce</div>
+                        <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial dark:text-white">Salesforce</div>
                       </div>
                       <div className="flex items-center">
                         <div className="mr-2">
                           <input type="checkbox" className="checkbox" />
                         </div>
-                        <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">Khoros</div>
+                        <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial dark:text-white">Khoros</div>
                       </div>
                     </div>
                   )}
@@ -188,66 +188,68 @@ const Report: React.FC = () => {
         </div>
         <div className="relative">
           <div className="py-2 overflow-x-auto mt-1.868">
-            <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixReportTableHead min-h-[31.25rem]">
+            <div className="inline-block min-w-full overflow-hidden dark:border-[#dbd8fc1a] align-middle w-61.68 rounded-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixReportTableHead min-h-[31.25rem]">
               <table className="min-w-full relative  rounded-t-0.6 ">
                 <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky z-40">
                   <tr className="min-w-full">
-                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray ">
+                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray ">
                       Report Name
                     </th>
-                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Date</th>
-                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Platforms</th>
-                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
+                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray">
+                      Date
+                    </th>
+                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray">
+                      Platforms
+                    </th>
+                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray">
                       Report Status
                     </th>
-                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray w-6.25">
+                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray w-6.25">
                       Actions
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   {reportData.map((data, i) => (
-                    <tr className="border-b" key={i}>
-                      <td className="px-6 py-3">
+                    <tr className="border-b dark:border-[#dbd8fc1a]" key={i}>
+                      <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
                         <div className="flex ">
-                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.reportName}</div>
+                          <div className="py-3 font-Poppins font-medium text-trial  leading-1.31 cursor-pointer">{data.reportName}</div>
                         </div>
                       </td>
-                      <td className="px-6 py-3">
+                      <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
                         <div className="flex ">
-                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">{data.date}</div>
+                          <div className="py-3 font-Poppins font-medium text-trial  leading-1.31 cursor-pointer">{data.date}</div>
                         </div>
                       </td>
-                      <td className="px-6 py-3">
+                      <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
                         <div className="flex gap-x-1">
-                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer w-1.375">
+                          <div className="py-3 font-Poppins font-medium text-trial  leading-1.31 cursor-pointer w-1.375">
                             <img src={data.platform.img1} alt="" />
                           </div>
-                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer w-1.375">
+                          <div className="py-3 font-Poppins font-medium text-trial  leading-1.31 cursor-pointer w-1.375">
                             <img src={data.platform.img2} alt="" />
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-3">
+                      <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
                         <div className="flex ">
-                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                            {data.reportStatus}
-                          </div>
+                          <div className="py-3 font-Poppins font-medium text-trial leading-1.31 cursor-pointer">{data.reportStatus}</div>
                         </div>
                       </td>
-                      <td className="px-6 py-3">
+                      <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
                         <div className="flex   cursor-pointer relative">
                           <div
                             onClick={() => handleDropDownActive(data.id)}
-                            className="flex items-center justify-center action  h-3.12 box-border bg-white rounded-0.1 shadow-deleteButton w-3.12 "
+                            className="flex items-center justify-center action  h-3.12 box-border bg-white dark:bg-secondaryDark rounded-sm dark:border-[#dbd8fc1a] shadow-deleteButton w-3.12 "
                           >
                             <img src={actionDotIcon} alt="" className="relative" />
                           </div>
                           {isDropdownActive === data.id && (
-                            <div className="absolute top-6 app-result-card-border bg-white rounded-0.6 box-border w-9.62  right-[0.5rem] shadow-shadowInput z-40">
+                            <div className="absolute top-6 app-result-card-border bg-white dark:bg-secondaryDark rounded-0.6 box-border w-9.62  right-[0.5rem] shadow-shadowInput z-40">
                               {options.map((options, i) => (
                                 <div className="flex flex-col" onClick={() => handleDropDownActive(0)} key={i}>
-                                  <div className="h-3.06 p-2 flex items-center text-searchBlack font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300">
+                                  <div className="h-3.06 p-2 flex items-center text-searchBlack dark:text-white font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain dark:hover:bg-thirdDark transition ease-in duration-300 rounded-md">
                                     {options}
                                   </div>
                                 </div>
@@ -258,7 +260,7 @@ const Report: React.FC = () => {
                       </td>
                     </tr>
                   ))}
-                  <tr className="px-6 py-3 ">
+                  <tr className="px-6 py-3  dark:text-white">
                     <td className="px-6 py-3 "></td>
                   </tr>
                 </tbody>
@@ -266,7 +268,7 @@ const Report: React.FC = () => {
             </div>
           </div>
 
-          <div className="px-6 py-6 flex items-center justify-center gap-0.66 w-full rounded-b-lg bg-white bottom-0">
+          <div className="px-6 py-6 flex items-center justify-center gap-0.66 w-full rounded-b-lg bg-white dark:bg-thirdDark bottom-0">
             <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
               <img src={prevIcon} alt="" />
             </div>

@@ -4,38 +4,41 @@
 import Button from 'common/button';
 import MembersCard from 'common/membersCard/MembersCard';
 // eslint-disable-next-line object-curly-newline
-import React, { ChangeEvent, Fragment, Key, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import useDebounce from '@/hooks/useDebounce';
+import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
+import useSkeletonLoading from '@/hooks/useSkeletonLoading';
+import { API_ENDPOINT } from '@/lib/config';
+import fetchExportList from '@/lib/fetchExport';
+import { convertEndDate, convertStartDate } from '@/lib/helper';
+import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
+import Pagination from 'common/pagination/pagination';
+import { width_90 } from 'constants/constants';
+import { format, parseISO, subDays, subMonths } from 'date-fns';
+import { AssignTypeEnum } from 'modules/settings/interface/settings.interface';
+import settingsSlice from 'modules/settings/store/slice/settings.slice';
+import React, {
+  ChangeEvent, Fragment, Key, ReactNode, useEffect, useMemo, useRef, useState
+} from 'react';
 import DatePicker, { ReactDatePicker } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import Skeleton from 'react-loading-skeleton';
 import Modal from 'react-modal';
 import { useNavigate, useParams } from 'react-router-dom';
+import ReactTooltip from 'react-tooltip';
 import calendarIcon from '../../../assets/images/calandar.svg';
 import editIcon from '../../../assets/images/edit.svg';
 import exportImage from '../../../assets/images/export.svg';
+import noMemberIcon from '../../../assets/images/no-member.svg';
 import searchIcon from '../../../assets/images/search.svg';
 import closeIcon from '../../../assets/images/tag-close.svg';
 import dropdownIcon from '../../../assets/images/Vector.svg';
-import './Members.css';
-import useDebounce from '@/hooks/useDebounce';
-import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
-import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
-import Pagination from 'common/pagination/pagination';
-import { format, parseISO, subDays, subMonths } from 'date-fns';
-import noMemberIcon from '../../../assets/images/no-member.svg';
+import { CustomDateType } from '../interface/members.interface';
 import membersSlice from '../store/slice/members.slice';
+import './Members.css';
 import MembersFilter from './MembersFilter';
 import MembersDraggableColumn from './membersTableColumn/membersDraggableColumn';
 import { ColumNames } from './MembersTableData';
 import { customDateLinkProps, filterDateProps, memberFilterExportProps } from './membertypes';
-import { CustomDateType } from '../interface/members.interface';
-import { API_ENDPOINT } from '@/lib/config';
-import Skeleton from 'react-loading-skeleton';
-import fetchExportList from '@/lib/fetchExport';
-import useSkeletonLoading from '@/hooks/useSkeletonLoading';
-import { width_90 } from 'constants/constants';
-import settingsSlice from 'modules/settings/store/slice/settings.slice';
-import ReactTooltip from 'react-tooltip';
-import { AssignTypeEnum } from 'modules/settings/interface/settings.interface';
 
 Modal.setAppElement('#root');
 
@@ -51,6 +54,7 @@ const Members: React.FC = () => {
   const [searchText, setSearchText] = useState<string>('');
   const [customStartDate, setCustomStartDate] = useState<Date>();
   const [customEndDate, setCustomEndDate] = useState<Date>();
+  const [customSingleStartDate, setCustomSingleStartDate] = useState<Date>();
   const [customDateLink, setCustomDateLink] = useState<Partial<customDateLinkProps>>({
     '1day': false,
     '7day': false,
@@ -132,7 +136,7 @@ const Members: React.FC = () => {
         membersQuery: {
           page,
           limit,
-          search: '',
+          search: searchText,
           'createdAT.gte': (filterExportParams.startDate && filterExportParams.startDate) || filteredDate.filterStartDate,
           'createdAT.lte': (filterExportParams.endDate && filterExportParams.endDate) || filteredDate.filterEndDate,
           tags: { searchedTags: '', checkedTags: filterExportParams.checkTags.toString() },
@@ -157,24 +161,14 @@ const Members: React.FC = () => {
   // Returns the debounced value of the search text.
   useEffect(() => {
     if (debouncedValue) {
-      getFilteredMembersList(
-        1,
-        debouncedValue,
-        customStartDate && format(customStartDate as Date, 'yyyy-MM-dd'),
-        customEndDate && format(customEndDate as Date, 'yyyy-MM-dd')
-      );
+      getFilteredMembersList(1, debouncedValue, customStartDate ?  customStartDate && convertStartDate(customStartDate) :  customSingleStartDate && convertStartDate(customSingleStartDate), customEndDate && convertEndDate(customEndDate));
     }
   }, [debouncedValue]);
 
   // Custom Date filter member list
   useEffect(() => {
     if (customStartDate && customEndDate) {
-      getFilteredMembersList(
-        1,
-        searchText,
-        customStartDate && format(customStartDate as Date, 'yyyy-MM-dd'),
-        customEndDate && format(customEndDate as Date, 'yyyy-MM-dd')
-      );
+      getFilteredMembersList(1, debouncedValue, customStartDate && convertStartDate(customStartDate), customEndDate && convertEndDate(customEndDate));
       setCustomDateLink({ '1day': false, '7day': false, '1month': false });
     }
   }, [customStartDate, customEndDate]);
@@ -221,16 +215,20 @@ const Members: React.FC = () => {
     const todayDate = new Date();
     setCustomStartDate(undefined);
     setCustomEndDate(undefined);
+    setCustomSingleStartDate(undefined);
     if (date === CustomDateType.Day) {
-      getFilteredMembersList(1, searchText, format(subDays(todayDate, 1), 'yyyy-MM-dd'));
+      getFilteredMembersList(1, searchText, convertStartDate(subDays(todayDate, 1)));
+      setCustomSingleStartDate(subDays(todayDate, 1));
       setCustomDateLink({ [date]: true });
     }
     if (date === CustomDateType.Week) {
-      getFilteredMembersList(1, searchText, format(subDays(todayDate, 7), 'yyyy-MM-dd'));
+      getFilteredMembersList(1, searchText, convertStartDate(subDays(todayDate, 7)));
+      setCustomSingleStartDate(subDays(todayDate, 7));
       setCustomDateLink({ [date]: true });
     }
     if (date === CustomDateType.Month) {
-      getFilteredMembersList(1, searchText, format(subMonths(todayDate, 1), 'yyyy-MM-dd'));
+      getFilteredMembersList(1, searchText, convertStartDate(subMonths(todayDate, 1)));
+      setCustomSingleStartDate(subMonths(todayDate, 1));
       setCustomDateLink({ [date]: true });
     }
   };
@@ -251,12 +249,7 @@ const Members: React.FC = () => {
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
     if (!searchText) {
-      getFilteredMembersList(
-        1,
-        searchText,
-        customStartDate && format(customStartDate as Date, 'yyyy-MM-dd'),
-        customEndDate && format(customEndDate as Date, 'yyyy-MM-dd')
-      );
+      getFilteredMembersList(1, searchText, customStartDate ?  customStartDate && convertStartDate(customStartDate) :  customSingleStartDate && convertStartDate(customSingleStartDate), customEndDate && convertEndDate(customEndDate));
     }
     setSearchText(searchText);
   };
@@ -282,37 +275,23 @@ const Members: React.FC = () => {
 
   // Function to map customized column with api data response to create a new column array with index matching with customized column.
   // eslint-disable-next-line max-len
-  const customizedColumn = data?.reduce(
-    (acc: Array<Record<string, unknown>>, currentValue: Record<string, unknown>): Array<Record<string, unknown>> => {
-      const accumulatedColumn: Record<string, unknown> = {};
-      const memberValue = { ...currentValue };
-      columns.forEach((column: ColumnNameProps) => {
-        // eslint-disable-next-line no-prototype-builtins
-        if (memberValue.hasOwnProperty(column.id)) {
-          if (column.isDisplayed) {
-            accumulatedColumn[column.id] = memberValue[column.id];
-          }
+  const customizedColumn = data?.reduce((acc: Array<Record<string, unknown>>, currentValue: Record<string, unknown>): Array<
+    Record<string, unknown>
+  > => {
+    const accumulatedColumn: Record<string, unknown> = {};
+    const memberValue = { ...currentValue };
+    columns.forEach((column: ColumnNameProps) => {
+      // eslint-disable-next-line no-prototype-builtins
+      if (memberValue.hasOwnProperty(column.id)) {
+        if (column.isDisplayed) {
+          accumulatedColumn[column.id] = memberValue[column.id];
         }
-      });
-      accumulatedColumn['name'] = { name: accumulatedColumn['name'], id: currentValue.id };
-      acc.push(accumulatedColumn);
-      return acc;
-    },
-    []
-  );
-
-  // Memoized functionality to stop re-render.
-  const membersColumn = useMemo(
-    () => <MembersDraggableColumn MembersColumn={customizedColumnBool} handleModalClose={handleModalClose} />,
-    [customizedColumnBool]
-  );
-
-  const MemberFilter = useMemo(
-    () => (
-      <MembersFilter page={page} limit={limit} memberFilterExport={setFilterExportParams} searchText={debouncedValue} filteredDate={filteredDate} />
-    ),
-    [debouncedValue, filteredDate]
-  );
+      }
+    });
+    accumulatedColumn['name'] = { name: accumulatedColumn['name'], id: currentValue.id };
+    acc.push(accumulatedColumn);
+    return acc;
+  }, []);
 
   const handleClickDatePickerIcon = (type: string) => {
     if (type === 'start') {
@@ -338,9 +317,21 @@ const Members: React.FC = () => {
     );
   };
 
+  // Memoized functionality to stop re-render.
+  const membersColumn = useMemo(() => <MembersDraggableColumn MembersColumn={customizedColumnBool} handleModalClose={handleModalClose} />, [
+    customizedColumnBool
+  ]);
+
+  const MemberFilter = useMemo(
+    () => (
+      <MembersFilter page={page} limit={limit} memberFilterExport={setFilterExportParams} searchText={debouncedValue} filteredDate={filteredDate} />
+    ),
+    [debouncedValue, filteredDate]
+  );
+
   return (
     <div className="flex flex-col mt-12">
-      <h3 className="font-Poppins font-semibold text-infoBlack text-infoData leading-9">Members</h3>
+      <h3 className="font-Poppins font-semibold text-infoBlack text-infoData leading-9 dark:text-white">Members</h3>
       <div className="member-card pt-10">
         <MembersCard />
       </div>

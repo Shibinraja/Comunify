@@ -12,4 +12,5 @@ export type ActivityStreamTypesProps = {
   limit: number;
   searchText: string;
   activityFilterExport: (arg0: activityFilterExportProps) => void;
+  onPageChange:(value: number | string) => void;
 };
