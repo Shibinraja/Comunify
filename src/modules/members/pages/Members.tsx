@@ -84,6 +84,8 @@ const Members: React.FC = () => {
 
   const handleFilterDropdown = (): void => {
     setIsFilterDropdownActive((prev) => !prev);
+    setCustomStartDate(undefined);
+    setCustomEndDate(undefined);
   };
 
   const handleOutsideClick = (event: MouseEvent) => {
@@ -167,7 +169,7 @@ const Members: React.FC = () => {
   // Custom Date filter member list
   useEffect(() => {
     if (customStartDate && customEndDate) {
-      getFilteredMembersList(1, searchText, customStartDate && convertStartDate(customStartDate), customEndDate && convertEndDate(customEndDate));
+      getFilteredMembersList(1, debouncedValue, customStartDate && convertStartDate(customStartDate), customEndDate && convertEndDate(customEndDate));
       setCustomDateLink({ '1day': false, '7day': false, '1month': false });
     }
   }, [customStartDate, customEndDate]);
@@ -216,14 +218,17 @@ const Members: React.FC = () => {
     setCustomEndDate(undefined);
     if (date === CustomDateType.Day) {
       getFilteredMembersList(1, searchText, convertStartDate(subDays(todayDate, 1)));
+      setCustomStartDate(subDays(todayDate, 1));
       setCustomDateLink({ [date]: true });
     }
     if (date === CustomDateType.Week) {
       getFilteredMembersList(1, searchText, convertStartDate(subDays(todayDate, 7)));
+      setCustomStartDate(subDays(todayDate, 7));
       setCustomDateLink({ [date]: true });
     }
     if (date === CustomDateType.Month) {
       getFilteredMembersList(1, searchText, convertStartDate(subMonths(todayDate, 1)));
+      setCustomStartDate(subMonths(todayDate, 1));
       setCustomDateLink({ [date]: true });
     }
   };
@@ -288,18 +293,6 @@ const Members: React.FC = () => {
     return acc;
   }, []);
 
-  // Memoized functionality to stop re-render.
-  const membersColumn = useMemo(() => <MembersDraggableColumn MembersColumn={customizedColumnBool} handleModalClose={handleModalClose} />, [
-    customizedColumnBool
-  ]);
-
-  const MemberFilter = useMemo(
-    () => (
-      <MembersFilter page={page} limit={limit} memberFilterExport={setFilterExportParams} searchText={debouncedValue} filteredDate={filteredDate} />
-    ),
-    [debouncedValue, filteredDate]
-  );
-
   const handleClickDatePickerIcon = (type: string) => {
     if (type === 'start') {
       const datePickerElement = datePickerRefStart.current;
@@ -323,6 +316,18 @@ const Members: React.FC = () => {
       })
     );
   };
+
+  // Memoized functionality to stop re-render.
+  const membersColumn = useMemo(() => <MembersDraggableColumn MembersColumn={customizedColumnBool} handleModalClose={handleModalClose} />, [
+    customizedColumnBool
+  ]);
+
+  const MemberFilter = useMemo(
+    () => (
+      <MembersFilter page={page} limit={limit} memberFilterExport={setFilterExportParams} searchText={debouncedValue} filteredDate={filteredDate} />
+    ),
+    [debouncedValue, filteredDate]
+  );
 
   return (
     <div className="flex flex-col mt-12">
