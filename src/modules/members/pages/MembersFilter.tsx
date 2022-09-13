@@ -249,6 +249,13 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
       setCheckedOrganization({});
     }
 
+    if (MemberFilterList[0] === Boolean(false)) {
+      setCheckedPlatform({});
+      setCheckedTags({});
+      setCheckedLocation({});
+      setCheckedOrganization({});
+    }
+
     if (Object.keys(checkedPlatform).length > 0) {
       Object.keys(checkedPlatform).map((platform: string) => {
         if (checkedPlatform[platform] === true) {

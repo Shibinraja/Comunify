@@ -10,7 +10,7 @@ import { useAppDispatch } from '../../hooks/useRedux';
 import authSlice from '../../modules/authentication/store/slices/auth.slice';
 import { AppDispatch } from '../../store';
 import { useNavigate } from 'react-router';
-import { useTheme } from 'contexts/ThemeContext';
+// import { useTheme } from 'contexts/ThemeContext';
 
 const TopBar: React.FC = () => {
   const navigate = useNavigate();
@@ -47,12 +47,12 @@ const TopBar: React.FC = () => {
     };
   }, []);
 
-  const { theme, setTheme } = useTheme();
+  // const { theme, setTheme } = useTheme();
 
-  function handleToggleTheme() {
-    //reverse the theme value every time that "handleToggleTheme" is called
-    setTheme(!theme);
-  }
+  // function handleToggleTheme() {
+  //   //reverse the theme value every time that "handleToggleTheme" is called
+  //   setTheme(!theme);
+  // }
 
   return (
     <div className=" mt-6 px-12 xl:px-20">
