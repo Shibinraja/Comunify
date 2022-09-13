@@ -54,6 +54,7 @@ const Members: React.FC = () => {
   const [searchText, setSearchText] = useState<string>('');
   const [customStartDate, setCustomStartDate] = useState<Date>();
   const [customEndDate, setCustomEndDate] = useState<Date>();
+  const [customSingleStartDate, setCustomSingleStartDate] = useState<Date>();
   const [customDateLink, setCustomDateLink] = useState<Partial<customDateLinkProps>>({
     '1day': false,
     '7day': false,
@@ -84,8 +85,6 @@ const Members: React.FC = () => {
 
   const handleFilterDropdown = (): void => {
     setIsFilterDropdownActive((prev) => !prev);
-    setCustomStartDate(undefined);
-    setCustomEndDate(undefined);
   };
 
   const handleOutsideClick = (event: MouseEvent) => {
@@ -162,7 +161,7 @@ const Members: React.FC = () => {
   // Returns the debounced value of the search text.
   useEffect(() => {
     if (debouncedValue) {
-      getFilteredMembersList(1, debouncedValue, customStartDate && convertStartDate(customStartDate), customEndDate && convertEndDate(customEndDate));
+      getFilteredMembersList(1, debouncedValue, customStartDate ?  customStartDate && convertStartDate(customStartDate) :  customSingleStartDate && convertStartDate(customSingleStartDate), customEndDate && convertEndDate(customEndDate));
     }
   }, [debouncedValue]);
 
@@ -216,19 +215,20 @@ const Members: React.FC = () => {
     const todayDate = new Date();
     setCustomStartDate(undefined);
     setCustomEndDate(undefined);
+    setCustomSingleStartDate(undefined);
     if (date === CustomDateType.Day) {
       getFilteredMembersList(1, searchText, convertStartDate(subDays(todayDate, 1)));
-      setCustomStartDate(subDays(todayDate, 1));
+      setCustomSingleStartDate(subDays(todayDate, 1));
       setCustomDateLink({ [date]: true });
     }
     if (date === CustomDateType.Week) {
       getFilteredMembersList(1, searchText, convertStartDate(subDays(todayDate, 7)));
-      setCustomStartDate(subDays(todayDate, 7));
+      setCustomSingleStartDate(subDays(todayDate, 7));
       setCustomDateLink({ [date]: true });
     }
     if (date === CustomDateType.Month) {
       getFilteredMembersList(1, searchText, convertStartDate(subMonths(todayDate, 1)));
-      setCustomStartDate(subMonths(todayDate, 1));
+      setCustomSingleStartDate(subMonths(todayDate, 1));
       setCustomDateLink({ [date]: true });
     }
   };
@@ -249,7 +249,7 @@ const Members: React.FC = () => {
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
     if (!searchText) {
-      getFilteredMembersList(1, searchText, customStartDate && convertStartDate(customStartDate), customEndDate && convertEndDate(customEndDate));
+      getFilteredMembersList(1, searchText, customStartDate ?  customStartDate && convertStartDate(customStartDate) :  customSingleStartDate && convertStartDate(customSingleStartDate), customEndDate && convertEndDate(customEndDate));
     }
     setSearchText(searchText);
   };
