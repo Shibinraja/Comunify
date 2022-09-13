@@ -76,7 +76,8 @@ const TopBar: React.FC = () => {
         </div>
         <div className="flex items-center">
           <div className="cursor-pointer">
-            {theme ? (
+            <img src={sunIcon} alt="" />
+            {/* {theme ? (
               <img src={sunIcon} alt="" onClick={handleToggleTheme} />
             ) : (
               <div onClick={handleToggleTheme}>
@@ -89,7 +90,7 @@ const TopBar: React.FC = () => {
                   />
                 </svg>
               </div>
-            )}
+            )} */}
           </div>
           <div className="pl-1.68 relative cursor-pointer">
             <div className="notification-icon">
