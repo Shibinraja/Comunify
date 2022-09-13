@@ -282,30 +282,28 @@ const Members: React.FC = () => {
 
   // Function to map customized column with api data response to create a new column array with index matching with customized column.
   // eslint-disable-next-line max-len
-  const customizedColumn = data?.reduce(
-    (acc: Array<Record<string, unknown>>, currentValue: Record<string, unknown>): Array<Record<string, unknown>> => {
-      const accumulatedColumn: Record<string, unknown> = {};
-      const memberValue = { ...currentValue };
-      columns.forEach((column: ColumnNameProps) => {
-        // eslint-disable-next-line no-prototype-builtins
-        if (memberValue.hasOwnProperty(column.id)) {
-          if (column.isDisplayed) {
-            accumulatedColumn[column.id] = memberValue[column.id];
-          }
+  const customizedColumn = data?.reduce((acc: Array<Record<string, unknown>>, currentValue: Record<string, unknown>): Array<
+    Record<string, unknown>
+  > => {
+    const accumulatedColumn: Record<string, unknown> = {};
+    const memberValue = { ...currentValue };
+    columns.forEach((column: ColumnNameProps) => {
+      // eslint-disable-next-line no-prototype-builtins
+      if (memberValue.hasOwnProperty(column.id)) {
+        if (column.isDisplayed) {
+          accumulatedColumn[column.id] = memberValue[column.id];
         }
-      });
-      accumulatedColumn['name'] = { name: accumulatedColumn['name'], id: currentValue.id };
-      acc.push(accumulatedColumn);
-      return acc;
-    },
-    []
-  );
+      }
+    });
+    accumulatedColumn['name'] = { name: accumulatedColumn['name'], id: currentValue.id };
+    acc.push(accumulatedColumn);
+    return acc;
+  }, []);
 
   // Memoized functionality to stop re-render.
-  const membersColumn = useMemo(
-    () => <MembersDraggableColumn MembersColumn={customizedColumnBool} handleModalClose={handleModalClose} />,
-    [customizedColumnBool]
-  );
+  const membersColumn = useMemo(() => <MembersDraggableColumn MembersColumn={customizedColumnBool} handleModalClose={handleModalClose} />, [
+    customizedColumnBool
+  ]);
 
   const MemberFilter = useMemo(
     () => (
@@ -340,7 +338,7 @@ const Members: React.FC = () => {
 
   return (
     <div className="flex flex-col mt-12">
-      <h3 className="font-Poppins font-semibold text-infoBlack text-infoData leading-9">Members</h3>
+      <h3 className="font-Poppins font-semibold text-infoBlack text-infoData leading-9 dark:text-white">Members</h3>
       <div className="member-card pt-10">
         <MembersCard />
       </div>

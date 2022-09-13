@@ -48,20 +48,20 @@ const NewActivitesList: React.FC<Props> = ({ hidden }) => (
       <ul>
         {activities.map((item, index: number) => (
           <>
-            <li key={index} className="my-1.68">
+            <li key={index} className="my-1.68 active-list relative">
               <div className="w-full flex justify-start items-center">
-                <div className="ml-2.024">
+                <div className="ml-2.024 bottom-line ">
                   <img src={yellowDotted} alt="" />
                 </div>
                 <div className="ml-0.71 ">
-                  <img className="h-1.835 w-1.918" src={item.url} alt="" />
+                  <img className="h-1.9 w-1.9" src={item.url} alt="" />
                 </div>
 
                 <div className="ml-0.865">
                   <div>
-                    <p className="font-medium text-card font-Poppins">{item.message}</p>
+                    <p className="font-medium text-xs font-Poppins">{item.message}</p>
                   </div>
-                  <div className="font-Poppins text-createdAt not-italic font-normal text-createdAtGrey">
+                  <div className="font-Poppins text-createdAt not-italic font-normal text-createdAtGrey dark:text-greyDark">
                     <p>{item.createdAt}</p>
                   </div>
                 </div>

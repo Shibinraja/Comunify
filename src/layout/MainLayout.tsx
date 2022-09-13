@@ -1,5 +1,6 @@
 import { getResolution } from '@/lib/resolution';
 import { maximum_screen_height } from 'constants/constants';
+import { ThemeContextProvider } from 'contexts/ThemeContext';
 import React, { Fragment } from 'react';
 import { useDispatch } from 'react-redux';
 import { Outlet } from 'react-router';
@@ -21,23 +22,25 @@ const MainLayout: React.FC = () => {
   }, []);
 
   return (
-    <Fragment>
-      {screenWidth < maximum_screen_height ? (
-        <ResolutionLayout />
-      ) : (
-        <div className="flex h-screen">
-          <div className="w-1/4 xl:w-1/5">
-            <SideNav />
-          </div>
-          <div className="w-3/4 xl:w-4/5">
-            <TopBar />
-            <div className="px-12 xl:px-20  overflow-y-auto layout-screen bg-background-pattern bg-right-top bg-no-repeat">
-              <Outlet />
+    <ThemeContextProvider>
+      <Fragment>
+        {screenWidth < maximum_screen_height ? (
+          <ResolutionLayout />
+        ) : (
+          <div className="flex h-screen">
+            <div className="w-1/4 xl:w-1/5">
+              <SideNav />
+            </div>
+            <div className="w-3/4 xl:w-4/5 dark:bg-primaryDark">
+              <TopBar />
+              <div className="px-12 xl:px-20  overflow-y-auto layout-screen bg-background-pattern bg-right-top bg-no-repeat">
+                <Outlet />
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </Fragment>
+        )}
+      </Fragment>
+    </ThemeContextProvider>
   );
 };
 

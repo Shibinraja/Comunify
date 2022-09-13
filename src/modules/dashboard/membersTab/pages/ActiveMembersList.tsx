@@ -52,20 +52,20 @@ const members = [
 const ActiveMembersList: React.FC<Props> = ({ hidden }) => (
   <TabPanel hidden={hidden}>
     <div>
-      <ul>
+      <ul className="mt-1.474 ">
         {members.map((item, index) => (
           <>
-            <li key={index} className="my-1.474 ">
+            <li key={index} className="mb-4 ">
               <div className="w-full flex justify-start items-center">
-                <div className="ml-0.71 ">
-                  <img className="h-1.835 w-1.959" src={item.url} alt="" />
+                <div className="">
+                  <img className="h-1.9 w-1.9" src={item.url} alt="" />
                 </div>
 
                 <div className="ml-0.865">
                   <div>
-                    <p className="font-medium pt-0.5 text-card font-Poppins">{item.name}</p>
+                    <p className="font-medium pt-0.5 text-xs font-Poppins">{item.name}</p>
                   </div>
-                  <div className="font-Poppins text-membersCreatedAt not-italic font-normal text-createdAtGrey">
+                  <div className="font-Poppins text-membersCreatedAt not-italic font-normal text-createdAtGrey dark:text-greyDark">
                     <p>{item.createdAt}</p>
                   </div>
                 </div>
