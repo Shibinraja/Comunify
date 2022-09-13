@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable no-unused-vars */
@@ -9,6 +10,7 @@ import { AxiosError, SuccessResponse } from '../../../../lib/api';
 import loaderSlice from '../../../authentication/store/slices/loader.slice';
 import {
   assignTagProps,
+  AssignTagsProps,
   ConnectedPlatforms,
   createTagProps,
   GetTagListQueryParams,
@@ -169,8 +171,9 @@ function* assignTagDataSaga(action: PayloadAction<assignTagProps>) {
   try {
     yield put(loaderSlice.actions.startLoadingAction(settingsSlice.actions.assignTags.type));
 
-    const res: SuccessResponse<{}> = yield call(AssignTagDataService, action.payload);
+    const res: SuccessResponse<AssignTagsProps> = yield call(AssignTagDataService, action.payload);
     if (res.message.toLocaleLowerCase() === 'tag assigned') {
+      // yield put(settingsSlice.actions.getAssignTagsData(res.data));
       yield put(settingsSlice.actions.resetValue(true));
       yield put(
         membersSlice.actions.getMemberProfileCardData({
@@ -181,8 +184,13 @@ function* assignTagDataSaga(action: PayloadAction<assignTagProps>) {
       yield put(
         activitiesSlice.actions.getActiveStreamData({
           activeStreamQuery: {
-            page: 1,
-            limit: 10
+            page: action.payload.filter?.page as number,
+            limit: action.payload.filter?.limit as number,
+            search: action.payload.filter?.search,
+            tags: { searchedTags: action.payload.filter?.tags?.searchedTags as string, checkedTags: action.payload.filter?.tags?.checkedTags as string },
+            platforms: action.payload.filter?.platforms,
+            'activity.lte': action.payload.filter?.['activity.lte'],
+            'activity.gte': action.payload.filter?.['activity.gte']
           },
           workspaceId: action.payload.workspaceId
         })
@@ -222,8 +230,13 @@ function* unAssignTagDataSaga(action: PayloadAction<unAssignTagProps>) {
       yield put(
         activitiesSlice.actions.getActiveStreamData({
           activeStreamQuery: {
-            page: 1,
-            limit: 10
+            page: action.payload.filter?.page as number,
+            limit: action.payload.filter?.limit as number,
+            search: action.payload.filter?.search,
+            tags: { searchedTags: action.payload.filter?.tags?.searchedTags as string, checkedTags: action.payload.filter?.tags?.checkedTags as string },
+            platforms: action.payload.filter?.platforms,
+            'activity.lte': action.payload.filter?.['activity.lte'],
+            'activity.gte': action.payload.filter?.['activity.gte']
           },
           workspaceId: action.payload.workspaceId
         })
