@@ -1,13 +1,20 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable max-len */
-import React, { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
+import useDebounce from '@/hooks/useDebounce';
+import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 import Button from 'common/button';
-import { format } from 'date-fns';
+import Input from 'common/input';
+import { count_5, width_90 } from 'constants/constants';
+import settingsSlice from 'modules/settings/store/slice/settings.slice';
+import React, { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 import DatePicker, { ReactDatePicker } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import Skeleton from 'react-loading-skeleton';
 import Modal from 'react-modal';
 import { useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
+import ReactTooltip from 'react-tooltip';
+import * as Yup from 'yup';
 import calendarIcon from '../../../../assets/images/calandar.svg';
 import closeIcon from '../../../../assets/images/close-member.svg';
 import dropDownIcon from '../../../../assets/images/profile-dropdown.svg';
@@ -15,22 +22,14 @@ import searchIcon from '../../../../assets/images/search.svg';
 import slackIcon from '../../../../assets/images/slack.svg';
 import unsplashIcon from '../../../../assets/images/unsplash_mj.svg';
 import yellowDottedIcon from '../../../../assets/images/yellow_dotted.svg';
+import usePlatform from '../../../../hooks/usePlatform';
 import { useAppSelector } from '../../../../hooks/useRedux';
-import { generateDateAndTime } from '../../../../lib/helper';
+import { convertEndDate, convertStartDate, generateDateAndTime } from '../../../../lib/helper';
 import { AppDispatch } from '../../../../store';
+import { AssignTypeEnum, PlatformResponse, TagResponseData } from '../../../settings/interface/settings.interface';
 import { ActivityResult, MemberProfileCard } from '../../interface/members.interface';
 import membersSlice from '../../store/slice/members.slice';
 import MembersProfileGraph from '../membersProfileGraph/MembersProfileGraph';
-import Skeleton from 'react-loading-skeleton';
-import useSkeletonLoading from '@/hooks/useSkeletonLoading';
-import { count_5, width_90 } from 'constants/constants';
-import usePlatform from '../../../../hooks/usePlatform';
-import { AssignTypeEnum, PlatformResponse, TagResponseData } from '../../../settings/interface/settings.interface';
-import settingsSlice from 'modules/settings/store/slice/settings.slice';
-import useDebounce from '@/hooks/useDebounce';
-import ReactTooltip from 'react-tooltip';
-import * as Yup from 'yup';
-import Input from 'common/input';
 
 Modal.setAppElement('#root');
 
@@ -129,7 +128,7 @@ const MembersProfile: React.FC = () => {
       setTagDropDownOption(true);
     }
 
-    if(TagFilterResponseData?.length === 0) {
+    if (TagFilterResponseData?.length === 0) {
       setTagDropDownOption(false);
     }
   }, [TagFilterResponseData]);
@@ -144,8 +143,8 @@ const MembersProfile: React.FC = () => {
         memberId: memberId as string,
         nextCursor: cursor ? cursor : activityNextCursor ? activityNextCursor : '',
         platform: platform && platform,
-        fromDate: fromDate && format(fromDate, 'yyyy-MM-dd'),
-        toDate: toDate && format(toDate, 'yyyy-MM-dd')
+        fromDate: fromDate && convertStartDate(fromDate),
+        toDate: toDate && convertEndDate(toDate)
       })
     );
   };
@@ -161,14 +160,6 @@ const MembersProfile: React.FC = () => {
       tagName: ''
     });
     setSearchText('');
-    dispatch(
-      settingsSlice.actions.getTagFilterData({
-        data: [],
-        totalPages: 0,
-        previousPage: 0,
-        nextPage: 0
-      })
-    );
     dispatch(settingsSlice.actions.resetValue(false));
   };
 
@@ -318,7 +309,7 @@ const MembersProfile: React.FC = () => {
         getTagsList(1, '');
         handleSelectTagName('', '');
       }
-      if(tags.tagName) {
+      if (tags.tagName) {
         setTags({ tagId: '', tagName: '' });
       }
     } catch ({ message }) {

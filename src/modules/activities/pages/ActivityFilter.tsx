@@ -1,26 +1,26 @@
 /* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+import useDebounce from '@/hooks/useDebounce';
+import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
+import useSkeletonLoading from '@/hooks/useSkeletonLoading';
+import { convertEndDate, convertStartDate } from '@/lib/helper';
+import Button from 'common/button';
+import settingsSlice from 'modules/settings/store/slice/settings.slice';
 import {
   ChangeEvent, FC, Fragment, useEffect, useMemo, useRef, useState
 } from 'react';
-import { ActivityStreamTypesProps } from './activity.types';
-import downArrow from '../../../assets/images/filter-dropdown.svg';
-import searchIcon from '../../../assets/images/search.svg';
-import filterDownIcon from '../../../assets/images/report-dropdown.svg';
-import calendarIcon from '../../../assets/images/calandar.svg';
 import DatePicker, { ReactDatePicker } from 'react-datepicker';
-import Button from 'common/button';
-import { format } from 'date-fns';
-import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
-import useDebounce from '@/hooks/useDebounce';
 import { useParams } from 'react-router-dom';
-import activitiesSlice from '../store/slice/activities.slice';
-import { PlatformResponse, TagResponseData } from '../../settings/interface/settings.interface';
+import calendarIcon from '../../../assets/images/calandar.svg';
+import downArrow from '../../../assets/images/filter-dropdown.svg';
+import filterDownIcon from '../../../assets/images/report-dropdown.svg';
+import searchIcon from '../../../assets/images/search.svg';
 import usePlatform from '../../../hooks/usePlatform';
-import settingsSlice from 'modules/settings/store/slice/settings.slice';
-import useSkeletonLoading from '@/hooks/useSkeletonLoading';
+import { PlatformResponse, TagResponseData } from '../../settings/interface/settings.interface';
+import activitiesSlice from '../store/slice/activities.slice';
+import { ActivityStreamTypesProps } from './activity.types';
 
-const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFilterExport, searchText }) => {
+const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFilterExport, searchText, onPageChange }) => {
   const { workspaceId } = useParams();
   const dispatch = useAppDispatch();
   const [isFilterDropdownActive, setIsFilterDropdownActive] = useState<boolean>(false);
@@ -76,6 +76,12 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
 
   const handleFilterDropdown = (): void => {
     setIsFilterDropdownActive((prev) => !prev);
+    dispatch(
+      settingsSlice.actions.tagFilterData({
+        settingsQuery: { page: 1, limit, tags: { searchedTags: '', checkedTags: '' } },
+        workspaceId: workspaceId!
+      })
+    );
   };
 
   const handleActiveBetween = (val: boolean) => {
@@ -140,11 +146,11 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
       return true;
     }
 
-    if(startDate && endDate) {
+    if (startDate && endDate) {
       return false;
     }
 
-    if(startDate || endDate) {
+    if (startDate || endDate) {
       return true;
     }
     return false;
@@ -153,6 +159,11 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
   const submitFilterChange = (): void => {
     const checkPlatform: Array<string> = [];
     const checkTags: Array<string> = [];
+
+    if (ActivityFilterList[0] === Boolean(false)) {
+      setCheckedPlatform({});
+      setCheckedTags({});
+    }
 
     if (ActivityFilterList[0] === Boolean(false)) {
       setCheckedPlatform({});
@@ -178,8 +189,8 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
     activityFilterExport({
       checkTags: checkTags.toString(),
       checkPlatform: checkPlatform.toString(),
-      endDate: endDate && format(endDate!, 'yyyy-MM-dd'),
-      startDate: startDate && format(startDate!, 'yyyy-MM-dd')
+      endDate: endDate && convertEndDate(endDate!),
+      startDate: startDate && convertStartDate(startDate!)
     });
 
     if (!disableApplyBtn) {
@@ -191,12 +202,13 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
             search: searchText,
             tags: { searchedTags: '', checkedTags: checkTags.toString() },
             platforms: checkPlatform.toString(),
-            'activity.lte': endDate && format(endDate!, 'yyyy-MM-dd'),
-            'activity.gte': startDate && format(startDate!, 'yyyy-MM-dd')
+            'activity.lte': endDate && convertEndDate(endDate!),
+            'activity.gte': startDate && convertStartDate(startDate!)
           },
           workspaceId: workspaceId!
         })
       );
+      onPageChange(1);
     }
     handleFilterDropdown();
   };

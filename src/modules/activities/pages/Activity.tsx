@@ -8,11 +8,22 @@ import Button from 'common/button';
 import Input from 'common/input';
 import Pagination from 'common/pagination/pagination';
 // eslint-disable-next-line object-curly-newline
-import React, { ChangeEvent, FormEvent, Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import useSkeletonLoading from '@/hooks/useSkeletonLoading';
+import { width_90 } from 'constants/constants';
+import { format, parseISO } from 'date-fns';
+import membersSlice from 'modules/members/store/slice/members.slice';
+import { AssignTypeEnum, TagResponseData } from 'modules/settings/interface/settings.interface';
+import settingsSlice from 'modules/settings/store/slice/settings.slice';
+import React, {
+  ChangeEvent, FormEvent, Fragment, useEffect, useMemo, useRef, useState
+} from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
+import Skeleton from 'react-loading-skeleton';
 import Modal from 'react-modal';
 import { useDispatch } from 'react-redux';
 import { NavLink, useParams } from 'react-router-dom';
+import ReactTooltip from 'react-tooltip';
+import * as Yup from 'yup';
 import closeIcon from '../../../assets/images/close.svg';
 import profileImage from '../../../assets/images/ellip.svg';
 import exportImage from '../../../assets/images/export.svg';
@@ -22,17 +33,8 @@ import { generateDateAndTime } from '../../../lib/helper';
 import { ActiveStreamData, ActivityCard, ProfileModal } from '../interfaces/activities.interface';
 import activitiesSlice from '../store/slice/activities.slice';
 import './Activity.css';
-import ActivityFilter from './ActivityFilter';
-import Skeleton from 'react-loading-skeleton';
-import useSkeletonLoading from '@/hooks/useSkeletonLoading';
-import { width_90 } from 'constants/constants';
 import { activityFilterExportProps } from './activity.types';
-import settingsSlice from 'modules/settings/store/slice/settings.slice';
-import { AssignTypeEnum, TagResponseData } from 'modules/settings/interface/settings.interface';
-import membersSlice from 'modules/members/store/slice/members.slice';
-import ReactTooltip from 'react-tooltip';
-import { format, parseISO } from 'date-fns';
-import * as Yup from 'yup';
+import ActivityFilter from './ActivityFilter';
 
 Modal.setAppElement('#root');
 
@@ -94,7 +96,7 @@ const Activity: React.FC = () => {
         activeStreamQuery: {
           page,
           limit,
-          search: '',
+          search: searchText,
           tags: { searchedTags: '', checkedTags: filterExportParams.checkTags.toString() },
           platforms: filterExportParams.checkPlatform.toString(),
           'activity.lte': filterExportParams.endDate,
@@ -119,6 +121,10 @@ const Activity: React.FC = () => {
     if (TagFilterResponseData?.length === 0) {
       setTagDropDownOption(false);
     }
+
+    // if (TagFilterResponseData?.length === 0 && searchTagText) {
+    //   setErrorMessage('No Record Found');
+    // }
   }, [TagFilterResponseData]);
 
   // Returns the debounced value of the search text.
@@ -142,7 +148,11 @@ const Activity: React.FC = () => {
 
   useEffect(() => {
     if (ActivityCard?.activityId) {
-      filterTags();
+      data?.find((activity: ActiveStreamData) => {
+        if (activity.id === ActivityCard.activityId) {
+          setActivityCard((prevState) => ({ ...prevState, tags: activity.tags }));
+        }
+      });
     }
   }, [data]);
 
@@ -162,12 +172,11 @@ const Activity: React.FC = () => {
     .required('Tag Name is a required field')
     .nullable(true);
 
-  const filterTags = () => {
-    data?.find((activity: ActiveStreamData) => {
-      if (activity.id === ActivityCard?.activityId) {
-        setActivityCard((prevState) => ({ ...prevState, tags: activity.tags }));
-      }
-    });
+  const filterTags = (tagId: string) => {
+    const filteredTags = (ActivityCard?.tags as Array<{ id: string; name: string }>).filter((item) => item.id !== tagId);
+    if (filteredTags.length) {
+      setActivityCard((prevState) => ({ ...prevState, tags: filteredTags }));
+    }
   };
 
   const getTagsList = (pageNumber: number, text: string): void => {
@@ -240,14 +249,6 @@ const Activity: React.FC = () => {
       tagName: ''
     });
     setSearchTagText('');
-    dispatch(
-      settingsSlice.actions.getTagFilterData({
-        data: [],
-        totalPages: 0,
-        previousPage: 0,
-        nextPage: 0
-      })
-    );
     dispatch(settingsSlice.actions.resetValue(false));
   };
 
@@ -269,6 +270,7 @@ const Activity: React.FC = () => {
     if (!searchText) {
       getFilteredActiveStreamList(1, searchText);
     }
+    setPage(1);
     setSearchText(searchText);
   };
 
@@ -366,6 +368,15 @@ const Activity: React.FC = () => {
             activityId: ActivityCard?.activityId,
             type: 'Activity' as AssignTypeEnum.Activity
           },
+          filter: {
+            search: debouncedValue,
+            page,
+            limit,
+            tags: { searchedTags: '', checkedTags: filterExportParams.checkTags.toString() },
+            platforms: filterExportParams.checkPlatform.toString(),
+            'activity.lte': filterExportParams.endDate,
+            'activity.gte': filterExportParams.startDate
+          },
           workspaceId: workspaceId!
         })
       );
@@ -381,14 +392,31 @@ const Activity: React.FC = () => {
           type: 'Activity' as AssignTypeEnum.Activity,
           activityId: ActivityCard?.activityId
         },
+        filter: {
+          search: debouncedValue,
+          page,
+          limit,
+          tags: { searchedTags: '', checkedTags: filterExportParams.checkTags.toString() },
+          platforms: filterExportParams.checkPlatform.toString(),
+          'activity.lte': filterExportParams.endDate,
+          'activity.gte': filterExportParams.startDate
+        },
         workspaceId: workspaceId!
       })
     );
-    filterTags();
+    filterTags(id);
   };
 
   const ActiveStreamFilter = useMemo(
-    () => <ActivityFilter page={page} limit={limit} activityFilterExport={setFilterExportParams} searchText={debouncedValue} />,
+    () => (
+      <ActivityFilter
+        page={page}
+        limit={limit}
+        activityFilterExport={setFilterExportParams}
+        searchText={debouncedValue}
+        onPageChange={(page) => setPage(Number(page))}
+      />
+    ),
     [debouncedValue]
   );
 

@@ -11,7 +11,7 @@ const Settings = () => {
 
   return (
     <div className="flex flex-col ">
-      <div className="font-Poppins  leading-35 text-infoData not-italic font-semibold mt-12">Settings</div>
+      <div className="font-Poppins  leading-35 text-infoData not-italic font-semibold mt-12 dark:text-white">Settings</div>
       <div className="w-full mt-10 ">
         <nav className="flex items-end">
           <TabSelector

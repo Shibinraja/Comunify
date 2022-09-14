@@ -3,12 +3,11 @@
 import useDebounce from '@/hooks/useDebounce';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import useSkeletonLoading from '@/hooks/useSkeletonLoading';
-import { getLocalWorkspaceId } from '@/lib/helper';
+import { convertEndDate, convertStartDate, getLocalWorkspaceId } from '@/lib/helper';
 import Button from 'common/button';
-import { format } from 'date-fns';
 import { PlatformResponse, TagResponseData } from 'modules/settings/interface/settings.interface';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
-import { ChangeEvent, useEffect, useRef, useState, FC, useMemo } from 'react';
+import { ChangeEvent, FC, useEffect, useMemo, useRef, useState } from 'react';
 import DatePicker, { ReactDatePicker } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import calendarIcon from '../../../assets/images/calandar.svg';
@@ -91,6 +90,12 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
 
   const handleFilterDropdown = (): void => {
     setIsFilterDropdownActive((prev) => !prev);
+    dispatch(
+      settingsSlice.actions.tagFilterData({
+        settingsQuery: { page: 1, limit, tags: { searchedTags: '', checkedTags: '' } },
+        workspaceId: workspaceId!
+      })
+    );
   };
 
   const handlePlatformActive = (val: boolean) => {
@@ -220,11 +225,11 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
       return true;
     }
 
-    if(startDate && endDate) {
+    if (startDate && endDate) {
       return false;
     }
 
-    if(startDate || endDate) {
+    if (startDate || endDate) {
       return true;
     }
 
@@ -236,6 +241,13 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
     const checkTags: Array<string> = [];
     const checkOrganization: Array<string> = [];
     const checkLocation: Array<string> = [];
+
+    if (MemberFilterList[0] === Boolean(false)) {
+      setCheckedPlatform({});
+      setCheckedTags({});
+      setCheckedLocation({});
+      setCheckedOrganization({});
+    }
 
     if (MemberFilterList[0] === Boolean(false)) {
       setCheckedPlatform({});
@@ -281,8 +293,8 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
       checkPlatform: checkPlatform.toString(),
       checkOrganization: checkOrganization.toString(),
       checkLocation: checkLocation.toString(),
-      endDate: endDate && format(endDate!, 'yyyy-MM-dd'),
-      startDate: startDate && format(startDate!, 'yyyy-MM-dd')
+      endDate: endDate && convertEndDate(endDate),
+      startDate: startDate && convertStartDate(startDate)
     });
 
     if (!disableApplyBtn) {
@@ -296,8 +308,8 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
             platforms: checkPlatform.toString(),
             organization: { searchedOrganization: '', checkedOrganization: checkOrganization.toString() },
             location: { searchedLocation: '', checkedLocation: checkLocation.toString() },
-            'lastActivity.lte': endDate && format(endDate!, 'yyyy-MM-dd'),
-            'lastActivity.gte': startDate && format(startDate!, 'yyyy-MM-dd'),
+            'lastActivity.lte': endDate && convertEndDate(endDate),
+            'lastActivity.gte': startDate && convertStartDate(startDate),
             'createdAT.gte': filteredDate.filterStartDate,
             'createdAT.lte': filteredDate.filterEndDate
           },

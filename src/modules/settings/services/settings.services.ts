@@ -10,7 +10,8 @@ import {
   PlatformResponse,
   TagResponse,
   updateTagProps,
-  unAssignTagProps
+  unAssignTagProps,
+  AssignTagsProps
 } from '../interface/settings.interface';
 
 export const NavigateToConnectPage = () => {
@@ -51,7 +52,7 @@ export function* DeleteTagDataService(params: Omit<updateTagProps, 'tagBody'>): 
   return data;
 }
 
-export function* AssignTagDataService(params: assignTagProps): GeneratorResponse<{}> {
+export function* AssignTagDataService(params: assignTagProps): GeneratorResponse<AssignTagsProps> {
   const { data } = yield request.post(`/v1/${params.workspaceId}/tags/${params.memberId}/assign`, params.assignTagBody);
   return data;
 }

@@ -1,4 +1,26 @@
 /* eslint-disable no-unused-vars */
+
+export interface PlatformIcons {
+  slack: string | undefined;
+  vanillaForums: string | undefined;
+}
+
+export interface PlatformsStatus {
+  platform: string | undefined;
+  status: string | undefined;
+}
+
+export interface SlackConnectData {
+  code: string | null;
+  workspaceId: string;
+}
+
+export interface VanillaForumsConnectData {
+  vanillaBaseUrl: string;
+  vanillaAccessToken: string;
+  workspaceId: string;
+}
+
 // Input Body
 
 export interface workspaceId {
@@ -32,6 +54,20 @@ export enum AssignTypeEnum {
   Comments = 'Comments',
   Reactions = 'Reactions'
 }
+
+type filterProps = {
+  page: number;
+  limit: number;
+  search?: string;
+  platforms?: string;
+  tags?: {
+    checkedTags: string;
+    searchedTags: string;
+  };
+  'activity.lte'?: string;
+  'activity.gte'?: string;
+};
+
 export interface assignTagProps extends workspaceId {
   memberId: string;
   assignTagBody: {
@@ -40,6 +76,7 @@ export interface assignTagProps extends workspaceId {
     type: AssignTypeEnum;
     activityId?: string;
   };
+  filter?: filterProps;
 }
 
 export interface unAssignTagProps extends workspaceId {
@@ -49,6 +86,7 @@ export interface unAssignTagProps extends workspaceId {
     type: AssignTypeEnum;
     activityId?: string;
   };
+  filter?: filterProps;
 }
 export interface ModalState {
   slack: boolean;
@@ -105,23 +143,19 @@ export interface ConnectedPlatforms {
   };
 }
 
-export interface PlatformIcons {
-  slack: string | undefined;
-  vanillaForums: string | undefined;
+export enum AssignTagsTypeEnum {
+  Custom,
+  Default
 }
 
-export interface PlatformsStatus {
-  platform: string | undefined;
-  status: string | undefined;
-}
-
-export interface SlackConnectData {
-  code: string | null;
+export type AssignTagsProps = {
+  id: string;
+  name: string;
+  viewName: string;
   workspaceId: string;
-}
-
-export interface VanillaForumsConnectData {
-  vanillaBaseUrl: string;
-  vanillaAccessToken: string;
-  workspaceId: string;
-}
+  createdBy: string;
+  updatedBy: string;
+  type: AssignTagsTypeEnum;
+  createdAt: string;
+  updatedAt: string;
+};

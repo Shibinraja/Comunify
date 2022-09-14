@@ -14,27 +14,43 @@ const BillingHistory: React.FC<Props> = ({ hidden }) => (
   <TabPanel hidden={hidden}>
     <div className="relative">
       <div className="billingTable mt-1.8">
-        <h3 className="text-infoBlack font-Poppins font-semibold text-base leading-1.56">Billing History</h3>
+        <h3 className="text-infoBlack font-Poppins font-semibold text-base leading-1.56 dark:text-white">Billing History</h3>
         <div className="py-2 overflow-x-auto mt-1.868">
-          <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-t-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixBillingTableHead min-h-[31.25rem]">
-            <table className="min-w-full relative  rounded-t-0.6 ">
+          <div className="inline-block min-w-full overflow-hidden dark:border-[#dbd8fc1a] align-middle w-61.68 rounded-t-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixBillingTableHead min-h-[31.25rem]">
+            <table className="min-w-full relative  rounded-t-0.6  ">
               <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
                 <tr className="min-w-full">
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white border-b">Plan Name</th>
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white border-b">Date</th>
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white border-b">Amount</th>
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white border-b">Validity</th>
-                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white border-b"></th>
+                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]">
+                    Plan Name
+                  </th>
+                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white border-b dark:border-[#dbd8fc1a] dark:bg-thirdDark">
+                    Date
+                  </th>
+                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white border-b dark:border-[#dbd8fc1a] dark:bg-thirdDark ">
+                    Amount
+                  </th>
+                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white border-b dark:border-[#dbd8fc1a] dark:bg-thirdDark">
+                    Validity
+                  </th>
+                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white border-b dark:border-[#dbd8fc1a] dark:bg-thirdDark"></th>
                 </tr>
               </thead>
               <tbody>
                 {billingHistoryData.map((data, i) => (
-                  <tr className="border-b" key={i}>
-                    <td className="px-6 py-4 font-Poppins leading-1.31 text-trial text-infoBlack font-medium">{data.planName}</td>
-                    <td className="px-6 py-4 font-Poppins leading-1.31 text-trial text-infoBlack font-medium">{data.date}</td>
-                    <td className="px-6 py-4 font-Poppins leading-1.31 text-trial text-infoBlack font-medium">{data.amount}</td>
-                    <td className="px-6 py-4 font-Poppins leading-1.31 text-trial text-infoBlack font-medium">{data.validity}</td>
-                    <td>
+                  <tr className="border-b dark:border-[#dbd8fc1a]" key={i}>
+                    <td className="px-6 py-4 font-Poppins leading-1.31 text-trial text-infoBlack font-medium dark:bg-secondaryDark dark:text-white">
+                      {data.planName}
+                    </td>
+                    <td className="px-6 py-4 font-Poppins leading-1.31 text-trial text-infoBlack font-medium dark:bg-secondaryDark dark:text-white">
+                      {data.date}
+                    </td>
+                    <td className="px-6 py-4 font-Poppins leading-1.31 text-trial text-infoBlack font-medium dark:bg-secondaryDark dark:text-white">
+                      {data.amount}
+                    </td>
+                    <td className="px-6 py-4 font-Poppins leading-1.31 text-trial text-infoBlack font-medium dark:bg-secondaryDark dark:text-white">
+                      {data.validity}
+                    </td>
+                    <td className="dark:bg-secondaryDark">
                       <Button
                         type="button"
                         text="Invoice"
@@ -48,7 +64,7 @@ const BillingHistory: React.FC<Props> = ({ hidden }) => (
           </div>
         </div>
       </div>
-      <div className="px-6 py-6 flex items-center justify-center gap-0.66 w-full rounded-b-lg  bg-white bottom-0">
+      <div className="px-6 py-6 flex items-center justify-center gap-0.66 w-full rounded-b-lg  bg-white dark:bg-thirdDark bottom-0">
         <div className="pagination w-1.51 h-1.51 box-border rounded flex items-center justify-center cursor-pointer">
           <img src={prevIcon} alt="" />
         </div>

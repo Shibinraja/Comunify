@@ -1,9 +1,21 @@
 /* eslint-disable quotes */
 module.exports = {
+  darkMode: 'class',
   content: ['./src/**/*.tsx'],
   theme: {
     extend: {
       colors: {
+        primaryDark: '#2e323b',
+        secondary: '#F9F9F9',
+        secondaryDark: '#22252D',
+        thirdDark: '#1B1E25',
+        borderDark: '#272727',
+        inputText: '#7C8DB5',
+        greyDark: '#8A8B9F',
+
+        borderPrimary: '#dbd8fc',
+        greyPrimary: '#6B6B6B',
+
         lightBlack: '#05060A',
         neutralBlack: '#170F49',
         lightGray: '#6F6C90',
@@ -14,7 +26,6 @@ module.exports = {
         thinGray: '#808080;',
         grayBorder: ' #D9DBE9',
         listGray: '#6B7280',
-        brightGray: '#F9F9F9;',
         slimGray: '#8A8B9F',
         lightGreeny: '#AACF6F',
         success: '#A9CE70;',

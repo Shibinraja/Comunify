@@ -4,6 +4,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { workspaceId } from '../../../members/interface/members.interface';
 import {
   assignTagProps,
+  AssignTagsProps,
+  AssignTagsTypeEnum,
   ConnectedPlatforms,
   createTagProps,
   GetTagListQueryParams,
@@ -35,7 +37,18 @@ const initialState: InitialState = {
     previousPage: 0,
     nextPage: 0
   },
-  clearValue: false
+  clearValue: false,
+  assignTagResponse: {
+    id: '',
+    name: '',
+    viewName: '',
+    workspaceId: '',
+    createdBy: '',
+    updatedBy: '',
+    type: AssignTagsTypeEnum.Custom,
+    createdAt: '',
+    updatedAt: ''
+  }
 };
 
 //Saga Call
@@ -72,6 +85,11 @@ const resetValue = (state: InitialState, action: PayloadAction<boolean>) => ({
   clearValue: action.payload
 });
 
+const getAssignTagsData = (state: InitialState, action: PayloadAction<AssignTagsProps>) => ({
+  ...state,
+  assignTagResponse: action.payload
+});
+
 const settingsSlice = createSlice({
   name: 'activities',
   initialState,
@@ -87,7 +105,8 @@ const settingsSlice = createSlice({
     assignTags,
     unAssignTags,
     connectedPlatforms,
-    getConnectedPlatformsData
+    getConnectedPlatformsData,
+    getAssignTagsData
   }
 });
 
