@@ -24,7 +24,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
       isOpen={modalOpen}
       shouldCloseOnOverlayClick={false}
       onRequestClose={() => setModalOpen(false)}
-      className="w-24.31 pb-28 mx-auto  mt-32 rounded-lg modals-tag bg-white shadow-modal "
+      className="w-24.31 mx-auto  mt-32 rounded-lg modals-tag bg-white shadow-modal "
       style={{
         overlay: {
           display: 'flex',
@@ -37,7 +37,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
         }
       }}
     >
-      <div className="flex flex-col ml-1.8 pt-9 ">
+      <div className="flex flex-col ml-1.8 pt-9">
         <h3 className="font-Inter font-semibold text-xl leading-1.43">Merge Members</h3>
         <div className="flex relative items-center mt-1.43">
           <input
@@ -49,7 +49,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
             <img src={searchIcon} alt="" />
           </div>
         </div>
-        <div className="flex flex-col overflow-scroll overflow-y-scroll member-section mt-1.8 height-member-activity">
+        <div className="flex flex-col gap-5 overflow-scroll overflow-y-scroll member-section mt-1.8 height-member-activity">
           <div className="flex">
             <div className="mr-0.34">
               <input type="checkbox" className="checkbox" />
@@ -170,21 +170,20 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
               </div>
             </div>
           </div>
-
-          <div className="flex right-8 mt-1.8">
-            <Button
-              type="button"
-              text="CANCEL"
-              className="mr-2.5 font-Poppins text-error font-medium border-cancel  leading-1.31 text-thinGray cursor-pointer w-5.25 h-2.81 rounded box-border"
-              onClick={() => setModalOpen(false)}
-            />
-            <Button
-              type="button"
-              text="SUBMIT"
-              className="submit border-none text-white font-Poppins text-error font-medium leading-1.31 cursor-pointer w-5.25 h-2.81 rounded shadow-contactBtn btn-save-modal"
-              onClick={navigateToReviewMerge}
-            />
-          </div>
+        </div>
+        <div className="flex justify-end pr-6 mt-1.8 pb-[3.3094rem]">
+          <Button
+            type="button"
+            text="CANCEL"
+            className="mr-2.5 font-Poppins text-error font-medium border-cancel  leading-1.31 text-thinGray cursor-pointer w-5.25 h-2.81 rounded box-border"
+            onClick={() => setModalOpen(false)}
+          />
+          <Button
+            type="button"
+            text="SUBMIT"
+            className="submit border-none text-white font-Poppins text-error font-medium leading-1.31 cursor-pointer w-5.25 h-2.81 rounded shadow-contactBtn btn-save-modal"
+            onClick={navigateToReviewMerge}
+          />
         </div>
       </div>
     </Modal>
