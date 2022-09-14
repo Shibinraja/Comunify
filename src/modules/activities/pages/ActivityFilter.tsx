@@ -165,11 +165,6 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
       setCheckedTags({});
     }
 
-    if (ActivityFilterList[0] === Boolean(false)) {
-      setCheckedPlatform({});
-      setCheckedTags({});
-    }
-
     if (Object.keys(checkedPlatform).length > 0) {
       Object.keys(checkedPlatform).map((platform: string) => {
         if (checkedPlatform[platform] === true) {
