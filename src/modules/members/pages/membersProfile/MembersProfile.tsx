@@ -693,7 +693,7 @@ const MembersProfile: React.FC = () => {
         <div className="mt-1.8">
           <Button
             type="button"
-            text={memberProfileCardData[0].isMerged ? 'Merged Members' : 'Merge Members'}
+            text={memberProfileCardData[0]?.isMerged ? 'Merged Members' : 'Merge Members'}
             className="cursor-pointer border-none font-Poppins font-medium text-search leading-5 btn-save-modal hover:shadow-buttonShadowHover transition ease-in duration-300 text-white shadow-contactBtn rounded-0.3 w-full h-3.06"
             onClick={() => handleModal(true)}
           />
