@@ -37,6 +37,7 @@ const MembersReview: React.FC = () => {
     setCheckedRadioId({ [checked_id]: event.target.checked });
   };
 
+  // Function to remove the desired potentital duplicate member from the list
   const handleRemoveMember = (memberId: string) => {
     const filteredMembers = MergeMembersList?.filter((member: MergeMembersDataResult) => {
       if (member.id !== memberId) {
@@ -48,6 +49,7 @@ const MembersReview: React.FC = () => {
     localStorage.setItem('merge-membersId', JSON.stringify(filteredMembers));
   };
 
+  // Function to confirm submit the possible list to be merged and call api.
   const handleMergeMembers = () => {
     const mergeList = MergeMembersList.map((member: MergeMembersDataResult) => ({
       primaryMemberId: Object.keys(checkedRadioId)[0],

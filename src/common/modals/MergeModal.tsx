@@ -35,6 +35,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
     setCheckedMemberId((prevValue) => ({ ...prevValue, [checked_id]: event.target.checked }));
   };
 
+  // Function to call the api and list the membersSuggestionList
   const getMemberSuggestionList = (cursor: string | null, prop: string) => {
     getAxiosRequest(
       `/v1/${workspaceId}/members/${memberId}/merge-suggestion-list?page=1&limit=10${
@@ -58,6 +59,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
   }, [debouncedValue]);
 
   useEffect(() => {
+    //To Check the selected memberId to which we need to merge with the primaryMemberId;
     if (Object.keys(checkedMemberId).length > 0) {
       Object.keys(checkedMemberId).map((memberId: string) => {
         if (checkedMemberId[memberId] === true) {
