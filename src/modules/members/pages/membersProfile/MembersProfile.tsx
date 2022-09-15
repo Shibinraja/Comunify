@@ -4,9 +4,10 @@ import useDebounce from '@/hooks/useDebounce';
 import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 import Button from 'common/button';
 import Input from 'common/input';
+import MergeModal from 'common/modals/MergeModal';
 import { count_5, width_90 } from 'constants/constants';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
-import React, { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import DatePicker, { ReactDatePicker } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Skeleton from 'react-loading-skeleton';
@@ -18,9 +19,6 @@ import * as Yup from 'yup';
 import calendarIcon from '../../../../assets/images/calandar.svg';
 import closeIcon from '../../../../assets/images/close-member.svg';
 import dropDownIcon from '../../../../assets/images/profile-dropdown.svg';
-import searchIcon from '../../../../assets/images/search.svg';
-import slackIcon from '../../../../assets/images/slack.svg';
-import unsplashIcon from '../../../../assets/images/unsplash_mj.svg';
 import yellowDottedIcon from '../../../../assets/images/yellow_dotted.svg';
 import usePlatform from '../../../../hooks/usePlatform';
 import { useAppSelector } from '../../../../hooks/useRedux';
@@ -98,6 +96,7 @@ const MembersProfile: React.FC = () => {
     document.addEventListener('click', handleDropDownClick);
     document.addEventListener('click', handleIntegrationDropDownClick);
     document.addEventListener('click', handleDateFilterDropDownClick);
+    localStorage.removeItem('merge-membersId');
     return () => {
       document.removeEventListener('click', handleOutsideClick);
       document.addEventListener('click', handleDropDownClick);
@@ -173,10 +172,6 @@ const MembersProfile: React.FC = () => {
 
   const handleIntegrationDropDownActive = (): void => {
     setIntegrationDropDownActive((prev) => !prev);
-  };
-
-  const navigateToReviewMerge = () => {
-    navigate(`${workspaceId}/members/${memberId}/members-review`);
   };
 
   // switch case for member graph
@@ -348,6 +343,8 @@ const MembersProfile: React.FC = () => {
       })
     );
   };
+
+  const MergeModalComponent = useMemo(() => <MergeModal modalOpen={isModalOpen} setModalOpen={setIsModalOpen} />, [isModalOpen]);
 
   return (
     <div className="flex pt-3.93 w-full">
@@ -696,80 +693,13 @@ const MembersProfile: React.FC = () => {
         <div className="mt-1.8">
           <Button
             type="button"
-            text="Merge Members"
+            text={memberProfileCardData[0]?.isMerged ? 'Merged Members' : 'Merge Members'}
             className="cursor-pointer border-none font-Poppins font-medium text-search leading-5 btn-save-modal hover:shadow-buttonShadowHover transition ease-in duration-300 text-white shadow-contactBtn rounded-0.3 w-full h-3.06"
             onClick={() => handleModal(true)}
           />
         </div>
-        <Modal
-          isOpen={isModalOpen}
-          shouldCloseOnOverlayClick={false}
-          onRequestClose={() => setIsModalOpen(false)}
-          className="w-24.31 pb-28 mx-auto  mt-32 rounded-lg modals-tag bg-white shadow-modal "
-          style={{
-            overlay: {
-              display: 'flex',
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              bottom: 0,
-              right: 0,
-              alignItems: 'center'
-            }
-          }}
-        >
-          <div className="flex flex-col ml-1.8 pt-9 ">
-            <h3 className="font-Inter font-semibold text-xl leading-1.43">Merge Members</h3>
-            <div className="flex relative items-center mt-1.43">
-              <input
-                type="text"
-                className="input-merge-search focus:outline-none px-3 pr-8 box-border w-20.5 h-3.06 rounded-0.6 shadow-profileCard placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray"
-                placeholder="Search Members"
-              />
-              <div className="absolute right-12 w-0.78 h-3 z-40">
-                <img src={searchIcon} alt="" />
-              </div>
-            </div>
-            <div className="flex-flex-col relative mt-1.8">
-              <div className="flex">
-                <div className="mr-0.34">
-                  <input type="checkbox" className="checkbox" />
-                </div>
-                <div className="flex flex-col">
-                  <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31">Emerson Schleifer</div>
-                  <div className="text-tagEmail font-Poppins font-normal leading-1.31 text-email pl-1">dmrity125@mail.com | neoito technologies</div>
-                  <div className="flex mt-2.5">
-                    <div className="mr-0.34 w-1.001 h-1.001">
-                      <img src={slackIcon} alt="" />
-                    </div>
-                    <div className="mr-0.34 w-1.001 h-1.001">
-                      <img src={unsplashIcon} alt="" />
-                    </div>
-                    <div className="mr-0.34 w-1.001 h-1.001">
-                      <img src={slackIcon} alt="" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex absolute right-8 mt-1.8">
-                <Button
-                  type="button"
-                  text="CANCEL"
-                  className="mr-2.5 font-Poppins text-error font-medium border-cancel  leading-1.31 text-thinGray cursor-pointer w-5.25 h-2.81 rounded box-border"
-                  onClick={() => setIsModalOpen(false)}
-                />
-                <Button
-                  type="button"
-                  text="SUBMIT"
-                  className="submit border-none text-white font-Poppins text-error font-medium leading-1.31 cursor-pointer w-5.25 h-2.81 rounded shadow-contactBtn btn-save-modal"
-                  onClick={navigateToReviewMerge}
-                />
-              </div>
-            </div>
-          </div>
-        </Modal>
       </div>
+      {MergeModalComponent}
     </div>
   );
 };
