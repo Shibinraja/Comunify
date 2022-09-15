@@ -563,3 +563,27 @@ input {
 .border-download {
   border: 1px solid #eaedf3;
 }
+
+.border-gradient-rounded-member {
+  position: sticky;
+  box-sizing: border-box;
+  background: #fff;
+  border-radius: 15px;
+}
+
+.border-gradient-rounded-member:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  margin: -5px;
+  border-radius: inherit;
+  background: linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
+  border: double 1px transparent;
+  background-image: linear-gradient(white, white), linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+}
