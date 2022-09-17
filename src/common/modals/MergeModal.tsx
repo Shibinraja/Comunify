@@ -4,20 +4,17 @@ import useDebounce from '@/hooks/useDebounce';
 import { getAxiosRequest } from '@/lib/axiosRequest';
 import Button from 'common/button';
 import { MergeMembersDataResponse, MergeMembersDataResult } from 'modules/members/interface/members.interface';
-import React, { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import Modal from 'react-modal';
 import { useNavigate, useParams } from 'react-router-dom';
 import searchIcon from '../../assets/images/search.svg';
-
-type MergeModalProps = {
-  modalOpen: boolean;
-  setModalOpen: Dispatch<SetStateAction<boolean>>;
-};
+import { MergeModalProps } from './MergeModalTypes';
 
 const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
   const { workspaceId, memberId } = useParams();
   const navigate = useNavigate();
+
   const [searchSuggestion, setSearchSuggestion] = useState<string>('');
   const [activityNextCursor, setActivityNextCursor] = useState<string | null>('');
   const [suggestionList, setSuggestionList] = useState<MergeMembersDataResponse>({
@@ -25,7 +22,6 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
     nextCursor: null
   });
   const [loading, setLoading] = useState<boolean>(false);
-  const [duplicateMembers, setDuplicateMembers] = useState<Array<MergeMembersDataResult>>([]);
   const [checkedMemberId, setCheckedMemberId] = useState<Record<string, unknown>>({});
 
   const debouncedValue = useDebounce(searchSuggestion, 300);
@@ -59,21 +55,10 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
   }, [debouncedValue]);
 
   useEffect(() => {
-    //To Check the selected memberId to which we need to merge with the primaryMemberId;
-    if (Object.keys(checkedMemberId).length > 0) {
-      Object.keys(checkedMemberId).map((memberId: string) => {
-        if (checkedMemberId[memberId] === true) {
-          suggestionList.result.filter((memberList: MergeMembersDataResult) => {
-            if (memberList.id === memberId) {
-              setDuplicateMembers((prevMembers) => [...prevMembers, memberList]);
-            }
-          });
-        }
-      });
-    }
+    setSearchSuggestion('');
   }, [checkedMemberId]);
 
-  // function to listen for scroll event
+  // function for scroll event
   const handleScroll = (event: React.UIEvent<HTMLElement>) => {
     event.preventDefault();
     const { clientHeight, scrollHeight, scrollTop } = event.currentTarget;
@@ -95,7 +80,25 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
   };
 
   const navigateToReviewMerge = () => {
-    localStorage.setItem('merge-membersId', JSON.stringify([...new Set(duplicateMembers)]));
+    const duplicateMembersResult: Array<MergeMembersDataResult> = [];
+    if (Object.keys(checkedMemberId).length > 0) {
+      Object.keys(checkedMemberId).map((memberId: string) => {
+        suggestionList.result.filter((memberList: MergeMembersDataResult) => {
+          if (checkedMemberId[memberId] === true) {
+            if (memberList.id === memberId) {
+              duplicateMembersResult.push(memberList);
+            }
+          }
+          if (checkedMemberId[memberId] === false) {
+            if (memberList.id === memberId) {
+              duplicateMembersResult.push(memberList);
+              duplicateMembersResult?.splice(duplicateMembersResult.indexOf(memberId as unknown as MergeMembersDataResult), 1);
+            }
+          }
+        });
+      });
+    }
+    localStorage.setItem('merge-membersId', JSON.stringify(duplicateMembersResult));
     navigate(`/${workspaceId}/members/${memberId}/members-review`);
   };
 
@@ -124,6 +127,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
             type="text"
             className="input-merge-search focus:outline-none px-3 pr-8 box-border w-20.5 h-3.06 rounded-0.6 shadow-profileCard placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray"
             placeholder="Search Members"
+            value={searchSuggestion}
             onChange={handleSearchTextChange}
           />
           <div className="absolute right-12 w-0.78 h-3 z-40">

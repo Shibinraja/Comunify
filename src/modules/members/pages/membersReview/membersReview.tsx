@@ -2,42 +2,86 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import modalMergeIcon from '../../../../assets/images/merge.svg';
 import mergeIcon from '../../../../assets/images/merged.svg';
-
-import { useAppSelector } from '@/hooks/useRedux';
 import Button from 'common/button';
-import { MergeMembersDataResult } from 'modules/members/interface/members.interface';
+import { MergeMembersDataResponse, MergeMembersDataResult } from 'modules/members/interface/members.interface';
 import Modal from 'react-modal';
 import closeIcon from '../../../../assets/images/close-member.svg';
-import slackIcon from '../../../../assets/images/slack.svg';
 import './membersReview.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import { postAxiosRequest } from '@/lib/axiosRequest';
+import { getAxiosRequest, postAxiosRequest } from '@/lib/axiosRequest';
 
 Modal.setAppElement('#root');
 
 const MembersReview: React.FC = () => {
   const { workspaceId, memberId } = useParams();
   const navigate = useNavigate();
-  const { memberProfileCardData } = useAppSelector((state) => state.members);
+  const memberProfileCardData = JSON.parse(localStorage.getItem('primaryMemberId')!);
   const MergeMembersListData = JSON.parse(localStorage.getItem('merge-membersId')!);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [checkedRadioId, setCheckedRadioId] = useState<Record<string, unknown>>({ [memberProfileCardData[0]?.id]: true });
+  const [checkedRadioId, setCheckedRadioId] = useState<Record<string, unknown>>({ [memberProfileCardData[0]?.comunifyMemberId]: true });
   const handleModal = (val: boolean) => {
     setIsModalOpen(val);
   };
   const [MergeMembersList, setMergeMembersList] = useState<Array<MergeMembersDataResult>>([]);
+  const [primaryMemberId, setPrimaryMemberId] = useState<any>([]);
+  const [suggestionList, setSuggestionList] = useState<MergeMembersDataResponse>({
+    result: [],
+    nextCursor: null
+  });
+
+  // Function to call the api and list the membersSuggestionList
+  const getMergedMemberSuggestionList = (cursor: string | null, prop: string) => {
+    getAxiosRequest(
+      `/v1/${workspaceId}/members/${memberId}/merged-list?page=1&limit=10${
+        cursor ? `&cursor=${cursor}` : suggestionList.nextCursor ? `&cursor=${prop ? '' : suggestionList.nextCursor}` : ''
+      }`
+    ).then((data) =>
+      setSuggestionList((prevState) => ({
+        result: prevState.result.concat(data?.result as unknown as MergeMembersDataResult),
+        nextCursor: data?.nextCursor as string | null
+      }))
+    );
+  };
 
   useEffect(() => {
+    getMergedMemberSuggestionList(null, 'search');
     setMergeMembersList(MergeMembersListData);
-    localStorage.removeItem('merge-membersId');
   }, []);
+
+  useEffect(() => {
+    if (primaryMemberId?.length < 1) {
+      const memberProfileData = [...memberProfileCardData];
+      const platform = memberProfileData[0].platforms;
+      memberProfileData[0].platform = { platformLogoUrl: platform[0].platformLogoUrl };
+      delete memberProfileData[0].platforms;
+      setPrimaryMemberId(memberProfileData);
+    }
+  }, [memberProfileCardData]);
+
+  useEffect(() => {
+    const filteredDuplicateMembers = MergeMembersList?.concat(primaryMemberId).filter((member: MergeMembersDataResult) => {
+      if (member.comunifyMemberId !== Object.keys(checkedRadioId)[0]) {
+        return member;
+      }
+    });
+    // MergeMembersList?.splice((MergeMembersList).indexOf(filteredMembers as unknown as MergeMembersDataResult), 1);
+    const filteredPrimaryMember = MergeMembersList?.concat(primaryMemberId).filter((member: MergeMembersDataResult) => {
+      if (member.comunifyMemberId === Object.keys(checkedRadioId)[0]) {
+        return member;
+      }
+    });
+    if (filteredPrimaryMember?.length) {
+      setMergeMembersList(filteredDuplicateMembers);
+      setPrimaryMemberId(filteredPrimaryMember);
+    }
+  }, [checkedRadioId]);
 
   const handleRadioBtn = (event: ChangeEvent<HTMLInputElement>) => {
     const checked_id: string = event.target.name;
     setCheckedRadioId({ [checked_id]: event.target.checked });
   };
 
-  // Function to remove the desired potentital duplicate member from the list
+  // Function to remove the desired potential duplicate member from the list
   const handleRemoveMember = (memberId: string) => {
     const filteredMembers = MergeMembersList?.filter((member: MergeMembersDataResult) => {
       if (member.id !== memberId) {
@@ -51,14 +95,15 @@ const MembersReview: React.FC = () => {
 
   // Function to confirm submit the possible list to be merged and call api.
   const handleMergeMembers = () => {
-    const mergeList = MergeMembersList.map((member: MergeMembersDataResult) => ({
+    const mergeList = MergeMembersList.concat(suggestionList.result).map((member: MergeMembersDataResult) => ({
       primaryMemberId: Object.keys(checkedRadioId)[0],
       memberId: member.comunifyMemberId
     }));
     mergeList.push({
-      primaryMemberId: memberProfileCardData[0]?.comunifyMemberId,
-      memberId: memberProfileCardData[0]?.comunifyMemberId
+      primaryMemberId: Object.keys(checkedRadioId)[0],
+      memberId: Object.keys(checkedRadioId)[0]
     });
+
     postAxiosRequest(
       `/v1/${workspaceId}/members/${memberId}/merge`,
       {
@@ -67,9 +112,10 @@ const MembersReview: React.FC = () => {
       // eslint-disable-next-line no-unused-vars
     ).then((data) => {
       setIsModalOpen(false);
-      navigate(`/${workspaceId}/members/${memberId}/profile`);
+      navigate(`/${workspaceId}/members/${Object.keys(checkedRadioId)[0]}/merged-members`);
     });
   };
+
   return (
     <div className=" mx-auto mt-[3.3125rem]">
       <div className="flex justify-between items-center border-review pb-5">
@@ -135,33 +181,34 @@ const MembersReview: React.FC = () => {
         <div className="relative">
           <h3 className="font-Poppins font-semibold leading-1.56 text-infoBlack text-base">Primary Member</h3>
           <div className="flex flex-wrap gap-5">
-            <div className="flex items-center app-input-card-border box-border w-26.25 h-7.5 shadow-profileCard rounded-0.6 pl-1.313 mt-5">
+            <div className="flex items-center app-input-card-border box-border w-26.25 h-7.5 shadow-profileCard rounded-0.6 pl-1.313 mt-5 ">
               <div className="w-16 h-16">
-                <img src={memberProfileCardData[0]?.profileUrl} alt="" />
+                <img src={primaryMemberId[0]?.profileUrl} alt="" />
               </div>
               <div className="flex flex-col pl-3">
-                <div className="font-Poppins font-semibold text-trial text-profileBlack leading-1.31">{memberProfileCardData[0]?.name}</div>
+                <div className="font-Poppins font-semibold text-trial text-profileBlack leading-1.31">{primaryMemberId[0]?.name}</div>
                 <div className="font-Poppins font-normal text-email text-profileBlack leading-1.31">
-                  {memberProfileCardData[0]?.email} | {memberProfileCardData[0]?.organization}
+                  {' '}
+                  {primaryMemberId[0]?.email} | {primaryMemberId[0]?.organization}
                 </div>
                 <div className="flex mt-2.5">
                   <div className="w-1.001 h-1.001 mr-0.34">
-                    <img src={slackIcon} alt="" />
+                    <img src={primaryMemberId[0]?.platform.platformLogoUrl} alt="" />
                   </div>
                 </div>
                 <div className="flex absolute left-[20rem] bottom-4 items-center">
-                  <label htmlFor={memberProfileCardData[0]?.id} className="flex items-center">
+                  <label htmlFor={primaryMemberId[0]?.id} className="flex items-center">
                     <input
                       type="radio"
                       className="hidden peer"
-                      name={memberProfileCardData[0]?.comunifyMemberId}
-                      id={memberProfileCardData[0]?.id}
-                      value={memberProfileCardData[0]?.comunifyMemberId}
-                      checked={(checkedRadioId[memberProfileCardData[0]?.comunifyMemberId] as boolean) || false}
+                      name={primaryMemberId[0]?.comunifyMemberId}
+                      id={primaryMemberId[0]?.id}
+                      value={primaryMemberId[0]?.comunifyMemberId}
+                      checked={(checkedRadioId[primaryMemberId[0]?.comunifyMemberId] as boolean) || false}
                       onChange={handleRadioBtn}
                     />{' '}
                     <span className="w-3 h-3 mr-1.5 border font-normal font-Poppins text-card leading-1.31 border-[#ddd] rounded-full inline-flex peer-checked:bg-[#ABCF6B]"></span>
-                  Primary
+                    Primary
                   </label>
                 </div>
               </div>

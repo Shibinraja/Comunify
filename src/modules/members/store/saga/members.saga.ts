@@ -218,6 +218,7 @@ function* getMemberProfileCardData(action: PayloadAction<VerifyMembers>) {
     yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.getMemberProfileCardData.type));
     const res: SuccessResponse<MemberProfileCard[]> = yield call(GetMembersProfileCardService, action.payload);
     yield put(membersSlice.actions.setMemberProfileCardData(res?.data));
+    localStorage.setItem('primaryMemberId', JSON.stringify(res?.data));
   } catch (e) {
     const error = e as AxiosError<unknown>;
   } finally {

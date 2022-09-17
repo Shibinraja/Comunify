@@ -5,6 +5,7 @@ import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 import Button from 'common/button';
 import Input from 'common/input';
 import MergeModal from 'common/modals/MergeModal';
+import { MergeModalPropsEnum } from 'common/modals/MergeModalTypes';
 import { count_5, width_90 } from 'constants/constants';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
 import React, { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from 'react';
@@ -344,7 +345,10 @@ const MembersProfile: React.FC = () => {
     );
   };
 
-  const MergeModalComponent = useMemo(() => <MergeModal modalOpen={isModalOpen} setModalOpen={setIsModalOpen} />, [isModalOpen]);
+  const MergeModalComponent = useMemo(
+    () => <MergeModal modalOpen={isModalOpen} setModalOpen={setIsModalOpen} type={MergeModalPropsEnum.MergeMember} />,
+    [isModalOpen]
+  );
 
   return (
     <div className="flex pt-3.93 w-full">
@@ -579,11 +583,11 @@ const MembersProfile: React.FC = () => {
                   {data?.email} || {data?.organization}
                 </div>
                 <div className="flex gap-1 pt-1.12">
-                  {data?.platforms.map((platformData) => (
+                  {/* {data?.platforms.map((platformData) => (
                     <div key={`${platformData?.id + platformData?.name}`}>
                       <img src={platformData?.platformLogoUrl} alt="" className="rounded-full w-[1.0012rem] h-[1.0012rem]" />
                     </div>
-                  ))}
+                  ))} */}
                 </div>
               </div>
             </div>
@@ -695,7 +699,7 @@ const MembersProfile: React.FC = () => {
             type="button"
             text={memberProfileCardData[0]?.isMerged ? 'Merged Members' : 'Merge Members'}
             className="cursor-pointer border-none font-Poppins font-medium text-search leading-5 btn-save-modal hover:shadow-buttonShadowHover transition ease-in duration-300 text-white shadow-contactBtn rounded-0.3 w-full h-3.06"
-            onClick={() => handleModal(true)}
+            onClick={() => (memberProfileCardData[0]?.isMerged ? navigate(`/${workspaceId}/members/${memberId}/merged-members`) : handleModal(true))}
           />
         </div>
       </div>

@@ -195,7 +195,6 @@ export type MergeMembersDataResponse = {
   result: MergeMembersDataResult[];
   nextCursor: string | null;
 };
-
 export interface ActivityInfiniteScroll {
   workspaceId: string;
   memberId: string;
@@ -268,10 +267,13 @@ export interface MemberProfileCard {
   platformMemberId: string;
   createdAt: Date | string;
   updatedAt: Date | string;
-  platforms: {
+  platforms?: {
     id: string;
     name: string;
     platformLogoUrl: string;
   }[];
   tags: TagResponseData[];
+  platform?: {
+    platformLogoUrl: string;
+  };
 }
