@@ -636,22 +636,25 @@ const MembersProfile: React.FC = () => {
                         errors={Boolean(errorMessage)}
                         helperText={errorMessage}
                       />
-                      <div
-                        className={`bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 ${
-                          tagDropDownOption ? '' : 'hidden'
-                        }`}
-                      >
-                        {TagFilterResponseData?.map((data: TagResponseData) => (
-                          <div
-                            ref={tagDropDownRef}
-                            key={data.id}
-                            className="p-2 text-searchBlack cursor-pointer font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300"
-                            onClick={() => handleSelectTagName(data.name, data.id)}
-                          >
-                            {data.name}
-                          </div>
-                        ))}
-                      </div>
+                      {!errorMessage && (
+                        <div
+                          className={`bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 ${
+                            tagDropDownOption ? '' : 'hidden'
+                          }`}
+                        >
+                          {TagFilterResponseData?.map((data: TagResponseData) => (
+                            <div
+                              ref={tagDropDownRef}
+                              key={data.id}
+                              className="p-2 text-searchBlack cursor-pointer font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300"
+                              onClick={() => handleSelectTagName(data.name, data.id)}
+                            >
+                              {data.name}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
                       <div className="flex absolute right-1 top-24 pr-6 items-center">
                         <Button
                           type="button"
