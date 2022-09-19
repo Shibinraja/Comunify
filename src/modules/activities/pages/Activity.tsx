@@ -677,7 +677,7 @@ const Activity: React.FC = () => {
                             errors={Boolean(errorMessage)}
                             helperText={errorMessage}
                           />
-                          <div
+                          {!errorMessage &&   <div
                             className={`bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 ${
                               tagDropDownOption ? '' : 'hidden'
                             }`}
@@ -692,7 +692,7 @@ const Activity: React.FC = () => {
                                 {data.name}
                               </div>
                             ))}
-                          </div>
+                          </div>}
                           <div className="flex justify-end pt-10 items-center">
                             <Button
                               type="button"

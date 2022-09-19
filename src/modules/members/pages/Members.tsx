@@ -128,6 +128,8 @@ const Members: React.FC = () => {
     );
     dispatch(membersSlice.actions.membersColumnsList({ workspaceId: workspaceId! }));
     setCustomDateLink({ '1day': false, '7day': false, '1month': false });
+    localStorage.removeItem('primaryMemberId');
+    localStorage.removeItem('merge-membersId');
   }, []);
 
   useEffect(() => {
@@ -161,7 +163,12 @@ const Members: React.FC = () => {
   // Returns the debounced value of the search text.
   useEffect(() => {
     if (debouncedValue) {
-      getFilteredMembersList(1, debouncedValue, customStartDate ?  customStartDate && convertStartDate(customStartDate) :  customSingleStartDate && convertStartDate(customSingleStartDate), customEndDate && convertEndDate(customEndDate));
+      getFilteredMembersList(
+        1,
+        debouncedValue,
+        customStartDate ? customStartDate && convertStartDate(customStartDate) : customSingleStartDate && convertStartDate(customSingleStartDate),
+        customEndDate && convertEndDate(customEndDate)
+      );
     }
   }, [debouncedValue]);
 
@@ -249,7 +256,12 @@ const Members: React.FC = () => {
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
     if (!searchText) {
-      getFilteredMembersList(1, searchText, customStartDate ?  customStartDate && convertStartDate(customStartDate) :  customSingleStartDate && convertStartDate(customSingleStartDate), customEndDate && convertEndDate(customEndDate));
+      getFilteredMembersList(
+        1,
+        searchText,
+        customStartDate ? customStartDate && convertStartDate(customStartDate) : customSingleStartDate && convertStartDate(customSingleStartDate),
+        customEndDate && convertEndDate(customEndDate)
+      );
     }
     setSearchText(searchText);
   };
@@ -275,23 +287,24 @@ const Members: React.FC = () => {
 
   // Function to map customized column with api data response to create a new column array with index matching with customized column.
   // eslint-disable-next-line max-len
-  const customizedColumn = data?.reduce((acc: Array<Record<string, unknown>>, currentValue: Record<string, unknown>): Array<
-    Record<string, unknown>
-  > => {
-    const accumulatedColumn: Record<string, unknown> = {};
-    const memberValue = { ...currentValue };
-    columns.forEach((column: ColumnNameProps) => {
-      // eslint-disable-next-line no-prototype-builtins
-      if (memberValue.hasOwnProperty(column.id)) {
-        if (column.isDisplayed) {
-          accumulatedColumn[column.id] = memberValue[column.id];
+  const customizedColumn = data?.reduce(
+    (acc: Array<Record<string, unknown>>, currentValue: Record<string, unknown>): Array<Record<string, unknown>> => {
+      const accumulatedColumn: Record<string, unknown> = {};
+      const memberValue = { ...currentValue };
+      columns.forEach((column: ColumnNameProps) => {
+        // eslint-disable-next-line no-prototype-builtins
+        if (memberValue.hasOwnProperty(column.id)) {
+          if (column.isDisplayed) {
+            accumulatedColumn[column.id] = memberValue[column.id];
+          }
         }
-      }
-    });
-    accumulatedColumn['name'] = { name: accumulatedColumn['name'], id: currentValue.id };
-    acc.push(accumulatedColumn);
-    return acc;
-  }, []);
+      });
+      accumulatedColumn['name'] = { name: accumulatedColumn['name'], id: currentValue.id };
+      acc.push(accumulatedColumn);
+      return acc;
+    },
+    []
+  );
 
   const handleClickDatePickerIcon = (type: string) => {
     if (type === 'start') {
@@ -318,9 +331,10 @@ const Members: React.FC = () => {
   };
 
   // Memoized functionality to stop re-render.
-  const membersColumn = useMemo(() => <MembersDraggableColumn MembersColumn={customizedColumnBool} handleModalClose={handleModalClose} />, [
-    customizedColumnBool
-  ]);
+  const membersColumn = useMemo(
+    () => <MembersDraggableColumn MembersColumn={customizedColumnBool} handleModalClose={handleModalClose} />,
+    [customizedColumnBool]
+  );
 
   const MemberFilter = useMemo(
     () => (
@@ -349,7 +363,7 @@ const Members: React.FC = () => {
         </div>
         <div
           className={`day w-1/3 h-3.06 flex items-center justify-center ml-5 box-border rounded-0.6 ${
-            customDateLink['1day'] ? 'border-gradient-rounded' : 'app-input-card-border'
+            customDateLink['1day'] ? 'border-gradient-rounded-member' : 'app-input-card-border'
           } shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
           onClick={() => selectCustomDate('1day')}
         >
@@ -357,7 +371,7 @@ const Members: React.FC = () => {
         </div>
         <div
           className={`day w-1/3 h-3.06 flex items-center justify-center ml-5  box-border rounded-0.6 ${
-            customDateLink['7day'] ? 'border-gradient-rounded' : 'app-input-card-border'
+            customDateLink['7day'] ? 'border-gradient-rounded-member' : 'app-input-card-border'
           } shadow-shadowInput font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
           onClick={() => selectCustomDate('7day')}
         >
@@ -365,7 +379,7 @@ const Members: React.FC = () => {
         </div>
         <div
           className={`day w-1/3 h-3.06 flex items-center justify-center ml-5 box-border rounded-0.6 ${
-            customDateLink['1month'] ? 'border-gradient-rounded' : 'app-input-card-border'
+            customDateLink['1month'] ? 'border-gradient-rounded-member' : 'app-input-card-border'
           } shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
           onClick={() => selectCustomDate('1month')}
         >
