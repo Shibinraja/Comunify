@@ -94,7 +94,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
 
   // function for scroll event
   const handleScroll = (event: React.UIEvent<HTMLElement>) => {
-    event.preventDefault();
+    // event.preventDefault();
     const { clientHeight, scrollHeight, scrollTop } = event.currentTarget;
     if (scrollHeight - scrollTop === clientHeight) {
       setActivityNextCursor(suggestionList.nextCursor);
@@ -180,7 +180,9 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
             <img src={searchIcon} alt="" />
           </div>
         </div>
+        {!MergeMemberList?.length && <div className="font-Poppins font-medium text-tableDuration text-lg leading-10 pt-8 pl-2"> No data found</div>}
         <div className="flex flex-col  member-section-model max-h-96 overflow-y-auto" onScroll={handleScroll}>
+
           {loading ? (
             <div className='flex flex-col  gap-5 overflow-scroll '>
               <Skeleton width={500} className={'my-4'} count={6} />
