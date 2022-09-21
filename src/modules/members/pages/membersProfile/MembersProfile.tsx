@@ -313,6 +313,7 @@ const MembersProfile: React.FC = () => {
     }
   };
 
+  // Tag Name assign functionality
   const handleAssignTagsName = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     if (errorMessage || !searchText) {
@@ -332,6 +333,7 @@ const MembersProfile: React.FC = () => {
     }
   };
 
+  // Tag Name un-assign functionality
   const handleUnAssignTagsName = (id: string): void => {
     dispatch(
       settingsSlice.actions.unAssignTags({
@@ -345,10 +347,11 @@ const MembersProfile: React.FC = () => {
     );
   };
 
-  const MergeModalComponent = useMemo(
-    () => <MergeModal modalOpen={isModalOpen} setModalOpen={setIsModalOpen} type={MergeModalPropsEnum.MergeMember} />,
-    [isModalOpen]
-  );
+  const MergeModalComponent = useMemo(() => {
+    if (isModalOpen) {
+      return <MergeModal modalOpen={isModalOpen} setModalOpen={setIsModalOpen} type={MergeModalPropsEnum.MergeMember} />;
+    }
+  }, [isModalOpen]);
 
   return (
     <div className="flex pt-3.93 w-full">

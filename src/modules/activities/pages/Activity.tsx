@@ -494,7 +494,7 @@ const Activity: React.FC = () => {
                                       email: data?.email,
                                       memberName: data?.memberName,
                                       organization: data?.organization,
-                                      memberProfileUrl: `/${workspaceId}/members/${data.memberId}/profile`,
+                                      memberProfileUrl: `/${workspaceId}/members/${data.primaryMemberId}/profile`,
                                       profilePictureUrl: data?.memberProfile,
                                       platformLogoUrl: data?.platformLogoUrl
                                     });

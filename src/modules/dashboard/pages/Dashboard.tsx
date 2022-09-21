@@ -6,7 +6,7 @@ import brickIcon from '../../../assets/images/brick.svg';
 import dropDownIcon from '../../../assets/images/profile-dropdown.svg';
 import calendarIcon from '../../../assets/images/calandar.svg';
 import widgetSearchIcon from '../../../assets/images/widget-search.svg';
-
+import noWidgetIcon from '../../../assets/images/no-widget.svg';
 import HealthCard from 'common/healthCard/HealthCard';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -225,6 +225,10 @@ const Dashboard: React.FC = () => {
           <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18  mt-1.258 ">Members</h3>
           <MembersTab />
         </div>
+      </div>
+      <div className="flex flex-col items-center justify-center fixTableHead-nomember hidden">
+        <img src={noWidgetIcon} alt="" className="w-[3.8125rem] h-[3.8125rem]" />
+        <div className="font-Poppins font-medium text-tableDuration text-noReports leading-10 pt-5">No widgets added</div>
       </div>
     </>
   );

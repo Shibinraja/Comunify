@@ -95,6 +95,7 @@ export interface ActiveStreamData {
   email: string;
   memberProfile: string;
   totalCount: number;
+  primaryMemberId: string
 }
 
 export interface ActiveStreamResponse {
