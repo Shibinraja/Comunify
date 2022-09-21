@@ -247,7 +247,11 @@ const MergedMembers: React.FC = () => {
           <div className="flex flex-wrap gap-5">
             <div className="flex items-center app-input-card-border box-border w-26.25 h-7.5 shadow-profileCard rounded-0.6 pl-1.313 mt-5 ">
               <div className="w-16 h-16">
-                {!primaryMemberId?.length ? <Skeleton circle height="100%" /> : <img src={primaryMemberId[0]?.profileUrl} alt="" />}
+                {!primaryMemberId?.length ? (
+                  <Skeleton circle height="100%" />
+                ) : (
+                  <img src={primaryMemberId[0]?.profileUrl} alt="" className="w-16 h-16 rounded-full" />
+                )}
               </div>
               <div className="flex flex-col pl-3">
                 <div className="font-Poppins font-semibold text-trial text-profileBlack leading-1.31">
@@ -292,7 +296,9 @@ const MergedMembers: React.FC = () => {
               suggestionList?.result?.map((members: MergeMembersDataResult) => (
                 <div key={members.id}>
                   <div className="flex items-center primary-card box-border app-input-card-border w-26.25 h-7.5 shadow-profileCard rounded-0.6 pl-1.313 mt-5 relative">
-                    <div className="w-16 h-16">{loading ? <Skeleton circle height="100%" /> : <img src={members.profileUrl} alt="" />}</div>
+                    <div className="w-16 h-16">
+                      {loading ? <Skeleton circle height="100%" /> : <img src={members.profileUrl} alt="" className="w-16 h-16 rounded-full" />}
+                    </div>
                     <div className="flex flex-col pl-3">
                       <div className="font-Poppins font-semibold text-trial text-profileBlack leading-1.31">
                         {' '}
