@@ -153,7 +153,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
       isOpen={modalOpen}
       shouldCloseOnOverlayClick={false}
       onRequestClose={() => setModalOpen(false)}
-      className="w-24.31 mx-auto  mt-32 rounded-lg modals-tag bg-white shadow-modal "
+      className="w-24.31  mx-auto rounded-lg modals-tag bg-white shadow-modal pt-10 pb-53 px-8"
       style={{
         overlay: {
           display: 'flex',
@@ -171,22 +171,22 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
         <div className="flex relative items-center mt-1.43">
           <input
             type="text"
-            className="input-merge-search focus:outline-none px-3 pr-8 box-border w-20.5 h-3.06 rounded-0.6 shadow-profileCard placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray"
+            className="input-merge-search focus:outline-none px-3 pr-8 box-border border border-borderPrimary w-20.5 h-3.06 rounded-0.6 shadow-profileCard placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray"
             placeholder="Search Members"
             value={searchSuggestion}
             onChange={handleSearchTextChange}
           />
-          <div className="absolute right-12 w-0.78 h-3 z-40">
+          <div className="absolute right-4 w-0.78 h-3 z-40">
             <img src={searchIcon} alt="" />
           </div>
         </div>
-        <div className="flex flex-col gap-5 overflow-scroll overflow-y-scroll member-section mt-1.8 height-member-merge" onScroll={handleScroll}>
+        <div className="flex flex-col gap-5 overflow-scroll  member-section mt-1.8 max-h-96 overflow-y-auto" onScroll={handleScroll}>
           {loading ? (
             <Skeleton width={500} className={'my-4'} count={6} />
           ) : (
             suggestionList?.result &&
             MergeMemberList.map((member: MergeMembersDataResult, index: number) => (
-              <div className="flex" key={index}>
+              <div className="flex border-b border-activitySubCard pb-4 pt-4" key={index}>
                 <div className="mr-0.34">
                   <input
                     type="checkbox"
@@ -197,7 +197,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
                     onChange={handleCheckBox}
                   />
                 </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col ">
                   {/* Reg Exp function to highlight and show all the values matched with search suggestion string.  */}
                   <div
                     className={`font-Poppins font-medium text-trial text-infoBlack leading-1.31 ${
@@ -219,7 +219,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
             ))
           )}
         </div>
-        <div className="flex justify-end pr-6 mt-1.8 pb-[3.3094rem]">
+        <div className="flex justify-end mt-1.8">
           <Button
             type="button"
             text="CANCEL"
