@@ -94,7 +94,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
 
   // function for scroll event
   const handleScroll = (event: React.UIEvent<HTMLElement>) => {
-    event.preventDefault();
+    // event.preventDefault();
     const { clientHeight, scrollHeight, scrollTop } = event.currentTarget;
     if (scrollHeight - scrollTop === clientHeight) {
       setActivityNextCursor(suggestionList.nextCursor);
