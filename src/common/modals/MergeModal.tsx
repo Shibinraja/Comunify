@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
@@ -97,7 +98,10 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
     event.preventDefault();
     const { clientHeight, scrollHeight, scrollTop } = event.currentTarget;
 
-    if (clientHeight + scrollTop === scrollHeight) {
+    console.log({ scrollHeight, scrollTop, clientHeight });
+    console.log('err', Math.floor(scrollHeight) - Math.floor(scrollTop) === Math.floor(clientHeight));
+    console.log('err', event);
+    if (Math.floor(scrollHeight) - Math.floor(scrollTop) === Math.floor(clientHeight)) {
       setActivityNextCursor(suggestionList.nextCursor);
       if (suggestionList.nextCursor !== null && !loading) {
         getMemberList({
