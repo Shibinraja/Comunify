@@ -6,7 +6,7 @@ import Button from 'common/button';
 import { MergeMembersDataResponse, MergeMembersDataResult } from 'modules/members/interface/members.interface';
 import { getMemberSuggestionList } from 'modules/members/services/members.services';
 import { memberSuggestionType } from 'modules/members/services/service.types';
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import Modal from 'react-modal';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -29,7 +29,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
 
   const CheckedDuplicateMembers = new Set();
   const debouncedValue = useDebounce(searchSuggestion, 300);
-
+  const member_scroll = useRef<HTMLDivElement>(null);
   // Function to call the api and list the membersSuggestionList
   const getMemberList = (props: Partial<memberSuggestionType>) => {
     getMemberSuggestionList(
@@ -94,9 +94,10 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
 
   // function for scroll event
   const handleScroll = (event: React.UIEvent<HTMLElement>) => {
-    // event.preventDefault();
+    event.preventDefault();
     const { clientHeight, scrollHeight, scrollTop } = event.currentTarget;
-    if (scrollHeight - scrollTop === clientHeight) {
+
+    if (clientHeight + scrollTop === scrollHeight) {
       setActivityNextCursor(suggestionList.nextCursor);
       if (suggestionList.nextCursor !== null && !loading) {
         getMemberList({
@@ -181,10 +182,13 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
           </div>
         </div>
         {!MergeMemberList?.length && <div className="font-Poppins font-medium text-tableDuration text-lg leading-10 pt-8 pl-2"> No data found</div>}
-        <div className="flex flex-col  member-section-model max-h-96 overflow-y-auto" onScroll={handleScroll}>
-
+        <div
+          className="flex flex-col gap-5 overflow-scroll overflow-y-scroll member-section mt-1.8 height-member-merge"
+          onScroll={handleScroll}
+          ref={member_scroll}
+        >
           {loading ? (
-            <div className='flex flex-col  gap-5 overflow-scroll '>
+            <div className="flex flex-col  gap-5 overflow-scroll ">
               <Skeleton width={500} className={'my-4'} count={6} />
             </div>
           ) : (
