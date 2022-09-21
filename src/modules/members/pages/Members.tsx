@@ -349,8 +349,8 @@ const Members: React.FC = () => {
       <div className="member-card pt-10">
         <MembersCard />
       </div>
-      <div className="flex mt-1.8 items-center ">
-        <div className="flex relative items-center ">
+      <div className="flex flex-col xl:flex-row  justify-between mt-1.8 i ">
+        <div className="flex relative items-center w-19.06">
           <input
             type="text"
             className="focus:outline-none px-3 pr-8 box-border w-19.06 h-3.06  rounded-0.6  placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray shadow-shadowInput"
@@ -361,8 +361,9 @@ const Members: React.FC = () => {
             <img src={searchIcon} alt="" />
           </div>
         </div>
+        <div className='flex justify-between xl:justify-start mt-4 xl:mt-0'>
         <div
-          className={`day w-1/3 h-3.06 flex items-center justify-center ml-5 box-border rounded-0.6 ${
+          className={`day w-[49px] h-3.06 flex items-center justify-center ml-0 xl:ml-0.652 box-border rounded-0.6 ${
             customDateLink['1day'] ? 'border-gradient-rounded-member' : 'app-input-card-border'
           } shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
           onClick={() => selectCustomDate('1day')}
@@ -370,7 +371,7 @@ const Members: React.FC = () => {
           1D
         </div>
         <div
-          className={`day w-1/3 h-3.06 flex items-center justify-center ml-5  box-border rounded-0.6 ${
+          className={`day w-[49px] h-3.06 flex items-center justify-center ml-0.652 box-border rounded-0.6 ${
             customDateLink['7day'] ? 'border-gradient-rounded-member' : 'app-input-card-border'
           } shadow-shadowInput font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
           onClick={() => selectCustomDate('7day')}
@@ -378,14 +379,14 @@ const Members: React.FC = () => {
           7D
         </div>
         <div
-          className={`day w-1/3 h-3.06 flex items-center justify-center ml-5 box-border rounded-0.6 ${
+          className={`day w-[49px] h-3.06 flex items-center justify-center ml-0.652 box-border rounded-0.6 ${
             customDateLink['1month'] ? 'border-gradient-rounded-member' : 'app-input-card-border'
           } shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
           onClick={() => selectCustomDate('1month')}
         >
           1M
         </div>
-        <div className="box-border cursor-pointer rounded-0.6 shadow-contactCard app-input-card-border relative ml-5" ref={dropDownRef}>
+        <div className="box-border cursor-pointer rounded-0.6 shadow-contactCard app-input-card-border relative ml-0.652" ref={dropDownRef}>
           <div className="flex h-3.06 w-[11.25rem] items-center justify-between px-5 " onClick={handleFilterDropdown}>
             <div className="box-border rounded-0.6 shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">
               Custom Date
@@ -442,16 +443,18 @@ const Members: React.FC = () => {
           )}
         </div>
 
-        <div className="ml-1.30 w-[800px]">{MemberFilter}</div>
-        <div className="ml-0.652">
+        <div className="ml-1.30 w-[155px]">{MemberFilter}</div>
+        <div className="ml-0.652 w-[112px]">
           <div
-            className="export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex ml-0.63 cursor-pointer hover:border-infoBlack transition ease-in-out duration-300"
+            className="export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex cursor-pointer hover:border-infoBlack transition ease-in-out duration-300"
             onClick={fetchMembersListExportData}
           >
             <h3 className="text-memberDay leading-1.12 font-Poppins font-semibold text-card">Export</h3>
             <img src={exportImage} alt="" />
           </div>
         </div>
+        </div>
+
       </div>
       {customizedColumn && (customizedColumn?.[0]?.name as { name: string; id: string })?.name ? (
         <div className="memberTable mt-1.8">
