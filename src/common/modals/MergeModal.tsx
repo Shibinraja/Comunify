@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
 import useDebounce from '@/hooks/useDebounce';
-import { getAxiosRequest } from '@/lib/axiosRequest';
 import Button from 'common/button';
 import { MergeMembersDataResponse, MergeMembersDataResult } from 'modules/members/interface/members.interface';
+import { getMemberSuggestionList } from 'modules/members/services/members.services';
+import { memberSuggestionType } from 'modules/members/services/service.types';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import Modal from 'react-modal';
@@ -23,7 +25,9 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
   });
   const [loading, setLoading] = useState<boolean>(false);
   const [checkedMemberId, setCheckedMemberId] = useState<Record<string, unknown>>({});
+  const [duplicateMembers, setDuplicateMembers] = useState<Array<MergeMembersDataResult>>([]);
 
+  const CheckedDuplicateMembers = new Set();
   const debouncedValue = useDebounce(searchSuggestion, 300);
 
   const handleCheckBox = (event: ChangeEvent<HTMLInputElement>) => {
@@ -32,11 +36,16 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
   };
 
   // Function to call the api and list the membersSuggestionList
-  const getMemberSuggestionList = (cursor: string | null, prop: string) => {
-    getAxiosRequest(
-      `/v1/${workspaceId}/members/${memberId}/merge-suggestion-list?page=1&limit=10${
-        cursor ? `&cursor=${cursor}` : suggestionList.nextCursor ? `&cursor=${prop ? '' : suggestionList.nextCursor}` : ''
-      }${debouncedValue ? `&search=${debouncedValue}` : ''}`,
+  const getMemberList = (props: Partial<memberSuggestionType>) => {
+    getMemberSuggestionList(
+      {
+        workspaceId: workspaceId!,
+        memberId: memberId!,
+        cursor: props.cursor as string | null,
+        prop: props.prop as string,
+        search: props.search as string,
+        suggestionListCursor: props.suggestionListCursor as string | null
+      },
       setLoading
     ).then((data) =>
       setSuggestionList((prevState) => ({
@@ -46,16 +55,46 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
     );
   };
 
+  //useEffect to call the api at initial load.
   useEffect(() => {
     setSuggestionList({
       result: [],
       nextCursor: null
     });
-    getMemberSuggestionList(null, 'search');
+    getMemberList({
+      cursor: null,
+      prop: 'search',
+      search: debouncedValue,
+      suggestionListCursor: suggestionList.nextCursor
+    });
   }, [debouncedValue]);
 
+  // Effect to fetch the member which are checked to continue to merge with the primary member id.
   useEffect(() => {
-    setSearchSuggestion('');
+    if (Object.keys(checkedMemberId).length > 0) {
+      Object.keys(checkedMemberId).map((memberId: string) => {
+        suggestionList.result.filter((memberList: MergeMembersDataResult) => {
+          if (checkedMemberId[memberId] === true) {
+            if (memberList.id === memberId) {
+              setDuplicateMembers((prevMember) => [...new Set(prevMember), memberList]);
+            }
+          }
+          if (checkedMemberId[memberId] === false) {
+            if (memberList.id === memberId) {
+              setDuplicateMembers((prevMember) => {
+                const CheckedMembers = [...prevMember];
+                CheckedMembers?.splice(
+                  CheckedMembers.findIndex((memberId) => memberId.id === memberList.id),
+                  1
+                );
+                return CheckedMembers;
+              });
+            }
+          }
+        });
+      });
+    }
+    // setSearchSuggestion('');
   }, [checkedMemberId]);
 
   // function for scroll event
@@ -65,42 +104,48 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
     if (scrollHeight - scrollTop === clientHeight) {
       setActivityNextCursor(suggestionList.nextCursor);
       if (suggestionList.nextCursor !== null && !loading) {
-        getMemberSuggestionList(suggestionList.nextCursor, '');
+        getMemberList({
+          cursor: suggestionList.nextCursor,
+          prop: '',
+          search: debouncedValue,
+          suggestionListCursor: null
+        });
       }
     }
   };
 
+  //Function to search of the desired members from DB.
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
     if (!searchText) {
       setSearchSuggestion('');
-      getMemberSuggestionList(null, 'search');
+      getMemberList({
+        cursor: null,
+        prop: 'search',
+        search: debouncedValue,
+        suggestionListCursor: suggestionList.nextCursor
+      });
     }
     setSearchSuggestion(searchText);
   };
 
+  // Routes to review-suggestion page with the members checked from the list.
   const navigateToReviewMerge = () => {
-    const duplicateMembersResult: Array<MergeMembersDataResult> = [];
-    if (Object.keys(checkedMemberId).length > 0) {
-      Object.keys(checkedMemberId).map((memberId: string) => {
-        suggestionList.result.filter((memberList: MergeMembersDataResult) => {
-          if (checkedMemberId[memberId] === true) {
-            if (memberList.id === memberId) {
-              duplicateMembersResult.push(memberList);
-            }
-          }
-          if (checkedMemberId[memberId] === false) {
-            if (memberList.id === memberId) {
-              duplicateMembersResult.push(memberList);
-              duplicateMembersResult?.splice(duplicateMembersResult.indexOf(memberId as unknown as MergeMembersDataResult), 1);
-            }
-          }
-        });
-      });
+    if (duplicateMembers.length) {
+      localStorage.setItem('merge-membersId', JSON.stringify(duplicateMembers));
+      navigate(`/${workspaceId}/members/${memberId}/members-review`);
     }
-    localStorage.setItem('merge-membersId', JSON.stringify(duplicateMembersResult));
-    navigate(`/${workspaceId}/members/${memberId}/members-review`);
   };
+
+  // Function to concat the data checked with the api response list and show the checked data at first for readability,
+  const MembersList = duplicateMembers.concat(suggestionList.result).filter((member: MergeMembersDataResult) => {
+    const duplicate = CheckedDuplicateMembers.has(member.comunifyMemberId);
+    CheckedDuplicateMembers.add(member.comunifyMemberId);
+    return !duplicate;
+  });
+
+  // Ternary Condition to show the list needed in the pop-up
+  const MergeMemberList = searchSuggestion ? suggestionList.result : MembersList;
 
   return (
     <Modal
@@ -139,8 +184,8 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
             <Skeleton width={500} className={'my-4'} count={6} />
           ) : (
             suggestionList?.result &&
-            suggestionList?.result?.map((member: MergeMembersDataResult) => (
-              <div className="flex" key={member.id}>
+            MergeMemberList.map((member: MergeMembersDataResult, index: number) => (
+              <div className="flex" key={index}>
                 <div className="mr-0.34">
                   <input
                     type="checkbox"
@@ -152,7 +197,14 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
                   />
                 </div>
                 <div className="flex flex-col">
-                  <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31">{member.name}</div>
+                  {/* Reg Exp function to highlight and show all the values matched with search suggestion string.  */}
+                  <div
+                    className={`font-Poppins font-medium text-trial text-infoBlack leading-1.31 ${
+                      new RegExp(!searchSuggestion ? '/' : searchSuggestion).test(member.name.toLocaleLowerCase()) ? 'bg-yellow-500' : ''
+                    }`}
+                  >
+                    {member.name}
+                  </div>
                   <div className="text-tagEmail font-Poppins font-normal leading-1.31 text-email pl-1">
                     {member.email} | {member.organization}
                   </div>

@@ -345,10 +345,11 @@ const MembersProfile: React.FC = () => {
     );
   };
 
-  const MergeModalComponent = useMemo(
-    () => <MergeModal modalOpen={isModalOpen} setModalOpen={setIsModalOpen} type={MergeModalPropsEnum.MergeMember} />,
-    [isModalOpen]
-  );
+  const MergeModalComponent = useMemo(() => {
+    if (isModalOpen) {
+      return <MergeModal modalOpen={isModalOpen} setModalOpen={setIsModalOpen} type={MergeModalPropsEnum.MergeMember} />;
+    }
+  }, [isModalOpen]);
 
   return (
     <div className="flex pt-3.93 w-full">
