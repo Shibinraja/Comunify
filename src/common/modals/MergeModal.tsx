@@ -153,7 +153,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
       isOpen={modalOpen}
       shouldCloseOnOverlayClick={false}
       onRequestClose={() => setModalOpen(false)}
-      className="w-24.31  mx-auto rounded-lg modals-tag bg-white shadow-modal pt-10 pb-53 px-8"
+      className="w-24.31  mx-auto rounded-lg modals-tag bg-white shadow-modal pt-10 px-8"
       style={{
         overlay: {
           display: 'flex',
@@ -166,7 +166,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
         }
       }}
     >
-      <div className="flex flex-col ml-1.8 pt-9">
+      <div className="flex flex-col">
         <h3 className="font-Inter font-semibold text-xl leading-1.43">Merge Members</h3>
         <div className="flex relative items-center mt-1.43">
           <input
@@ -180,13 +180,15 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
             <img src={searchIcon} alt="" />
           </div>
         </div>
-        <div className="flex flex-col gap-5 overflow-scroll  member-section mt-1.8 max-h-96 overflow-y-auto" onScroll={handleScroll}>
+        <div className="flex flex-col  member-section-model max-h-96 overflow-y-auto" onScroll={handleScroll}>
           {loading ? (
-            <Skeleton width={500} className={'my-4'} count={6} />
+            <div className='flex flex-col  gap-5 overflow-scroll '>
+              <Skeleton width={500} className={'my-4'} count={6} />
+            </div>
           ) : (
             suggestionList?.result &&
             MergeMemberList.map((member: MergeMembersDataResult, index: number) => (
-              <div className="flex border-b border-activitySubCard pb-4 pt-4" key={index}>
+              <div className="flex border-b border-activitySubCard pb-4 pt-6" key={index}>
                 <div className="mr-0.34">
                   <input
                     type="checkbox"
@@ -219,7 +221,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
             ))
           )}
         </div>
-        <div className="flex justify-end mt-1.8">
+        <div className="flex justify-end mt-1.8 pb-53 ">
           <Button
             type="button"
             text="CANCEL"

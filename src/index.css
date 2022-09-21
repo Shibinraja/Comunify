@@ -304,7 +304,9 @@ input {
   background: #eeeeee;
   border-radius: 60px;
 }
-
+.member-section-model{
+  background: transparent;
+}
 .border-review {
   border-bottom: 1px solid #e5e5e5;
 }
@@ -592,4 +594,7 @@ input {
   background-image: linear-gradient(white, white), linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
   background-origin: border-box;
   background-clip: content-box, border-box;
+}
+.ReactModalPortal .ReactModal__Overlay{
+  background-color: rgb(0, 0, 0, 0.7) !important;
 }
