@@ -151,7 +151,7 @@ const MembersReview: React.FC = () => {
               type="button"
               text="Merge"
               className="border-none text-white font-Poppins text-search font-medium leading-1.31 cursor-pointer w-5.25 h-2.81 rounded  "
-              onClick={() => handleModal(true)}
+              onClick={() => MergeMembersList.length && handleModal(true)}
             />
           </div>
           <div className="">
