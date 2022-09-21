@@ -101,7 +101,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
     console.log({ scrollHeight, scrollTop, clientHeight });
     console.log('err', Math.floor(scrollHeight) - Math.floor(scrollTop) === Math.floor(clientHeight));
     console.log('err', event);
-    if (Math.floor(scrollHeight) - Math.floor(scrollTop) === Math.floor(clientHeight)) {
+    if (scrollHeight - scrollTop <= clientHeight + 2) {
       setActivityNextCursor(suggestionList.nextCursor);
       if (suggestionList.nextCursor !== null && !loading) {
         getMemberList({
