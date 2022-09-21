@@ -200,6 +200,7 @@ const MergedMembers: React.FC = () => {
     }
   };
 
+  //On Submit functionality
   const handleOnSubmit = () => {
     if (modalOpen.UnMergeModalOpen) {
       handleRemoveMember();

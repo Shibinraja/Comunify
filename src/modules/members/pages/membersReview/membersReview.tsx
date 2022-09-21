@@ -22,6 +22,7 @@ const MembersReview: React.FC = () => {
   const memberProfileCardData = JSON.parse(localStorage.getItem('primaryMemberId')!);
   const MergeMembersListData = JSON.parse(localStorage.getItem('merge-membersId')!);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [checkedRadioId, setCheckedRadioId] = useState<Record<string, unknown>>({ [memberProfileCardData[0]?.comunifyMemberId]: true });
   const handleModal = (val: boolean) => {
     setIsModalOpen(val);
@@ -32,7 +33,6 @@ const MembersReview: React.FC = () => {
     result: [],
     nextCursor: null
   });
-  const [loading, setLoading] = useState<boolean>(false);
 
   // Function to call the api and list the mergedMembersList
   const getMergedMemberSuggestionList = (props: Partial<memberSuggestionType>) => {

@@ -30,11 +30,6 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
   const CheckedDuplicateMembers = new Set();
   const debouncedValue = useDebounce(searchSuggestion, 300);
 
-  const handleCheckBox = (event: ChangeEvent<HTMLInputElement>) => {
-    const checked_id: string = event.target.name;
-    setCheckedMemberId((prevValue) => ({ ...prevValue, [checked_id]: event.target.checked }));
-  };
-
   // Function to call the api and list the membersSuggestionList
   const getMemberList = (props: Partial<memberSuggestionType>) => {
     getMemberSuggestionList(
@@ -127,6 +122,12 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
       });
     }
     setSearchSuggestion(searchText);
+  };
+
+  //CheckBox selection functionality to chose the preffered duplicate members
+  const handleCheckBox = (event: ChangeEvent<HTMLInputElement>) => {
+    const checked_id: string = event.target.name;
+    setCheckedMemberId((prevValue) => ({ ...prevValue, [checked_id]: event.target.checked }));
   };
 
   // Routes to review-suggestion page with the members checked from the list.

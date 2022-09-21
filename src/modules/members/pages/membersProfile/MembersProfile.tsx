@@ -313,6 +313,7 @@ const MembersProfile: React.FC = () => {
     }
   };
 
+  // Tag Name assign functionality
   const handleAssignTagsName = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     if (errorMessage || !searchText) {
@@ -332,6 +333,7 @@ const MembersProfile: React.FC = () => {
     }
   };
 
+  // Tag Name un-assign functionality
   const handleUnAssignTagsName = (id: string): void => {
     dispatch(
       settingsSlice.actions.unAssignTags({

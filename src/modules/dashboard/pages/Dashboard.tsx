@@ -7,7 +7,6 @@ import dropDownIcon from '../../../assets/images/profile-dropdown.svg';
 import calendarIcon from '../../../assets/images/calandar.svg';
 import widgetSearchIcon from '../../../assets/images/widget-search.svg';
 import noWidgetIcon from '../../../assets/images/no-widget.svg';
-
 import HealthCard from 'common/healthCard/HealthCard';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
