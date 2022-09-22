@@ -77,7 +77,8 @@ module.exports = {
         manageTitle: ' #0C0E14',
         slackStatus: ' #A9CE70',
         vanillaDescription: '#6F6C90',
-        download: '#2B3646'
+        download: '#2B3646',
+        textHighlightColor: '#F3DC07'
       },
       margin: {
         2.6: '43px',
@@ -274,7 +275,8 @@ module.exports = {
         1.375: '22px',
         11: '176px',
         11.72: '187.59px',
-        1.81: '1.8125rem'
+        1.81: '1.8125rem',
+        100: '100px'
       },
       height: {
         4.5: '72.87px',
@@ -328,7 +330,8 @@ module.exports = {
         11: '176px',
         18.75: '18.75rem',
         1.81: '1.8125rem',
-        1.375: '22px'
+        1.375: '22px',
+        100: '100px'
       },
       fontSize: {
         logo: '21.35px',
@@ -419,7 +422,8 @@ module.exports = {
       },
       borderWidth: {
         15: '15px',
-        20: '20px'
+        20: '20px',
+        5: '5px'
       },
       maxWidth: {
         40: '640px'

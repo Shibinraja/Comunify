@@ -6,7 +6,7 @@ import Button from 'common/button';
 import { MergeMembersDataResponse, MergeMembersDataResult } from 'modules/members/interface/members.interface';
 import { getMemberSuggestionList } from 'modules/members/services/members.services';
 import { memberSuggestionType } from 'modules/members/services/service.types';
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, Fragment, useEffect, useRef, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import Modal from 'react-modal';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -25,13 +25,13 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
   });
   const [loading, setLoading] = useState<boolean>(false);
   const [checkedMemberId, setCheckedMemberId] = useState<Record<string, unknown>>({});
-  const [duplicateMembers, setDuplicateMembers] = useState<Array<MergeMembersDataResult>>([]);
+  const [selectedMembers, setSelectedMembers] = useState<Array<MergeMembersDataResult>>([]);
 
   const CheckedDuplicateMembers = new Set();
   const debouncedValue = useDebounce(searchSuggestion, 300);
   const member_scroll = useRef<HTMLDivElement>(null);
   // Function to call the api and list the membersSuggestionList
-  const getMemberList = (props: Partial<memberSuggestionType>) => {
+  const getMemberList = (props: Partial<memberSuggestionType>, isClearSearch?: boolean) => {
     getMemberSuggestionList(
       {
         workspaceId: workspaceId!,
@@ -42,12 +42,24 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
         suggestionListCursor: props.suggestionListCursor as string | null
       },
       setLoading
-    ).then((data) =>
-      setSuggestionList((prevState) => ({
-        result: prevState.result.concat(data?.result as unknown as MergeMembersDataResult),
-        nextCursor: data?.nextCursor as string | null
-      }))
-    );
+    ).then((data) => {
+      if (isClearSearch) {
+        const MembersList = selectedMembers.concat(data?.result as unknown as MergeMembersDataResult).filter((member: MergeMembersDataResult) => {
+          const duplicate = CheckedDuplicateMembers.has(member.comunifyMemberId);
+          CheckedDuplicateMembers.add(member.comunifyMemberId);
+          return !duplicate;
+        });
+        setSuggestionList({
+          result: MembersList,
+          nextCursor: data?.nextCursor as string | null
+        });
+      } else {
+        setSuggestionList((prevState) => ({
+          result: prevState.result.concat(data?.result as unknown as MergeMembersDataResult),
+          nextCursor: data?.nextCursor as string | null
+        }));
+      }
+    });
   };
 
   //useEffect to call the api at initial load.
@@ -56,12 +68,24 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
       result: [],
       nextCursor: null
     });
-    getMemberList({
-      cursor: null,
-      prop: 'search',
-      search: debouncedValue,
-      suggestionListCursor: suggestionList.nextCursor
-    });
+    if (debouncedValue) {
+      getMemberList({
+        cursor: null,
+        prop: 'search',
+        search: debouncedValue,
+        suggestionListCursor: suggestionList.nextCursor
+      });
+    } else {
+      getMemberList(
+        {
+          cursor: null,
+          prop: 'search',
+          search: debouncedValue,
+          suggestionListCursor: suggestionList.nextCursor
+        },
+        true
+      );
+    }
   }, [debouncedValue]);
 
   // Effect to fetch the member which are checked to continue to merge with the primary member id.
@@ -71,12 +95,12 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
         suggestionList.result.filter((memberList: MergeMembersDataResult) => {
           if (checkedMemberId[memberId] === true) {
             if (memberList.id === memberId) {
-              setDuplicateMembers((prevMember) => [...new Set(prevMember), memberList]);
+              setSelectedMembers((prevMember) => [...new Set(prevMember), memberList]);
             }
           }
           if (checkedMemberId[memberId] === false) {
             if (memberList.id === memberId) {
-              setDuplicateMembers((prevMember) => {
+              setSelectedMembers((prevMember) => {
                 const CheckedMembers = [...prevMember];
                 CheckedMembers?.splice(
                   CheckedMembers.findIndex((memberId) => memberId.id === memberList.id),
@@ -105,6 +129,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
           search: debouncedValue,
           suggestionListCursor: null
         });
+        setLoading(false);
       }
     }
   };
@@ -114,17 +139,12 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
     const searchText: string = event.target.value;
     if (!searchText) {
       setSearchSuggestion('');
-      getMemberList({
-        cursor: null,
-        prop: 'search',
-        search: debouncedValue,
-        suggestionListCursor: suggestionList.nextCursor
-      });
+    } else {
+      setSearchSuggestion(searchText);
     }
-    setSearchSuggestion(searchText);
   };
 
-  //CheckBox selection functionality to chose the preffered duplicate members
+  //CheckBox selection functionality to chose the preferred duplicate members
   const handleCheckBox = (event: ChangeEvent<HTMLInputElement>) => {
     const checked_id: string = event.target.name;
     setCheckedMemberId((prevValue) => ({ ...prevValue, [checked_id]: event.target.checked }));
@@ -132,21 +152,20 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
 
   // Routes to review-suggestion page with the members checked from the list.
   const navigateToReviewMerge = () => {
-    if (duplicateMembers.length) {
-      localStorage.setItem('merge-membersId', JSON.stringify(duplicateMembers));
+    if (selectedMembers.length) {
+      localStorage.setItem('merge-membersId', JSON.stringify(selectedMembers));
       navigate(`/${workspaceId}/members/${memberId}/members-review`);
     }
   };
 
-  // Function to concat the data checked with the api response list and show the checked data at first for readability,
-  const MembersList = duplicateMembers.concat(suggestionList.result).filter((member: MergeMembersDataResult) => {
-    const duplicate = CheckedDuplicateMembers.has(member.comunifyMemberId);
-    CheckedDuplicateMembers.add(member.comunifyMemberId);
-    return !duplicate;
-  });
-
-  // Ternary Condition to show the list needed in the pop-up
-  const MergeMemberList = searchSuggestion ? suggestionList.result : MembersList;
+  const getHighlightedText = (text: string, highlight: string) => {
+    const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
+    return (
+      <Fragment>
+        {parts.map((part) => (part.toLowerCase() === highlight.toLowerCase() ? <mark className="bg-textHighlightColor">{part}</mark> : part))}
+      </Fragment>
+    );
+  };
 
   return (
     <Modal
@@ -180,19 +199,17 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
             <img src={searchIcon} alt="" />
           </div>
         </div>
-        {!MergeMemberList?.length && <div className="font-Poppins font-medium text-tableDuration text-lg leading-10 pt-8 pl-2"> No data found</div>}
-        <div
-          className="flex flex-col gap-5 overflow-scroll overflow-y-scroll member-section mt-1.8 height-member-merge"
-          onScroll={handleScroll}
-          ref={member_scroll}
-        >
+        {!loading && !suggestionList.result?.length && (
+          <div className="font-Poppins font-medium text-tableDuration text-lg leading-10 pt-8 pl-2"> No data found</div>
+        )}
+        <div className="flex flex-col gap-5 overflow-y-scroll member-section mt-1.8 max-h-96" onScroll={handleScroll} ref={member_scroll}>
           {loading ? (
             <div className="flex flex-col  gap-5 overflow-scroll ">
               <Skeleton width={500} className={'my-4'} count={6} />
             </div>
           ) : (
             suggestionList?.result &&
-            MergeMemberList.map((member: MergeMembersDataResult, index: number) => (
+            suggestionList?.result.map((member: MergeMembersDataResult, index: number) => (
               <div className="flex border-b border-activitySubCard pb-4 pt-6" key={index}>
                 <div className="mr-0.34">
                   <input
@@ -205,13 +222,10 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
                   />
                 </div>
                 <div className="flex flex-col ">
-                  {/* Reg Exp function to highlight and show all the values matched with search suggestion string.  */}
-                  <div
-                    className={`font-Poppins font-medium text-trial text-infoBlack leading-1.31 ${
-                      new RegExp(!searchSuggestion ? '/' : searchSuggestion).test(member.name.toLocaleLowerCase()) ? 'bg-yellow-500' : ''
-                    }`}
-                  >
-                    {member.name}
+                  <div className={`font-Poppins font-medium text-trial text-infoBlack leading-1.31 `}>
+                    {getHighlightedText(member.name, searchSuggestion)}
+                    {/* Reg Exp function to highlight and show all the values matched with search suggestion string.  */}
+                    {/* {member.name.includes(!searchSuggestion ? '/' : searchSuggestion)? member.name.replace(new RegExp(searchSuggestion, 'g'), '') : member.name} */}
                   </div>
                   <div className="text-tagEmail font-Poppins font-normal leading-1.31 text-email pl-1">
                     {member.email} | {member.organization}
@@ -236,7 +250,9 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
           <Button
             type="button"
             text="SUBMIT"
-            className="submit border-none text-white font-Poppins text-error font-medium leading-1.31 cursor-pointer w-5.25 h-2.81 rounded shadow-contactBtn btn-save-modal"
+            className={`submit border-none text-white font-Poppins text-error font-medium leading-1.31 cursor-pointer w-5.25 h-2.81 rounded shadow-contactBtn btn-save-modal ${
+              !selectedMembers.length ? 'cursor-not-allowed' : ''
+            }`}
             onClick={navigateToReviewMerge}
           />
         </div>

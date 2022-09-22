@@ -128,7 +128,10 @@ const MergedMembers: React.FC = () => {
         memberId: memberId!,
         mergeList
       }).then(() => {
-        showSuccessToast('Primary Member Changed');
+        if (modalOpen.isConfirmPrimaryMember) {
+          showSuccessToast('Primary Member Changed');
+          setModalOpen((prevState) => ({ ...prevState, isConfirmPrimaryMember: false }));
+        }
         navigate(`/${workspaceId}/members/${Object.keys(checkedRadioId)[0]}/merged-members`);
       });
     }
@@ -163,6 +166,7 @@ const MergedMembers: React.FC = () => {
           result: filteredMembers,
           nextCursor: prevList.nextCursor
         }));
+        showSuccessToast('Member Unmerged');
         setModalOpen((prevState) => ({ ...prevState, UnMergeModalOpen: false }));
       }
     });
@@ -172,7 +176,7 @@ const MergedMembers: React.FC = () => {
   const handleScroll = (event: React.UIEvent<HTMLElement>) => {
     event.preventDefault();
     const { clientHeight, scrollHeight, scrollTop } = event.currentTarget;
-    if (scrollHeight - scrollTop === clientHeight) {
+    if (scrollHeight - scrollTop <= clientHeight + 2) {
       setActivityNextCursor(suggestionList.nextCursor);
       if (suggestionList.nextCursor !== null && !loading) {
         getMergedMemberSuggestionList({
@@ -343,7 +347,12 @@ const MergedMembers: React.FC = () => {
         </div>
       </div>
       {MergeModalComponent}
-      <MergeMemberModal isOpen={modalOpen} isClose={handleModalClose} onSubmit={handleOnSubmit} />
+      <MergeMemberModal
+        isOpen={modalOpen}
+        isClose={handleModalClose}
+        onSubmit={handleOnSubmit}
+        contextText={modalOpen.ChangePrimaryMember ? 'Are you sure you want to change the primary member' : modalOpen.UnMergeModalOpen ? 'Are you sure want to unmerge members': ''}
+      />
     </div>
   );
 };
