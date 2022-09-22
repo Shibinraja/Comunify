@@ -202,11 +202,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
         {!loading && !suggestionList.result?.length && (
           <div className="font-Poppins font-medium text-tableDuration text-lg leading-10 pt-8 pl-2"> No data found</div>
         )}
-        <div
-          className="flex flex-col gap-5 overflow-y-scroll member-section mt-1.8 max-h-96"
-          onScroll={handleScroll}
-          ref={member_scroll}
-        >
+        <div className="flex flex-col gap-5 overflow-y-scroll member-section mt-1.8 max-h-96" onScroll={handleScroll} ref={member_scroll}>
           {loading ? (
             <div className="flex flex-col  gap-5 overflow-scroll ">
               <Skeleton width={500} className={'my-4'} count={6} />

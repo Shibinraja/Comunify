@@ -11,7 +11,6 @@ import Skeleton from 'react-loading-skeleton';
 import Modal from 'react-modal';
 import { useNavigate, useParams } from 'react-router-dom';
 import closeIcon from '../../../../assets/images/close-member.svg';
-import modalMergeIcon from '../../../../assets/images/merge.svg';
 import mergeIcon from '../../../../assets/images/merged.svg';
 import { MergeMemberModal } from '../mergedMembers/MergeMemberModal';
 import './membersReview.css';
