@@ -32,7 +32,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
   const debouncedValue = useDebounce(searchSuggestion, 300);
 
   // Function to call the api and list the membersSuggestionList
-  const getMemberList = async(props: Partial<memberSuggestionType>, isClearSearch?: boolean) => {
+  const getMemberList = async(props: Partial<memberSuggestionType>, action?: string) => {
     setLoading(true);
     const data = await getMemberSuggestionList({
       workspaceId: workspaceId!,
@@ -43,7 +43,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
       suggestionListCursor: props.suggestionListCursor as string | null
     });
     setLoading(false);
-    if (isClearSearch) {
+    if (action === 'clearSearch') {
       const CheckedDuplicateMembers = new Set();
       const MembersList = selectedMembers.concat(data?.result as unknown as MergeMembersDataResult).filter((member: MergeMembersDataResult) => {
         const duplicate = CheckedDuplicateMembers.has(member.comunifyMemberId);
@@ -52,6 +52,11 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
       });
       setSuggestionList({
         result: MembersList,
+        nextCursor: data?.nextCursor as string | null
+      });
+    } else if(action === 'search') {
+      setSuggestionList({
+        result: data?.result as unknown as MergeMembersDataResult[],
         nextCursor: data?.nextCursor as string | null
       });
     } else {
@@ -69,6 +74,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
         };
       });
     }
+
   };
 
   //useEffect to call the api at initial load.
@@ -83,7 +89,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
         prop: 'search',
         search: debouncedValue,
         suggestionListCursor: suggestionList.nextCursor
-      });
+      }, 'search');
     } else {
       getMemberList(
         {
@@ -92,7 +98,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
           search: debouncedValue,
           suggestionListCursor: suggestionList.nextCursor
         },
-        true
+        'clearSearch'
       );
     }
   }, [debouncedValue]);
