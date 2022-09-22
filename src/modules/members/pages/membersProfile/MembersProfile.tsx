@@ -409,7 +409,7 @@ const MembersProfile: React.FC = () => {
           ) : (
             memberProfileCardData?.map((data: MemberProfileCard) => (
               <div key={data?.id + data?.name} className="flex flex-col w-full">
-                <div className="font-Poppins font-normal text-card leading-4 text-renewalGray">Last Active Date</div>
+                <div className="font-Poppins font-normal text-xs leading-4 text-listGray">Last Active Date</div>
                 <div className="font-Poppins font-semibold text-base leading-6 text-accountBlack">
                   {data?.lastActivity ? generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY') : 'Last active date is not available'}
                 </div>
@@ -516,7 +516,7 @@ const MembersProfile: React.FC = () => {
                   {' '}
                   {data?.lastActivity ? generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY') : 'Last active date is not available'}
                 </div>
-                <div onClick={navigateToActivities} className="font-Poppins font-normal leading-4 text-renewalGray text-preview cursor-pointer">
+                <div onClick={navigateToActivities} className="font-Poppins font-normal leading-4 text-listGray text-preview cursor-pointer">
                   Preview All
                 </div>
               </div>
@@ -579,7 +579,7 @@ const MembersProfile: React.FC = () => {
               <div className="profile-card items-center btn-save-modal justify-center pro-bag rounded-t-0.6 w-18.125 shadow-contactBtn box-border h-6.438 "></div>
               <div className="flex flex-col profile-card items-center justify-center bg-white rounded-b-0.6 w-18.125 shadow-contactCard box-border h-11.06">
                 <div className="-mt-24">
-                  <img src={data?.profileUrl} alt="profileImage" className="bg-cover bg-center border-8 border-white rounded-full w-24" />
+                  <img src={data?.profileUrl} alt="profileImage" className="bg-cover bg-center border-5 border-white rounded-full w-100 h-100" />
                 </div>
                 <div className="mt-0.688 text-profileBlack font-semibold font-Poppins leading-1.31 text-trial">{data?.name}</div>
                 <div className="text-center pt-0.125 font-Poppins text-profileBlack text-member">
@@ -604,7 +604,9 @@ const MembersProfile: React.FC = () => {
               <div className="font-Poppins font-medium text-error leading-5 text-addTag cursor-pointer" onClick={() => handleTagModalOpen(true)}>
                 ADD TAG
               </div>
-              <div className="flex items-center justify-center">
+              
+            </div>
+            <div className="flex items-center justify-center">
                 <Modal
                   isOpen={isTagModalOpen}
                   shouldCloseOnOverlayClick={false}
@@ -675,7 +677,8 @@ const MembersProfile: React.FC = () => {
                   </div>
                 </Modal>
               </div>
-            </div>
+
+
             <div className="flex flex-wrap pt-1.56 gap-2">
               {memberProfileCardData?.map((data: MemberProfileCard) =>
                 data.tags?.map((tag: TagResponseData) => (
