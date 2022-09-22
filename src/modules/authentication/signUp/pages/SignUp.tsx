@@ -102,10 +102,10 @@ const SignUp: React.FC = () => {
       <div className="auth-layout-signUp">
         <div className="flex w-full height-calc container mx-auto">
           <div className="w-1/2 rounded-r-lg flex items-center justify-center p-28 overflow-hidden">
-            <img src={bgSignUpImage} alt="" className="object-cover" />
+            <img src={bgSignUpImage} alt="" className="object-cover w-[640px]" />
           </div>
           <div className="flex justify-center w-1/2 3xl:items-center">
-            <div className="flex flex-col overflow-scroll no-scrollbar-firefox ">
+            <div className="flex flex-col  no-scrollbar-firefox ">
               <h3 className="font-Inter text-neutralBlack font-bold not-italic text-signIn leading-2.8">Sign Up </h3>{' '}
               <p className="text-lightGray font-Inter  max-w-sm font-normal not-italic mt-0.78 text-desc">
                 Get Comunified with your communities. Create your account now.
