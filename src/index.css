@@ -291,9 +291,7 @@ input {
 }
 
 .height-member-merge {
-  height: calc(100vh - 50rem);
-  min-height: 160px;
-  max-height: 200px;
+  height: calc(100vh - 20rem);
 }
 
 .member-section::-webkit-scrollbar {
