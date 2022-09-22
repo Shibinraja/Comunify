@@ -11,6 +11,8 @@ import Modal from 'react-modal';
 import { useNavigate, useParams } from 'react-router-dom';
 import searchIcon from '../../assets/images/search.svg';
 import { MergeModalProps } from './MergeModalTypes';
+import Skeleton from 'react-loading-skeleton';
+import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 
 const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
   const { workspaceId, memberId } = useParams();
@@ -23,13 +25,14 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
     nextCursor: null
   });
   const [loading, setLoading] = useState<boolean>(false);
+  const [preventLoading, setPreventLoading] = useState<boolean>(false);
   const [checkedMemberId, setCheckedMemberId] = useState<Record<string, unknown>>({});
   const [selectedMembers, setSelectedMembers] = useState<Array<MergeMembersDataResult>>([]);
 
   const debouncedValue = useDebounce(searchSuggestion, 300);
 
   // Function to call the api and list the membersSuggestionList
-  const getMemberList = async (props: Partial<memberSuggestionType>, isClearSearch?: boolean) => {
+  const getMemberList = async(props: Partial<memberSuggestionType>, isClearSearch?: boolean) => {
     setLoading(true);
     const data = await getMemberSuggestionList({
       workspaceId: workspaceId!,
@@ -95,19 +98,21 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
   }, [debouncedValue]);
 
   // function for scroll event
-  const handleScroll = async (event: React.UIEvent<HTMLElement>) => {
+  const handleScroll = async(event: React.UIEvent<HTMLElement>) => {
     event.preventDefault();
     const { clientHeight, scrollHeight, scrollTop } = event.currentTarget;
     if (scrollHeight - scrollTop <= clientHeight + 2 && !loading) {
       setActivityNextCursor(suggestionList.nextCursor);
       if (suggestionList.nextCursor) {
+        setPreventLoading(true);
         await getMemberList({
           cursor: suggestionList.nextCursor,
           prop: '',
           search: debouncedValue,
           suggestionListCursor: null
         });
-        setLoading(false);
+        setPreventLoading(false);
+
       }
     }
   };
@@ -202,7 +207,12 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
           <div className="font-Poppins font-medium text-tableDuration text-lg leading-10 pt-8 pl-2"> No data found</div>
         )}
         <div className="flex flex-col gap-5 overflow-y-scroll member-section mt-1.8 max-h-96 height-member-merge " onScroll={handleScroll}>
-          {suggestionList?.result &&
+          {loading && !preventLoading ? (
+            <div className="flex flex-col  gap-5 overflow-scroll ">
+              <Skeleton width={500} className={'my-4'} count={6} />
+            </div>
+          ) : (
+            suggestionList?.result &&
             suggestionList?.result.map((member: MergeMembersDataResult, index: number) => (
               <div className="flex border-b border-activitySubCard pb-4 pt-6" key={index}>
                 <div className="mr-0.34">
@@ -231,7 +241,8 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
                   </div>
                 </div>
               </div>
-            ))}
+            ))
+          )}
         </div>
         <div className="flex justify-end mt-1.8 pb-53 ">
           <Button
