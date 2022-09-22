@@ -193,7 +193,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
           ) : (
             suggestionList?.result &&
             MergeMemberList.map((member: MergeMembersDataResult, index: number) => (
-              <div className="flex border-b border-activitySubCard pb-4 pt-6" key={index}>
+              <div className="flex border-b border-activitySubCard pb-4" key={index}>
                 <div className="mr-0.34">
                   <input
                     type="checkbox"
