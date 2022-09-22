@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import Button from 'common/button';
@@ -12,21 +13,27 @@ import { useNavigate, useParams } from 'react-router-dom';
 import closeIcon from '../../../../assets/images/close-member.svg';
 import modalMergeIcon from '../../../../assets/images/merge.svg';
 import mergeIcon from '../../../../assets/images/merged.svg';
+import { MergeMemberModal } from '../mergedMembers/MergeMemberModal';
 import './membersReview.css';
 
 Modal.setAppElement('#root');
 
+enum ModalType {
+  Merge = 'Merge',
+  unMerge = 'UnMerge'
+}
 const MembersReview: React.FC = () => {
   const { workspaceId, memberId } = useParams();
   const navigate = useNavigate();
   const memberProfileCardData = JSON.parse(localStorage.getItem('primaryMemberId')!);
   const MergeMembersListData = JSON.parse(localStorage.getItem('merge-membersId')!);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [checkedRadioId, setCheckedRadioId] = useState<Record<string, unknown>>({ [memberProfileCardData[0]?.comunifyMemberId]: true });
-  const handleModal = (val: boolean) => {
-    setIsModalOpen(val);
-  };
+  const [modalOpen, setModalOpen] = useState<{ UnMergeModalOpen: boolean; confirmMerge: boolean }>({
+    UnMergeModalOpen: false,
+    confirmMerge: false
+  });
+  const [checkedId, setCheckedId] = useState<string>('');
   const [MergeMembersList, setMergeMembersList] = useState<Array<MergeMembersDataResult>>([]);
   const [primaryMemberId, setPrimaryMemberId] = useState<any>([]);
   const [suggestionList, setSuggestionList] = useState<MergeMembersDataResponse>({
@@ -96,6 +103,36 @@ const MembersReview: React.FC = () => {
     }
   }, [checkedRadioId]);
 
+  const handleModal = (modalType: string) => {
+    if (modalType === ModalType.Merge) {
+      setModalOpen((prevState) => ({ ...prevState, confirmMerge: true }));
+    }
+
+    if (modalType === ModalType.unMerge) {
+      setModalOpen((prevState) => ({ ...prevState, UnMergeModalOpen: true }));
+    }
+  };
+
+  const handleModalClose = () => {
+    if (modalOpen.confirmMerge) {
+      setModalOpen((prevState) => ({ ...prevState, confirmMerge: false }));
+    }
+
+    if (modalOpen.UnMergeModalOpen) {
+      setModalOpen((prevState) => ({ ...prevState, UnMergeModalOpen: false }));
+    }
+  };
+
+  //On Submit functionality
+  const handleOnSubmit = () => {
+    if (modalOpen.confirmMerge) {
+      handleMergeMembers();
+    }
+    if (modalOpen.UnMergeModalOpen) {
+      handleRemoveMember();
+    }
+  };
+
   // Function to change the Primary Member List
   const handleRadioBtn = (event: ChangeEvent<HTMLInputElement>) => {
     const checked_id: string = event.target.name;
@@ -103,14 +140,15 @@ const MembersReview: React.FC = () => {
   };
 
   // Function to remove the desired potential duplicate member from the list
-  const handleRemoveMember = (memberId: string) => {
+  const handleRemoveMember = () => {
     const filteredMembers = MergeMembersList?.filter((member: MergeMembersDataResult) => {
-      if (member.id !== memberId) {
+      if (member.id !== checkedId) {
         return member;
       }
     });
     // MergeMembersList?.splice((MergeMembersList).indexOf(filteredMembers as unknown as MergeMembersDataResult), 1);
     setMergeMembersList(filteredMembers);
+    setModalOpen((prevState) => ({ ...prevState, UnMergeModalOpen: false }));
     localStorage.setItem('merge-membersId', JSON.stringify(filteredMembers));
   };
 
@@ -130,7 +168,7 @@ const MembersReview: React.FC = () => {
       memberId: memberId!,
       mergeList
     }).then(() => {
-      setIsModalOpen(false);
+      setModalOpen((prevState) => ({ ...prevState, confirmMerge: false }));
       showSuccessToast('Members Merged');
       navigate(`/${workspaceId}/members/${Object.keys(checkedRadioId)[0]}/merged-members`);
     });
@@ -150,51 +188,15 @@ const MembersReview: React.FC = () => {
             <Button
               type="button"
               text="Merge"
-              className="border-none text-white font-Poppins text-search font-medium leading-1.31 cursor-pointer w-5.25 h-2.81 rounded  "
-              onClick={() => MergeMembersList.length && handleModal(true)}
+              className={`1border-none text-white font-Poppins text-search font-medium leading-1.31 cursor-pointer w-5.25 h-2.81 rounded ${
+                !MergeMembersList.length ? 'cursor-not-allowed' : ''
+              }`}
+              onClick={() => MergeMembersList.length && handleModal('Merge')}
             />
           </div>
           <div className="">
             <img src={mergeIcon} alt="" />
           </div>
-          <Modal
-            isOpen={isModalOpen}
-            shouldCloseOnOverlayClick={false}
-            onRequestClose={() => setIsModalOpen(false)}
-            className="w-24.31 h-18.43 mx-auto rounded-lg modals-tag bg-white shadow-modal flex items-center justify-center"
-            style={{
-              overlay: {
-                display: 'flex',
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                bottom: 0,
-                right: 0,
-                alignItems: 'center'
-              }
-            }}
-          >
-            <div className="flex flex-col items-center justify-center ">
-              <div className="bg-cover">
-                <img src={modalMergeIcon} alt="" />
-              </div>
-              <div className="mt-5 leading-6 text-black font-Inter font-semibold text-xl w-2/3 text-center">Are you sure want to merge members</div>
-              <div className="flex mt-1.8">
-                <Button
-                  type="button"
-                  text="NO"
-                  className="border-none border-cancel h-2.81 w-5.25 box-border rounded cursor-pointer font-Poppins font-medium text-error leading-5 text-thinGray "
-                  onClick={() => setIsModalOpen(false)}
-                />
-                <Button
-                  type="button"
-                  text="YES"
-                  className="border-none ml-2.5 yes-btn h-2.81 w-5.25 box-border rounded shadow-contactBtn cursor-pointer font-Poppins font-medium text-error leading-5 text-white btn-save-modal"
-                  onClick={handleMergeMembers}
-                />
-              </div>
-            </div>
-          </Modal>
         </div>
       </div>
       <div className="flex flex-col mt-1.8">
@@ -275,7 +277,14 @@ const MembersReview: React.FC = () => {
                       </div>
                     </div>
                     <div className="absolute right-7 top-5 cursor-pointer">
-                      <img src={closeIcon} alt="" onClick={() => handleRemoveMember(members.id)} />
+                      <img
+                        src={closeIcon}
+                        alt=""
+                        onClick={() => {
+                          handleModal('UnMerge');
+                          setCheckedId(members.id);
+                        }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -284,6 +293,14 @@ const MembersReview: React.FC = () => {
           </div>
         </div>
       </div>
+      <MergeMemberModal
+        isOpen={modalOpen}
+        isClose={handleModalClose}
+        onSubmit={handleOnSubmit}
+        contextText={
+          modalOpen.confirmMerge ? 'Are you sure want to merge members' : modalOpen.UnMergeModalOpen ? 'Are you sure want to unmerge members' : ''
+        }
+      />
     </div>
   );
 };

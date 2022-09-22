@@ -77,7 +77,8 @@ module.exports = {
         manageTitle: ' #0C0E14',
         slackStatus: ' #A9CE70',
         vanillaDescription: '#6F6C90',
-        download: '#2B3646'
+        download: '#2B3646',
+        textHighlightColor: '#F3DC07'
       },
       margin: {
         2.6: '43px',

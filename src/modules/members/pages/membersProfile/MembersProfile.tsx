@@ -214,7 +214,7 @@ const MembersProfile: React.FC = () => {
   const handleScroll = (event: React.UIEvent<HTMLElement>) => {
     event.preventDefault();
     const { clientHeight, scrollHeight, scrollTop } = event.currentTarget;
-    if (scrollHeight - scrollTop === clientHeight) {
+    if (scrollHeight - scrollTop <= clientHeight + 2) {
       setActivityNextCursor(activityData?.nextCursor);
       if (activityData.nextCursor !== null && !activityDataLoader) {
         loadActivityData(false, activityData.nextCursor);

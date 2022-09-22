@@ -6,9 +6,9 @@ import { MergeModalProps } from './MergeModalTypes';
 
 Modal.setAppElement('#root');
 
-export const MergeMemberModal: React.FC<MergeModalProps> = ({ isOpen, isClose, onSubmit }) => (
+export const MergeMemberModal: React.FC<MergeModalProps> = ({ isOpen, isClose, onSubmit, contextText }) => (
   <Modal
-    isOpen={isOpen.ChangePrimaryMember || isOpen.UnMergeModalOpen}
+    isOpen={(isOpen.ChangePrimaryMember || isOpen.UnMergeModalOpen  || isOpen.confirmMerge) as boolean}
     shouldCloseOnOverlayClick={false}
     onRequestClose={isClose}
     className="w-24.31 h-18.43 mx-auto rounded-lg modals-tag bg-white shadow-modal flex items-center justify-center"
@@ -29,7 +29,7 @@ export const MergeMemberModal: React.FC<MergeModalProps> = ({ isOpen, isClose, o
         <img src={modalMergeIcon} alt="" />
       </div>
       <div className="mt-5 leading-6 text-black font-Inter font-semibold text-xl w-2/3 text-center">
-        {isOpen.ChangePrimaryMember ? 'Are you sure you want to change the primary member' : 'Are you sure want to unmerge members'}
+        {contextText}
       </div>
       <div className="flex mt-1.8">
         <Button
