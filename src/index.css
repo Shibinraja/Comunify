@@ -597,5 +597,5 @@ input {
   -o-border-radius: 10px;
 }
 .ReactModalPortal .ReactModal__Overlay{
-  background-color: rgb(0, 0, 0, 0.7) !important;
+  /* background-color: rgb(0, 0, 0, 0.7) !important; */
 }
