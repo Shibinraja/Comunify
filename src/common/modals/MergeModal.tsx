@@ -88,41 +88,13 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
     }
   }, [debouncedValue]);
 
-  // Effect to fetch the member which are checked to continue to merge with the primary member id.
-  useEffect(() => {
-    if (Object.keys(checkedMemberId).length > 0) {
-      Object.keys(checkedMemberId).map((memberId: string) => {
-        suggestionList.result.filter((memberList: MergeMembersDataResult) => {
-          if (checkedMemberId[memberId] === true) {
-            if (memberList.id === memberId) {
-              setSelectedMembers((prevMember) => [...new Set(prevMember), memberList]);
-            }
-          }
-          if (checkedMemberId[memberId] === false) {
-            if (memberList.id === memberId) {
-              setSelectedMembers((prevMember) => {
-                const CheckedMembers = [...prevMember];
-                CheckedMembers?.splice(
-                  CheckedMembers.findIndex((memberId) => memberId.id === memberList.id),
-                  1
-                );
-                return CheckedMembers;
-              });
-            }
-          }
-        });
-      });
-    }
-    // setSearchSuggestion('');
-  }, [checkedMemberId]);
-
   // function for scroll event
   const handleScroll = (event: React.UIEvent<HTMLElement>) => {
     event.preventDefault();
     const { clientHeight, scrollHeight, scrollTop } = event.currentTarget;
     if (scrollHeight - scrollTop <= clientHeight + 2) {
       setActivityNextCursor(suggestionList.nextCursor);
-      if (suggestionList.nextCursor !== null && !loading) {
+      if (suggestionList.nextCursor) {
         getMemberList({
           cursor: suggestionList.nextCursor,
           prop: '',
@@ -148,6 +120,27 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
   const handleCheckBox = (event: ChangeEvent<HTMLInputElement>) => {
     const checked_id: string = event.target.name;
     setCheckedMemberId((prevValue) => ({ ...prevValue, [checked_id]: event.target.checked }));
+
+    if (event.target.checked) {
+      suggestionList.result.filter((memberList: MergeMembersDataResult) => {
+        if (memberList.id === checked_id) {
+          setSelectedMembers((prevMember) => [...prevMember, memberList]);
+        }
+      });
+    } else {
+      suggestionList.result.filter((memberList: MergeMembersDataResult) => {
+        if (memberList.id === checked_id) {
+          setSelectedMembers((prevMember) => {
+            const CheckedMembers = [...prevMember];
+            CheckedMembers?.splice(
+              CheckedMembers.findIndex((memberId) => memberId.id === memberList.id),
+              1
+            );
+            return CheckedMembers;
+          });
+        }
+      });
+    }
   };
 
   // Routes to review-suggestion page with the members checked from the list.
@@ -159,7 +152,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
   };
 
   const getHighlightedText = (text: string, highlight: string) => {
-    const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
+    const parts = text.split(new RegExp(`(${highlight.replace(/[^a-z]/gi, '')})`, 'gi'));
     return (
       <Fragment>
         {parts.map((part) => (part.toLowerCase() === highlight.toLowerCase() ? <mark className="bg-textHighlightColor">{part}</mark> : part))}
@@ -202,7 +195,11 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
         {!loading && !suggestionList.result?.length && (
           <div className="font-Poppins font-medium text-tableDuration text-lg leading-10 pt-8 pl-2"> No data found</div>
         )}
-        <div className="flex flex-col gap-5 overflow-y-scroll member-section mt-1.8 max-h-96 height-member-merge " onScroll={handleScroll} ref={member_scroll}>
+        <div
+          className="flex flex-col gap-5 overflow-y-scroll member-section mt-1.8 max-h-96 height-member-merge "
+          onScroll={handleScroll}
+          ref={member_scroll}
+        >
           {loading ? (
             <div className="flex flex-col  gap-5 overflow-scroll ">
               <Skeleton width={500} className={'my-4'} count={6} />
@@ -228,7 +225,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
                     {/* {member.name.includes(!searchSuggestion ? '/' : searchSuggestion)? member.name.replace(new RegExp(searchSuggestion, 'g'), '') : member.name} */}
                   </div>
                   <div className="text-tagEmail font-Poppins font-normal leading-1.31 text-email pl-1">
-                    {member.email} | {member.organization}
+                    {getHighlightedText(member.email, searchSuggestion)} | {member.organization}
                   </div>
                   <div className="flex mt-2.5">
                     <div className="mr-0.34 w-1.001 h-1.001">
