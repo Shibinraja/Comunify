@@ -7,7 +7,6 @@ import { MergeMembersDataResponse, MergeMembersDataResult } from 'modules/member
 import { getMemberSuggestionList } from 'modules/members/services/members.services';
 import { memberSuggestionType } from 'modules/members/services/service.types';
 import React, { ChangeEvent, Fragment, useEffect, useRef, useState } from 'react';
-import Skeleton from 'react-loading-skeleton';
 import Modal from 'react-modal';
 import { useNavigate, useParams } from 'react-router-dom';
 import searchIcon from '../../assets/images/search.svg';
@@ -27,39 +26,46 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
   const [checkedMemberId, setCheckedMemberId] = useState<Record<string, unknown>>({});
   const [selectedMembers, setSelectedMembers] = useState<Array<MergeMembersDataResult>>([]);
 
-  const CheckedDuplicateMembers = new Set();
   const debouncedValue = useDebounce(searchSuggestion, 300);
 
   // Function to call the api and list the membersSuggestionList
-  const getMemberList = (props: Partial<memberSuggestionType>, isClearSearch?: boolean) => {
-    getMemberSuggestionList(
-      {
-        workspaceId: workspaceId!,
-        memberId: memberId!,
-        cursor: props.cursor as string | null,
-        prop: props.prop as string,
-        search: props.search as string,
-        suggestionListCursor: props.suggestionListCursor as string | null
-      },
-      setLoading
-    ).then((data) => {
-      if (isClearSearch) {
-        const MembersList = selectedMembers.concat(data?.result as unknown as MergeMembersDataResult).filter((member: MergeMembersDataResult) => {
-          const duplicate = CheckedDuplicateMembers.has(member.id);
-          CheckedDuplicateMembers.add(member.id);
+  const getMemberList = async (props: Partial<memberSuggestionType>, isClearSearch?: boolean) => {
+    setLoading(true);
+    const data = await getMemberSuggestionList({
+      workspaceId: workspaceId!,
+      memberId: memberId!,
+      cursor: props.cursor as string | null,
+      prop: props.prop as string,
+      search: props.search as string,
+      suggestionListCursor: props.suggestionListCursor as string | null
+    });
+    setLoading(false);
+    if (isClearSearch) {
+      const CheckedDuplicateMembers = new Set();
+      const MembersList = selectedMembers.concat(data?.result as unknown as MergeMembersDataResult).filter((member: MergeMembersDataResult) => {
+        const duplicate = CheckedDuplicateMembers.has(member.comunifyMemberId);
+        CheckedDuplicateMembers.add(member.comunifyMemberId);
+        return !duplicate;
+      });
+      setSuggestionList({
+        result: MembersList,
+        nextCursor: data?.nextCursor as string | null
+      });
+    } else {
+      setSuggestionList((prevState) => {
+        const CheckedDuplicateMembers = new Set();
+
+        const MemberList = prevState.result.concat(data?.result as unknown as MergeMembersDataResult).filter((member: MergeMembersDataResult) => {
+          const duplicate = CheckedDuplicateMembers.has(member.comunifyMemberId);
+          CheckedDuplicateMembers.add(member.comunifyMemberId);
           return !duplicate;
         });
-        setSuggestionList({
-          result: MembersList,
+        return {
+          result: MemberList,
           nextCursor: data?.nextCursor as string | null
-        });
-      } else {
-        setSuggestionList((prevState) => ({
-          result: [...new Set(prevState.result)].concat(data?.result as unknown as MergeMembersDataResult),
-          nextCursor: data?.nextCursor as string | null
-        }));
-      }
-    });
+        };
+      });
+    }
   };
 
   //useEffect to call the api at initial load.
@@ -89,13 +95,13 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
   }, [debouncedValue]);
 
   // function for scroll event
-  const handleScroll = (event: React.UIEvent<HTMLElement>) => {
+  const handleScroll = async (event: React.UIEvent<HTMLElement>) => {
     event.preventDefault();
     const { clientHeight, scrollHeight, scrollTop } = event.currentTarget;
-    if (scrollHeight - scrollTop <= clientHeight + 2) {
+    if (scrollHeight - scrollTop <= clientHeight + 2 && !loading) {
       setActivityNextCursor(suggestionList.nextCursor);
-      if (activityNextCursor !== suggestionList.nextCursor) {
-        getMemberList({
+      if (suggestionList.nextCursor) {
+        await getMemberList({
           cursor: suggestionList.nextCursor,
           prop: '',
           search: debouncedValue,
@@ -152,7 +158,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
   };
 
   const getHighlightedText = (text: string, highlight: string) => {
-    const parts = text.split(new RegExp(`(${highlight.replace(/[^a-z]/gi, '')})`, 'gi'));
+    const parts = text.split(new RegExp(`(${highlight.replace(/[^a-z .@]/gi, '')})`, 'gi'));
     return (
       <Fragment>
         {parts.map((part) => (part.toLowerCase() === highlight.toLowerCase() ? <mark className="bg-textHighlightColor">{part}</mark> : part))}
@@ -196,12 +202,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
           <div className="font-Poppins font-medium text-tableDuration text-lg leading-10 pt-8 pl-2"> No data found</div>
         )}
         <div className="flex flex-col gap-5 overflow-y-scroll member-section mt-1.8 max-h-96 height-member-merge " onScroll={handleScroll}>
-          {loading ? (
-            <div className="flex flex-col  gap-5 overflow-scroll ">
-              <Skeleton width={500} className={'my-4'} count={6} />
-            </div>
-          ) : (
-            suggestionList?.result &&
+          {suggestionList?.result &&
             suggestionList?.result.map((member: MergeMembersDataResult, index: number) => (
               <div className="flex border-b border-activitySubCard pb-4 pt-6" key={index}>
                 <div className="mr-0.34">
@@ -230,8 +231,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
                   </div>
                 </div>
               </div>
-            ))
-          )}
+            ))}
         </div>
         <div className="flex justify-end mt-1.8 pb-53 ">
           <Button

@@ -101,9 +101,9 @@ const MembersProfile: React.FC = () => {
     localStorage.removeItem('merge-membersId');
     return () => {
       document.removeEventListener('click', handleOutsideClick);
-      document.addEventListener('click', handleDropDownClick);
-      document.addEventListener('click', handleIntegrationDropDownClick);
-      document.addEventListener('click', handleDateFilterDropDownClick);
+      document.removeEventListener('click', handleDropDownClick);
+      document.removeEventListener('click', handleIntegrationDropDownClick);
+      document.removeEventListener('click', handleDateFilterDropDownClick);
     };
   }, []);
 
