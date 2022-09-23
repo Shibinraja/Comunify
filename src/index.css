@@ -301,7 +301,7 @@ input {
 }
 
 .member-section::-webkit-scrollbar-thumb {
-  background: #eeeeee;
+  background: #eeeeee00;
   border-radius: 60px;
 }
 .member-section-model{
