@@ -210,7 +210,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
           </div>
         </div>
         {!loading && !suggestionList.result?.length && (
-          <div className="font-Poppins font-medium text-tableDuration text-lg leading-10 pt-8 pl-2"> No data found</div>
+          <div className="font-Poppins font-medium text-tableDuration text-lg leading-10 pt-8 pl-2 h-96"> No data found</div>
         )}
         <div className="flex flex-col gap-5 overflow-y-scroll member-section mt-1.8 max-h-96 height-member-merge " onScroll={handleScroll}>
           {loading && !preventLoading ? (
@@ -220,7 +220,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
           ) : (
             suggestionList?.result &&
             suggestionList?.result.map((member: MergeMembersDataResult, index: number) => (
-              <div className="flex border-b border-activitySubCard pb-4 pt-6" key={index}>
+              <div className="flex border-b border-activitySubCard pb-4" key={index}>
                 <div className="mr-0.34">
                   <input
                     type="checkbox"
