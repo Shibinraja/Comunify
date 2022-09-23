@@ -1,11 +1,18 @@
 ::-webkit-scrollbar {
   width: 0px;
 }
-.auth-layout-signUp {
+@media screen and (min-width: 2000px) {
+  .layout-height {
+    height: calc(100vh - 5rem);
+  }
+}
+
+
+.auth-layout-section {
   background-image: url('../../../../assets/images/sign-up-bg.svg');
   background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-size: 50%;
-  background-position: left;
-  height: calc(100vh - -8rem);
+  
+  background-size: 90%;
+  background-position:top left;
+  background-color: #f6fdff;
 }

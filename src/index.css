@@ -599,3 +599,6 @@ input {
 .ReactModalPortal .ReactModal__Overlay{
   /* background-color: rgb(0, 0, 0, 0.7) !important; */
 }
+.boder-lightRed {
+  border-color: #FF5F5F !important;
+}
