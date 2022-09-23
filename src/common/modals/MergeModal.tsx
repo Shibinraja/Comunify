@@ -6,13 +6,12 @@ import Button from 'common/button';
 import { MergeMembersDataResponse, MergeMembersDataResult } from 'modules/members/interface/members.interface';
 import { getMemberSuggestionList } from 'modules/members/services/members.services';
 import { memberSuggestionType } from 'modules/members/services/service.types';
-import React, { ChangeEvent, Fragment, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, Fragment, useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { useNavigate, useParams } from 'react-router-dom';
 import searchIcon from '../../assets/images/search.svg';
+import { MemberLoader } from './MemberLoader';
 import { MergeModalProps } from './MergeModalTypes';
-import Skeleton from 'react-loading-skeleton';
-import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 
 const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
   const { workspaceId, memberId } = useParams();
@@ -54,7 +53,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
         result: MembersList,
         nextCursor: data?.nextCursor as string | null
       });
-    } else if(action === 'search') {
+    } else if (action === 'search') {
       setSuggestionList({
         result: data?.result as unknown as MergeMembersDataResult[],
         nextCursor: data?.nextCursor as string | null
@@ -74,7 +73,6 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
         };
       });
     }
-
   };
 
   //useEffect to call the api at initial load.
@@ -84,12 +82,15 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
       nextCursor: null
     });
     if (debouncedValue) {
-      getMemberList({
-        cursor: null,
-        prop: 'search',
-        search: debouncedValue,
-        suggestionListCursor: suggestionList.nextCursor
-      }, 'search');
+      getMemberList(
+        {
+          cursor: null,
+          prop: 'search',
+          search: debouncedValue,
+          suggestionListCursor: suggestionList.nextCursor
+        },
+        'search'
+      );
     } else {
       getMemberList(
         {
@@ -118,7 +119,6 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
           suggestionListCursor: null
         });
         setPreventLoading(false);
-
       }
     }
   };
@@ -211,58 +211,44 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
         </div>
         {!loading && !suggestionList.result?.length && (
           <div className="font-Poppins font-medium text-tableDuration text-lg leading-10 pt-8 pl-2 max-h-96"> No data found</div>
-
         )}
         <div className="flex flex-col gap-5 overflow-y-scroll member-section mt-1.8 max-h-96 height-member-merge " onScroll={handleScroll}>
-          {loading && !preventLoading ? (
-            <div className="flex border-b border-activitySubCard pb-2 mt-4" >
-
-              <Skeleton width={12} height={12} className={'mr-2'}  />
-
-              <div className="flex flex-col ">
-
-                <Skeleton width={100} height={14}  />
-                <Skeleton width={200} height={10} className={'-top-1'} />
-                <div className="flex -mt-3">
-                  <Skeleton width={17} height={17} borderRadius={'50%'} className={'mr-1'} />
-                  <Skeleton width={17} height={17} borderRadius={'50%'}  className={'mr-1'} />
-                  <Skeleton width={17} height={17} borderRadius={'50%'}  className={'mr-1'} />
-                </div>
-              </div>
-            </div>
-          ) : (
-            suggestionList?.result &&
-            suggestionList?.result.map((member: MergeMembersDataResult, index: number) => (
-
-              <div className="flex border-b border-activitySubCard pb-4" key={index}>
-                <div className="mr-0.34">
-                  <input
-                    type="checkbox"
-                    className="checkbox"
-                    id={member.id}
-                    name={member.id}
-                    checked={(checkedMemberId[member.id] as boolean) || false}
-                    onChange={handleCheckBox}
-                  />
-                </div>
-                <div className="flex flex-col ">
-                  <div className={`font-Poppins font-medium text-trial text-infoBlack leading-1.31 `}>
-                    {getHighlightedText(member.name, searchSuggestion)}
-                    {/* Reg Exp function to highlight and show all the values matched with search suggestion string.  */}
-                    {/* {member.name.includes(!searchSuggestion ? '/' : searchSuggestion)? member.name.replace(new RegExp(searchSuggestion, 'g'), '') : member.name} */}
+          {loading && !preventLoading
+            ? Array.from({ length: 10 }, (_, i) => i + 1).map((type: number) => (
+              <Fragment key={type}>
+                <MemberLoader />
+              </Fragment>
+            ))
+            : suggestionList?.result &&
+              suggestionList?.result.map((member: MergeMembersDataResult, index: number) => (
+                <div className="flex border-b border-activitySubCard pb-4" key={index}>
+                  <div className="mr-0.34">
+                    <input
+                      type="checkbox"
+                      className="checkbox"
+                      id={member.id}
+                      name={member.id}
+                      checked={(checkedMemberId[member.id] as boolean) || false}
+                      onChange={handleCheckBox}
+                    />
                   </div>
-                  <div className="text-tagEmail font-Poppins font-normal leading-1.31 text-email pl-1">
-                    {getHighlightedText(member.email, searchSuggestion)} | {member.organization}
-                  </div>
-                  <div className="flex mt-2.5">
-                    <div className="mr-0.34 w-1.001 h-1.001">
-                      <img src={member.platform.platformLogoUrl} alt="" />
+                  <div className="flex flex-col ">
+                    <div className={`font-Poppins font-medium text-trial text-infoBlack leading-1.31 `}>
+                      {getHighlightedText(member.name, searchSuggestion)}
+                      {/* Reg Exp function to highlight and show all the values matched with search suggestion string.  */}
+                      {/* {member.name.includes(!searchSuggestion ? '/' : searchSuggestion)? member.name.replace(new RegExp(searchSuggestion, 'g'), '') : member.name} */}
+                    </div>
+                    <div className="text-tagEmail font-Poppins font-normal leading-1.31 text-email pl-1">
+                      {getHighlightedText(member.email, searchSuggestion)} | {member.organization}
+                    </div>
+                    <div className="flex mt-2.5">
+                      <div className="mr-0.34 w-1.001 h-1.001">
+                        <img src={member.platform.platformLogoUrl} alt="" />
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))
-          )}
+              ))}
         </div>
         <div className="flex justify-end mt-1.8 pb-53 ">
           <Button

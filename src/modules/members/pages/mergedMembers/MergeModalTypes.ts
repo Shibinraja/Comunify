@@ -6,5 +6,6 @@ export type MergeModalProps = {
   };
   isClose: () => void;
   onSubmit: () => void;
-  contextText: string
+  contextText: string;
+  loader:boolean
 };

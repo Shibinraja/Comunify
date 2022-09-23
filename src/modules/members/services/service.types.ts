@@ -15,3 +15,9 @@ export type mergeMembersType = {
     memberId: string;
   }[];
 };
+
+export type unMergeMembersType = {
+  workspaceId: string;
+  memberId: string;
+  unMergeId: string;
+};

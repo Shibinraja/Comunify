@@ -6,9 +6,9 @@ import { MergeModalProps } from './MergeModalTypes';
 
 Modal.setAppElement('#root');
 
-export const MergeMemberModal: React.FC<MergeModalProps> = ({ isOpen, isClose, onSubmit, contextText }) => (
+export const MergeMemberModal: React.FC<MergeModalProps> = ({ isOpen, isClose, onSubmit, contextText, loader }) => (
   <Modal
-    isOpen={(isOpen.ChangePrimaryMember || isOpen.UnMergeModalOpen  || isOpen.confirmMerge) as boolean}
+    isOpen={(isOpen.ChangePrimaryMember || isOpen.UnMergeModalOpen || isOpen.confirmMerge) as boolean}
     shouldCloseOnOverlayClick={false}
     onRequestClose={isClose}
     className="w-24.31 h-18.43 mx-auto rounded-lg modals-tag bg-white shadow-modal flex items-center justify-center"
@@ -28,9 +28,7 @@ export const MergeMemberModal: React.FC<MergeModalProps> = ({ isOpen, isClose, o
       <div className="bg-cover">
         <img src={modalMergeIcon} alt="" />
       </div>
-      <div className="mt-5 leading-6 text-black font-Inter font-semibold text-xl w-2/3 text-center">
-        {contextText}
-      </div>
+      <div className="mt-5 leading-6 text-black font-Inter font-semibold text-xl w-2/3 text-center">{contextText}</div>
       <div className="flex mt-1.8">
         <Button
           type="button"
@@ -40,8 +38,12 @@ export const MergeMemberModal: React.FC<MergeModalProps> = ({ isOpen, isClose, o
         />
         <Button
           type="button"
+          disabled={loader}
           text="YES"
-          className="border-none ml-2.5 yes-btn h-2.81 w-5.25 box-border rounded shadow-contactBtn cursor-pointer font-Poppins font-medium text-error leading-5 text-white btn-save-modal"
+          // eslint-disable-next-line max-len
+          className={`border-none ml-2.5 yes-btn h-2.81 w-5.25 box-border rounded shadow-contactBtn cursor-pointer font-Poppins font-medium text-error leading-5 text-white btn-save-modal ${
+            loader ? 'cursor-not-allowed' : ''
+          }`}
           onClick={onSubmit}
         />
       </div>
