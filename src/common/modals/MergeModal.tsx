@@ -211,15 +211,29 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
         </div>
         {!loading && !suggestionList.result?.length && (
           <div className="font-Poppins font-medium text-tableDuration text-lg leading-10 pt-8 pl-2 max-h-96"> No data found</div>
+
         )}
         <div className="flex flex-col gap-5 overflow-y-scroll member-section mt-1.8 max-h-96 height-member-merge " onScroll={handleScroll}>
           {loading && !preventLoading ? (
-            <div className="flex flex-col  gap-5 overflow-scroll ">
-              <Skeleton width={500} className={'my-4'} count={6} />
+            <div className="flex border-b border-activitySubCard pb-2 mt-4" >
+
+              <Skeleton width={12} height={12} className={'mr-2'}  />
+
+              <div className="flex flex-col ">
+
+                <Skeleton width={100} height={14}  />
+                <Skeleton width={200} height={10} className={'-top-1'} />
+                <div className="flex -mt-3">
+                  <Skeleton width={17} height={17} borderRadius={'50%'} className={'mr-1'} />
+                  <Skeleton width={17} height={17} borderRadius={'50%'}  className={'mr-1'} />
+                  <Skeleton width={17} height={17} borderRadius={'50%'}  className={'mr-1'} />
+                </div>
+              </div>
             </div>
           ) : (
             suggestionList?.result &&
             suggestionList?.result.map((member: MergeMembersDataResult, index: number) => (
+
               <div className="flex border-b border-activitySubCard pb-4" key={index}>
                 <div className="mr-0.34">
                   <input
