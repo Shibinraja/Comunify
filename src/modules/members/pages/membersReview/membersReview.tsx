@@ -297,7 +297,11 @@ const MembersReview: React.FC = () => {
         isClose={handleModalClose}
         onSubmit={handleOnSubmit}
         contextText={
-          modalOpen.confirmMerge ? 'Are you sure want to merge members' : modalOpen.UnMergeModalOpen ? 'Are you sure want to unmerge members' : ''
+          modalOpen.confirmMerge
+            ? 'Are you sure want to merge members'
+            : modalOpen.UnMergeModalOpen
+              ? 'Are you sure you want to remove the member?'
+              : ''
         }
       />
     </div>

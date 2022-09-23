@@ -361,100 +361,99 @@ const Members: React.FC = () => {
             <img src={searchIcon} alt="" />
           </div>
         </div>
-        <div className='flex justify-between xl:justify-start mt-4 xl:mt-0'>
-        <div
-          className={`day w-[49px] h-3.06 flex items-center justify-center ml-0 xl:ml-0.652 box-border rounded-0.6 ${
-            customDateLink['1day'] ? 'border-gradient-rounded-member' : 'app-input-card-border'
-          } shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
-          onClick={() => selectCustomDate('1day')}
-        >
-          1D
-        </div>
-        <div
-          className={`day w-[49px] h-3.06 flex items-center justify-center ml-0.652 box-border rounded-0.6 ${
-            customDateLink['7day'] ? 'border-gradient-rounded-member' : 'app-input-card-border'
-          } shadow-shadowInput font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
-          onClick={() => selectCustomDate('7day')}
-        >
-          7D
-        </div>
-        <div
-          className={`day w-[49px] h-3.06 flex items-center justify-center ml-0.652 box-border rounded-0.6 ${
-            customDateLink['1month'] ? 'border-gradient-rounded-member' : 'app-input-card-border'
-          } shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
-          onClick={() => selectCustomDate('1month')}
-        >
-          1M
-        </div>
-        <div className="box-border cursor-pointer rounded-0.6 shadow-contactCard app-input-card-border relative ml-0.652" ref={dropDownRef}>
-          <div className="flex h-3.06 w-[11.25rem] items-center justify-between px-5 " onClick={handleFilterDropdown}>
-            <div className="box-border rounded-0.6 shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">
-              Custom Date
-            </div>
-            <div>
-              <img src={dropdownIcon} alt="" className={isFilterDropdownActive ? 'rotate-180' : 'rotate-0'} />
-            </div>
+        <div className="flex justify-between xl:justify-start mt-4 xl:mt-0">
+          <div
+            className={`day w-[49px] h-3.06 flex items-center justify-center ml-0 xl:ml-0.652 box-border rounded-0.6 ${
+              customDateLink['1day'] ? 'border-gradient-rounded-member' : 'app-input-card-border'
+            } shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
+            onClick={() => selectCustomDate('1day')}
+          >
+            1D
           </div>
-          {isFilterDropdownActive && (
-            <div className="absolute w-16.56 pb-0 bg-white border z-40 rounded-0.3">
-              <div className="flex flex-col pb-5">
-                <>
-                  <div className="flex flex-col px-3 pt-4">
-                    <label htmlFor="Start Date p-1 font-Inter font-normal leading-4 text-trial text-searchBlack">Start Date</label>
-                    <div className="relative flex items-center">
-                      <DatePicker
-                        selected={customStartDate}
-                        onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'start')}
-                        className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
-                        placeholderText="DD/MM/YYYY"
-                        ref={datePickerRefStart}
-                        dateFormat="dd/MM/yyyy"
-                      />
-                      <img
-                        className="absolute icon-holder right-6 cursor-pointer"
-                        src={calendarIcon}
-                        alt=""
-                        onClick={() => handleClickDatePickerIcon('start')}
-                      />
-                    </div>
-                  </div>
-                  <div className="flex flex-col px-3 pb-4 pt-3">
-                    <label htmlFor="Start Date p-1 font-Inter font-Inter font-normal leading-4 text-trial text-searchBlack">End Date</label>
-                    <div className="relative flex items-center">
-                      <DatePicker
-                        selected={customEndDate}
-                        onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'end')}
-                        className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
-                        placeholderText="DD/MM/YYYY"
-                        ref={datePickerRefEnd}
-                        dateFormat="dd/MM/yyyy"
-                      />
-                      <img
-                        className="absolute icon-holder right-6 cursor-pointer"
-                        src={calendarIcon}
-                        alt=""
-                        onClick={() => handleClickDatePickerIcon('end')}
-                      />
-                    </div>
-                  </div>
-                </>
+          <div
+            className={`day w-[49px] h-3.06 flex items-center justify-center ml-0.652 box-border rounded-0.6 ${
+              customDateLink['7day'] ? 'border-gradient-rounded-member' : 'app-input-card-border'
+            } shadow-shadowInput font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
+            onClick={() => selectCustomDate('7day')}
+          >
+            7D
+          </div>
+          <div
+            className={`day w-[49px] h-3.06 flex items-center justify-center ml-0.652 box-border rounded-0.6 ${
+              customDateLink['1month'] ? 'border-gradient-rounded-member' : 'app-input-card-border'
+            } shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
+            onClick={() => selectCustomDate('1month')}
+          >
+            1M
+          </div>
+          <div className="box-border cursor-pointer rounded-0.6 shadow-contactCard app-input-card-border relative ml-0.652" ref={dropDownRef}>
+            <div className="flex h-3.06 w-[11.25rem] items-center justify-between px-5 " onClick={handleFilterDropdown}>
+              <div className="box-border rounded-0.6 shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">
+                Custom Date
+              </div>
+              <div>
+                <img src={dropdownIcon} alt="" className={isFilterDropdownActive ? 'rotate-180' : 'rotate-0'} />
               </div>
             </div>
-          )}
-        </div>
+            {isFilterDropdownActive && (
+              <div className="absolute w-16.56 pb-0 bg-white border z-40 rounded-0.3">
+                <div className="flex flex-col pb-5">
+                  <>
+                    <div className="flex flex-col px-3 pt-4">
+                      <label htmlFor="Start Date p-1 font-Inter font-normal leading-4 text-trial text-searchBlack">Start Date</label>
+                      <div className="relative flex items-center">
+                        <DatePicker
+                          selected={customStartDate}
+                          onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'start')}
+                          className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
+                          placeholderText="DD/MM/YYYY"
+                          ref={datePickerRefStart}
+                          dateFormat="dd/MM/yyyy"
+                        />
+                        <img
+                          className="absolute icon-holder right-6 cursor-pointer"
+                          src={calendarIcon}
+                          alt=""
+                          onClick={() => handleClickDatePickerIcon('start')}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex flex-col px-3 pb-4 pt-3">
+                      <label htmlFor="Start Date p-1 font-Inter font-Inter font-normal leading-4 text-trial text-searchBlack">End Date</label>
+                      <div className="relative flex items-center">
+                        <DatePicker
+                          selected={customEndDate}
+                          onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'end')}
+                          className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
+                          placeholderText="DD/MM/YYYY"
+                          ref={datePickerRefEnd}
+                          dateFormat="dd/MM/yyyy"
+                        />
+                        <img
+                          className="absolute icon-holder right-6 cursor-pointer"
+                          src={calendarIcon}
+                          alt=""
+                          onClick={() => handleClickDatePickerIcon('end')}
+                        />
+                      </div>
+                    </div>
+                  </>
+                </div>
+              </div>
+            )}
+          </div>
 
-        <div className="ml-1.30 w-[155px]">{MemberFilter}</div>
-        <div className="ml-0.652 w-[112px]">
-          <div
-            className="export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex cursor-pointer hover:border-infoBlack transition ease-in-out duration-300"
-            onClick={fetchMembersListExportData}
-          >
-            <h3 className="text-memberDay leading-1.12 font-Poppins font-semibold text-card">Export</h3>
-            <img src={exportImage} alt="" />
+          <div className="ml-1.30 w-[155px]">{MemberFilter}</div>
+          <div className="ml-0.652 w-[112px]">
+            <div
+              className="export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex cursor-pointer hover:border-infoBlack transition ease-in-out duration-300"
+              onClick={fetchMembersListExportData}
+            >
+              <h3 className="text-memberDay leading-1.12 font-Poppins font-semibold text-card">Export</h3>
+              <img src={exportImage} alt="" />
+            </div>
           </div>
         </div>
-        </div>
-
       </div>
       {customizedColumn && (customizedColumn?.[0]?.name as { name: string; id: string })?.name ? (
         <div className="memberTable mt-1.8">

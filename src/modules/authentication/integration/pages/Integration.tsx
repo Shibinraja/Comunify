@@ -194,7 +194,8 @@ const Integration: React.FC = () => {
                       left: '60%',
                       bottom: 0,
                       right: 0,
-                      alignItems: 'center'
+                      alignItems: 'center',
+                      backgroundColor: 'transparent'
                     }
                   }}
                 >

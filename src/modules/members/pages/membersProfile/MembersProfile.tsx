@@ -7,6 +7,7 @@ import Input from 'common/input';
 import MergeModal from 'common/modals/MergeModal';
 import { MergeModalPropsEnum } from 'common/modals/MergeModalTypes';
 import { count_5, width_90 } from 'constants/constants';
+import loaderSlice from 'modules/authentication/store/slices/loader.slice';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
 import React, { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import DatePicker, { ReactDatePicker } from 'react-datepicker';
@@ -100,9 +101,9 @@ const MembersProfile: React.FC = () => {
     localStorage.removeItem('merge-membersId');
     return () => {
       document.removeEventListener('click', handleOutsideClick);
-      document.addEventListener('click', handleDropDownClick);
-      document.addEventListener('click', handleIntegrationDropDownClick);
-      document.addEventListener('click', handleDateFilterDropDownClick);
+      document.removeEventListener('click', handleDropDownClick);
+      document.removeEventListener('click', handleIntegrationDropDownClick);
+      document.removeEventListener('click', handleDateFilterDropDownClick);
     };
   }, []);
 
@@ -216,8 +217,9 @@ const MembersProfile: React.FC = () => {
     const { clientHeight, scrollHeight, scrollTop } = event.currentTarget;
     if (scrollHeight - scrollTop <= clientHeight + 2) {
       setActivityNextCursor(activityData?.nextCursor);
-      if (activityData.nextCursor !== null && !activityDataLoader) {
+      if (activityData.nextCursor !== null) {
         loadActivityData(false, activityData.nextCursor);
+        dispatch(loaderSlice.actions.stopLoadingAction(membersSlice.actions.getMembersActivityDataInfiniteScroll.type));
       }
     }
   };
@@ -604,80 +606,78 @@ const MembersProfile: React.FC = () => {
               <div className="font-Poppins font-medium text-error leading-5 text-addTag cursor-pointer" onClick={() => handleTagModalOpen(true)}>
                 ADD TAG
               </div>
-              
             </div>
             <div className="flex items-center justify-center">
-                <Modal
-                  isOpen={isTagModalOpen}
-                  shouldCloseOnOverlayClick={false}
-                  onRequestClose={() => setIsModalOpen(false)}
-                  className="w-24.31 h-18.75 mx-auto  rounded-lg modals-tag bg-white shadow-modal outline-none"
-                  style={{
-                    overlay: {
-                      display: 'flex',
-                      position: 'fixed',
-                      top: 0,
-                      left: 0,
-                      bottom: 0,
-                      right: 0,
-                      alignItems: 'center'
-                    }
-                  }}
-                >
-                  <div className="flex flex-col">
-                    <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Add Tag</h3>
-                    <form className="flex flex-col relative px-1.93 mt-9" onSubmit={(e) => handleAssignTagsName(e)}>
-                      <label htmlFor="billingName " className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack ">
-                        Tag Name
-                      </label>
-                      <Input
-                        id="tags"
-                        name="tags"
-                        type="text"
-                        className="mt-0.375 inputs box-border bg-white shadow-inputShadow rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-sm placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
-                        placeholder="Enter Tag Name"
-                        onChange={handleSearchTextChange}
-                        value={tags.tagName || searchText}
-                        errors={Boolean(errorMessage)}
-                        helperText={errorMessage}
-                      />
-                      {!errorMessage && (
-                        <div
-                          className={`bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 ${
-                            tagDropDownOption ? '' : 'hidden'
-                          }`}
-                        >
-                          {TagFilterResponseData?.map((data: TagResponseData) => (
-                            <div
-                              ref={tagDropDownRef}
-                              key={data.id}
-                              className="p-2 text-searchBlack cursor-pointer font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300"
-                              onClick={() => handleSelectTagName(data.name, data.id)}
-                            >
-                              {data.name}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-
-                      <div className="flex absolute right-1 top-24 pr-6 items-center">
-                        <Button
-                          type="button"
-                          text="CANCEL"
-                          className="mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel w-5.25 h-2.81 rounded border-none"
-                          onClick={() => handleTagModalOpen(false)}
-                        />
-                        <Button
-                          type="submit"
-                          text="SAVE"
-                          className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-5.25 h-2.81  border-none btn-save-modal"
-                        />
+              <Modal
+                isOpen={isTagModalOpen}
+                shouldCloseOnOverlayClick={false}
+                onRequestClose={() => setIsModalOpen(false)}
+                className="w-24.31 h-18.75 mx-auto  rounded-lg modals-tag bg-white shadow-modal outline-none"
+                style={{
+                  overlay: {
+                    display: 'flex',
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: 0,
+                    alignItems: 'center'
+                  }
+                }}
+              >
+                <div className="flex flex-col">
+                  <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Add Tag</h3>
+                  <form className="flex flex-col relative px-1.93 mt-9" onSubmit={(e) => handleAssignTagsName(e)}>
+                    <label htmlFor="billingName " className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack ">
+                      Tag Name
+                    </label>
+                    <Input
+                      id="tags"
+                      name="tags"
+                      type="text"
+                      className="mt-0.375 inputs box-border bg-white shadow-inputShadow rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-sm placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
+                      placeholder="Enter Tag Name"
+                      onChange={handleSearchTextChange}
+                      value={tags.tagName || searchText}
+                      errors={Boolean(errorMessage)}
+                      helperText={errorMessage}
+                    />
+                    {!errorMessage && (
+                      <div
+                        className={`bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 ${
+                          tagDropDownOption ? '' : 'hidden'
+                        }`}
+                      >
+                        {TagFilterResponseData?.map((data: TagResponseData) => (
+                          <div
+                            ref={tagDropDownRef}
+                            key={data.id}
+                            className="p-2 text-searchBlack cursor-pointer font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300"
+                            onClick={() => handleSelectTagName(data.name, data.id)}
+                          >
+                            {data.name}
+                          </div>
+                        ))}
                       </div>
-                    </form>
-                  </div>
-                </Modal>
-              </div>
+                    )}
 
+                    <div className="flex absolute right-1 top-24 pr-6 items-center">
+                      <Button
+                        type="button"
+                        text="CANCEL"
+                        className="mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel w-5.25 h-2.81 rounded border-none"
+                        onClick={() => handleTagModalOpen(false)}
+                      />
+                      <Button
+                        type="submit"
+                        text="SAVE"
+                        className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-5.25 h-2.81  border-none btn-save-modal"
+                      />
+                    </div>
+                  </form>
+                </div>
+              </Modal>
+            </div>
 
             <div className="flex flex-wrap pt-1.56 gap-2">
               {memberProfileCardData?.map((data: MemberProfileCard) =>
