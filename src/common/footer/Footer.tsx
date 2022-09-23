@@ -1,11 +1,9 @@
-const Footer = () => {
-  return (
-    <div className="pt-8">
-      <div className="flex justify-center items-center py-1.9 border-t-1 border font-normal leading-1.8 text-secondaryGray text-desc fixed bottom-0 w-full bg-white">
-        <footer>Copyright © Comunify 2022 | All Rights Reserved</footer>
-      </div>
-    </div>
-  );
-};
+import React from 'react';
+
+const Footer: React.FC = () => (
+  <div className="flex justify-center items-center border-t border-grayBorder font-normal leading-1.8 text-lightGray text-desc w-full bg-white h-[92px]">
+    <footer>Copyright © Comunify 2022 | All Rights Reserved</footer>
+  </div>
+);
 
 export default Footer;

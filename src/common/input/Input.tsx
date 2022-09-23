@@ -1,38 +1,39 @@
+import React, { Fragment } from 'react';
 import { Props } from '../../interface/interface';
-import { useField, ErrorMessage } from 'formik';
+// import { useField, ErrorMessage } from 'formik';
 
 const Input = ({
+  id,
   disabled = false,
   placeholder,
   name,
   type,
   value,
-  handleSubmit,
+  // handleSubmit,
   className,
-  ...rest
-}: Props) => {
-  const passDataToParent = (e: any) => {
-    e.preventDefault();
-    console.log(e.target.value);
-    
-  };
-
-  const errorClassName='';
-
-  return (
-    <div className='flex flex-col'>
+  errors,
+  onBlur,
+  onChange,
+  helperText
+}: // ...rest
+Props) => (
+  <Fragment>
+    <div className="flex flex-col relative">
       <input
+        id={id}
         type={type}
+        name={name}
         className={className}
         placeholder={placeholder}
         disabled={disabled}
-        {...rest}
-        autoComplete='off'
+        autoComplete="off"
         value={value}
-        onChange={(e) => passDataToParent(e)}
+        onBlur={onBlur}
+        onChange={onChange}
       />
+      {errors && <p className="text-lightRed absolute -bottom-5 font-normal text-error font-Inter mt-0.287 pl-1">{helperText}</p>}
     </div>
-  );
-};
+  </Fragment>
+);
 
 export default Input;

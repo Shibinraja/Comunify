@@ -1,7 +1,7 @@
-import { applyMiddleware, compose, createStore, StoreEnhancer } from 'redux';
-import type { Middleware } from 'redux';
-import createSagaMiddleware from 'redux-saga';
+import { configureStore, Store } from '@reduxjs/toolkit';
+import type { Middleware, compose } from 'redux';
 import logger from 'redux-logger';
+import createSagaMiddleware, { SagaMiddleware } from 'redux-saga';
 import rootReducer from './rootReducer';
 import rootSaga from './rootSaga';
 
@@ -11,32 +11,31 @@ declare global {
   }
 }
 
-const configureStore = (preloadedState: RootState = {} as RootState) => {
-  const sagaMiddleware = createSagaMiddleware();
-  const middlewares: Middleware[] = [sagaMiddleware];
-
-  if (import.meta.env.MODE === 'development') {
-    middlewares.push(logger);
+declare module 'redux' {
+  export interface Store {
+    sagaTask: unknown;
   }
+}
 
-  const composeEnhancers =
-    window?.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-  const middlewareEnhancer = applyMiddleware(...middlewares);
-  // Add enhancers here
-  const enhancers = [middlewareEnhancer];
-  const composedEnhancers: StoreEnhancer = composeEnhancers(...enhancers);
+export type State = ReturnType<typeof rootReducer>;
 
-  const store = createStore(rootReducer, preloadedState, composedEnhancers);
+// const makeStore = (preloadedState: RootState = {} as RootState) => {
+const sagaMiddleware = createSagaMiddleware();
+const middleware: Middleware[] = [sagaMiddleware];
 
-  sagaMiddleware.run(rootSaga);
+if (import.meta.env.MODE === 'development') {
+  middleware.push(logger as SagaMiddleware);
+}
 
-  return store;
-};
+const store: Store = configureStore({
+  reducer: rootReducer,
+  middleware,
+  devTools: import.meta.env.MODE === 'development'
+});
 
-// Preloaded state is used to initialize the store with data possibly from localStorage
-const preloadedState = {} as RootState;
-const store = configureStore(preloadedState);
+store.sagaTask = sagaMiddleware.run(rootSaga);
 
-export type RootState = ReturnType<typeof rootReducer>;
 export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof rootReducer>;
+
 export default store;

@@ -1,3 +1,10 @@
-.signup-cover-bg {
-  background-image: url('../../../../assets/images/signup-line.svg');
+::-webkit-scrollbar {
+  width: 0px;
+}
+.auth-layout-signUp {
+  background-image: url('../../../../assets/images/sign-up-bg.svg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: 50%;
+  background-position: left;
 }
