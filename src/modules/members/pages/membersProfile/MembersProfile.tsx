@@ -363,7 +363,7 @@ const MembersProfile: React.FC = () => {
             <div className="font-Poppins font-semibold text-base leading-9 text-accountBlack">Member Activity by Source</div>
             <div className="select relative">
               <div
-                className="flex justify-around items-center cursor-pointer box-border w-9.59 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border "
+                className="flex justify-between  pl-3 pr-5 items-center cursor-pointer box-border w-9.59 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border "
                 ref={dropDownRef}
                 onClick={handleDropDownActive}
               >
@@ -374,11 +374,11 @@ const MembersProfile: React.FC = () => {
               </div>
               {isSelectDropDownActive && (
                 <div
-                  className="absolute flex flex-col text-left px-5 pt-2  cursor-pointer box-border w-full bg-white z-40 rounded-0.6 shadow-contactCard pb-2 app-input-card-border"
+                  className="absolute flex flex-col text-left px-2 pt-2  cursor-pointer box-border w-full bg-white z-40 rounded-0.6 shadow-contactCard pb-2 app-input-card-border"
                   onClick={handleDropDownActive}
                 >
                   <div
-                    className='className="rounded-0.3 h-1.93 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack hover:bg-signUpDomain transition ease-in duration-100'
+                    className='rounded-0.3 h-1.93 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack hover:bg-signUpDomain px-2 px-2'
                     onClick={() => selectPlatformToDisplayOnGraph('All')}
                   >
                     All
@@ -387,7 +387,7 @@ const MembersProfile: React.FC = () => {
                     <div key={`${data?.id + data?.name}`}>
                       {data?.isConnected && (
                         <div
-                          className="rounded-0.3 h-1.93 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack hover:bg-signUpDomain transition ease-in duration-100"
+                          className="rounded-0.3 h-1.93 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack hover:bg-signUpDomain px-2"
                           onClick={() => selectPlatformToDisplayOnGraph(data?.name)}
                         >
                           {data?.name}
@@ -403,14 +403,14 @@ const MembersProfile: React.FC = () => {
             <MembersProfileGraph activityGraphData={activityGraphData} />
           </div>
         </div>
-        <div className="flex pt-2.18 items-center">
+        <div className="flex flex-col xl:flex-row pt-2.18 items-start xl:items-center justify-between">
           {memberProfileCardLoader ? (
             <div className="flex flex-col w-full">
               <Skeleton width={width_90} />
             </div>
           ) : (
             memberProfileCardData?.map((data: MemberProfileCard) => (
-              <div key={data?.id + data?.name} className="flex flex-col w-full">
+              <div key={data?.id + data?.name} className="flex flex-col ">
                 <div className="font-Poppins font-normal text-xs leading-4 text-listGray">Last Active Date</div>
                 <div className="font-Poppins font-semibold text-base leading-6 text-accountBlack">
                   {data?.lastActivity ? generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY') : 'Last active date is not available'}
@@ -419,93 +419,95 @@ const MembersProfile: React.FC = () => {
             ))
           )}
 
-          <div className="select relative mr-2 float-right">
-            <div
-              className="flex justify-around items-center cursor-pointer box-border w-9.59 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border"
-              ref={integrationDropDownRef}
-              onClick={handleIntegrationDropDownActive}
-            >
-              <div className="font-Poppins font-semibold text-card text-memberDay leading-4">
-                {selectedIntegration ? selectedIntegration : 'All Integrations'}
-              </div>
-              <div>
-                <img src={dropDownIcon} alt="" className={isIntegrationDropDownActive ? 'rotate-180' : 'rotate-0'} />
-              </div>
-            </div>
-            {isIntegrationDropDownActive && (
+          <div className='flex mt-3 xl:mt-0'>
+            <div className="select relative mr-2 float-right">
               <div
-                className="absolute flex flex-col text-left pt-2 px-2 cursor-pointer box-border w-full bg-white z-40 rounded-0.6 shadow-contactCard pb-2 app-input-card-border"
+                className="flex justify-between pl-3 pr-5 items-center cursor-pointer box-border w-173 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border"
+                ref={integrationDropDownRef}
                 onClick={handleIntegrationDropDownActive}
               >
-                <div className="w-full hover:bg-signUpDomain rounded-0.3 transition ease-in duration-100">
-                  <div
-                    className="h-1.93 px-3 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack "
-                    onClick={() => selectPlatformForActivityScroll('All Integration')}
-                  >
+                <div className="font-Poppins font-semibold text-card text-memberDay leading-4">
+                  {selectedIntegration ? selectedIntegration : 'All Integrations'}
+                </div>
+                <div>
+                  <img src={dropDownIcon} alt="" className={isIntegrationDropDownActive ? 'rotate-180' : 'rotate-0'} />
+                </div>
+              </div>
+              {isIntegrationDropDownActive && (
+                <div
+                  className="absolute flex flex-col text-left pt-2 px-2 cursor-pointer box-border w-full bg-white z-40 rounded-0.6 shadow-contactCard pb-2 app-input-card-border"
+                  onClick={handleIntegrationDropDownActive}
+                >
+                  <div className="w-full hover:bg-signUpDomain rounded-0.3 transition ease-in duration-100">
+                    <div
+                      className="h-1.93 px-3 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack "
+                      onClick={() => selectPlatformForActivityScroll('All Integration')}
+                    >
                     All Integrations
+                    </div>
                   </div>
+                  {platformData.map((options: PlatformResponse) => (
+                    <div key={`${options?.id + options?.name}`} className="w-full hover:bg-signUpDomain rounded-0.3 transition ease-in duration-100">
+                      {options?.isConnected && (
+                        <div
+                          className="h-1.93 px-3 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack "
+                          onClick={() => selectPlatformForActivityScroll(options?.name)}
+                        >
+                          {options?.name}
+                        </div>
+                      )}
+                    </div>
+                  ))}
                 </div>
-                {platformData.map((options: PlatformResponse) => (
-                  <div key={`${options?.id + options?.name}`} className="w-full hover:bg-signUpDomain rounded-0.3 transition ease-in duration-100">
-                    {options?.isConnected && (
-                      <div
-                        className="h-1.93 px-3 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack "
-                        onClick={() => selectPlatformForActivityScroll(options?.name)}
-                      >
-                        {options?.name}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-          <div className="select relative" ref={dateFilterDropDownRef}>
-            <div
-              className="flex justify-around items-center cursor-pointer box-border w-9.59 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border"
-              onClick={handleFilterDropDownActive}
-            >
-              <div className="font-Poppins font-semibold text-card text-memberDay leading-4">Filters</div>
-              <div>
-                <img src={dropDownIcon} alt="" className={isFilterDropDownActive ? 'rotate-180' : 'rotate-0'} />
-              </div>
+              )}
             </div>
-            {isFilterDropDownActive && (
-              <div className="absolute flex flex-col text-left px-2 pt-2  cursor-pointer box-border w-full bg-white z-40 rounded-0.6 shadow-contactCard pb-2 app-input-card-border">
-                <div className="relative flex items-center">
-                  <DatePicker
-                    ref={datePickerRefStart}
-                    selected={fromDate}
-                    onChange={(date: Date) => setFromDate(date)}
-                    className=" h-3.06 app-result-card-border shadow-reportInput w-full rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
-                    placeholderText="From"
-                    dateFormat="dd/MM/yyyy"
-                  />
-                  <img
-                    className="absolute icon-holder right-4 cursor-pointer"
-                    src={calendarIcon}
-                    alt=""
-                    onClick={() => handleClickDatePickerIcon('start')}
-                  />
-                </div>
-                <div className="relative flex items-center pt-1">
-                  <DatePicker
-                    selected={toDate}
-                    ref={datePickerRefEnd}
-                    onChange={(date: Date) => setToDate(date)}
-                    className=" h-3.06 app-result-card-border shadow-reportInput w-full rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
-                    placeholderText="To"
-                    dateFormat="dd/MM/yyyy"
-                  />
-                  <img
-                    className="absolute icon-holder right-4 cursor-pointer"
-                    src={calendarIcon}
-                    alt=""
-                    onClick={() => handleClickDatePickerIcon('end')}
-                  />
+            <div className="select relative" ref={dateFilterDropDownRef}>
+              <div
+                className="flex justify-between pl-3 pr-5 items-center cursor-pointer box-border w-9.59 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border"
+                onClick={handleFilterDropDownActive}
+              >
+                <div className="font-Poppins font-semibold text-card text-memberDay leading-4">Filters</div>
+                <div>
+                  <img src={dropDownIcon} alt="" className={isFilterDropDownActive ? 'rotate-180' : 'rotate-0'} />
                 </div>
               </div>
-            )}
+              {isFilterDropDownActive && (
+                <div className="absolute flex flex-col text-left px-2 pt-2  cursor-pointer box-border w-full bg-white z-40 rounded-0.6 shadow-contactCard pb-2 app-input-card-border">
+                  <div className="relative flex items-center">
+                    <DatePicker
+                      ref={datePickerRefStart}
+                      selected={fromDate}
+                      onChange={(date: Date) => setFromDate(date)}
+                      className=" h-3.06 app-result-card-border shadow-reportInput w-full rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
+                      placeholderText="From"
+                      dateFormat="dd/MM/yyyy"
+                    />
+                    <img
+                      className="absolute icon-holder right-4 cursor-pointer"
+                      src={calendarIcon}
+                      alt=""
+                      onClick={() => handleClickDatePickerIcon('start')}
+                    />
+                  </div>
+                  <div className="relative flex items-center pt-1">
+                    <DatePicker
+                      selected={toDate}
+                      ref={datePickerRefEnd}
+                      onChange={(date: Date) => setToDate(date)}
+                      className=" h-3.06 app-result-card-border shadow-reportInput w-full rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
+                      placeholderText="To"
+                      dateFormat="dd/MM/yyyy"
+                    />
+                    <img
+                      className="absolute icon-holder right-4 cursor-pointer"
+                      src={calendarIcon}
+                      alt=""
+                      onClick={() => handleClickDatePickerIcon('end')}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
         <div className="mt-1.56 pt-8 px-1.62 box-border w-full rounded-0.6 shadow-contactCard app-input-card-border pb-5">
@@ -689,7 +691,7 @@ const MembersProfile: React.FC = () => {
                       className="labels flex  items-center px-2  h-8 rounded bg-tagSection cursor-pointer"
                       key={tag.id}
                     >
-                      <div className="font-Poppins text-profileBlack font-normal text-card leading-4 pr-4 tags-ellipse">{tag.name}</div>
+                      <div className="font-Poppins text-profileBlack font-normal text-card leading-4 pr-1 tags-ellipse capitalize">{tag.name}</div>
                       <div className="pl-2">
                         <img src={closeIcon} alt="" onClick={() => handleUnAssignTagsName(tag.id)} />
                       </div>

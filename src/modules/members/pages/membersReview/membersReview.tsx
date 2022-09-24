@@ -202,23 +202,23 @@ const MembersReview: React.FC = () => {
         <div className="relative">
           <h3 className="font-Poppins font-semibold leading-1.56 text-infoBlack text-base">Primary Member</h3>
           <div className="flex flex-wrap gap-5">
-            <div className="flex items-center app-input-card-border box-border w-26.25 h-7.5 shadow-profileCard rounded-0.6 pl-1.313 mt-5 ">
-              <div className="w-16 h-16">
+            <div className="flex items-center app-input-card-border box-border w-26.25 h-7.5 shadow-profileCard rounded-0.6  mt-5 p-5">
+              <div className="w-1/5">
                 <img src={primaryMemberId[0]?.profileUrl} alt="" className="w-16 h-16 rounded-full" />
               </div>
-              <div className="flex flex-col pl-3">
-                <div className="font-Poppins font-semibold text-trial text-profileBlack leading-1.31">{primaryMemberId[0]?.name}</div>
-                <div className="font-Poppins font-normal text-email text-profileBlack leading-1.31">
+              <div className="flex flex-col w-4/5 relative">
+                <div className="font-Poppins font-semibold text-trial text-profileBlack leading-1.31 capitalize">{primaryMemberId[0]?.name}</div>
+                <div className=" font-normal text-email text-profileBlack leading-1.31">
                   {' '}
                   {primaryMemberId[0]?.email} | {primaryMemberId[0]?.organization}
                 </div>
-                <div className="flex mt-2.5">
+                <div className="flex mt-1">
                   <div className="w-1.001 h-1.001 mr-0.34">
                     <img src={primaryMemberId[0]?.platform.platformLogoUrl} alt="" />
                   </div>
                 </div>
-                <div className="flex absolute left-[20rem] bottom-4 items-center">
-                  <label htmlFor={primaryMemberId[0]?.id} className="flex items-center">
+                <div className="flex justify-end items-center absolute right-0 -bottom-4">
+                  <label htmlFor={primaryMemberId[0]?.id} className="flex items-center  font-normal font-Poppins text-card">
                     <input
                       type="radio"
                       className="hidden peer"
@@ -228,7 +228,10 @@ const MembersReview: React.FC = () => {
                       checked={(checkedRadioId[primaryMemberId[0]?.comunifyMemberId] as boolean) || false}
                       onChange={handleRadioBtn}
                     />{' '}
-                    <span className="w-3 h-3 mr-1.5 border font-normal font-Poppins text-card leading-1.31 border-[#ddd] rounded-full inline-flex peer-checked:bg-[#ABCF6B]"></span>
+                    <div className='w-3 h-3 border peer-checked:border-[#ABCF6B] rounded-full mr-1 flex justify-center items-center'>
+                      <span className="w-2 h-2  rounded-full bg-[#ABCF6B] peer-checked:bg-[#ABCF6B]"></span>
+                    </div>
+
                     Primary
                   </label>
                 </div>
@@ -237,30 +240,49 @@ const MembersReview: React.FC = () => {
           </div>
         </div>
         <div className="flex flex-col mt-2.55">
-          <h3 className="font-Poppins text-infoBlack font-semibold text-base leading-1.56">Potential Duplicates</h3>
-          <div className="flex flex-wrap gap-5 relative">
+          <h3 className="font-Poppins text-infoBlack font-semibold text-base leading-1.56 mb-5">Potential Duplicates</h3>
+          <div className="flex flex-wrap gap-5 relative ">
             {loading ? (
-              <Skeleton width={500} className={'my-4'} count={6} />
+              <div className="flex items-center primary-card box-border border border-borderPrimary w-26.25 h-7.5 shadow-profileCard rounded-0.6 p-5  ">
+                <div className="w-1/5">
+                  <Skeleton width={64} height={64} borderRadius={'50%'} />
+                </div>
+                <div className="flex flex-col  w-4/5 relative">
+                  <div ><Skeleton width={120} height={15} /></div>
+                  <div >
+                    <Skeleton width={180} height={12} />
+                  </div>
+                  <div className="flex">
+                    <Skeleton width={16} height={16} borderRadius={'50%'} className={'mr-1'} />
+                    <Skeleton width={16} height={16} borderRadius={'50%'} className={'mr-1'} />
+                    <Skeleton width={16} height={16} borderRadius={'50%'} />
+                  </div>
+                  <div className="flex absolute right-0 -bottom-4 items-center">
+                    <Skeleton width={12} height={12} borderRadius={'50%'}  />
+                    <Skeleton width={50} height={12} className={'ml-1'} />
+                  </div>
+                </div>
+              </div>
             ) : (
               MergeMembersList &&
               MergeMembersList.map((members: MergeMembersDataResult) => (
                 <div key={members.id}>
-                  <div className="flex items-center primary-card box-border app-input-card-border w-26.25 h-7.5 shadow-profileCard rounded-0.6 pl-1.313 mt-5 relative">
-                    <div className="w-16 h-16">
+                  <div className="flex items-center primary-card box-border border border-borderPrimary w-26.25 h-7.5 shadow-profileCard rounded-0.6 p-5  ">
+                    <div className="w-1/5">
                       <img src={members.profileUrl} alt="" className="w-16 h-16 rounded-full" />
                     </div>
-                    <div className="flex flex-col pl-3">
-                      <div className="font-Poppins font-semibold text-trial text-profileBlack leading-1.31">{members.name}</div>
-                      <div className="font-Poppins font-normal text-email text-profileBlack leading-1.31">
+                    <div className="flex flex-col  w-4/5 relative">
+                      <div className="font-Poppins font-semibold text-trial text-profileBlack leading-1.31 capitalize">{members.name}</div>
+                      <div className=" font-normal text-email text-profileBlack leading-1.31">
                         {members.email} | {members.organization}
                       </div>
-                      <div className="flex mt-2.5">
+                      <div className="flex mt-1">
                         <div className="w-1.001 h-1.001 mr-0.34">
                           <img src={members.platform.platformLogoUrl} alt="" />
                         </div>
                       </div>
-                      <div className="flex absolute right-8 bottom-4 items-center">
-                        <label htmlFor={members.id} className="flex items-center">
+                      <div className="flex absolute right-0 -bottom-4 items-center">
+                        <label htmlFor={members.id} className="flex items-center text-xs text-greyDark">
                           <input
                             type="radio"
                             className="hidden peer"
@@ -270,21 +292,22 @@ const MembersReview: React.FC = () => {
                             checked={(checkedRadioId[members.comunifyMemberId] as boolean) || false}
                             onChange={handleRadioBtn}
                           />{' '}
-                          <span className="w-3 h-3 mr-1.5 border font-normal font-Poppins text-card leading-1.31 border-[#ddd] rounded-full inline-flex peer-checked:bg-[#ABCF6B]"></span>
+                          <span className="w-3 h-3 mr-1.5 border font-normal font-Poppins text-card leading-1.31 border-[#7D7D7D] rounded-full inline-flex peer-checked:bg-[#ABCF6B]"></span>
                           Primary
                         </label>
+                      </div><div className="absolute -right-2 -top-4 cursor-pointer">
+                        <img
+                          src={closeIcon}
+                          alt=""
+                          onClick={() => {
+                            handleModal('UnMerge');
+                            setCheckedId(members.id);
+                          }}
+                        />
                       </div>
+
                     </div>
-                    <div className="absolute right-7 top-5 cursor-pointer">
-                      <img
-                        src={closeIcon}
-                        alt=""
-                        onClick={() => {
-                          handleModal('UnMerge');
-                          setCheckedId(members.id);
-                        }}
-                      />
-                    </div>
+
                   </div>
                 </div>
               ))
