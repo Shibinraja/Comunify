@@ -26,7 +26,10 @@ const MembersReview: React.FC = () => {
   const navigate = useNavigate();
   const memberProfileCardData = JSON.parse(localStorage.getItem('primaryMemberId')!);
   const MergeMembersListData = JSON.parse(localStorage.getItem('merge-membersId')!);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<{ mergeListLoader: boolean; confirmationLoader: boolean }>({
+    mergeListLoader: false,
+    confirmationLoader: false
+  });
   const [checkedRadioId, setCheckedRadioId] = useState<Record<string, unknown>>({ [memberProfileCardData[0]?.comunifyMemberId]: true });
   const [modalOpen, setModalOpen] = useState<{ UnMergeModalOpen: boolean; confirmMerge: boolean }>({
     UnMergeModalOpen: false,
@@ -51,7 +54,7 @@ const MembersReview: React.FC = () => {
         search: props.search as string,
         suggestionListCursor: props.suggestionListCursor as string | null
       },
-      setLoading
+      loaderSetAction
     ).then((data) =>
       setSuggestionList((prevState) => ({
         result: prevState.result.concat(data?.result as unknown as MergeMembersDataResult),
@@ -101,6 +104,16 @@ const MembersReview: React.FC = () => {
       setPrimaryMemberId(filteredPrimaryMember);
     }
   }, [checkedRadioId]);
+
+  const loaderSetAction = (type: string, loader: boolean) => {
+    if (type === 'MergeListLoader') {
+      setLoading((prev) => ({ ...prev, mergeListLoader: loader }));
+    }
+
+    if (type === 'ConfirmationLoader') {
+      setLoading((prev) => ({ ...prev, confirmationLoader: loader }));
+    }
+  };
 
   const handleModal = (modalType: string) => {
     if (modalType === ModalType.Merge) {
@@ -162,11 +175,14 @@ const MembersReview: React.FC = () => {
       memberId: Object.keys(checkedRadioId)[0]
     });
 
-    mergeMembers({
-      workspaceId: workspaceId!,
-      memberId: memberId!,
-      mergeList
-    }).then(() => {
+    mergeMembers(
+      {
+        workspaceId: workspaceId!,
+        memberId: memberId!,
+        mergeList
+      },
+      loaderSetAction
+    ).then(() => {
       setModalOpen((prevState) => ({ ...prevState, confirmMerge: false }));
       showSuccessToast('Members Merged');
       navigate(`/${workspaceId}/members/${Object.keys(checkedRadioId)[0]}/merged-members`);
@@ -241,8 +257,8 @@ const MembersReview: React.FC = () => {
         </div>
         <div className="flex flex-col mt-2.55">
           <h3 className="font-Poppins text-infoBlack font-semibold text-base leading-1.56 mb-5">Potential Duplicates</h3>
-          <div className="flex flex-wrap gap-5 relative ">
-            {loading ? (
+          <div className="flex flex-wrap gap-5 relative">
+            {loading.mergeListLoader ? (
               <div className="flex items-center primary-card box-border border border-borderPrimary w-26.25 h-7.5 shadow-profileCard rounded-0.6 p-5  ">
                 <div className="w-1/5">
                   <Skeleton width={64} height={64} borderRadius={'50%'} />
@@ -307,7 +323,6 @@ const MembersReview: React.FC = () => {
                       </div>
 
                     </div>
-
                   </div>
                 </div>
               ))
@@ -318,6 +333,7 @@ const MembersReview: React.FC = () => {
       <MergeMemberModal
         isOpen={modalOpen}
         isClose={handleModalClose}
+        loader={loading.confirmationLoader}
         onSubmit={handleOnSubmit}
         contextText={
           modalOpen.confirmMerge
