@@ -299,7 +299,7 @@ input {
 }
 
 .member-section::-webkit-scrollbar-thumb {
-  background: #eeeeee;
+  background: #eeeeee00;
   border-radius: 60px;
 }
 .member-section-model{
@@ -598,4 +598,7 @@ input {
 }
 .ReactModalPortal .ReactModal__Overlay{
   /* background-color: rgb(0, 0, 0, 0.7) !important; */
+}
+.boder-lightRed {
+  border-color: #FF5F5F !important;
 }

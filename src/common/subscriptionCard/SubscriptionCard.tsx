@@ -30,7 +30,7 @@ const SubscriptionCard: React.FC<SubscriptionProps> = ({ subscriptionData }) => 
                 <span>
                   <img src={successIcon} alt="" className="w-[17px] pr-1" />
                 </span>
-                {` ${featuresData.value} ${featuresData.comunifyFeature.name}`}
+                {` ${featuresData.value === '1' ? 'Single': featuresData.value} ${featuresData.comunifyFeature.name}`}
               </div>
             ))}
           </div>
