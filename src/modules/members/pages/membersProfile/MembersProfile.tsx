@@ -356,7 +356,7 @@ const MembersProfile: React.FC = () => {
   }, [isModalOpen]);
 
   return (
-    <div className="flex pt-3.93 w-full">
+    <div className="flex pt-3.93 w-full mb-8">
       <div className="flex flex-col w-full">
         <div className="p-5 flex flex-col box-border  rounded-0.6 shadow-contactCard app-input-card-border">
           <div className="flex justify-between items-center relative">
@@ -422,7 +422,7 @@ const MembersProfile: React.FC = () => {
           <div className='flex mt-3 xl:mt-0'>
             <div className="select relative mr-2 float-right">
               <div
-                className="flex justify-between pl-3 pr-5 items-center cursor-pointer box-border w-173 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border"
+                className="flex justify-between pl-3 pr-5 items-center cursor-pointer box-border w-[173px] h-3.06 rounded-0.6 shadow-contactCard app-input-card-border"
                 ref={integrationDropDownRef}
                 onClick={handleIntegrationDropDownActive}
               >
@@ -551,7 +551,7 @@ const MembersProfile: React.FC = () => {
                 </div>
               ))
             ) : (
-              <div className="font-Poppins font-semibold text-base leading-9 text-accountBlack">Member activity is not available</div>
+              <div className="font-Poppins font-semibold text-base leading-9 text-greyDark flex justify-center">Member activity is not available</div>
             )}
           </div>
         </div>
