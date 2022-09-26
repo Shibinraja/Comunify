@@ -434,11 +434,11 @@ const Activity: React.FC = () => {
             onChange={handleSearchTextChange}
           />
         </div>
-        <div className="relative mr-5">{ActiveStreamFilter}</div>
+        <div className="-mr-1">{ActiveStreamFilter}</div>
 
         <div className="">
           <div
-            className="app-input-card-border w-6.98 h-3.06 rounded-0.6 shadow-shadowInput box-border bg-white items-center justify-evenly flex ml-0.63 cursor-pointer hover:border-infoBlack transition ease-in-out duration-300"
+            className="app-input-card-border w-6.98 h-3.06 rounded-0.6 shadow-shadowInput box-border bg-white items-center justify-evenly flex cursor-pointer hover:border-infoBlack transition ease-in-out duration-300"
             onClick={fetchActiveStreamListExportData}
           >
             <h3 className="text-dropGray leading-1.12 font-Poppins font-semibold text-card">Export</h3>
@@ -786,7 +786,7 @@ const Activity: React.FC = () => {
           <div>
             <img src={noActivityIcon} alt="" />
           </div>
-          <div className="pt-5 font-Poppins font-medium text-tableDuration text-lg leading-10">No activities to display</div>
+          <div className="pt-5 font-Poppins font-medium text-greyDark text-[28px] leading-10">No activities to display</div>
         </div>
       )}
     </div>
