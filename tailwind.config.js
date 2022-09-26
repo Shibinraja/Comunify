@@ -78,7 +78,8 @@ module.exports = {
         slackStatus: ' #A9CE70',
         vanillaDescription: '#6F6C90',
         download: '#2B3646',
-        textHighlightColor: '#F3DC07'
+        textHighlightColor: '#F3DC07',
+        widgetClose: '#F09E34'
       },
       margin: {
         2.6: '43px',

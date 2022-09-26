@@ -30,7 +30,7 @@ const QuickInfo: React.FC = () => {
       <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Quick Info</h3>
       <div
         // eslint-disable-next-line max-len
-        className={`grid ${isDrag ? 'grid-cols-2' : 'grid-cols-4'}  info-data py-6 box-border bg-white dark:bg-secondaryDark  
+        className={`grid ${isDrag ? 'grid-cols-2 widget-border relative' : 'grid-cols-4'}  info-data py-6 box-border bg-white dark:bg-secondaryDark  
         rounded-0.6 mt-1.868 border border-borderPrimary dark:border-borderDark shadow-profileCard`}
       >
         <div className="flex flex-col justify-center items-center">
@@ -105,6 +105,7 @@ const QuickInfo: React.FC = () => {
             </Fragment>
           )}
         </div>
+        <div className="absolute -right-3 bg-widgetClose rounded-full flex items-center justify-center h-6 w-6 text-white text-2xl -top-3">-</div>
       </div>
     </div>
   );

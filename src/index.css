@@ -602,3 +602,7 @@ input {
 .boder-lightRed {
   border-color: #FF5F5F !important;
 }
+
+.widget-border{
+  border: 1px solid #F09E34;;
+}
