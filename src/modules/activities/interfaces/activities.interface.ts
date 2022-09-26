@@ -80,7 +80,6 @@ export interface ActiveStreamData {
   sourceUrl: null | string;
   platformLogoUrl: string;
   description: string;
-  comunifyMemberId: string;
   organization: string;
   profilePictureUrl: string;
   platformId: string;
@@ -95,7 +94,7 @@ export interface ActiveStreamData {
   email: string;
   memberProfile: string;
   totalCount: number;
-  primaryMemberId: string
+  primaryMemberId: string;
 }
 
 export interface ActiveStreamResponse {

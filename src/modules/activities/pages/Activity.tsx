@@ -14,9 +14,7 @@ import { format, parseISO } from 'date-fns';
 import membersSlice from 'modules/members/store/slice/members.slice';
 import { AssignTypeEnum, TagResponseData } from 'modules/settings/interface/settings.interface';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
-import React, {
-  ChangeEvent, FormEvent, Fragment, useEffect, useMemo, useRef, useState
-} from 'react';
+import React, { ChangeEvent, FormEvent, Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import Skeleton from 'react-loading-skeleton';
 import Modal from 'react-modal';
@@ -84,7 +82,7 @@ const Activity: React.FC = () => {
   const loader = useSkeletonLoading(activitiesSlice.actions.getActiveStreamData.type);
 
   const { data, totalPages } = useAppSelector((state) => state.activities.activeStreamData);
-
+  console.log('****', data);
   const {
     TagFilterResponse: { data: TagFilterResponseData },
     clearValue
@@ -677,22 +675,24 @@ const Activity: React.FC = () => {
                             errors={Boolean(errorMessage)}
                             helperText={errorMessage}
                           />
-                          {!errorMessage &&   <div
-                            className={`bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 ${
-                              tagDropDownOption ? '' : 'hidden'
-                            }`}
-                          >
-                            {TagFilterResponseData?.map((data: TagResponseData) => (
-                              <div
-                                ref={tagDropDownRef}
-                                key={data.id}
-                                className="p-2 text-searchBlack cursor-pointer font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300"
-                                onClick={() => handleSelectTagName(data.name, data.id)}
-                              >
-                                {data.name}
-                              </div>
-                            ))}
-                          </div>}
+                          {!errorMessage && (
+                            <div
+                              className={`bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 ${
+                                tagDropDownOption ? '' : 'hidden'
+                              }`}
+                            >
+                              {TagFilterResponseData?.map((data: TagResponseData) => (
+                                <div
+                                  ref={tagDropDownRef}
+                                  key={data.id}
+                                  className="p-2 text-searchBlack cursor-pointer font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300"
+                                  onClick={() => handleSelectTagName(data.name, data.id)}
+                                >
+                                  {data.name}
+                                </div>
+                              ))}
+                            </div>
+                          )}
                           <div className="flex justify-end pt-10 items-center">
                             <Button
                               type="button"

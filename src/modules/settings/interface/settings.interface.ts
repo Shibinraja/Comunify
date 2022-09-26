@@ -137,6 +137,7 @@ export interface ConnectedPlatforms {
   lastFetched: string;
   createdAt: Date;
   updatedAt: Date;
+  platformLogoUrl: string;
   platform: {
     name: string;
     platformLogoUrl: string;

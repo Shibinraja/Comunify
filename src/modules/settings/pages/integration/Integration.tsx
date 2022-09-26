@@ -290,14 +290,14 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
               {data?.name !== undefined ? (
                 <div className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5">
                   <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                    <img src={data?.platform?.platformLogoUrl} alt="" className="h-2.31" />
+                    <img src={data?.platformLogoUrl} alt="" className="h-2.31" />
                   </div>
-                  <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">{data?.platform?.name}</div>
+                  <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">{data?.name}</div>
                   <Button
                     type="button"
                     text={isButtonConnect ? 'Disconnect' : 'Connect'}
                     className={isButtonConnect ? disConnectedBtnClassName : connectedBtnClassName}
-                    onClick={() => handleDisconnect(data?.platform?.name, data?.id, data?.platform?.platformLogoUrl)}
+                    onClick={() => handleDisconnect(data?.name, data?.id, data?.platformLogoUrl)}
                   />
                 </div>
               ) : (

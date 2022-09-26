@@ -35,7 +35,7 @@ const MergedMembers: React.FC = () => {
   });
 
   const [activityNextCursor, setActivityNextCursor] = useState<string | null>('');
-  const [checkedRadioId, setCheckedRadioId] = useState<Record<string, unknown>>({ [memberProfileCardData[0]?.comunifyMemberId]: true });
+  const [checkedRadioId, setCheckedRadioId] = useState<Record<string, unknown>>({ [memberProfileCardData[0]?.id]: true });
   const [suggestionList, setSuggestionList] = useState<MergeMembersDataResponse>({
     result: [],
     nextCursor: null
@@ -86,14 +86,14 @@ const MergedMembers: React.FC = () => {
       memberProfileData[0].platform = { platformLogoUrl: platform[0].platformLogoUrl };
       delete memberProfileData[0].platforms;
       setPrimaryMemberId(memberProfileData);
-      setCheckedRadioId({ [memberProfileData[0]?.comunifyMemberId]: true });
+      setCheckedRadioId({ [memberProfileData[0]?.id]: true });
     }
   }, [memberProfileCardDataResult]);
 
   useEffect(() => {
     //Function to concat the api response data with the Member Chosen and filter out the with the primary member selected.
     const filteredDuplicateMembers = suggestionList?.result?.concat(primaryMemberId).filter((member: MergeMembersDataResult) => {
-      if (member.comunifyMemberId !== Object.keys(checkedRadioId)[0]) {
+      if (member.id !== Object.keys(checkedRadioId)[0]) {
         return member;
       }
     });
@@ -105,7 +105,7 @@ const MergedMembers: React.FC = () => {
 
     //Function to concat the api response data with the Member Chosen and filter out the with the primary member not selected.
     const filteredPrimaryMember = suggestionList?.result?.concat(primaryMemberId).filter((member: MergeMembersDataResult) => {
-      if (member.comunifyMemberId === Object.keys(checkedRadioId)[0]) {
+      if (member.id === Object.keys(checkedRadioId)[0]) {
         return member;
       }
     });
@@ -114,12 +114,12 @@ const MergedMembers: React.FC = () => {
 
     const mergeList = filteredDuplicateMembers?.map((member: MergeMembersDataResult) => ({
       primaryMemberId: Object.keys(checkedRadioId)[0],
-      memberId: member.comunifyMemberId
+      memberId: member.id
     }));
 
     mergeList.push({
-      primaryMemberId: filteredPrimaryMember[0]?.comunifyMemberId,
-      memberId: filteredPrimaryMember[0]?.comunifyMemberId
+      primaryMemberId: filteredPrimaryMember[0]?.id,
+      memberId: filteredPrimaryMember[0]?.id
     });
 
     if (filteredPrimaryMember?.length) {
@@ -279,10 +279,10 @@ const MergedMembers: React.FC = () => {
                       <input
                         type="radio"
                         className="hidden peer"
-                        name={primaryMemberId[0]?.comunifyMemberId}
+                        name={primaryMemberId[0]?.id}
                         id={primaryMemberId[0]?.id}
-                        value={primaryMemberId[0]?.comunifyMemberId}
-                        checked={(checkedRadioId[primaryMemberId[0]?.comunifyMemberId] as boolean) || false}
+                        value={primaryMemberId[0]?.id}
+                        checked={(checkedRadioId[primaryMemberId[0]?.id] as boolean) || false}
                         onChange={handleRadioBtn}
                       />{' '}
                       <span className="w-3 h-3 mr-1.5 border font-normal font-Poppins text-card leading-1.31 border-[#ddd] rounded-full inline-flex peer-checked:bg-[#ABCF6B]"></span>
@@ -326,9 +326,9 @@ const MergedMembers: React.FC = () => {
                               type="radio"
                               className="hidden peer"
                               id={members.id}
-                              value={members.comunifyMemberId}
-                              name={members.comunifyMemberId}
-                              checked={(checkedRadioId[members.comunifyMemberId] as boolean) || false}
+                              value={members.id}
+                              name={members.id}
+                              checked={(checkedRadioId[members.id] as boolean) || false}
                               onChange={handleRadioBtn}
                             />{' '}
                             <span className="w-3 h-3 mr-1.5 border font-normal font-Poppins text-card leading-1.31 border-[#ddd] rounded-full inline-flex peer-checked:bg-[#ABCF6B]"></span>
@@ -338,7 +338,7 @@ const MergedMembers: React.FC = () => {
                       </div>
                     </div>
                     <div className="absolute right-7 top-5 cursor-pointer">
-                      <img src={closeIcon} alt="" onClick={() => handleUnMergeModal(members.comunifyMemberId)} />
+                      <img src={closeIcon} alt="" onClick={() => handleUnMergeModal(members.id)} />
                     </div>
                   </div>
                 </div>
@@ -351,7 +351,13 @@ const MergedMembers: React.FC = () => {
         isOpen={modalOpen}
         isClose={handleModalClose}
         onSubmit={handleOnSubmit}
-        contextText={modalOpen.ChangePrimaryMember ? 'Are you sure you want to change the primary member' : modalOpen.UnMergeModalOpen ? 'Are you sure want to unmerge members': ''}
+        contextText={
+          modalOpen.ChangePrimaryMember
+            ? 'Are you sure you want to change the primary member'
+            : modalOpen.UnMergeModalOpen
+            ? 'Are you sure want to unmerge members'
+            : ''
+        }
       />
     </div>
   );

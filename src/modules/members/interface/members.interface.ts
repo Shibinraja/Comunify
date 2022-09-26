@@ -148,7 +148,7 @@ export interface ActivityResult {
   displayValue: string;
   sourceUrl: string | null;
   description: string;
-  comunifyMemberId: string;
+  memberId: string;
   profilePictureUrl: string;
   platforms: {
     platformLogoUrl: string;
@@ -175,7 +175,6 @@ export type MergeMembersDataResult = {
   platformName: string;
   organization: string;
   location: string;
-  comunifyMemberId: string;
   email: string;
   profileUrl: string;
   isMerged: boolean;
@@ -226,7 +225,7 @@ export interface ActivityResult {
   displayValue: string;
   sourceUrl: string | null;
   description: string;
-  comunifyMemberId: string;
+  memberId: string;
   profilePictureUrl: string;
   platformId: string;
   platformMemberId: string;
@@ -257,7 +256,6 @@ export interface MemberProfileCard {
   organization: string | null;
   location: string | null;
   lastActivity: Date | string;
-  comunifyMemberId: string;
   email: string;
   profileUrl: string;
   isMerged: boolean;

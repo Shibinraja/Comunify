@@ -32,7 +32,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
   const debouncedValue = useDebounce(searchSuggestion, 300);
 
   // Function to call the api and list the membersSuggestionList
-  const getMemberList = async(props: Partial<memberSuggestionType>, action?: string) => {
+  const getMemberList = async (props: Partial<memberSuggestionType>, action?: string) => {
     setLoading(true);
     const data = await getMemberSuggestionList({
       workspaceId: workspaceId!,
@@ -46,15 +46,15 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
     if (action === 'clearSearch') {
       const CheckedDuplicateMembers = new Set();
       const MembersList = selectedMembers.concat(data?.result as unknown as MergeMembersDataResult).filter((member: MergeMembersDataResult) => {
-        const duplicate = CheckedDuplicateMembers.has(member.comunifyMemberId);
-        CheckedDuplicateMembers.add(member.comunifyMemberId);
+        const duplicate = CheckedDuplicateMembers.has(member.id);
+        CheckedDuplicateMembers.add(member.id);
         return !duplicate;
       });
       setSuggestionList({
         result: MembersList,
         nextCursor: data?.nextCursor as string | null
       });
-    } else if(action === 'search') {
+    } else if (action === 'search') {
       setSuggestionList({
         result: data?.result as unknown as MergeMembersDataResult[],
         nextCursor: data?.nextCursor as string | null
@@ -64,8 +64,8 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
         const CheckedDuplicateMembers = new Set();
 
         const MemberList = prevState.result.concat(data?.result as unknown as MergeMembersDataResult).filter((member: MergeMembersDataResult) => {
-          const duplicate = CheckedDuplicateMembers.has(member.comunifyMemberId);
-          CheckedDuplicateMembers.add(member.comunifyMemberId);
+          const duplicate = CheckedDuplicateMembers.has(member.id);
+          CheckedDuplicateMembers.add(member.id);
           return !duplicate;
         });
         return {
@@ -74,7 +74,6 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
         };
       });
     }
-
   };
 
   //useEffect to call the api at initial load.
@@ -84,12 +83,15 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
       nextCursor: null
     });
     if (debouncedValue) {
-      getMemberList({
-        cursor: null,
-        prop: 'search',
-        search: debouncedValue,
-        suggestionListCursor: suggestionList.nextCursor
-      }, 'search');
+      getMemberList(
+        {
+          cursor: null,
+          prop: 'search',
+          search: debouncedValue,
+          suggestionListCursor: suggestionList.nextCursor
+        },
+        'search'
+      );
     } else {
       getMemberList(
         {
@@ -104,7 +106,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
   }, [debouncedValue]);
 
   // function for scroll event
-  const handleScroll = async(event: React.UIEvent<HTMLElement>) => {
+  const handleScroll = async (event: React.UIEvent<HTMLElement>) => {
     event.preventDefault();
     const { clientHeight, scrollHeight, scrollTop } = event.currentTarget;
     if (scrollHeight - scrollTop <= clientHeight + 2 && !loading) {
@@ -118,7 +120,6 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
           suggestionListCursor: null
         });
         setPreventLoading(false);
-
       }
     }
   };

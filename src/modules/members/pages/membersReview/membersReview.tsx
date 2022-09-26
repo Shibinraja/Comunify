@@ -27,7 +27,7 @@ const MembersReview: React.FC = () => {
   const memberProfileCardData = JSON.parse(localStorage.getItem('primaryMemberId')!);
   const MergeMembersListData = JSON.parse(localStorage.getItem('merge-membersId')!);
   const [loading, setLoading] = useState<boolean>(false);
-  const [checkedRadioId, setCheckedRadioId] = useState<Record<string, unknown>>({ [memberProfileCardData[0]?.comunifyMemberId]: true });
+  const [checkedRadioId, setCheckedRadioId] = useState<Record<string, unknown>>({ [memberProfileCardData[0]?.id]: true });
   const [modalOpen, setModalOpen] = useState<{ UnMergeModalOpen: boolean; confirmMerge: boolean }>({
     UnMergeModalOpen: false,
     confirmMerge: false
@@ -84,7 +84,7 @@ const MembersReview: React.FC = () => {
   useEffect(() => {
     //Function to concat the api response data with the Member Chosen and filter out the with the primary member selected.
     const filteredDuplicateMembers = MergeMembersList?.concat(primaryMemberId).filter((member: MergeMembersDataResult) => {
-      if (member.comunifyMemberId !== Object.keys(checkedRadioId)[0]) {
+      if (member.id !== Object.keys(checkedRadioId)[0]) {
         return member;
       }
     });
@@ -92,7 +92,7 @@ const MembersReview: React.FC = () => {
 
     //Function to concat the api response data with the Member Chosen and filter out the with the primary member not selected.
     const filteredPrimaryMember = MergeMembersList?.concat(primaryMemberId).filter((member: MergeMembersDataResult) => {
-      if (member.comunifyMemberId === Object.keys(checkedRadioId)[0]) {
+      if (member.id === Object.keys(checkedRadioId)[0]) {
         return member;
       }
     });
@@ -155,7 +155,7 @@ const MembersReview: React.FC = () => {
   const handleMergeMembers = () => {
     const mergeList = MergeMembersList.concat(suggestionList.result).map((member: MergeMembersDataResult) => ({
       primaryMemberId: Object.keys(checkedRadioId)[0],
-      memberId: member.comunifyMemberId
+      memberId: member.id
     }));
     mergeList.push({
       primaryMemberId: Object.keys(checkedRadioId)[0],
@@ -222,10 +222,10 @@ const MembersReview: React.FC = () => {
                     <input
                       type="radio"
                       className="hidden peer"
-                      name={primaryMemberId[0]?.comunifyMemberId}
+                      name={primaryMemberId[0]?.id}
                       id={primaryMemberId[0]?.id}
-                      value={primaryMemberId[0]?.comunifyMemberId}
-                      checked={(checkedRadioId[primaryMemberId[0]?.comunifyMemberId] as boolean) || false}
+                      value={primaryMemberId[0]?.id}
+                      checked={(checkedRadioId[primaryMemberId[0]?.id] as boolean) || false}
                       onChange={handleRadioBtn}
                     />{' '}
                     <span className="w-3 h-3 mr-1.5 border font-normal font-Poppins text-card leading-1.31 border-[#ddd] rounded-full inline-flex peer-checked:bg-[#ABCF6B]"></span>
@@ -265,9 +265,9 @@ const MembersReview: React.FC = () => {
                             type="radio"
                             className="hidden peer"
                             id={members.id}
-                            value={members.comunifyMemberId}
-                            name={members.comunifyMemberId}
-                            checked={(checkedRadioId[members.comunifyMemberId] as boolean) || false}
+                            value={members.id}
+                            name={members.id}
+                            checked={(checkedRadioId[members.id] as boolean) || false}
                             onChange={handleRadioBtn}
                           />{' '}
                           <span className="w-3 h-3 mr-1.5 border font-normal font-Poppins text-card leading-1.31 border-[#ddd] rounded-full inline-flex peer-checked:bg-[#ABCF6B]"></span>
@@ -300,8 +300,8 @@ const MembersReview: React.FC = () => {
           modalOpen.confirmMerge
             ? 'Are you sure want to merge members'
             : modalOpen.UnMergeModalOpen
-              ? 'Are you sure you want to remove the member?'
-              : ''
+            ? 'Are you sure you want to remove the member?'
+            : ''
         }
       />
     </div>
