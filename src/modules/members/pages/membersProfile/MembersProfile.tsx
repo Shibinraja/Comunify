@@ -6,7 +6,7 @@ import Button from 'common/button';
 import Input from 'common/input';
 import MergeModal from 'common/modals/MergeModal';
 import { MergeModalPropsEnum } from 'common/modals/MergeModalTypes';
-import { count_5, width_90 } from 'constants/constants';
+import { width_90 } from 'constants/constants';
 import loaderSlice from 'modules/authentication/store/slices/loader.slice';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
 import React, { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from 'react';
@@ -378,7 +378,7 @@ const MembersProfile: React.FC = () => {
                   onClick={handleDropDownActive}
                 >
                   <div
-                    className='rounded-0.3 h-1.93 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack hover:bg-signUpDomain px-2 px-2'
+                    className="rounded-0.3 h-1.93 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack hover:bg-signUpDomain px-2 px-2"
                     onClick={() => selectPlatformToDisplayOnGraph('All')}
                   >
                     All
@@ -419,7 +419,7 @@ const MembersProfile: React.FC = () => {
             ))
           )}
 
-          <div className='flex mt-3 xl:mt-0'>
+          <div className="flex mt-3 xl:mt-0">
             <div className="select relative mr-2 float-right">
               <div
                 className="flex justify-between pl-3 pr-5 items-center cursor-pointer box-border w-[173px] h-3.06 rounded-0.6 shadow-contactCard app-input-card-border"
@@ -443,7 +443,7 @@ const MembersProfile: React.FC = () => {
                       className="h-1.93 px-3 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack "
                       onClick={() => selectPlatformForActivityScroll('All Integration')}
                     >
-                    All Integrations
+                      All Integrations
                     </div>
                   </div>
                   {platformData.map((options: PlatformResponse) => (
@@ -511,21 +511,23 @@ const MembersProfile: React.FC = () => {
           </div>
         </div>
         <div className="mt-1.56 pt-8 px-1.62 box-border w-full rounded-0.6 shadow-contactCard app-input-card-border pb-5">
-          {memberProfileCardLoader ? (
-            <Skeleton width={width_90} count={count_5} />
-          ) : (
-            memberProfileCardData?.map((data: MemberProfileCard) => (
-              <div key={data?.id + data?.name} className="flex justify-between ">
-                <div className="font-Poppins text-card leading-4 font-medium">
-                  {' '}
-                  {data?.lastActivity ? generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY') : 'Last active date is not available'}
-                </div>
-                <div onClick={navigateToActivities} className="font-Poppins font-normal leading-4 text-listGray text-preview cursor-pointer">
-                  Preview All
-                </div>
+          {memberProfileCardData?.map((data: MemberProfileCard) => (
+            <div key={data?.id + data?.name} className="flex justify-between ">
+              <div className="font-Poppins text-card leading-4 font-medium">
+                {' '}
+                {memberProfileCardLoader ? (
+                  <Skeleton width={width_90} />
+                ) : data?.lastActivity ? (
+                  generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY')
+                ) : (
+                  'Last active date is not available'
+                )}
               </div>
-            ))
-          )}
+              <div onClick={navigateToActivities} className="font-Poppins font-normal leading-4 text-listGray text-preview cursor-pointer">
+                {memberProfileCardLoader ? <Skeleton width={width_90} /> : 'Preview All'}
+              </div>
+            </div>
+          ))}
 
           <div
             onScroll={handleScroll}
@@ -557,49 +559,34 @@ const MembersProfile: React.FC = () => {
         </div>
       </div>
       <div className=" flex flex-col ml-1.8">
-        {memberProfileCardLoader ? (
-          <div className=" flex flex-col ">
+        {memberProfileCardData?.map((data: MemberProfileCard) => (
+          <div key={data?.id + data?.createdAt} className=" flex flex-col">
             <div className="profile-card items-center btn-save-modal justify-center pro-bag rounded-t-0.6 w-18.125 shadow-contactBtn box-border h-6.438 "></div>
             <div className="flex flex-col profile-card items-center justify-center bg-white rounded-b-0.6 w-18.125 shadow-contactCard box-border h-11.06">
               <div className="-mt-24">
-                <Skeleton circle height="100%" />
+                {memberProfileCardLoader ? (
+                  <Skeleton circle height="100%" className='className="bg-cover bg-center border-5 w-100 h-100' />
+                ) : (
+                  <img src={data?.profileUrl} alt="profileImage" className="bg-cover bg-center border-5 border-white rounded-full w-100 h-100" />
+                )}
               </div>
               <div className="mt-0.688 text-profileBlack font-semibold font-Poppins leading-1.31 text-trial">
-                <Skeleton width={width_90} />
+                {' '}
+                {memberProfileCardLoader ? <Skeleton width={width_90} /> : data?.name}
               </div>
               <div className="text-center pt-0.125 font-Poppins text-profileBlack text-member">
-                <Skeleton width={width_90} />
+                {memberProfileCardLoader ? <Skeleton width={width_90} /> : data?.email || data?.organization}
               </div>
-              <div className="flex gap-1 pt-1.12  mt-2 loader-avatar">
-                <div>
-                  <Skeleton circle height="100%" />
-                </div>
-              </div>
-            </div>
-          </div>
-        ) : (
-          memberProfileCardData?.map((data: MemberProfileCard) => (
-            <div key={data?.id + data?.createdAt} className=" flex flex-col">
-              <div className="profile-card items-center btn-save-modal justify-center pro-bag rounded-t-0.6 w-18.125 shadow-contactBtn box-border h-6.438 "></div>
-              <div className="flex flex-col profile-card items-center justify-center bg-white rounded-b-0.6 w-18.125 shadow-contactCard box-border h-11.06">
-                <div className="-mt-24">
-                  <img src={data?.profileUrl} alt="profileImage" className="bg-cover bg-center border-5 border-white rounded-full w-100 h-100" />
-                </div>
-                <div className="mt-0.688 text-profileBlack font-semibold font-Poppins leading-1.31 text-trial">{data?.name}</div>
-                <div className="text-center pt-0.125 font-Poppins text-profileBlack text-member">
-                  {data?.email} || {data?.organization}
-                </div>
-                <div className="flex gap-1 pt-1.12">
-                  {/* {data?.platforms.map((platformData) => (
+              <div className="flex gap-1 pt-1.12">
+                {/* {data?.platforms.map((platformData) => (
                     <div key={`${platformData?.id + platformData?.name}`}>
                       <img src={platformData?.platformLogoUrl} alt="" className="rounded-full w-[1.0012rem] h-[1.0012rem]" />
                     </div>
                   ))} */}
-                </div>
               </div>
             </div>
-          ))
-        )}
+          </div>
+        ))}
 
         <div className="mt-1.37 box-border w-18.125 rounded-0.6 shadow-profileCard app-input-card-border">
           <div className="flex flex-col p-5">
