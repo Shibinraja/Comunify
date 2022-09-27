@@ -224,7 +224,7 @@ const MembersReview: React.FC = () => {
               </div>
               <div className="flex flex-col w-4/5 relative">
                 <div className="font-Poppins font-semibold text-trial text-profileBlack leading-1.31 capitalize">{primaryMemberId[0]?.name}</div>
-                <div className=" font-normal text-email text-profileBlack leading-1.31">
+                <div className="font-Poppins font-normal text-email text-profileBlack leading-1.31">
                   {' '}
                   {primaryMemberId[0]?.email} | {primaryMemberId[0]?.organization}
                 </div>
@@ -289,7 +289,7 @@ const MembersReview: React.FC = () => {
                     </div>
                     <div className="flex flex-col  w-4/5 relative">
                       <div className="font-Poppins font-semibold text-trial text-profileBlack leading-1.31 capitalize">{members.name}</div>
-                      <div className=" font-normal text-email text-profileBlack leading-1.31">
+                      <div className="font-Poppins font-normal text-email text-profileBlack leading-1.31">
                         {members.email} | {members.organization}
                       </div>
                       <div className="flex mt-1">

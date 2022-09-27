@@ -350,10 +350,10 @@ const Members: React.FC = () => {
         <MembersCard />
       </div>
       <div className="flex flex-col xl:flex-row  justify-between mt-1.8 i ">
-        <div className="flex relative items-center w-19.06">
+        <div className="flex relative items-center w-1/2 xl:w-[250px] 2xl:w-19.06">
           <input
             type="text"
-            className="focus:outline-none px-3 pr-8 box-border w-19.06 h-3.06  rounded-0.6  placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray shadow-shadowInput"
+            className="focus:outline-none px-3 pr-8 box-border w-full h-3.06  rounded-0.6  placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray shadow-shadowInput"
             placeholder="Search By Name or Email"
             onChange={handleSearchTextChange}
           />
