@@ -102,7 +102,7 @@ input {
   bottom: 0;
   left: 0;
   z-index: -1;
-  margin: -5px;
+  margin: -3px;
   border-radius: inherit;
   background: linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
   border: double 1px transparent;
@@ -118,7 +118,10 @@ input {
 .section::-webkit-scrollbar {
   width: 4.18px;
 }
+.feature-box{
+  background: linear-gradient(277.31deg, #69B5E5 1.11%, #ABCF6B 100%);
 
+}
 /* .section::-webkit-scrollbar-track {
   background-color: darkgrey;
 } */
