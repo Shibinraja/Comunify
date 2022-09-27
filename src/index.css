@@ -102,7 +102,7 @@ input {
   bottom: 0;
   left: 0;
   z-index: -1;
-  margin: -1px;
+  margin: -3px;
   border-radius: inherit;
   background: linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
   border: double 1px transparent;

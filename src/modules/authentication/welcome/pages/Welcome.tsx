@@ -44,7 +44,7 @@ const Welcome: React.FC = () => {
         </div>
 
 
-        <div className="flex justify-center xl:items-center 3xl:justify-start  pl-0 3xl:pl-16 pb-16">
+        <div className="flex justify-center w-1/2 xl:items-center 3xl:justify-start  pl-0 3xl:pl-16 pb-16">
           <div className="flex flex-col pt-16 pb-6 ">
             <div className="w-25.9">
               <h1 className="font-Inter font-bold text-signIn text-neutralBlack leading-2.8">Welcome to Comunify!</h1>{' '}
