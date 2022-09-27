@@ -8,7 +8,7 @@ import { TabPanel } from 'common/tabs/TabPanel';
 import { showErrorToast } from 'common/toast/toastFunctions';
 import { TagResponseData, TagType } from 'modules/settings/interface/settings.interface';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
-import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, FormEvent, Fragment, useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router';
@@ -175,6 +175,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
 
   const handleCancelConfirmationModal = () => {
     setIsDeleteModalOpen(false);
+    setTagId('');
   };
 
   const handleDeleteConfirmationModal = () => {
@@ -283,9 +284,9 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                           </tr>
                         </thead>
                         <tbody>
-                          {TagFilterResponseData?.map((data: TagResponseData, i) => (
-                            <>
-                              <tr className="border" key={i}>
+                          {TagFilterResponseData?.map((data: TagResponseData) => (
+                            <Fragment key={data.id}>
+                              <tr className="border" >
                                 <td className="px-6 py-3">
                                   <div className="flex ">
                                     <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
@@ -317,7 +318,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                                   </td>
                                 )}
                               </tr>
-                            </>
+                            </Fragment>
                           ))}
                         </tbody>
                       </table>
