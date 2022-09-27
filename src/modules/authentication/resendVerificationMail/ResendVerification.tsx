@@ -44,25 +44,27 @@ const ResendVerificationMail: React.FC = () => {
   };
 
   return (
-    <div className="create-password">
-      <div className="flex w-full height-calc">
-        <div className="w-1/2 rounded-r-lg   bg-thinBlue flex items-center justify-center p-28 resend-cover-bg bg-no-repeat bg-left overflow-hidden">
-          <img src={bgSendMailImage} alt="" className="object-cover" />
+    <div className="flex flex-col h-auto layout-height">
+      <div className=" flex h-full overflow-auto ">
+
+
+        <div className="w-3/5 2xl:w-1/2 auth-layout-section flex items-center justify-center 3xl:justify-end pr-0   3xl:pr-16 py-10">
+          <div className="flex items-center justify-center">
+            <img src={bgSendMailImage} alt="" className="w-9/12 xl:w-[621px] 3xl:w-full object-cover" />
+          </div>
         </div>
-        <div className="flex flex-col w-1/2  pl-7.40 overflow-scroll pt-13.9">
-          <div className="w-25.9">
-            <p className="font-Inter font-normal leading-1.8 text-lightGray text-desc">
-              A verification link has been sent to the entered email address. Please check your mail and verify it to continue.
+        <div className="flex justify-center w-1/2 3xl:items-center 3xl:justify-start  pl-0 3xl:pl-16">
+          <div className="flex flex-col  justify-center">
+            <p className="text-lightGray font-Inter  max-w-sm font-normal not-italic mt-0.78 text-desc">
+            A verification link has been sent to the entered email address. Please check your mail and verify it to continue.
             </p>
-            <div className="pb-10">
-              <Button
-                text="Resend Verification Mail"
-                onClick={resendVerifyEmail}
-                type="submit"
-                className={`font-Poppins rounded-lg text-base font-semibold text-white mt-1.8 h-3.6  w-full hover:shadow-buttonShadowHover
+            <Button
+              text="Resend Verification Mail"
+              onClick={resendVerifyEmail}
+              type="submit"
+              className={`font-Poppins rounded-lg text-base font-semibold text-white mt-1.8 h-3.6  w-full hover:shadow-buttonShadowHover
                 transition ease-in duration-300 btn-gradient`}
-              />
-            </div>
+            />
           </div>
         </div>
       </div>
