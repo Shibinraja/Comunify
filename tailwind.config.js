@@ -79,7 +79,8 @@ module.exports = {
         vanillaDescription: '#6F6C90',
         download: '#2B3646',
         textHighlightColor: '#F3DC07',
-        widgetClose: '#F09E34'
+        widgetClose: '#F09E34',
+        activityGray: '#848B91'
       },
       margin: {
         2.6: '43px',
