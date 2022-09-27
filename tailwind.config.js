@@ -26,7 +26,7 @@ module.exports = {
         thinGray: '#808080;',
         grayBorder: ' #D9DBE9',
         listGray: '#6B7280',
-        slimGray: '#8A8B9F',
+        slimGray: '  ',
         lightGreeny: '#AACF6F',
         success: '#A9CE70;',
         primary: '#6DB7DF;',
