@@ -14,7 +14,9 @@ import { format, parseISO } from 'date-fns';
 import membersSlice from 'modules/members/store/slice/members.slice';
 import { AssignTypeEnum, TagResponseData } from 'modules/settings/interface/settings.interface';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
-import React, { ChangeEvent, FormEvent, Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  ChangeEvent, FormEvent, Fragment, useEffect, useMemo, useRef, useState
+} from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import Skeleton from 'react-loading-skeleton';
 import Modal from 'react-modal';
@@ -297,7 +299,7 @@ const Activity: React.FC = () => {
   };
 
   // Fetch members list data in comma separated value
-  const fetchActiveStreamListExportData = async () => {
+  const fetchActiveStreamListExportData = async() => {
     const checkedIds: Array<string> = [];
 
     if (Object.keys(checkedActivityId).length > 0) {

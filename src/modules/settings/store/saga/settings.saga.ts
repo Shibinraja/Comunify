@@ -102,7 +102,7 @@ function* createTagDataSaga(action: PayloadAction<createTagProps>) {
     showSuccessToast('Tag created successfully');
   } catch (e) {
     const error = e as AxiosError<unknown>;
-    showErrorToast(error?.response?.data?.message);
+    showErrorToast('Tag name already exists');
   } finally {
     yield put(loaderSlice.actions.stopLoadingAction(settingsSlice.actions.createTags.type));
   }
@@ -212,21 +212,22 @@ function* unAssignTagDataSaga(action: PayloadAction<unAssignTagProps>) {
 
     const res: SuccessResponse<{}> = yield call(UnAssignTagDataService, action.payload);
     if (res.message.toLocaleLowerCase() === 'tag unassigned') {
+      yield put(settingsSlice.actions.resetValue(true));
       yield put(
         membersSlice.actions.getMemberProfileCardData({
           workspaceId: action.payload.workspaceId,
           memberId: action.payload.memberId
         })
       );
-      yield put(
-        membersSlice.actions.membersList({
-          workspaceId: action.payload.workspaceId,
-          membersQuery: {
-            page: 1,
-            limit: 10
-          }
-        })
-      );
+      // yield put(
+      //   membersSlice.actions.membersList({
+      //     workspaceId: action.payload.workspaceId,
+      //     membersQuery: {
+      //       page: 1,
+      //       limit: 10
+      //     }
+      //   })
+      // );
       yield put(
         activitiesSlice.actions.getActiveStreamData({
           activeStreamQuery: {

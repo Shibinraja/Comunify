@@ -63,7 +63,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
     vanillaBaseUrl: '',
     workspaceId: ''
   });
-
+  const [integrationDisconnect, setIntegrationDisconnect] = useState<boolean>(false);
   const platformData = usePlatform();
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
@@ -209,12 +209,14 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
       setIsWarningModalOpen(false);
     } else {
       try {
+        setIntegrationDisconnect(true);
         const disconnectResponse: IntegrationResponse<PlatformsStatus> = await request.post(
           `${API_ENDPOINT}/v1/${confirmPlatformToDisconnect.platform.toLocaleLowerCase().trim()}/disconnect`,
           body
         );
         if (disconnectResponse?.data?.data?.status?.toLocaleLowerCase().trim() === 'disabled') {
           setIsWarningModalOpen(false);
+          setIntegrationDisconnect(false);
           if (disconnectResponse?.data?.data?.platform?.toLocaleLowerCase().trim() === 'vanilla') {
             showSuccessToast(`${confirmPlatformToDisconnect.platform} Forums was successfully disconnected from your workspace`);
             dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
@@ -224,6 +226,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
           }
         }
       } catch {
+        setIntegrationDisconnect(false);
         showErrorToast(`${confirmPlatformToDisconnect.platform} disconnection failed`);
       }
     }
@@ -456,12 +459,10 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
                     <Button
                       text="Save"
                       type="submit"
-                      disabled={isLoading ? true : false}
+                      disabled={isLoading ? true : (!vanillaForumsData.vanillaAccessToken || !vanillaForumsData.vanillaBaseUrl) ? true : false }
                       onClick={(e) => sendVanillaData(e)}
-                      className={`text-white ${
-                        isLoading ? 'opacity-50 cursor-not-allowed' : ''
-                      } font-Poppins text-error font-medium leading-5 btn-save-modal
-                       cursor-pointer rounded shadow-contactBtn w-5.25 border-none h-2.81`}
+                      className={`text-white font-Poppins text-error font-medium leading-5 btn-save-modal
+                       cursor-pointer rounded shadow-contactBtn w-5.25  ${isLoading ? 'opacity-50 cursor-not-allowed ' : (!vanillaForumsData.vanillaAccessToken || !vanillaForumsData.vanillaBaseUrl) ? 'opacity-50 cursor-not-allowed ' : ''} border-none h-2.81`}
                     />
                   </div>
                 </form>
@@ -501,8 +502,10 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
                 />
                 <Button
                   type="button"
+                  disabled={integrationDisconnect}
                   text="YES"
-                  className="border-none ml-2.5 yes-btn h-2.81 w-5.25 box-border rounded shadow-contactBtn cursor-pointer font-Poppins font-medium text-error leading-5 text-white btn-save-modal"
+                  // eslint-disable-next-line max-len
+                  className={`border-none ml-2.5 yes-btn h-2.81 w-5.25 box-border rounded shadow-contactBtn cursor-pointer font-Poppins font-medium text-error leading-5 text-white btn-save-modal ${integrationDisconnect ? 'opacity-50 cursor-not-allowed' : ''}`}
                   onClick={() => handleConfirmation(true)}
                 />
               </div>
