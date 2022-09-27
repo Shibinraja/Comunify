@@ -73,7 +73,7 @@ const Members: React.FC = () => {
     endDate: '',
     startDate: ''
   });
-
+  const [fetchLoader, setFetchLoader] = useState<boolean>(false);
   const memberColumnsLoader = useSkeletonLoading(membersSlice.actions.membersList.type);
 
   const datePickerRefStart = useRef<ReactDatePicker>(null);
@@ -104,6 +104,10 @@ const Members: React.FC = () => {
     membersListData: { data, totalPages },
     customizedColumn: customizedColumnData
   } = useAppSelector((state) => state.members);
+
+  const {
+    clearValue
+  } = useAppSelector((state) => state.settings);
 
   useEffect(() => {
     dispatch(membersSlice.actions.membersCountAnalytics({ workspaceId: workspaceId! }));
@@ -153,6 +157,12 @@ const Members: React.FC = () => {
     );
   }, [page]);
 
+  useEffect(() => {
+    if (clearValue) {
+      getFilteredMembersList(1, debouncedValue, customStartDate && convertStartDate(customStartDate), customEndDate && convertEndDate(customEndDate));
+    }
+  }, [clearValue]);
+
   // Set new column change if the initial order changes.
   useEffect(() => {
     if (customizedColumnData?.length > 1) {
@@ -181,7 +191,7 @@ const Members: React.FC = () => {
   }, [customStartDate, customEndDate]);
 
   // Function to dispatch the search text to hit api of member list.
-  const getFilteredMembersList = (pageNumber: number, text: string, date?: string, endDate?: string) => {
+  const getFilteredMembersList = async(pageNumber: number, text: string, date?: string, endDate?: string) => {
     setFilteredDate((prevDate) => ({ ...prevDate, filterStartDate: date!, filterEndDate: endDate! }));
     dispatch(
       membersSlice.actions.membersList({
@@ -267,8 +277,9 @@ const Members: React.FC = () => {
   };
 
   // Fetch members list data in comma separated value
-  const fetchMembersListExportData = () => {
-    fetchExportList(
+  const fetchMembersListExportData = async() => {
+    setFetchLoader(true);
+    await fetchExportList(
       `${API_ENDPOINT}/v1/${workspaceId}/members/memberlistexport`,
       {
         search: debouncedValue,
@@ -283,6 +294,7 @@ const Members: React.FC = () => {
       },
       'MembersListExport.xlsx'
     );
+    setFetchLoader(false);
   };
 
   // Function to map customized column with api data response to create a new column array with index matching with customized column.
@@ -446,8 +458,9 @@ const Members: React.FC = () => {
           <div className="ml-1.30 w-[155px]">{MemberFilter}</div>
           <div className="ml-0.652 w-[112px]">
             <div
-              className="export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex cursor-pointer hover:border-infoBlack transition ease-in-out duration-300"
-              onClick={fetchMembersListExportData}
+              aria-disabled = {fetchLoader}
+              className={`export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex cursor-pointer hover:border-infoBlack transition ease-in-out duration-300 ${fetchLoader ? 'cursor-not-allowed' : ''}`}
+              onClick={() => !fetchLoader &&  fetchMembersListExportData()}
             >
               <h3 className="text-memberDay leading-1.12 font-Poppins font-semibold text-card">Export</h3>
               <img src={exportImage} alt="" />

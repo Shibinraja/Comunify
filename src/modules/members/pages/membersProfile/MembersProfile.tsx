@@ -1,3 +1,4 @@
+/* eslint-disable no-constant-condition */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable max-len */
 import useDebounce from '@/hooks/useDebounce';
@@ -59,7 +60,8 @@ const MembersProfile: React.FC = () => {
   const [platform, setPlatform] = useState<string | undefined>();
   const [tagDropDownOption, setTagDropDownOption] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | unknown>('');
-
+  const [tagAssignLoading, setTagAssignLoading] = useState<boolean>(false);
+  const [tagUnAssignLoading, setTagUnAssignLoading] = useState<boolean>(true);
   const {
     membersActivityData: activityData,
     membersProfileActivityGraphData: activityGraphData,
@@ -68,6 +70,9 @@ const MembersProfile: React.FC = () => {
 
   const memberProfileCardLoader = useSkeletonLoading(membersSlice.actions.getMembersActivityGraphData.type);
   const activityDataLoader = useSkeletonLoading(membersSlice.actions.getMembersActivityDataInfiniteScroll.type);
+  const tagsAssignLoader = useSkeletonLoading(settingsSlice.actions.assignTags.type);
+  // const tagsUnAssignLoader = useSkeletonLoading(settingsSlice.actions.unAssignTags.type);
+
   const platformData = usePlatform();
 
   const tagDropDownRef = useRef<HTMLDivElement>(null);
@@ -99,6 +104,7 @@ const MembersProfile: React.FC = () => {
     document.addEventListener('click', handleIntegrationDropDownClick);
     document.addEventListener('click', handleDateFilterDropDownClick);
     localStorage.removeItem('merge-membersId');
+    dispatch(membersSlice.actions.setMemberProfileCardData([]));
     return () => {
       document.removeEventListener('click', handleOutsideClick);
       document.removeEventListener('click', handleDropDownClick);
@@ -125,6 +131,11 @@ const MembersProfile: React.FC = () => {
   }, [clearValue]);
 
   useEffect(() => {
+    setTagUnAssignLoading(true);
+  }, [memberProfileCardData]);
+
+  useEffect(() => {
+    setTagAssignLoading(false);
     if (TagFilterResponseData?.length && searchText) {
       setTagDropDownOption(true);
     }
@@ -316,11 +327,12 @@ const MembersProfile: React.FC = () => {
   };
 
   // Tag Name assign functionality
-  const handleAssignTagsName = (e: FormEvent<HTMLFormElement>): void => {
+  const handleAssignTagsName = (e: FormEvent<HTMLFormElement>):void => {
     e.preventDefault();
     if (errorMessage || !searchText) {
       setErrorMessage(errorMessage || 'Tag Name is a required field');
     } else {
+      setTagAssignLoading(true);
       dispatch(
         settingsSlice.actions.assignTags({
           memberId: memberId!,
@@ -337,16 +349,19 @@ const MembersProfile: React.FC = () => {
 
   // Tag Name un-assign functionality
   const handleUnAssignTagsName = (id: string): void => {
-    dispatch(
-      settingsSlice.actions.unAssignTags({
-        memberId: memberId!,
-        unAssignTagBody: {
-          tagId: id,
-          type: 'Member' as AssignTypeEnum.Member
-        },
-        workspaceId: workspaceId!
-      })
-    );
+    if (tagUnAssignLoading) {
+      setTagUnAssignLoading(false);
+      dispatch(
+        settingsSlice.actions.unAssignTags({
+          memberId: memberId!,
+          unAssignTagBody: {
+            tagId: id,
+            type: 'Member' as AssignTypeEnum.Member
+          },
+          workspaceId: workspaceId!
+        })
+      );
+    }
   };
 
   const MergeModalComponent = useMemo(() => {
@@ -547,7 +562,7 @@ const MembersProfile: React.FC = () => {
                   <div className="flex flex-col pl-0.89">
                     <div className="font-Poppins font-normal text-card leading-4">{data?.displayValue}</div>
                     <div className="font-Poppins left-4 font-normal text-profileEmail text-duration">
-                      {new Date(`${data?.activityTime}`).getHours()} hours ago
+                      {generateDateAndTime(`${data?.activityTime}`, 'HH:MM')}
                     </div>
                   </div>
                 </div>
@@ -559,34 +574,49 @@ const MembersProfile: React.FC = () => {
         </div>
       </div>
       <div className=" flex flex-col ml-1.8">
-        {memberProfileCardData?.map((data: MemberProfileCard) => (
-          <div key={data?.id + data?.createdAt} className=" flex flex-col">
+        {memberProfileCardLoader ? (
+          <div className=" flex flex-col ">
             <div className="profile-card items-center btn-save-modal justify-center pro-bag rounded-t-0.6 w-18.125 shadow-contactBtn box-border h-6.438 "></div>
             <div className="flex flex-col profile-card items-center justify-center bg-white rounded-b-0.6 w-18.125 shadow-contactCard box-border h-11.06">
               <div className="-mt-24">
-                {memberProfileCardLoader ? (
-                  <Skeleton circle height="100%" className='className="bg-cover bg-center border-5 w-100 h-100' />
-                ) : (
-                  <img src={data?.profileUrl} alt="profileImage" className="bg-cover bg-center border-5 border-white rounded-full w-100 h-100" />
-                )}
+                <Skeleton circle width={'100px'} className="bg-cover bg-center border-5 h-100" />
               </div>
               <div className="mt-0.688 text-profileBlack font-semibold font-Poppins leading-1.31 text-trial">
-                {' '}
-                {memberProfileCardLoader ? <Skeleton width={width_90} /> : data?.name}
+                <Skeleton width={width_90} />
               </div>
               <div className="text-center pt-0.125 font-Poppins text-profileBlack text-member">
-                {memberProfileCardLoader ? <Skeleton width={width_90} /> : data?.email || data?.organization}
+                <Skeleton width={width_90} />
               </div>
-              <div className="flex gap-1 pt-1.12">
-                {/* {data?.platforms.map((platformData) => (
+              {/* <div className="flex gap-1 pt-1.12  mt-2 loader-avatar">
+                <div>
+                  <Skeleton circle height="100%" />
+                </div>
+              </div> */}
+            </div>
+          </div>
+        ) : (
+          memberProfileCardData?.map((data: MemberProfileCard) => (
+            <div key={data?.id + data?.createdAt} className=" flex flex-col">
+              <div className="profile-card items-center btn-save-modal justify-center pro-bag rounded-t-0.6 w-18.125 shadow-contactBtn box-border h-6.438 "></div>
+              <div className="flex flex-col profile-card items-center justify-center bg-white rounded-b-0.6 w-18.125 shadow-contactCard box-border h-11.06">
+                <div className="-mt-24">
+                  <img src={data?.profileUrl} alt="profileImage" className="bg-cover bg-center border-5 border-white rounded-full w-100 h-100" />
+                </div>
+                <div className="mt-0.688 text-profileBlack font-semibold font-Poppins leading-1.31 text-trial">{data?.name}</div>
+                <div className="text-center pt-0.125 font-Poppins text-profileBlack text-member">
+                  {data?.email} || {data?.organization}
+                </div>
+                <div className="flex gap-1 pt-1.12">
+                  {/* {data?.platforms.map((platformData) => (
                     <div key={`${platformData?.id + platformData?.name}`}>
                       <img src={platformData?.platformLogoUrl} alt="" className="rounded-full w-[1.0012rem] h-[1.0012rem]" />
                     </div>
                   ))} */}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
 
         <div className="mt-1.37 box-border w-18.125 rounded-0.6 shadow-profileCard app-input-card-border">
           <div className="flex flex-col p-5">
@@ -659,8 +689,11 @@ const MembersProfile: React.FC = () => {
                       />
                       <Button
                         type="submit"
+                        disabled={tagsAssignLoader || tagAssignLoading}
                         text="SAVE"
-                        className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-5.25 h-2.81  border-none btn-save-modal"
+                        className={`save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-5.25 h-2.81  border-none btn-save-modal ${
+                          tagsAssignLoader ? ' opacity-50 cursor-not-allowed' : ''
+                        }`}
                       />
                     </div>
                   </form>

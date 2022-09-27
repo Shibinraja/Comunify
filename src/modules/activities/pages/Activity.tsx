@@ -14,9 +14,7 @@ import { format, parseISO } from 'date-fns';
 import membersSlice from 'modules/members/store/slice/members.slice';
 import { AssignTypeEnum, TagResponseData } from 'modules/settings/interface/settings.interface';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
-import React, {
-  ChangeEvent, FormEvent, Fragment, useEffect, useMemo, useRef, useState
-} from 'react';
+import React, { ChangeEvent, FormEvent, Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import Skeleton from 'react-loading-skeleton';
 import Modal from 'react-modal';
@@ -73,6 +71,7 @@ const Activity: React.FC = () => {
   });
   const [tagDropDownOption, setTagDropDownOption] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | unknown>('');
+  const [fetchLoader, setFetchLoader] = useState<boolean>(false);
 
   const dropDownRef = useRef<HTMLDivElement>(null);
   const tagDropDownRef = useRef<HTMLDivElement>(null);
@@ -161,7 +160,7 @@ const Activity: React.FC = () => {
     document.addEventListener('click', handleDropDownClick);
     return () => {
       document.removeEventListener('click', handleOutsideClick);
-      document.addEventListener('click', handleDropDownClick);
+      document.removeEventListener('click', handleDropDownClick);
     };
   }, []);
 
@@ -298,7 +297,7 @@ const Activity: React.FC = () => {
   };
 
   // Fetch members list data in comma separated value
-  const fetchActiveStreamListExportData = () => {
+  const fetchActiveStreamListExportData = async () => {
     const checkedIds: Array<string> = [];
 
     if (Object.keys(checkedActivityId).length > 0) {
@@ -308,7 +307,8 @@ const Activity: React.FC = () => {
         }
       });
     }
-    fetchExportList(
+    setFetchLoader(true);
+    await fetchExportList(
       `${API_ENDPOINT}/v1/${workspaceId}/activity/export`,
       {
         search: debouncedValue,
@@ -320,6 +320,7 @@ const Activity: React.FC = () => {
       },
       'ActiveStreamExport.xlsx'
     );
+    setFetchLoader(false);
   };
 
   const handleSelectTagName = (tagName: string, tagId: string) => {
@@ -436,10 +437,11 @@ const Activity: React.FC = () => {
         </div>
         <div className="-mr-1">{ActiveStreamFilter}</div>
 
-        <div className="">
+        <div>
           <div
-            className="app-input-card-border w-6.98 h-3.06 rounded-0.6 shadow-shadowInput box-border bg-white items-center justify-evenly flex cursor-pointer hover:border-infoBlack transition ease-in-out duration-300"
-            onClick={fetchActiveStreamListExportData}
+            aria-disabled={fetchLoader}
+            className={`app-input-card-border w-6.98 h-3.06 rounded-0.6 shadow-shadowInput box-border bg-white items-center justify-evenly flex cursor-pointer hover:border-infoBlack transition ease-in-out duration-300 ${fetchLoader ? 'cursor-not-allowed' : ''}`}
+            onClick={() => !fetchLoader && fetchActiveStreamListExportData()}
           >
             <h3 className="text-dropGray leading-1.12 font-Poppins font-semibold text-card">Export</h3>
             <img src={exportImage} alt="" />
@@ -677,22 +679,24 @@ const Activity: React.FC = () => {
                             errors={Boolean(errorMessage)}
                             helperText={errorMessage}
                           />
-                          {!errorMessage &&   <div
-                            className={`bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 ${
-                              tagDropDownOption ? '' : 'hidden'
-                            }`}
-                          >
-                            {TagFilterResponseData?.map((data: TagResponseData) => (
-                              <div
-                                ref={tagDropDownRef}
-                                key={data.id}
-                                className="p-2 text-searchBlack cursor-pointer font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300"
-                                onClick={() => handleSelectTagName(data.name, data.id)}
-                              >
-                                {data.name}
-                              </div>
-                            ))}
-                          </div>}
+                          {!errorMessage && (
+                            <div
+                              className={`bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 ${
+                                tagDropDownOption ? '' : 'hidden'
+                              }`}
+                            >
+                              {TagFilterResponseData?.map((data: TagResponseData) => (
+                                <div
+                                  ref={tagDropDownRef}
+                                  key={data.id}
+                                  className="p-2 text-searchBlack cursor-pointer font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain transition ease-in duration-300"
+                                  onClick={() => handleSelectTagName(data.name, data.id)}
+                                >
+                                  {data.name}
+                                </div>
+                              ))}
+                            </div>
+                          )}
                           <div className="flex justify-end pt-10 items-center">
                             <Button
                               type="button"
