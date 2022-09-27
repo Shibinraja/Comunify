@@ -99,10 +99,10 @@ const CreateNewPassword: React.FC = () => {
                       )}
                     </div>
                   </div>
-                  <div  
-                  className={`password relative ${
-                   errors.password ==='Password must have one uppercase, one lowercase, a digit and special characters'  ? 'password relative mt-8' : 'mt-8 '
-                  }`}>
+                  <div
+                    className={`password relative ${
+                      errors.password ==='Password must have one uppercase, one lowercase, a digit and special characters'  ? 'password relative mt-8' : 'mt-8 '
+                    }`}>
                     <Input
                       type={confirmPassword}
                       placeholder="Confirm Password"
