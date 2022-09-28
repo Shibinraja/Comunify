@@ -5,7 +5,7 @@ import { Fragment } from 'react';
 import membersSlice from 'modules/members/store/slice/members.slice';
 import { count_3, width_90 } from 'constants/constants';
 
-const MembersCard = () => {
+const MembersCard: React.FC = () => {
   const membersCountAnalyticsLoading = useSkeletonLoading(membersSlice.actions.membersCountAnalytics.type);
   const membersActivityAnalyticsLoading = useSkeletonLoading(membersSlice.actions.membersActivityAnalytics.type);
   const {
@@ -23,7 +23,7 @@ const MembersCard = () => {
             <Fragment>
               <div className="text-infoBlack font-Poppins font-semibold text-signIn leading-3.18">{totalMembers.count}</div>
               <div className="text-Poppins font-semibold text-infoBlack text-member leading-4">{totalMembers.title}</div>
-              <div className="text-card font-Poppins font-normal leading-1.12 text-status mt-0.151">{totalMembers.analyticMessage}</div>
+              <div className="text-[8px] xl:text-card font-Poppins font-normal leading-1.12 text-status mt-0.151">{totalMembers.analyticMessage}</div>
             </Fragment>
           )}
         </div>
@@ -34,7 +34,7 @@ const MembersCard = () => {
             <Fragment>
               <div className="text-infoBlack font-Poppins font-semibold text-signIn leading-3.18">{newMembers.count}</div>
               <div className="text-Poppins font-semibold text-infoBlack text-member leading-4">{newMembers.title}</div>
-              <div className="text-card font-Poppins font-normal leading-1.12 text-status mt-0.151">{newMembers.analyticMessage}</div>
+              <div className="text-[8px] xl:text-card  font-Poppins font-normal leading-1.12 text-status mt-0.151">{newMembers.analyticMessage}</div>
             </Fragment>
           )}
         </div>
@@ -45,7 +45,7 @@ const MembersCard = () => {
             <Fragment>
               <div className="text-infoBlack font-Poppins font-semibold text-signIn leading-3.18">{activeMembers.count}</div>
               <div className="text-Poppins font-semibold text-infoBlack text-member leading-4">{activeMembers.title}</div>
-              <div className="text-card font-Poppins font-normal leading-1.12 text-status mt-0.151">{activeMembers.analyticMessage}</div>
+              <div className="text-[8px] xl:text-card  font-Poppins font-normal leading-1.12 text-status mt-0.151">{activeMembers.analyticMessage}</div>
             </Fragment>
           )}
         </div>
@@ -56,7 +56,7 @@ const MembersCard = () => {
             <Fragment>
               <div className="text-infoBlack font-Poppins font-semibold text-signIn leading-3.18">{inActiveMembers.count}</div>
               <div className="text-Poppins font-semibold text-infoBlack text-member leading-4">{inActiveMembers.title}</div>
-              <div className="text-card font-Poppins font-normal leading-1.12 text-status mt-0.151">{inActiveMembers.analyticMessage}</div>
+              <div className="text-[8px] xl:text-card  font-Poppins font-normal leading-1.12 text-status mt-0.151">{inActiveMembers.analyticMessage}</div>
             </Fragment>
           )}
         </div>

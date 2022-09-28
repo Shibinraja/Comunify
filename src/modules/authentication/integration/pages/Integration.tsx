@@ -194,7 +194,8 @@ const Integration: React.FC = () => {
                       left: '60%',
                       bottom: 0,
                       right: 0,
-                      alignItems: 'center'
+                      alignItems: 'center',
+                      backgroundColor: 'transparent'
                     }
                   }}
                 >
@@ -286,10 +287,10 @@ const Integration: React.FC = () => {
                           />
                           <Button
                             text="Save"
-                            disabled={isLoading ? true : false}
+                            disabled={isLoading ? true : (!vanillaForumsData.vanillaAccessToken || !vanillaForumsData.vanillaBaseUrl) ? true : false }
                             onClick={(e) => sendVanillaData(e)}
                             className={`text-white font-Poppins text-error font-medium leading-5 btn-save-modal cursor-pointer rounded 
-                            shadow-contactBtn w-5.25 ${isLoading ? 'opacity-50 cursor-not-allowed ' : ''} border-none h-2.81`}
+                            shadow-contactBtn w-5.25 ${isLoading ? 'opacity-50 cursor-not-allowed ' : (!vanillaForumsData.vanillaAccessToken || !vanillaForumsData.vanillaBaseUrl) ? 'opacity-50 cursor-not-allowed ' : ''} border-none h-2.81`}
                           />
                         </div>
                       </form>

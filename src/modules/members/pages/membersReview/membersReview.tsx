@@ -1,27 +1,46 @@
+/* eslint-disable no-constant-condition */
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import React, { ChangeEvent, useEffect, useState } from 'react';
-import modalMergeIcon from '../../../../assets/images/merge.svg';
-import mergeIcon from '../../../../assets/images/merged.svg';
 import Button from 'common/button';
+import MemberSuggestionLoader from 'common/Loader/MemberSuggestionLoader';
+import { showSuccessToast } from 'common/toast/toastFunctions';
 import { MergeMembersDataResponse, MergeMembersDataResult } from 'modules/members/interface/members.interface';
+import { getMergedMemberList, mergeMembers } from 'modules/members/services/members.services';
+import { memberSuggestionType } from 'modules/members/services/service.types';
+import React, { ChangeEvent, Fragment, useEffect, useState } from 'react';
 import Modal from 'react-modal';
-import closeIcon from '../../../../assets/images/close-member.svg';
-import './membersReview.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getAxiosRequest, postAxiosRequest } from '@/lib/axiosRequest';
+import closeIcon from '../../../../assets/images/close-member.svg';
+import mergeIcon from '../../../../assets/images/merged.svg';
+import { MergeMemberModal } from '../mergedMembers/MergeMemberModal';
+import './membersReview.css';
 
 Modal.setAppElement('#root');
 
+enum ModalType {
+  Merge = 'Merge',
+  unMerge = 'UnMerge'
+}
 const MembersReview: React.FC = () => {
   const { workspaceId, memberId } = useParams();
   const navigate = useNavigate();
   const memberProfileCardData = JSON.parse(localStorage.getItem('primaryMemberId')!);
   const MergeMembersListData = JSON.parse(localStorage.getItem('merge-membersId')!);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [loading, setLoading] = useState<{ mergeListLoader: boolean; confirmationLoader: boolean }>({
+    mergeListLoader: false,
+    confirmationLoader: false
+  });
   const [checkedRadioId, setCheckedRadioId] = useState<Record<string, unknown>>({ [memberProfileCardData[0]?.comunifyMemberId]: true });
-  const handleModal = (val: boolean) => {
-    setIsModalOpen(val);
-  };
+  const [modalOpen, setModalOpen] = useState<{ UnMergeModalOpen: boolean; confirmMerge: boolean; ChangePrimaryMember: boolean }>({
+    UnMergeModalOpen: false,
+    confirmMerge: false,
+    ChangePrimaryMember: false
+  });
+  const [checkedId, setCheckedId] = useState<{ UnMergeMemberId: string; ChangePrimaryMemberId: string }>({
+    UnMergeMemberId: '',
+    ChangePrimaryMemberId: ''
+  });
   const [MergeMembersList, setMergeMembersList] = useState<Array<MergeMembersDataResult>>([]);
   const [primaryMemberId, setPrimaryMemberId] = useState<any>([]);
   const [suggestionList, setSuggestionList] = useState<MergeMembersDataResponse>({
@@ -29,12 +48,18 @@ const MembersReview: React.FC = () => {
     nextCursor: null
   });
 
-  // Function to call the api and list the membersSuggestionList
-  const getMergedMemberSuggestionList = (cursor: string | null, prop: string) => {
-    getAxiosRequest(
-      `/v1/${workspaceId}/members/${memberId}/merged-list?page=1&limit=10${
-        cursor ? `&cursor=${cursor}` : suggestionList.nextCursor ? `&cursor=${prop ? '' : suggestionList.nextCursor}` : ''
-      }`
+  // Function to call the api and list the mergedMembersList
+  const getMergedMemberSuggestionList = (props: Partial<memberSuggestionType>) => {
+    getMergedMemberList(
+      {
+        workspaceId: workspaceId!,
+        memberId: memberId!,
+        cursor: props.cursor as string | null,
+        prop: props.prop as string,
+        search: props.search as string,
+        suggestionListCursor: props.suggestionListCursor as string | null
+      },
+      loaderSetAction
     ).then((data) =>
       setSuggestionList((prevState) => ({
         result: prevState.result.concat(data?.result as unknown as MergeMembersDataResult),
@@ -43,11 +68,17 @@ const MembersReview: React.FC = () => {
     );
   };
 
+  //useEffect to call the api at initial load.
   useEffect(() => {
-    getMergedMemberSuggestionList(null, 'search');
+    getMergedMemberSuggestionList({
+      cursor: null,
+      prop: 'search',
+      suggestionListCursor: suggestionList.nextCursor
+    });
     setMergeMembersList(MergeMembersListData);
   }, []);
 
+  // Make an Object based on the result data received form members platform
   useEffect(() => {
     if (primaryMemberId?.length < 1) {
       const memberProfileData = [...memberProfileCardData];
@@ -59,12 +90,15 @@ const MembersReview: React.FC = () => {
   }, [memberProfileCardData]);
 
   useEffect(() => {
+    //Function to concat the api response data with the Member Chosen and filter out the with the primary member selected.
     const filteredDuplicateMembers = MergeMembersList?.concat(primaryMemberId).filter((member: MergeMembersDataResult) => {
       if (member.comunifyMemberId !== Object.keys(checkedRadioId)[0]) {
         return member;
       }
     });
     // MergeMembersList?.splice((MergeMembersList).indexOf(filteredMembers as unknown as MergeMembersDataResult), 1);
+
+    //Function to concat the api response data with the Member Chosen and filter out the with the primary member not selected.
     const filteredPrimaryMember = MergeMembersList?.concat(primaryMemberId).filter((member: MergeMembersDataResult) => {
       if (member.comunifyMemberId === Object.keys(checkedRadioId)[0]) {
         return member;
@@ -73,24 +107,78 @@ const MembersReview: React.FC = () => {
     if (filteredPrimaryMember?.length) {
       setMergeMembersList(filteredDuplicateMembers);
       setPrimaryMemberId(filteredPrimaryMember);
+      setCheckedId((prevId) => ({ ...prevId, ChangePrimaryMemberId: '' }));
     }
   }, [checkedRadioId]);
 
+  const loaderSetAction = (type: string, loader: boolean) => {
+    if (type === 'MergeListLoader') {
+      setLoading((prev) => ({ ...prev, mergeListLoader: loader }));
+    }
+
+    if (type === 'ConfirmationLoader') {
+      setLoading((prev) => ({ ...prev, confirmationLoader: loader }));
+    }
+  };
+
+  const handleModal = (modalType: string) => {
+    if (modalType === ModalType.Merge) {
+      setModalOpen((prevState) => ({ ...prevState, confirmMerge: true }));
+    }
+
+    if (modalType === ModalType.unMerge) {
+      setModalOpen((prevState) => ({ ...prevState, UnMergeModalOpen: true }));
+    }
+  };
+
+  const handleModalClose = () => {
+    if (modalOpen.confirmMerge) {
+      setModalOpen((prevState) => ({ ...prevState, confirmMerge: false }));
+    }
+
+    if (modalOpen.UnMergeModalOpen) {
+      setModalOpen((prevState) => ({ ...prevState, UnMergeModalOpen: false }));
+    }
+
+    if (modalOpen.ChangePrimaryMember) {
+      setModalOpen((prevState) => ({ ...prevState, ChangePrimaryMember: false }));
+    }
+  };
+
+  //On Submit functionality
+  const handleOnSubmit = () => {
+    if (modalOpen.confirmMerge) {
+      handleMergeMembers();
+    }
+    if (modalOpen.UnMergeModalOpen) {
+      handleRemoveMember();
+    }
+    if (modalOpen.ChangePrimaryMember) {
+      setCheckedRadioId({ [checkedId.ChangePrimaryMemberId]: true });
+      setModalOpen((prevState) => ({ ...prevState, ChangePrimaryMember: false, isConfirmPrimaryMember: true }));
+    }
+  };
+
+  // Function to change the Primary Member List
   const handleRadioBtn = (event: ChangeEvent<HTMLInputElement>) => {
     const checked_id: string = event.target.name;
-    setCheckedRadioId({ [checked_id]: event.target.checked });
+    setModalOpen((prevState) => ({ ...prevState, ChangePrimaryMember: true }));
+    setCheckedId((prevId) => ({ ...prevId, ChangePrimaryMemberId: checked_id }));
   };
 
   // Function to remove the desired potential duplicate member from the list
-  const handleRemoveMember = (memberId: string) => {
+  const handleRemoveMember = () => {
     const filteredMembers = MergeMembersList?.filter((member: MergeMembersDataResult) => {
-      if (member.id !== memberId) {
+      if (member.id !== checkedId.UnMergeMemberId) {
         return member;
       }
     });
     // MergeMembersList?.splice((MergeMembersList).indexOf(filteredMembers as unknown as MergeMembersDataResult), 1);
     setMergeMembersList(filteredMembers);
+    setModalOpen((prevState) => ({ ...prevState, UnMergeModalOpen: false }));
+    setCheckedId((prevId) => ({ ...prevId, UnMergeMemberId: '' }));
     localStorage.setItem('merge-membersId', JSON.stringify(filteredMembers));
+    showSuccessToast('Member Removed');
   };
 
   // Function to confirm submit the possible list to be merged and call api.
@@ -104,14 +192,16 @@ const MembersReview: React.FC = () => {
       memberId: Object.keys(checkedRadioId)[0]
     });
 
-    postAxiosRequest(
-      `/v1/${workspaceId}/members/${memberId}/merge`,
+    mergeMembers(
       {
+        workspaceId: workspaceId!,
+        memberId: memberId!,
         mergeList
-      }
-      // eslint-disable-next-line no-unused-vars
-    ).then((data) => {
-      setIsModalOpen(false);
+      },
+      loaderSetAction
+    ).then(() => {
+      setModalOpen((prevState) => ({ ...prevState, confirmMerge: false }));
+      showSuccessToast('Members Merged');
       navigate(`/${workspaceId}/members/${Object.keys(checkedRadioId)[0]}/merged-members`);
     });
   };
@@ -130,74 +220,38 @@ const MembersReview: React.FC = () => {
             <Button
               type="button"
               text="Merge"
-              className="border-none text-white font-Poppins text-search font-medium leading-1.31 cursor-pointer w-5.25 h-2.81 rounded  "
-              onClick={() => handleModal(true)}
+              className={`1border-none text-white font-Poppins text-search font-medium leading-1.31 cursor-pointer w-5.25 h-2.81 rounded ${
+                !MergeMembersList.length ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
+              onClick={() => MergeMembersList.length && handleModal('Merge')}
             />
           </div>
           <div className="">
             <img src={mergeIcon} alt="" />
           </div>
-          <Modal
-            isOpen={isModalOpen}
-            shouldCloseOnOverlayClick={false}
-            onRequestClose={() => setIsModalOpen(false)}
-            className="w-24.31 h-18.43 mx-auto rounded-lg modals-tag bg-white shadow-modal flex items-center justify-center"
-            style={{
-              overlay: {
-                display: 'flex',
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                bottom: 0,
-                right: 0,
-                alignItems: 'center'
-              }
-            }}
-          >
-            <div className="flex flex-col items-center justify-center ">
-              <div className="bg-cover">
-                <img src={modalMergeIcon} alt="" />
-              </div>
-              <div className="mt-5 leading-6 text-black font-Inter font-semibold text-xl w-2/3 text-center">Are you sure want to merge members</div>
-              <div className="flex mt-1.8">
-                <Button
-                  type="button"
-                  text="NO"
-                  className="border-none border-cancel h-2.81 w-5.25 box-border rounded cursor-pointer font-Poppins font-medium text-error leading-5 text-thinGray "
-                  onClick={() => setIsModalOpen(false)}
-                />
-                <Button
-                  type="button"
-                  text="YES"
-                  className="border-none ml-2.5 yes-btn h-2.81 w-5.25 box-border rounded shadow-contactBtn cursor-pointer font-Poppins font-medium text-error leading-5 text-white btn-save-modal"
-                  onClick={handleMergeMembers}
-                />
-              </div>
-            </div>
-          </Modal>
         </div>
       </div>
       <div className="flex flex-col mt-1.8">
         <div className="relative">
           <h3 className="font-Poppins font-semibold leading-1.56 text-infoBlack text-base">Primary Member</h3>
           <div className="flex flex-wrap gap-5">
-            <div className="flex items-center app-input-card-border box-border w-26.25 h-7.5 shadow-profileCard rounded-0.6 pl-1.313 mt-5 ">
-              <div className="w-16 h-16">
-                <img src={primaryMemberId[0]?.profileUrl} alt="" />
+            <div className="flex items-center app-input-card-border box-border w-26.25 h-7.5 shadow-profileCard rounded-0.6  mt-5 p-5">
+              <div className="w-1/5">
+                <img src={primaryMemberId[0]?.profileUrl} alt="" className="w-16 h-16 rounded-full" />
               </div>
-              <div className="flex flex-col pl-3">
-                <div className="font-Poppins font-semibold text-trial text-profileBlack leading-1.31">{primaryMemberId[0]?.name}</div>
+              <div className="flex flex-col w-4/5 relative">
+                <div className="font-Poppins font-semibold text-trial text-profileBlack leading-1.31 capitalize">{primaryMemberId[0]?.name}</div>
                 <div className="font-Poppins font-normal text-email text-profileBlack leading-1.31">
                   {' '}
                   {primaryMemberId[0]?.email} | {primaryMemberId[0]?.organization}
                 </div>
-                <div className="flex mt-2.5">
+                <div className="flex mt-1">
                   <div className="w-1.001 h-1.001 mr-0.34">
                     <img src={primaryMemberId[0]?.platform.platformLogoUrl} alt="" />
                   </div>
                 </div>
-                <div className="flex absolute left-[20rem] bottom-4 items-center">
-                  <label htmlFor={primaryMemberId[0]?.id} className="flex items-center">
+                <div className="flex justify-end items-center absolute right-0 -bottom-4">
+                  <label htmlFor={primaryMemberId[0]?.id} className="flex items-center  font-normal font-Poppins text-card">
                     <input
                       type="radio"
                       className="hidden peer"
@@ -207,7 +261,9 @@ const MembersReview: React.FC = () => {
                       checked={(checkedRadioId[primaryMemberId[0]?.comunifyMemberId] as boolean) || false}
                       onChange={handleRadioBtn}
                     />{' '}
-                    <span className="w-3 h-3 mr-1.5 border font-normal font-Poppins text-card leading-1.31 border-[#ddd] rounded-full inline-flex peer-checked:bg-[#ABCF6B]"></span>
+                    <div className="w-3 h-3 border peer-checked:border-[#ABCF6B] rounded-full mr-1 flex justify-center items-center">
+                      <span className="w-2 h-2  rounded-full bg-[#ABCF6B] peer-checked:bg-[#ABCF6B]"></span>
+                    </div>
                     Primary
                   </label>
                 </div>
@@ -216,50 +272,78 @@ const MembersReview: React.FC = () => {
           </div>
         </div>
         <div className="flex flex-col mt-2.55">
-          <h3 className="font-Poppins text-infoBlack font-semibold text-base leading-1.56">Potential Duplicates</h3>
+          <h3 className="font-Poppins text-infoBlack font-semibold text-base leading-1.56 mb-5">Potential Duplicates</h3>
           <div className="flex flex-wrap gap-5 relative">
-            {MergeMembersList &&
-              MergeMembersList.map((members: MergeMembersDataResult) => (
-                <div key={members.id}>
-                  <div className="flex items-center primary-card box-border app-input-card-border w-26.25 h-7.5 shadow-profileCard rounded-0.6 pl-1.313 mt-5 relative">
-                    <div className="w-16 h-16">
-                      <img src={members.profileUrl} alt="" />
-                    </div>
-                    <div className="flex flex-col pl-3">
-                      <div className="font-Poppins font-semibold text-trial text-profileBlack leading-1.31">{members.name}</div>
-                      <div className="font-Poppins font-normal text-email text-profileBlack leading-1.31">
-                        {members.email} | {members.organization}
+            {loading.mergeListLoader
+              ? Array.from({ length: MergeMembersList?.length }, (_, i) => i + 1).map((type: number) => (
+                <Fragment key={type}>
+                  <MemberSuggestionLoader />
+                </Fragment>
+              ))
+              : MergeMembersList &&
+                MergeMembersList.map((members: MergeMembersDataResult) => (
+                  <div key={members.id}>
+                    <div className="flex items-center primary-card box-border border border-borderPrimary w-26.25 h-7.5 shadow-profileCard rounded-0.6 p-5  ">
+                      <div className="w-1/5">
+                        <img src={members.profileUrl} alt="" className="w-16 h-16 rounded-full" />
                       </div>
-                      <div className="flex mt-2.5">
-                        <div className="w-1.001 h-1.001 mr-0.34">
-                          <img src={members.platform.platformLogoUrl} alt="" />
+                      <div className="flex flex-col  w-4/5 relative">
+                        <div className="font-Poppins font-semibold text-trial text-profileBlack leading-1.31 capitalize">{members.name}</div>
+                        <div className="font-Poppins font-normal text-email text-profileBlack leading-1.31">
+                          {members.email} | {members.organization}
+                        </div>
+                        <div className="flex mt-1">
+                          <div className="w-1.001 h-1.001 mr-0.34">
+                            <img src={members.platform.platformLogoUrl} alt="" />
+                          </div>
+                        </div>
+                        <div className="flex absolute right-0 -bottom-4 items-center">
+                          <label htmlFor={members.id} className="flex items-center text-xs text-greyDark">
+                            <input
+                              type="radio"
+                              className="hidden peer"
+                              id={members.id}
+                              value={members.comunifyMemberId}
+                              name={members.comunifyMemberId}
+                              checked={(checkedRadioId[members.comunifyMemberId] as boolean) || false}
+                              onChange={handleRadioBtn}
+                            />{' '}
+                            <span className="w-3 h-3 mr-1.5 border font-normal font-Poppins text-card leading-1.31 border-[#7D7D7D] rounded-full inline-flex peer-checked:bg-[#ABCF6B]"></span>
+                            Primary
+                          </label>
+                        </div>
+                        <div className="absolute -right-2 -top-4 cursor-pointer">
+                          <img
+                            src={closeIcon}
+                            alt=""
+                            onClick={() => {
+                              handleModal('UnMerge');
+                              setCheckedId((prevId) => ({ ...prevId, UnMergeMemberId: members.id }));
+                            }}
+                          />
                         </div>
                       </div>
-                      <div className="flex absolute right-8 bottom-4 items-center">
-                        <label htmlFor={members.id} className="flex items-center">
-                          <input
-                            type="radio"
-                            className="hidden peer"
-                            id={members.id}
-                            value={members.comunifyMemberId}
-                            name={members.comunifyMemberId}
-                            checked={(checkedRadioId[members.comunifyMemberId] as boolean) || false}
-                            onChange={handleRadioBtn}
-                          />{' '}
-                          <span className="w-3 h-3 mr-1.5 border font-normal font-Poppins text-card leading-1.31 border-[#ddd] rounded-full inline-flex peer-checked:bg-[#ABCF6B]"></span>
-                          Primary
-                        </label>
-                      </div>
-                    </div>
-                    <div className="absolute right-7 top-5 cursor-pointer">
-                      <img src={closeIcon} alt="" onClick={() => handleRemoveMember(members.id)} />
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
           </div>
         </div>
       </div>
+      <MergeMemberModal
+        isOpen={modalOpen}
+        isClose={handleModalClose}
+        loader={loading.confirmationLoader}
+        onSubmit={handleOnSubmit}
+        contextText={
+          modalOpen.confirmMerge
+            ? 'Are you sure want to merge members'
+            : modalOpen.UnMergeModalOpen
+              ? 'Are you sure you want to remove the member?'
+              : modalOpen.ChangePrimaryMember
+                ? 'Are you sure you want to change the primary member'
+                : ''
+        }
+      />
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import { getLocalWorkspaceId } from '@/lib/helper';
 import Button from 'common/button';
 import Input from 'common/input';
-import QuickInfo from 'common/quickInfo/QuickInfo';
+import QuickInfo from 'common/widgets/quickInfo/QuickInfo';
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import dashboardIcon from '../../assets/images/dashboard.svg';
@@ -53,7 +53,6 @@ const SideNav: React.FC = () => {
             </div>
             <Button
               text="Request for a Widget"
-              type="submit"
               className="font-Poppins rounded-lg text-base font-semibold text-white py-3.5 mt-7 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient"
             />
           </div>

@@ -21,7 +21,7 @@ const MembersProfileGraph: React.FC<MemberGraphProps> = ({ activityGraphData }) 
   return (
     <div className="h-[15rem]">
       {graphDataLoader ? (
-        <Skeleton count={count_5} width={700} className={'m-4'} wrapper={InlineWrapperWithMargin} />
+        <Skeleton count={count_5} width={500} className={'m-4'} wrapper={InlineWrapperWithMargin} />
       ) : (
         <Chart options={options} type="line" series={activityGraphData?.series} width="100%" height="100%" />
       )}

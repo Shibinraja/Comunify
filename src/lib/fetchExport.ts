@@ -2,8 +2,8 @@ import { request } from './request';
 import { Buffer } from 'buffer';
 import { AxiosResponse } from 'axios';
 
-const fetchExportList = (url: string, params: Record<string, unknown>, fileName: string) => {
-  request
+const fetchExportList = async(url: string, params: Record<string, unknown>, fileName: string) => {
+  await request
     .get(url, {
       params,
       headers: {

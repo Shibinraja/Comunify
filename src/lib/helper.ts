@@ -62,10 +62,6 @@ export const setRefreshToken = async () => {
   }
 };
 
-export const convertStartDate = (fromDate:Date):string => (
-  startOfDay(fromDate).toISOString()
-);
+export const convertStartDate = (fromDate: Date): string => startOfDay(fromDate).toISOString();
 
-export const convertEndDate = (endDate:Date):string => (
-  endOfDay(endDate).toISOString()
-);
+export const convertEndDate = (endDate: Date): string => endOfDay(endDate).toISOString();

@@ -381,7 +381,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                 type="button"
                 text="Apply"
                 className={`border-none btn-save-modal rounded-0.31 h-2.063 w-full mt-1.56 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${
-                  loader ? 'cursor-not-allowed' : ''
+                  loader ? ' opacity-50 cursor-not-allowed' : ''
                 }`}
               />
             </div>
