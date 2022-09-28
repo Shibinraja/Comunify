@@ -3,6 +3,7 @@
 /* eslint-disable no-unused-vars */
 import { useAppSelector } from '@/hooks/useRedux';
 import Button from 'common/button';
+import MemberSuggestionLoader from 'common/Loader/MemberSuggestionLoader';
 import MergeModal from 'common/modals/MergeModal';
 import { MergeModalPropsEnum } from 'common/modals/MergeModalTypes';
 import { showSuccessToast } from 'common/toast/toastFunctions';
@@ -11,7 +12,7 @@ import { MergeMembersDataResponse, MergeMembersDataResult } from 'modules/member
 import { getMergedMemberList, mergeMembers, unMergeMembers } from 'modules/members/services/members.services';
 import { memberSuggestionType } from 'modules/members/services/service.types';
 import membersSlice from 'modules/members/store/slice/members.slice';
-import { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -43,9 +44,11 @@ const MergedMembers: React.FC = () => {
     result: [],
     nextCursor: null
   });
+  const [preventLoading, setPreventLoading] = useState<boolean>(false);
   const [unMergeId, setUnMergeId] = useState<string>('');
-
   const [primaryMemberId, setPrimaryMemberId] = useState<any>([]);
+
+  const infinityScrollRef = useRef<HTMLDivElement>(null);
 
   // Function to call the api and list the mergedMembersList
   const getMergedMemberSuggestionList = async(props: Partial<memberSuggestionType>) => {
@@ -59,6 +62,7 @@ const MergedMembers: React.FC = () => {
       suggestionListCursor: props.suggestionListCursor as string | null
     });
     setLoading((prev) => ({ ...prev, mergedListLoader: false }));
+
     setSuggestionList((prevState) => ({
       result: prevState.result.concat(data?.result as unknown as MergeMembersDataResult[]),
       nextCursor: data?.nextCursor as string | null
@@ -71,12 +75,14 @@ const MergedMembers: React.FC = () => {
       result: [],
       nextCursor: null
     });
-    getMergedMemberSuggestionList({
-      cursor: null,
-      prop: 'search',
-      suggestionListCursor: suggestionList.nextCursor
-    });
-    dispatch(membersSlice.actions.getMemberProfileCardData({ workspaceId: workspaceId as string, memberId: memberId as string }));
+    if (memberId) {
+      getMergedMemberSuggestionList({
+        cursor: null,
+        prop: 'search',
+        suggestionListCursor: suggestionList.nextCursor
+      });
+      dispatch(membersSlice.actions.getMemberProfileCardData({ workspaceId: workspaceId as string, memberId: memberId as string }));
+    }
   }, [memberId]);
 
   // Make an Object based on the result data received form members platform
@@ -123,7 +129,7 @@ const MergedMembers: React.FC = () => {
       memberId: filteredPrimaryMember[0]?.comunifyMemberId
     });
 
-    if (filteredPrimaryMember?.length) {
+    if (filteredPrimaryMember?.length && checkedId) {
       mergeMembers({
         workspaceId: workspaceId!,
         memberId: memberId!,
@@ -131,6 +137,7 @@ const MergedMembers: React.FC = () => {
       }).then(() => {
         if (modalOpen.isConfirmPrimaryMember) {
           showSuccessToast('Primary Member Changed');
+          setCheckedId('');
           setModalOpen((prevState) => ({ ...prevState, isConfirmPrimaryMember: false }));
         }
         navigate(`/${workspaceId}/members/${Object.keys(checkedRadioId)[0]}/merged-members`);
@@ -193,11 +200,13 @@ const MergedMembers: React.FC = () => {
     if (scrollHeight - scrollTop <= clientHeight + 2 && !loading.mergedListLoader) {
       setActivityNextCursor(suggestionList.nextCursor);
       if (suggestionList.nextCursor) {
+        setPreventLoading(true);
         await getMergedMemberSuggestionList({
           cursor: suggestionList.nextCursor,
           prop: '',
           suggestionListCursor: null
         });
+        setPreventLoading(false);
       }
     }
   };
@@ -247,8 +256,10 @@ const MergedMembers: React.FC = () => {
     [isModalOpen]
   );
 
+  // console.log('err', window.scroll)
+
   return (
-    <div className=" mx-auto mt-[3.3125rem] h-full overflow-y-auto" onScroll={handleScroll}>
+    <div className=" mx-auto mt-[3.3125rem] h-full overflow-y-auto" onScroll={handleScroll} ref={infinityScrollRef}>
       <div className="flex justify-between items-center border-review pb-5">
         <div className="flex flex-col">
           <h3 className="font-Poppins font-semibold leading-2.18 text-infoData text-infoBlack">Merged Members</h3>
@@ -311,14 +322,19 @@ const MergedMembers: React.FC = () => {
         <div className="flex flex-col mt-2.55">
           <h3 className="font-Poppins text-infoBlack font-semibold text-base leading-1.56">Potential Duplicates</h3>
           <div className="flex flex-wrap gap-5 relative">
-            {suggestionList?.result &&
-              suggestionList?.result?.map((members: MergeMembersDataResult) => (
+            {loading.mergedListLoader && !preventLoading
+              ? Array.from({ length: 6 }, (_, i) => i + 1).map((type: number) => (
+                <Fragment key={type}>
+                  <MemberSuggestionLoader />
+                </Fragment>
+              ))
+              : suggestionList?.result?.map((members: MergeMembersDataResult) => (
                 <div key={members.id}>
                   <div className="flex items-center primary-card box-border app-input-card-border w-26.25 h-7.5 shadow-profileCard rounded-0.6 pl-1.313 mt-5 relative">
                     <div className="w-16 h-16">
                       {/* {loading.mergedListLoader ? (
-                        <Skeleton circle height="100%" />
-                      ) :  */}
+                              <Skeleton circle height="100%" />
+                            ) :  */}
 
                       <img src={members.profileUrl} alt="" className="w-16 h-16 rounded-full" />
                       {/* } */}
@@ -341,8 +357,8 @@ const MergedMembers: React.FC = () => {
                       </div>
                       <div className="flex absolute right-8 bottom-4 items-center">
                         {/* {loading.mergedListLoader ? (
-                          <Skeleton width={width_90} />
-                        ) :  */}
+                                <Skeleton width={width_90} />
+                              ) :  */}
 
                         <label htmlFor={members.id} className="flex items-center">
                           <input
@@ -355,7 +371,7 @@ const MergedMembers: React.FC = () => {
                             onChange={handleRadioBtn}
                           />{' '}
                           <span className="w-3 h-3 mr-1.5 border font-normal font-Poppins text-card leading-1.31 border-[#ddd] rounded-full inline-flex peer-checked:bg-[#ABCF6B]"></span>
-                          Primary
+                            Primary
                         </label>
 
                         {/* } */}
@@ -367,6 +383,8 @@ const MergedMembers: React.FC = () => {
                   </div>
                 </div>
               ))}
+
+            {loading.mergedListLoader && <MemberSuggestionLoader />}
           </div>
         </div>
       </div>
