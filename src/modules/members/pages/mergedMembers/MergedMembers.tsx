@@ -256,8 +256,6 @@ const MergedMembers: React.FC = () => {
     [isModalOpen]
   );
 
-  // console.log('err', window.scroll)
-
   return (
     <div className=" mx-auto mt-[3.3125rem] h-full overflow-y-auto" onScroll={handleScroll} ref={infinityScrollRef}>
       <div className="flex justify-between items-center border-review pb-5">
@@ -332,34 +330,19 @@ const MergedMembers: React.FC = () => {
                 <div key={members.id}>
                   <div className="flex items-center primary-card box-border app-input-card-border w-26.25 h-7.5 shadow-profileCard rounded-0.6 pl-1.313 mt-5 relative">
                     <div className="w-16 h-16">
-                      {/* {loading.mergedListLoader ? (
-                              <Skeleton circle height="100%" />
-                            ) :  */}
-
                       <img src={members.profileUrl} alt="" className="w-16 h-16 rounded-full" />
-                      {/* } */}
                     </div>
                     <div className="flex flex-col pl-3">
-                      <div className="font-Poppins font-semibold text-trial text-profileBlack leading-1.31">
-                        {' '}
-                        {/* {loading.mergedListLoader ? <Skeleton width={width_90} /> : members.name} */}
-                        {members.name}
-                      </div>
+                      <div className="font-Poppins font-semibold text-trial text-profileBlack leading-1.31">{members.name}</div>
                       <div className="font-Poppins font-normal text-email text-profileBlack leading-1.31">
-                        {/* {loading.mergedListLoader ? <Skeleton width={width_90} /> : `${members.email} | ${members.organization}`} */}
                         {members.email} | {members.organization}
                       </div>
                       <div className="flex mt-2.5">
                         <div className="w-1.001 h-1.001 mr-0.34">
-                          {/* {loading.mergedListLoader ? <Skeleton circle height="100%" /> : <img src={members.platform.platformLogoUrl} alt="" />} */}
                           <img src={members.platform.platformLogoUrl} alt="" />
                         </div>
                       </div>
                       <div className="flex absolute right-8 bottom-4 items-center">
-                        {/* {loading.mergedListLoader ? (
-                                <Skeleton width={width_90} />
-                              ) :  */}
-
                         <label htmlFor={members.id} className="flex items-center">
                           <input
                             type="radio"

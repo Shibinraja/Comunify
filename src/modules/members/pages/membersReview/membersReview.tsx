@@ -32,12 +32,12 @@ const MembersReview: React.FC = () => {
     confirmationLoader: false
   });
   const [checkedRadioId, setCheckedRadioId] = useState<Record<string, unknown>>({ [memberProfileCardData[0]?.comunifyMemberId]: true });
-  const [modalOpen, setModalOpen] = useState<{ UnMergeModalOpen: boolean; confirmMerge: boolean; ChangePrimaryMember:boolean }>({
+  const [modalOpen, setModalOpen] = useState<{ UnMergeModalOpen: boolean; confirmMerge: boolean; ChangePrimaryMember: boolean }>({
     UnMergeModalOpen: false,
     confirmMerge: false,
     ChangePrimaryMember: false
   });
-  const [checkedId, setCheckedId] = useState<{UnMergeMemberId:string; ChangePrimaryMemberId:string}>({
+  const [checkedId, setCheckedId] = useState<{ UnMergeMemberId: string; ChangePrimaryMemberId: string }>({
     UnMergeMemberId: '',
     ChangePrimaryMemberId: ''
   });
@@ -107,8 +107,7 @@ const MembersReview: React.FC = () => {
     if (filteredPrimaryMember?.length) {
       setMergeMembersList(filteredDuplicateMembers);
       setPrimaryMemberId(filteredPrimaryMember);
-      setCheckedId((prevId) => ({ ...prevId,  ChangePrimaryMemberId: '' }));
-
+      setCheckedId((prevId) => ({ ...prevId, ChangePrimaryMemberId: '' }));
     }
   }, [checkedRadioId]);
 
@@ -262,10 +261,9 @@ const MembersReview: React.FC = () => {
                       checked={(checkedRadioId[primaryMemberId[0]?.comunifyMemberId] as boolean) || false}
                       onChange={handleRadioBtn}
                     />{' '}
-                    <div className='w-3 h-3 border peer-checked:border-[#ABCF6B] rounded-full mr-1 flex justify-center items-center'>
+                    <div className="w-3 h-3 border peer-checked:border-[#ABCF6B] rounded-full mr-1 flex justify-center items-center">
                       <span className="w-2 h-2  rounded-full bg-[#ABCF6B] peer-checked:bg-[#ABCF6B]"></span>
                     </div>
-
                     Primary
                   </label>
                 </div>
@@ -276,58 +274,58 @@ const MembersReview: React.FC = () => {
         <div className="flex flex-col mt-2.55">
           <h3 className="font-Poppins text-infoBlack font-semibold text-base leading-1.56 mb-5">Potential Duplicates</h3>
           <div className="flex flex-wrap gap-5 relative">
-            {loading.mergeListLoader ? Array.from({ length: MergeMembersList?.length }, (_, i) => i + 1).map((type: number) => (
-              <Fragment key={type}>
-                <MemberSuggestionLoader />
-              </Fragment>
-            )) : (
-              MergeMembersList &&
-              MergeMembersList.map((members: MergeMembersDataResult) => (
-                <div key={members.id}>
-                  <div className="flex items-center primary-card box-border border border-borderPrimary w-26.25 h-7.5 shadow-profileCard rounded-0.6 p-5  ">
-                    <div className="w-1/5">
-                      <img src={members.profileUrl} alt="" className="w-16 h-16 rounded-full" />
-                    </div>
-                    <div className="flex flex-col  w-4/5 relative">
-                      <div className="font-Poppins font-semibold text-trial text-profileBlack leading-1.31 capitalize">{members.name}</div>
-                      <div className="font-Poppins font-normal text-email text-profileBlack leading-1.31">
-                        {members.email} | {members.organization}
+            {loading.mergeListLoader
+              ? Array.from({ length: MergeMembersList?.length }, (_, i) => i + 1).map((type: number) => (
+                  <Fragment key={type}>
+                    <MemberSuggestionLoader />
+                  </Fragment>
+                ))
+              : MergeMembersList &&
+                MergeMembersList.map((members: MergeMembersDataResult) => (
+                  <div key={members.id}>
+                    <div className="flex items-center primary-card box-border border border-borderPrimary w-26.25 h-7.5 shadow-profileCard rounded-0.6 p-5  ">
+                      <div className="w-1/5">
+                        <img src={members.profileUrl} alt="" className="w-16 h-16 rounded-full" />
                       </div>
-                      <div className="flex mt-1">
-                        <div className="w-1.001 h-1.001 mr-0.34">
-                          <img src={members.platform.platformLogoUrl} alt="" />
+                      <div className="flex flex-col  w-4/5 relative">
+                        <div className="font-Poppins font-semibold text-trial text-profileBlack leading-1.31 capitalize">{members.name}</div>
+                        <div className="font-Poppins font-normal text-email text-profileBlack leading-1.31">
+                          {members.email} | {members.organization}
+                        </div>
+                        <div className="flex mt-1">
+                          <div className="w-1.001 h-1.001 mr-0.34">
+                            <img src={members.platform.platformLogoUrl} alt="" />
+                          </div>
+                        </div>
+                        <div className="flex absolute right-0 -bottom-4 items-center">
+                          <label htmlFor={members.id} className="flex items-center text-xs text-greyDark">
+                            <input
+                              type="radio"
+                              className="hidden peer"
+                              id={members.id}
+                              value={members.comunifyMemberId}
+                              name={members.comunifyMemberId}
+                              checked={(checkedRadioId[members.comunifyMemberId] as boolean) || false}
+                              onChange={handleRadioBtn}
+                            />{' '}
+                            <span className="w-3 h-3 mr-1.5 border font-normal font-Poppins text-card leading-1.31 border-[#7D7D7D] rounded-full inline-flex peer-checked:bg-[#ABCF6B]"></span>
+                            Primary
+                          </label>
+                        </div>
+                        <div className="absolute -right-2 -top-4 cursor-pointer">
+                          <img
+                            src={closeIcon}
+                            alt=""
+                            onClick={() => {
+                              handleModal('UnMerge');
+                              setCheckedId((prevId) => ({ ...prevId, UnMergeMemberId: members.id }));
+                            }}
+                          />
                         </div>
                       </div>
-                      <div className="flex absolute right-0 -bottom-4 items-center">
-                        <label htmlFor={members.id} className="flex items-center text-xs text-greyDark">
-                          <input
-                            type="radio"
-                            className="hidden peer"
-                            id={members.id}
-                            value={members.comunifyMemberId}
-                            name={members.comunifyMemberId}
-                            checked={(checkedRadioId[members.comunifyMemberId] as boolean) || false}
-                            onChange={handleRadioBtn}
-                          />{' '}
-                          <span className="w-3 h-3 mr-1.5 border font-normal font-Poppins text-card leading-1.31 border-[#7D7D7D] rounded-full inline-flex peer-checked:bg-[#ABCF6B]"></span>
-                          Primary
-                        </label>
-                      </div><div className="absolute -right-2 -top-4 cursor-pointer">
-                        <img
-                          src={closeIcon}
-                          alt=""
-                          onClick={() => {
-                            handleModal('UnMerge');
-                            setCheckedId((prevId) => ({ ...prevId, UnMergeMemberId: members.id }));
-                          }}
-                        />
-                      </div>
-
                     </div>
                   </div>
-                </div>
-              ))
-            )}
+                ))}
           </div>
         </div>
       </div>
@@ -340,9 +338,10 @@ const MembersReview: React.FC = () => {
           modalOpen.confirmMerge
             ? 'Are you sure want to merge members'
             : modalOpen.UnMergeModalOpen
-              ? 'Are you sure you want to remove the member?'
-              :           modalOpen.ChangePrimaryMember
-                ? 'Are you sure you want to change the primary member' : ''
+            ? 'Are you sure you want to remove the member?'
+            : modalOpen.ChangePrimaryMember
+            ? 'Are you sure you want to change the primary member'
+            : ''
         }
       />
     </div>
