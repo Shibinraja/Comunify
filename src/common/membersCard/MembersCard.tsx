@@ -5,7 +5,7 @@ import { Fragment } from 'react';
 import membersSlice from 'modules/members/store/slice/members.slice';
 import { count_3, width_90 } from 'constants/constants';
 
-const MembersCard = () => {
+const MembersCard: React.FC = () => {
   const membersCountAnalyticsLoading = useSkeletonLoading(membersSlice.actions.membersCountAnalytics.type);
   const membersActivityAnalyticsLoading = useSkeletonLoading(membersSlice.actions.membersActivityAnalytics.type);
   const {

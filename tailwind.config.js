@@ -11,11 +11,9 @@ module.exports = {
         thirdDark: '#1B1E25',
         borderDark: '#272727',
         inputText: '#7C8DB5',
-        greyDark: '#8A8B9F',
-
+        greyDark: '#E5E5E5',
         borderPrimary: '#dbd8fc',
         greyPrimary: '#6B6B6B',
-
         lightBlack: '#05060A',
         neutralBlack: '#170F49',
         lightGray: '#6F6C90',
@@ -449,7 +447,8 @@ module.exports = {
         }
       },
       zIndex: {
-        9999: '9999'
+        9999: '9999',
+        100: '100'
       },
       backgroundImage: {
         'background-pattern': "url('src/assets/images/background-pattern.svg')"

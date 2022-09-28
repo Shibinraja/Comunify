@@ -42,7 +42,7 @@ import membersSlice from '../slice/members.slice';
 //     history.push(location);
 // };
 
-function* membersCountAnalytics(action: PayloadAction<workspaceId>) {
+function* membersCountAnalytics(action: PayloadAction<{ workspaceId: string; startDate?: string; endDate?: string }>) {
   try {
     yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.membersCountAnalytics.type));
 
@@ -58,7 +58,7 @@ function* membersCountAnalytics(action: PayloadAction<workspaceId>) {
   }
 }
 
-function* membersActivityAnalytics(action: PayloadAction<workspaceId>) {
+function* membersActivityAnalytics(action: PayloadAction<{ workspaceId: string; startDate?: string; endDate?: string }>) {
   try {
     yield put(loaderSlice.actions.startLoadingAction(membersSlice.actions.membersActivityAnalytics.type));
 

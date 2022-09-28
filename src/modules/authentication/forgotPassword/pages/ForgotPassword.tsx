@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useEffect, useRef } from 'react';
 import Button from 'common/button';
 import Input from 'common/input';
@@ -34,11 +35,8 @@ const ForgotPassword: React.FC = () => {
   };
 
   return (
-
     <div className="flex flex-col h-auto layout-height">
       <div className=" flex h-full overflow-auto ">
-
-
         <div className="w-3/5 2xl:w-1/2 auth-layout-section flex items-center justify-center 3xl:justify-end pr-0   3xl:pr-16 py-10">
           <div className="flex items-center justify-center">
             <img src={bgForgotImage} alt="" className="w-9/12 xl:w-[621px] 3xl:w-full object-cover" />
@@ -48,7 +46,7 @@ const ForgotPassword: React.FC = () => {
           <div className="flex flex-col  justify-center">
             <h3 className="font-Inter text-neutralBlack font-bold not-italic text-signIn leading-2.8">Forgot Password</h3>{' '}
             <p className="text-lightGray font-Inter  max-w-sm font-normal not-italic mt-0.78 text-desc">
-            Enter your email address to reset your password.
+              Enter your email address to reset your password.
             </p>
             <Formik
               innerRef={formikRef}
@@ -67,9 +65,10 @@ const ForgotPassword: React.FC = () => {
                       id="email"
                       name="email"
                       className={`h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${
-                        touched.email && errors.email ? 'boder-lightRed h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border' : ''
+                        touched.email && errors.email
+                          ? 'boder-lightRed h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
+                          : ''
                       }`}
-
                       onBlur={handleBlur}
                       onChange={handleChange}
                       value={values.email}
@@ -85,16 +84,16 @@ const ForgotPassword: React.FC = () => {
                 </Form>
               )}
             </Formik>
-
             <div className="font-Inter text-secondaryGray text-sm text-center font-normal leading-2.8 transition ease-in duration-300 pt-4">
-              <Link to="forgot-password" className='underline hover:text-letsSignInSignUp hover:underline'> Resend Link</Link>
+              <Link to="forgot-password" className="underline hover:text-letsSignInSignUp hover:underline">
+                {' '}
+                Resend Link
+              </Link>
             </div>
           </div>
         </div>
       </div>
     </div>
-
-
   );
 };
 
