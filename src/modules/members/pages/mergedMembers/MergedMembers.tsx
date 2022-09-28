@@ -257,7 +257,7 @@ const MergedMembers: React.FC = () => {
   );
 
   return (
-    <div className=" mx-auto mt-[3.3125rem] h-full overflow-y-auto" onScroll={handleScroll} ref={infinityScrollRef}>
+    <div className=" mx-auto mt-[3.3125rem] h-full overflow-y-scroll" onScroll={handleScroll}>
       <div className="flex justify-between items-center border-review pb-5">
         <div className="flex flex-col">
           <h3 className="font-Poppins font-semibold leading-2.18 text-infoData text-infoBlack">Merged Members</h3>
@@ -269,7 +269,7 @@ const MergedMembers: React.FC = () => {
           onClick={() => handleModal(true)}
         />
       </div>
-      <div className="flex flex-col mt-1.8">
+      <div className="flex flex-col mt-1.8 h-full">
         <div className="relative">
           <h3 className="font-Poppins font-semibold leading-1.56 text-infoBlack text-base">Primary Member</h3>
           <div className="flex flex-wrap gap-5">

@@ -14,9 +14,8 @@ import { format, parseISO } from 'date-fns';
 import membersSlice from 'modules/members/store/slice/members.slice';
 import { AssignTypeEnum, TagResponseData } from 'modules/settings/interface/settings.interface';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
-import React, {
-  ChangeEvent, FormEvent, Fragment, useEffect, useMemo, useRef, useState
-} from 'react';
+// eslint-disable-next-line object-curly-newline
+import React, { ChangeEvent, FormEvent, Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import Skeleton from 'react-loading-skeleton';
 import Modal from 'react-modal';
@@ -74,6 +73,8 @@ const Activity: React.FC = () => {
   const [tagDropDownOption, setTagDropDownOption] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | unknown>('');
   const [fetchLoader, setFetchLoader] = useState<boolean>(false);
+  const [tagAssignLoading, setTagAssignLoading] = useState<boolean>(false);
+  const [tagUnAssignLoading, setTagUnAssignLoading] = useState<boolean>(true);
 
   const dropDownRef = useRef<HTMLDivElement>(null);
   const tagDropDownRef = useRef<HTMLDivElement>(null);
@@ -90,6 +91,7 @@ const Activity: React.FC = () => {
     TagFilterResponse: { data: TagFilterResponseData },
     clearValue
   } = useAppSelector((state) => state.settings);
+  const tagsAssignLoader = useSkeletonLoading(settingsSlice.actions.assignTags.type);
 
   useEffect(() => {
     dispatch(
@@ -113,8 +115,12 @@ const Activity: React.FC = () => {
       })
     );
   }, [page]);
+  useEffect(() => {
+    setTagUnAssignLoading(true);
+  }, [ActivityCard]);
 
   useEffect(() => {
+    setTagAssignLoading(false);
     if (TagFilterResponseData?.length && searchTagText) {
       setTagDropDownOption(true);
     }
@@ -299,7 +305,8 @@ const Activity: React.FC = () => {
   };
 
   // Fetch members list data in comma separated value
-  const fetchActiveStreamListExportData = async() => {
+  // eslint-disable-next-line space-before-function-paren
+  const fetchActiveStreamListExportData = async () => {
     const checkedIds: Array<string> = [];
 
     if (Object.keys(checkedActivityId).length > 0) {
@@ -387,27 +394,29 @@ const Activity: React.FC = () => {
   };
 
   const handleUnAssignTagsName = (id: string): void => {
-    dispatch(
-      settingsSlice.actions.unAssignTags({
-        memberId: ActivityCard?.memberId as string,
-        unAssignTagBody: {
-          tagId: id,
-          type: 'Activity' as AssignTypeEnum.Activity,
-          activityId: ActivityCard?.activityId
-        },
-        filter: {
-          search: debouncedValue,
-          page,
-          limit,
-          tags: { searchedTags: '', checkedTags: filterExportParams.checkTags.toString() },
-          platforms: filterExportParams.checkPlatform.toString(),
-          'activity.lte': filterExportParams.endDate,
-          'activity.gte': filterExportParams.startDate
-        },
-        workspaceId: workspaceId!
-      })
-    );
-    filterTags(id);
+    if (tagUnAssignLoading) {
+      dispatch(
+        settingsSlice.actions.unAssignTags({
+          memberId: ActivityCard?.memberId as string,
+          unAssignTagBody: {
+            tagId: id,
+            type: 'Activity' as AssignTypeEnum.Activity,
+            activityId: ActivityCard?.activityId
+          },
+          filter: {
+            search: debouncedValue,
+            page,
+            limit,
+            tags: { searchedTags: '', checkedTags: filterExportParams.checkTags.toString() },
+            platforms: filterExportParams.checkPlatform.toString(),
+            'activity.lte': filterExportParams.endDate,
+            'activity.gte': filterExportParams.startDate
+          },
+          workspaceId: workspaceId!
+        })
+      );
+      filterTags(id);
+    }
   };
 
   const ActiveStreamFilter = useMemo(
@@ -710,8 +719,11 @@ const Activity: React.FC = () => {
                             />
                             <Button
                               type="submit"
+                              disabled={tagsAssignLoader || tagAssignLoading}
                               text="SAVE"
-                              className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-5.25 h-2.81  border-none btn-save-modal"
+                              className={`save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-5.25 h-2.81  border-none btn-save-modal ${
+                                tagsAssignLoader ? ' opacity-50 cursor-not-allowed' : ''
+                              }`}
                             />
                           </div>
                         </form>
