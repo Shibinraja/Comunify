@@ -8,7 +8,7 @@ import { ActivitiesWidgetData } from '../../../modules/dashboard/interface/dashb
 import { createSearchParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 const ActivitiesTab: React.FC = () => {
-  const [selectedTab, setSelectedTab] = useTabs(['new activities', 'highlights']);
+  const [selectedTab, setSelectedTab] = useTabs(['newActivities', 'highlights']);
   const [activitiesWidgetResponse, setActivitiesWidgetResponse] = React.useState<ActivitiesWidgetData[]>();
 
   const [searchParams] = useSearchParams();
@@ -59,8 +59,8 @@ const ActivitiesTab: React.FC = () => {
         <div className="w-full mt-6 flex flex-col ">
           <nav>
             <TabSelector
-              isActive={selectedTab === 'new activities'}
-              onClick={() => setSelectedTab('new activities')}
+              isActive={selectedTab === 'newActivities'}
+              onClick={() => setSelectedTab('newActivities')}
               style={'ml-1.625 mt-0.438 text-sm pb-2  border-transparent'}
               styleActive={'gradient-bottom-border'}
             >
