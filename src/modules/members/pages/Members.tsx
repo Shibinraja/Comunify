@@ -104,9 +104,7 @@ const Members: React.FC = () => {
     customizedColumn: customizedColumnData
   } = useAppSelector((state) => state.members);
 
-  const {
-    clearValue
-  } = useAppSelector((state) => state.settings);
+  const { clearValue } = useAppSelector((state) => state.settings);
 
   useEffect(() => {
     dispatch(membersSlice.actions.membersCountAnalytics({ workspaceId: workspaceId! }));
@@ -190,7 +188,7 @@ const Members: React.FC = () => {
   }, [customStartDate, customEndDate]);
 
   // Function to dispatch the search text to hit api of member list.
-  const getFilteredMembersList = async(pageNumber: number, text: string, date?: string, endDate?: string) => {
+  const getFilteredMembersList = async (pageNumber: number, text: string, date?: string, endDate?: string) => {
     setFilteredDate((prevDate) => ({ ...prevDate, filterStartDate: date!, filterEndDate: endDate! }));
     dispatch(
       membersSlice.actions.membersList({
@@ -276,7 +274,7 @@ const Members: React.FC = () => {
   };
 
   // Fetch members list data in comma separated value
-  const fetchMembersListExportData = async() => {
+  const fetchMembersListExportData = async () => {
     setFetchLoader(true);
     await fetchExportList(
       `${API_ENDPOINT}/v1/${workspaceId}/members/memberlistexport`,
@@ -457,9 +455,11 @@ const Members: React.FC = () => {
           <div className="ml-1.30 w-[155px]">{MemberFilter}</div>
           <div className="ml-0.652 w-[112px]">
             <div
-              aria-disabled = {fetchLoader}
-              className={`export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex cursor-pointer hover:border-infoBlack transition ease-in-out duration-300 ${fetchLoader ? 'cursor-not-allowed' : ''}`}
-              onClick={() => !fetchLoader &&  fetchMembersListExportData()}
+              aria-disabled={fetchLoader}
+              className={`export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex cursor-pointer hover:border-infoBlack transition ease-in-out duration-300 ${
+                fetchLoader ? 'cursor-not-allowed' : ''
+              }`}
+              onClick={() => !fetchLoader && fetchMembersListExportData()}
             >
               <h3 className="text-memberDay leading-1.12 font-Poppins font-semibold text-card">Export</h3>
               <img src={exportImage} alt="" />
@@ -525,37 +525,37 @@ const Members: React.FC = () => {
                             ) : (
                               <div className="flex ">
                                 <div className="py-3 flex gap-2 items-center flex-wrap font-Poppins font-medium text-trial text-infoBlack leading-1.31">
-                                  {member?.tags  ? (member?.tags as Array<{ id: string; name: string }>)
-                                    ?.slice(0, 2)
-                                    .map((tags: { name: string; id: string }, index: number) => (
-                                      <>
-                                        <div
-                                          data-tip
-                                          data-for={tags.name}
-                                          className="bg-tagSection rounded h-8 flex justify-between px-3 items-center cursor-pointer"
-                                          key={index}
-                                        >
-                                          <div className="font-Poppins font-normal text-card text-profileBlack leading-5 pr-4 tags-ellipse">
-                                            {tags?.name }
+                                  {member?.tags ? (
+                                    (member?.tags as Array<{ id: string; name: string }>)
+                                      ?.slice(0, 2)
+                                      .map((tags: { name: string; id: string }, index: number) => (
+                                        <>
+                                          <div
+                                            data-tip
+                                            data-for={tags.name}
+                                            className="bg-tagSection rounded h-8 flex justify-between px-3 items-center cursor-pointer"
+                                            key={index}
+                                          >
+                                            <div className="font-Poppins font-normal text-card text-profileBlack leading-5 pr-4 tags-ellipse">
+                                              {tags?.name}
+                                            </div>
+                                            <div>
+                                              <img
+                                                src={closeIcon}
+                                                alt=""
+                                                onClick={() =>
+                                                  handleUnAssignTagsName((member?.name as { name: string; id: string })?.id as string, tags.id)
+                                                }
+                                              />
+                                            </div>
                                           </div>
-                                          <div>
-                                            <img
-                                              src={closeIcon}
-                                              alt=""
-                                              onClick={() =>
-                                                handleUnAssignTagsName((member?.name as { name: string; id: string })?.id as string, tags.id)
-                                              }
-                                            />
-                                          </div>
-                                        </div>
-                                        <ReactTooltip id={tags.name} textColor="" backgroundColor="" effect="solid">
-                                          <span className="font-Poppins text-card font-normal leading-5 pr-4">{tags.name}</span>
-                                        </ReactTooltip>
-                                      </>
-                                    )) : (
-                                    <div className="font-Poppins font-normal text-card text-infoBlack leading-5 pr-4 tags-ellipse">
-                                      {'--' }
-                                    </div>
+                                          <ReactTooltip id={tags.name} textColor="" backgroundColor="" effect="solid">
+                                            <span className="font-Poppins text-card font-normal leading-5 pr-4">{tags.name}</span>
+                                          </ReactTooltip>
+                                        </>
+                                      ))
+                                  ) : (
+                                    <div className="font-Poppins font-normal text-card text-infoBlack leading-5 pr-4 tags-ellipse">{'--'}</div>
                                   )}
                                   <div
                                     className="font-Poppins font-medium text-trial text-infoBlack leading-1.31"
@@ -574,10 +574,10 @@ const Members: React.FC = () => {
                             ) : (
                               <div className="flex flex-col">
                                 <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
-                                  {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'MMM dd yyyy') : '--'}
+                                  {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'dd MMM yyyy') : '--'}
                                 </div>
                                 <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
-                                  {member?.lastActivity as ReactNode && format(parseISO(member?.lastActivity as string), 'HH:MM')}
+                                  {(member?.lastActivity as ReactNode) && format(parseISO(member?.lastActivity as string), 'HH:MM')}
                                 </div>
                               </div>
                             )
