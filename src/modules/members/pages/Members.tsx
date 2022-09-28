@@ -469,16 +469,16 @@ const Members: React.FC = () => {
       </div>
       {customizedColumn && (customizedColumn?.[0]?.name as { name: string; id: string })?.name ? (
         <div className="memberTable mt-1.8">
-          <div className="py-2 overflow-x-auto mt-1.868">
-            <div className="inline-block min-w-full overflow-hidden align-middle rounded-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto sticky top-0 fixTableHead max-h-34 min-h-[31.25rem]">
-              <table className="min-w-full relative  rounded-t-0.6 ">
-                <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
-                  <tr className="min-w-full">
+          <div className="py-2  mt-1.868">
+            <div className="inline-block min-w-full w-full align-middle rounded-0.6 border-table  overflow-x-auto overflow-y-auto sticky top-0 fixTableHead max-h-34 min-h-[31.25rem] mb-16">
+              <table className="min-w-full relative w-full rounded-t-0.6 ">
+                <thead className="h-3.25  top-0 w-full  sticky ">
+                  <tr className="min-w-full w-full">
                     {columns.map(
                       (columnName: ColumnNameProps) =>
                         columnName.isDisplayed && (
                           <Fragment key={columnName.id}>
-                            <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray ">
+                            <th className="px-3 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray ">
                               {columnName.name}
                             </th>
                           </Fragment>
@@ -489,14 +489,14 @@ const Members: React.FC = () => {
                 {/* {Check with the custom column dynamic order and displays content/rows as per the index position of the arranged column name} */}
                 <tbody>
                   {customizedColumn.map((member: Record<string, unknown>) => (
-                    <tr className="border-b" key={(member?.name as { name: string; id: string })?.id as Key}>
+                    <tr className="border-b " key={(member?.name as { name: string; id: string })?.id as Key}>
                       {Object.keys(member).map((column: keyof typeof member, index) => (
-                        <td className="px-6 py-4" key={index}>
+                        <td className="px-3 py-4 " key={index}>
                           {column === 'name' ? (
                             memberColumnsLoader ? (
                               <Skeleton width={width_90} />
                             ) : (
-                              <div className="flex ">
+                              <div className="flex w-[150px]">
                                 <div
                                   className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer"
                                   onClick={() => navigateToProfile((member?.name as { name: string; id: string })?.id as string)}
@@ -509,7 +509,7 @@ const Members: React.FC = () => {
                             memberColumnsLoader ? (
                               <Skeleton width={width_90} />
                             ) : (
-                              <div className="flex gap-x-2">
+                              <div className="flex gap-x-2 w-[150px]">
                                 {(member?.platforms as Array<{ id: string; name: string; platformLogoUrl: string }>)?.map(
                                   (platforms: { name: string; id: string; platformLogoUrl: string }, index: number) => (
                                     <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31  rounded-full" key={index}>
@@ -523,7 +523,7 @@ const Members: React.FC = () => {
                             memberColumnsLoader ? (
                               <Skeleton width={width_90} />
                             ) : (
-                              <div className="flex ">
+                              <div className="flex w-[200px]">
                                 <div className="py-3 flex gap-2 items-center flex-wrap font-Poppins font-medium text-trial text-infoBlack leading-1.31">
                                   {member?.tags ? (
                                     (member?.tags as Array<{ id: string; name: string }>)
@@ -572,7 +572,7 @@ const Members: React.FC = () => {
                             memberColumnsLoader ? (
                               <Skeleton width={width_90} />
                             ) : (
-                              <div className="flex flex-col">
+                              <div className="flex flex-col w-[150px]">
                                 <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
                                   {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'dd MMM yyyy') : '--'}
                                 </div>
@@ -594,13 +594,13 @@ const Members: React.FC = () => {
                       ))}
                     </tr>
                   ))}
-                  <tr className="px-6 py-4">
-                    <td className="px-6 py-4"></td>
+                  <tr className="px-3 py-4">
+                    <td className="px-3 py-4"></td>
                   </tr>
                 </tbody>
               </table>
               {!memberColumnsLoader && (
-                <div className="px-6 py-6 flex items-center gap-0.66 pl-[30%] w-full rounded-b-lg fixed bg-white bottom-0">
+                <div className="px-3 py-6 flex items-center gap-0.66 pl-[30%] w-full rounded-b-lg fixed bg-white bottom-0">
                   <Pagination currentPage={page} totalPages={totalPages} limit={limit} onPageChange={(page) => setPage(Number(page))} />
                 </div>
               )}
