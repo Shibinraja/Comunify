@@ -452,9 +452,9 @@ const Activity: React.FC = () => {
           <div
             aria-disabled={fetchLoader}
             className={`app-input-card-border w-6.98 h-3.06 rounded-0.6 shadow-shadowInput box-border bg-white items-center justify-evenly flex cursor-pointer hover:border-infoBlack transition ease-in-out duration-300 ${
-              fetchLoader ? 'cursor-not-allowed' : ''
+              fetchLoader || data.length === 0 ? 'cursor-not-allowed' : ''
             }`}
-            onClick={() => !fetchLoader && fetchActiveStreamListExportData()}
+            onClick={() => (data.length > 0 ? !fetchLoader && fetchActiveStreamListExportData() : {})}
           >
             <h3 className="text-dropGray leading-1.12 font-Poppins font-semibold text-card">Export</h3>
             <img src={exportImage} alt="" />
