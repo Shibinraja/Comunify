@@ -122,7 +122,7 @@
     "max-len": [
       "error",
       {
-        "code": 150,
+        "code": 250,
         "tabWidth": 2,
         "ignoreComments": true,
         "ignoreStrings": true,

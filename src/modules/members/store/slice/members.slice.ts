@@ -115,9 +115,9 @@ const initialState: InitialState = {
 
 //Saga Call
 
-const membersCountAnalytics = (state: InitialState, action: PayloadAction<workspaceId>) => state;
+const membersCountAnalytics = (state: InitialState, action: PayloadAction<{ workspaceId: string; startDate?: string; endDate?: string }>) => state;
 
-const membersActivityAnalytics = (state: InitialState, action: PayloadAction<workspaceId>) => state;
+const membersActivityAnalytics = (state: InitialState, action: PayloadAction<{ workspaceId: string; startDate?: string; endDate?: string }>) => state;
 
 const platformData = (state: InitialState) => state;
 

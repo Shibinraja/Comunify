@@ -10,7 +10,7 @@ import React, { ChangeEvent, Fragment, useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { useNavigate, useParams } from 'react-router-dom';
 import searchIcon from '../../assets/images/search.svg';
-import { MemberLoader } from './MemberLoader';
+import { MemberLoader } from '../Loader/MemberLoader';
 import { MergeModalProps } from './MergeModalTypes';
 
 const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
@@ -210,27 +210,36 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
           </div>
         </div>
         {!loading && !suggestionList.result?.length && (
-          <div className="font-Poppins font-medium text-tableDuration text-lg leading-10 pt-8 pl-2 max-h-96"> No data found</div>
+          <div className="font-Poppins font-medium text-tableDuration text-lg leading-10 pt-8 pl-2 max-h-96"> No result found</div>
         )}
-        <div className="flex flex-col gap-5 overflow-y-scroll member-section mt-1.8 max-h-96 height-member-merge " onScroll={handleScroll}>
+        <div
+          id="scrollableDiv"
+          className="flex flex-col gap-5 overflow-y-scroll member-section mt-1.8 max-h-96 height-member-merge "
+          onScroll={handleScroll}
+        >
           {loading && !preventLoading
             ? Array.from({ length: 10 }, (_, i) => i + 1).map((type: number) => (
               <Fragment key={type}>
                 <MemberLoader />
               </Fragment>
             ))
-            : suggestionList?.result &&
-              suggestionList?.result.map((member: MergeMembersDataResult, index: number) => (
-                <div className="flex border-b border-activitySubCard pb-4" key={index}>
-                  <div className="mr-0.34">
-                    <input
-                      type="checkbox"
-                      className="checkbox"
-                      id={member.id}
-                      name={member.id}
-                      checked={(checkedMemberId[member.id] as boolean) || false}
-                      onChange={handleCheckBox}
-                    />
+            :   suggestionList?.result.map((member: MergeMembersDataResult, index: number) => (
+              <div className="flex border-b border-activitySubCard pb-4" key={index}>
+                <div className="mr-0.34">
+                  <input
+                    type="checkbox"
+                    className="checkbox"
+                    id={member.id}
+                    name={member.id}
+                    checked={(checkedMemberId[member.id] as boolean) || false}
+                    onChange={handleCheckBox}
+                  />
+                </div>
+                <div className="flex flex-col ">
+                  <div className={`font-Poppins font-medium text-trial text-infoBlack leading-1.31 `}>
+                    {getHighlightedText(member.name, searchSuggestion)}
+                    {/* Reg Exp function to highlight and show all the values matched with search suggestion string.  */}
+                    {/* {member.name.includes(!searchSuggestion ? '/' : searchSuggestion)? member.name.replace(new RegExp(searchSuggestion, 'g'), '') : member.name} */}
                   </div>
                   <div className="flex flex-col ">
                     <div className={`font-Poppins font-medium text-trial text-infoBlack leading-1.31 `}>
@@ -248,7 +257,10 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
                     </div>
                   </div>
                 </div>
-              ))}
+              </div>
+            )
+            )}
+          {loading && <MemberLoader />}
         </div>
         <div className="flex justify-end mt-1.8 pb-53 ">
           <Button
@@ -261,7 +273,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
             type="button"
             text="SUBMIT"
             className={`submit border-none text-white font-Poppins text-error font-medium leading-1.31 cursor-pointer w-5.25 h-2.81 rounded shadow-contactBtn btn-save-modal ${
-              !selectedMembers.length ? 'cursor-not-allowed' : ''
+              !selectedMembers.length ? 'opacity-50 cursor-not-allowed' : ''
             }`}
             onClick={navigateToReviewMerge}
           />

@@ -1,49 +1,47 @@
-import QuickInfo from 'common/quickInfo/QuickInfo';
-import React, { useEffect, useRef, useState } from 'react';
-import ActivitiesTab from '../activitiesTab/pages/ActivitiesTab';
-import MembersTab from '../membersTab/pages/MembersTab';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import brickIcon from '../../../assets/images/brick.svg';
-import dropDownIcon from '../../../assets/images/profile-dropdown.svg';
 import calendarIcon from '../../../assets/images/calandar.svg';
-import widgetSearchIcon from '../../../assets/images/widget-search.svg';
+import dropDownIcon from '../../../assets/images/profile-dropdown.svg';
+import '../../../../node_modules/react-grid-layout/css/styles.css';
 import noWidgetIcon from '../../../assets/images/no-widget.svg';
-import HealthCard from 'common/healthCard/HealthCard';
-import DatePicker from 'react-datepicker';
+import SidePanelWidgets, { widgetList } from 'common/widgetLayout/SidePanelWidgets';
+import DatePicker, { ReactDatePicker } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import Input from 'common/input';
-import Button from 'common/button';
 import Modal from 'react-modal';
+import ReactGridLayout, { Layout, Responsive, WidthProvider } from 'react-grid-layout';
+import { getLocalWorkspaceId } from '../../../lib/helper';
+import { showErrorToast, showSuccessToast } from '../../../common/toast/toastFunctions';
+import { getWidgetsLayoutService, saveWidgetsLayoutService } from '../services/dashboard.services';
+import { PanelWidgetsType } from '../../../common/widgetLayout/WidgetTypes';
+import { useLocation, useNavigate, createSearchParams, useSearchParams } from 'react-router-dom';
+import moment from 'moment';
+const ResponsiveReactGridLayout = WidthProvider(Responsive);
 Modal.setAppElement('#root');
 
 const Dashboard: React.FC = () => {
   const [isSelectDropDownActive, setSelectDropDownActive] = useState<boolean>(false);
+  // eslint-disable-next-line no-unused-vars
   const [selected, setSelected] = useState<string>('');
   const [dateRange, setDateRange] = useState([null, null]);
-  const datepickerRef = useRef<any>(null);
+  const datePickerRef = useRef<ReactDatePicker>(null);
   const [startDate, endDate] = dateRange;
   const handleDropDownActive = (): void => {
     setSelectDropDownActive((prev) => !prev);
   };
-  const selectOptions = ['This Week', 'Last Week', 'Month'];
+  const selectOptions = [
+    { id: Math.random(), dateRange: 'This Week' },
+    { id: Math.random(), dateRange: 'Last Week' },
+    { id: Math.random(), dateRange: 'This Month' }
+  ];
   const [isDrawerOpen, setDrawerOpen] = useState<boolean>(false);
-  const [isWidgetModalOpen, setWidgetModalOpen] = useState(false);
-
+  const [widgets, setWidgets] = useState<any[] | []>([]);
+  const [widgetKey, setWidgetKey] = useState<string | null>(null);
+  // eslint-disable-next-line no-unused-vars
+  const [widgetListData] = React.useState(widgetList);
+  const [transformedWidgetData, setTransformedWidgetData] = React.useState<any[]>(new Array(null));
   const dropDownRef = useRef<HTMLDivElement>(null);
-
-  const handleOutsideClick = (event: MouseEvent) => {
-    if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
-      setSelectDropDownActive(false);
-    }
-  };
-
-  const handleClickDatepickerIcon = () => {
-    const datepickerElement = datepickerRef.current;
-    datepickerElement.setFocus(true);
-  };
-
-  const handleWidgetDrawer = () => {
-    setDrawerOpen((prev) => !prev);
-  };
+  const [startingDate, setStartingDate] = React.useState<string>();
+  const [endingDate, setEndingDate] = React.useState<string>();
 
   useEffect(() => {
     document.addEventListener('click', handleOutsideClick);
@@ -52,105 +50,187 @@ const Dashboard: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    fetchWidgetLayoutData();
+    setSelectedDateRange('Select');
+  }, []);
+
+  useEffect(() => {
+    if (selected) {
+      setNavigation(startingDate, endingDate);
+    }
+  }, [selected]);
+
+  useEffect(() => {
+    if (startDate && endDate) {
+      const start: string = moment(startDate).toISOString();
+      const end: string = moment(endDate).toISOString();
+      setNavigation(start, end);
+    }
+  }, [startDate, endDate]);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const removeWidget: string | null = searchParams.get('widgetName');
+
+  useEffect(() => {
+    removeWidgetFromState();
+  }, [removeWidget]);
+
+  useEffect(() => {
+    if (isDrawerOpen) {
+      setParamsToManageWidgets('manage');
+    } else {
+      setParamsToManageWidgets();
+    }
+  }, [isDrawerOpen]);
+
+  const removeWidgetFromState = () => {
+    try {
+      const newWidgetArray = widgets?.filter((data) => data?.widget?.widgetLocation !== removeWidget);
+      setWidgets(newWidgetArray);
+      navigate({ pathname: location.pathname, search: `` });
+      // showSuccessToast('Removed the selected the widget');
+    } catch {
+      showErrorToast('Failed to remove widget');
+    }
+  };
+
+  const setNavigation = (start?: string, end?: string) => {
+    if (start && end) {
+      const params = { startDate: start, endDate: end };
+      navigate({
+        pathname: location.pathname,
+        search: `?${createSearchParams(params)}`
+      });
+    }
+  };
+
+  const setParamsToManageWidgets = (action?: string) => {
+    if (action === 'manage') {
+      const params = { manageWidgets: action };
+      navigate({
+        pathname: location.pathname,
+        search: `?${createSearchParams(params)}`
+      });
+    } else {
+      navigate({
+        pathname: location.pathname,
+        search: ``
+      });
+    }
+  };
+
+  const workspaceId = getLocalWorkspaceId();
+
+  const onDrop = useCallback(
+    (items: Layout[], item: Layout, e: DragEvent) => {
+      const raw = e.dataTransfer?.getData('droppableWidget');
+      if (!raw) {
+        return;
+      }
+      const droppableWidget: any = JSON.parse(raw);
+      setWidgetKey(droppableWidget?.widget?.widgetLocation);
+
+      const newWidgetArray = [...widgets];
+      const droppedWidget: PanelWidgetsType = {
+        layout: { ...droppableWidget.layout },
+        widget: { ...droppableWidget.widget }
+      };
+      newWidgetArray.push(droppedWidget);
+      setWidgets(newWidgetArray);
+    },
+    [widgets]
+  );
+
+  const handleOutsideClick = (event: MouseEvent) => {
+    if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
+      setSelectDropDownActive(false);
+    }
+  };
+
+  const handleClickDatePickerIcon = () => {
+    const datePickerElement = datePickerRef.current;
+    datePickerElement?.setFocus();
+  };
+
+  const handleWidgetDrawer = () => {
+    setDrawerOpen((prev) => !prev);
+  };
+
+  // eslint-disable-next-line space-before-function-paren
+  const saveWidgetLayout = async () => {
+    try {
+      const data = await saveWidgetsLayoutService(workspaceId, transformedWidgetData);
+      await fetchWidgetLayoutData();
+      if (data?.data) {
+        setDrawerOpen(false);
+        showSuccessToast('Widget layout saved');
+      }
+      return data;
+    } catch {
+      showErrorToast('Failed to save widgets layout');
+    }
+  };
+  // eslint-disable-next-line space-before-function-paren
+  const fetchWidgetLayoutData = async () => {
+    try {
+      const response = await getWidgetsLayoutService(workspaceId);
+      const widgetDataArray = response?.map((data: any) => ({
+        id: data?.id,
+        layout: { ...data.configs, i: data?.id },
+        widget: { ...data?.widget, widgetId: data?.widgetId }
+      }));
+      setWidgets(widgetDataArray);
+    } catch {
+      showErrorToast('Failed to load widgets layout');
+    }
+  };
+
+  const onLayoutChange = useCallback(
+    (currentLayout: ReactGridLayout.Layout[]) => {
+      const widgetsToBeSaved = currentLayout.map((layout: Layout) => {
+        const existingWidget = widgets.find((widget) => layout.i === widget.id);
+        return {
+          id: existingWidget?.id,
+          widgetId: existingWidget?.widget?.widgetId || layout.i,
+          status: 'Active',
+          order: 1,
+          config: {
+            ...layout
+          }
+        };
+      });
+
+      setTransformedWidgetData(widgetsToBeSaved);
+    },
+    [widgets]
+  );
+
+  const setSelectedDateRange = (option: string) => {
+    if (option.toLocaleLowerCase().trim() === 'select') {
+      setStartingDate(moment().startOf('week').toISOString());
+      setEndingDate(new Date().toISOString());
+    }
+    if (option === 'this week') {
+      setSelected(option);
+      setStartingDate(moment().startOf('week').toISOString());
+      setEndingDate(new Date().toISOString());
+    } else if (option === 'last week') {
+      setSelected(option);
+      setStartingDate(moment().startOf('week').subtract(1, 'week').toISOString());
+      setEndingDate(moment().endOf('week').subtract(1, 'week').endOf('week').toISOString());
+    } else if (option === 'this month') {
+      setSelected(option);
+      setStartingDate(moment().startOf('month').toISOString());
+      setEndingDate(moment().endOf('month').toISOString());
+    }
+  };
+
   return (
     <>
-      <div className="flex justify-between mt-10 ">
-        {isDrawerOpen && (
-          <div className="w-1/4 xl:w-1/5 widgetDrawerGradient left-0 top-0 h-full px-7 absolute z-40 opacity-90">
-            <div className="flex flex-col">
-              <div className="flex flex-col">
-                <div className="text-center font-Poppins font-semibold text-2xl pt-24">Add Widget</div>
-                <div className="pt-4 relative">
-                  <Input
-                    type="text"
-                    name="search"
-                    id="searchId"
-                    placeholder="Search widgets"
-                    className="py-3 bg-white text-xs focus:outline-none px-4 rounded-0.6 pr-8 placeholder:font-Poppins placeholder:font-normal placeholder:text-widgetSearch placeholder:text-xs"
-                  />
-                  <div className="absolute top-8 right-5">
-                    <img src={widgetSearchIcon} alt="" />
-                  </div>
-                </div>
-              </div>
-              {/* <div className="hidden">
-                <QuickInfo />
-              </div> */}
-              {/* <div className="mt-1.8 hidden">
-                <HealthCard />
-              </div> */}
-              {/* <div className="flex mt-1.8 w-full hidden">
-                <div>
-                  <ActivitiesTab />
-                </div>
-                <div>
-                  <MembersTab />
-                </div>
-              </div> */}
-              <Button
-                text="Request for a Widget"
-                type="submit"
-                className="font-Poppins rounded-lg text-base font-semibold text-white py-3.5 mt-7 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient"
-                onClick={() => setWidgetModalOpen(true)}
-              />
-              <Modal
-                isOpen={isWidgetModalOpen}
-                shouldCloseOnOverlayClick={false}
-                onRequestClose={() => setWidgetModalOpen(false)}
-                className="w-24.31 pb-12 mx-auto rounded-lg border-fetching-card bg-white shadow-modal"
-                style={{
-                  overlay: {
-                    display: 'flex',
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    bottom: 0,
-                    right: 0,
-                    alignItems: 'center'
-                  }
-                }}
-              >
-                <div className="flex flex-col">
-                  <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Request for a Widget</h3>
-                  <form className="flex flex-col relative  px-1.93 mt-9">
-                    <label htmlFor="name " className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack ">
-                      Name
-                    </label>
-                    <Input
-                      type="text"
-                      name="name"
-                      id="nameId"
-                      className="mt-0.375 inputs app-result-card-border box-border bg-white shadow-inputShadow rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-sm placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
-                      placeholder="Enter Name"
-                    />
-                    <label htmlFor="description" className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack mt-1.06">
-                      Description
-                    </label>
-                    <textarea
-                      name=""
-                      id=""
-                      className="mt-0.375 inputs text-area app-result-card-border rounded-0.3 w-20.5 h-6.06 shadow-inputShadow focus:outline-none p-3 placeholder:font-Poppins placeholder:text-sm placeholder:text-thinGray placeholder:leading-1.31"
-                      placeholder="Description"
-                    ></textarea>
-                    <div className="flex items-center justify-end mt-1.8">
-                      <Button
-                        text="Cancel"
-                        type="submit"
-                        className="cancel mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  h-2.81 w-5.25  rounded border-none"
-                        onClick={() => setWidgetModalOpen(false)}
-                      />
-                      <Button
-                        text="Save"
-                        type="submit"
-                        className="text-white font-Poppins text-error font-medium leading-5 btn-save-modal cursor-pointer rounded shadow-contactBtn w-5.25 border-none h-2.81"
-                      />
-                    </div>
-                  </form>
-                </div>
-              </Modal>
-            </div>
-          </div>
-        )}
+      <div className="flex justify-between mt-10 pb-28">
         <div className="flex relative items-center">
           <div
             className="flex items-center justify-between px-5 w-11.72 h-3.06 border border-borderPrimary rounded-0.6 shadow-shadowInput cursor-pointer "
@@ -167,13 +247,13 @@ const Dashboard: React.FC = () => {
               className="absolute top-12 w-11.72 border border-borderPrimary bg-white dark:bg-secondaryDark   shadow-shadowInput rounded-0.6 "
               onClick={handleDropDownActive}
             >
-              {selectOptions.map((options: string, index: number) => (
-                <div key={index} className="flex flex-col p-2 hover:bg-greyDark transition ease-in duration-300 cursor-pointer rounded-lg">
+              {selectOptions?.map((options: { id: number; dateRange: string }) => (
+                <div key={`${options?.id}`} className="flex flex-col p-2 hover:bg-greyDark transition ease-in duration-300 cursor-pointer rounded-lg">
                   <div
-                    className="text-searchBlack dark:text-white font-Poppins font-normal text-trial leading-1.31"
-                    onClick={() => setSelected(options)}
+                    onClick={() => setSelectedDateRange(options?.dateRange.toLocaleLowerCase().trim())}
+                    className="h-1.93 px-3 flex items-center z-100 font-Poppins text-trial font-normal leading-4 text-searchBlack"
                   >
-                    {options}
+                    <div>{options?.dateRange}</div>
                   </div>
                 </div>
               ))}
@@ -191,45 +271,66 @@ const Dashboard: React.FC = () => {
                 className="export w-[15.5rem] h-3.06  bg-transparent dark:bg-primaryDark text-dropGray dark:text-inputText shadow-shadowInput rounded-0.6 pl-3 font-Poppins font-semibold text-xs border border-borderPrimary leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-xs placeholder:text-dropGray dark:placeholder:text-inputText placeholder:leading-1.12"
                 placeholderText="DD/MM/YYYY - DD/MM/YYYY"
                 isClearable={true}
-                ref={datepickerRef}
+                ref={datePickerRef}
                 dateFormat="dd/MM/yyyy"
               />
             </div>
             <div className="absolute right-4 top-4 drop-icon">
-              <img className="right-6 cursor-pointer" src={calendarIcon} alt="" onClick={() => handleClickDatepickerIcon()} />
+              <img className="right-6 cursor-pointer" src={calendarIcon} alt="" onClick={() => handleClickDatePickerIcon()} />
             </div>
           </div>
         </div>
-        <div
-          className="flex justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow cursor-pointer"
-          onClick={handleWidgetDrawer}
-        >
-          <div className="font-Poppins font-medium text-white leading-5 text-search ">Manage Widget</div>
-          <div className="brick-icon bg-cover">
-            <img src={brickIcon} alt="" />
+        {isDrawerOpen === false ? (
+          <div
+            className="flex justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow cursor-pointer"
+            onClick={handleWidgetDrawer}
+          >
+            <div className="font-Poppins font-medium text-white leading-5 text-search ">Manage Widget</div>
+            <div className="brick-icon bg-cover">
+              <img src={brickIcon} alt="" />
+            </div>
           </div>
+        ) : (
+          <div
+            className="flex justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow cursor-pointer"
+            onClick={saveWidgetLayout}
+          >
+            <div className="font-Poppins font-medium text-white leading-5 text-search ml-3">Save Layout</div>
+            <div className="brick-icon bg-cover">
+              <img src={brickIcon} alt="" />
+            </div>
+          </div>
+        )}
+      </div>
+      {isDrawerOpen && <SidePanelWidgets widgetKey={widgetKey !== null ? widgetKey : ''} />}
+      <ResponsiveReactGridLayout
+        autoSize
+        preventCollision={false}
+        useCSSTransforms
+        isDroppable
+        measureBeforeMount={false}
+        compactType={null}
+        onDrop={onDrop}
+        allowOverlap={false}
+        isDraggable={isDrawerOpen}
+        isResizable={isDrawerOpen}
+        rowHeight={undefined}
+        isBounded
+        onLayoutChange={onLayoutChange}
+        style={{ height: '160vh', maxHeight: '156.25rem' }}
+      >
+        {widgets.map((widget) => (
+          <div key={widget.layout.i} data-grid={widget.layout}>
+            {widgetListData[widget?.widget?.widgetLocation as keyof typeof widgetListData]}
+          </div>
+        ))}
+      </ResponsiveReactGridLayout>
+      {Boolean(widgets?.length) === false && (
+        <div className="flex flex-col items-center justify-center fixTableHead-nomember">
+          <img src={noWidgetIcon} alt="" className="w-[3.8125rem] h-[3.8125rem]" />
+          <div className="font-Poppins font-medium text-tableDuration text-noReports leading-10 pt-5">No widgets added</div>
         </div>
-      </div>
-      <div className="flex flex-col mt-1.8">
-        <QuickInfo />
-      </div>
-      <div className="flex flex-col mt-1.8">
-        <HealthCard />
-      </div>
-      <div className=" flex flex-row mt-2.47">
-        <div className=" flex flex-col w-full">
-          <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 mt-1.258">Activities</h3>
-          <ActivitiesTab />
-        </div>
-        <div className=" flex flex-col ml-1.86 w-full">
-          <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18  mt-1.258 ">Members</h3>
-          <MembersTab />
-        </div>
-      </div>
-      <div className="flex flex-col items-center justify-center fixTableHead-nomember hidden">
-        <img src={noWidgetIcon} alt="" className="w-[3.8125rem] h-[3.8125rem]" />
-        <div className="font-Poppins font-medium text-tableDuration text-noReports leading-10 pt-5">No widgets added</div>
-      </div>
+      )}
     </>
   );
 };

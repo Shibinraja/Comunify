@@ -1,3 +1,4 @@
+/* eslint-disable space-before-function-paren */
 /* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
 import { AxiosError, GeneratorResponse, ServerResponse } from '@/lib/api';
@@ -25,13 +26,17 @@ import {
 import { memberSuggestionType, mergeMembersType, unMergeMembersType } from './service.types';
 
 //Members Module
-export function* CountAnalyticsService(params: workspaceId): GeneratorResponse<MemberCountAnalyticsResponse> {
-  const { data } = yield request.get(`/v1/${params.workspaceId}/members/count-analytics`);
+export function* CountAnalyticsService(params: workspaceId, startDate?: string, endDate?: string): GeneratorResponse<MemberCountAnalyticsResponse> {
+  const { data } = yield request.get(`/v1/${params.workspaceId}/members/count-analytics`, { params: { startDate, endDate } });
   return data;
 }
 
-export function* ActivityAnalyticsService(params: workspaceId): GeneratorResponse<MemberActivityAnalyticsResponse> {
-  const { data } = yield request.get(`v1/${params.workspaceId}/members/activity-analytics`);
+export function* ActivityAnalyticsService(
+  params: workspaceId,
+  startDate?: string,
+  endDate?: string
+): GeneratorResponse<MemberActivityAnalyticsResponse> {
+  const { data } = yield request.get(`v1/${params.workspaceId}/members/activity-analytics`, { params: { startDate, endDate } });
   return data;
 }
 
@@ -114,7 +119,7 @@ export function* GetMembersProfileCardService(params: VerifyMembers): GeneratorR
 
 //axios request
 
-export const getMemberSuggestionList = async(args: memberSuggestionType, loading?: Dispatch<SetStateAction<boolean>>) => {
+export const getMemberSuggestionList = async (args: memberSuggestionType, loading?: Dispatch<SetStateAction<boolean>>) => {
   try {
     loading?.(true);
     const response: ServerResponse<MergeMembersDataResponse> = await request.get(
@@ -133,7 +138,7 @@ export const getMemberSuggestionList = async(args: memberSuggestionType, loading
   }
 };
 
-export const getMergedMemberList = async(args: memberSuggestionType, loading?: (type: string, loader: boolean) => void) => {
+export const getMergedMemberList = async (args: memberSuggestionType, loading?: (type: string, loader: boolean) => void) => {
   try {
     loading?.('MergeListLoader', true);
     const response: ServerResponse<MergeMembersDataResponse> = await request.get(
@@ -152,7 +157,7 @@ export const getMergedMemberList = async(args: memberSuggestionType, loading?: (
   }
 };
 
-export const mergeMembers = async(args: mergeMembersType, loading?: (type: string, loader: boolean) => void) => {
+export const mergeMembers = async (args: mergeMembersType, loading?: (type: string, loader: boolean) => void) => {
   try {
     loading?.('ConfirmationLoader', true);
     const response: ServerResponse<Record<string, never>> = await request.post(`/v1/${args.workspaceId}/members/${args.memberId}/merge`, {
@@ -169,7 +174,7 @@ export const mergeMembers = async(args: mergeMembersType, loading?: (type: strin
   }
 };
 
-export const unMergeMembers = async(params: unMergeMembersType, loading?: (type: string, loader: boolean) => void) => {
+export const unMergeMembers = async (params: unMergeMembersType, loading?: (type: string, loader: boolean) => void) => {
   try {
     loading?.('ConfirmationLoader', true);
     const response: ServerResponse<Record<string, never>> = await request.delete(

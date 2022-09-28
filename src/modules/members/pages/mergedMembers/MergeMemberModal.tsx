@@ -42,7 +42,7 @@ export const MergeMemberModal: React.FC<MergeModalProps> = ({ isOpen, isClose, o
           text="YES"
           // eslint-disable-next-line max-len
           className={`border-none ml-2.5 yes-btn h-2.81 w-5.25 box-border rounded shadow-contactBtn cursor-pointer font-Poppins font-medium text-error leading-5 text-white btn-save-modal ${
-            loader ? 'cursor-not-allowed' : ''
+            loader ? 'opacity-50 cursor-not-allowed' : ''
           }`}
           onClick={onSubmit}
         />

@@ -84,8 +84,11 @@ const SignIn: React.FC = () => {
                       label="Username"
                       id="userName"
                       name="userName"
+                      // eslint-disable-next-line max-len
                       className={`h-4.5 pr-10 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${
-                        touched.userName && errors.userName ? 'boder-lightRed h-4.5 pr-10 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border' : ''
+                        touched.userName && errors.userName
+                          ? 'boder-lightRed h-4.5 pr-10 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
+                          : ''
                       }`}
                       onBlur={handleBlur}
                       onChange={handleChange}
@@ -101,8 +104,11 @@ const SignIn: React.FC = () => {
                       label="Password"
                       id="password"
                       name="password"
+                      // eslint-disable-next-line max-len
                       className={`h-4.5 rounded-lg bg-white p-2.5 pr-10 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${
-                        touched.password && errors.password ? 'boder-lightRed h-4.5 rounded-lg bg-white p-2.5 pr-10 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border' : ''
+                        touched.password && errors.password
+                          ? 'boder-lightRed h-4.5 rounded-lg bg-white p-2.5 pr-10 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
+                          : ''
                       }`}
                       onBlur={handleBlur}
                       onChange={handleChange}
@@ -118,20 +124,17 @@ const SignIn: React.FC = () => {
                       )}
                     </div>
                   </div>
-                  <div className='flex justify-between items-center'>
-
-                    <div className='flex items-center'>
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center">
                       <div className="mr-2 mt-1">
-                        <input
-                          type="checkbox"
-                          className="checkbox cursor-pointer"
-
-                        />
+                        <input type="checkbox" className="checkbox cursor-pointer" />
                       </div>
-                      <span className='text-sm text-secondaryGray font-normal font-Inter'>Remember me</span>
+                      <span className="text-sm text-secondaryGray font-normal font-Inter">Remember me</span>
                     </div>
                     <div className="font-Inter text-secondaryGray text-sm font-normal leading-2.8 transition ease-in duration-300 ">
-                      <Link to="forgot-password" className='hover:text-letsSignInSignUp hover:underline'>Forgot your password?</Link>
+                      <Link to="forgot-password" className="hover:text-letsSignInSignUp hover:underline">
+                        Forgot your password?
+                      </Link>
                     </div>
                   </div>
 
