@@ -11,7 +11,7 @@ import { createSearchParams, useLocation, useNavigate, useSearchParams } from 'r
 const MembersTab: React.FC = () => {
   const workspaceId = getLocalWorkspaceId();
 
-  const [selectedTab, setSelectedTab] = useTabs(['top contributor', 'active', 'inactive']);
+  const [selectedTab, setSelectedTab] = useTabs(['topContributor', 'active', 'inActive']);
   const [memberWidgetData, setMemberWidgetData] = React.useState<MemberWidgetData[]>();
 
   const [searchParams] = useSearchParams();
@@ -61,8 +61,8 @@ const MembersTab: React.FC = () => {
         <div className="w-full mt-6 flex flex-col ">
           <nav>
             <TabSelector
-              isActive={selectedTab === 'top contributor'}
-              onClick={() => setSelectedTab('top contributor')}
+              isActive={selectedTab === 'topContributor'}
+              onClick={() => setSelectedTab('topContributor')}
               style={'ml-1.625 mt-0.438 text-sm pb-2  border-transparent'}
               styleActive={'gradient-bottom-border'}
             >
@@ -83,8 +83,8 @@ const MembersTab: React.FC = () => {
               Active
             </TabSelector>
             <TabSelector
-              isActive={selectedTab === 'inactive'}
-              onClick={() => setSelectedTab('inactive')}
+              isActive={selectedTab === 'inActive'}
+              onClick={() => setSelectedTab('inActive')}
               style={'ml-1.625 mt-0.438 text-sm pb-2  border-transparent'}
               styleActive={'gradient-bottom-border'}
             >
