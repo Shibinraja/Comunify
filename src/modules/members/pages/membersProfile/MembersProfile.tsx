@@ -421,20 +421,26 @@ const MembersProfile: React.FC = () => {
         <div className="flex flex-col xl:flex-row pt-2.18 items-start xl:items-center justify-between">
           {memberProfileCardLoader ? (
             <div className="flex flex-col w-full">
-              <Skeleton width={width_90} />
+              <div className="font-Poppins font-normal text-xs leading-4 text-listGray">Last Active Date</div>
+              <div className="font-Poppins font-semibold text-base leading-6 text-accountBlack">
+                <Skeleton width={width_90} />
+
+              </div>
             </div>
           ) : (
-            memberProfileCardData?.map((data: MemberProfileCard) => (
+            memberProfileCardData?.length ? memberProfileCardData?.map((data: MemberProfileCard) => (
               <div key={data?.id + data?.name} className="flex flex-col ">
                 <div className="font-Poppins font-normal text-xs leading-4 text-listGray">Last Active Date</div>
                 <div className="font-Poppins font-semibold text-base leading-6 text-accountBlack">
-                  {data?.lastActivity ? generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY') : 'Last active date is not available'}
+                  {memberProfileCardLoader ?    <Skeleton width={width_90} /> : data?.lastActivity ? generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY') : 'Last active date is not available'}
                 </div>
               </div>
-            ))
+            )) :(
+              <div className="flex flex-col w-full"></div>
+            )
           )}
 
-          <div className="flex mt-3 xl:mt-0">
+          <div className="flex mt-3 xl:mt-0 relative">
             <div className="select relative mr-2 float-right">
               <div
                 className="flex justify-between pl-3 pr-5 items-center cursor-pointer box-border w-[173px] h-3.06 rounded-0.6 shadow-contactCard app-input-card-border"

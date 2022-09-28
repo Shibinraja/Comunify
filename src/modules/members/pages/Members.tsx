@@ -526,7 +526,7 @@ const Members: React.FC = () => {
                             ) : (
                               <div className="flex ">
                                 <div className="py-3 flex gap-2 items-center flex-wrap font-Poppins font-medium text-trial text-infoBlack leading-1.31">
-                                  {(member?.tags as Array<{ id: string; name: string }>)
+                                  {member?.tags  ? (member?.tags as Array<{ id: string; name: string }>)
                                     ?.slice(0, 2)
                                     .map((tags: { name: string; id: string }, index: number) => (
                                       <>
@@ -537,7 +537,7 @@ const Members: React.FC = () => {
                                           key={index}
                                         >
                                           <div className="font-Poppins font-normal text-card text-profileBlack leading-5 pr-4 tags-ellipse">
-                                            {tags?.name}
+                                            {tags?.name }
                                           </div>
                                           <div>
                                             <img
@@ -553,9 +553,13 @@ const Members: React.FC = () => {
                                           <span className="font-Poppins text-card font-normal leading-5 pr-4">{tags.name}</span>
                                         </ReactTooltip>
                                       </>
-                                    ))}
+                                    )) : (
+                                    <div className="font-Poppins font-normal text-card text-infoBlack leading-5 pr-4 tags-ellipse">
+                                      {'--' }
+                                    </div>
+                                  )}
                                   <div
-                                    className="font-Poppins font-semibold leading-5 text-tag text-card underline cursor-pointer"
+                                    className="font-Poppins font-medium text-trial text-infoBlack leading-1.31"
                                     onClick={() => navigateToProfile((member?.name as { name: string; id: string })?.id as string)}
                                   >
                                     {(member?.tags as Array<Record<string, unknown>>)?.length > 2
@@ -574,7 +578,7 @@ const Members: React.FC = () => {
                                   {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'MMM dd yyyy') : '--'}
                                 </div>
                                 <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
-                                  {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'HH:MM') : '--'}
+                                  {member?.lastActivity as ReactNode && format(parseISO(member?.lastActivity as string), 'HH:MM')}
                                 </div>
                               </div>
                             )
