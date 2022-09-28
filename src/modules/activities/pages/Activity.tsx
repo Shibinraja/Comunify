@@ -74,6 +74,8 @@ const Activity: React.FC = () => {
   const [tagDropDownOption, setTagDropDownOption] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | unknown>('');
   const [fetchLoader, setFetchLoader] = useState<boolean>(false);
+  const [tagAssignLoading, setTagAssignLoading] = useState<boolean>(false);
+  const [tagUnAssignLoading, setTagUnAssignLoading] = useState<boolean>(true);
 
   const dropDownRef = useRef<HTMLDivElement>(null);
   const tagDropDownRef = useRef<HTMLDivElement>(null);
@@ -90,6 +92,7 @@ const Activity: React.FC = () => {
     TagFilterResponse: { data: TagFilterResponseData },
     clearValue
   } = useAppSelector((state) => state.settings);
+  const tagsAssignLoader = useSkeletonLoading(settingsSlice.actions.assignTags.type);
 
   useEffect(() => {
     dispatch(
@@ -113,8 +116,12 @@ const Activity: React.FC = () => {
       })
     );
   }, [page]);
+  useEffect(() => {
+    setTagUnAssignLoading(true);
+  }, [ActivityCard]);
 
   useEffect(() => {
+    setTagAssignLoading(false);
     if (TagFilterResponseData?.length && searchTagText) {
       setTagDropDownOption(true);
     }
@@ -387,27 +394,29 @@ const Activity: React.FC = () => {
   };
 
   const handleUnAssignTagsName = (id: string): void => {
-    dispatch(
-      settingsSlice.actions.unAssignTags({
-        memberId: ActivityCard?.memberId as string,
-        unAssignTagBody: {
-          tagId: id,
-          type: 'Activity' as AssignTypeEnum.Activity,
-          activityId: ActivityCard?.activityId
-        },
-        filter: {
-          search: debouncedValue,
-          page,
-          limit,
-          tags: { searchedTags: '', checkedTags: filterExportParams.checkTags.toString() },
-          platforms: filterExportParams.checkPlatform.toString(),
-          'activity.lte': filterExportParams.endDate,
-          'activity.gte': filterExportParams.startDate
-        },
-        workspaceId: workspaceId!
-      })
-    );
-    filterTags(id);
+    if (tagUnAssignLoading) {
+      dispatch(
+        settingsSlice.actions.unAssignTags({
+          memberId: ActivityCard?.memberId as string,
+          unAssignTagBody: {
+            tagId: id,
+            type: 'Activity' as AssignTypeEnum.Activity,
+            activityId: ActivityCard?.activityId
+          },
+          filter: {
+            search: debouncedValue,
+            page,
+            limit,
+            tags: { searchedTags: '', checkedTags: filterExportParams.checkTags.toString() },
+            platforms: filterExportParams.checkPlatform.toString(),
+            'activity.lte': filterExportParams.endDate,
+            'activity.gte': filterExportParams.startDate
+          },
+          workspaceId: workspaceId!
+        })
+      );
+      filterTags(id);
+    }
   };
 
   const ActiveStreamFilter = useMemo(
@@ -710,8 +719,11 @@ const Activity: React.FC = () => {
                             />
                             <Button
                               type="submit"
+                              disabled={tagsAssignLoader || tagAssignLoading}
                               text="SAVE"
-                              className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-5.25 h-2.81  border-none btn-save-modal"
+                              className={`save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-5.25 h-2.81  border-none btn-save-modal ${
+                                tagsAssignLoader ? ' opacity-50 cursor-not-allowed' : ''
+                              }`}
                             />
                           </div>
                         </form>
@@ -758,7 +770,7 @@ const Activity: React.FC = () => {
                         {`VIEW ON ${ActivityCard?.platform?.toLocaleUpperCase()}`}
                       </a>
                       <div className="top-5 font-Poppins font-medium pr-3 text-card leading-1.12 text-slimGray">
-                        {generateDateAndTime(`${ActivityCard?.activityTime}`, 'HH:MM')} |{' '}
+                        {generateDateAndTime(`${ActivityCard?.activityTime}`, 'HH:MM')} | {' '}
                         {generateDateAndTime(`${ActivityCard?.activityTime}`, 'MM-DD')}
                       </div>
                     </div>
