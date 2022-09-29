@@ -239,12 +239,19 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
                       onChange={handleCheckBox}
                     />
                   </div>
-                  <div className="text-tagEmail font-Poppins font-normal leading-1.31 text-email pl-1">
-                    {getHighlightedText(member.email, searchSuggestion)} | {member.organization}
-                  </div>
-                  <div className="flex mt-2.5">
-                    <div className="mr-0.34 w-1.001 h-1.001">
-                      <img src={member.platform.platformLogoUrl} alt="" />
+                  <div className="flex flex-col ">
+                    <div className={`font-Poppins font-medium text-trial text-infoBlack leading-1.31 `}>
+                      {getHighlightedText(member.name, searchSuggestion)}
+                      {/* Reg Exp function to highlight and show all the values matched with search suggestion string.  */}
+                      {/* {member.name.includes(!searchSuggestion ? '/' : searchSuggestion)? member.name.replace(new RegExp(searchSuggestion, 'g'), '') : member.name} */}
+                    </div>
+                    <div className="text-tagEmail font-Poppins font-normal leading-1.31 text-email pl-1">
+                      {getHighlightedText(member.email, searchSuggestion)} | {member.organization}
+                    </div>
+                    <div className="flex mt-1">
+                      <div className="mr-0.34 w-1.001 h-1.001">
+                        <img src={member.platform.platformLogoUrl} alt="" />
+                      </div>
                     </div>
                   </div>
                 </div>

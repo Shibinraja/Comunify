@@ -16,8 +16,9 @@ import { width_90 } from 'constants/constants';
 import { format, parseISO, subDays, subMonths } from 'date-fns';
 import { AssignTypeEnum } from 'modules/settings/interface/settings.interface';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
-// eslint-disable-next-line object-curly-newline
-import React, { ChangeEvent, Fragment, Key, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  ChangeEvent, Fragment, Key, ReactNode, useEffect, useMemo, useRef, useState
+} from 'react';
 import DatePicker, { ReactDatePicker } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Skeleton from 'react-loading-skeleton';
