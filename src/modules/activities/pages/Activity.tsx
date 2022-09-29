@@ -14,7 +14,6 @@ import { format, parseISO } from 'date-fns';
 import membersSlice from 'modules/members/store/slice/members.slice';
 import { AssignTypeEnum, TagResponseData } from 'modules/settings/interface/settings.interface';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
-// eslint-disable-next-line object-curly-newline
 import React, { ChangeEvent, FormEvent, Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import Skeleton from 'react-loading-skeleton';
@@ -305,7 +304,6 @@ const Activity: React.FC = () => {
   };
 
   // Fetch members list data in comma separated value
-  // eslint-disable-next-line space-before-function-paren
   const fetchActiveStreamListExportData = async () => {
     const checkedIds: Array<string> = [];
 
