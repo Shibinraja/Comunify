@@ -31,7 +31,7 @@ export const getWidgetsLayoutService = async (workspaceId: string) => {
     const { data } = await request.get(`${API_ENDPOINT}/v1/${workspaceId}/widgets/workspace-widgets`);
     return data?.data?.result;
   } catch {
-    showErrorToast('Failed to save widget layout');
+    // showErrorToast('Failed to save widget layout');
   }
 };
 
