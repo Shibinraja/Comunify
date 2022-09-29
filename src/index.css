@@ -417,6 +417,7 @@ input {
   position: relative;
   bottom: 2px;
   left: 2px;
+  padding-right: 10px;
 }
 
 /* Customradio button */
