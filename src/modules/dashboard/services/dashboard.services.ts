@@ -101,11 +101,11 @@ export const activityGrowthWidgetDataService = async (
 
 export const memberGrowthWidgetDataService = async (
   workspaceId: string,
-  startEnd?: string,
+  startDate?: string,
   endDate?: string
 ): Promise<MembersProfileActivityGraphData> => {
   try {
-    const { data } = await request.get(`${API_ENDPOINT}/v1/${workspaceId}/widgets/member-growth`, { params: { startEnd, endDate } });
+    const { data } = await request.get(`${API_ENDPOINT}/v1/${workspaceId}/widgets/member-growth`, { params: { startDate, endDate } });
     return data?.data as MembersProfileActivityGraphData;
   } catch {
     showErrorToast('Failed to load member growth widget data');

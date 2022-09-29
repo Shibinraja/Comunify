@@ -441,20 +441,20 @@ const Activity: React.FC = () => {
             type="text"
             name="search"
             id="searchId"
-            className="app-input-card-border focus:outline-none px-4 mr-0.76 box-border h-3.06 w-19.06 bg-white  rounded-0.6 placeholder:text-reportSearch placeholder:text-card placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.12 font-Poppins"
+            className="app-input-card-border focus:outline-none px-4 mr-0.76 box-border h-3.06 w-19.06 bg-white  rounded-0.6 text-card placeholder:font-normal placeholder:leading-1.12 font-Poppins"
             placeholder="Search By Name or Email"
             onChange={handleSearchTextChange}
           />
         </div>
-        <div className="-mr-1">{ActiveStreamFilter}</div>
+        <div className="-mr-3">{ActiveStreamFilter}</div>
 
         <div>
           <div
             aria-disabled={fetchLoader}
             className={`app-input-card-border w-6.98 h-3.06 rounded-0.6 shadow-shadowInput box-border bg-white items-center justify-evenly flex cursor-pointer hover:border-infoBlack transition ease-in-out duration-300 ${
-              fetchLoader ? 'cursor-not-allowed' : ''
+              fetchLoader || !data.length ? 'cursor-not-allowed' : ''
             }`}
-            onClick={() => !fetchLoader && fetchActiveStreamListExportData()}
+            onClick={() => (data.length ? !fetchLoader && fetchActiveStreamListExportData() : null)}
           >
             <h3 className="text-dropGray leading-1.12 font-Poppins font-semibold text-card">Export</h3>
             <img src={exportImage} alt="" />
@@ -462,10 +462,10 @@ const Activity: React.FC = () => {
         </div>
       </div>
       {data?.length !== 0 ? (
-        <div className="relative">
-          <div className="py-2 overflow-x-auto mt-1.868">
-            <div className="inline-block min-w-full align-middle rounded-0.6 border-table no-scroll-bar  overflow-y-auto h-screen sticky top-0 fixActivityTableHead min-h-[31.25rem]">
-              <table className="min-w-full relative  rounded-t-0.6 ">
+        <div className="relative ">
+          <div className="py-2 mt-1.868 overflow-x-auto activityTable">
+            <div className="inline-block min-w-full align-middle rounded-0.6 border-table overflow-auto h-screen sticky top-0 fixActivityTableHead min-h-[31.25rem]">
+              <table className="min-w-full w-full relative  rounded-t-0.6 ">
                 <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky z-10">
                   <tr className="min-w-full">
                     <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray ">Members</th>
@@ -532,7 +532,7 @@ const Activity: React.FC = () => {
                                         className="rounded-full w-4.43 h-4.43 bg-cover bg-center border-4 border-white"
                                       />
                                     </div>
-                                    <div className="font-semibold font-Poppins text-card text-profileBlack leading-1.12 pt-[0.2381rem]">
+                                    <div className="font-semibold font-Poppins text-card text-profileBlack leading-1.12 pt-[0.2381rem] capitalize">
                                       {ProfileModal?.memberName}
                                     </div>
                                     <div className="text-profileEmail font-Poppins font-normal text-profileBlack text-center w-6.875 mt-0.146">
@@ -563,7 +563,7 @@ const Activity: React.FC = () => {
                           {loader ? (
                             <Skeleton width={width_90} />
                           ) : (
-                            <div className="flex flex-col">
+                            <div className="flex flex-col w-[100px]">
                               <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31">
                                 {data?.activityTime ? format(parseISO(data?.activityTime as unknown as string), 'dd MMM yyyy') : '--'}
                               </div>
@@ -578,7 +578,7 @@ const Activity: React.FC = () => {
                           {loader ? (
                             <Skeleton width={width_90} />
                           ) : (
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 w-[200px]">
                               <img src={data?.platformLogoUrl} alt="" className="rounded-full w-[1.3419rem] h-[1.3419rem]" />
                               <div className="flex flex-col">
                                 <div
@@ -614,22 +614,24 @@ const Activity: React.FC = () => {
                           )}
                         </td>
 
-                        <td className="px-6 py-3 border-b">
+                        <td className="px-6 py-3 border-b ">
                           {loader ? (
                             <Skeleton width={width_90} />
                           ) : (
-                            <a
-                              href={`${data?.sourceUrl}`}
-                              target="_blank"
-                              rel="noreferrer noopener"
-                              className="font-Poppins font-medium text-trial text-infoBlack leading-1.31 underline cursor-pointer"
-                            >
-                              {data?.sourceUrl === null ? 'www.slack.com/profile' : data?.sourceUrl}
-                            </a>
+                            <div className="w-[150px] truncate">
+                              <a
+                                href={`${data?.sourceUrl}`}
+                                target="_blank"
+                                rel="noreferrer noopener"
+                                className="font-Poppins  font-medium text-trial text-infoBlack leading-1.31 underline cursor-pointer"
+                              >
+                                {data?.sourceUrl === null ? 'www.slack.com/profile' : data?.sourceUrl}
+                              </a>
+                            </div>
                           )}
                         </td>
                         <td className="px-6 py-3 border-b font-Poppins font-medium text-trial text-infoBlack leading-1.31">
-                          {loader ? <Skeleton width={width_90} /> : data?.type}
+                          <div className="w-[150px] truncate">{loader ? <Skeleton width={width_90} /> : data?.type}</div>
                         </td>
                       </tr>
                     ))}

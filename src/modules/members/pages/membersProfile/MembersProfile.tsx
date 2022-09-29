@@ -327,7 +327,7 @@ const MembersProfile: React.FC = () => {
   };
 
   // Tag Name assign functionality
-  const handleAssignTagsName = (e: FormEvent<HTMLFormElement>):void => {
+  const handleAssignTagsName = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     if (errorMessage || !searchText) {
       setErrorMessage(errorMessage || 'Tag Name is a required field');
@@ -424,20 +424,25 @@ const MembersProfile: React.FC = () => {
               <div className="font-Poppins font-normal text-xs leading-4 text-listGray">Last Active Date</div>
               <div className="font-Poppins font-semibold text-base leading-6 text-accountBlack">
                 <Skeleton width={width_90} />
-
               </div>
             </div>
-          ) : (
-            memberProfileCardData?.length ? memberProfileCardData?.map((data: MemberProfileCard) => (
+          ) : memberProfileCardData?.length ? (
+            memberProfileCardData?.map((data: MemberProfileCard) => (
               <div key={data?.id + data?.name} className="flex flex-col ">
                 <div className="font-Poppins font-normal text-xs leading-4 text-listGray">Last Active Date</div>
                 <div className="font-Poppins font-semibold text-base leading-6 text-accountBlack">
-                  {memberProfileCardLoader ?    <Skeleton width={width_90} /> : data?.lastActivity ? generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY') : 'Last active date is not available'}
+                  {memberProfileCardLoader ? (
+                    <Skeleton width={width_90} />
+                  ) : data?.lastActivity ? (
+                    generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY')
+                  ) : (
+                    'Last active date is not available'
+                  )}
                 </div>
               </div>
-            )) :(
-              <div className="flex flex-col w-full"></div>
-            )
+            ))
+          ) : (
+            <div className="flex flex-col w-full"></div>
           )}
 
           <div className="flex mt-3 xl:mt-0 relative">
@@ -498,6 +503,7 @@ const MembersProfile: React.FC = () => {
                     <DatePicker
                       ref={datePickerRefStart}
                       selected={fromDate}
+                      maxDate={toDate}
                       onChange={(date: Date) => setFromDate(date)}
                       className=" h-3.06 app-result-card-border shadow-reportInput w-full rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="From"
@@ -514,6 +520,10 @@ const MembersProfile: React.FC = () => {
                     <DatePicker
                       selected={toDate}
                       ref={datePickerRefEnd}
+                      minDate={fromDate}
+                      selectsEnd
+                      startDate={fromDate}
+                      endDate={toDate}
                       onChange={(date: Date) => setToDate(date)}
                       className=" h-3.06 app-result-card-border shadow-reportInput w-full rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="To"
@@ -544,9 +554,11 @@ const MembersProfile: React.FC = () => {
                   'Last active date is not available'
                 )}
               </div>
-              <div onClick={navigateToActivities} className="font-Poppins font-normal leading-4 text-listGray text-preview cursor-pointer">
-                {memberProfileCardLoader ? <Skeleton width={width_90} /> : 'Preview All'}
-              </div>
+              {activityData?.result?.length ? (
+                <div onClick={navigateToActivities} className="font-Poppins font-normal leading-4 text-listGray text-preview cursor-pointer">
+                  {memberProfileCardLoader ? <Skeleton width={width_90} /> : 'Preview All'}
+                </div>
+              ) : null}
             </div>
           ))}
 
@@ -574,7 +586,7 @@ const MembersProfile: React.FC = () => {
                 </div>
               ))
             ) : (
-              <div className="font-Poppins font-semibold text-base leading-9 text-greyDark flex justify-center">Member activity is not available</div>
+              <div className="font-Poppins font-semibold text-base leading-9 text-listGray flex justify-center">Member activity is not available</div>
             )}
           </div>
         </div>
@@ -613,11 +625,11 @@ const MembersProfile: React.FC = () => {
                   {data?.email} || {data?.organization}
                 </div>
                 <div className="flex gap-1 pt-1.12">
-                  {/* {data?.platforms.map((platformData) => (
+                  {data?.platforms.map((platformData) => (
                     <div key={`${platformData?.id + platformData?.name}`}>
                       <img src={platformData?.platformLogoUrl} alt="" className="rounded-full w-[1.0012rem] h-[1.0012rem]" />
                     </div>
-                  ))} */}
+                  ))}
                 </div>
               </div>
             </div>

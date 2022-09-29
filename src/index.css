@@ -258,7 +258,12 @@ input {
 
 .fixTableHead {
   height: calc(100vh - 36rem);
+  
 }
+.fixTableHead table  tr th{
+        width: 200px !important;
+}
+
 
 .fixTableHead-nomember {
   height: calc(100vh - 20rem);
@@ -298,14 +303,15 @@ input {
   height: calc(100vh - 20rem);
 }
 
-.member-section::-webkit-scrollbar {
+.member-section::-webkit-scrollbar{
   width: 4.18px;
 }
 
-.member-section::-webkit-scrollbar-thumb {
+.member-section::-webkit-scrollbar-thumb{
   background: #eeeeee00;
   border-radius: 60px;
 }
+
 .member-section-model{
   background: transparent;
 }
@@ -417,6 +423,7 @@ input {
   position: relative;
   bottom: 2px;
   left: 2px;
+  padding-right: 10px;
 }
 
 /* Customradio button */
@@ -609,4 +616,8 @@ input {
 
 .widget-border{
   border: 1px solid #F09E34;;
+}
+
+.fixWidgetNoDataHeight {
+  height: calc(100vh - 30rem);
 }
