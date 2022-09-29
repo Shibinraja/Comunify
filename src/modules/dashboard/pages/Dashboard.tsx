@@ -214,15 +214,15 @@ const Dashboard: React.FC = () => {
       setEndingDate(new Date().toISOString());
     }
     if (option === 'this week') {
-      setSelected(option);
+      setSelected('This Week');
       setStartingDate(moment().startOf('week').toISOString());
       setEndingDate(new Date().toISOString());
     } else if (option === 'last week') {
-      setSelected(option);
+      setSelected('Last Week');
       setStartingDate(moment().startOf('week').subtract(1, 'week').toISOString());
       setEndingDate(moment().endOf('week').subtract(1, 'week').endOf('week').toISOString());
     } else if (option === 'this month') {
-      setSelected(option);
+      setSelected('This Month');
       setStartingDate(moment().startOf('month').toISOString());
       setEndingDate(moment().endOf('month').toISOString());
     }
