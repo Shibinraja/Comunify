@@ -303,14 +303,15 @@ input {
   height: calc(100vh - 20rem);
 }
 
-.member-section::-webkit-scrollbar {
+.member-section::-webkit-scrollbar{
   width: 4.18px;
 }
 
-.member-section::-webkit-scrollbar-thumb {
+.member-section::-webkit-scrollbar-thumb{
   background: #eeeeee00;
   border-radius: 60px;
 }
+
 .member-section-model{
   background: transparent;
 }

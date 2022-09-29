@@ -10,9 +10,6 @@
   display: none;
 } */
 
-.memberTable ::-webkit-scrollbar {
-  width: 10px;
-}
 
 /* Track */
 .memberTable  ::-webkit-scrollbar-track {
