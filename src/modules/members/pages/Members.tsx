@@ -188,7 +188,7 @@ const Members: React.FC = () => {
   }, [customStartDate, customEndDate]);
 
   // Function to dispatch the search text to hit api of member list.
-  const getFilteredMembersList = async(pageNumber: number, text: string, date?: string, endDate?: string) => {
+  const getFilteredMembersList = async (pageNumber: number, text: string, date?: string, endDate?: string) => {
     setFilteredDate((prevDate) => ({ ...prevDate, filterStartDate: date!, filterEndDate: endDate! }));
     dispatch(
       membersSlice.actions.membersList({
@@ -274,7 +274,7 @@ const Members: React.FC = () => {
   };
 
   // Fetch members list data in comma separated value
-  const fetchMembersListExportData = async() => {
+  const fetchMembersListExportData = async () => {
     setFetchLoader(true);
     await fetchExportList(
       `${API_ENDPOINT}/v1/${workspaceId}/members/memberlistexport`,
@@ -413,6 +413,7 @@ const Members: React.FC = () => {
                       <div className="relative flex items-center">
                         <DatePicker
                           selected={customStartDate}
+                          maxDate={customEndDate}
                           onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'start')}
                           className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                           placeholderText="DD/MM/YYYY"
@@ -432,6 +433,10 @@ const Members: React.FC = () => {
                       <div className="relative flex items-center">
                         <DatePicker
                           selected={customEndDate}
+                          minDate={customStartDate}
+                          selectsEnd
+                          startDate={customStartDate}
+                          endDate={customEndDate}
                           onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'end')}
                           className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                           placeholderText="DD/MM/YYYY"
