@@ -46,9 +46,7 @@ const MergedMembers: React.FC = () => {
   });
   const [preventLoading, setPreventLoading] = useState<boolean>(false);
   const [unMergeId, setUnMergeId] = useState<string>('');
-  const [primaryMemberId, setPrimaryMemberId] = useState<any>([]);
-
-  const infinityScrollRef = useRef<HTMLDivElement>(null);
+  const [primaryMemberId, setPrimaryMemberId] = useState<Array<MergeMembersDataResult>>([]);
 
   // Function to call the api and list the mergedMembersList
   const getMergedMemberSuggestionList = async(props: Partial<memberSuggestionType>) => {
@@ -91,7 +89,6 @@ const MergedMembers: React.FC = () => {
       const memberProfileData = [...memberProfileCardData];
       const platform = memberProfileData[0].platforms;
       memberProfileData[0].platform = { platformLogoUrl: platform[0].platformLogoUrl };
-      delete memberProfileData[0].platforms;
       setPrimaryMemberId(memberProfileData);
       setCheckedRadioId({ [memberProfileData[0]?.comunifyMemberId]: true });
     }
@@ -291,7 +288,17 @@ const MergedMembers: React.FC = () => {
                 </div>
                 <div className="flex mt-2.5">
                   <div className="w-1.001 h-1.001 mr-0.34">
-                    {!primaryMemberId?.length ? <Skeleton circle height="100%" /> : <img src={primaryMemberId[0]?.platform.platformLogoUrl} alt="" />}
+                    {!primaryMemberId?.length ? <Skeleton circle height="100%" /> : (
+                      <div className='flex gap-1 '>
+                        {primaryMemberId[0]?.platforms?.map((platform:{id:string; name:string; platformLogoUrl:string}) => (
+                          <Fragment key={platform.id}>
+                            <img src={platform.platformLogoUrl} alt="" />
+                          </Fragment>
+                        )
+                        )
+                        }
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="flex absolute left-[20rem] bottom-4 items-center">
@@ -342,6 +349,7 @@ const MergedMembers: React.FC = () => {
                           <img src={members.platform.platformLogoUrl} alt="" />
                         </div>
                       </div>
+
                       <div className="flex absolute right-8 bottom-4 items-center">
                         <label htmlFor={members.id} className="flex items-center">
                           <input

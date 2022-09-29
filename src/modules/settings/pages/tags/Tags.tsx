@@ -200,8 +200,8 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                   <div className="w-full">
                     <input
                       type="text"
-                      className="input-search  h-3.06 box-border focus:outline-none px-3 rounded-0.6 shadow-profileCard placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray"
-                      placeholder="Search By Name"
+                      className="input-search  h-[45px] w-[373px] box-border focus:outline-none px-3 rounded-0.6 shadow-profileCard text-xs  font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray"
+                      placeholder="Search By Name or Email"
                       onChange={handleSearchTextChange}
                     />
                   </div>
@@ -209,7 +209,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                     <Button
                       type="button"
                       text="Add Tag"
-                      className="h-3.06 w-7.68 border-none btn-save-modal  rounded font-Poppins font-medium text-white shadow-contactBtn text-error leading-1.31 cursor-pointer"
+                      className="h-[45px] w-7.68 border-none btn-save-modal  rounded font-Poppins font-medium text-white shadow-contactBtn text-error leading-1.31 cursor-pointer"
                       onClick={() => handleTagModalOpen()}
                     />
                   </div>
@@ -269,16 +269,16 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                 <div className="billingTable mt-1.8">
                   <div className="py-2 overflow-x-auto mt-1.868">
                     <div className="inline-block min-w-full overflow-hidden align-middle w-61.68 rounded-t-0.6  no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixTagsTableHead min-h-[31.25rem]">
-                      <table className="min-w-full relative  rounded-t-0.6 ">
+                      <table className="min-w-full relative  rounded-t-0.6 bg-[#FEFEFF] border border-greyDark">
                         <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky ">
                           <tr className="min-w-full">
-                            <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white  bg-tableHeaderGray">
+                            <th className="px-6 py-3 w-[30%] text-left font-Poppins font-medium text-card leading-1.12 text-[#010101]  bg-white  bg-tableHeaderGray">
                               Tag Name
                             </th>
-                            <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white  bg-tableHeaderGray">
+                            <th className="px-6 py-3 w-[50%] text-left font-Poppins font-medium text-card leading-1.12 text-[#010101]  bg-white  bg-tableHeaderGray">
                               Type
                             </th>
-                            <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-white  bg-tableHeaderGray">
+                            <th className="px-6 py-3 w-[20%] text-left font-Poppins font-medium text-card leading-1.12 text-[#010101]  bg-white  bg-tableHeaderGray">
                               Action
                             </th>
                           </tr>
@@ -286,7 +286,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                         <tbody>
                           {TagFilterResponseData?.map((data: TagResponseData) => (
                             <Fragment key={data.id}>
-                              <tr className="border" >
+                              <tr className="border border-greyDark h-[65px]" >
                                 <td className="px-6 py-3">
                                   <div className="flex ">
                                     <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
@@ -303,7 +303,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                                   </div>
                                 </td>
                                 {data.type !== TagType.Default && (
-                                  <td>
+                                  <td className='px-6 py-3'>
                                     <div className="flex">
                                       <Button
                                         type="button"
@@ -311,9 +311,9 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                                         className="edit-btn w-6.25 h-2.87 mr-2.5 cursor-pointer text-masterCard font-Poppins font-medium text-trial leading-1.31 rounded box-border shadow-deleteButton"
                                         onClick={() => handleTagModalOpen(data.name, data.id)}
                                       />
-                                      <div className="flex items-center justify-center delete-btn cursor-pointer w-3.12 h-2.87 rounded box-border shadow-deleteButton">
+                                      <button className="flex items-center justify-center delete-btn border border-greyDark cursor-pointer w-3.12 h-2.87 rounded box-border shadow-deleteButton">
                                         <img src={deleteBtn} alt="" onClick={() => handleDeleteTagName(data.id)} />
-                                      </div>
+                                      </button>
                                     </div>
                                   </td>
                                 )}

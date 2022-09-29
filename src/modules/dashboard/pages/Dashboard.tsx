@@ -9,7 +9,7 @@ import DatePicker, { ReactDatePicker } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Modal from 'react-modal';
 import ReactGridLayout, { Layout, Responsive, WidthProvider } from 'react-grid-layout';
-import { getLocalWorkspaceId } from '../../../lib/helper';
+import { convertEndDate, convertStartDate, getLocalWorkspaceId } from '../../../lib/helper';
 import { showErrorToast, showSuccessToast } from '../../../common/toast/toastFunctions';
 import { getWidgetsLayoutService, saveWidgetsLayoutService } from '../services/dashboard.services';
 import { PanelWidgetsType } from '../../../common/widgetLayout/WidgetTypes';
@@ -63,8 +63,8 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     if (startDate && endDate) {
-      const start: string = moment(startDate).toISOString();
-      const end: string = moment(endDate).toISOString();
+      const start: string = convertStartDate(startDate);
+      const end: string = convertEndDate(endDate);
       setNavigation(start, end);
     }
   }, [startDate, endDate]);
@@ -211,18 +211,18 @@ const Dashboard: React.FC = () => {
   const setSelectedDateRange = (option: string) => {
     if (option.toLocaleLowerCase().trim() === 'select') {
       setStartingDate(moment().startOf('week').toISOString());
-      setEndingDate(new Date().toISOString());
+      setEndingDate(convertEndDate(new Date()));
     }
     if (option === 'this week') {
-      setSelected(option);
+      setSelected('This Week');
       setStartingDate(moment().startOf('week').toISOString());
-      setEndingDate(new Date().toISOString());
+      setEndingDate(convertEndDate(new Date()));
     } else if (option === 'last week') {
-      setSelected(option);
+      setSelected('Last Week');
       setStartingDate(moment().startOf('week').subtract(1, 'week').toISOString());
       setEndingDate(moment().endOf('week').subtract(1, 'week').endOf('week').toISOString());
     } else if (option === 'this month') {
-      setSelected(option);
+      setSelected('This Month');
       setStartingDate(moment().startOf('month').toISOString());
       setEndingDate(moment().endOf('month').toISOString());
     }
@@ -237,7 +237,9 @@ const Dashboard: React.FC = () => {
             ref={dropDownRef}
             onClick={handleDropDownActive}
           >
-            <div className="font-Poppins font-semibold text-card text-dropGray dark:text-inputText leading-4">{selected ? selected : 'Select'}</div>
+            <div className="font-Poppins font-semibold text-card capitalize text-dropGray dark:text-inputText leading-4">
+              {selected ? selected : 'Select'}
+            </div>
             <div className="bg-cover drop-icon">
               <img src={dropDownIcon} alt="" className={isSelectDropDownActive ? 'rotate-180' : 'rotate-0'} />
             </div>
@@ -275,7 +277,7 @@ const Dashboard: React.FC = () => {
                 dateFormat="dd/MM/yyyy"
               />
             </div>
-            <div className="absolute right-4 top-4 drop-icon">
+            <div className="absolute right-[1.4rem] top-4 drop-icon">
               <img className="right-6 cursor-pointer" src={calendarIcon} alt="" onClick={() => handleClickDatePickerIcon()} />
             </div>
           </div>

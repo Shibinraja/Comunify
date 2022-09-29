@@ -210,7 +210,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
           </div>
         </div>
         {!loading && !suggestionList.result?.length && (
-          <div className="font-Poppins font-medium text-tableDuration text-lg leading-10 pt-8 pl-2 max-h-96"> No result found</div>
+          <div className="font-Poppins font-medium text-tableDuration text-lg leading-10 pt-8 pl-2 max-h-96 height-member-merge"> No result found</div>
         )}
         <div
           id="scrollableDiv"
