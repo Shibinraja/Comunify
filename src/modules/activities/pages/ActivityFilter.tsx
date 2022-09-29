@@ -6,9 +6,7 @@ import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 import { convertEndDate, convertStartDate } from '@/lib/helper';
 import Button from 'common/button';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
-import {
-  ChangeEvent, FC, Fragment, useEffect, useMemo, useRef, useState
-} from 'react';
+import { ChangeEvent, FC, Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import DatePicker, { ReactDatePicker } from 'react-datepicker';
 import { useParams } from 'react-router-dom';
 import calendarIcon from '../../../assets/images/calandar.svg';
@@ -338,6 +336,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                   <div className="relative flex items-center">
                     <DatePicker
                       selected={startDate}
+                      maxDate={endDate}
                       onChange={(date: Date, event: ChangeEvent<Date>) => selectActiveBetweenDate(event, date, 'start')}
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
@@ -357,6 +356,10 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                   <div className="relative flex items-center">
                     <DatePicker
                       selected={endDate}
+                      minDate={startDate}
+                      selectsEnd
+                      startDate={startDate}
+                      endDate={endDate}
                       onChange={(date: Date, event: ChangeEvent<Date>) => selectActiveBetweenDate(event, date, 'end')}
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"

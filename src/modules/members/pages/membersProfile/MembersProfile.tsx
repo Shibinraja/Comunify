@@ -503,6 +503,7 @@ const MembersProfile: React.FC = () => {
                     <DatePicker
                       ref={datePickerRefStart}
                       selected={fromDate}
+                      maxDate={toDate}
                       onChange={(date: Date) => setFromDate(date)}
                       className=" h-3.06 app-result-card-border shadow-reportInput w-full rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="From"
@@ -519,6 +520,10 @@ const MembersProfile: React.FC = () => {
                     <DatePicker
                       selected={toDate}
                       ref={datePickerRefEnd}
+                      minDate={fromDate}
+                      selectsEnd
+                      startDate={fromDate}
+                      endDate={toDate}
                       onChange={(date: Date) => setToDate(date)}
                       className=" h-3.06 app-result-card-border shadow-reportInput w-full rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="To"
