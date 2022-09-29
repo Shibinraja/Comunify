@@ -160,11 +160,46 @@ export interface ActivityResult {
   updatedAt: Date;
 }
 
+export type platformLogoType = {
+  platformLogoUrl: string;
+};
 export interface ActivityDataResponse {
   result: ActivityResult[];
   nextCursor: string | null;
 }
 
+export type MergeMembersDataResult = {
+  id: string;
+  workspaceId: string;
+  name: string;
+  platformName: string;
+  organization: string;
+  location: string;
+  comunifyMemberId: string;
+  email: string;
+  profileUrl: string;
+  isMerged: boolean;
+  parentMemberId: null | string;
+  isPrimary: boolean;
+  platformId: string;
+  platformMemberId: string;
+  joinedAt: string;
+  createdAt: string;
+  updatedAt: string;
+  platform: {
+    platformLogoUrl: string;
+  };
+  platforms: {
+    id: string;
+    name: string;
+    platformLogoUrl: string;
+  }[];
+};
+
+export type MergeMembersDataResponse = {
+  result: MergeMembersDataResult[];
+  nextCursor: string | null;
+};
 export interface ActivityInfiniteScroll {
   workspaceId: string;
   memberId: string;
@@ -243,4 +278,7 @@ export interface MemberProfileCard {
     platformLogoUrl: string;
   }[];
   tags: TagResponseData[];
+  platform?: {
+    platformLogoUrl: string;
+  };
 }

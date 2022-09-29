@@ -17,7 +17,7 @@ const AuthLayout: React.FC = () => {
       {screenWidth < maximum_screen_height ? (
         <ResolutionLayout />
       ) : (
-        <div className="flex flex-col">
+        <div className="flex flex-col overflow-y-auto">
           <Header />
           {loader && <Loader />}
           <Outlet />

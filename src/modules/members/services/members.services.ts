@@ -1,7 +1,11 @@
+/* eslint-disable space-before-function-paren */
+/* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
-import { GeneratorResponse } from '@/lib/api';
+import { AxiosError, GeneratorResponse, ServerResponse } from '@/lib/api';
 import { request } from '@/lib/request';
+import { showErrorToast } from 'common/toast/toastFunctions';
 import { workspaceId } from 'modules/activities/interfaces/activities.interface';
+import { Dispatch, SetStateAction } from 'react';
 
 import {
   MembersProfileActivityGraphData,
@@ -16,17 +20,23 @@ import {
   ActivityInfiniteScroll,
   MemberProfileCard,
   MemberCountAnalyticsResponse,
-  MemberActivityAnalyticsResponse
-} from '../interface/members.interface';
+  MemberActivityAnalyticsResponse,
+  MergeMembersDataResponse
+} from '../../members/interface/members.interface';
+import { memberSuggestionType, mergeMembersType, unMergeMembersType } from './service.types';
 
 //Members Module
-export function* CountAnalyticsService(params: workspaceId): GeneratorResponse<MemberCountAnalyticsResponse> {
-  const { data } = yield request.get(`/v1/${params.workspaceId}/members/count-analytics`);
+export function* CountAnalyticsService(params: workspaceId, startDate?: string, endDate?: string): GeneratorResponse<MemberCountAnalyticsResponse> {
+  const { data } = yield request.get(`/v1/${params.workspaceId}/members/count-analytics`, { params: { startDate, endDate } });
   return data;
 }
 
-export function* ActivityAnalyticsService(params: workspaceId): GeneratorResponse<MemberActivityAnalyticsResponse> {
-  const { data } = yield request.get(`v1/${params.workspaceId}/members/activity-analytics`);
+export function* ActivityAnalyticsService(
+  params: workspaceId,
+  startDate?: string,
+  endDate?: string
+): GeneratorResponse<MemberActivityAnalyticsResponse> {
+  const { data } = yield request.get(`v1/${params.workspaceId}/members/activity-analytics`, { params: { startDate, endDate } });
   return data;
 }
 
@@ -106,3 +116,76 @@ export function* GetMembersProfileCardService(params: VerifyMembers): GeneratorR
   const { data } = yield request.get(`/v1/${params.workspaceId}/members/${params.memberId}/getMemberById`);
   return data;
 }
+
+//axios request
+
+export const getMemberSuggestionList = async (args: memberSuggestionType, loading?: Dispatch<SetStateAction<boolean>>) => {
+  try {
+    loading?.(true);
+    const response: ServerResponse<MergeMembersDataResponse> = await request.get(
+      `/v1/${args.workspaceId}/members/${args.memberId}/merge-suggestion-list?page=1&limit=10${
+        args.cursor ? `&cursor=${args.cursor}` : args.suggestionListCursor ? `&cursor=${args.prop ? '' : args.suggestionListCursor}` : ''
+      }${args.search ? `&search=${args.search}` : ''}`
+    );
+
+    const responseData = response?.data?.data;
+    return responseData;
+  } catch (e) {
+    const error = e as AxiosError<unknown>;
+    showErrorToast(error?.response?.data?.message);
+  } finally {
+    loading?.(false);
+  }
+};
+
+export const getMergedMemberList = async (args: memberSuggestionType, loading?: (type: string, loader: boolean) => void) => {
+  try {
+    loading?.('MergeListLoader', true);
+    const response: ServerResponse<MergeMembersDataResponse> = await request.get(
+      `/v1/${args.workspaceId}/members/${args.memberId}/merged-list?${
+        args.cursor ? `&cursor=${args.cursor}` : args.suggestionListCursor ? `&cursor=${args.prop ? '' : args.suggestionListCursor}` : ''
+      }`
+    );
+
+    const responseData = response?.data?.data;
+    return responseData;
+  } catch (e) {
+    const error = e as AxiosError<unknown>;
+    showErrorToast(error?.response?.data?.message);
+  } finally {
+    loading?.('MergeListLoader', false);
+  }
+};
+
+export const mergeMembers = async (args: mergeMembersType, loading?: (type: string, loader: boolean) => void) => {
+  try {
+    loading?.('ConfirmationLoader', true);
+    const response: ServerResponse<Record<string, never>> = await request.post(`/v1/${args.workspaceId}/members/${args.memberId}/merge`, {
+      mergeList: args.mergeList
+    });
+
+    const responseData = response;
+    return responseData;
+  } catch (e) {
+    const error = e as AxiosError<unknown>;
+    showErrorToast(error?.response?.data?.message);
+  } finally {
+    loading?.('ConfirmationLoader', false);
+  }
+};
+
+export const unMergeMembers = async (params: unMergeMembersType, loading?: (type: string, loader: boolean) => void) => {
+  try {
+    loading?.('ConfirmationLoader', true);
+    const response: ServerResponse<Record<string, never>> = await request.delete(
+      `/v1/${params.workspaceId}/members/${params.memberId}/un-merge/${params.unMergeId}`
+    );
+    const responseData = response;
+    return { responseData, error: false };
+  } catch (e) {
+    const error = e as AxiosError<unknown>;
+    showErrorToast(error?.response?.data?.message);
+  } finally {
+    loading?.('ConfirmationLoader', false);
+  }
+};

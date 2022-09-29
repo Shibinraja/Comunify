@@ -1,5 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=Outfit:wght@100;200;300;400;500;600;700&family=Poppins:ital,wght@0,500;1,400;1,500&family=Lato:wght@100;300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=Outfit:wght@100;200;300;400;500;600;700&family=Lato:wght@100;300;400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Roboto:wght@100;300;500;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -101,7 +102,7 @@ input {
   bottom: 0;
   left: 0;
   z-index: -1;
-  margin: -5px;
+  margin: -3px;
   border-radius: inherit;
   background: linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
   border: double 1px transparent;
@@ -117,7 +118,9 @@ input {
 .section::-webkit-scrollbar {
   width: 4.18px;
 }
-
+.feature-box {
+  background: linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
+}
 /* .section::-webkit-scrollbar-track {
   background-color: darkgrey;
 } */
@@ -255,6 +258,9 @@ input {
 .fixTableHead {
   height: calc(100vh - 36rem);
 }
+.fixTableHead table tr th {
+  width: 200px !important;
+}
 
 .fixTableHead-nomember {
   height: calc(100vh - 20rem);
@@ -290,15 +296,22 @@ input {
   max-height: 241px;
 }
 
+.height-member-merge {
+  height: calc(100vh - 20rem);
+}
+
 .member-section::-webkit-scrollbar {
   width: 4.18px;
 }
 
 .member-section::-webkit-scrollbar-thumb {
-  background: #eeeeee;
+  background: #eeeeee00;
   border-radius: 60px;
 }
 
+.member-section-model {
+  background: transparent;
+}
 .border-review {
   border-bottom: 1px solid #e5e5e5;
 }
@@ -407,6 +420,7 @@ input {
   position: relative;
   bottom: 2px;
   left: 2px;
+  padding-right: 10px;
 }
 
 /* Customradio button */
@@ -562,4 +576,45 @@ input {
 }
 .border-download {
   border: 1px solid #eaedf3;
+}
+
+.border-gradient-rounded-member {
+  position: sticky;
+  box-sizing: border-box;
+  background: #fff;
+  border-radius: 15px;
+}
+
+.border-gradient-rounded-member:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  border-radius: 10px;
+  background: linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
+  border: double 1px transparent;
+  background-image: linear-gradient(white, white), linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.ReactModalPortal .ReactModal__Overlay {
+  /* background-color: rgb(0, 0, 0, 0.7) !important; */
+}
+.boder-lightRed {
+  border-color: #ff5f5f !important;
+}
+
+.widget-border {
+  border: 1px solid #f09e34;
+}
+
+.fixWidgetNoDataHeight {
+  height: calc(100vh - 30rem);
 }

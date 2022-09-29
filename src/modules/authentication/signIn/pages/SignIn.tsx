@@ -76,7 +76,7 @@ const SignIn: React.FC = () => {
 
             <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={signInSchema}>
               {({ errors, handleBlur, handleChange, touched, values }): JSX.Element => (
-                <Form className="flex flex-col  mt-1.8 w-25.9 " autoComplete="off">
+                <Form className="flex flex-col  mt-1.8 w-25.9 xl:ml-8" autoComplete="off">
                   <div className="username">
                     <Input
                       type="text"
@@ -84,7 +84,12 @@ const SignIn: React.FC = () => {
                       label="Username"
                       id="userName"
                       name="userName"
-                      className="h-4.5 pr-3.12 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
+                      // eslint-disable-next-line max-len
+                      className={`h-4.5 pr-10 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${
+                        touched.userName && errors.userName
+                          ? 'boder-lightRed h-4.5 pr-10 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
+                          : ''
+                      }`}
                       onBlur={handleBlur}
                       onChange={handleChange}
                       value={values.userName}
@@ -99,14 +104,19 @@ const SignIn: React.FC = () => {
                       label="Password"
                       id="password"
                       name="password"
-                      className="h-4.5 rounded-lg bg-white p-2.5 pr-3.12 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
+                      // eslint-disable-next-line max-len
+                      className={`h-4.5 rounded-lg bg-white p-2.5 pr-10 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${
+                        touched.password && errors.password
+                          ? 'boder-lightRed h-4.5 rounded-lg bg-white p-2.5 pr-10 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
+                          : ''
+                      }`}
                       onBlur={handleBlur}
                       onChange={handleChange}
                       value={values.password}
                       errors={Boolean(touched.password && errors.password)}
                       helperText={touched.password && errors.password}
                     />
-                    <div onClick={togglePassword} className="absolute top-7 right-[28.87px]">
+                    <div onClick={togglePassword} className="absolute top-7 right-3">
                       {passwordType === 'password' ? (
                         <img className="cursor-pointer " src={eyeIcon} alt="" />
                       ) : (
@@ -114,6 +124,20 @@ const SignIn: React.FC = () => {
                       )}
                     </div>
                   </div>
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center">
+                      <div className="mr-2 mt-1">
+                        <input type="checkbox" className="checkbox cursor-pointer" />
+                      </div>
+                      <span className="text-sm text-secondaryGray font-normal font-Inter">Remember me</span>
+                    </div>
+                    <div className="font-Inter text-secondaryGray text-sm font-normal leading-2.8 transition ease-in duration-300 ">
+                      <Link to="forgot-password" className="hover:text-letsSignInSignUp hover:underline">
+                        Forgot your password?
+                      </Link>
+                    </div>
+                  </div>
+
                   <Button
                     text="Sign In"
                     type="submit"
@@ -131,9 +155,7 @@ const SignIn: React.FC = () => {
                     <img src={socialLogo} alt="" className="pr-0.781" />
                     Continue with Google
                   </div>
-                  <div className="font-Inter text-secondaryGray text-center text-base font-normal mt-1.8 leading-2.8 text-signLink hover:underline transition ease-in duration-300">
-                    <Link to="forgot-password">Forgot your password?</Link>
-                  </div>
+
                   <div className="font-Poppins text-secondaryGray text-center text-base font-normal mt-5  text-signLink ">
                     <h3>
                       Don’t have an account yet?{' '}
@@ -150,7 +172,7 @@ const SignIn: React.FC = () => {
         </div>
         <div className="w-3/5 2xl:w-1/2 auth-layout flex items-center justify-center pr-0  3xl:justify-start 3xl:pl-16">
           <div className="flex items-center justify-center">
-            <img src={bgSignInImage} alt="" className="w-9/12 xl:w-10/12 3xl:w-full object-cover" />
+            <img src={bgSignInImage} alt="" className="w-9/12 xl:w-[640px] 3xl:w-full object-cover" />
           </div>
         </div>
       </div>
