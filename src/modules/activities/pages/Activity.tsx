@@ -14,6 +14,7 @@ import { format, parseISO } from 'date-fns';
 import membersSlice from 'modules/members/store/slice/members.slice';
 import { AssignTypeEnum, TagResponseData } from 'modules/settings/interface/settings.interface';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
+// eslint-disable-next-line object-curly-newline
 import React, { ChangeEvent, FormEvent, Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import Skeleton from 'react-loading-skeleton';
@@ -304,6 +305,7 @@ const Activity: React.FC = () => {
   };
 
   // Fetch members list data in comma separated value
+  // eslint-disable-next-line space-before-function-paren
   const fetchActiveStreamListExportData = async () => {
     const checkedIds: Array<string> = [];
 
@@ -461,7 +463,7 @@ const Activity: React.FC = () => {
       </div>
       {data?.length !== 0 ? (
         <div className="relative ">
-          <div className="py-2 mt-1.868 overflow-x-auto activityTable" >
+          <div className="py-2 mt-1.868 overflow-x-auto activityTable">
             <div className="inline-block min-w-full align-middle rounded-0.6 border-table overflow-auto h-screen sticky top-0 fixActivityTableHead min-h-[31.25rem]">
               <table className="min-w-full w-full relative  rounded-t-0.6 ">
                 <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky z-10">
@@ -616,7 +618,7 @@ const Activity: React.FC = () => {
                           {loader ? (
                             <Skeleton width={width_90} />
                           ) : (
-                            <div className='w-[150px] truncate'>
+                            <div className="w-[150px] truncate">
                               <a
                                 href={`${data?.sourceUrl}`}
                                 target="_blank"
@@ -629,9 +631,7 @@ const Activity: React.FC = () => {
                           )}
                         </td>
                         <td className="px-6 py-3 border-b font-Poppins font-medium text-trial text-infoBlack leading-1.31">
-                          <div className='w-[150px] truncate'>
-                            {loader ? <Skeleton width={width_90} /> : data?.type}
-                          </div>
+                          <div className="w-[150px] truncate">{loader ? <Skeleton width={width_90} /> : data?.type}</div>
                         </td>
                       </tr>
                     ))}
