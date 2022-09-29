@@ -10,7 +10,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import Modal from 'react-modal';
 import ReactGridLayout, { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import { convertEndDate, convertStartDate, getLocalWorkspaceId } from '../../../lib/helper';
-import { showErrorToast, showSuccessToast } from '../../../common/toast/toastFunctions';
+import { showErrorToast } from '../../../common/toast/toastFunctions';
 import { getWidgetsLayoutService, saveWidgetsLayoutService } from '../services/dashboard.services';
 import { PanelWidgetsType } from '../../../common/widgetLayout/WidgetTypes';
 import { useLocation, useNavigate, createSearchParams, useSearchParams } from 'react-router-dom';
@@ -167,11 +167,11 @@ const Dashboard: React.FC = () => {
       await fetchWidgetLayoutData();
       if (data?.data) {
         setDrawerOpen(false);
-        showSuccessToast('Widget layout saved');
+        // showSuccessToast('Widget layout saved');
       }
       return data;
     } catch {
-      showErrorToast('Failed to save widgets layout');
+      //   showErrorToast('Failed to save widgets layout');
     }
   };
   // eslint-disable-next-line space-before-function-paren
