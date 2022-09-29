@@ -329,8 +329,8 @@ const Dashboard: React.FC = () => {
           maxHeight: `${window.location.href.includes('stage') ? '0px' : '156.25rem'} `
         }}
       >
-        {widgets.map((widget) => (
-          <div key={widget.layout.i} data-grid={widget.layout}>
+        {widgets?.map((widget) => (
+          <div key={widget?.layout?.i} data-grid={widget?.layout}>
             {widgetListData[widget?.widget?.widgetLocation as keyof typeof widgetListData]}
           </div>
         ))}
