@@ -554,9 +554,11 @@ const MembersProfile: React.FC = () => {
                   'Last active date is not available'
                 )}
               </div>
-              <div onClick={navigateToActivities} className="font-Poppins font-normal leading-4 text-listGray text-preview cursor-pointer">
-                {memberProfileCardLoader ? <Skeleton width={width_90} /> : 'Preview All'}
-              </div>
+              {activityData?.result?.length ? (
+                <div onClick={navigateToActivities} className="font-Poppins font-normal leading-4 text-listGray text-preview cursor-pointer">
+                  {memberProfileCardLoader ? <Skeleton width={width_90} /> : 'Preview All'}
+                </div>
+              ) : null}
             </div>
           ))}
 
@@ -584,7 +586,7 @@ const MembersProfile: React.FC = () => {
                 </div>
               ))
             ) : (
-              <div className="font-Poppins font-semibold text-base leading-9 text-greyDark flex justify-center">Member activity is not available</div>
+              <div className="font-Poppins font-semibold text-base leading-9 text-listGray flex justify-center">Member activity is not available</div>
             )}
           </div>
         </div>
