@@ -9,7 +9,7 @@ import DatePicker, { ReactDatePicker } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Modal from 'react-modal';
 import ReactGridLayout, { Layout, Responsive, WidthProvider } from 'react-grid-layout';
-import { getLocalWorkspaceId } from '../../../lib/helper';
+import { convertEndDate, convertStartDate, getLocalWorkspaceId } from '../../../lib/helper';
 import { showErrorToast, showSuccessToast } from '../../../common/toast/toastFunctions';
 import { getWidgetsLayoutService, saveWidgetsLayoutService } from '../services/dashboard.services';
 import { PanelWidgetsType } from '../../../common/widgetLayout/WidgetTypes';
@@ -63,8 +63,8 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     if (startDate && endDate) {
-      const start: string = moment(startDate).toISOString();
-      const end: string = moment(endDate).toISOString();
+      const start: string = convertStartDate(startDate);
+      const end: string = convertEndDate(endDate);
       setNavigation(start, end);
     }
   }, [startDate, endDate]);
@@ -211,12 +211,12 @@ const Dashboard: React.FC = () => {
   const setSelectedDateRange = (option: string) => {
     if (option.toLocaleLowerCase().trim() === 'select') {
       setStartingDate(moment().startOf('week').toISOString());
-      setEndingDate(new Date().toISOString());
+      setEndingDate(convertEndDate(new Date()));
     }
     if (option === 'this week') {
       setSelected('This Week');
       setStartingDate(moment().startOf('week').toISOString());
-      setEndingDate(new Date().toISOString());
+      setEndingDate(convertEndDate(new Date()));
     } else if (option === 'last week') {
       setSelected('Last Week');
       setStartingDate(moment().startOf('week').subtract(1, 'week').toISOString());
@@ -237,7 +237,9 @@ const Dashboard: React.FC = () => {
             ref={dropDownRef}
             onClick={handleDropDownActive}
           >
-            <div className="font-Poppins font-semibold text-card capitalize text-dropGray dark:text-inputText leading-4">{selected ? selected : 'Select'}</div>
+            <div className="font-Poppins font-semibold text-card capitalize text-dropGray dark:text-inputText leading-4">
+              {selected ? selected : 'Select'}
+            </div>
             <div className="bg-cover drop-icon">
               <img src={dropDownIcon} alt="" className={isSelectDropDownActive ? 'rotate-180' : 'rotate-0'} />
             </div>
