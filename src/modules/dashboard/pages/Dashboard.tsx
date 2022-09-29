@@ -15,6 +15,7 @@ import { getWidgetsLayoutService, saveWidgetsLayoutService } from '../services/d
 import { PanelWidgetsType } from '../../../common/widgetLayout/WidgetTypes';
 import { useLocation, useNavigate, createSearchParams, useSearchParams } from 'react-router-dom';
 import moment from 'moment';
+import Button from 'common/button';
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 Modal.setAppElement('#root');
 
@@ -281,15 +282,19 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
         {isDrawerOpen === false ? (
-          <div
-            className="flex justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow cursor-pointer"
+          <Button
+            text=""
             onClick={handleWidgetDrawer}
+            className={`flex justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow ${
+              window.location.href.includes('stage') ? 'cursor-not-allowed' : 'cursor-pointer'
+            } `}
+            disabled={window.location.href.includes('stage') ? true : false}
           >
             <div className="font-Poppins font-medium text-white leading-5 text-search ">Manage Widget</div>
             <div className="brick-icon bg-cover">
               <img src={brickIcon} alt="" />
             </div>
-          </div>
+          </Button>
         ) : (
           <div
             className="flex justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow cursor-pointer"
@@ -317,7 +322,10 @@ const Dashboard: React.FC = () => {
         rowHeight={undefined}
         isBounded
         onLayoutChange={onLayoutChange}
-        style={{ height: '160vh', maxHeight: '156.25rem' }}
+        style={{
+          height: `${window.location.href.includes('stage') ? '0px' : '160vh'}`,
+          maxHeight: `${window.location.href.includes('stage') ? '0px' : '156.25rem'} `
+        }}
       >
         {widgets.map((widget) => (
           <div key={widget.layout.i} data-grid={widget.layout}>
@@ -326,9 +334,11 @@ const Dashboard: React.FC = () => {
         ))}
       </ResponsiveReactGridLayout>
       {Boolean(widgets?.length) === false && (
-        <div className="flex flex-col items-center justify-center fixTableHead-nomember">
+        <div className="flex flex-col items-center justify-center fixWidgetNoDataHeight">
           <img src={noWidgetIcon} alt="" className="w-[3.8125rem] h-[3.8125rem]" />
-          <div className="font-Poppins font-medium text-tableDuration text-noReports leading-10 pt-5">No widgets added</div>
+          <div className="font-Poppins font-medium text-tableDuration text-noReports leading-10 pt-5">{`${
+            window.location.href.includes('stage') ? 'Widgets coming soon...' : 'No widgets added'
+          }`}</div>
         </div>
       )}
     </>
