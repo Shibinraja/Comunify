@@ -286,7 +286,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                         <tbody>
                           {TagFilterResponseData?.map((data: TagResponseData) => (
                             <Fragment key={data.id}>
-                              <tr className="border" >
+                              <tr className="border">
                                 <td className="px-6 py-3">
                                   <div className="flex ">
                                     <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
@@ -325,7 +325,9 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                     </div>
                   </div>
                 </div>
-              ) : null}
+              ) : (
+                <h3 className="font-Poppins font-normal text-base text-infoBlack mt-6 text-center">No data found</h3>
+              )}
             </div>
           </div>
 
