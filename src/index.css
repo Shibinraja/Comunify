@@ -617,3 +617,7 @@ input {
 .widget-border{
   border: 1px solid #F09E34;;
 }
+
+.fixWidgetNoDataHeight {
+  height: calc(100vh - 30rem);
+}
