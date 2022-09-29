@@ -237,7 +237,7 @@ const Dashboard: React.FC = () => {
             ref={dropDownRef}
             onClick={handleDropDownActive}
           >
-            <div className="font-Poppins font-semibold text-card text-dropGray dark:text-inputText leading-4">{selected ? selected : 'Select'}</div>
+            <div className="font-Poppins font-semibold text-card capitalize text-dropGray dark:text-inputText leading-4">{selected ? selected : 'Select'}</div>
             <div className="bg-cover drop-icon">
               <img src={dropDownIcon} alt="" className={isSelectDropDownActive ? 'rotate-180' : 'rotate-0'} />
             </div>

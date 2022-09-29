@@ -596,16 +596,24 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                 </div>
               </div>
             )}
-            <div className="buttons px-2">
+            <div className="buttons px-2 flex mt-1.56">
+              <Button
+                disabled={memberColumnsLoader ? true : false}
+
+                type="button"
+                text="Reset"
+                className='border border-backdropColor text-black rounded-0.31 h-2.063 w-1/2 mr-1 cursor-pointer text-card font-Manrope font-semibold leading-1.31 hover:text-white hover:bg-backdropColor'
+              />
               <Button
                 disabled={memberColumnsLoader ? true : false}
                 onClick={submitFilterChange}
                 type="button"
                 text="Apply"
-                className={`border-none btn-save-modal rounded-0.31 h-2.063 w-full mt-1.56 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${
-                  memberColumnsLoader ? ' opacity-50 cursor-not-allowed' : ''
+                className={`border-none btn-save-modal rounded-0.31 h-2.063 w-1/2 ml-1 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${
+                  memberColumnsLoader ? 'cursor-not-allowed' : ''
                 }`}
               />
+
             </div>
           </div>
         </div>

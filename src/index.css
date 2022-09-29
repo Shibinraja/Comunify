@@ -258,7 +258,12 @@ input {
 
 .fixTableHead {
   height: calc(100vh - 36rem);
+  
 }
+.fixTableHead table  tr th{
+        width: 200px !important;
+}
+
 
 .fixTableHead-nomember {
   height: calc(100vh - 20rem);
