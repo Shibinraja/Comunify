@@ -118,8 +118,9 @@ input {
 .section::-webkit-scrollbar {
   width: 4.18px;
 }
-.feature-box {
-  background: linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
+.feature-box{
+  background: linear-gradient(277.31deg, #69B5E5 1.11%, #ABCF6B 100%);
+
 }
 /* .section::-webkit-scrollbar-track {
   background-color: darkgrey;
@@ -257,10 +258,12 @@ input {
 
 .fixTableHead {
   height: calc(100vh - 36rem);
+  
 }
-.fixTableHead table tr th {
-  width: 200px !important;
+.fixTableHead table  tr th{
+        width: 200px !important;
 }
+
 
 .fixTableHead-nomember {
   height: calc(100vh - 20rem);
@@ -300,16 +303,16 @@ input {
   height: calc(100vh - 20rem);
 }
 
-.member-section::-webkit-scrollbar {
+.member-section::-webkit-scrollbar{
   width: 4.18px;
 }
 
-.member-section::-webkit-scrollbar-thumb {
+.member-section::-webkit-scrollbar-thumb{
   background: #eeeeee00;
   border-radius: 60px;
 }
 
-.member-section-model {
+.member-section-model{
   background: transparent;
 }
 .border-review {
@@ -604,15 +607,15 @@ input {
   -ms-border-radius: 10px;
   -o-border-radius: 10px;
 }
-.ReactModalPortal .ReactModal__Overlay {
+.ReactModalPortal .ReactModal__Overlay{
   /* background-color: rgb(0, 0, 0, 0.7) !important; */
 }
 .boder-lightRed {
-  border-color: #ff5f5f !important;
+  border-color: #FF5F5F !important;
 }
 
-.widget-border {
-  border: 1px solid #f09e34;
+.widget-border{
+  border: 1px solid #F09E34;;
 }
 
 .fixWidgetNoDataHeight {
