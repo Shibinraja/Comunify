@@ -16,7 +16,9 @@ import { width_90 } from 'constants/constants';
 import { format, parseISO, subDays, subMonths } from 'date-fns';
 import { AssignTypeEnum } from 'modules/settings/interface/settings.interface';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
-import React, { ChangeEvent, Fragment, Key, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  ChangeEvent, Fragment, Key, ReactNode, useEffect, useMemo, useRef, useState
+} from 'react';
 import DatePicker, { ReactDatePicker } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Skeleton from 'react-loading-skeleton';
@@ -187,7 +189,7 @@ const Members: React.FC = () => {
   }, [customStartDate, customEndDate]);
 
   // Function to dispatch the search text to hit api of member list.
-  const getFilteredMembersList = async (pageNumber: number, text: string, date?: string, endDate?: string) => {
+  const getFilteredMembersList = async(pageNumber: number, text: string, date?: string, endDate?: string) => {
     setFilteredDate((prevDate) => ({ ...prevDate, filterStartDate: date!, filterEndDate: endDate! }));
     dispatch(
       membersSlice.actions.membersList({
@@ -273,7 +275,7 @@ const Members: React.FC = () => {
   };
 
   // Fetch members list data in comma separated value
-  const fetchMembersListExportData = async () => {
+  const fetchMembersListExportData = async() => {
     setFetchLoader(true);
     await fetchExportList(
       `${API_ENDPOINT}/v1/${workspaceId}/members/memberlistexport`,
