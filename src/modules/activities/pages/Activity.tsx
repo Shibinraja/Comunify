@@ -14,7 +14,6 @@ import { format, parseISO } from 'date-fns';
 import membersSlice from 'modules/members/store/slice/members.slice';
 import { AssignTypeEnum, TagResponseData } from 'modules/settings/interface/settings.interface';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
-// eslint-disable-next-line object-curly-newline
 import React, { ChangeEvent, FormEvent, Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import Skeleton from 'react-loading-skeleton';
@@ -305,7 +304,6 @@ const Activity: React.FC = () => {
   };
 
   // Fetch members list data in comma separated value
-  // eslint-disable-next-line space-before-function-paren
   const fetchActiveStreamListExportData = async () => {
     const checkedIds: Array<string> = [];
 
@@ -452,9 +450,9 @@ const Activity: React.FC = () => {
           <div
             aria-disabled={fetchLoader}
             className={`app-input-card-border w-6.98 h-3.06 rounded-0.6 shadow-shadowInput box-border bg-white items-center justify-evenly flex cursor-pointer hover:border-infoBlack transition ease-in-out duration-300 ${
-              fetchLoader ? 'cursor-not-allowed' : ''
+              fetchLoader || !data.length ? 'cursor-not-allowed' : ''
             }`}
-            onClick={() => !fetchLoader && fetchActiveStreamListExportData()}
+            onClick={() => (data.length ? !fetchLoader && fetchActiveStreamListExportData() : null)}
           >
             <h3 className="text-dropGray leading-1.12 font-Poppins font-semibold text-card">Export</h3>
             <img src={exportImage} alt="" />

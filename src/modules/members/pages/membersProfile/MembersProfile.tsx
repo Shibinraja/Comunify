@@ -327,7 +327,7 @@ const MembersProfile: React.FC = () => {
   };
 
   // Tag Name assign functionality
-  const handleAssignTagsName = (e: FormEvent<HTMLFormElement>):void => {
+  const handleAssignTagsName = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     if (errorMessage || !searchText) {
       setErrorMessage(errorMessage || 'Tag Name is a required field');
@@ -424,20 +424,25 @@ const MembersProfile: React.FC = () => {
               <div className="font-Poppins font-normal text-xs leading-4 text-listGray">Last Active Date</div>
               <div className="font-Poppins font-semibold text-base leading-6 text-accountBlack">
                 <Skeleton width={width_90} />
-
               </div>
             </div>
-          ) : (
-            memberProfileCardData?.length ? memberProfileCardData?.map((data: MemberProfileCard) => (
+          ) : memberProfileCardData?.length ? (
+            memberProfileCardData?.map((data: MemberProfileCard) => (
               <div key={data?.id + data?.name} className="flex flex-col ">
                 <div className="font-Poppins font-normal text-xs leading-4 text-listGray">Last Active Date</div>
                 <div className="font-Poppins font-semibold text-base leading-6 text-accountBlack">
-                  {memberProfileCardLoader ?    <Skeleton width={width_90} /> : data?.lastActivity ? generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY') : 'Last active date is not available'}
+                  {memberProfileCardLoader ? (
+                    <Skeleton width={width_90} />
+                  ) : data?.lastActivity ? (
+                    generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY')
+                  ) : (
+                    'Last active date is not available'
+                  )}
                 </div>
               </div>
-            )) :(
-              <div className="flex flex-col w-full"></div>
-            )
+            ))
+          ) : (
+            <div className="flex flex-col w-full"></div>
           )}
 
           <div className="flex mt-3 xl:mt-0 relative">
