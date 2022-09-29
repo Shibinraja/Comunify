@@ -214,7 +214,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
         className="flex justify-between items-center px-1.08 app-input-card-border rounded-0.6 box-border w-9.59 h-3.06 cursor-pointer bg-white "
         onClick={handleFilterDropdown}
       >
-        <div className="font-Poppins font-normal text-card text-dropGray leading-1.12">Filters</div>
+        <div className="font-Poppins font-semibold text-card text-dropGray leading-1.12">Filters</div>
         <div>
           <img src={filterDownIcon} alt="" className={isFilterDropdownActive ? 'rotate-180' : 'rotate-0'} />
         </div>
