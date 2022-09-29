@@ -188,7 +188,7 @@ const Members: React.FC = () => {
   }, [customStartDate, customEndDate]);
 
   // Function to dispatch the search text to hit api of member list.
-  const getFilteredMembersList = async(pageNumber: number, text: string, date?: string, endDate?: string) => {
+  const getFilteredMembersList = async (pageNumber: number, text: string, date?: string, endDate?: string) => {
     setFilteredDate((prevDate) => ({ ...prevDate, filterStartDate: date!, filterEndDate: endDate! }));
     dispatch(
       membersSlice.actions.membersList({
@@ -274,7 +274,7 @@ const Members: React.FC = () => {
   };
 
   // Fetch members list data in comma separated value
-  const fetchMembersListExportData = async() => {
+  const fetchMembersListExportData = async () => {
     setFetchLoader(true);
     await fetchExportList(
       `${API_ENDPOINT}/v1/${workspaceId}/members/memberlistexport`,
@@ -457,9 +457,9 @@ const Members: React.FC = () => {
             <div
               aria-disabled={fetchLoader}
               className={`export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex cursor-pointer hover:border-infoBlack transition ease-in-out duration-300 ${
-                fetchLoader ? 'cursor-not-allowed' : ''
+                fetchLoader || customizedColumn?.length === 0 ? 'cursor-not-allowed' : ''
               }`}
-              onClick={() => !fetchLoader && fetchMembersListExportData()}
+              onClick={() => (customizedColumn?.length > 0 ? !fetchLoader && fetchMembersListExportData() : {})}
             >
               <h3 className="text-memberDay leading-1.12 font-Poppins font-semibold text-card">Export</h3>
               <img src={exportImage} alt="" />
