@@ -464,12 +464,12 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
                       onClick={(e) => sendVanillaData(e)}
                       className={`text-white font-Poppins text-error font-medium leading-5 btn-save-modal
                        cursor-pointer rounded shadow-contactBtn w-5.25  ${
-                         isLoading
-                           ? 'opacity-50 cursor-not-allowed '
-                           : !vanillaForumsData.vanillaAccessToken || !vanillaForumsData.vanillaBaseUrl
-                           ? 'opacity-50 cursor-not-allowed '
-                           : ''
-                       } border-none h-2.81`}
+    isLoading
+      ? 'opacity-50 cursor-not-allowed '
+      : !vanillaForumsData.vanillaAccessToken || !vanillaForumsData.vanillaBaseUrl
+        ? 'opacity-50 cursor-not-allowed '
+        : ''
+    } border-none h-2.81`}
                     />
                   </div>
                 </form>
