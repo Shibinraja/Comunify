@@ -275,7 +275,7 @@ const Dashboard: React.FC = () => {
                 dateFormat="dd/MM/yyyy"
               />
             </div>
-            <div className="absolute right-4 top-4 drop-icon">
+            <div className="absolute right-[1.4rem] top-4 drop-icon">
               <img className="right-6 cursor-pointer" src={calendarIcon} alt="" onClick={() => handleClickDatePickerIcon()} />
             </div>
           </div>
