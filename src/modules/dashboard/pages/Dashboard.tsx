@@ -9,12 +9,13 @@ import DatePicker, { ReactDatePicker } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Modal from 'react-modal';
 import ReactGridLayout, { Layout, Responsive, WidthProvider } from 'react-grid-layout';
-import { getLocalWorkspaceId } from '../../../lib/helper';
+import { convertEndDate, convertStartDate, getLocalWorkspaceId } from '../../../lib/helper';
 import { showErrorToast, showSuccessToast } from '../../../common/toast/toastFunctions';
 import { getWidgetsLayoutService, saveWidgetsLayoutService } from '../services/dashboard.services';
 import { PanelWidgetsType } from '../../../common/widgetLayout/WidgetTypes';
 import { useLocation, useNavigate, createSearchParams, useSearchParams } from 'react-router-dom';
 import moment from 'moment';
+import Button from 'common/button';
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 Modal.setAppElement('#root');
 
@@ -63,8 +64,8 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     if (startDate && endDate) {
-      const start: string = moment(startDate).toISOString();
-      const end: string = moment(endDate).toISOString();
+      const start: string = convertStartDate(startDate);
+      const end: string = convertEndDate(endDate);
       setNavigation(start, end);
     }
   }, [startDate, endDate]);
@@ -211,18 +212,18 @@ const Dashboard: React.FC = () => {
   const setSelectedDateRange = (option: string) => {
     if (option.toLocaleLowerCase().trim() === 'select') {
       setStartingDate(moment().startOf('week').toISOString());
-      setEndingDate(new Date().toISOString());
+      setEndingDate(convertEndDate(new Date()));
     }
     if (option === 'this week') {
-      setSelected(option);
+      setSelected('This Week');
       setStartingDate(moment().startOf('week').toISOString());
-      setEndingDate(new Date().toISOString());
+      setEndingDate(convertEndDate(new Date()));
     } else if (option === 'last week') {
-      setSelected(option);
+      setSelected('Last Week');
       setStartingDate(moment().startOf('week').subtract(1, 'week').toISOString());
       setEndingDate(moment().endOf('week').subtract(1, 'week').endOf('week').toISOString());
     } else if (option === 'this month') {
-      setSelected(option);
+      setSelected('This Month');
       setStartingDate(moment().startOf('month').toISOString());
       setEndingDate(moment().endOf('month').toISOString());
     }
@@ -237,7 +238,9 @@ const Dashboard: React.FC = () => {
             ref={dropDownRef}
             onClick={handleDropDownActive}
           >
-            <div className="font-Poppins font-semibold text-card text-dropGray dark:text-inputText leading-4">{selected ? selected : 'Select'}</div>
+            <div className="font-Poppins font-semibold text-card capitalize text-dropGray dark:text-inputText leading-4">
+              {selected ? selected : 'Select'}
+            </div>
             <div className="bg-cover drop-icon">
               <img src={dropDownIcon} alt="" className={isSelectDropDownActive ? 'rotate-180' : 'rotate-0'} />
             </div>
@@ -275,21 +278,25 @@ const Dashboard: React.FC = () => {
                 dateFormat="dd/MM/yyyy"
               />
             </div>
-            <div className="absolute right-4 top-4 drop-icon">
+            <div className="absolute right-[1.4rem] top-4 drop-icon">
               <img className="right-6 cursor-pointer" src={calendarIcon} alt="" onClick={() => handleClickDatePickerIcon()} />
             </div>
           </div>
         </div>
         {isDrawerOpen === false ? (
-          <div
-            className="flex justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow cursor-pointer"
+          <Button
+            text=""
             onClick={handleWidgetDrawer}
+            className={`flex justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow ${
+              window.location.href.includes('stage') ? 'cursor-not-allowed' : 'cursor-pointer'
+            } `}
+            disabled={window.location.href.includes('stage') ? true : false}
           >
             <div className="font-Poppins font-medium text-white leading-5 text-search ">Manage Widget</div>
             <div className="brick-icon bg-cover">
               <img src={brickIcon} alt="" />
             </div>
-          </div>
+          </Button>
         ) : (
           <div
             className="flex justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow cursor-pointer"
@@ -317,7 +324,10 @@ const Dashboard: React.FC = () => {
         rowHeight={undefined}
         isBounded
         onLayoutChange={onLayoutChange}
-        style={{ height: '160vh', maxHeight: '156.25rem' }}
+        style={{
+          height: `${window.location.href.includes('stage') ? '0px' : '160vh'}`,
+          maxHeight: `${window.location.href.includes('stage') ? '0px' : '156.25rem'} `
+        }}
       >
         {widgets.map((widget) => (
           <div key={widget.layout.i} data-grid={widget.layout}>
@@ -326,9 +336,11 @@ const Dashboard: React.FC = () => {
         ))}
       </ResponsiveReactGridLayout>
       {Boolean(widgets?.length) === false && (
-        <div className="flex flex-col items-center justify-center fixTableHead-nomember">
+        <div className="flex flex-col items-center justify-center fixWidgetNoDataHeight">
           <img src={noWidgetIcon} alt="" className="w-[3.8125rem] h-[3.8125rem]" />
-          <div className="font-Poppins font-medium text-tableDuration text-noReports leading-10 pt-5">No widgets added</div>
+          <div className="font-Poppins font-medium text-tableDuration text-noReports leading-10 pt-5">{`${
+            window.location.href.includes('stage') ? 'Widgets coming soon...' : 'No widgets added'
+          }`}</div>
         </div>
       )}
     </>

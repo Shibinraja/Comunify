@@ -210,51 +210,55 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
           </div>
         </div>
         {!loading && !suggestionList.result?.length && (
-          <div className="font-Poppins font-medium text-tableDuration text-lg leading-10 pt-8 pl-2 max-h-96"> No result found</div>
+          <div className="font-Poppins font-medium text-tableDuration text-lg leading-10 pt-8 pl-2 max-h-96 mb-8 height-member-merge">
+            {' '}
+      No result found
+          </div>
         )}
-        <div
-          id="scrollableDiv"
-          className="flex flex-col gap-5 overflow-y-scroll member-section mt-1.8 max-h-96 height-member-merge "
-          onScroll={handleScroll}
-        >
-          {loading && !preventLoading
-            ? Array.from({ length: 10 }, (_, i) => i + 1).map((type: number) => (
-              <Fragment key={type}>
-                <MemberLoader />
-              </Fragment>
-            ))
-            :   suggestionList?.result.map((member: MergeMembersDataResult, index: number) => (
-              <div className="flex border-b border-activitySubCard pb-4" key={index}>
-                <div className="mr-0.34">
-                  <input
-                    type="checkbox"
-                    className="checkbox"
-                    id={member.id}
-                    name={member.id}
-                    checked={(checkedMemberId[member.id] as boolean) || false}
-                    onChange={handleCheckBox}
-                  />
-                </div>
-                <div className="flex flex-col ">
-                  <div className={`font-Poppins font-medium text-trial text-infoBlack leading-1.31 `}>
-                    {getHighlightedText(member.name, searchSuggestion)}
-                    {/* Reg Exp function to highlight and show all the values matched with search suggestion string.  */}
-                    {/* {member.name.includes(!searchSuggestion ? '/' : searchSuggestion)? member.name.replace(new RegExp(searchSuggestion, 'g'), '') : member.name} */}
+        {suggestionList.result?.length > 0 && (
+          <div
+            id="scrollableDiv"
+            className="flex flex-col gap-5 overflow-y-scroll member-section mt-1.8 max-h-96 height-member-merge "
+            onScroll={handleScroll}
+          >
+            {loading && !preventLoading
+              ? Array.from({ length: 10 }, (_, i) => i + 1).map((type: number) => (
+                <Fragment key={type}>
+                  <MemberLoader />
+                </Fragment>
+              ))
+              : suggestionList?.result.map((member: MergeMembersDataResult, index: number) => (
+                <div className="flex border-b border-activitySubCard pb-4" key={index}>
+                  <div className="mr-0.34">
+                    <input
+                      type="checkbox"
+                      className="checkbox"
+                      id={member.id}
+                      name={member.id}
+                      checked={(checkedMemberId[member.id] as boolean) || false}
+                      onChange={handleCheckBox}
+                    />
                   </div>
-                  <div className="text-tagEmail font-Poppins font-normal leading-1.31 text-email pl-1">
-                    {getHighlightedText(member.email, searchSuggestion)} | {member.organization}
-                  </div>
-                  <div className="flex mt-2.5">
-                    <div className="mr-0.34 w-1.001 h-1.001">
-                      <img src={member.platform.platformLogoUrl} alt="" />
+                  <div className="flex flex-col ">
+                    <div className={`font-Poppins font-medium text-trial text-infoBlack leading-1.31 `}>
+                      {getHighlightedText(member.name, searchSuggestion)}
+                      {/* Reg Exp function to highlight and show all the values matched with search suggestion string.  */}
+                      {/* {member.name.includes(!searchSuggestion ? '/' : searchSuggestion)? member.name.replace(new RegExp(searchSuggestion, 'g'), '') : member.name} */}
+                    </div>
+                    <div className="text-tagEmail font-Poppins font-normal leading-1.31 text-email pl-1">
+                      {getHighlightedText(member.email, searchSuggestion)} | {member.organization}
+                    </div>
+                    <div className="flex mt-1">
+                      <div className="mr-0.34 w-1.001 h-1.001">
+                        <img src={member.platform.platformLogoUrl} alt="" />
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )
-            )}
-          {loading && <MemberLoader />}
-        </div>
+              ))}
+            {loading && <MemberLoader />}
+          </div>
+        )}
         <div className="flex justify-end mt-1.8 pb-53 ">
           <Button
             type="button"

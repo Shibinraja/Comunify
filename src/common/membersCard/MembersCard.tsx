@@ -22,7 +22,7 @@ const MembersCard: React.FC = () => {
           ) : (
             <Fragment>
               <div className="text-infoBlack font-Poppins font-semibold text-signIn leading-3.18">{totalMembers.count}</div>
-              <div className="text-Poppins font-semibold text-infoBlack text-member leading-4">{totalMembers.title}</div>
+              <div className="font-Poppins font-semibold text-infoBlack text-member leading-4">{totalMembers.title}</div>
               <div className="text-[8px] xl:text-card font-Poppins font-normal leading-1.12 text-status mt-0.151">{totalMembers.analyticMessage}</div>
             </Fragment>
           )}
@@ -33,7 +33,7 @@ const MembersCard: React.FC = () => {
           ) : (
             <Fragment>
               <div className="text-infoBlack font-Poppins font-semibold text-signIn leading-3.18">{newMembers.count}</div>
-              <div className="text-Poppins font-semibold text-infoBlack text-member leading-4">{newMembers.title}</div>
+              <div className="font-Poppins font-semibold text-infoBlack text-member leading-4">{newMembers.title}</div>
               <div className="text-[8px] xl:text-card  font-Poppins font-normal leading-1.12 text-status mt-0.151">{newMembers.analyticMessage}</div>
             </Fragment>
           )}
@@ -44,7 +44,7 @@ const MembersCard: React.FC = () => {
           ) : (
             <Fragment>
               <div className="text-infoBlack font-Poppins font-semibold text-signIn leading-3.18">{activeMembers.count}</div>
-              <div className="text-Poppins font-semibold text-infoBlack text-member leading-4">{activeMembers.title}</div>
+              <div className="font-Poppins font-semibold text-infoBlack text-member leading-4">{activeMembers.title}</div>
               <div className="text-[8px] xl:text-card  font-Poppins font-normal leading-1.12 text-status mt-0.151">{activeMembers.analyticMessage}</div>
             </Fragment>
           )}
@@ -55,7 +55,7 @@ const MembersCard: React.FC = () => {
           ) : (
             <Fragment>
               <div className="text-infoBlack font-Poppins font-semibold text-signIn leading-3.18">{inActiveMembers.count}</div>
-              <div className="text-Poppins font-semibold text-infoBlack text-member leading-4">{inActiveMembers.title}</div>
+              <div className="font-Poppins font-semibold text-infoBlack text-member leading-4">{inActiveMembers.title}</div>
               <div className="text-[8px] xl:text-card  font-Poppins font-normal leading-1.12 text-status mt-0.151">{inActiveMembers.analyticMessage}</div>
             </Fragment>
           )}
