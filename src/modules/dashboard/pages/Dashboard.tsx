@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import brickIcon from '../../../assets/images/brick.svg';
 import calendarIcon from '../../../assets/images/calandar.svg';
 import dropDownIcon from '../../../assets/images/profile-dropdown.svg';
 import '../../../../node_modules/react-grid-layout/css/styles.css';
 import noWidgetIcon from '../../../assets/images/no-widget.svg';
-import SidePanelWidgets, { widgetList } from 'common/widgetLayout/SidePanelWidgets';
+import SidePanelWidgets from 'common/widgetLayout/SidePanelWidgets';
 import DatePicker, { ReactDatePicker } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Modal from 'react-modal';
@@ -12,10 +12,14 @@ import ReactGridLayout, { Layout, Responsive, WidthProvider } from 'react-grid-l
 import { convertEndDate, convertStartDate, getLocalWorkspaceId } from '../../../lib/helper';
 import { showErrorToast, showSuccessToast } from '../../../common/toast/toastFunctions';
 import { getWidgetsLayoutService, saveWidgetsLayoutService } from '../services/dashboard.services';
-import { PanelWidgetsType } from '../../../common/widgetLayout/WidgetTypes';
-import { useLocation, useNavigate, createSearchParams, useSearchParams } from 'react-router-dom';
+import { PanelWidgetsType, WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
+import { useLocation, useNavigate, createSearchParams } from 'react-router-dom';
 import moment from 'moment';
-import Button from 'common/button';
+import Button from '../../../common/button';
+// Temporarily imported for development
+import WidgetComponents from 'common/widgets';
+import Skeleton from 'react-loading-skeleton';
+
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 Modal.setAppElement('#root');
 
@@ -26,23 +30,23 @@ const Dashboard: React.FC = () => {
   const [dateRange, setDateRange] = useState([null, null]);
   const datePickerRef = useRef<ReactDatePicker>(null);
   const [startDate, endDate] = dateRange;
-  const handleDropDownActive = (): void => {
-    setSelectDropDownActive((prev) => !prev);
-  };
+
   const selectOptions = [
     { id: Math.random(), dateRange: 'This Week' },
     { id: Math.random(), dateRange: 'Last Week' },
     { id: Math.random(), dateRange: 'This Month' }
   ];
-  const [isDrawerOpen, setDrawerOpen] = useState<boolean>(false);
+  const [isManageMode, setIsManageMode] = useState<boolean>(false);
   const [widgets, setWidgets] = useState<any[] | []>([]);
   const [widgetKey, setWidgetKey] = useState<string | null>(null);
-  // eslint-disable-next-line no-unused-vars
-  const [widgetListData] = React.useState(widgetList);
   const [transformedWidgetData, setTransformedWidgetData] = React.useState<any[]>(new Array(null));
   const dropDownRef = useRef<HTMLDivElement>(null);
   const [startingDate, setStartingDate] = React.useState<string>();
   const [endingDate, setEndingDate] = React.useState<string>();
+  const [widgetRemoved, setWidgetRemoved] = React.useState<string>();
+
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     document.addEventListener('click', handleOutsideClick);
@@ -52,8 +56,13 @@ const Dashboard: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    //to clear any params in the url when the page is being reload/loaded first time
+    navigate({
+      pathname: location.pathname,
+      search: ``
+    });
     fetchWidgetLayoutData();
-    setSelectedDateRange('Select');
+    setSelectedDateRange('');
   }, []);
 
   useEffect(() => {
@@ -70,31 +79,20 @@ const Dashboard: React.FC = () => {
     }
   }, [startDate, endDate]);
 
-  const location = useLocation();
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const removeWidget: string | null = searchParams.get('widgetName');
-
-  useEffect(() => {
-    removeWidgetFromState();
-  }, [removeWidget]);
-
-  useEffect(() => {
-    if (isDrawerOpen) {
-      setParamsToManageWidgets('manage');
-    } else {
-      setParamsToManageWidgets();
-    }
-  }, [isDrawerOpen]);
-
-  const removeWidgetFromState = () => {
+  const removeWidgetFromDashboard = (selectedWidget: PanelWidgetsType) => {
+    setWidgetRemoved(selectedWidget?.widget?.widgetLocation);
     try {
-      const newWidgetArray = widgets?.filter((data) => data?.widget?.widgetLocation !== removeWidget);
+      const newWidgetArray = widgets?.filter((data) => data?.widget?.widgetLocation !== selectedWidget.widget.widgetLocation);
       setWidgets(newWidgetArray);
-      navigate({ pathname: location.pathname, search: `` });
-      // showSuccessToast('Removed the selected the widget');
     } catch {
       showErrorToast('Failed to remove widget');
+    }
+  };
+
+  const handleDropDownActive = (): void => {
+    if (widgets.length) {
+      setSelectDropDownActive((prev) => !prev);
+      setDateRange([null, null]);
     }
   };
 
@@ -104,21 +102,6 @@ const Dashboard: React.FC = () => {
       navigate({
         pathname: location.pathname,
         search: `?${createSearchParams(params)}`
-      });
-    }
-  };
-
-  const setParamsToManageWidgets = (action?: string) => {
-    if (action === 'manage') {
-      const params = { manageWidgets: action };
-      navigate({
-        pathname: location.pathname,
-        search: `?${createSearchParams(params)}`
-      });
-    } else {
-      navigate({
-        pathname: location.pathname,
-        search: ``
       });
     }
   };
@@ -137,7 +120,8 @@ const Dashboard: React.FC = () => {
       const newWidgetArray = [...widgets];
       const droppedWidget: PanelWidgetsType = {
         layout: { ...droppableWidget.layout },
-        widget: { ...droppableWidget.widget }
+        widget: { ...droppableWidget.widget },
+        isAssigned: { ...droppableWidget.isAssigned }
       };
       newWidgetArray.push(droppedWidget);
       setWidgets(newWidgetArray);
@@ -156,8 +140,14 @@ const Dashboard: React.FC = () => {
     datePickerElement?.setFocus();
   };
 
+  const handleCalendarOpenAndClearOtherFiler = () => {
+    setStartingDate(undefined);
+    setEndingDate(undefined);
+    setSelected('');
+  };
+
   const handleWidgetDrawer = () => {
-    setDrawerOpen((prev) => !prev);
+    setIsManageMode((prev) => !prev);
   };
 
   // eslint-disable-next-line space-before-function-paren
@@ -166,7 +156,7 @@ const Dashboard: React.FC = () => {
       const data = await saveWidgetsLayoutService(workspaceId, transformedWidgetData);
       await fetchWidgetLayoutData();
       if (data?.data) {
-        setDrawerOpen(false);
+        setIsManageMode(false);
         showSuccessToast('Widget layout saved');
       }
       return data;
@@ -210,11 +200,10 @@ const Dashboard: React.FC = () => {
   );
 
   const setSelectedDateRange = (option: string) => {
-    if (option.toLocaleLowerCase().trim() === 'select') {
+    if (option.toLocaleLowerCase().trim() === '') {
       setStartingDate(moment().startOf('week').toISOString());
       setEndingDate(convertEndDate(new Date()));
-    }
-    if (option === 'this week') {
+    } else if (option === 'this week') {
       setSelected('This Week');
       setStartingDate(moment().startOf('week').toISOString());
       setEndingDate(convertEndDate(new Date()));
@@ -229,12 +218,40 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  const renderWidget = (widgetLocation: string, props: React.PropsWithoutRef<WidgetComponentProps>) => {
+    /* @vite-ignore */
+    // use this while developing because vite doesn't hot reload dynamically imported components
+    const Widget = WidgetComponents[widgetLocation];
+
+    // Use dynamic import while pushing to prod
+    // const Widget = lazy(() => import(`../../../common/widgets/${widgetLocation}/${widgetLocation}`));
+    return (
+      <Suspense
+        fallback={
+          <div>
+            <Skeleton width={700} height={300} highlightColor={'#e5e7eb'} style={{ backgroundColor: 'white' }} count={1} enableAnimation />
+          </div>
+        }
+      >
+        <Widget {...props} />
+      </Suspense>
+    );
+  };
+
+  const widgetProps = {
+    isManageMode,
+    removeWidgetFromDashboard,
+    widget: {}
+  };
+
   return (
     <>
-      <div className="flex justify-between mt-10 pb-28">
+      <div className="flex justify-between mt-10 pb-2">
         <div className="flex relative items-center">
           <div
-            className="flex items-center justify-between px-5 w-11.72 h-3.06 border border-borderPrimary rounded-0.6 shadow-shadowInput cursor-pointer "
+            className={`flex items-center justify-between px-5 w-11.72 h-3.06 border border-borderPrimary rounded-0.6 shadow-shadowInput ${
+              widgets?.length ? 'cursor-pointer' : 'cursor-not-allowed'
+            }  `}
             ref={dropDownRef}
             onClick={handleDropDownActive}
           >
@@ -247,7 +264,7 @@ const Dashboard: React.FC = () => {
           </div>
           {isSelectDropDownActive && (
             <div
-              className="absolute top-12 w-11.72 border border-borderPrimary bg-white dark:bg-secondaryDark   shadow-shadowInput rounded-0.6 "
+              className={`absolute top-12 w-11.72 border border-borderPrimary bg-white dark:bg-secondaryDark  shadow-shadowInput rounded-0.6`}
               onClick={handleDropDownActive}
             >
               {selectOptions?.map((options: { id: number; dateRange: string }) => (
@@ -266,12 +283,17 @@ const Dashboard: React.FC = () => {
             <div>
               <DatePicker
                 selectsRange={true}
+                onCalendarOpen={handleCalendarOpenAndClearOtherFiler}
+                disabled={!widgets?.length ? true : false}
                 startDate={startDate}
                 endDate={endDate}
                 onChange={(update: any) => {
                   setDateRange(update);
                 }}
-                className="export w-[15.5rem] h-3.06  bg-transparent dark:bg-primaryDark text-dropGray dark:text-inputText shadow-shadowInput rounded-0.6 pl-3 font-Poppins font-semibold text-xs border border-borderPrimary leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-xs placeholder:text-dropGray dark:placeholder:text-inputText placeholder:leading-1.12"
+                className={`export w-[15.5rem] h-3.06  bg-transparent dark:bg-primaryDark text-dropGray dark:text-inputText shadow-shadowInput rounded-0.6 pl-4 
+                font-Poppins font-semibold text-xs border border-borderPrimary leading-1.12 
+                focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-xs
+                 placeholder:text-dropGray dark:placeholder:text-inputText placeholder:leading-1.12 ${!widgets?.length ? 'cursor-not-allowed' : ''}`}
                 placeholderText="DD/MM/YYYY - DD/MM/YYYY"
                 isClearable={true}
                 ref={datePickerRef}
@@ -279,11 +301,16 @@ const Dashboard: React.FC = () => {
               />
             </div>
             <div className="absolute right-[1.4rem] top-4 drop-icon">
-              <img className="right-6 cursor-pointer" src={calendarIcon} alt="" onClick={() => handleClickDatePickerIcon()} />
+              <img
+                className="right-6 cursor-pointer"
+                src={dateRange[0] === null && dateRange[1] === null ? calendarIcon : dateRange[0] !== null ? '' : calendarIcon}
+                alt=""
+                onClick={() => handleClickDatePickerIcon()}
+              />
             </div>
           </div>
         </div>
-        {isDrawerOpen === false ? (
+        {isManageMode === false ? (
           <Button
             text=""
             onClick={handleWidgetDrawer}
@@ -298,7 +325,8 @@ const Dashboard: React.FC = () => {
             </div>
           </Button>
         ) : (
-          <div
+          <Button
+            text=""
             className="flex justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow cursor-pointer"
             onClick={saveWidgetLayout}
           >
@@ -306,12 +334,12 @@ const Dashboard: React.FC = () => {
             <div className="brick-icon bg-cover">
               <img src={brickIcon} alt="" />
             </div>
-          </div>
+          </Button>
         )}
       </div>
-      {isDrawerOpen && <SidePanelWidgets widgetKey={widgetKey !== null ? widgetKey : ''} />}
+      {isManageMode && <SidePanelWidgets widgetKey={widgetKey !== null ? widgetKey : ''} widgetRemoved={widgetRemoved ? widgetRemoved : ''} />}
       <ResponsiveReactGridLayout
-        autoSize
+        autoSize={true}
         preventCollision={false}
         useCSSTransforms
         isDroppable
@@ -319,24 +347,29 @@ const Dashboard: React.FC = () => {
         compactType={null}
         onDrop={onDrop}
         allowOverlap={false}
-        isDraggable={isDrawerOpen}
-        isResizable={isDrawerOpen}
-        rowHeight={undefined}
+        isDraggable={isManageMode}
+        isResizable={isManageMode}
+        rowHeight={90}
         isBounded
         onLayoutChange={onLayoutChange}
+        resizeHandles={['ne']}
         style={{
-          height: `${window.location.href.includes('stage') ? '0px' : '160vh'}`,
-          maxHeight: `${window.location.href.includes('stage') ? '0px' : '156.25rem'} `
+          height: `${window.location.href.includes('stage') ? '0px' : isManageMode ? '100%' : '0'}`,
+          maxHeight: `${window.location.href.includes('stage') ? '0px' : isManageMode ? '100%' : '0'} `,
+          width: '100%'
         }}
       >
-        {widgets.map((widget) => (
-          <div key={widget.layout.i} data-grid={widget.layout}>
-            {widgetListData[widget?.widget?.widgetLocation as keyof typeof widgetListData]}
-          </div>
-        ))}
+        {widgets?.map((widget) => {
+          widgetProps.widget = widget;
+          return (
+            <div key={widget?.layout?.i} data-grid={widget?.layout}>
+              {renderWidget(widget?.widget?.widgetLocation, widgetProps as unknown as WidgetComponentProps)}
+            </div>
+          );
+        })}
       </ResponsiveReactGridLayout>
       {Boolean(widgets?.length) === false && (
-        <div className="flex flex-col items-center justify-center fixWidgetNoDataHeight">
+        <div className="flex flex-col items-center justify-center fixWidgetNoDataHeight {">
           <img src={noWidgetIcon} alt="" className="w-[3.8125rem] h-[3.8125rem]" />
           <div className="font-Poppins font-medium text-tableDuration text-noReports leading-10 pt-5">{`${
             window.location.href.includes('stage') ? 'Widgets coming soon...' : 'No widgets added'

@@ -8,9 +8,13 @@ import ProgressProvider from './progressProvider';
 import { getLocalWorkspaceId } from '../../../lib/helper';
 import { healthScoreWidgetDataService } from '../../../modules/dashboard/services/dashboard.services';
 import { HealthScoreWidgetData } from '../../widgetLayout/WidgetTypes';
-import { createSearchParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
-const HealthCard: React.FC = () => {
+import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
+
+
+const HealthCard: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
+  const { isManageMode, removeWidgetFromDashboard, widget, isShrunk } = props;
   const gradientTransform = `rotate(90)`;
   const workspaceId = getLocalWorkspaceId();
 
@@ -42,20 +46,15 @@ const HealthCard: React.FC = () => {
   const [searchParams] = useSearchParams();
   const startDate = searchParams.get('startDate');
   const endDate = searchParams.get('endDate');
-  const location = useLocation();
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (startDate && endDate) {
       fetchHealthScoreWidgetData();
     }
   }, [startDate, endDate]);
-  // eslint-disable-next-line no-unused-vars
-  const [isDrag, setIsDrag] = React.useState<boolean>(true);
 
-  const setWidgetNameAsParams = () => {
-    const params = { widgetName: 'HealthCard' };
-    navigate({ pathname: location.pathname, search: `?${createSearchParams(params)}` });
+  const handleRemove = () => {
+    removeWidgetFromDashboard(widget);
   };
 
   return (
@@ -63,11 +62,12 @@ const HealthCard: React.FC = () => {
       <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Health</h3>
       <div
         className={`flex  ${
-          isDrag ? 'justify-start w-[19.0625rem] gap-5 py-8 px-5 widget-border relative' : 'justify-between w-full py-5 px-20 border-borderPrimary'
+          isShrunk ? 'justify-start w-[19.0625rem] gap-5 py-8 px-5 border-borderPrimary ' :
+            !isManageMode ? 'justify-between w-full py-5 px-20' : 'justify-between w-full py-5 px-20 widget-border relative '
         }  items-center border-table border  dark:border-borderDark shadow-healtCardShadow dark:shadow-none bg-white dark:bg-secondaryDark  box-border rounded-0.9 mt-5 `}
       >
         <div className="flex items-center">
-          <div className={`${isDrag ? 'w-[3.8831rem]' : 'w-[3.1169rem]'}`}>
+          <div className={`${!isShrunk ? 'w-[3.1169rem]' : ' w-[3.8831rem]'}`}>
             <ProgressProvider valueStart={0} valueEnd={activitiesScoreData?.percentage ? activitiesScoreData?.percentage : 0}>
               {(value: number) => (
                 <CircularProgressbarWithChildren
@@ -83,15 +83,25 @@ const HealthCard: React.FC = () => {
             </ProgressProvider>
           </div>
           <div className="flex flex-col pl-3">
-            <div className="font-Poppins font-medium text-activityHealth leading-0.93 text-activityGray pb-1 dark:text-greyDark">Activities</div>
-            <div className="font-Poppins font-semibold text-activityPercentage text-activityGray leading-4 dark:text-white">
+            <div
+              className={`font-Poppins font-medium ${
+                !isShrunk ? 'text-activityHealth' : 'text-[0.6878rem]'
+              } leading-0.93  text-activityGray pb-1 dark:text-greyDark`}
+            >
+              Activities
+            </div>
+            <div
+              className={`font-Poppins font-semibold ${
+                !isShrunk ? 'text-activityPercentage ' : 'text-lg'
+              } text-activityGray leading-4 dark:text-white`}
+            >
               {activitiesScoreData?.percentage}%
             </div>
           </div>
         </div>
 
         <div className="flex items-center">
-          <div className="w-[49.87px]">
+          <div className={`${!isShrunk ? 'w-[3.1169rem]' : ' w-[3.8831rem]'}`}>
             <svg style={{ height: 0 }}>
               <defs>
                 <linearGradient id={'hai'} gradientTransform={gradientTransform}>
@@ -117,20 +127,22 @@ const HealthCard: React.FC = () => {
           <div className="flex flex-col pl-3">
             <div
               className={`font-Poppins font-medium ${
-                isDrag ? 'text-[0.6878rem]' : 'text-activityHealth'
+                !isShrunk ? 'text-activityHealth' : 'text-[0.6878rem]'
               } leading-0.93 text-activityGray pb-1 dark:text-greyDark`}
             >
               Members
             </div>
             <div
-              className={`font-Poppins font-semibold ${isDrag ? 'text-lg' : 'text-activityPercentage'} text-activityGray leading-4 dark:text-white`}
+              className={`font-Poppins font-semibold ${
+                !isShrunk ? 'text-activityPercentage ' : 'text-lg'
+              } text-activityGray leading-4 dark:text-white`}
             >
               {membersScoreData?.percentage}%
             </div>
           </div>
         </div>
 
-        <div className={`flex items-center ${isDrag ? 'hidden' : 'block'}`}>
+        <div className={`flex items-center ${!isShrunk ? 'block' : 'hidden'}`}>
           <div className="w-[4.4425rem]">
             <svg style={{ height: 0 }}>
               <defs>
@@ -159,12 +171,14 @@ const HealthCard: React.FC = () => {
             <div className="font-Poppins font-semibold text-2xl leading-4 dark:text-white">{overallScoreData?.percentage}%</div>
           </div>
         </div>
-        <div
-          onClick={setWidgetNameAsParams}
-          className="absolute -right-3 bg-widgetClose rounded-full flex items-center justify-center h-6 w-6 text-white text-2xl -top-3 cursor-pointer"
-        >
-          -
-        </div>
+        {isManageMode && (
+          <div
+            onClick={handleRemove}
+            className="absolute -right-3 bg-widgetClose rounded-full flex items-center justify-center h-6 w-6 text-white text-2xl -top-3 cursor-pointer"
+          >
+            -
+          </div>
+        )}
       </div>
     </div>
   );

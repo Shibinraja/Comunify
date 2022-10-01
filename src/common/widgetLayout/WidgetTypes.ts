@@ -3,6 +3,7 @@ import { SidePanelWidgetsData } from '../../modules/dashboard/interface/dashboar
 export type WidgetIdentification = {
   widgetKey: string;
   sidePanelWidgetsData?: SidePanelWidgetsData[];
+  widgetRemoved: string;
 };
 
 export type PanelWidgetsType = {
@@ -13,7 +14,8 @@ export type PanelWidgetsType = {
     h: number;
     i: string;
   };
-  widget: { widgetLocation: string; invocationType: number };
+  widget: { widgetLocation: string; invocationType: number; widgetId: string };
+  isAssigned: boolean;
 };
 
 export type WidgetsArrayBody = {
@@ -34,4 +36,12 @@ export type WidgetsArrayBody = {
 export interface HealthScoreWidgetData {
   title: string;
   percentage: number;
+}
+
+export interface WidgetComponentProps {
+  isManageMode: boolean | undefined;
+  widget: PanelWidgetsType;
+  isShrunk?: boolean;
+  // eslint-disable-next-line no-unused-vars
+  removeWidgetFromDashboard: (selectedWidget: PanelWidgetsType) => void;
 }

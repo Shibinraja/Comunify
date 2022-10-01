@@ -11,13 +11,15 @@ export interface SidePanelWidgetsList {
   type: string;
   scope: number;
   config: {
-    maxW: string;
-    minW: string;
-    height: string;
+    minH: number;
+    minW: number;
+    height: number;
+    width: number;
   };
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
+  isAssigned: boolean;
 }
 
 export interface SidePanelWidgetsData {
@@ -30,13 +32,15 @@ export interface SidePanelWidgetsData {
   type: string;
   scope: number;
   config: {
-    maxW: string;
-    minW: string;
-    height: string;
+    minH: number;
+    minW: number;
+    height: number;
+    width: number;
   };
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
+  isAssigned: boolean;
 }
 
 export interface WidgetsList {
