@@ -325,7 +325,9 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                     </div>
                   </div>
                 </div>
-              ) : null}
+              ) : (
+                <h3 className="font-Poppins font-normal text-base text-infoBlack mt-6 text-center">No data found</h3>
+              )}
             </div>
           </div>
 
