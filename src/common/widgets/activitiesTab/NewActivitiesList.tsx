@@ -2,6 +2,7 @@ import React from 'react';
 import yellowDotted from '../../../assets/images/yellow_dotted.svg';
 import { TabPanel } from 'common/tabs/TabPanel';
 import { ActivitiesWidgetData } from '../../../modules/dashboard/interface/dashboard.interface';
+import { generateDateAndTime } from '../../../lib/helper';
 
 type Props = {
   hidden: boolean;
@@ -29,7 +30,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData }) =>
                       <p className="font-medium text-xs font-Poppins">{item?.displayValue}</p>
                     </div>
                     <div className="font-Poppins text-createdAt not-italic font-normal text-createdAtGrey dark:text-greyDark">
-                      <p>{new Date(`${item?.activityTime}`).getHours()} hours ago</p>
+                      <p> {generateDateAndTime(`${item?.activityTime}`, 'HH:MM')}</p>
                     </div>
                   </div>
                 </div>

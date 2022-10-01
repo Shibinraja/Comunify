@@ -116,7 +116,7 @@ export const memberGrowthWidgetDataService = async (
 export const requestForWidgetService = async (workspaceId: string, body: RequestForWidget) => {
   try {
     const { data } = await request.post(`${API_ENDPOINT}/v1/${workspaceId}/widgets/request`, body);
-    return data?.data;
+    return data?.data?.data;
   } catch {
     showErrorToast('Request for widget failed');
     return {};
