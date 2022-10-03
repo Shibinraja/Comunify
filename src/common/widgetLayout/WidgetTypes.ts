@@ -7,6 +7,7 @@ export type WidgetIdentification = {
 };
 
 export type PanelWidgetsType = {
+  id?: string;
   layout: {
     x: number;
     y: number;
@@ -44,4 +45,11 @@ export interface WidgetComponentProps {
   isShrunk?: boolean;
   // eslint-disable-next-line no-unused-vars
   removeWidgetFromDashboard: (selectedWidget: PanelWidgetsType) => void;
+}
+
+export interface WidgetContainerProps {
+  isManageMode: boolean | undefined
+  widgets: PanelWidgetsType[],
+  setWidgets?: React.Dispatch<React.SetStateAction<PanelWidgetsType[] | []>>;
+  setTransformedWidgetData?: React.Dispatch<React.SetStateAction<unknown[] | []>>;
 }
