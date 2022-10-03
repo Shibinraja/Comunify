@@ -1,26 +1,20 @@
-import React, { Suspense, useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import brickIcon from '../../../assets/images/brick.svg';
 import calendarIcon from '../../../assets/images/calandar.svg';
 import dropDownIcon from '../../../assets/images/profile-dropdown.svg';
 import '../../../../node_modules/react-grid-layout/css/styles.css';
-import noWidgetIcon from '../../../assets/images/no-widget.svg';
-import SidePanelWidgets from 'common/widgetLayout/SidePanelWidgets';
 import DatePicker, { ReactDatePicker } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Modal from 'react-modal';
-import ReactGridLayout, { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import { convertEndDate, convertStartDate, getLocalWorkspaceId } from '../../../lib/helper';
 import { showErrorToast, showSuccessToast } from '../../../common/toast/toastFunctions';
 import { getWidgetsLayoutService, saveWidgetsLayoutService } from '../services/dashboard.services';
-import { PanelWidgetsType, WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
 import { useLocation, useNavigate, createSearchParams } from 'react-router-dom';
 import moment from 'moment';
 import Button from '../../../common/button';
-// Temporarily imported for development
-import WidgetComponents from 'common/widgets';
-import Skeleton from 'react-loading-skeleton';
 
-const ResponsiveReactGridLayout = WidthProvider(Responsive);
+import WidgetContainer from '../../../common/widgets/widgetContainer/WidgetContainer';
+
 Modal.setAppElement('#root');
 
 const Dashboard: React.FC = () => {
@@ -38,12 +32,10 @@ const Dashboard: React.FC = () => {
   ];
   const [isManageMode, setIsManageMode] = useState<boolean>(false);
   const [widgets, setWidgets] = useState<any[] | []>([]);
-  const [widgetKey, setWidgetKey] = useState<string | null>(null);
   const [transformedWidgetData, setTransformedWidgetData] = React.useState<any[]>(new Array(null));
   const dropDownRef = useRef<HTMLDivElement>(null);
   const [startingDate, setStartingDate] = React.useState<string>();
   const [endingDate, setEndingDate] = React.useState<string>();
-  const [widgetRemoved, setWidgetRemoved] = React.useState<string>();
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -79,16 +71,6 @@ const Dashboard: React.FC = () => {
     }
   }, [startDate, endDate]);
 
-  const removeWidgetFromDashboard = (selectedWidget: PanelWidgetsType) => {
-    setWidgetRemoved(selectedWidget?.widget?.widgetLocation);
-    try {
-      const newWidgetArray = widgets?.filter((data) => data?.widget?.widgetLocation !== selectedWidget.widget.widgetLocation);
-      setWidgets(newWidgetArray);
-    } catch {
-      showErrorToast('Failed to remove widget');
-    }
-  };
-
   const handleDropDownActive = (): void => {
     if (widgets.length) {
       setSelectDropDownActive((prev) => !prev);
@@ -107,27 +89,6 @@ const Dashboard: React.FC = () => {
   };
 
   const workspaceId = getLocalWorkspaceId();
-
-  const onDrop = useCallback(
-    (items: Layout[], item: Layout, e: DragEvent) => {
-      const raw = e.dataTransfer?.getData('droppableWidget');
-      if (!raw) {
-        return;
-      }
-      const droppableWidget: any = JSON.parse(raw);
-      setWidgetKey(droppableWidget?.widget?.widgetLocation);
-
-      const newWidgetArray = [...widgets];
-      const droppedWidget: PanelWidgetsType = {
-        layout: { ...droppableWidget.layout },
-        widget: { ...droppableWidget.widget },
-        isAssigned: { ...droppableWidget.isAssigned }
-      };
-      newWidgetArray.push(droppedWidget);
-      setWidgets(newWidgetArray);
-    },
-    [widgets]
-  );
 
   const handleOutsideClick = (event: MouseEvent) => {
     if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
@@ -179,26 +140,6 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  const onLayoutChange = useCallback(
-    (currentLayout: ReactGridLayout.Layout[]) => {
-      const widgetsToBeSaved = currentLayout.map((layout: Layout) => {
-        const existingWidget = widgets.find((widget) => layout.i === widget.id);
-        return {
-          id: existingWidget?.id,
-          widgetId: existingWidget?.widget?.widgetId || layout.i,
-          status: 'Active',
-          order: 1,
-          config: {
-            ...layout
-          }
-        };
-      });
-
-      setTransformedWidgetData(widgetsToBeSaved);
-    },
-    [widgets]
-  );
-
   const setSelectedDateRange = (option: string) => {
     if (option.toLocaleLowerCase().trim() === '') {
       setStartingDate(moment().startOf('week').toISOString());
@@ -216,32 +157,6 @@ const Dashboard: React.FC = () => {
       setStartingDate(moment().startOf('month').toISOString());
       setEndingDate(moment().endOf('month').toISOString());
     }
-  };
-
-  const renderWidget = (widgetLocation: string, props: React.PropsWithoutRef<WidgetComponentProps>) => {
-    /* @vite-ignore */
-    // use this while developing because vite doesn't hot reload dynamically imported components
-    const Widget = WidgetComponents[widgetLocation];
-
-    // Use dynamic import while pushing to prod
-    // const Widget = lazy(() => import(`../../../common/widgets/${widgetLocation}/${widgetLocation}`));
-    return (
-      <Suspense
-        fallback={
-          <div>
-            <Skeleton width={700} height={300} highlightColor={'#e5e7eb'} style={{ backgroundColor: 'white' }} count={1} enableAnimation />
-          </div>
-        }
-      >
-        <Widget {...props} />
-      </Suspense>
-    );
-  };
-
-  const widgetProps = {
-    isManageMode,
-    removeWidgetFromDashboard,
-    widget: {}
   };
 
   return (
@@ -337,45 +252,7 @@ const Dashboard: React.FC = () => {
           </Button>
         )}
       </div>
-      {isManageMode && <SidePanelWidgets widgetKey={widgetKey !== null ? widgetKey : ''} widgetRemoved={widgetRemoved ? widgetRemoved : ''} />}
-      <ResponsiveReactGridLayout
-        autoSize={true}
-        preventCollision={false}
-        useCSSTransforms
-        isDroppable
-        measureBeforeMount={false}
-        compactType={null}
-        onDrop={onDrop}
-        allowOverlap={false}
-        isDraggable={isManageMode}
-        isResizable={isManageMode}
-        rowHeight={90}
-        isBounded
-        onLayoutChange={onLayoutChange}
-        resizeHandles={['ne']}
-        style={{
-          height: `${window.location.href.includes('stage') ? '0px' : isManageMode ? '100%' : '0'}`,
-          maxHeight: `${window.location.href.includes('stage') ? '0px' : isManageMode ? '100%' : '0'} `,
-          width: '100%'
-        }}
-      >
-        {widgets?.map((widget) => {
-          widgetProps.widget = widget;
-          return (
-            <div key={widget?.layout?.i} data-grid={widget?.layout}>
-              {renderWidget(widget?.widget?.widgetLocation, widgetProps as unknown as WidgetComponentProps)}
-            </div>
-          );
-        })}
-      </ResponsiveReactGridLayout>
-      {Boolean(widgets?.length) === false && (
-        <div className="flex flex-col items-center justify-center fixWidgetNoDataHeight {">
-          <img src={noWidgetIcon} alt="" className="w-[3.8125rem] h-[3.8125rem]" />
-          <div className="font-Poppins font-medium text-tableDuration text-noReports leading-10 pt-5">{`${
-            window.location.href.includes('stage') ? 'Widgets coming soon...' : 'No widgets added'
-          }`}</div>
-        </div>
-      )}
+      <WidgetContainer isManageMode={isManageMode} widgets={widgets} setWidgets={setWidgets} setTransformedWidgetData={setTransformedWidgetData} />
     </>
   );
 };

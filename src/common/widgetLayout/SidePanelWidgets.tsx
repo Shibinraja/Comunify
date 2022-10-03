@@ -159,16 +159,6 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
     }
   };
 
-  //   const requestForWidgetsSchema = Yup.object().shape({
-  //     name: Yup.string().max(25).min(4).matches(whiteSpace_regex, 'Whitespace is not allowed').required('Name is required'),
-  //     description: Yup.string().required('Password is required')
-  //   });
-
-  //   const initialValues = {
-  //     name: '',
-  //     description: ''
-  //   };
-
   return (
     <div className="w-1/4 xl:w-1/5 widgetDrawerGradient left-0 top-0 pb-2 max-h-[156.25rem] min-h-screen px-7 absolute z-40 opacity-90">
       <div className="flex flex-col">
