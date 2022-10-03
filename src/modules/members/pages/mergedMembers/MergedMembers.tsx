@@ -351,23 +351,21 @@ const MergedMembers: React.FC = () => {
                         </div>
 
                         <div className="flex absolute right-8 bottom-4 items-center">
-                          {loading ? (
-                            <Skeleton width={width_90} />
-                          ) : (
-                            <label htmlFor={members.id} className="flex items-center">
-                              <input
-                                type="radio"
-                                className="hidden peer"
-                                id={members.id}
-                                value={members.id}
-                                name={members.id}
-                                checked={(checkedRadioId[members.id] as boolean) || false}
-                                onChange={handleRadioBtn}
-                              />{' '}
-                              <span className="w-3 h-3 mr-1.5 border font-normal font-Poppins text-card leading-1.31 border-[#ddd] rounded-full inline-flex peer-checked:bg-[#ABCF6B]"></span>
-                              Primary
-                            </label>
-                          )}
+                          <label htmlFor={members.id} className="flex items-center">
+                            <input
+                              type="radio"
+                              className="hidden peer"
+                              id={members.id}
+                              value={members.id}
+                              name={members.id}
+                              checked={(checkedRadioId[members.id] as boolean) || false}
+                              onChange={handleRadioBtn}
+                            />{' '}
+                            <span className="w-3 h-3 mr-1.5 border font-normal font-Poppins text-card leading-1.31 border-[#ddd] rounded-full inline-flex peer-checked:bg-[#ABCF6B]"></span>
+                            Primary
+                          </label>
+
+                          {/* } */}
                         </div>
                       </div>
                       <div className="absolute right-7 top-5 cursor-pointer">
