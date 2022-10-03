@@ -444,6 +444,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                   <div className="relative flex items-center">
                     <DatePicker
                       selected={startDate}
+                      maxDate={endDate}
                       onChange={(date: Date, event: ChangeEvent<Date>) => selectActiveBetweenDate(event, date, 'start')}
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
@@ -463,6 +464,10 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                   <div className="relative flex items-center">
                     <DatePicker
                       selected={endDate}
+                      minDate={startDate}
+                      selectsEnd
+                      startDate={startDate}
+                      endDate={endDate}
                       onChange={(date: Date, event: ChangeEvent<Date>) => selectActiveBetweenDate(event, date, 'end')}
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
@@ -596,13 +601,19 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                 </div>
               </div>
             )}
-            <div className="buttons px-2">
+            <div className="buttons px-2 flex mt-1.56">
+              <Button
+                disabled={memberColumnsLoader ? true : false}
+                type="button"
+                text="Reset"
+                className="border border-backdropColor text-black rounded-0.31 h-2.063 w-1/2 mr-1 cursor-pointer text-card font-Manrope font-semibold leading-1.31 hover:text-white hover:bg-backdropColor"
+              />
               <Button
                 disabled={memberColumnsLoader ? true : false}
                 onClick={submitFilterChange}
                 type="button"
                 text="Apply"
-                className={`border-none btn-save-modal rounded-0.31 h-2.063 w-full mt-1.56 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${
+                className={`border-none btn-save-modal rounded-0.31 h-2.063 w-1/2 ml-1 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${
                   memberColumnsLoader ? 'cursor-not-allowed' : ''
                 }`}
               />

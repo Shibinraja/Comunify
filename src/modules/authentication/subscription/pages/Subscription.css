@@ -16,11 +16,17 @@
 ::-webkit-scrollbar {
   width: 0px;
 }
+@media screen and (min-width: 1700px) {
+  .layout-height {
+    height: calc(100vh - 13rem);
+  }
+}
 
-.auth-layout-subscription {
+.auth-layout-section {
   background-image: url('../../../../assets/images/sign-up-bg.svg');
   background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-size: 50%;
-  background-position: left;
+  
+  background-size: 90%;
+  background-position:top left;
+  background-color: #f6fdff;
 }

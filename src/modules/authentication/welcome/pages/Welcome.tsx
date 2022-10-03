@@ -31,33 +31,39 @@ const Welcome: React.FC = () => {
   };
 
   return (
-    <div className="welcome">
-      <div className="auth-layout-welcome">
-        <div className="flex w-full height-calc container mx-auto">
-          <div className="w-1/2 rounded-r-lg flex items-center justify-center p-28 bg-left overflow-hidden">
-            <img src={bgWelcomeImage} alt="" className="object-cover" />
+
+
+    <div className="flex flex-col h-auto layout-height">
+      <div className=" flex h-full overflow-auto ">
+
+
+        <div className="w-3/5 2xl:w-1/2 auth-layout-section flex items-center justify-center 3xl:justify-end pr-0   3xl:pr-16 py-10">
+          <div className="flex items-center justify-center">
+            <img src={bgWelcomeImage} alt="" className="w-9/12 xl:w-[621px] 3xl:w-full object-cover" />
           </div>
-          <div className="flex justify-center w-1/2 3xl:items-center">
-            <div className="flex flex-col pt-16 overflow-scroll pb-6">
-              <div className="w-25.9">
-                <h1 className="font-Inter font-bold text-signIn text-neutralBlack leading-2.8">Welcome to Comunify!</h1>{' '}
-                <p className="mt-0.81 text-desc font-normal leading-1.8 font-Inter text-lightGray max-w-sm">
+        </div>
+
+
+        <div className="flex justify-center w-1/2 xl:items-center 3xl:justify-start  pl-0 3xl:pl-16 pb-16">
+          <div className="flex flex-col pt-16 pb-6 ">
+            <div className="w-25.9">
+              <h1 className="font-Inter font-bold text-signIn text-neutralBlack leading-2.8">Welcome to Comunify!</h1>{' '}
+              <p className="mt-0.81 text-desc font-normal leading-1.8 font-Inter text-lightGray max-w-sm">
                   Thank you for choosing comunify. Let’s get to know your communities better.
-                </p>
-                <div className="subscriptionCard w-[95%] mx-auto">
-                  {comunifySubscriptionPlan?.map((data: SubscriptionPackages) => (
-                    <SubscriptionCard key={data.id} subscriptionData={data} />
-                  ))}
-                </div>
+              </p>
+              <div className="subscriptionCard  mx-auto  w-25.9 h-[417px]">
+                {comunifySubscriptionPlan?.map((data: SubscriptionPackages) => (
+                  <SubscriptionCard key={data.id} subscriptionData={data} />
+                ))}
               </div>
-              <div className="mt-5">
-                <button
-                  className="free-trial-btn font-Inter text-desc w-25.9 font-normal leading-1.8 text-lightBlue box-border rounded-lg bg-white py-2.5 px-4 shadow-trialButtonShadow "
-                  onClick={selectFreeTrialPlan}
-                >
+            </div>
+            <div className="mt-5">
+              <button
+                className="free-trial-btn font-Inter text-desc w-25.9 h-3.6 font-normal leading-1.8 text-lightBlue box-border rounded-lg bg-white py-2.5 px-4 shadow-trialButtonShadow "
+                onClick={selectFreeTrialPlan}
+              >
                   Continue with 14 Days Free Trial
-                </button>
-              </div>
+              </button>
             </div>
           </div>
         </div>

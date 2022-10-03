@@ -84,7 +84,12 @@ const SignIn: React.FC = () => {
                       label="Username"
                       id="userName"
                       name="userName"
-                      className="h-4.5 pr-10 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
+                      // eslint-disable-next-line max-len
+                      className={`h-4.5 pr-10 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${
+                        touched.userName && errors.userName
+                          ? 'border-lightRed h-4.5 pr-10 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
+                          : ''
+                      }`}
                       onBlur={handleBlur}
                       onChange={handleChange}
                       value={values.userName}
@@ -99,7 +104,12 @@ const SignIn: React.FC = () => {
                       label="Password"
                       id="password"
                       name="password"
-                      className="h-4.5 rounded-lg bg-white p-2.5 pr-10 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border"
+                      // eslint-disable-next-line max-len
+                      className={`h-4.5 rounded-lg bg-white p-2.5 pr-10 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${
+                        touched.password && errors.password
+                          ? 'boder-lightRed h-4.5 rounded-lg bg-white p-2.5 pr-10 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
+                          : ''
+                      }`}
                       onBlur={handleBlur}
                       onChange={handleChange}
                       value={values.password}
@@ -114,23 +124,20 @@ const SignIn: React.FC = () => {
                       )}
                     </div>
                   </div>
-                  <div className='flex justify-between items-center'>
-                    
-                  <div className='flex items-center'>
-                  <div className="mr-2 mt-1">
-                  <input
-                    type="checkbox"
-                    className="checkbox cursor-pointer"
-                    
-                  />
-                </div>
-<span className='text-sm text-secondaryGray font-normal font-Inter'>Remember me</span>
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center">
+                      <div className="mr-2 mt-1">
+                        <input type="checkbox" className="checkbox cursor-pointer" />
+                      </div>
+                      <span className="text-sm text-secondaryGray font-normal font-Inter">Remember me</span>
+                    </div>
+                    <div className="font-Inter text-secondaryGray text-sm font-normal leading-2.8 transition ease-in duration-300 ">
+                      <Link to="forgot-password" className="hover:text-letsSignInSignUp hover:underline">
+                        Forgot your password?
+                      </Link>
+                    </div>
                   </div>
-                  <div className="font-Inter text-secondaryGray text-sm font-normal leading-2.8 transition ease-in duration-300 ">
-                    <Link to="forgot-password" className='hover:text-letsSignInSignUp hover:underline'>Forgot your password?</Link>
-                  </div>
-                  </div>
-                  
+
                   <Button
                     text="Sign In"
                     type="submit"
@@ -148,7 +155,7 @@ const SignIn: React.FC = () => {
                     <img src={socialLogo} alt="" className="pr-0.781" />
                     Continue with Google
                   </div>
-                 
+
                   <div className="font-Poppins text-secondaryGray text-center text-base font-normal mt-5  text-signLink ">
                     <h3>
                       Don’t have an account yet?{' '}

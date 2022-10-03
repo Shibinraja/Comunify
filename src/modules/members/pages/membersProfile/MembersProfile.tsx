@@ -1,3 +1,4 @@
+/* eslint-disable no-constant-condition */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable max-len */
 import useDebounce from '@/hooks/useDebounce';
@@ -6,7 +7,7 @@ import Button from 'common/button';
 import Input from 'common/input';
 import MergeModal from 'common/modals/MergeModal';
 import { MergeModalPropsEnum } from 'common/modals/MergeModalTypes';
-import { count_5, width_90 } from 'constants/constants';
+import { width_90 } from 'constants/constants';
 import loaderSlice from 'modules/authentication/store/slices/loader.slice';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
 import React, { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from 'react';
@@ -59,7 +60,8 @@ const MembersProfile: React.FC = () => {
   const [platform, setPlatform] = useState<string | undefined>();
   const [tagDropDownOption, setTagDropDownOption] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | unknown>('');
-
+  const [tagAssignLoading, setTagAssignLoading] = useState<boolean>(false);
+  const [tagUnAssignLoading, setTagUnAssignLoading] = useState<boolean>(true);
   const {
     membersActivityData: activityData,
     membersProfileActivityGraphData: activityGraphData,
@@ -68,6 +70,9 @@ const MembersProfile: React.FC = () => {
 
   const memberProfileCardLoader = useSkeletonLoading(membersSlice.actions.getMembersActivityGraphData.type);
   const activityDataLoader = useSkeletonLoading(membersSlice.actions.getMembersActivityDataInfiniteScroll.type);
+  const tagsAssignLoader = useSkeletonLoading(settingsSlice.actions.assignTags.type);
+  // const tagsUnAssignLoader = useSkeletonLoading(settingsSlice.actions.unAssignTags.type);
+
   const platformData = usePlatform();
 
   const tagDropDownRef = useRef<HTMLDivElement>(null);
@@ -99,6 +104,7 @@ const MembersProfile: React.FC = () => {
     document.addEventListener('click', handleIntegrationDropDownClick);
     document.addEventListener('click', handleDateFilterDropDownClick);
     localStorage.removeItem('merge-membersId');
+    dispatch(membersSlice.actions.setMemberProfileCardData([]));
     return () => {
       document.removeEventListener('click', handleOutsideClick);
       document.removeEventListener('click', handleDropDownClick);
@@ -125,6 +131,11 @@ const MembersProfile: React.FC = () => {
   }, [clearValue]);
 
   useEffect(() => {
+    setTagUnAssignLoading(true);
+  }, [memberProfileCardData]);
+
+  useEffect(() => {
+    setTagAssignLoading(false);
     if (TagFilterResponseData?.length && searchText) {
       setTagDropDownOption(true);
     }
@@ -321,6 +332,7 @@ const MembersProfile: React.FC = () => {
     if (errorMessage || !searchText) {
       setErrorMessage(errorMessage || 'Tag Name is a required field');
     } else {
+      setTagAssignLoading(true);
       dispatch(
         settingsSlice.actions.assignTags({
           memberId: memberId!,
@@ -337,16 +349,19 @@ const MembersProfile: React.FC = () => {
 
   // Tag Name un-assign functionality
   const handleUnAssignTagsName = (id: string): void => {
-    dispatch(
-      settingsSlice.actions.unAssignTags({
-        memberId: memberId!,
-        unAssignTagBody: {
-          tagId: id,
-          type: 'Member' as AssignTypeEnum.Member
-        },
-        workspaceId: workspaceId!
-      })
-    );
+    if (tagUnAssignLoading) {
+      setTagUnAssignLoading(false);
+      dispatch(
+        settingsSlice.actions.unAssignTags({
+          memberId: memberId!,
+          unAssignTagBody: {
+            tagId: id,
+            type: 'Member' as AssignTypeEnum.Member
+          },
+          workspaceId: workspaceId!
+        })
+      );
+    }
   };
 
   const MergeModalComponent = useMemo(() => {
@@ -356,14 +371,14 @@ const MembersProfile: React.FC = () => {
   }, [isModalOpen]);
 
   return (
-    <div className="flex pt-3.93 w-full">
+    <div className="flex pt-3.93 w-full mb-8">
       <div className="flex flex-col w-full">
         <div className="p-5 flex flex-col box-border  rounded-0.6 shadow-contactCard app-input-card-border">
           <div className="flex justify-between items-center relative">
             <div className="font-Poppins font-semibold text-base leading-9 text-accountBlack">Member Activity by Source</div>
             <div className="select relative">
               <div
-                className="flex justify-around items-center cursor-pointer box-border w-9.59 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border "
+                className="flex justify-between  pl-3 pr-5 items-center cursor-pointer box-border w-9.59 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border "
                 ref={dropDownRef}
                 onClick={handleDropDownActive}
               >
@@ -374,11 +389,11 @@ const MembersProfile: React.FC = () => {
               </div>
               {isSelectDropDownActive && (
                 <div
-                  className="absolute flex flex-col text-left px-5 pt-2  cursor-pointer box-border w-full bg-white z-40 rounded-0.6 shadow-contactCard pb-2 app-input-card-border"
+                  className="absolute flex flex-col text-left px-2 pt-2  cursor-pointer box-border w-full bg-white z-40 rounded-0.6 shadow-contactCard pb-2 app-input-card-border"
                   onClick={handleDropDownActive}
                 >
                   <div
-                    className='className="rounded-0.3 h-1.93 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack hover:bg-signUpDomain transition ease-in duration-100'
+                    className="rounded-0.3 h-1.93 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack hover:bg-signUpDomain px-2 px-2"
                     onClick={() => selectPlatformToDisplayOnGraph('All')}
                   >
                     All
@@ -387,7 +402,7 @@ const MembersProfile: React.FC = () => {
                     <div key={`${data?.id + data?.name}`}>
                       {data?.isConnected && (
                         <div
-                          className="rounded-0.3 h-1.93 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack hover:bg-signUpDomain transition ease-in duration-100"
+                          className="rounded-0.3 h-1.93 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack hover:bg-signUpDomain px-2"
                           onClick={() => selectPlatformToDisplayOnGraph(data?.name)}
                         >
                           {data?.name}
@@ -403,127 +418,149 @@ const MembersProfile: React.FC = () => {
             <MembersProfileGraph activityGraphData={activityGraphData} />
           </div>
         </div>
-        <div className="flex pt-2.18 items-center">
+        <div className="flex flex-col xl:flex-row pt-2.18 items-start xl:items-center justify-between">
           {memberProfileCardLoader ? (
             <div className="flex flex-col w-full">
-              <Skeleton width={width_90} />
+              <div className="font-Poppins font-normal text-xs leading-4 text-listGray">Last Active Date</div>
+              <div className="font-Poppins font-semibold text-base leading-6 text-accountBlack">
+                <Skeleton width={width_90} />
+              </div>
             </div>
-          ) : (
+          ) : memberProfileCardData?.length ? (
             memberProfileCardData?.map((data: MemberProfileCard) => (
-              <div key={data?.id + data?.name} className="flex flex-col w-full">
+              <div key={data?.id + data?.name} className="flex flex-col ">
                 <div className="font-Poppins font-normal text-xs leading-4 text-listGray">Last Active Date</div>
                 <div className="font-Poppins font-semibold text-base leading-6 text-accountBlack">
-                  {data?.lastActivity ? generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY') : 'Last active date is not available'}
+                  {memberProfileCardLoader ? (
+                    <Skeleton width={width_90} />
+                  ) : data?.lastActivity ? (
+                    generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY')
+                  ) : (
+                    'Last active date is not available'
+                  )}
                 </div>
               </div>
             ))
+          ) : (
+            <div className="flex flex-col w-full"></div>
           )}
 
-          <div className="select relative mr-2 float-right">
-            <div
-              className="flex justify-around items-center cursor-pointer box-border w-9.59 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border"
-              ref={integrationDropDownRef}
-              onClick={handleIntegrationDropDownActive}
-            >
-              <div className="font-Poppins font-semibold text-card text-memberDay leading-4">
-                {selectedIntegration ? selectedIntegration : 'All Integrations'}
-              </div>
-              <div>
-                <img src={dropDownIcon} alt="" className={isIntegrationDropDownActive ? 'rotate-180' : 'rotate-0'} />
-              </div>
-            </div>
-            {isIntegrationDropDownActive && (
+          <div className="flex mt-3 xl:mt-0 relative">
+            <div className="select relative mr-2 float-right">
               <div
-                className="absolute flex flex-col text-left pt-2 px-2 cursor-pointer box-border w-full bg-white z-40 rounded-0.6 shadow-contactCard pb-2 app-input-card-border"
+                className="flex justify-between pl-3 pr-5 items-center cursor-pointer box-border w-[173px] h-3.06 rounded-0.6 shadow-contactCard app-input-card-border"
+                ref={integrationDropDownRef}
                 onClick={handleIntegrationDropDownActive}
               >
-                <div className="w-full hover:bg-signUpDomain rounded-0.3 transition ease-in duration-100">
-                  <div
-                    className="h-1.93 px-3 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack "
-                    onClick={() => selectPlatformForActivityScroll('All Integration')}
-                  >
-                    All Integrations
-                  </div>
+                <div className="font-Poppins font-semibold text-card text-memberDay leading-4">
+                  {selectedIntegration ? selectedIntegration : 'All Integrations'}
                 </div>
-                {platformData.map((options: PlatformResponse) => (
-                  <div key={`${options?.id + options?.name}`} className="w-full hover:bg-signUpDomain rounded-0.3 transition ease-in duration-100">
-                    {options?.isConnected && (
-                      <div
-                        className="h-1.93 px-3 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack "
-                        onClick={() => selectPlatformForActivityScroll(options?.name)}
-                      >
-                        {options?.name}
-                      </div>
-                    )}
+                <div>
+                  <img src={dropDownIcon} alt="" className={isIntegrationDropDownActive ? 'rotate-180' : 'rotate-0'} />
+                </div>
+              </div>
+              {isIntegrationDropDownActive && (
+                <div
+                  className="absolute flex flex-col text-left pt-2 px-2 cursor-pointer box-border w-full bg-white z-40 rounded-0.6 shadow-contactCard pb-2 app-input-card-border"
+                  onClick={handleIntegrationDropDownActive}
+                >
+                  <div className="w-full hover:bg-signUpDomain rounded-0.3 transition ease-in duration-100">
+                    <div
+                      className="h-1.93 px-3 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack "
+                      onClick={() => selectPlatformForActivityScroll('All Integration')}
+                    >
+                      All Integrations
+                    </div>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
-          <div className="select relative" ref={dateFilterDropDownRef}>
-            <div
-              className="flex justify-around items-center cursor-pointer box-border w-9.59 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border"
-              onClick={handleFilterDropDownActive}
-            >
-              <div className="font-Poppins font-semibold text-card text-memberDay leading-4">Filters</div>
-              <div>
-                <img src={dropDownIcon} alt="" className={isFilterDropDownActive ? 'rotate-180' : 'rotate-0'} />
-              </div>
+                  {platformData.map((options: PlatformResponse) => (
+                    <div key={`${options?.id + options?.name}`} className="w-full hover:bg-signUpDomain rounded-0.3 transition ease-in duration-100">
+                      {options?.isConnected && (
+                        <div
+                          className="h-1.93 px-3 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack "
+                          onClick={() => selectPlatformForActivityScroll(options?.name)}
+                        >
+                          {options?.name}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-            {isFilterDropDownActive && (
-              <div className="absolute flex flex-col text-left px-2 pt-2  cursor-pointer box-border w-full bg-white z-40 rounded-0.6 shadow-contactCard pb-2 app-input-card-border">
-                <div className="relative flex items-center">
-                  <DatePicker
-                    ref={datePickerRefStart}
-                    selected={fromDate}
-                    onChange={(date: Date) => setFromDate(date)}
-                    className=" h-3.06 app-result-card-border shadow-reportInput w-full rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
-                    placeholderText="From"
-                    dateFormat="dd/MM/yyyy"
-                  />
-                  <img
-                    className="absolute icon-holder right-4 cursor-pointer"
-                    src={calendarIcon}
-                    alt=""
-                    onClick={() => handleClickDatePickerIcon('start')}
-                  />
-                </div>
-                <div className="relative flex items-center pt-1">
-                  <DatePicker
-                    selected={toDate}
-                    ref={datePickerRefEnd}
-                    onChange={(date: Date) => setToDate(date)}
-                    className=" h-3.06 app-result-card-border shadow-reportInput w-full rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
-                    placeholderText="To"
-                    dateFormat="dd/MM/yyyy"
-                  />
-                  <img
-                    className="absolute icon-holder right-4 cursor-pointer"
-                    src={calendarIcon}
-                    alt=""
-                    onClick={() => handleClickDatePickerIcon('end')}
-                  />
+            <div className="select relative" ref={dateFilterDropDownRef}>
+              <div
+                className="flex justify-between pl-3 pr-5 items-center cursor-pointer box-border w-9.59 h-3.06 rounded-0.6 shadow-contactCard app-input-card-border"
+                onClick={handleFilterDropDownActive}
+              >
+                <div className="font-Poppins font-semibold text-card text-memberDay leading-4">Filters</div>
+                <div>
+                  <img src={dropDownIcon} alt="" className={isFilterDropDownActive ? 'rotate-180' : 'rotate-0'} />
                 </div>
               </div>
-            )}
+              {isFilterDropDownActive && (
+                <div className="absolute flex flex-col text-left px-2 pt-2  cursor-pointer box-border w-full bg-white z-40 rounded-0.6 shadow-contactCard pb-2 app-input-card-border">
+                  <div className="relative flex items-center">
+                    <DatePicker
+                      ref={datePickerRefStart}
+                      selected={fromDate}
+                      maxDate={toDate}
+                      onChange={(date: Date) => setFromDate(date)}
+                      className=" h-3.06 app-result-card-border shadow-reportInput w-full rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
+                      placeholderText="From"
+                      dateFormat="dd/MM/yyyy"
+                    />
+                    <img
+                      className="absolute icon-holder right-4 cursor-pointer"
+                      src={calendarIcon}
+                      alt=""
+                      onClick={() => handleClickDatePickerIcon('start')}
+                    />
+                  </div>
+                  <div className="relative flex items-center pt-1">
+                    <DatePicker
+                      selected={toDate}
+                      ref={datePickerRefEnd}
+                      minDate={fromDate}
+                      selectsEnd
+                      startDate={fromDate}
+                      endDate={toDate}
+                      onChange={(date: Date) => setToDate(date)}
+                      className=" h-3.06 app-result-card-border shadow-reportInput w-full rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
+                      placeholderText="To"
+                      dateFormat="dd/MM/yyyy"
+                    />
+                    <img
+                      className="absolute icon-holder right-4 cursor-pointer"
+                      src={calendarIcon}
+                      alt=""
+                      onClick={() => handleClickDatePickerIcon('end')}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
         <div className="mt-1.56 pt-8 px-1.62 box-border w-full rounded-0.6 shadow-contactCard app-input-card-border pb-5">
-          {memberProfileCardLoader ? (
-            <Skeleton width={width_90} count={count_5} />
-          ) : (
-            memberProfileCardData?.map((data: MemberProfileCard) => (
-              <div key={data?.id + data?.name} className="flex justify-between ">
-                <div className="font-Poppins text-card leading-4 font-medium">
-                  {' '}
-                  {data?.lastActivity ? generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY') : 'Last active date is not available'}
-                </div>
-                <div onClick={navigateToActivities} className="font-Poppins font-normal leading-4 text-listGray text-preview cursor-pointer">
-                  Preview All
-                </div>
+          {memberProfileCardData?.map((data: MemberProfileCard) => (
+            <div key={data?.id + data?.name} className="flex justify-between ">
+              <div className="font-Poppins text-card leading-4 font-medium">
+                {' '}
+                {memberProfileCardLoader ? (
+                  <Skeleton width={width_90} />
+                ) : data?.lastActivity ? (
+                  generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY')
+                ) : (
+                  'Last active date is not available'
+                )}
               </div>
-            ))
-          )}
+              {activityData?.result?.length ? (
+                <div onClick={navigateToActivities} className="font-Poppins font-normal leading-4 text-listGray text-preview cursor-pointer">
+                  {memberProfileCardLoader ? <Skeleton width={width_90} /> : 'Preview All'}
+                </div>
+              ) : null}
+            </div>
+          ))}
 
           <div
             onScroll={handleScroll}
@@ -543,13 +580,13 @@ const MembersProfile: React.FC = () => {
                   <div className="flex flex-col pl-0.89">
                     <div className="font-Poppins font-normal text-card leading-4">{data?.displayValue}</div>
                     <div className="font-Poppins left-4 font-normal text-profileEmail text-duration">
-                      {new Date(`${data?.activityTime}`).getHours()} hours ago
+                      {generateDateAndTime(`${data?.activityTime}`, 'HH:MM')}
                     </div>
                   </div>
                 </div>
               ))
             ) : (
-              <div className="font-Poppins font-semibold text-base leading-9 text-accountBlack">Member activity is not available</div>
+              <div className="font-Poppins font-semibold text-base leading-9 text-listGray flex justify-center">Member activity is not available</div>
             )}
           </div>
         </div>
@@ -560,7 +597,7 @@ const MembersProfile: React.FC = () => {
             <div className="profile-card items-center btn-save-modal justify-center pro-bag rounded-t-0.6 w-18.125 shadow-contactBtn box-border h-6.438 "></div>
             <div className="flex flex-col profile-card items-center justify-center bg-white rounded-b-0.6 w-18.125 shadow-contactCard box-border h-11.06">
               <div className="-mt-24">
-                <Skeleton circle height="100%" />
+                <Skeleton circle width={'100px'} className="bg-cover bg-center border-5 h-100" />
               </div>
               <div className="mt-0.688 text-profileBlack font-semibold font-Poppins leading-1.31 text-trial">
                 <Skeleton width={width_90} />
@@ -568,11 +605,11 @@ const MembersProfile: React.FC = () => {
               <div className="text-center pt-0.125 font-Poppins text-profileBlack text-member">
                 <Skeleton width={width_90} />
               </div>
-              <div className="flex gap-1 pt-1.12  mt-2 loader-avatar">
+              {/* <div className="flex gap-1 pt-1.12  mt-2 loader-avatar">
                 <div>
                   <Skeleton circle height="100%" />
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         ) : (
@@ -588,11 +625,11 @@ const MembersProfile: React.FC = () => {
                   {data?.email} || {data?.organization}
                 </div>
                 <div className="flex gap-1 pt-1.12">
-                  {/* {data?.platforms.map((platformData) => (
+                  {data?.platforms.map((platformData) => (
                     <div key={`${platformData?.id + platformData?.name}`}>
                       <img src={platformData?.platformLogoUrl} alt="" className="rounded-full w-[1.0012rem] h-[1.0012rem]" />
                     </div>
-                  ))} */}
+                  ))}
                 </div>
               </div>
             </div>
@@ -670,8 +707,11 @@ const MembersProfile: React.FC = () => {
                       />
                       <Button
                         type="submit"
+                        disabled={tagsAssignLoader || tagAssignLoading}
                         text="SAVE"
-                        className="save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-5.25 h-2.81  border-none btn-save-modal"
+                        className={`save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-5.25 h-2.81  border-none btn-save-modal ${
+                          tagsAssignLoader ? ' opacity-50 cursor-not-allowed' : ''
+                        }`}
                       />
                     </div>
                   </form>
@@ -689,7 +729,7 @@ const MembersProfile: React.FC = () => {
                       className="labels flex  items-center px-2  h-8 rounded bg-tagSection cursor-pointer"
                       key={tag.id}
                     >
-                      <div className="font-Poppins text-profileBlack font-normal text-card leading-4 pr-4 tags-ellipse">{tag.name}</div>
+                      <div className="font-Poppins text-profileBlack font-normal text-card leading-4 pr-1 tags-ellipse capitalize">{tag.name}</div>
                       <div className="pl-2">
                         <img src={closeIcon} alt="" onClick={() => handleUnAssignTagsName(tag.id)} />
                       </div>

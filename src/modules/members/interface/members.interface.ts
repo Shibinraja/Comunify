@@ -188,6 +188,11 @@ export type MergeMembersDataResult = {
   platform: {
     platformLogoUrl: string;
   };
+  platforms: {
+    id: string;
+    name: string;
+    platformLogoUrl: string;
+  }[];
 };
 
 export type MergeMembersDataResponse = {
@@ -265,7 +270,7 @@ export interface MemberProfileCard {
   platformMemberId: string;
   createdAt: Date | string;
   updatedAt: Date | string;
-  platforms?: {
+  platforms: {
     id: string;
     name: string;
     platformLogoUrl: string;

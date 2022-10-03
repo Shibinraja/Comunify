@@ -9,7 +9,7 @@ type Props = {
 };
 
 const Subscription: React.FC<Props> = ({ hidden }) => {
-  const [toggle, settoggle] = useState<boolean>(false);
+  const [toggle, setToggle] = useState<boolean>(false);
   return (
     <TabPanel hidden={hidden}>
       <div className="subscription mt-2.625 ">
@@ -106,7 +106,7 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
             </div>
             <div className="flex gap-4 items-center">
               <div className="text-renewalLightGray text-trial font-medium leading-1.31 font-Poppins dark:text-white">NO</div>
-              <ToggleButton value={toggle} onChange={() => settoggle(toggle ? false : true)} />
+              <ToggleButton value={toggle} onChange={() => setToggle(toggle ? false : true)} />
               <div className="text-trial font-medium leading-1.31 font-Poppins dark:text-white">YES</div>
             </div>
           </div>

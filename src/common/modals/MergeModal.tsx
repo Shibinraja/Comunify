@@ -6,13 +6,12 @@ import Button from 'common/button';
 import { MergeMembersDataResponse, MergeMembersDataResult } from 'modules/members/interface/members.interface';
 import { getMemberSuggestionList } from 'modules/members/services/members.services';
 import { memberSuggestionType } from 'modules/members/services/service.types';
-import React, { ChangeEvent, Fragment, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, Fragment, useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { useNavigate, useParams } from 'react-router-dom';
 import searchIcon from '../../assets/images/search.svg';
+import { MemberLoader } from '../Loader/MemberLoader';
 import { MergeModalProps } from './MergeModalTypes';
-import Skeleton from 'react-loading-skeleton';
-import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 
 const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
   const { workspaceId, memberId } = useParams();
@@ -211,17 +210,29 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
           </div>
         </div>
         {!loading && !suggestionList.result?.length && (
-          <div className="font-Poppins font-medium text-tableDuration text-lg leading-10 pt-8 pl-2"> No data found</div>
+          <div className="font-Poppins font-medium text-tableDuration text-lg leading-10 pt-8 pl-2 max-h-96 mb-8 height-member-merge">
+            {' '}
+            No result found
+          </div>
         )}
-        <div className="flex flex-col gap-5 overflow-y-scroll member-section mt-1.8 max-h-96 height-member-merge " onScroll={handleScroll}>
-          {loading && !preventLoading ? (
-            <div className="flex flex-col  gap-5 overflow-scroll ">
-              <Skeleton width={500} className={'my-4'} count={6} />
-            </div>
-          ) : (
-            suggestionList?.result &&
-            suggestionList?.result.map((member: MergeMembersDataResult, index: number) => (
-              <div className="flex border-b border-activitySubCard pb-4 pt-6" key={index}>
+
+        {loading && !preventLoading && (
+          <div className="flex flex-col gap-5 overflow-y-scroll member-section mt-1.8 max-h-96 height-member-merge ">
+            {Array.from({ length: 10 }, (_, i) => i + 1).map((type: number) => (
+              <Fragment key={type}>
+                <MemberLoader />
+              </Fragment>
+            ))}
+          </div>
+        )}
+        {suggestionList.result.length > 0 && (
+          <div
+            id="scrollableDiv"
+            className="flex flex-col gap-5 overflow-y-scroll member-section mt-1.8 max-h-96 height-member-merge "
+            onScroll={handleScroll}
+          >
+            {suggestionList?.result.map((member: MergeMembersDataResult, index: number) => (
+              <div className="flex border-b border-activitySubCard pb-4" key={index}>
                 <div className="mr-0.34">
                   <input
                     type="checkbox"
@@ -241,16 +252,17 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
                   <div className="text-tagEmail font-Poppins font-normal leading-1.31 text-email pl-1">
                     {getHighlightedText(member.email, searchSuggestion)} | {member.organization}
                   </div>
-                  <div className="flex mt-2.5">
+                  <div className="flex mt-1">
                     <div className="mr-0.34 w-1.001 h-1.001">
                       <img src={member.platform.platformLogoUrl} alt="" />
                     </div>
                   </div>
                 </div>
               </div>
-            ))
-          )}
-        </div>
+            ))}
+            {loading && <MemberLoader />}
+          </div>
+        )}
         <div className="flex justify-end mt-1.8 pb-53 ">
           <Button
             type="button"
@@ -262,7 +274,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
             type="button"
             text="SUBMIT"
             className={`submit border-none text-white font-Poppins text-error font-medium leading-1.31 cursor-pointer w-5.25 h-2.81 rounded shadow-contactBtn btn-save-modal ${
-              !selectedMembers.length ? 'cursor-not-allowed' : ''
+              !selectedMembers.length ? 'opacity-50 cursor-not-allowed' : ''
             }`}
             onClick={navigateToReviewMerge}
           />
