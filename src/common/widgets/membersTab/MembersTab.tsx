@@ -94,7 +94,7 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
             </TabSelector>
           </nav>
           {!memberWidgetData?.length && (
-            <div className="flex items-center justify-center font-Poppins font-normal text-xs text-infoBlack pt-5">No data available</div>
+            <div className="flex items-center justify-center font-Poppins font-normal text-xs text-infoBlack pt-5 h-14.375">No data available</div>
           )}
           <div className="h-14.375 items-center relative overflow-y-auto ml-1.661 block section">
             <ActiveMembersList hidden={false} membersWidgetData={memberWidgetData ? memberWidgetData : []} />

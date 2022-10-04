@@ -75,7 +75,7 @@ const ActivitiesTab: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
             </TabSelector>
           </nav>
           {!activitiesWidgetResponse?.length && (
-            <div className="flex items-center justify-center font-Poppins font-normal text-xs text-infoBlack pt-5">No data available</div>
+            <div className="flex items-center justify-center font-Poppins font-normal text-xs text-infoBlack pt-5 h-14.375">No data available</div>
           )}
           <div className="h-14.375 items-center relative overflow-y-auto block section ">
             <NewActivitiesList hidden={false} activitiesWidgetData={activitiesWidgetResponse ? activitiesWidgetResponse : []} />
