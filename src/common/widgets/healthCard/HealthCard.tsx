@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 /* eslint-disable max-len */
 import React, { useEffect } from 'react';
 import { buildStyles, CircularProgressbarWithChildren } from 'react-circular-progressbar';
@@ -12,17 +13,18 @@ import { useSearchParams } from 'react-router-dom';
 
 import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
 
-
 const HealthCard: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
-  const { isManageMode, removeWidgetFromDashboard, widget, isShrunk } = props;
+  const { isManageMode, removeWidgetFromDashboard, widget, isShrunk, isSidePanelOpen } = props;
   const gradientTransform = `rotate(90)`;
   const workspaceId = getLocalWorkspaceId();
 
   const [healthScoreData, setHealthScoreData] = React.useState<HealthScoreWidgetData[] | []>([]);
 
   React.useEffect(() => {
-    fetchHealthScoreWidgetData();
-  }, []);
+    if (!isManageMode && !isSidePanelOpen) {
+      fetchHealthScoreWidgetData();
+    }
+  }, [isManageMode]);
 
   // eslint-disable-next-line space-before-function-paren
   const fetchHealthScoreWidgetData = async () => {
@@ -48,8 +50,10 @@ const HealthCard: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
   const endDate = searchParams.get('endDate');
 
   useEffect(() => {
-    if (startDate && endDate) {
-      fetchHealthScoreWidgetData();
+    if (!isManageMode && !isSidePanelOpen) {
+      if (startDate && endDate) {
+        fetchHealthScoreWidgetData();
+      }
     }
   }, [startDate, endDate]);
 
@@ -62,13 +66,19 @@ const HealthCard: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
       <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Health</h3>
       <div
         className={`flex  ${
-          isShrunk ? 'justify-start w-[19.0625rem] gap-5 py-8 px-5 border-borderPrimary ' :
-            !isManageMode ? 'justify-between w-full py-5 px-20' : 'justify-between w-full py-5 px-20 widget-border relative '
+          isShrunk
+            ? 'justify-start w-[19.0625rem] gap-5 py-8 px-5 border-borderPrimary '
+            : !isManageMode
+            ? 'justify-between w-full py-5 px-20'
+            : 'justify-between w-full py-5 px-20 widget-border relative '
         }  items-center border-table border  dark:border-borderDark shadow-healtCardShadow dark:shadow-none bg-white dark:bg-secondaryDark  box-border rounded-0.9 mt-5 `}
       >
         <div className="flex items-center">
           <div className={`${!isShrunk ? 'w-[3.1169rem]' : ' w-[3.8831rem]'}`}>
-            <ProgressProvider valueStart={0} valueEnd={activitiesScoreData?.percentage ? activitiesScoreData?.percentage : 0}>
+            <ProgressProvider
+              valueStart={0}
+              valueEnd={!isManageMode && !isSidePanelOpen ? (activitiesScoreData?.percentage ? activitiesScoreData?.percentage : 0) : 45}
+            >
               {(value: number) => (
                 <CircularProgressbarWithChildren
                   value={value}
@@ -95,7 +105,7 @@ const HealthCard: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
                 !isShrunk ? 'text-activityPercentage ' : 'text-lg'
               } text-activityGray leading-4 dark:text-white`}
             >
-              {activitiesScoreData?.percentage}%
+              {!isManageMode && !isSidePanelOpen ? activitiesScoreData?.percentage : 45}%
             </div>
           </div>
         </div>
@@ -110,7 +120,10 @@ const HealthCard: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
                 </linearGradient>
               </defs>
             </svg>
-            <ProgressProvider valueStart={0} valueEnd={membersScoreData?.percentage ? membersScoreData?.percentage : 0}>
+            <ProgressProvider
+              valueStart={0}
+              valueEnd={!isManageMode && !isSidePanelOpen ? (membersScoreData?.percentage ? membersScoreData?.percentage : 0) : 78}
+            >
               {(value: number) => (
                 <CircularProgressbarWithChildren
                   value={value}
@@ -137,7 +150,7 @@ const HealthCard: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
                 !isShrunk ? 'text-activityPercentage ' : 'text-lg'
               } text-activityGray leading-4 dark:text-white`}
             >
-              {membersScoreData?.percentage}%
+              {!isManageMode && !isSidePanelOpen ? membersScoreData?.percentage : 78}%
             </div>
           </div>
         </div>
@@ -152,7 +165,10 @@ const HealthCard: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
                 </linearGradient>
               </defs>
             </svg>
-            <ProgressProvider valueStart={0} valueEnd={overallScoreData?.percentage ? overallScoreData?.percentage : 0}>
+            <ProgressProvider
+              valueStart={0}
+              valueEnd={!isManageMode && !isSidePanelOpen ? (overallScoreData?.percentage ? overallScoreData?.percentage : 0) : 67}
+            >
               {(value: number) => (
                 <CircularProgressbarWithChildren
                   value={value}
@@ -168,7 +184,9 @@ const HealthCard: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
           </div>
           <div className="flex flex-col pl-3">
             <div className="font-Poppins font-medium text-error leading-4 pb-2 dark:text-greyDark">Overall</div>
-            <div className="font-Poppins font-semibold text-2xl leading-4 dark:text-white">{overallScoreData?.percentage}%</div>
+            <div className="font-Poppins font-semibold text-2xl leading-4 dark:text-white">
+              {!isManageMode && !isSidePanelOpen ? overallScoreData?.percentage : 67}%
+            </div>
           </div>
         </div>
         {isManageMode && (

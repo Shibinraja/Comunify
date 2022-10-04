@@ -4,7 +4,14 @@ import { HealthScoreWidgetData } from '../../../common/widgetLayout/WidgetTypes'
 import { API_ENDPOINT } from '../../../lib/config';
 import { request } from '../../../lib/request';
 import { MembersProfileActivityGraphData } from '../../members/interface/members.interface';
-import { ActivitiesWidgetData, MemberWidgetData, QuickInfoData, RequestForWidget, SidePanelWidgetsList } from '../interface/dashboard.interface';
+import {
+  ActivitiesWidgetData,
+  MemberWidgetData,
+  QuickInfoData,
+  RequestForWidget,
+  RequestForWidgetResponse,
+  SidePanelWidgetsList
+} from '../interface/dashboard.interface';
 
 export const getSidePanelWidgetsService = async (scope: number, workspaceId: string, search?: string): Promise<SidePanelWidgetsList[]> => {
   try {
@@ -113,12 +120,12 @@ export const memberGrowthWidgetDataService = async (
   }
 };
 
-export const requestForWidgetService = async (workspaceId: string, body: RequestForWidget) => {
+export const requestForWidgetService = async (workspaceId: string, body: RequestForWidget): Promise<RequestForWidgetResponse> => {
   try {
     const { data } = await request.post(`${API_ENDPOINT}/v1/${workspaceId}/widgets/request`, body);
-    return data?.data?.data;
+    return data?.data as RequestForWidgetResponse;
   } catch {
     showErrorToast('Request for widget failed');
-    return {};
+    return {} as RequestForWidgetResponse;
   }
 };

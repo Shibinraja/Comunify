@@ -36,6 +36,7 @@ const Dashboard: React.FC = () => {
   const dropDownRef = useRef<HTMLDivElement>(null);
   const [startingDate, setStartingDate] = React.useState<string>();
   const [endingDate, setEndingDate] = React.useState<string>();
+  const [isButtonLoading, setIsButtonLoading] = React.useState<boolean>(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -113,15 +114,18 @@ const Dashboard: React.FC = () => {
 
   // eslint-disable-next-line space-before-function-paren
   const saveWidgetLayout = async () => {
+    setIsButtonLoading(true);
     try {
       const data = await saveWidgetsLayoutService(workspaceId, transformedWidgetData);
       await fetchWidgetLayoutData();
       if (data?.data) {
         setIsManageMode(false);
+        setIsButtonLoading(false);
         showSuccessToast('Widget layout saved');
       }
       return data;
     } catch {
+      setIsButtonLoading(false);
       showErrorToast('Failed to save widgets layout');
     }
   };
@@ -242,7 +246,10 @@ const Dashboard: React.FC = () => {
         ) : (
           <Button
             text=""
-            className="flex justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow cursor-pointer"
+            disabled={isButtonLoading ? true : false}
+            className={`flex justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow ${
+              isButtonLoading ? 'opacity-50 cursor-not-allowed ' : 'cursor-pointer'
+            }`}
             onClick={saveWidgetLayout}
           >
             <div className="font-Poppins font-medium text-white leading-5 text-search ml-3">Save Layout</div>
@@ -253,9 +260,9 @@ const Dashboard: React.FC = () => {
         )}
       </div>
       <div className='mb-4'>
-      <WidgetContainer isManageMode={isManageMode} widgets={widgets} setWidgets={setWidgets} setTransformedWidgetData={setTransformedWidgetData} />
+        <WidgetContainer isManageMode={isManageMode} widgets={widgets} setWidgets={setWidgets} setTransformedWidgetData={setTransformedWidgetData} />
       </div>
-      
+
     </>
   );
 };

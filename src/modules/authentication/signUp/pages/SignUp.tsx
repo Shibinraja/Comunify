@@ -100,8 +100,6 @@ const SignUp: React.FC = () => {
   return (
     <div className="flex flex-col h-auto layout-height">
       <div className=" flex h-full overflow-auto ">
-
-
         <div className="w-3/5 2xl:w-1/2 auth-layout-section flex items-center justify-center 3xl:justify-end pr-0   3xl:pr-16">
           <div className="flex items-center justify-center">
             <img src={bgSignUpImage} alt="" className="w-9/12 xl:w-[640px] 3xl:w-full object-cover" />
@@ -111,7 +109,7 @@ const SignUp: React.FC = () => {
           <div className="flex flex-col  no-scrollbar-firefox ">
             <h3 className="font-Inter text-neutralBlack font-bold not-italic text-signIn leading-2.8">Sign Up </h3>{' '}
             <p className="text-lightGray font-Inter  max-w-sm font-normal not-italic mt-0.78 text-desc">
-                Get Comunified with your communities. Create your account now.
+              Get Comunified with your communities. Create your account now.
             </p>
             <Formik
               innerRef={formikRef}
@@ -130,7 +128,9 @@ const SignUp: React.FC = () => {
                       id="username"
                       name="userName"
                       className={`h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border ${
-                        touched.userName && errors.userName ? 'boder-lightRed h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border' : ''
+                        touched.userName && errors.userName
+                          ? 'boder-lightRed h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border'
+                          : ''
                       }`}
                       onBlur={handleBlur}
                       onChange={handleChange}
@@ -147,9 +147,10 @@ const SignUp: React.FC = () => {
                       id="email"
                       name="email"
                       className={`h-4.5 rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border ${
-                        touched.email && errors.email ? 'boder-lightRed  h-4.5 rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border' : ''
+                        touched.email && errors.email
+                          ? 'boder-lightRed  h-4.5 rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border'
+                          : ''
                       }`}
-
                       onBlur={handleBlur}
                       onChange={handleChange}
                       value={values.email}
@@ -165,7 +166,9 @@ const SignUp: React.FC = () => {
                       id="password"
                       name="password"
                       className={`h-4.5 rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border ${
-                        touched.password && errors.password ? 'boder-lightRed  h-4.5 rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border' : ''
+                        touched.password && errors.password
+                          ? 'boder-lightRed  h-4.5 rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border'
+                          : ''
                       }`}
                       onBlur={handleBlur}
                       onChange={handleChange}
@@ -197,7 +200,9 @@ const SignUp: React.FC = () => {
                       id="cname"
                       name="companyName"
                       className={`h-4.5 rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border ${
-                        touched.companyName && errors.companyName ? 'boder-lightRed  h-4.5 rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border' : ''
+                        touched.companyName && errors.companyName
+                          ? 'boder-lightRed  h-4.5 rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border'
+                          : ''
                       }`}
                       onBlur={handleBlur}
                       onChange={handleChange}
@@ -208,11 +213,14 @@ const SignUp: React.FC = () => {
                   </div>
                   <div className="domain mt-1.258 relative">
                     <div className="cursor-pointer ">
-                      <div className={`flex items-center w-full  justify-between border border-signUpDomain  box-border rounded-lg h-4.5  bg-white p-2.5 focus:outline-none font-normal text-secondaryGray text-base leading-6 font-Inter shadow-trialButtonShadow relative ${
-                        touched.domainSector && errors.domainSector ? 'boder-lightRed flex items-center w-full  justify-between border   box-border rounded-lg h-4.5  bg-white p-2.5 focus:outline-none font-normal text-secondaryGray text-base leading-6 font-Inter shadow-trialButtonShadow relative' : ''
-                      }`}
-                      ref={dropDownRef}
-                      onClick={() => setDropDownActive(!isDropDownActive)}
+                      <div
+                        className={`flex items-center w-full  justify-between border border-signUpDomain  box-border rounded-lg h-4.5  bg-white p-2.5 focus:outline-none font-normal text-secondaryGray text-base leading-6 font-Inter shadow-trialButtonShadow relative ${
+                          touched.domainSector && errors.domainSector
+                            ? 'boder-lightRed flex items-center w-full  justify-between border   box-border rounded-lg h-4.5  bg-white p-2.5 focus:outline-none font-normal text-secondaryGray text-base leading-6 font-Inter shadow-trialButtonShadow relative'
+                            : ''
+                        }`}
+                        ref={dropDownRef}
+                        onClick={() => setDropDownActive(!isDropDownActive)}
                       >
                         <div className={selectedDomainSector === 'Domain' ? 'text-secondaryGray' : 'text-black'}>
                           {selectedDomainSector ? selectedDomainSector : 'Domain'}
@@ -263,11 +271,11 @@ const SignUp: React.FC = () => {
                     onClick={navigateToGoogleSignIn}
                   >
                     <img src={socialLogo} alt="" className="pr-0.781" />
-                      Continue with Google
+                    Continue with Google
                   </div>
                   <div className="font-Poppins text-secondaryGray text-center text-base font-normal mt-1.8  text-signLink">
                     <h3>
-                        Already have an account?{' '}
+                      Already have an account?{' '}
                       <Link to="/">
                         {' '}
                         <span className="text-letsSignInSignUp underline">Let’s Sign In</span>
@@ -289,21 +297,21 @@ const signUpSchema = Yup.object().shape({
     .required('Username is required')
     .min(5, 'Username should be more than 5 character long')
     .max(25, 'Username should not exceed 25 characters')
-    .matches(whiteSpace_regex, 'Whitespaces are not allowed')
+    .matches(whiteSpace_regex, 'White spaces are not allowed')
     .matches(userName_regex, 'Username is not valid')
     .trim(),
   password: Yup.string()
     .required('Password is required')
-    .min(8, 'Password must be atleast 8 characters')
+    .min(8, 'Password must be at least 8 characters')
     .matches(password_regex, 'Password must have one uppercase, one lowercase, a digit and special characters'),
   email: Yup.string().email('Must be a valid email').matches(email_regex, 'Must be a valid email').max(255).required('Email is required'),
   domainSector: Yup.string().required('Domain is required'),
   companyName: Yup.string()
-    .min(2, 'Company Name must be atleast 2 characters')
+    .min(2, 'Company Name must be at least 2 characters')
     .max(15, 'Company Name should not exceed 15 characters')
     .strict(true)
     .matches(companyName_regex, 'Company Name is not valid')
-    .trim('Whitespaces are not allowed')
+    .trim('White spaces are not allowed')
 });
 
 export default SignUp;

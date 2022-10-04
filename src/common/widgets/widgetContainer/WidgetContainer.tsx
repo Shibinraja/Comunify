@@ -31,7 +31,7 @@ export default function WidgetContainer(props: WidgetContainerProps) {
       <Suspense
         fallback={
           <div>
-            <Skeleton width={700} height={300} highlightColor={'#e5e7eb'} style={{ backgroundColor: 'white' }} count={1} enableAnimation />
+            <Skeleton width={800} height={300} count={1} />
           </div>
         }
       >
@@ -114,8 +114,9 @@ export default function WidgetContainer(props: WidgetContainerProps) {
         allowOverlap={false}
         isDraggable={isManageMode}
         isResizable={isManageMode}
-        rowHeight={90}
+        rowHeight={10}
         isBounded
+        // margin={[0, 30]}
         onLayoutChange={onLayoutChange}
         resizeHandles={['ne']}
         style={{
