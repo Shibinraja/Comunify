@@ -16,7 +16,6 @@ export interface ActivityCard {
   organization: string;
   displayValue: string;
   description: string;
-  channelName: string;
   sourceUrl: string | null;
   activityTime: Date;
   profilePictureUrl: string | null;
@@ -95,7 +94,7 @@ export interface ActiveStreamData {
   email: string;
   memberProfile: string;
   totalCount: number;
-  primaryMemberId: string
+  primaryMemberId: string;
 }
 
 export interface ActiveStreamResponse {
