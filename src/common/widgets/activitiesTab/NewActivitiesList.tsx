@@ -17,7 +17,7 @@ type Props = {
 const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLoading, isManageMode, isSidePanelOpen }) => (
   <TabPanel hidden={hidden}>
     {isManageMode === false && !isSidePanelOpen ? (
-      <div>
+      <div className="overflow-scroll overflow-y-scroll">
         {!isLoading ? (
           <ul>
             {activitiesWidgetData.map((item: ActivitiesWidgetData) => (
@@ -46,11 +46,11 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
             ))}
           </ul>
         ) : (
-          <Skeleton count={4} width={500} height={30} className="mt-4 mb-4 ml-5" />
+          <Skeleton count={4} width={350} height={22} className="m-4" />
         )}
       </div>
     ) : (
-      <div>
+      <div className="overflow-scroll overflow-y-scroll">
         <ul>
           {activities.map((item) => (
             <>

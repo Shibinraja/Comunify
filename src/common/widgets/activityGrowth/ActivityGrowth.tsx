@@ -20,7 +20,7 @@ const ActivityGrowth: React.FC<WidgetComponentProps> = (props: WidgetComponentPr
   const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen } = props;
 
   const [activityGrowthWidgetData, setActivityGrowthWidgetData] = React.useState<MembersProfileActivityGraphData>();
-  const [isLoading, setIsLoading] = React.useState<boolean>(true);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const options = {
     xaxis: {
@@ -52,6 +52,7 @@ const ActivityGrowth: React.FC<WidgetComponentProps> = (props: WidgetComponentPr
 
   // eslint-disable-next-line space-before-function-paren
   const getActivityGrowthData = async () => {
+    setIsLoading(true);
     const data: MembersProfileActivityGraphData = await activityGrowthWidgetDataService(
       workspaceId,
       startDate ? startDate : undefined,

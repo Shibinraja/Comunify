@@ -51,6 +51,7 @@ const MemberGrowth: React.FC<WidgetComponentProps> = (props: WidgetComponentProp
 
   // eslint-disable-next-line space-before-function-paren
   const getMemberGrowthWidgetData = async () => {
+    setIsLoading(true);
     const data: MembersProfileActivityGraphData = await memberGrowthWidgetDataService(
       workspaceId,
       startDate ? startDate : undefined,

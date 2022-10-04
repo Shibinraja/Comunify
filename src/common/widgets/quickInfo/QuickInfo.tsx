@@ -13,7 +13,7 @@ const QuickInfo: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) 
   const [searchParams] = useSearchParams();
   const startDate = searchParams.get('startDate');
   const endDate = searchParams.get('endDate');
-  const [isLoading, setIsLoading] = React.useState<boolean>(true);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const workspaceId = getLocalWorkspaceId();
 
@@ -25,6 +25,7 @@ const QuickInfo: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) 
 
   // eslint-disable-next-line space-before-function-paren
   const getQuickInfoWidgetData = async () => {
+    setIsLoading(true);
     const data: QuickInfoData[] = await quickInfoWidgetService(workspaceId, startDate ? startDate : undefined, endDate ? endDate : undefined);
     setQuickInfoWidgetData(data);
     setIsLoading(false);
