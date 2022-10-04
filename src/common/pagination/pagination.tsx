@@ -69,7 +69,11 @@ const Pagination: FC<PaginationProps> = (props) => {
         paginationRange!.map((pageNumber, index) => {
           // If the pageItem is a DOT, render the DOTS unicode character
           if (pageNumber === '...') {
-            return <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">...</div>;
+            return (
+              <div key={index} className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">
+                ...
+              </div>
+            );
           }
           return (
             <div
