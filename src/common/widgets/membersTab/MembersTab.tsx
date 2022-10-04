@@ -12,24 +12,28 @@ import { useSearchParams } from 'react-router-dom';
 import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
 
 const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
-  const { isManageMode, removeWidgetFromDashboard, widget } = props;
+  const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen } = props;
 
   const workspaceId = getLocalWorkspaceId();
 
   const [selectedTab, setSelectedTab] = useTabs(['topContributor', 'active', 'inActive']);
   const [memberWidgetData, setMemberWidgetData] = React.useState<MemberWidgetData[]>();
+  const [isLoading, setIsLoading] = React.useState<boolean>(true);
 
   const [searchParams] = useSearchParams();
   const startDate = searchParams.get('startDate');
   const endDate = searchParams.get('endDate');
-  // eslint-disable-next-line no-unused-vars
   React.useEffect(() => {
-    getMembersWidgetData();
+    if (isManageMode === false && !isSidePanelOpen) {
+      getMembersWidgetData();
+    }
   }, [selectedTab]);
 
   React.useEffect(() => {
-    if (startDate && endDate) {
-      getMembersWidgetData();
+    if (isManageMode === false && isSidePanelOpen) {
+      if (startDate && endDate) {
+        getMembersWidgetData();
+      }
     }
   }, [startDate, endDate]);
 
@@ -42,6 +46,7 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
       endDate ? endDate : undefined
     );
     setMemberWidgetData(data);
+    setIsLoading(false);
   };
 
   const handleRemove = () => {
@@ -93,11 +98,17 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
               Inactive
             </TabSelector>
           </nav>
-          {!memberWidgetData?.length && (
+          {!memberWidgetData?.length && !isLoading && (
             <div className="flex items-center justify-center font-Poppins font-normal text-xs text-infoBlack pt-5">No data available</div>
           )}
           <div className="h-14.375 items-center relative overflow-y-auto ml-1.661 block section">
-            <ActiveMembersList hidden={false} membersWidgetData={memberWidgetData ? memberWidgetData : []} />
+            <ActiveMembersList
+              hidden={false}
+              membersWidgetData={memberWidgetData ? memberWidgetData : []}
+              isLoading={isLoading}
+              isManageMode={isManageMode && isManageMode}
+              isSidePanelOpen={isSidePanelOpen}
+            />
           </div>
         </div>
         {isManageMode && (

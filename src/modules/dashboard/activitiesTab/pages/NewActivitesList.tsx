@@ -9,7 +9,7 @@ type Props = {
   hidden: boolean;
 };
 
-const activities = [
+export const activities = [
   {
     key: 'Today',
     url: unsplashIcon,

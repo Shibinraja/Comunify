@@ -6,26 +6,30 @@ import { activitiesWidgetDataService } from '../../../modules/dashboard/services
 import { getLocalWorkspaceId } from '../../../lib/helper';
 import { ActivitiesWidgetData } from '../../../modules/dashboard/interface/dashboard.interface';
 import { useSearchParams } from 'react-router-dom';
-
 import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
 
 const ActivitiesTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
-  const { isManageMode, removeWidgetFromDashboard, widget } = props;
+  const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen } = props;
 
   const [selectedTab, setSelectedTab] = useTabs(['newActivities', 'highlights']);
   const [activitiesWidgetResponse, setActivitiesWidgetResponse] = React.useState<ActivitiesWidgetData[]>();
+  const [isLoading, setIsLoading] = React.useState<boolean>(true);
 
   const [searchParams] = useSearchParams();
   const startDate = searchParams.get('startDate');
   const endDate = searchParams.get('endDate');
 
   React.useEffect(() => {
-    getActivityWidgetData();
+    if (isManageMode === false && !isSidePanelOpen) {
+      getActivityWidgetData();
+    }
   }, [selectedTab]);
 
   React.useEffect(() => {
-    if (startDate && endDate) {
-      getActivityWidgetData();
+    if (isManageMode === false && !isSidePanelOpen) {
+      if (startDate && endDate) {
+        getActivityWidgetData();
+      }
     }
   }, [startDate, endDate]);
 
@@ -40,6 +44,7 @@ const ActivitiesTab: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
       endDate ? endDate : undefined
     );
     setActivitiesWidgetResponse(data);
+    setIsLoading(false);
   };
 
   const handleRemove = () => {
@@ -74,11 +79,17 @@ const ActivitiesTab: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
               Highlights
             </TabSelector>
           </nav>
-          {!activitiesWidgetResponse?.length && (
+          {!activitiesWidgetResponse?.length && !isLoading && (
             <div className="flex items-center justify-center font-Poppins font-normal text-xs text-infoBlack pt-5">No data available</div>
           )}
           <div className="h-14.375 items-center relative overflow-y-auto block section ">
-            <NewActivitiesList hidden={false} activitiesWidgetData={activitiesWidgetResponse ? activitiesWidgetResponse : []} />
+            <NewActivitiesList
+              hidden={false}
+              activitiesWidgetData={activitiesWidgetResponse ? activitiesWidgetResponse : []}
+              isLoading={isLoading}
+              isManageMode={isManageMode && isManageMode}
+              isSidePanelOpen={isSidePanelOpen}
+            />
           </div>
         </div>
         {isManageMode && (

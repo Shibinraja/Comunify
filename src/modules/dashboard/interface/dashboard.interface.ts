@@ -13,8 +13,9 @@ export interface SidePanelWidgetsList {
   config: {
     minH: number;
     minW: number;
-    height: number;
-    width: number;
+    maxH?: number;
+    h: number;
+    w: number;
   };
   isActive: boolean;
   createdAt: Date;
@@ -34,8 +35,9 @@ export interface SidePanelWidgetsData {
   config: {
     minH: number;
     minW: number;
-    height: number;
-    width: number;
+    maxH?: number;
+    h: number;
+    w: number;
   };
   isActive: boolean;
   createdAt: Date;

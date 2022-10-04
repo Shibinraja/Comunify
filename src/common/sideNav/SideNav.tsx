@@ -40,7 +40,7 @@ const SideNav: React.FC = () => {
   return (
     <nav className="h-screen bg-secondary dark:bg-secondaryDark relative overflow-y-hidden side-nav-layout">
       {isDrawerOpen && (
-        <div className="w-full widgetDrawerGradient h-full px-7 absolute z-40 opacity-90">
+        <div className="w-full widgetDrawerGradient h-full px-7 absolute z-40">
           <div className="flex flex-col">
             <div className="flex flex-col">
               <div className="text-center font-Poppins font-semibold text-2xl pt-24">Add Widget</div>

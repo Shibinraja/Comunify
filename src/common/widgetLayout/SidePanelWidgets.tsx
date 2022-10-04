@@ -4,7 +4,12 @@ import React, { Suspense } from 'react';
 import widgetSearchIcon from '../../assets/images/widget-search.svg';
 import Modal from 'react-modal';
 import { getLocalWorkspaceId } from '../../lib/helper';
-import { RequestForWidget, SidePanelWidgetsData, SidePanelWidgetsList } from '../../modules/dashboard/interface/dashboard.interface';
+import {
+  RequestForWidget,
+  RequestForWidgetResponse,
+  SidePanelWidgetsData,
+  SidePanelWidgetsList
+} from '../../modules/dashboard/interface/dashboard.interface';
 import { PanelWidgetsType, WidgetComponentProps, WidgetIdentification } from './WidgetTypes';
 import { getSidePanelWidgetsService, requestForWidgetService } from 'modules/dashboard/services/dashboard.services';
 import useDebounce from '../../hooks/useDebounce';
@@ -12,6 +17,9 @@ import { showSuccessToast } from '../toast/toastFunctions';
 // Temporarily imported for development
 import WidgetComponents from 'common/widgets';
 import Skeleton from 'react-loading-skeleton';
+import * as Yup from 'yup';
+import { Form, Formik } from 'formik';
+import { whiteSpace_single_regex } from '../../constants/constants';
 
 Modal.setAppElement('#root');
 
@@ -20,8 +28,8 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
   const [sidePanelWidgetsData, setSidePanelWidgetsData] = React.useState<SidePanelWidgetsList[] | undefined>([]);
   const [sidePanelWidgets, setSidePanelWidgets] = React.useState<PanelWidgetsType[] | undefined>([]);
   const [searchWidget, setSearchWidget] = React.useState<string>();
-  const [requestForWidget, setRequestForWidget] = React.useState<RequestForWidget>({ name: '', description: '' });
   const debouncedSearchTextValue: string | undefined = useDebounce(searchWidget, 300);
+  const [isButtonLoading, setIsButtonLoading] = React.useState<boolean>(false);
 
   const workspaceId: string = getLocalWorkspaceId();
   React.useEffect(() => {
@@ -49,7 +57,7 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
   const filterWidgets = (widgetName: string) => {
     if (widgetName && sidePanelWidgets?.length) {
       const sidePanelWidgetList = [...sidePanelWidgets];
-      const filteredWidgetsList = sidePanelWidgetList.filter((widget) => widget.widget.widgetLocation !== widgetName);
+      const filteredWidgetsList = sidePanelWidgetList.filter((widget) => widget?.widget?.widgetLocation !== widgetName);
       setSidePanelWidgets(filteredWidgetsList);
     }
   };
@@ -61,18 +69,19 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
     setSidePanelWidgetsData(widgetsData);
     const sidePanelWidgetList = widgetsData?.reduce((acc: PanelWidgetsType[], curr: SidePanelWidgetsData) => {
       const widgets = {
-        layout: { x: 0, y: 0, w: 0, h: 0, i: curr.id, minW: 0, minH: 0 },
-        widget: { widgetLocation: curr.widgetLocation, invocationType: curr.invocationType, widgetId: curr.id },
+        layout: { x: 0, y: 0, w: 0, h: 0, i: curr?.id, minW: 0, minH: 0, maxH: 0 },
+        widget: { widgetLocation: curr?.widgetLocation, invocationType: curr?.invocationType, widgetId: curr?.id },
         isAssigned: curr?.isAssigned
       };
       widgets['layout'] = {
         x: 0,
         y: 0,
-        i: curr.id,
-        w: handleWidgetWidth(curr?.widgetLocation, curr?.config?.width),
-        h: handleWidgetHeight(curr?.widgetLocation, curr?.config?.height),
-        minW: 4,
-        minH: 2
+        i: curr?.id,
+        w: curr?.config?.w,
+        h: curr?.config?.h,
+        minW: curr?.config?.minW,
+        minH: curr?.config?.minH,
+        maxH: curr?.config?.maxH || 0
       };
       acc.push(widgets);
       return acc;
@@ -84,57 +93,17 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
     setSearchWidget(searchText);
   };
 
-  const handleWidgetWidth = (widgetLocation: string, width: number) => {
-    if (widgetLocation === 'QuickInfo') {
-      return width + 6;
-    } else if (widgetLocation === 'HealthCard') {
-      return width + 3;
-    }
-    return width;
-  };
-
-  const handleWidgetHeight = (widgetLocation: string, height: number) => {
-    if (
-      widgetLocation === 'MembersTab' ||
-      widgetLocation === 'MemberGrowth' ||
-      widgetLocation === 'ActivityGrowth' ||
-      widgetLocation === 'ActivitiesTab'
-    ) {
-      return height + 2;
-    }
-    return height;
-  };
-  // eslint-disable-next-line space-before-function-paren
-  const handleRequestForWidget = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const body: RequestForWidget = {
-      name: requestForWidget.name,
-      description: requestForWidget.description
-    };
-    const response = await requestForWidgetService(workspaceId, body);
-    setWidgetModalOpen(false);
-    setRequestForWidget({ name: '', description: '' });
-    if (response) {
-      showSuccessToast('Request for widget successful');
-    }
-  };
-
   const renderWidget = (widgetLocation: string, isAssigned: boolean, props: React.PropsWithoutRef<WidgetComponentProps>) => {
     // use this while developing because vite doesn't hot reload dynamically imported components
     const Widget = WidgetComponents[widgetLocation];
 
     // Use dynamic import while pushing to prod
     // const Widget = React.lazy(() => import(`../../common/widgets/${widgetLocation}/${widgetLocation}`));
-    return (
-      <Suspense
-        fallback={<Skeleton width={400} height={300} highlightColor={'#e5e7eb'} style={{ backgroundColor: 'white' }} count={1} enableAnimation />}
-      >
-        {!isAssigned && <Widget {...props} />}
-      </Suspense>
-    );
+    return <Suspense fallback={<Skeleton width={400} height={300} count={1} enableAnimation />}>{!isAssigned && <Widget {...props} />}</Suspense>;
   };
 
   const widgetProps = {
+    isSidePanelOpen: true,
     isManageMode: false,
     removeWidgetFromDashboard: () => null,
     widget: {},
@@ -147,10 +116,10 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
       const newWidgetDataArray: PanelWidgetsType[] = widgetToBeAppended?.reduce((acc: PanelWidgetsType[], curr: SidePanelWidgetsList) => {
         const widgets = {
           layout: { x: 0, y: 0, w: 0, h: 0, i: curr.id },
-          widget: { widgetLocation: curr.widgetLocation, invocationType: curr.invocationType, widgetId: curr.id },
+          widget: { widgetLocation: curr?.widgetLocation, invocationType: curr?.invocationType, widgetId: curr?.id },
           isAssigned: false
         };
-        widgets['layout'] = { x: 0, y: 0, w: Number(curr.config.width), h: Number(curr.config.height), i: curr.id };
+        widgets['layout'] = { x: 0, y: 0, w: Number(curr?.config?.w), h: Number(curr.config?.h), i: curr?.id };
         acc.push(widgets);
         return acc;
       }, []);
@@ -159,8 +128,27 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
     }
   };
 
+  const initialValues: RequestForWidget = {
+    name: '',
+    description: ''
+  };
+
+  // eslint-disable-next-line space-before-function-paren
+  const handleRequestForWidgetSubmit = async (values: RequestForWidget) => {
+    setIsButtonLoading(true);
+    const response: RequestForWidgetResponse = await requestForWidgetService(workspaceId, values);
+    if (response) {
+      showSuccessToast('Request for widget successful');
+      setWidgetModalOpen(false);
+      setIsButtonLoading(false);
+    } else {
+      setWidgetModalOpen(false);
+      setIsButtonLoading(false);
+    }
+  };
+
   return (
-    <div className="w-1/4 xl:w-1/5 widgetDrawerGradient left-0 top-0 pb-2 max-h-[156.25rem] min-h-screen px-7 absolute z-40 opacity-90">
+    <div className="w-1/4 xl:w-1/5 widgetDrawerGradient left-0 top-0 pb-2 max-h-[156.25rem] min-h-screen px-7 absolute z-40 ">
       <div className="flex flex-col">
         <div className="flex flex-col pb-2">
           <div className="text-center font-Poppins font-semibold text-2xl pt-24">Add Widget</div>
@@ -189,12 +177,13 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
               <div
                 key={component?.layout?.h + component?.layout?.i + component?.layout?.w}
                 draggable={true}
+                // eslint-disable-next-line react/no-unknown-property
                 unselectable="on"
                 onDragStart={(e: React.DragEvent<HTMLDivElement>) => {
                   e?.dataTransfer.setData('droppableWidget', JSON.stringify(component));
                   return true;
                 }}
-                className={''}
+                className="translate-x-0 translate-y-0"
               >
                 {renderWidget(
                   component?.widget?.widgetLocation as string,
@@ -230,49 +219,81 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
         >
           <div className="flex flex-col">
             <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Request for a Widget</h3>
-            <form className="flex flex-col relative  px-1.93 mt-9" onSubmit={handleRequestForWidget}>
-              <label htmlFor="name " className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack ">
-                Name
-              </label>
-              <Input
-                type="text"
-                name="name"
-                id="nameId"
-                value={requestForWidget.name}
-                className="mt-0.375 inputs app-result-card-border box-border bg-white shadow-inputShadow rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-sm placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
-                placeholder="Enter Name"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRequestForWidget((prev) => ({ ...prev, name: e?.target?.value }))}
-              />
-              <label htmlFor="description" className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack mt-1.06">
-                Description
-              </label>
-              <textarea
-                name=""
-                id=""
-                value={requestForWidget.description}
-                className="mt-0.375 inputs text-area app-result-card-border rounded-0.3 w-20.5 h-6.06 shadow-inputShadow focus:outline-none p-3 placeholder:font-Poppins placeholder:text-sm placeholder:text-thinGray placeholder:leading-1.31"
-                placeholder="Description"
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setRequestForWidget((prev) => ({ ...prev, description: e?.target?.value }))}
-              ></textarea>
-              <div className="flex items-center justify-end mt-1.8">
-                <Button
-                  text="Cancel"
-                  type="submit"
-                  className="cancel mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  h-2.81 w-5.25  rounded border-none"
-                  onClick={() => setWidgetModalOpen(false)}
-                />
-                <Button
-                  text="Save"
-                  type="submit"
-                  className="text-white font-Poppins text-error font-medium leading-5 btn-save-modal cursor-pointer rounded shadow-contactBtn w-5.25 border-none h-2.81"
-                />
-              </div>
-            </form>
+            <Formik initialValues={initialValues} onSubmit={handleRequestForWidgetSubmit} validateOnChange={true} validationSchema={widgetSchema}>
+              {({ errors, handleBlur, handleChange, handleSubmit, touched, values }): JSX.Element => (
+                <Form className="flex flex-col relative  px-1.93 mt-9" onSubmit={handleSubmit}>
+                  <label htmlFor="name " className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack ">
+                    Name
+                  </label>
+                  <Input
+                    type="text"
+                    name="name"
+                    id="nameId"
+                    value={values.name}
+                    className="mt-0.375 inputs app-result-card-border box-border bg-white shadow-inputShadow rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-sm placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
+                    placeholder="Enter Name"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    errors={Boolean(touched.name && errors.name)}
+                    helperText={touched.name && errors.name}
+                  />
+                  <label htmlFor="description" className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack mt-1.06">
+                    Description
+                  </label>
+                  <Input
+                    type="text"
+                    name="description"
+                    id="descriptionId"
+                    value={values.description}
+                    className="mt-0.375 inputs text-area app-result-card-border rounded-0.3 w-20.5 h-6.06 shadow-inputShadow focus:outline-none p-3 placeholder:font-Poppins placeholder:text-sm placeholder:text-thinGray placeholder:leading-1.31"
+                    placeholder="Description"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    errors={Boolean(touched.description && errors.description)}
+                    helperText={touched.description && errors.description}
+                  ></Input>
+                  <div className="flex items-center justify-end mt-1.8">
+                    <Button
+                      text="Cancel"
+                      type="submit"
+                      className="cancel mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  h-2.81 w-5.25  rounded border-none"
+                      onClick={() => setWidgetModalOpen(false)}
+                    />
+                    <Button
+                      text="Save"
+                      type="submit"
+                      disabled={isButtonLoading ? true : false}
+                      className={`text-white font-Poppins text-error font-medium leading-5 btn-save-modal rounded shadow-contactBtn w-5.25 ${
+                        isButtonLoading ? 'opacity-50 cursor-not-allowed ' : 'cursor-pointer'
+                      } border-none h-2.81`}
+                    />
+                  </div>
+                </Form>
+              )}
+            </Formik>
           </div>
         </Modal>
       </div>
     </div>
   );
 };
+
+const widgetSchema = Yup.object().shape({
+  name: Yup.string()
+    .trim('WhiteSpaces are not allowed')
+    .min(4, 'Widget Name must be at least 4 characters')
+    .max(25, 'Widget Name should not exceed above 25 characters')
+    .matches(whiteSpace_single_regex, 'White spaces are not allowed')
+    .required('Widget Name is a required field')
+    .nullable(true),
+
+  description: Yup.string()
+    .trim('WhiteSpaces are not allowed')
+    .min(4, 'Widget Description must be at least 4 characters')
+    .max(25, 'Widget Description should not exceed above 100 characters')
+    .matches(whiteSpace_single_regex, 'White spaces are not allowed')
+    .required('Widget Description is a required field')
+    .nullable(true)
+});
 
 export default SidePanelWidgets;
