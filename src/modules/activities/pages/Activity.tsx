@@ -235,7 +235,6 @@ const Activity: React.FC = () => {
       activityTime: data?.activityTime,
       description: data?.description,
       organization: data?.organization,
-      channelName: data?.channelName,
       sourceUrl: data?.sourceUrl,
       profilePictureUrl: data?.profilePictureUrl,
       value: data?.value,
@@ -592,7 +591,6 @@ const Activity: React.FC = () => {
                                       displayValue: data?.displayValue,
                                       activityTime: data?.activityTime,
                                       organization: data?.organization,
-                                      channelName: data?.channelId,
                                       sourceUrl: data?.sourceUrl,
                                       profilePictureUrl: data?.memberProfile as string,
                                       value: data?.value,
@@ -756,7 +754,6 @@ const Activity: React.FC = () => {
                         className="pl-0.563 font-Poppins font-medium text-infoBlack text-card leading-1.12"
                         dangerouslySetInnerHTML={{ __html: ActivityCard?.displayValue ? ActivityCard?.displayValue : '--' }}
                       ></div>
-                      <div className="pl-2.5 text-tagChannel font-Poppins font-medium text-card leading-1.12">#{ActivityCard?.channelName}</div>
                     </div>
                     <div
                       className="mt-5 font-Poppins font-medium text-infoBlack text-card leading-1.12"
