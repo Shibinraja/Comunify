@@ -70,14 +70,14 @@ const Pagination: FC<PaginationProps> = (props) => {
           // If the pageItem is a DOT, render the DOTS unicode character
           if (pageNumber === '...') {
             return (
-              <div key={index} className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">
+              <div key={`${index + Math.random()}`} className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">
                 ...
               </div>
             );
           }
           return (
             <div
-              key={index}
+              key={`${index + Math.random()}`}
               className={`font-Lato font-normal text-error leading-4 cursor-pointer ${
                 currentPage === pageNumber ? 'text-paginationArrowButton font-extrabold' : 'text-pagination'
               }`}
