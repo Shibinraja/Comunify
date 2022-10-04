@@ -15,7 +15,7 @@ type Props = {
 const ActiveMembersList: React.FC<Props> = ({ hidden, membersWidgetData, isLoading, isManageMode, isSidePanelOpen }) => (
   <TabPanel hidden={hidden}>
     {!isManageMode && !isSidePanelOpen ? (
-      <div>
+      <div className="overflow-scroll overflow-y-scroll">
         {!isLoading ? (
           <ul className="mt-1.474 ">
             {membersWidgetData.map((item: MemberWidgetData) => (
@@ -40,11 +40,11 @@ const ActiveMembersList: React.FC<Props> = ({ hidden, membersWidgetData, isLoadi
             ))}
           </ul>
         ) : (
-          <Skeleton count={4} width={500} height={30} className="mt-4 mb-4 ml-5" />
+          <Skeleton count={4} width={350} height={22} className="m-4" />
         )}
       </div>
     ) : (
-      <div>
+      <div className="overflow-scroll overflow-y-scroll">
         <ul className="mt-1.474 ">
           {activityData.map((item) => (
             <>

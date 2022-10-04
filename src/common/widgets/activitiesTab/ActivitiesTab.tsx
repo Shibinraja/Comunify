@@ -13,7 +13,7 @@ const ActivitiesTab: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
 
   const [selectedTab, setSelectedTab] = useTabs(['newActivities', 'highlights']);
   const [activitiesWidgetResponse, setActivitiesWidgetResponse] = React.useState<ActivitiesWidgetData[]>();
-  const [isLoading, setIsLoading] = React.useState<boolean>(true);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const [searchParams] = useSearchParams();
   const startDate = searchParams.get('startDate');
@@ -37,6 +37,7 @@ const ActivitiesTab: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
 
   // eslint-disable-next-line space-before-function-paren
   const getActivityWidgetData = async () => {
+    setIsLoading(true);
     const data: ActivitiesWidgetData[] = await activitiesWidgetDataService(
       workspaceId,
       selectedTab ? selectedTab : '',

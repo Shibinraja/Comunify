@@ -18,7 +18,7 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
 
   const [selectedTab, setSelectedTab] = useTabs(['topContributor', 'active', 'inActive']);
   const [memberWidgetData, setMemberWidgetData] = React.useState<MemberWidgetData[]>();
-  const [isLoading, setIsLoading] = React.useState<boolean>(true);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const [searchParams] = useSearchParams();
   const startDate = searchParams.get('startDate');
@@ -39,6 +39,7 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
 
   // eslint-disable-next-line space-before-function-paren
   const getMembersWidgetData = async () => {
+    setIsLoading(true);
     const data: MemberWidgetData[] = await membersWidgetDataService(
       workspaceId,
       selectedTab ? selectedTab : '',
