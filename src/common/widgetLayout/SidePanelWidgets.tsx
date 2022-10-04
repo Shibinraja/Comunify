@@ -189,6 +189,7 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
               <div
                 key={component?.layout?.h + component?.layout?.i + component?.layout?.w}
                 draggable={true}
+                // eslint-disable-next-line react/no-unknown-property
                 unselectable="on"
                 onDragStart={(e: React.DragEvent<HTMLDivElement>) => {
                   e?.dataTransfer.setData('droppableWidget', JSON.stringify(component));

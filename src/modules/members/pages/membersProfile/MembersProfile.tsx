@@ -647,8 +647,8 @@ const MembersProfile: React.FC = () => {
             <div className="flex items-center justify-center">
               <Modal
                 isOpen={isTagModalOpen}
-                shouldCloseOnOverlayClick={false}
-                onRequestClose={() => setIsModalOpen(false)}
+                shouldCloseOnOverlayClick={true}
+                onRequestClose={() => setTagModalOpen(false)}
                 className="w-24.31 h-18.75 mx-auto  rounded-lg modals-tag bg-white shadow-modal outline-none"
                 style={{
                   overlay: {
