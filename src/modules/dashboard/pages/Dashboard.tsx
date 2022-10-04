@@ -179,7 +179,7 @@ const Dashboard: React.FC = () => {
           </div>
           {isSelectDropDownActive && (
             <div
-              className={`absolute top-12 w-11.72 border border-borderPrimary bg-white dark:bg-secondaryDark  shadow-shadowInput rounded-0.6`}
+              className={`absolute top-12 w-11.72 border z-10 border-borderPrimary bg-white dark:bg-secondaryDark  shadow-shadowInput rounded-0.6`}
               onClick={handleDropDownActive}
             >
               {selectOptions?.map((options: { id: number; dateRange: string }) => (
