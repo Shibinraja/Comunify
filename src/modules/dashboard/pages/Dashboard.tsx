@@ -252,7 +252,10 @@ const Dashboard: React.FC = () => {
           </Button>
         )}
       </div>
+      <div className='mb-4'>
       <WidgetContainer isManageMode={isManageMode} widgets={widgets} setWidgets={setWidgets} setTransformedWidgetData={setTransformedWidgetData} />
+      </div>
+      
     </>
   );
 };
