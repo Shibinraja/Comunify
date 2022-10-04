@@ -291,7 +291,7 @@ input {
 }
 
 .widgetDrawerGradient {
-  background: linear-gradient(180deg, #f9c837 0%, #ee9834 100%);
+  background: linear-gradient( rgba(249, 200, 55, .9), rgba(238, 152, 52, .9));
 }
 
 .height-member-activity {
