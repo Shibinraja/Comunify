@@ -55,7 +55,7 @@ const Dashboard: React.FC = () => {
       search: ``
     });
     fetchWidgetLayoutData();
-    setSelectedDateRange('');
+    setSelectedDateRange('this week');
   }, []);
 
   useEffect(() => {
@@ -145,10 +145,12 @@ const Dashboard: React.FC = () => {
   };
 
   const setSelectedDateRange = (option: string) => {
-    if (option.toLocaleLowerCase().trim() === '') {
-      setStartingDate(moment().startOf('week').toISOString());
-      setEndingDate(convertEndDate(new Date()));
-    } else if (option === 'this week') {
+    // if (option.toLocaleLowerCase().trim() === '') {
+    //   setStartingDate(moment().startOf('week').toISOString());
+    //   setEndingDate(convertEndDate(new Date()));
+
+    // }
+    if (option === 'this week') {
       setSelected('This Week');
       setStartingDate(moment().startOf('week').toISOString());
       setEndingDate(convertEndDate(new Date()));

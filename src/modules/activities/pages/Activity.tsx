@@ -756,8 +756,10 @@ const Activity: React.FC = () => {
                       ></div>
                     </div>
                     <div
-                      className="mt-5 font-Poppins font-medium text-infoBlack text-card leading-1.12"
-                      dangerouslySetInnerHTML={{ __html: ActivityCard?.value ? ActivityCard?.value : '--' }}
+                      className="mt-5 w-full truncate font-Poppins font-medium text-infoBlack text-card leading-1.12"
+                      dangerouslySetInnerHTML={{
+                        __html: ActivityCard?.value ? ActivityCard?.value : '--'
+                      }}
                     ></div>
                     <div className="mt-1.18 flex justify-between items-center">
                       <a

@@ -20,6 +20,7 @@ import Skeleton from 'react-loading-skeleton';
 import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
 import { whiteSpace_single_regex } from '../../constants/constants';
+import TextArea from '../textArea/TextArea';
 
 Modal.setAppElement('#root');
 
@@ -148,7 +149,7 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
   };
 
   return (
-    <div className="w-1/4 xl:w-1/5 widgetDrawerGradient left-0 top-0 pb-2 max-h-[156.25rem] min-h-screen px-7 absolute z-40 ">
+    <div className="w-[28%] xl:w-[23%]  widgetDrawerGradient left-0 top-0 pb-2 max-h-[156.25rem] min-h-screen px-7 absolute z-40 ">
       <div className="flex flex-col">
         <div className="flex flex-col pb-2">
           <div className="text-center font-Poppins font-semibold text-2xl pt-24">Add Widget</div>
@@ -240,8 +241,7 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
                   <label htmlFor="description" className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack mt-1.06">
                     Description
                   </label>
-                  <Input
-                    type="text"
+                  <TextArea
                     name="description"
                     id="descriptionId"
                     value={values.description}
@@ -251,7 +251,7 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
                     onBlur={handleBlur}
                     errors={Boolean(touched.description && errors.description)}
                     helperText={touched.description && errors.description}
-                  ></Input>
+                  />
                   <div className="flex items-center justify-end mt-1.8">
                     <Button
                       text="Cancel"
@@ -290,7 +290,7 @@ const widgetSchema = Yup.object().shape({
   description: Yup.string()
     .trim('WhiteSpaces are not allowed')
     .min(4, 'Widget Description must be at least 4 characters')
-    .max(25, 'Widget Description should not exceed above 100 characters')
+    .max(100, 'Widget Description should not exceed above 100 characters')
     .matches(whiteSpace_single_regex, 'White spaces are not allowed')
     .required('Widget Description is a required field')
     .nullable(true)
