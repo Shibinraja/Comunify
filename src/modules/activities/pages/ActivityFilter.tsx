@@ -31,7 +31,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
   const [checkedTags, setCheckedTags] = useState<Record<string, unknown>>({});
   const [tagSearchText, setTagSearchText] = useState<string>('');
   const [startDate, setStartDate] = useState<Date>();
-  const [endDate, setEndDate] = useState<Date>();
+  const [endDate, setEndDate] = useState<Date>(new Date());
 
   const dropDownRef = useRef<HTMLDivElement>(null);
   const datePickerRefStart = useRef<ReactDatePicker>(null);
@@ -359,6 +359,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                     <DatePicker
                       selected={endDate}
                       minDate={startDate}
+                      maxDate={endDate}
                       selectsEnd
                       startDate={startDate}
                       endDate={endDate}
