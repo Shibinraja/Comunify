@@ -1,8 +1,8 @@
 import { getLocalWorkspaceId } from '@/lib/helper';
 import Button from 'common/button';
 import Input from 'common/input';
-import QuickInfo from 'common/widgets/quickInfo/QuickInfo';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { NavLink, useLocation } from 'react-router-dom';
 import dashboardIcon from '../../assets/images/dashboard.svg';
 import dropdownIcon from '../../assets/images/dropdown.svg';
@@ -10,28 +10,37 @@ import comunifyLogo from '../../assets/images/Group 2 (1).svg';
 import memberIcon from '../../assets/images/members.svg';
 import chartIcon from '../../assets/images/pie_chart.svg';
 import settingsIcon from '../../assets/images/settings.svg';
-import slackIcon from '../../assets/images/slack.svg';
 import streamIcon from '../../assets/images/stream.svg';
 import activeStreamDarkIcon from '../../assets/images/svg/activities_black_icon.svg';
 import dashboardDarkIcon from '../../assets/images/svg/dashboard_black_icon.svg';
 import memberDarkIcon from '../../assets/images/svg/members_black_icon.svg';
 import reportsDarkIcon from '../../assets/images/svg/reports_black_icon.svg';
 import settingsDarkIcon from '../../assets/images/svg/settings_black_icon.svg';
-import unsplashIcon from '../../assets/images/unsplash.svg';
-import unsplashMGIcon from '../../assets/images/unsplash_mj.svg';
 import widgetSearchIcon from '../../assets/images/widget-search.svg';
+import { useAppSelector } from '../../hooks/useRedux';
+import settingsSlice from '../../modules/settings/store/slice/settings.slice';
+import { State } from '../../store';
+import { ConnectedPlatforms, PlatformResponse } from '../../modules/settings/interface/settings.interface';
 
 const SideNav: React.FC = () => {
   const location = useLocation();
   const [isDrawerOpen, setDrawerOpen] = useState<boolean>(false);
+  const [cls, setCls] = useState('platform-layout-close');
+  const dispatch = useDispatch();
   const workspaceId = getLocalWorkspaceId();
 
-  const [cls, setCls] = useState('platform-layout-close');
+  useEffect(() => {
+    dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+    dispatch(settingsSlice.actions.platformData({ workspaceId }));
+  }, []);
+
+  const connectedPlatforms: ConnectedPlatforms[] = useAppSelector((state: State) => state.settings.PlatformsConnected);
+  const platformsData: PlatformResponse[] = useAppSelector((state: State) => state.settings.PlatformFilterResponse);
 
   return (
     <nav className="h-screen bg-secondary dark:bg-secondaryDark relative overflow-y-hidden side-nav-layout">
       {isDrawerOpen && (
-        <div className="w-full widgetDrawerGradient h-full px-7 absolute z-40 opacity-90">
+        <div className="w-full widgetDrawerGradient h-full px-7 absolute z-40">
           <div className="flex flex-col">
             <div className="flex flex-col">
               <div className="text-center font-Poppins font-semibold text-2xl pt-24">Add Widget</div>
@@ -48,9 +57,9 @@ const SideNav: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="hidden">
+            {/* <div className="hidden">
               <QuickInfo />
-            </div>
+            </div> */}
             <Button
               text="Request for a Widget"
               className="font-Poppins rounded-lg text-base font-semibold text-white py-3.5 mt-7 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient"
@@ -165,7 +174,9 @@ const SideNav: React.FC = () => {
           <div className="flex justify-between items-center bg-lightBlack h-[60px] w-full rounded-t-lg pl-10 pr-6">
             <div className="flex items-center">
               <div className="text-white  font-Poppins font-medium leading-6 text-base">Platforms</div>
-              <div className="text-white pl-0.81 font-Poppins font-medium leading-6 text-base relative">4/10</div>
+              <div className="text-white pl-0.81 font-Poppins font-medium leading-6 text-base relative">
+                {connectedPlatforms?.length}/{platformsData?.length}
+              </div>
             </div>
             <div
               className="cursor-pointer"
@@ -183,44 +194,22 @@ const SideNav: React.FC = () => {
 
           <div className={cls}>
             <div className="flex flex-col pl-9 pr-4 list-platform pt-4 dark:bg-secondaryDark">
-              <div className="flex items-center mb-3">
-                <div className="w-16 h-16 bg-subIntegrationGray dark:bg-black flex justify-center items-center">
-                  <img src={unsplashIcon} alt="" className="w-[30px]" />
-                </div>
-                <div className="flex flex-col  pl-3">
-                  <span className="capitalize text-xs font-semibold text-integrationGray dark:text-white">Khoros</span>
-                  <div className="flex items-center">
-                    <span className="w-1.5 h-1.5 bg-green-400 rounded-full mt-1"></span>
-                    <span className="capitalize text-xs font-normal pl-1 pt-1 text-integrationGray dark:text-greyDark">Connected</span>
+              {platformsData?.map((data: PlatformResponse) => (
+                <div key={`${data?.id + Math.random()}`} className="flex items-center mb-3">
+                  <div className="w-16 h-16 bg-subIntegrationGray dark:bg-black flex justify-center items-center">
+                    <img src={data?.platformLogoUrl} alt="" className="w-[30px]" />
+                  </div>
+                  <div className="flex flex-col  pl-3">
+                    <span className="capitalize text-xs font-semibold text-integrationGray dark:text-white">{data?.name}</span>
+                    <div className="flex items-center">
+                      <span className={`w-1.5 h-1.5 ${data?.isConnected ? ' bg-green-400' : 'bg-red-500'} rounded-full mt-1`}></span>
+                      <span className="capitalize text-xs font-normal pl-1 pt-1 text-integrationGray dark:text-greyDark">
+                        {data?.isConnected ? 'Connected' : 'Disconnected'}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-
-              <div className="flex items-center mb-3">
-                <div className="w-16 h-16 bg-subIntegrationGray dark:bg-black flex justify-center items-center">
-                  <img src={unsplashMGIcon} alt="" className="w-[30px]" />
-                </div>
-                <div className="flex flex-col  pl-3">
-                  <span className="capitalize text-xs font-semibold text-integrationGray dark:text-white">Higher Logic</span>
-                  <div className="flex items-center">
-                    <span className="w-1.5 h-1.5 bg-red-500 rounded-full mt-1"></span>
-                    <span className="capitalize text-xs font-normal pl-1 pt-1 text-integrationGray dark:text-greyDark">Disconnected</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center pb-3">
-                <div className="w-16 h-16 bg-subIntegrationGray dark:bg-black flex justify-center items-center">
-                  <img src={slackIcon} alt="" className="w-[30px]" />
-                </div>
-                <div className="flex flex-col  pl-3">
-                  <span className="capitalize text-xs font-semibold text-integrationGray dark:text-white">slack</span>
-                  <div className="flex items-center">
-                    <span className="w-1.5 h-1.5 bg-gray-300 rounded-full mt-1"></span>
-                    <span className="capitalize text-xs font-normal pl-1 pt-1 text-integrationGray dark:text-greyDark">not active</span>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>

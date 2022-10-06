@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+/* eslint-disable indent */
+import React from 'react';
 import { TabSelector } from 'common/tabs/TabSelector';
 import { useTabs } from '@/hooks/useTabs';
 import ActiveMembersList from './ActiveMembersList';
@@ -6,34 +7,39 @@ import infoIcon from '../../../assets/images/info.svg';
 import { getLocalWorkspaceId } from '../../../lib/helper';
 import { membersWidgetDataService } from '../../../modules/dashboard/services/dashboard.services';
 import { MemberWidgetData } from '../../../modules/dashboard/interface/dashboard.interface';
-import { createSearchParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
-const MembersTab: React.FC = () => {
+import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
+
+const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
+  const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen } = props;
+
   const workspaceId = getLocalWorkspaceId();
 
   const [selectedTab, setSelectedTab] = useTabs(['topContributor', 'active', 'inActive']);
   const [memberWidgetData, setMemberWidgetData] = React.useState<MemberWidgetData[]>();
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const [searchParams] = useSearchParams();
   const startDate = searchParams.get('startDate');
   const endDate = searchParams.get('endDate');
-  // eslint-disable-next-line no-unused-vars
-  const [isDrag, setIsDrag] = useState<boolean>(true);
-  const location = useLocation();
-  const navigate = useNavigate();
-
   React.useEffect(() => {
-    getMembersWidgetData();
+    if (isManageMode === false && !isSidePanelOpen) {
+      getMembersWidgetData();
+    }
   }, [selectedTab]);
 
   React.useEffect(() => {
-    if (startDate && endDate) {
-      getMembersWidgetData();
+    if (isManageMode === false && isSidePanelOpen) {
+      if (startDate && endDate) {
+        getMembersWidgetData();
+      }
     }
   }, [startDate, endDate]);
 
   // eslint-disable-next-line space-before-function-paren
   const getMembersWidgetData = async () => {
+    setIsLoading(true);
     const data: MemberWidgetData[] = await membersWidgetDataService(
       workspaceId,
       selectedTab ? selectedTab : '',
@@ -41,21 +47,23 @@ const MembersTab: React.FC = () => {
       endDate ? endDate : undefined
     );
     setMemberWidgetData(data);
+    setIsLoading(false);
   };
 
-  const setWidgetNameAsParams = () => {
-    const params = { widgetName: 'MembersTab' };
-    navigate({ pathname: location.pathname, search: `?${createSearchParams(params)}` });
+  const handleRemove = () => {
+    removeWidgetFromDashboard(widget);
   };
 
   return (
     <div className="my-6">
       <div>
-        <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Members Tab</h3>
+        <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Members</h3>
       </div>
       <div
         className={`w-full h-full box-border
-        ${isDrag ? 'widget-border relative' : 'border-borderPrimary'} bg-white dark:bg-secondaryDark dark:text-white rounded-0.6 mt-1.868 border  
+        ${
+          isManageMode ? 'widget-border relative' : 'border-borderPrimary'
+        } bg-white dark:bg-secondaryDark dark:text-white rounded-0.6 mt-1.868 border  
          dark:border-borderDark shadow-profileCard `}
       >
         <div className="w-full mt-6 flex flex-col ">
@@ -63,7 +71,7 @@ const MembersTab: React.FC = () => {
             <TabSelector
               isActive={selectedTab === 'topContributor'}
               onClick={() => setSelectedTab('topContributor')}
-              style={'ml-1.625 mt-0.438 text-sm pb-2  border-transparent'}
+              style={`ml-1.625 mt-0.438 ${isManageMode ? 'text-sm' : 'text-xs'} pb-2  border-transparent`}
               styleActive={'gradient-bottom-border'}
             >
               Top Contributors
@@ -77,7 +85,7 @@ const MembersTab: React.FC = () => {
             <TabSelector
               isActive={selectedTab === 'active'}
               onClick={() => setSelectedTab('active')}
-              style={'ml-1.625 mt-0.438 text-sm pb-2  border-transparent'}
+              style={`ml-1.625 mt-0.438 ${isManageMode ? 'text-sm' : 'text-xs'} pb-2  border-transparent`}
               styleActive={'gradient-bottom-border'}
             >
               Active
@@ -85,22 +93,34 @@ const MembersTab: React.FC = () => {
             <TabSelector
               isActive={selectedTab === 'inActive'}
               onClick={() => setSelectedTab('inActive')}
-              style={'ml-1.625 mt-0.438 text-sm pb-2  border-transparent'}
+              style={`ml-1.625 mt-0.438 ${isManageMode ? 'text-sm' : 'text-xs'} pb-2  border-transparent`}
               styleActive={'gradient-bottom-border'}
             >
               Inactive
             </TabSelector>
           </nav>
           <div className="h-14.375 items-center relative overflow-y-auto ml-1.661 block section">
-            <ActiveMembersList hidden={false} membersWidgetData={memberWidgetData ? memberWidgetData : []} />
+            {!memberWidgetData?.length && !isLoading && !isManageMode && !isSidePanelOpen && (
+              <div className="flex items-center justify-center font-Poppins font-normal text-xs text-infoBlack h-full">No data available</div>
+            )}
+
+            <ActiveMembersList
+              hidden={false}
+              membersWidgetData={memberWidgetData ? memberWidgetData : []}
+              isLoading={isLoading}
+              isManageMode={isManageMode && isManageMode}
+              isSidePanelOpen={isSidePanelOpen}
+            />
           </div>
         </div>
-        <div
-          onClick={setWidgetNameAsParams}
-          className="absolute -right-3 bg-widgetClose rounded-full flex items-center justify-center h-6 w-6 text-white text-2xl -top-3 cursor-pointer"
-        >
-          -
-        </div>
+        {isManageMode && (
+          <div
+            onClick={handleRemove}
+            className="absolute -right-3 bg-widgetClose rounded-full flex items-center justify-center h-6 w-6 text-white text-2xl -top-3 cursor-pointer"
+          >
+            -
+          </div>
+        )}
       </div>
     </div>
   );
