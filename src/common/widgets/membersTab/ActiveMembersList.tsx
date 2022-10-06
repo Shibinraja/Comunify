@@ -28,7 +28,7 @@ const ActiveMembersList: React.FC<Props> = ({ hidden, membersWidgetData, isLoadi
 
                     <div className="ml-0.865">
                       <div>
-                        <p className="font-medium pt-0.5 text-xs font-Poppins">{item?.name}</p>
+                        <p className="font-medium pt-0.5 text-xs font-Poppins capitalize">{item?.name}</p>
                       </div>
                       <div className="font-Poppins text-membersCreatedAt not-italic font-normal text-createdAtGrey dark:text-greyDark">
                         <p>{new Date(`${item?.lastActivity}`).getHours()} hours ago</p>
@@ -40,7 +40,21 @@ const ActiveMembersList: React.FC<Props> = ({ hidden, membersWidgetData, isLoadi
             ))}
           </ul>
         ) : (
-          <Skeleton count={4} width={350} height={22} className="m-4" />
+          <><div className="w-full flex justify-start items-center ">
+            <div className="">
+              <Skeleton width={30} height={30} circle />
+            </div>
+
+            <div className="ml-2 mt-1">
+              <div>
+                <Skeleton width={150} height={15}   />
+              </div>
+              <div className="font-Poppins text-membersCreatedAt not-italic font-normal text-createdAtGrey dark:text-greyDark">
+                <Skeleton width={100} height={5}   />
+              </div>
+            </div>
+          </div>
+          </>
         )}
       </div>
     ) : (
@@ -56,7 +70,7 @@ const ActiveMembersList: React.FC<Props> = ({ hidden, membersWidgetData, isLoadi
 
                   <div className="ml-0.865">
                     <div>
-                      <p className="font-medium pt-0.5 text-xs font-Poppins">{item?.memberName}</p>
+                      <p className="font-medium pt-0.5 text-xs font-Poppins capitalize">{item?.memberName}</p>
                     </div>
                     <div className="font-Poppins text-membersCreatedAt not-italic font-normal text-createdAtGrey dark:text-greyDark">
                       <p>{item?.duration.time}</p>

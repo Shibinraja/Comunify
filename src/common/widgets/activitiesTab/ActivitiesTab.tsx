@@ -80,10 +80,11 @@ const ActivitiesTab: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
               Highlights
             </TabSelector>
           </nav>
-          {!activitiesWidgetResponse?.length && !isLoading && !isManageMode && !isSidePanelOpen && (
-            <div className="flex items-center justify-center font-Poppins font-normal text-xs text-infoBlack pt-5">No data available</div>
-          )}
           <div className="h-14.375 items-center relative overflow-y-auto block section ">
+            {!activitiesWidgetResponse?.length && !isLoading && !isManageMode && !isSidePanelOpen && (
+              <div className="flex items-center justify-center font-Poppins font-normal text-xs text-infoBlack h-full">No data available</div>
+            )}
+
             <NewActivitiesList
               hidden={false}
               activitiesWidgetData={activitiesWidgetResponse ? activitiesWidgetResponse : []}
