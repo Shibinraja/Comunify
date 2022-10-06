@@ -75,9 +75,9 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
               styleActive={'gradient-bottom-border'}
             >
               Top Contributors
-              <span className="pl-2 group relative">
+              <span className="pl-2 group relative z-10">
                 <img src={infoIcon} alt="" />
-                <div className="absolute group-hover:visible invisible mt-4 bg-toolTip text-left p-5 text-white dark:text-white font-Poppins text-email font-normal leading-4 rounded-0.6">
+                <div className="absolute z-10 group-hover:visible invisible mt-4 bg-toolTip text-left p-5 text-white dark:text-white font-Poppins text-email font-normal leading-4 rounded-0.6">
                   Top contributors are the Members <br /> with most number of activities
                 </div>
               </span>
