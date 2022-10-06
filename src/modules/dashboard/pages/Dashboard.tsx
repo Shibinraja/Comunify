@@ -236,10 +236,7 @@ const Dashboard: React.FC = () => {
           <Button
             text=""
             onClick={handleWidgetDrawer}
-            className={`flex justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow ${
-              window.location.href.includes('stage') ? 'cursor-not-allowed' : 'cursor-pointer'
-            } `}
-            disabled={window.location.href.includes('stage') ? true : false}
+            className={`flex justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow cursor-pointer`}
           >
             <div className="font-Poppins font-medium text-white leading-5 text-search ">Manage Widget</div>
             <div className="brick-icon bg-cover">
