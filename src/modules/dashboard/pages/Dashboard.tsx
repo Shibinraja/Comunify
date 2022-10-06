@@ -208,6 +208,7 @@ const Dashboard: React.FC = () => {
                 disabled={!widgets?.length ? true : false}
                 startDate={startDate}
                 endDate={endDate}
+                maxDate={new Date()}
                 onChange={(update: any) => {
                   setDateRange(update);
                 }}

@@ -30,7 +30,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
   const [checkedLocation, setCheckedLocation] = useState<Record<string, unknown>>({});
   const [checkedOrganization, setCheckedOrganization] = useState<Record<string, unknown>>({});
   const [startDate, setStartDate] = useState<Date>();
-  const [endDate, setEndDate] = useState<Date>();
+  const [endDate, setEndDate] = useState<Date>(new Date());
   const [tagSearchText, setTagSearchText] = useState<string>('');
   const [locationSearchText, setLocationSearchText] = useState<string>('');
   const [organizationSearchText, setOrganizationSearchText] = useState<string>('');
@@ -465,6 +465,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                     <DatePicker
                       selected={endDate}
                       minDate={startDate}
+                      maxDate={endDate}
                       selectsEnd
                       startDate={startDate}
                       endDate={endDate}
