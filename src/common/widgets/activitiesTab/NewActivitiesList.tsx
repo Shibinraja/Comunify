@@ -37,7 +37,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
                         </p>
                       </div>
                       <div className="font-Poppins text-createdAt not-italic font-normal text-createdAtGrey dark:text-greyDark">
-                        <p> {generateDateAndTime(`${item?.activityTime}`, 'HH:MM')}</p>
+                        <p>{item?.activityTime ? generateDateAndTime(`${item?.activityTime}`, 'HH:MM') : 'Activity time is not available'}</p>
                       </div>
                     </div>
                   </div>

@@ -3,6 +3,7 @@ import { TabPanel } from 'common/tabs/TabPanel';
 import { MemberWidgetData } from '../../../modules/dashboard/interface/dashboard.interface';
 import Skeleton from 'react-loading-skeleton';
 import { activityData } from '../../../modules/activities/pages/ActivityTableData';
+import { generateDateAndTime } from '../../../lib/helper';
 
 type Props = {
   hidden: boolean;
@@ -31,7 +32,7 @@ const ActiveMembersList: React.FC<Props> = ({ hidden, membersWidgetData, isLoadi
                         <p className="font-medium pt-0.5 text-xs font-Poppins capitalize">{item?.name}</p>
                       </div>
                       <div className="font-Poppins text-membersCreatedAt not-italic font-normal text-createdAtGrey dark:text-greyDark">
-                        <p>{new Date(`${item?.lastActivity}`).getHours()} hours ago</p>
+                        <p>{item?.lastActivity ? generateDateAndTime(`${item?.lastActivity}`, 'HH:MM') : 'Last activity time is not available'}</p>
                       </div>
                     </div>
                   </div>
