@@ -626,3 +626,12 @@ input {
 .fixWidgetNoDataHeight {
   height: calc(100vh - 30rem);
 }
+.react-grid-item.react-grid-placeholder {
+ background: #f0f3f8 !important;
+ opacity: 0 !important;
+ border-radius:10px ;
+ -webkit-border-radius:;
+ -moz-border-radius:;
+ -ms-border-radius:;
+ -o-border-radius:;
+}
