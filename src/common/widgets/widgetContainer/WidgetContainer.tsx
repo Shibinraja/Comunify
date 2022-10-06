@@ -122,7 +122,7 @@ export default function WidgetContainer(props: WidgetContainerProps) {
         onLayoutChange={onLayoutChange}
         resizeHandles={['ne']}
         style={{
-          minHeight: `${window.location.href.includes('stage') ? '0px' : isManageMode ? '160vh' : '0'}`,
+          minHeight: `${isManageMode ? '160vh' : '0'}`,
           width: '100%'
         }}
       >
@@ -138,9 +138,7 @@ export default function WidgetContainer(props: WidgetContainerProps) {
       {!widgets?.length && !isManageMode && (
         <div className="flex flex-col items-center justify-center fixWidgetNoDataHeight {">
           <img src={noWidgetIcon} alt="" className="w-[3.8125rem] h-[3.8125rem]" />
-          <div className="font-Poppins font-medium text-tableDuration text-noReports leading-10 pt-5">{`${
-            window.location.href.includes('stage') ? 'Widgets coming soon...' : 'No widgets added'
-          }`}</div>
+          <div className="font-Poppins font-medium text-tableDuration text-noReports leading-10 pt-5">No widgets added</div>
         </div>
       )}
     </>
