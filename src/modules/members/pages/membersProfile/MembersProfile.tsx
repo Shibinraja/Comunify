@@ -46,7 +46,7 @@ const MembersProfile: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isTagModalOpen, setTagModalOpen] = useState<boolean>(false);
   const [fromDate, setFromDate] = useState<Date>();
-  const [toDate, setToDate] = useState<Date>();
+  const [toDate, setToDate] = useState<Date>(new Date());
   const [searchText, setSearchText] = useState<string>('');
   const [tags, setTags] = useState<{
     tagName: string;
@@ -521,6 +521,7 @@ const MembersProfile: React.FC = () => {
                       selected={toDate}
                       ref={datePickerRefEnd}
                       minDate={fromDate}
+                      maxDate={toDate}
                       selectsEnd
                       startDate={fromDate}
                       endDate={toDate}
