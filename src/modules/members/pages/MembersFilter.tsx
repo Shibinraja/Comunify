@@ -605,6 +605,14 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
               <Button
                 disabled={memberColumnsLoader ? true : false}
                 type="button"
+                onClick={() => {
+                  setCheckedPlatform({});
+                  setCheckedTags({});
+                  setCheckedLocation({});
+                  setCheckedOrganization({});
+                  setStartDate(undefined);
+                  setEndDate(undefined);
+                }}
                 text="Reset"
                 className="border border-backdropColor text-black rounded-0.31 h-2.063 w-1/2 mr-1 cursor-pointer text-card font-Manrope font-semibold leading-1.31 hover:text-white hover:bg-backdropColor"
               />
