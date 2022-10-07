@@ -30,7 +30,7 @@ const WidgetPreview: React.FC<WidgetPreviewType> = ({ isOpen, setIsOpen, widgets
       isOpen={isOpen}
       shouldCloseOnOverlayClick={false}
       onRequestClose={() => setIsOpen(false)}
-      className="w-[1048px] mx-auto rounded-lg modals-tag bg-white shadow-modal flex items-center justify-center"
+      className="w-4/6 mx-auto rounded-lg modals-tag bg-white shadow-modal flex items-center justify-center"
       style={{
         overlay: {
           display: 'flex',
@@ -43,7 +43,7 @@ const WidgetPreview: React.FC<WidgetPreviewType> = ({ isOpen, setIsOpen, widgets
         }
       }}
     >
-      <div className="flex flex-col  text-white font-Popins rounded-lg shadow-modal">
+      <div className="flex flex-col  text-white font-Popins w-full">
         <header className="bg-[#141010] px-[30px] py-[35px] rounded-tl-lg rounded-tr-lg h-[164px]">
           <div className="flex justify-between items-center">
             <div className="flex flex-col">
