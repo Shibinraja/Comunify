@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { useSearchParams } from 'react-router-dom';
+// import { useSearchParams } from 'react-router-dom';
 import { quickInfoWidgetService } from '../../../modules/dashboard/services/dashboard.services';
 import { getLocalWorkspaceId } from '../../../lib/helper';
 import { QuickInfoData } from '../../../modules/dashboard/interface/dashboard.interface';
@@ -8,11 +8,13 @@ import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
 import Skeleton from 'react-loading-skeleton';
 
 const QuickInfo: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
-  const { isManageMode, removeWidgetFromDashboard, widget, isShrunk, isSidePanelOpen } = props;
+  const { isManageMode, removeWidgetFromDashboard, widget, isShrunk, isSidePanelOpen, filters } = props;
   const [quickInfoWidgetData, setQuickInfoWidgetData] = React.useState<QuickInfoData[] | []>();
-  const [searchParams] = useSearchParams();
-  const startDate = searchParams.get('startDate');
-  const endDate = searchParams.get('endDate');
+  // const [searchParams] = useSearchParams();
+  // const startDate = searchParams.get('startDate');
+  // const endDate = searchParams.get('endDate');
+  const startDate = filters?.startDate;
+  const endDate = filters?.endDate;
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const workspaceId = getLocalWorkspaceId();

@@ -23,7 +23,7 @@ const Dashboard: React.FC = () => {
   const [selected, setSelected] = useState<string>('');
   const [dateRange, setDateRange] = useState([null, null]);
   const datePickerRef = useRef<ReactDatePicker>(null);
-  const [startDate, endDate] = dateRange;
+  const [startDateRange, endDateRange] = dateRange;
 
   const selectOptions = [
     { id: Math.random(), dateRange: 'This Week' },
@@ -37,6 +37,9 @@ const Dashboard: React.FC = () => {
   const [startingDate, setStartingDate] = React.useState<string>();
   const [endingDate, setEndingDate] = React.useState<string>();
   const [isButtonLoading, setIsButtonLoading] = React.useState<boolean>(false);
+
+  const [startDate, setStartDate] = React.useState<string>(moment().startOf('week').toISOString());
+  const [endDate, setEndDate] = React.useState<string>(convertEndDate(new Date()));
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -65,12 +68,12 @@ const Dashboard: React.FC = () => {
   }, [selected]);
 
   useEffect(() => {
-    if (startDate && endDate) {
-      const start: string = convertStartDate(startDate);
-      const end: string = convertEndDate(endDate);
+    if (startDateRange && endDateRange) {
+      const start: string = convertStartDate(startDateRange);
+      const end: string = convertEndDate(endDateRange);
       setNavigation(start, end);
     }
-  }, [startDate, endDate]);
+  }, [startDateRange, endDateRange]);
 
   const handleDropDownActive = (): void => {
     if (widgets.length) {
@@ -81,6 +84,8 @@ const Dashboard: React.FC = () => {
 
   const setNavigation = (start?: string, end?: string) => {
     if (start && end) {
+      setStartDate(start);
+      setEndDate(end);
       const params = { startDate: start, endDate: end };
       navigate({
         pathname: location.pathname,
@@ -206,8 +211,8 @@ const Dashboard: React.FC = () => {
                 selectsRange={true}
                 onCalendarOpen={handleCalendarOpenAndClearOtherFiler}
                 disabled={!widgets?.length ? true : false}
-                startDate={startDate}
-                endDate={endDate}
+                startDate={startDateRange}
+                endDate={endDateRange}
                 maxDate={new Date()}
                 onChange={(update: any) => {
                   setDateRange(update);
@@ -260,7 +265,7 @@ const Dashboard: React.FC = () => {
         )}
       </div>
       <div className="mb-4">
-        <WidgetContainer isManageMode={isManageMode} widgets={widgets} setWidgets={setWidgets} setTransformedWidgetData={setTransformedWidgetData} />
+        <WidgetContainer isManageMode={isManageMode} widgets={widgets} setWidgets={setWidgets} setTransformedWidgetData={setTransformedWidgetData} filters={{ startDate, endDate }}/>
       </div>
     </>
   );
