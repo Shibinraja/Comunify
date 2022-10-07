@@ -79,17 +79,17 @@ const ForgotPassword: React.FC = () => {
                   <Button
                     text="Submit"
                     type="submit"
-                    className="font-Poppins rounded-lg text-base font-semibold text-white transition ease-in duration-300 w-full mt-1.84 h-3.6 hover:shadow-buttonShadowHover btn-gradient"
+                    className="font-Poppins rounded-lg text-base font-semibold text-white transition ease-in duration-300 w-full mt-8 h-3.6 hover:shadow-buttonShadowHover btn-gradient"
                   />
                 </Form>
               )}
             </Formik>
-            <div className="font-Inter text-secondaryGray text-sm text-center font-normal leading-2.8 transition ease-in duration-300 pt-4">
+            {/* <div className="font-Inter text-secondaryGray text-sm text-center font-normal leading-2.8 transition ease-in duration-300 pt-4">
               <Link to="forgot-password" className="underline hover:text-letsSignInSignUp hover:underline">
                 {' '}
                 Resend Link
               </Link>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

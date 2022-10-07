@@ -31,7 +31,7 @@ Props) => (
         onBlur={onBlur}
         onChange={onChange}
       />
-      {errors && <p className="text-lightRed absolute -bottom-4 font-normal text-xs font-Inter mt-0.287 pl-1">{helperText}</p>}
+      {errors && <p className="text-lightRed absolute -bottom-5 font-normal text-xs font-Inter mt-0.287 pl-1">{helperText}</p>}
     </div>
   </Fragment>
 );
