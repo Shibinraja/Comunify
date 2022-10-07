@@ -66,7 +66,9 @@ const MemberGrowth: React.FC<WidgetComponentProps> = (props: WidgetComponentProp
   };
 
   return (
-    <div className="my-6">
+    <div className={`my-6 ${
+      !isManageMode ? '' : 'cursor-grabbing'
+   }  `}>
       <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white ">Member Growth</h3>
       <div className={`my-6 pb-10 bg-white dark:bg-secondaryDark dark:text-white rounded-0.6 border  
          dark:border-borderDark shadow-profileCard ${isManageMode ? 'widget-border relative' : 'border-borderPrimary'}`}>
