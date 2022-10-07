@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { SidePanelWidgetsData } from '../../modules/dashboard/interface/dashboard.interface';
 
 export type WidgetIdentification = {
@@ -47,7 +48,6 @@ export interface WidgetComponentProps {
   widget: PanelWidgetsType;
   isShrunk?: boolean;
   isSidePanelOpen: boolean;
-  // eslint-disable-next-line no-unused-vars
   removeWidgetFromDashboard: (selectedWidget: PanelWidgetsType) => void;
 }
 

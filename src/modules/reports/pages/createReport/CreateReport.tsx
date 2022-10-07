@@ -83,7 +83,7 @@ const CreateReport = () => {
         const platformId = platform.workspacePlatformId;
         return setCheckedPlatform((preValue) => ({ ...preValue, [platformId]: true }));
       });
-      if (reportResponseValues?.scheduleRepeat !== ScheduleReportDateType['No Schedule']) {
+      if (reportResponseValues?.scheduleRepeat !== ScheduleReportDateType['NoSchedule']) {
         setCheckedRadioId({ ['Yes']: true });
         const scheduleReportId = reportResponseValues?.scheduleRepeat;
         setSelectedReport(ScheduleReportDateType[scheduleReportId]);
@@ -107,7 +107,7 @@ const CreateReport = () => {
       });
       reportValuesData.platform.map((platformId:string) => setCheckedPlatform((preValue) => ({ ...preValue, [platformId]: true })));
 
-      if (reportValuesData?.schedule !== ScheduleReportDateType['No Schedule']) {
+      if (reportValuesData?.schedule !== ScheduleReportDateType['NoSchedule']) {
         setCheckedRadioId({ ['Yes']: true });
         const scheduleReportId = reportValuesData?.schedule;
         setSelectedReport(ScheduleReportDateType[scheduleReportId]);

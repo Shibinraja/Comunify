@@ -19,7 +19,6 @@ Modal.setAppElement('#root');
 
 const Dashboard: React.FC = () => {
   const [isSelectDropDownActive, setSelectDropDownActive] = useState<boolean>(false);
-  // eslint-disable-next-line no-unused-vars
   const [selected, setSelected] = useState<string>('');
   const [dateRange, setDateRange] = useState([null, null]);
   const datePickerRef = useRef<ReactDatePicker>(null);

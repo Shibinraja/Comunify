@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import WidgetContainer from 'common/widgets/widgetContainer/WidgetContainer';
 import { format, parseISO } from 'date-fns';
@@ -12,7 +14,6 @@ const widgetPreview = () => {
   const [isManageMode, setIsManageMode] = useState<boolean>(true);
   const [widgets, setWidgets] = useState<any[] | []>([]);
   const [saveHistoryDetail, setSaveHistoryDetail] = useState<reportHistoryDetailsResponseProp>();
-  // eslint-disable-next-line no-unused-vars
   const [transformedWidgetData, setTransformedWidgetData] = React.useState<any>(new Array(null));
 
   // Function to call the api and list the membersSuggestionList

@@ -12,7 +12,7 @@ export enum ActionDropDownEnum {
   Edit = 'Edit',
   Generate = 'Generate',
   Remove = 'Remove',
-  'Schedule Off' = 'Schedule Off'
+  ScheduleOff = 'Schedule Off'
 }
 
 export enum ScheduleReportsEnum {
@@ -50,7 +50,7 @@ export const ReportOptions = [
 ];
 
 export enum ScheduleReportDateType {
-  'No Schedule' = 1,
+  NoSchedule = 1,
   Weekdays = 2,
   Daily = 3,
   Weekly = 4,

@@ -217,7 +217,7 @@ const Report: React.FC = () => {
       setModalOpen({ scheduleOffModalOpen: false, removeModalOpen: true });
     }
 
-    if (actionType === ActionDropDownEnum['Schedule Off']) {
+    if (actionType === ActionDropDownEnum['ScheduleOff']) {
       setModalOpen({ removeModalOpen: false, scheduleOffModalOpen: true });
     }
 
@@ -346,10 +346,10 @@ const Report: React.FC = () => {
   };
 
   const RenderedOption = (schedule: number) => {
-    if (schedule !== ScheduleReportDateType['No Schedule']) {
+    if (schedule !== ScheduleReportDateType['NoSchedule']) {
       return ['Edit', 'Generate', 'Remove', 'Schedule Off'];
     }
-    if (schedule === ScheduleReportDateType['No Schedule']) {
+    if (schedule === ScheduleReportDateType['NoSchedule']) {
       return ['Edit', 'Remove'];
     }
   };

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars */
 import Button from 'common/button';
 import Input from 'common/input';
 import { TabPanel } from 'common/tabs/TabPanel';
@@ -51,7 +53,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
     workspacePlatformSettingsId: '',
     platformIcon: ''
   });
-  // eslint-disable-next-line no-unused-vars
+
   const [platformIcons, setPlatformIcons] = useState<PlatformIcons>({ slack: undefined, vanillaForums: undefined });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   //   const [platformStatus, setPlatformStatus] = useState<PlatformsStatus>({ platform: undefined, status: undefined });
