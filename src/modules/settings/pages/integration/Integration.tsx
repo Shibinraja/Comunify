@@ -1,15 +1,25 @@
-/* eslint-disable no-unused-vars */
 import Button from 'common/button';
-import React, { useState } from 'react';
-import unsplashIcon from '../../../../assets/images/unsplash.svg';
-import slackIcon from '../../../../assets/images/slack.svg';
-import discordIcon from '../../../../assets/images/discord.svg';
-import { TabPanel } from 'common/tabs/TabPanel';
-import Modal from 'react-modal';
-import vanillaIcon from '../../../../assets/images/vanilla-forum.svg';
 import Input from 'common/input';
-import './Integration.css';
+import { TabPanel } from 'common/tabs/TabPanel';
+import { NavigateToConnectPage } from 'modules/settings/services/settings.services';
+import React, { useState } from 'react';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+import Modal from 'react-modal';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
+import discordIcon from '../../../../assets/images/discord.svg';
+import slackIcon from '../../../../assets/images/slack.svg';
+import vanillaIcon from '../../../../assets/images/vanilla-forum.svg';
+import { showErrorToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
 import usePlatform from '../../../../hooks/usePlatform';
+import { PlatformConnectResponse } from '../../../../interface/interface';
+import { IntegrationResponse, NetworkResponse } from '../../../../lib/api';
+import { API_ENDPOINT } from '../../../../lib/config';
+import { getLocalWorkspaceId } from '../../../../lib/helper';
+import { request } from '../../../../lib/request';
+import { AppDispatch } from '../../../../store';
 import {
   ConnectedPlatforms,
   ModalState,
@@ -19,21 +29,8 @@ import {
   SlackConnectData,
   VanillaForumsConnectData
 } from '../../interface/settings.interface';
-import { getLocalWorkspaceId } from '../../../../lib/helper';
-import { PlatformConnectResponse } from '../../../../interface/interface';
-import { IntegrationResponse, NetworkResponse } from '../../../../lib/api';
-import { showErrorToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
-import { useNavigate } from 'react-router';
-import { API_ENDPOINT } from '../../../../lib/config';
-import { request } from '../../../../lib/request';
-import { useDispatch } from 'react-redux';
 import settingsSlice from '../../store/slice/settings.slice';
-import { useSearchParams } from 'react-router-dom';
-import { useAppSelector } from '../../../../hooks/useRedux';
-import { AppDispatch, State } from '../../../../store';
-import { NavigateToConnectPage } from 'modules/settings/services/settings.services';
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
+import './Integration.css';
 
 Modal.setAppElement('#root');
 
@@ -64,7 +61,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
     workspaceId: ''
   });
   const [integrationDisconnect, setIntegrationDisconnect] = useState<boolean>(false);
-  const platformData = usePlatform();
+  const { PlatformFilterResponse } = usePlatform();
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -75,7 +72,6 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
   };
 
   React.useEffect(() => {
-    dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
     if (searchParams.get('code')) {
       const codeParams: null | string = searchParams.get('code');
       if (codeParams !== '') {
@@ -84,7 +80,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
     }
   }, []);
 
-  const { PlatformsConnected } = useAppSelector((state: State) => state.settings);
+  const { PlatformsConnected } = usePlatform();
   const checkForConnectedPlatform = (platformName: string) => {
     const data = PlatformsConnected?.find(
       (obj: ConnectedPlatforms) => obj?.platform?.name.toLocaleLowerCase().trim() === `${platformName.toLocaleLowerCase().trim()}`
@@ -318,7 +314,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
           </p>
 
           <div className="flex mt-1.8 flex-wrap w-full">
-            {platformData?.map((data: PlatformResponse) => (
+            {PlatformFilterResponse?.map((data: PlatformResponse) => (
               <div
                 key={`${data?.id + data?.name}`}
                 className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5"

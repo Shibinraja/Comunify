@@ -10,11 +10,21 @@ import membersRoutes from '../modules/members/routes/members.routes';
 import PrivateRoute from './PrivateRoute';
 import Loadable from './suspenseLoader';
 import accountRoutes from 'modules/account/routes/account.routes';
+import GuestRoute from './GuestGuard';
 
 const MainLayout = Loadable(lazy(() => import('../layout/MainLayout')));
+const ReportDetail = Loadable(lazy(() => import ('../modules/reports/pages/reportHistory/ReportDetail')));
 
 const routes: RoutesArray[] = [
   ...authRoutes,
+  {
+    path: '/:workspaceId/reports/:reportHistoryId/report-details',
+    element: (
+      <GuestRoute>
+        <ReportDetail/>
+      </GuestRoute>
+    )
+  },
   {
     path: '/',
     element: (
