@@ -7,7 +7,7 @@ import infoIcon from '../../../assets/images/info.svg';
 import { getLocalWorkspaceId } from '../../../lib/helper';
 import { membersWidgetDataService } from '../../../modules/dashboard/services/dashboard.services';
 import { MemberWidgetData } from '../../../modules/dashboard/interface/dashboard.interface';
-import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
+import { WidgetComponentProps } from '../../widgetLayout/WidgetTypes';
 
 const TopContributor: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen, filters } = props;

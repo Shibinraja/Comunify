@@ -5,7 +5,7 @@ import NewActivitiesList from '../activitiesTab/NewActivitiesList';
 import { activitiesWidgetDataService } from '../../../modules/dashboard/services/dashboard.services';
 import { getLocalWorkspaceId } from '../../../lib/helper';
 import { ActivitiesWidgetData } from '../../../modules/dashboard/interface/dashboard.interface';
-import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
+import { WidgetComponentProps } from '../../widgetLayout/WidgetTypes';
 
 const NewActivities: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen, filters } = props;
