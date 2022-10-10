@@ -62,9 +62,7 @@ const HealthCard: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
   };
 
   return (
-    <div className={`my-6 heathCard ${
-      !isManageMode ? '' : 'cursor-grabbing'
-   }  `}>
+    <div className={`my-6 heathCard ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
       <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Health</h3>
       <div
         className={`flex  ${
@@ -185,8 +183,18 @@ const HealthCard: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
             </ProgressProvider>
           </div>
           <div className="flex flex-col pl-3">
-            <div className="font-Poppins font-medium text-error leading-4 pb-2 dark:text-greyDark">Overall</div>
-            <div className="font-Poppins font-semibold text-2xl leading-4 dark:text-white">
+            <div
+              className={`font-Poppins font-medium ${
+                !isShrunk ? 'text-activityHealth' : 'text-[0.6878rem]'
+              } leading-0.93 text-activityGray pb-1 dark:text-greyDark`}
+            >
+              Overall
+            </div>
+            <div
+              className={`font-Poppins font-semibold ${
+                !isShrunk ? 'text-activityPercentage ' : 'text-lg'
+              } text-activityGray leading-4 dark:text-white`}
+            >
               {!isManageMode && !isSidePanelOpen ? overallScoreData?.percentage : 67}%
             </div>
           </div>

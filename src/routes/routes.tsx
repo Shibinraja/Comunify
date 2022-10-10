@@ -1,3 +1,4 @@
+
 import React, { lazy } from 'react';
 import activityRoutes from 'modules/activities/routes/activities.routes';
 import reportRoutes from 'modules/reports/routes/reports.routes';
@@ -18,7 +19,7 @@ const ReportDetail = Loadable(lazy(() => import ('../modules/reports/pages/repor
 const routes: RoutesArray[] = [
   ...authRoutes,
   {
-    path: '/:workspaceId/reports/:reportHistoryId/report-details',
+    path: ':workspaceId/reports/:reportHistoryId/report-details',
     element: (
       <GuestRoute>
         <ReportDetail/>

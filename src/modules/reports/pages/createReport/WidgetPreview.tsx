@@ -49,13 +49,15 @@ const WidgetPreview: React.FC<WidgetPreviewType> = ({ isOpen, setIsOpen, widgets
             <div className="flex flex-col">
               <span className="font-semibold text-2xl capitalize">{reportValuesData.name}</span>
               <div className="font-medium text-sm pt-1">
-                {startDate ? `Date: ${format(parseISO(startDate as string), 'dd MMM yyyy')}` : '--'}
-                <span className="pl-3">{endDate ? `Date: ${format(parseISO(endDate as string), 'dd MMM yyyy')}` : '--'}</span>
+                {startDate && `Date: ${format(parseISO(startDate as string), 'dd MMM yyyy')}`}
+                <span className="pl-3">{endDate && `Date: ${format(parseISO(endDate as string), 'dd MMM yyyy')}`}</span>
               </div>
             </div>
-            <div className="bg-[#E5F6FF] rounded-md text-xs font-medium text-[#0A0A0A] py-2 px-4 capitalize">
-              <span>{`Report Status : ${ScheduleReportDateType[reportValuesData.schedule as unknown as number]}`}</span>
-            </div>
+            {reportValuesData.schedule !== ScheduleReportDateType.NoSchedule && (
+              <div className="bg-[#E5F6FF] rounded-md text-xs font-medium text-[#0A0A0A] py-2 px-4 capitalize">
+                <span>{`Report Status : ${ScheduleReportDateType[reportValuesData.schedule as unknown as number]}`}</span>
+              </div>
+            )}
           </div>
 
           <div className="flex items-center pt-6">

@@ -70,7 +70,8 @@ const widgetsReports: React.FC = () => {
         if (data) {
           showSuccessToast('Report Created');
           if (data.reportUrl) {
-            navigate(data.reportUrl);
+            window.open(data.reportUrl, '_blank');
+            navigate(`/${workspaceId}/reports`);
           } else {
             navigate(`/${workspaceId}/reports`);
           }
@@ -85,9 +86,10 @@ const widgetsReports: React.FC = () => {
         reportId: reportId!
       }).then((data) => {
         if (data) {
-          showSuccessToast('Report Created');
+          showSuccessToast('Report Updated');
           if (data.reportUrl) {
-            navigate(data.reportUrl);
+            window.open(data.reportUrl, '_blank');
+            navigate(`/${workspaceId}/reports`);
           } else {
             navigate(`/${workspaceId}/reports`);
           }

@@ -2,7 +2,7 @@
 import { SidePanelWidgetsData } from '../../modules/dashboard/interface/dashboard.interface';
 
 export type WidgetIdentification = {
-  widgetKey: string;
+  widgetKey: string[];
   sidePanelWidgetsData?: SidePanelWidgetsData[];
   widgetRemoved: string;
 };

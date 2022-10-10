@@ -90,7 +90,7 @@ const CreateReport = () => {
       }
       else{
         setCheckedRadioId({ ['No']: true });
-        setSelectedReport('No Schedule');
+        setSelectedReport('NoSchedule');
         setCustomDate((prevDate) => ({ ...prevDate, startDate: new Date(reportResponseValues.createdAt), endDate: new Date(reportResponseValues.reportEndAt), singleDate: undefined }));
       }
     }
@@ -114,7 +114,7 @@ const CreateReport = () => {
       }
       else{
         setCheckedRadioId({ ['No']: true });
-        setSelectedReport('No Schedule');
+        setSelectedReport('NoSchedule');
         setCustomDate((prevDate) => ({ ...prevDate, startDate: new Date(reportValuesData.startDate), endDate: new Date(reportValuesData.endDate), singleDate: undefined }));
       }
     }
@@ -161,14 +161,14 @@ const CreateReport = () => {
     if (dateTime === 'end') {
       setCustomDate((prevDate) => ({ ...prevDate, endDate: !date ? undefined : date, singleDate: undefined }));
     }
-    setSelectedReport('No Schedule');
+    setSelectedReport('NoSchedule');
   };
 
   // Function to convert the day and subtract based on no of days/ months.
   const selectCustomDate = (date: string) => {
     const todayDate = new Date();
     setCustomDate({ startDate: undefined, endDate: undefined, singleDate: undefined });
-    setSelectedReport('No Schedule');
+    setSelectedReport('NoSchedule');
     if (date === CustomReportDateType.Day) {
       setCustomDate((prevDate) => ({ ...prevDate, singleDate: subDays(todayDate, 1) }));
       setCustomDateLink({ [date]: true });
@@ -205,7 +205,7 @@ const CreateReport = () => {
       });
     }
 
-    if(selectedReport === 'No Schedule') {
+    if(selectedReport === 'NoSchedule') {
       delete newValues['emails'];
     }
     newValues['schedule'] = ScheduleReportDateType[selectedReport as unknown as ScheduleReportDateType];

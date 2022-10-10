@@ -60,9 +60,9 @@ const widgetPreview = () => {
           <div className="flex flex-col">
             <span className="font-semibold text-2xl capitalize">{saveHistoryDetail?.report.name}</span>
             <div className="font-medium text-sm pt-1">
-              {saveHistoryDetail?.history.startAt ? `Date: ${format(parseISO(saveHistoryDetail?.history.startAt), 'dd MMM yyyy')}` : '--'}
+              {saveHistoryDetail?.history.startAt ? `Start Date: ${format(parseISO(saveHistoryDetail?.history.startAt), 'dd MMM yyyy')}` : '--'}
               <span className="pl-3">
-                {saveHistoryDetail?.history.endAt ? `Date: ${format(parseISO(saveHistoryDetail?.history.endAt), 'dd MMM yyyy')}` : '--'}
+                {saveHistoryDetail?.history.endAt ? `End Date: ${format(parseISO(saveHistoryDetail?.history.endAt), 'dd MMM yyyy')}` : '--'}
               </span>
             </div>
           </div>
