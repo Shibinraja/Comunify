@@ -11,7 +11,6 @@ import { showErrorToast, showSuccessToast } from '../../../common/toast/toastFun
 import { getWidgetsLayoutService, saveWidgetsLayoutService } from '../services/dashboard.services';
 import moment from 'moment';
 import Button from '../../../common/button';
-
 import WidgetContainer from '../../../common/widgets/widgetContainer/WidgetContainer';
 
 Modal.setAppElement('#root');
