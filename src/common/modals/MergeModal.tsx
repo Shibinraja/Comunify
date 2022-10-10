@@ -31,7 +31,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
   const debouncedValue = useDebounce(searchSuggestion, 300);
 
   // Function to call the api and list the membersSuggestionList
-  const getMemberList = async(props: Partial<memberSuggestionType>, action?: string) => {
+  const getMemberList = async (props: Partial<memberSuggestionType>, action?: string) => {
     setLoading(true);
     const data = await getMemberSuggestionList({
       workspaceId: workspaceId!,
@@ -45,8 +45,8 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
     if (action === 'clearSearch') {
       const CheckedDuplicateMembers = new Set();
       const MembersList = selectedMembers.concat(data?.result as unknown as MergeMembersDataResult).filter((member: MergeMembersDataResult) => {
-        const duplicate = CheckedDuplicateMembers.has(member.comunifyMemberId);
-        CheckedDuplicateMembers.add(member.comunifyMemberId);
+        const duplicate = CheckedDuplicateMembers.has(member.id);
+        CheckedDuplicateMembers.add(member.id);
         return !duplicate;
       });
       setSuggestionList({
@@ -63,8 +63,8 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
         const CheckedDuplicateMembers = new Set();
 
         const MemberList = prevState.result.concat(data?.result as unknown as MergeMembersDataResult).filter((member: MergeMembersDataResult) => {
-          const duplicate = CheckedDuplicateMembers.has(member.comunifyMemberId);
-          CheckedDuplicateMembers.add(member.comunifyMemberId);
+          const duplicate = CheckedDuplicateMembers.has(member.id);
+          CheckedDuplicateMembers.add(member.id);
           return !duplicate;
         });
         return {
@@ -105,7 +105,7 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
   }, [debouncedValue]);
 
   // function for scroll event
-  const handleScroll = async(event: React.UIEvent<HTMLElement>) => {
+  const handleScroll = async (event: React.UIEvent<HTMLElement>) => {
     event.preventDefault();
     const { clientHeight, scrollHeight, scrollTop } = event.currentTarget;
     if (scrollHeight - scrollTop <= clientHeight + 2 && !loading) {
