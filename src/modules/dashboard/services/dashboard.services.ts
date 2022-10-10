@@ -1,6 +1,6 @@
 /* eslint-disable space-before-function-paren */
 import { showErrorToast } from '../../../common/toast/toastFunctions';
-import { HealthScoreWidgetData } from '../../../common/widgetLayout/WidgetTypes';
+import { HealthScoreWidgetData, WidgetFilters } from '../../../common/widgetLayout/WidgetTypes';
 import { API_ENDPOINT } from '../../../lib/config';
 import { request } from '../../../lib/request';
 import { MembersProfileActivityGraphData } from '../../members/interface/members.interface';
@@ -13,7 +13,7 @@ import {
   SidePanelWidgetsList
 } from '../interface/dashboard.interface';
 
-export const getSidePanelWidgetsService = async (scope: number, workspaceId: string, search?: string): Promise<SidePanelWidgetsList[]> => {
+export const getSidePanelWidgetsService = async (scope: string, workspaceId: string, search?: string): Promise<SidePanelWidgetsList[]> => {
   try {
     const { data } = await request.get(`${API_ENDPOINT}/v1/${workspaceId}/widgets`, { params: { scope, search } });
     return data?.data?.result as SidePanelWidgetsList[];
@@ -42,9 +42,9 @@ export const getWidgetsLayoutService = async (workspaceId: string) => {
   }
 };
 
-export const quickInfoWidgetService = async (workspaceId: string, startDate?: string, endDate?: string): Promise<QuickInfoData[]> => {
+export const quickInfoWidgetService = async (workspaceId: string, filters: WidgetFilters): Promise<QuickInfoData[]> => {
   try {
-    const { data } = await request.get(`${API_ENDPOINT}/v1/${workspaceId}/widgets/quick-info`, { params: { startDate, endDate } });
+    const { data } = await request.get(`${API_ENDPOINT}/v1/${workspaceId}/widgets/quick-info`, { params: filters });
     return data?.data as QuickInfoData[];
   } catch {
     showErrorToast('Failed to load quick info widget data');
@@ -52,9 +52,9 @@ export const quickInfoWidgetService = async (workspaceId: string, startDate?: st
   }
 };
 
-export const healthScoreWidgetDataService = async (workspaceId: string, startDate?: string, endDate?: string): Promise<HealthScoreWidgetData[]> => {
+export const healthScoreWidgetDataService = async (workspaceId: string, filters: WidgetFilters): Promise<HealthScoreWidgetData[]> => {
   try {
-    const { data } = await request.get(`${API_ENDPOINT}/v1/${workspaceId}/widgets/health-score`, { params: { startDate, endDate } });
+    const { data } = await request.get(`${API_ENDPOINT}/v1/${workspaceId}/widgets/health-score`, { params: filters });
     return data?.data as HealthScoreWidgetData[];
   } catch {
     showErrorToast('Failed to load health score widget data');
@@ -62,14 +62,9 @@ export const healthScoreWidgetDataService = async (workspaceId: string, startDat
   }
 };
 
-export const activitiesWidgetDataService = async (
-  workspaceId: string,
-  type: string,
-  startDate?: string,
-  endDate?: string
-): Promise<ActivitiesWidgetData[]> => {
+export const activitiesWidgetDataService = async (workspaceId: string, filters: WidgetFilters): Promise<ActivitiesWidgetData[]> => {
   try {
-    const { data } = await request.get(`${API_ENDPOINT}/v1/${workspaceId}/widgets/activity`, { params: { type, limit: 20, startDate, endDate } });
+    const { data } = await request.get(`${API_ENDPOINT}/v1/${workspaceId}/widgets/activity`, { params: { ...filters } });
     return data?.data?.data as ActivitiesWidgetData[];
   } catch {
     showErrorToast('Failed to load activity widget data');
@@ -77,14 +72,9 @@ export const activitiesWidgetDataService = async (
   }
 };
 
-export const membersWidgetDataService = async (
-  workspaceId: string,
-  type: string,
-  startDate?: string,
-  endDate?: string
-): Promise<MemberWidgetData[]> => {
+export const membersWidgetDataService = async (workspaceId: string, filters: WidgetFilters): Promise<MemberWidgetData[]> => {
   try {
-    const { data } = await request.get(`${API_ENDPOINT}/v1/${workspaceId}/widgets/member`, { params: { type, limit: 20, startDate, endDate } });
+    const { data } = await request.get(`${API_ENDPOINT}/v1/${workspaceId}/widgets/member`, { params: { ...filters } });
     return data?.data?.data as MemberWidgetData[];
   } catch {
     showErrorToast('Failed to load members widget data');
@@ -92,13 +82,9 @@ export const membersWidgetDataService = async (
   }
 };
 
-export const activityGrowthWidgetDataService = async (
-  workspaceId: string,
-  startDate?: string,
-  endDate?: string
-): Promise<MembersProfileActivityGraphData> => {
+export const activityGrowthWidgetDataService = async (workspaceId: string, filters: WidgetFilters): Promise<MembersProfileActivityGraphData> => {
   try {
-    const { data } = await request.get(`${API_ENDPOINT}/v1/${workspaceId}/widgets/activity-growth`, { params: { startDate, endDate } });
+    const { data } = await request.get(`${API_ENDPOINT}/v1/${workspaceId}/widgets/activity-growth`, { params: filters });
     return data?.data as MembersProfileActivityGraphData;
   } catch {
     showErrorToast('Failed to load activity growth widget data');
@@ -106,13 +92,9 @@ export const activityGrowthWidgetDataService = async (
   }
 };
 
-export const memberGrowthWidgetDataService = async (
-  workspaceId: string,
-  startDate?: string,
-  endDate?: string
-): Promise<MembersProfileActivityGraphData> => {
+export const memberGrowthWidgetDataService = async (workspaceId: string, filters: WidgetFilters): Promise<MembersProfileActivityGraphData> => {
   try {
-    const { data } = await request.get(`${API_ENDPOINT}/v1/${workspaceId}/widgets/member-growth`, { params: { startDate, endDate } });
+    const { data } = await request.get(`${API_ENDPOINT}/v1/${workspaceId}/widgets/member-growth`, { params: filters });
     return data?.data as MembersProfileActivityGraphData;
   } catch {
     showErrorToast('Failed to load member growth widget data');

@@ -7,12 +7,10 @@ import infoIcon from '../../../assets/images/info.svg';
 import { getLocalWorkspaceId } from '../../../lib/helper';
 import { membersWidgetDataService } from '../../../modules/dashboard/services/dashboard.services';
 import { MemberWidgetData } from '../../../modules/dashboard/interface/dashboard.interface';
-import { useSearchParams } from 'react-router-dom';
-
 import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
 
 const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
-  const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen } = props;
+  const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen, filters } = props;
 
   const workspaceId = getLocalWorkspaceId();
 
@@ -20,9 +18,6 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
   const [memberWidgetData, setMemberWidgetData] = React.useState<MemberWidgetData[]>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
-  const [searchParams] = useSearchParams();
-  const startDate = searchParams.get('startDate');
-  const endDate = searchParams.get('endDate');
   React.useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
       getMembersWidgetData();
@@ -30,22 +25,19 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
   }, [selectedTab]);
 
   React.useEffect(() => {
-    if (isManageMode === false && isSidePanelOpen) {
-      if (startDate && endDate) {
+    if (isManageMode === false && !isSidePanelOpen) {
+      if (filters?.startDate && filters?.endDate) {
         getMembersWidgetData();
       }
     }
-  }, [startDate, endDate]);
+  }, filters && Object.values(filters));
 
   // eslint-disable-next-line space-before-function-paren
   const getMembersWidgetData = async () => {
     setIsLoading(true);
-    const data: MemberWidgetData[] = await membersWidgetDataService(
-      workspaceId,
-      selectedTab ? selectedTab : '',
-      startDate ? startDate : undefined,
-      endDate ? endDate : undefined
-    );
+    filters['type'] = selectedTab ? selectedTab : undefined;
+    filters['limit'] = 20;
+    const data: MemberWidgetData[] = await membersWidgetDataService(workspaceId, filters);
     setMemberWidgetData(data);
     setIsLoading(false);
   };
@@ -55,9 +47,7 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
   };
 
   return (
-    <div className={`my-6 ${
-       !isManageMode ? '' : 'cursor-grabbing'
-    }  `}>
+    <div className={`my-6 ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
       <div>
         <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Members</h3>
       </div>

@@ -1,6 +1,6 @@
 /* eslint-disable indent */
 /* eslint-disable max-len */
-import React, { useEffect } from 'react';
+import React from 'react';
 import { buildStyles, CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import healthUpArrowIcon from '../../../assets/images/health-bar-up.svg';
@@ -9,12 +9,12 @@ import ProgressProvider from './progressProvider';
 import { getLocalWorkspaceId } from '../../../lib/helper';
 import { healthScoreWidgetDataService } from '../../../modules/dashboard/services/dashboard.services';
 import { HealthScoreWidgetData } from '../../widgetLayout/WidgetTypes';
-import { useSearchParams } from 'react-router-dom';
+// import { useSearchParams } from 'react-router-dom';
 
 import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
 
 const HealthCard: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
-  const { isManageMode, removeWidgetFromDashboard, widget, isShrunk, isSidePanelOpen } = props;
+  const { isManageMode, removeWidgetFromDashboard, widget, isShrunk, isSidePanelOpen, filters } = props;
   const gradientTransform = `rotate(90)`;
   const workspaceId = getLocalWorkspaceId();
 
@@ -28,11 +28,7 @@ const HealthCard: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
 
   // eslint-disable-next-line space-before-function-paren
   const fetchHealthScoreWidgetData = async () => {
-    const response: HealthScoreWidgetData[] = await healthScoreWidgetDataService(
-      workspaceId,
-      startDate ? startDate : undefined,
-      endDate ? endDate : undefined
-    );
+    const response: HealthScoreWidgetData[] = await healthScoreWidgetDataService(workspaceId, filters);
     setHealthScoreData(response);
   };
   const activitiesScoreData: HealthScoreWidgetData | undefined = healthScoreData.find(
@@ -45,17 +41,17 @@ const HealthCard: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
     (data: HealthScoreWidgetData) => data?.title.toLocaleLowerCase().trim() === 'overall'
   );
 
-  const [searchParams] = useSearchParams();
-  const startDate = searchParams.get('startDate');
-  const endDate = searchParams.get('endDate');
+  //   const [searchParams] = useSearchParams();
+  //   const startDate = searchParams.get('startDate');
+  //   const endDate = searchParams.get('endDate');
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!isManageMode && !isSidePanelOpen) {
-      if (startDate && endDate) {
+      if (filters?.startDate && filters?.endDate) {
         fetchHealthScoreWidgetData();
       }
     }
-  }, [startDate, endDate]);
+  }, filters && Object.values(filters));
 
   const handleRemove = () => {
     removeWidgetFromDashboard(widget);
