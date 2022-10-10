@@ -47,7 +47,7 @@ export interface WidgetComponentProps {
   widget: PanelWidgetsType;
   isShrunk?: boolean;
   isSidePanelOpen: boolean;
-  filters: WidgetFilters
+  filters: WidgetFilters;
   // eslint-disable-next-line no-unused-vars
   removeWidgetFromDashboard: (selectedWidget: PanelWidgetsType) => void;
 }
@@ -55,6 +55,8 @@ export interface WidgetComponentProps {
 export interface WidgetFilters {
   startDate: string | null;
   endDate: string | null;
+  type?: string;
+  limit?: number;
   platformIds?: string[];
 }
 

@@ -10,11 +10,7 @@ import Skeleton from 'react-loading-skeleton';
 const QuickInfo: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const { isManageMode, removeWidgetFromDashboard, widget, isShrunk, isSidePanelOpen, filters } = props;
   const [quickInfoWidgetData, setQuickInfoWidgetData] = React.useState<QuickInfoData[] | []>();
-  // const [searchParams] = useSearchParams();
-  // const startDate = searchParams.get('startDate');
-  // const endDate = searchParams.get('endDate');
-  const startDate = filters?.startDate;
-  const endDate = filters?.endDate;
+
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const workspaceId = getLocalWorkspaceId();
@@ -28,7 +24,7 @@ const QuickInfo: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) 
   // eslint-disable-next-line space-before-function-paren
   const getQuickInfoWidgetData = async () => {
     setIsLoading(true);
-    const data: QuickInfoData[] = await quickInfoWidgetService(workspaceId, startDate ? startDate : undefined, endDate ? endDate : undefined);
+    const data: QuickInfoData[] = await quickInfoWidgetService(workspaceId, filters);
     setQuickInfoWidgetData(data);
     setIsLoading(false);
   };
@@ -51,22 +47,18 @@ const QuickInfo: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) 
 
   React.useEffect(() => {
     if (isManageMode === false) {
-      if (isManageMode === false) {
-        if (startDate && endDate) {
-          getQuickInfoWidgetData();
-        }
+      if (filters?.startDate && filters?.endDate) {
+        getQuickInfoWidgetData();
       }
     }
-  }, [startDate, endDate]);
+  }, filters && Object.values(filters));
 
   const handleRemove = () => {
     removeWidgetFromDashboard(widget);
   };
 
   return (
-    <div  className={`my-6 ${
-      isShrunk ? 'cursor-grabbing ' : !isManageMode ? '' : 'cursor-grabbing'
-    }  `}>
+    <div className={`my-6 ${isShrunk ? 'cursor-grabbing ' : !isManageMode ? '' : 'cursor-grabbing'}  `}>
       <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Quick Info</h3>
       <div
         className={`grid ${
