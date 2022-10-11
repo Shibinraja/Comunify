@@ -549,7 +549,7 @@ const Report: React.FC = () => {
           <div className="">
             <Button
               type="button"
-              text="create report"
+              text="Create Report"
               className="btn-save-modal border-none text-white w-8.37 font-Poppins font-medium shadow-contactBtn rounded leading-1.12 h-3.06 text-error cursor-pointer transition ease-in duration-300 hover:shadow-buttonShadowHover"
               onClick={navigateToCreateReport}
             />

@@ -268,7 +268,7 @@ const CreateReport = () => {
         >
           {({ handleBlur, handleChange, handleSubmit, values, errors, touched }): JSX.Element => (
             <Form onSubmit={handleSubmit}>
-              <div className="grid grid-cols-2 relative mt-1.8 w-[70%] 2xl:w-1/2">
+              <div className="grid grid-cols-2 relative mt-1.8 w-full  xl:w-[70%] 2xl:w-1/2">
                 <div className="flex flex-col">
                   <label htmlFor="name" className="text-trial font-Poppins text-infoBlack font-normal leading-1.31">
                     Report Name
@@ -424,7 +424,7 @@ const CreateReport = () => {
                     </div>
                   </Fragment>
                 )}
-                <div className="mt-5 flex flex-col " ref={dropDownRef}>
+                <div className="mt-5 flex flex-col relative" ref={dropDownRef}>
                   <label htmlFor="name" className="text-trial font-Poppins text-infoBlack font-normal leading-1.31">
                     Choose Platform
                   </label>
@@ -438,7 +438,7 @@ const CreateReport = () => {
                     </div>
                   </div>
                   {isPlatformActive && (
-                    <div className="flex-flex-col  app-result-card-border box-border w-20.5 rounded-0.3 shadow-reportInput cursor-pointer absolute -bottom-[.2rem] bg-white z-40">
+                    <div className="flex-flex-col  app-result-card-border box-border w-20.5 rounded-0.3 shadow-reportInput cursor-pointer absolute -bottom-[3.5rem] bg-white z-40">
                       {PlatformsConnected &&
                         PlatformsConnected.map((platform: ConnectedPlatforms) => (
                           <Fragment key={platform.id}>
