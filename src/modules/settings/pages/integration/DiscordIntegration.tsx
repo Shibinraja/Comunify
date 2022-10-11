@@ -1,12 +1,76 @@
 import Button from 'common/button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router';
 import discordIcon from '../../../../assets/images/discord.svg';
 import dropdownIcon from '../../../../assets/images/filter-dropdown.svg';
+import { showErrorToast, showSuccessToast } from '../../../../common/toast/toastFunctions';
+import { DiscordChannel, DiscordConnectResponse } from '../../../../interface/interface';
+import { NetworkResponse } from '../../../../lib/api';
+import { API_ENDPOINT } from '../../../../lib/config';
+import { getLocalWorkspaceId } from '../../../../lib/helper';
+import { request } from '../../../../lib/request';
 
-const DiscordIntegrationDetails = () => {
-  const [isChannelActive, setIsChannelActive] = useState(false);
-  const options = ['neoit bot', 'neoito test', 'neoito check'];
-  const [selectedChannel, setselectedChannel] = useState('');
+const DiscordIntegrationDetails: React.FC = () => {
+  const [isChannelActive, setIsChannelActive] = useState<boolean>(false);
+  const [selectedChannel, setSelectedChannel] = useState('');
+  const [channelDetails, setChannelDetails] = useState<ChannelDetails[]>([]);
+  const [selectedChannelDetails, setSelectedChannelDetails] = useState<ChannelDetails>();
+  const navigate = useNavigate();
+  const location: Location | any = useLocation();
+  const workspaceId = getLocalWorkspaceId();
+
+  interface ChannelDetails {
+    channelName: string;
+    channelId: string;
+  }
+  interface CompleteSetupBody {
+    workspacePlatformAuthSettingsId: string | null;
+    workspaceId: string;
+    channelName: string;
+    channelId: string;
+  }
+
+  const connectResponse: DiscordConnectResponse = location?.state?.discordConnectResponse;
+  const channelDataArray: ChannelDetails[] = connectResponse?.channels?.map((data: DiscordChannel) => ({
+    channelName: data?.name,
+    channelId: data?.id
+  }));
+
+  useEffect(() => {
+    if (!channelDetails.length) {
+      setChannelDetails(channelDataArray);
+    }
+  }, [channelDataArray]);
+
+  const selectChannel = (channel: string) => {
+    setSelectedChannel(channel);
+    const selectedChannelData: ChannelDetails | undefined = channelDetails?.find((data: ChannelDetails) => data?.channelName === channel);
+    if (selectedChannelData) {
+      setSelectedChannelDetails(selectedChannelData);
+    }
+  };
+
+  //   eslint-disable-next-line space-before-function-paren
+  const discordCompleteSetup = async () => {
+    try {
+      const body: CompleteSetupBody = {
+        workspaceId,
+        workspacePlatformAuthSettingsId: connectResponse?.id,
+        channelName: selectedChannel,
+        channelId: selectedChannelDetails ? selectedChannelDetails?.channelId : ''
+      };
+      showSuccessToast('Integration in progress...');
+      const response: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/discord/complete-setup`, body);
+      if (response?.data?.message) {
+        showSuccessToast('Successfully integrated');
+        navigate(`/${workspaceId}/settings`);
+      } else {
+        showErrorToast('Integration failed');
+      }
+    } catch {
+      showErrorToast('Integration Failed');
+    }
+  };
 
   return (
     <div className="pt-20">
@@ -22,7 +86,7 @@ const DiscordIntegrationDetails = () => {
           </div>
           <div className="flex justify-between py-5 border-top-card">
             <div className="font-Poppins font-semibold text-base text-manageTitle leading-6">Discord workspace</div>
-            <div className="font-Poppins font-semibold text-tag text-base leading-6">@workspace name</div>
+            <div className="font-Poppins font-semibold text-tag text-base leading-6">{connectResponse?.guildName}</div>
           </div>
           <div className="flex justify-between py-5 border-top-card">
             <div className="font-Poppins font-semibold text-base text-manageTitle leading-6">Status</div>
@@ -32,7 +96,7 @@ const DiscordIntegrationDetails = () => {
             <div className="font-Poppins font-semibold text-base text-manageTitle leading-6">Community</div>
             <div className="font-Poppins font-semibold text-base text-slimGray leading-6 capitalize">
               {' '}
-              {selectedChannel ? selectedChannel : 'Not Seleted'}
+              {selectedChannel ? selectedChannel : 'Not Selected'}
             </div>
           </div>
           <div className="flex justify-between py-5 border-top-card">
@@ -54,16 +118,16 @@ const DiscordIntegrationDetails = () => {
             </div>
             {isChannelActive && (
               <div className="flex flex-col app-result-card-border box-border w-20.5 rounded-0.3 shadow-ChannelInput cursor-pointer absolute -bottom-[2.6rem] bg-white">
-                {options.map((options) => (
+                {channelDetails.map((options: ChannelDetails) => (
                   <ul
                     className="cursor-pointer hover:bg-signUpDomain  transition ease-in duration-100 "
                     onClick={() => {
-                      setselectedChannel(options);
+                      selectChannel(options?.channelName);
                     }}
-                    key={options.toString()}
+                    key={`${options?.channelId + Math.random()}`}
                   >
                     <li value={selectedChannel} className="text-searchBlack font-Poppins font-normal leading-1.31 text-trial p-3 capitalize">
-                      {options}
+                      {options?.channelName}
                     </li>
                   </ul>
                 ))}
@@ -86,8 +150,9 @@ const DiscordIntegrationDetails = () => {
             className="cancel mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  h-2.81 w-[181.83px]  rounded border-none"
           />
           <Button
-            text="Remove"
+            text="Complete Setup"
             type="submit"
+            onClick={discordCompleteSetup}
             className="text-white font-Poppins text-error font-medium leading-5 btn-save-modal cursor-pointer rounded shadow-contactBtn w-[123px] border-none h-2.81"
           />
         </div>

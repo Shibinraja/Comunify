@@ -15,7 +15,7 @@ import { API_ENDPOINT } from '../../../../lib/config';
 import { getLocalWorkspaceId, setRefreshToken } from '@/lib/helper';
 import Input from 'common/input';
 import { IntegrationResponse, NetworkResponse } from '../../../../lib/api';
-import { PlatformConnectResponse } from '../../../../interface/interface';
+import { DiscordConnectResponse, PlatformConnectResponse } from '../../../../interface/interface';
 import { ModalState, PlatformResponse, PlatformIcons, VanillaForumsConnectData, ConnectBody } from '../../../settings/interface/settings.interface';
 import usePlatform from '../../../../hooks/usePlatform';
 import { useDispatch } from 'react-redux';
@@ -160,20 +160,22 @@ const Integration: React.FC = () => {
         code: codeParams,
         workspaceId
       };
-      const response: IntegrationResponse<PlatformConnectResponse> = await request.post(`${API_ENDPOINT}/v1/discord/connect`, body);
-      if (response) {
-        navigate(`/${workspaceId}/settings/discord-integration`);
-      }
+      const response: IntegrationResponse<DiscordConnectResponse> = await request.post(`${API_ENDPOINT}/v1/discord/connect`, body);
+      //   if (response) {
+      //     navigate(`/${workspaceId}/settings/discord-integration`);
+      //   }
       //   localStorage.setItem('workspacePlatformAuthSettingsId', response?.data?.data?.id);
       //   localStorage.setItem('workspacePlatformSettingsId', response?.data?.data?.workspacePlatformSettingsId);
-      //   if (response?.data?.data?.id) {
-      //     setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
-      //     navigate(`/${workspaceId}/settings/discord-integration`, { state: { workspacePlatformAuthSettingsId: response?.data?.data?.id } });
-      //     showSuccessToast('Authenticated successfully');
-      //   } else {
-      //     showErrorToast('Integration failed');
-      //     setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
-      //   }
+      if (response?.data?.data) {
+        // setIsModalOpen((prevState) => ({ ...prevState, discord: false }));
+        navigate(`/${workspaceId}/settings/discord-integration`, {
+          state: { discordConnectResponse: response?.data?.data }
+        });
+        showSuccessToast('Authenticated successfully');
+      } else {
+        showErrorToast('Integration failed');
+        // setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
+      }
     } catch {
       showErrorToast('Integration failed');
       //   setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
