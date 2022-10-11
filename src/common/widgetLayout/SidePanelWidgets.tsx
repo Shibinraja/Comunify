@@ -149,7 +149,7 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
   };
 
   return (
-    <div className="w-[28%] xl:w-[23%]  widgetDrawerGradient left-0 top-0 pb-2 max-h-[156.25rem] min-h-screen px-7 absolute z-40 ">
+    <div className="w-[28%] xl:w-[23%] 3xl:w-[22%] 4xl:w-[21%]  widgetDrawerGradient left-0 top-0 pb-2 max-h-[156.25rem] min-h-screen px-7 absolute z-40 ">
       <div className="flex flex-col">
         <div className="flex flex-col pb-2">
           <div className="text-center font-Poppins font-semibold text-2xl pt-24">Add Widget</div>
@@ -194,13 +194,14 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
               </div>
             );
           })}
-          <Button
+         
+        </div>
+        <Button
             text="Request for a Widget"
             type="submit"
-            className="font-Poppins rounded-lg sticky bottom-0  w-full text-base font-semibold text-white py-3.5 mt-7 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient"
+            className="font-Poppins rounded-lg sticky bottom-0  w-full text-base font-semibold text-white py-3.5 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient"
             onClick={() => setWidgetModalOpen(true)}
           />
-        </div>
         <Modal
           isOpen={isWidgetModalOpen}
           shouldCloseOnOverlayClick={false}
