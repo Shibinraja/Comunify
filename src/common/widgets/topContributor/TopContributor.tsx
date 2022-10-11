@@ -2,19 +2,19 @@
 import React from 'react';
 import { TabSelector } from 'common/tabs/TabSelector';
 import { useTabs } from '@/hooks/useTabs';
-import ActiveMembersList from './ActiveMembersList';
+import ActiveMembersList from '../membersTab/ActiveMembersList';
 import infoIcon from '../../../assets/images/info.svg';
 import { getLocalWorkspaceId } from '../../../lib/helper';
 import { membersWidgetDataService } from '../../../modules/dashboard/services/dashboard.services';
 import { MemberWidgetData } from '../../../modules/dashboard/interface/dashboard.interface';
-import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
+import { WidgetComponentProps } from '../../widgetLayout/WidgetTypes';
 
-const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
+const TopContributor: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen, filters } = props;
 
   const workspaceId = getLocalWorkspaceId();
 
-  const [selectedTab, setSelectedTab] = useTabs(['topContributor', 'active', 'inActive']);
+  const [selectedTab, setSelectedTab] = useTabs(['topContributor']);
   const [memberWidgetData, setMemberWidgetData] = React.useState<MemberWidgetData[]>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
@@ -74,7 +74,7 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
                 </div>
               </span>
             </TabSelector>
-            <TabSelector
+            {/* <TabSelector
               isActive={selectedTab === 'active'}
               onClick={() => setSelectedTab('active')}
               style={`ml-1.625 mt-0.438 ${isManageMode ? 'text-sm' : 'text-xs'} pb-2  border-transparent`}
@@ -89,7 +89,7 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
               styleActive={'gradient-bottom-border'}
             >
               Inactive
-            </TabSelector>
+            </TabSelector> */}
           </nav>
           <div className="h-14.375 items-center relative overflow-y-auto ml-1.661 block section">
             {!memberWidgetData?.length && !isLoading && !isManageMode && !isSidePanelOpen && (
@@ -118,4 +118,4 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
   );
 };
 
-export default MembersTab;
+export default TopContributor;

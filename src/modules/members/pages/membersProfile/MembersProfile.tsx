@@ -73,7 +73,7 @@ const MembersProfile: React.FC = () => {
   const tagsAssignLoader = useSkeletonLoading(settingsSlice.actions.assignTags.type);
   // const tagsUnAssignLoader = useSkeletonLoading(settingsSlice.actions.unAssignTags.type);
 
-  const platformData = usePlatform();
+  const { PlatformFilterResponse } = usePlatform();
 
   const tagDropDownRef = useRef<HTMLDivElement>(null);
   const dropDownRef = useRef<HTMLDivElement>(null);
@@ -398,7 +398,7 @@ const MembersProfile: React.FC = () => {
                   >
                     All
                   </div>
-                  {platformData?.map((data: PlatformResponse) => (
+                  {PlatformFilterResponse?.map((data: PlatformResponse) => (
                     <div key={`${data?.id + data?.name}`}>
                       {data?.isConnected && (
                         <div
@@ -472,7 +472,7 @@ const MembersProfile: React.FC = () => {
                       All Integrations
                     </div>
                   </div>
-                  {platformData.map((options: PlatformResponse) => (
+                  {PlatformFilterResponse?.map((options: PlatformResponse) => (
                     <div key={`${options?.id + options?.name}`} className="w-full hover:bg-signUpDomain rounded-0.3 transition ease-in duration-100">
                       {options?.isConnected && (
                         <div

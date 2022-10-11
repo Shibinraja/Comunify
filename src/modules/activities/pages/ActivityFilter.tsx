@@ -40,7 +40,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
   const debouncedTagValue = useDebounce(tagSearchText, 300);
 
   const { data: TagFilterResponse } = useAppSelector((state) => state.settings.TagFilterResponse);
-  const PlatformFilterResponse = usePlatform();
+  const { PlatformFilterResponse } = usePlatform();
 
   const ActivityFilterList = Object.values(checkedPlatform).concat(Object.values(checkedTags));
 

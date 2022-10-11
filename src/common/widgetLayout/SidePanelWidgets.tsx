@@ -34,7 +34,7 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
 
   const workspaceId: string = getLocalWorkspaceId();
   React.useEffect(() => {
-    if (widgetKey !== '') {
+    if (widgetKey.length) {
       filterWidgets(widgetKey);
     }
   }, [widgetKey]);
@@ -55,18 +55,18 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
     }
   }, [widgetRemoved]);
 
-  const filterWidgets = (widgetName: string) => {
+  const filterWidgets = (widgetName: string[]) => {
     if (widgetName && sidePanelWidgets?.length) {
       const sidePanelWidgetList = [...sidePanelWidgets];
-      const filteredWidgetsList = sidePanelWidgetList.filter((widget) => widget?.widget?.widgetLocation !== widgetName);
+      const filteredWidgetsList = sidePanelWidgetList.filter((widget) => !widgetName.includes(widget?.widget?.widgetLocation));
       setSidePanelWidgets(filteredWidgetsList);
     }
   };
 
   // eslint-disable-next-line space-before-function-paren
   const getWidgetsData = async (searchText?: string) => {
-    const scope = 1;
-    const widgetsData: SidePanelWidgetsList[] = await getSidePanelWidgetsService(scope, workspaceId, searchText);
+    const scope = window.location.href.includes('/reports') ? [1, 2] : window.location.href.includes('/dashboard') ? [1, 3] : [];
+    const widgetsData: SidePanelWidgetsList[] = await getSidePanelWidgetsService(scope.toString(), workspaceId, searchText);
     setSidePanelWidgetsData(widgetsData);
     const sidePanelWidgetList = widgetsData?.reduce((acc: PanelWidgetsType[], curr: SidePanelWidgetsData) => {
       const widgets = {
@@ -87,7 +87,8 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
       acc.push(widgets);
       return acc;
     }, []);
-    setSidePanelWidgets(sidePanelWidgetList);
+    const filteredWidgetsList = sidePanelWidgetList.filter((widget) => !widgetKey.includes(widget?.widget?.widgetLocation));
+    setSidePanelWidgets(filteredWidgetsList);
   };
 
   const handleSearch = (searchText: string) => {
@@ -97,10 +98,9 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
   const renderWidget = (widgetLocation: string, isAssigned: boolean, props: React.PropsWithoutRef<WidgetComponentProps>) => {
     // use this while developing because vite doesn't hot reload dynamically imported components
     const Widget = WidgetComponents[widgetLocation];
-
     // Use dynamic import while pushing to prod
     // const Widget = React.lazy(() => import(`../../common/widgets/${widgetLocation}/${widgetLocation}`));
-    return <Suspense fallback={<Skeleton width={400} height={300} count={1} enableAnimation />}>{!isAssigned && <Widget {...props} />}</Suspense>;
+    return <Suspense fallback={<Skeleton width={400} height={300} count={1} enableAnimation />}>{<Widget {...props} />}</Suspense>;
   };
 
   const widgetProps = {
