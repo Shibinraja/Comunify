@@ -75,7 +75,7 @@ const MemberGrowth: React.FC<WidgetComponentProps> = (props: WidgetComponentProp
                 height="100%"
               />
             )}
-            {Boolean(memberGrowthWidgetData?.series.length) === false && !isLoading && (
+            {Boolean(memberGrowthWidgetData?.series?.length) === false && !isLoading && (
               <div
                 className={`absolute top-24 font-Poppins text-infoBlack  ${
                   isManageMode ? 'text-lg top-24 ' : 'text-xs top-28'

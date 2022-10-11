@@ -9,6 +9,7 @@ import { useSearchParams } from 'react-router-dom';
 import Modal from 'react-modal';
 import { ScheduleReportDateType, WidgetPreviewType } from '../../interfaces/reports.interface';
 
+
 Modal.setAppElement('#root');
 
 const WidgetPreview: React.FC<WidgetPreviewType> = ({ isOpen, setIsOpen, widgets, filters }) => {
@@ -43,14 +44,14 @@ const WidgetPreview: React.FC<WidgetPreviewType> = ({ isOpen, setIsOpen, widgets
         }
       }}
     >
-      <div className="flex flex-col  text-white font-Popins w-full">
-        <header className="bg-[#141010] px-[30px] py-[35px] rounded-tl-lg rounded-tr-lg h-[164px]">
+      <div className="flex flex-col   font-Popins w-full">
+        <header className="bg-[#141010] px-[30px] py-[35px] rounded-tl-lg rounded-tr-lg h-[164px] text-white">
           <div className="flex justify-between items-center">
             <div className="flex flex-col">
               <span className="font-semibold text-2xl capitalize">{reportValuesData.name}</span>
               <div className="font-medium text-sm pt-1">
-                {startDate && `Date: ${format(parseISO(startDate as string), 'dd MMM yyyy')}`}
-                <span className="pl-3">{endDate && `Date: ${format(parseISO(endDate as string), 'dd MMM yyyy')}`}</span>
+                {startDate && `Date : ${format(parseISO(startDate as string), 'dd MMM yyyy')}`}
+                <span className="pl-3">{endDate && `To : ${format(parseISO(endDate as string), 'dd MMM yyyy')}`}</span>
               </div>
             </div>
             {reportValuesData.schedule !== ScheduleReportDateType.NoSchedule && (
@@ -68,7 +69,7 @@ const WidgetPreview: React.FC<WidgetPreviewType> = ({ isOpen, setIsOpen, widgets
                   if (platform.id === platformId) {
                     return (
                       <div className="flex items-center ml-3" key={platform.id}>
-                        <img src={platform.platformLogoUrl} alt="" className="w-[21px] h-[21px] rounded-full" />
+                        <img src={platform?.platformLogoUrl} alt="" className="w-[21px] h-[21px] rounded-full" />
                         <span className="text-xs font-semibold capitalize ml-2">{platform.id === platformId ? platform.name : ''}</span>
                       </div>
                     );
@@ -79,7 +80,7 @@ const WidgetPreview: React.FC<WidgetPreviewType> = ({ isOpen, setIsOpen, widgets
           </div>
         </header>
 
-        <div className="px-[30px] py-[35px]">
+        <div className="px-[30px] py-[10px] preview-box overflow-auto">
           <WidgetContainer
             isManageMode={isManageMode}
             widgets={widgets}
