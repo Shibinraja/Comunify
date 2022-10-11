@@ -63,7 +63,7 @@ const HealthCard: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
       <div
         className={`flex  ${
           isShrunk
-            ? 'justify-start w-[19.0625rem] gap-5 py-8 px-5 border-borderPrimary '
+            ? 'justify-around w-full gap-5 py-8 px-5 border-borderPrimary '
             : !isManageMode
             ? 'justify-between w-full py-5 px-20'
             : 'justify-between w-full py-5 px-20 widget-border relative '

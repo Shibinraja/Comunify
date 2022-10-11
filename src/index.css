@@ -621,7 +621,7 @@ input {
 }
 
 .widget-height {
-  height: calc(100vh - 13rem);
+  height: calc(100vh - 16rem);
 }
 
 .fixWidgetNoDataHeight {
