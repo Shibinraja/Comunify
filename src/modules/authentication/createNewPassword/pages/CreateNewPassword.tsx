@@ -72,12 +72,12 @@ const CreateNewPassword: React.FC = () => {
             <Formik initialValues={initialValues} onSubmit={handleSubmit} validateOnChange={true} validationSchema={confirmPasswordSchema}>
               {({ errors, handleBlur, handleChange, touched, values }): JSX.Element => (
                 <Form className="w-25.9 mt-1.9 " autoComplete="off">
-                  <div 
-                  className={`password relative ${
-                    errors.password === 'Password must have one uppercase, one lowercase, a digit and special characters'
-                      ? 'cr-password mb-10'
-                      : ''
-                  }`}>
+                  <div
+                    className={`password relative ${
+                      errors.password === 'Password must have one uppercase, one lowercase, a digit and special characters'
+                        ? 'cr-password mb-10'
+                        : ''
+                    }`}>
                     <Input
                       type={password}
                       placeholder="New Password"
@@ -136,10 +136,10 @@ const CreateNewPassword: React.FC = () => {
                     </div>
                   </div>
                   <div className={`pb-10 ${
-                      errors.password
-                        ? ' mt-4'
-                        : ''
-                    }`}>
+                    errors.password
+                      ? ' mt-4'
+                      : ''
+                  }`}>
                     <Button
                       text="Submit"
                       type="submit"

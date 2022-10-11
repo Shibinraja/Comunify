@@ -4,6 +4,9 @@ export const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT || 'http://localho
 //slack connect
 export const SLACK_CONNECT_ENDPOINT = import.meta.env.VITE_SLACK_CONNECT;
 
+//discord connect
+export const DISCORD_CONNECT_ENDPOINT = import.meta.env.VITE_DISCORD_CONNECT;
+
 // Auth Module URL
 export const auth_module = '/v1/auth';
 

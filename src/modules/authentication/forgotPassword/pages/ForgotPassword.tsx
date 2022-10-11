@@ -11,7 +11,6 @@ import * as Yup from 'yup';
 import { EmailFormValues } from 'modules/authentication/interface/auth.interface';
 import authSlice from 'modules/authentication/store/slices/auth.slice';
 import { email_regex } from 'constants/constants';
-import { Link } from 'react-router-dom';
 
 const ForgotPassword: React.FC = () => {
   const dispatch: AppDispatch = useAppDispatch();

@@ -1,9 +1,11 @@
+/* eslint-disable indent */
 /* eslint-disable no-unused-vars */
 import Button from 'common/button';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import unsplashIcon from '../../../../assets/images/unsplash.svg';
 import slackIcon from '../../../../assets/images/slack.svg';
 import discordIcon from '../../../../assets/images/discord.svg';
+import redditLogoIcon from '../../../../assets/images/reddit_logo.png';
 import { TabPanel } from 'common/tabs/TabPanel';
 import Modal from 'react-modal';
 import vanillaIcon from '../../../../assets/images/vanilla-forum.svg';
@@ -16,7 +18,7 @@ import {
   PlatformIcons,
   PlatformResponse,
   PlatformsStatus,
-  SlackConnectData,
+  ConnectBody,
   VanillaForumsConnectData
 } from '../../interface/settings.interface';
 import { getLocalWorkspaceId } from '../../../../lib/helper';
@@ -31,7 +33,7 @@ import settingsSlice from '../../store/slice/settings.slice';
 import { useSearchParams } from 'react-router-dom';
 import { useAppSelector } from '../../../../hooks/useRedux';
 import { AppDispatch, State } from '../../../../store';
-import { NavigateToConnectPage } from 'modules/settings/services/settings.services';
+import { NavigateToConnectPage, NavigateToDiscordConnectPage } from 'modules/settings/services/settings.services';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
@@ -47,7 +49,7 @@ interface ConfirmPlatformToDisconnect {
 }
 
 const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
-  const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanillaForums: false });
+  const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanillaForums: false, discord: false });
   const [isWarningModalOpen, setIsWarningModalOpen] = useState<boolean>(false);
   const [confirmPlatformToDisconnect, setConfirmPlatformToDisconnect] = useState<ConfirmPlatformToDisconnect>({
     platform: '',
@@ -74,12 +76,25 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
     setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: val }));
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
-    if (searchParams.get('code')) {
-      const codeParams: null | string = searchParams.get('code');
-      if (codeParams !== '') {
-        getData(codeParams);
+    if (window.location.href.includes('state')) {
+      if (searchParams.get('code')) {
+        const codeParams: null | string = searchParams.get('code');
+        if (codeParams !== '') {
+          getData(codeParams);
+        }
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (window.location.href.includes('guild_id') && window.location.href.includes('permissions')) {
+      if (searchParams.get('code')) {
+        const codeParams: null | string = searchParams.get('code');
+        if (codeParams !== '') {
+          connectToDiscord(codeParams);
+        }
       }
     }
   }, []);
@@ -124,6 +139,11 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
           setIsLoading(false);
         }
         break;
+
+      case 'Discord':
+        setIsLoading(true);
+        NavigateToDiscordConnectPage();
+        break;
       default:
         break;
     }
@@ -133,7 +153,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
   const getData = async (codeParams: string | null) => {
     try {
       setIsModalOpen((prevState) => ({ ...prevState, slack: true }));
-      const body: SlackConnectData = {
+      const body: ConnectBody = {
         code: codeParams,
         workspaceId
       };
@@ -273,6 +293,34 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
     }
   };
 
+  // eslint-disable-next-line space-before-function-paren
+  const connectToDiscord = async (codeParams: string | null) => {
+    try {
+      setIsModalOpen((prevState) => ({ ...prevState, discord: true }));
+      const body: ConnectBody = {
+        code: codeParams,
+        workspaceId
+      };
+      const response: IntegrationResponse<PlatformConnectResponse> = await request.post(`${API_ENDPOINT}/v1/discord/connect`, body);
+      if (response) {
+        navigate(`/${workspaceId}/settings/discord-integration`);
+      }
+      //   localStorage.setItem('workspacePlatformAuthSettingsId', response?.data?.data?.id);
+      //   localStorage.setItem('workspacePlatformSettingsId', response?.data?.data?.workspacePlatformSettingsId);
+      //   if (response?.data?.data?.id) {
+      //     setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
+      //     navigate(`/${workspaceId}/settings/discord-integration`, { state: { workspacePlatformAuthSettingsId: response?.data?.data?.id } });
+      //     showSuccessToast('Authenticated successfully');
+      //   } else {
+      //     showErrorToast('Integration failed');
+      //     setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
+      //   }
+    } catch {
+      showErrorToast('Integration failed');
+      //   setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
+    }
+  };
+
   const connectedBtnClassName = `dark:bg-secondaryDark bg-connectButton shadow-contactCard font-Poppins text-white font-medium leading-5 ${
     isLoading ? 'opacity-50 cursor-not-allowed ' : ''
   }
@@ -339,9 +387,9 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
 
             <div className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5">
               <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                <img src={discordIcon} alt="" className="h-2.31" />
+                <img src={redditLogoIcon} alt="" className="h-2.31" />
               </div>
-              <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">Discord</div>
+              <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">Reddit</div>
               <Button
                 disabled={isLoading ? true : false}
                 type="button"
@@ -464,12 +512,12 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
                       onClick={(e) => sendVanillaData(e)}
                       className={`text-white font-Poppins text-error font-medium leading-5 btn-save-modal
                        cursor-pointer rounded shadow-contactBtn w-5.25  ${
-    isLoading
-      ? 'opacity-50 cursor-not-allowed '
-      : !vanillaForumsData.vanillaAccessToken || !vanillaForumsData.vanillaBaseUrl
-        ? 'opacity-50 cursor-not-allowed '
-        : ''
-    } border-none h-2.81`}
+                         isLoading
+                           ? 'opacity-50 cursor-not-allowed '
+                           : !vanillaForumsData.vanillaAccessToken || !vanillaForumsData.vanillaBaseUrl
+                           ? 'opacity-50 cursor-not-allowed '
+                           : ''
+                       } border-none h-2.81`}
                     />
                   </div>
                 </form>

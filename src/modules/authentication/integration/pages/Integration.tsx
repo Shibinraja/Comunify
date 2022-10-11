@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import React, { useEffect, useState } from 'react';
 import slackIcon from '../../../../assets/images/slack.svg';
 import nextIcon from '../../../../assets/images/next.svg';
@@ -15,22 +16,16 @@ import { getLocalWorkspaceId, setRefreshToken } from '@/lib/helper';
 import Input from 'common/input';
 import { IntegrationResponse, NetworkResponse } from '../../../../lib/api';
 import { PlatformConnectResponse } from '../../../../interface/interface';
-import {
-  ModalState,
-  PlatformResponse,
-  PlatformIcons,
-  VanillaForumsConnectData,
-  SlackConnectData
-} from '../../../settings/interface/settings.interface';
+import { ModalState, PlatformResponse, PlatformIcons, VanillaForumsConnectData, ConnectBody } from '../../../settings/interface/settings.interface';
 import usePlatform from '../../../../hooks/usePlatform';
 import { useDispatch } from 'react-redux';
 import settingsSlice from '../../../settings/store/slice/settings.slice';
-import { NavigateToConnectPage } from '../../../settings/services/settings.services';
+import { NavigateToConnectPage, NavigateToDiscordConnectPage } from '../../../settings/services/settings.services';
 
 Modal.setAppElement('#root');
 
 const Integration: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanillaForums: false });
+  const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanillaForums: false, discord: false });
   // eslint-disable-next-line no-unused-vars
   const [platformIcons, setPlatformIcons] = useState<PlatformIcons>({ slack: undefined, vanillaForums: undefined });
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -51,10 +46,23 @@ const Integration: React.FC = () => {
   useEffect(() => {
     setRefreshToken();
     dispatch(settingsSlice.actions.platformData({ workspaceId }));
-    if (searchParams.get('code')) {
-      const codeParams: null | string = searchParams.get('code');
-      if (codeParams !== '') {
-        getData(codeParams);
+    if (window.location.href.includes('state')) {
+      if (searchParams.get('code')) {
+        const codeParams: null | string = searchParams.get('code');
+        if (codeParams !== '') {
+          getData(codeParams);
+        }
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (window.location.href.includes('guild_id') && window.location.href.includes('permissions')) {
+      if (searchParams.get('code')) {
+        const codeParams: null | string = searchParams.get('code');
+        if (codeParams !== '') {
+          connectToDiscord(codeParams);
+        }
       }
     }
   }, []);
@@ -69,6 +77,10 @@ const Integration: React.FC = () => {
         setPlatformIcons((prevState) => ({ ...prevState, vanillaForums: icon }));
         setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: true }));
         break;
+      case 'discord':
+        setIsLoading(true);
+        NavigateToDiscordConnectPage();
+        break;
 
       default:
         break;
@@ -79,7 +91,7 @@ const Integration: React.FC = () => {
   const getData = async (codeParams: string | null) => {
     try {
       setIsModalOpen((prevState) => ({ ...prevState, slack: true }));
-      const body: SlackConnectData = {
+      const body: ConnectBody = {
         code: codeParams,
         workspaceId
       };
@@ -137,6 +149,34 @@ const Integration: React.FC = () => {
     } catch (error) {
       showErrorToast('Integration Failed');
       setIsLoading(false);
+    }
+  };
+
+  // eslint-disable-next-line space-before-function-paren
+  const connectToDiscord = async (codeParams: string | null) => {
+    try {
+      setIsModalOpen((prevState) => ({ ...prevState, discord: true }));
+      const body: ConnectBody = {
+        code: codeParams,
+        workspaceId
+      };
+      const response: IntegrationResponse<PlatformConnectResponse> = await request.post(`${API_ENDPOINT}/v1/discord/connect`, body);
+      if (response) {
+        navigate(`/${workspaceId}/settings/discord-integration`);
+      }
+      //   localStorage.setItem('workspacePlatformAuthSettingsId', response?.data?.data?.id);
+      //   localStorage.setItem('workspacePlatformSettingsId', response?.data?.data?.workspacePlatformSettingsId);
+      //   if (response?.data?.data?.id) {
+      //     setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
+      //     navigate(`/${workspaceId}/settings/discord-integration`, { state: { workspacePlatformAuthSettingsId: response?.data?.data?.id } });
+      //     showSuccessToast('Authenticated successfully');
+      //   } else {
+      //     showErrorToast('Integration failed');
+      //     setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
+      //   }
+    } catch {
+      showErrorToast('Integration failed');
+      //   setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
     }
   };
 
@@ -287,10 +327,16 @@ const Integration: React.FC = () => {
                           />
                           <Button
                             text="Save"
-                            disabled={isLoading ? true : (!vanillaForumsData.vanillaAccessToken || !vanillaForumsData.vanillaBaseUrl) ? true : false }
+                            disabled={isLoading ? true : !vanillaForumsData.vanillaAccessToken || !vanillaForumsData.vanillaBaseUrl ? true : false}
                             onClick={(e) => sendVanillaData(e)}
                             className={`text-white font-Poppins text-error font-medium leading-5 btn-save-modal cursor-pointer rounded 
-                            shadow-contactBtn w-5.25 ${isLoading ? 'opacity-50 cursor-not-allowed ' : (!vanillaForumsData.vanillaAccessToken || !vanillaForumsData.vanillaBaseUrl) ? 'opacity-50 cursor-not-allowed ' : ''} border-none h-2.81`}
+                            shadow-contactBtn w-5.25 ${
+                              isLoading
+                                ? 'opacity-50 cursor-not-allowed '
+                                : !vanillaForumsData.vanillaAccessToken || !vanillaForumsData.vanillaBaseUrl
+                                ? 'opacity-50 cursor-not-allowed '
+                                : ''
+                            } border-none h-2.81`}
                           />
                         </div>
                       </form>

@@ -10,7 +10,7 @@ export interface PlatformsStatus {
   status: string | undefined;
 }
 
-export interface SlackConnectData {
+export interface ConnectBody {
   code: string | null;
   workspaceId: string;
 }
@@ -91,6 +91,7 @@ export interface unAssignTagProps extends workspaceId {
 export interface ModalState {
   slack: boolean;
   vanillaForums: boolean;
+  discord: boolean;
 }
 
 // Response Body
