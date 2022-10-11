@@ -429,7 +429,7 @@ const CreateReport = () => {
                     Choose Platform
                   </label>
                   <div
-                    className="w-20.5 2xl:w-full h-3.06 app-result-card-border flex items-center px-3 mt-0.375 shadow-reportInput rounded-0.3 font-Poppins font-normal text-trial text-thinGray leading-1.31 cursor-pointer relative"
+                    className={`w-20.5 2xl:w-full h-3.06 app-result-card-border flex items-center px-3 mt-0.375 shadow-reportInput rounded-0.3 font-Poppins font-normal text-trial text-thinGray leading-1.31 relative ${reportUpdateValuesData ? 'opacity-50 cursor-not-allowed': 'cursor-pointer'}`}
                     onClick={() => setIsPlatformActive((prevActive) => !prevActive)}
                   >
                     Select
@@ -442,7 +442,7 @@ const CreateReport = () => {
                       {PlatformsConnected &&
                         PlatformsConnected.map((platform: ConnectedPlatforms) => (
                           <Fragment key={platform.id}>
-                            <div className="flex items-center gap-2 cursor-pointer hover:bg-signUpDomain  transition ease-in duration-100 p-3">
+                            <div className={`flex items-center gap-2 hover:bg-signUpDomain  transition ease-in duration-100 p-3  ${reportUpdateValuesData ? 'opacity-50 cursor-not-allowed': 'cursor-pointer'}`}>
                               <div>
                                 <input
                                   type="checkbox"
@@ -455,7 +455,7 @@ const CreateReport = () => {
                                 />
                               </div>
                               <label
-                                className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer"
+                                className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-not-allowed"
                                 htmlFor={platform.id as string}
                               >
                                 {platform?.name}

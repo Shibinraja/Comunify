@@ -83,7 +83,7 @@ const Report: React.FC = () => {
 
   const debouncedValue = useDebounce(searchText, 300);
 
-  const getReportsList = async(props: any) => {
+  const getReportsList = async(props: { search: string; page: number; limit: number; }) => {
     setLoading(true);
     const reportData = await getReportsListService({
       workspaceId: workspaceId!,
@@ -98,6 +98,7 @@ const Report: React.FC = () => {
       }
     });
     setLoading(false);
+
     setReportsList({
       data: (reportData?.data as Array<ReportListServiceResponsePropsData>),
       totalPages: reportData?.totalPages as string,
@@ -246,7 +247,7 @@ const Report: React.FC = () => {
     }
   };
 
-  const submitFilterChange = (): void => {
+  const submitFilterChange = async():Promise<void> => {
     const checkPlatform: Array<string> = [];
     const checkStatusId: Array<string> = [];
 
@@ -268,7 +269,7 @@ const Report: React.FC = () => {
 
     setCheckedFilterOption({ checkPlatform, checkStatus: checkStatusId });
 
-    getReportsListService({
+    const reportData = await getReportsListService({
       workspaceId: workspaceId!,
       params: {
         page,
@@ -279,6 +280,14 @@ const Report: React.FC = () => {
         ...(date.startDate ? { startDate: date.startDate && convertStartDate(date.startDate) } : {}),
         ...(date.endDate ? { endDate: date.endDate && convertEndDate(date.endDate) } : {})
       }
+    },
+    setLoading);
+
+    setReportsList({
+      data: (reportData?.data as Array<ReportListServiceResponsePropsData>),
+      totalPages: reportData?.totalPages as string,
+      nextPage: reportData?.nextPage as string,
+      previousPage: reportData?.previousPage as string
     });
 
     // if (!disableApplyBtn) {

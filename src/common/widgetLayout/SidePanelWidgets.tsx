@@ -194,14 +194,14 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
               </div>
             );
           })}
-         
+
         </div>
         <Button
-            text="Request for a Widget"
-            type="submit"
-            className="font-Poppins rounded-lg sticky bottom-0  w-full text-base font-semibold text-white py-3.5 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient"
-            onClick={() => setWidgetModalOpen(true)}
-          />
+          text="Request for a Widget"
+          type="submit"
+          className="font-Poppins rounded-lg sticky bottom-0  w-full text-base font-semibold text-white py-3.5 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient"
+          onClick={() => setWidgetModalOpen(true)}
+        />
         <Modal
           isOpen={isWidgetModalOpen}
           shouldCloseOnOverlayClick={false}
