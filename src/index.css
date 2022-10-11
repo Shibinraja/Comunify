@@ -627,6 +627,9 @@ input {
 .fixWidgetNoDataHeight {
   height: calc(100vh - 30rem);
 }
+.preview-box{
+  height: calc(100vh - 22rem);
+}
 /* Drag and Drop */
 .react-grid-item.react-grid-placeholder {
   background: transparent !important;
