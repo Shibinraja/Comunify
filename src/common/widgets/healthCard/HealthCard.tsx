@@ -65,11 +65,11 @@ const HealthCard: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
     <div className={`my-6 heathCard ${
       !isManageMode ? '' : 'cursor-grabbing'
    }  `}>
-      <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Health</h3>
+      <h3 className="font-Poppins  font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Health</h3>
       <div
         className={`flex  ${
           isShrunk
-            ? 'justify-start w-[19.0625rem] gap-5 py-8 px-5 border-borderPrimary '
+            ? 'justify-around w-full gap-5 py-8 px-5 border-borderPrimary '
             : !isManageMode
             ? 'justify-between w-full py-5 px-20'
             : 'justify-between w-full py-5 px-20 widget-border relative '
