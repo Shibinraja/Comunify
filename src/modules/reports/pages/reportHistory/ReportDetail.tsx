@@ -76,9 +76,9 @@ const widgetPreview = () => {
         <div className="flex items-center pt-6">
           <span className="text-sm font-medium ">Platform Selected :</span>
           {saveHistoryDetail?.report?.workspaceReportSettings[0]?.reportPlatforms?.map((platform) => (
-            <div className="flex items-center ml-3" key={platform.workspacePlatforms.platform.id}>
-              <img src={platform.workspacePlatforms.platform.platformLogoUrl} alt="" className="w-[21px] h-[21px] rounded-full" />
-              <span className="text-xs font-semibold capitalize ml-2">{platform.workspacePlatforms.platform.name}</span>
+            <div className="flex items-center ml-3" key={platform.workspacePlatforms.platformSettings.platforms.id}>
+              <img src={platform.workspacePlatforms.platformSettings.platforms.platformLogoUrl} alt="" className="w-[21px] h-[21px] rounded-full" />
+              <span className="text-xs font-semibold capitalize ml-2">{platform.workspacePlatforms.platformSettings.platforms.name}</span>
             </div>
           ))}
         </div>

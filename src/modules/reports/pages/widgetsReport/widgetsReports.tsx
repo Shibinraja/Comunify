@@ -22,6 +22,10 @@ const widgetsReports: React.FC = () => {
   const reportValuesData = JSON.parse(localStorage.getItem('reportValues')!);
   const [searchParams] = useSearchParams();
   const reportId = searchParams.get('reportId');
+  const startDate = searchParams.get('startDate');
+  const endDate = searchParams.get('endDate') || '';
+
+  // console.log('err', platformId, startDate, endDate);
 
   // Function to call the api and list the membersSuggestionList
   const getReportWidgetsList = async(props: { page: number; limit: number }) => {
@@ -59,6 +63,7 @@ const widgetsReports: React.FC = () => {
 
   const handleGenerateReport = () => {
     const newValues = { ...reportValuesData };
+    delete newValues['platformId'];
 
     newValues['widgetsData'] = transformedWidgetData;
 
@@ -110,7 +115,7 @@ const widgetsReports: React.FC = () => {
       <div className="flex items-center justify-between pl-2.5 relative">
         <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Customize your Report</h3>
       </div>
-      <WidgetContainer isManageMode={isManageMode} widgets={widgets} setWidgets={setWidgets} setTransformedWidgetData={setTransformedWidgetData} />
+      <WidgetContainer isManageMode={isManageMode} widgets={widgets} setWidgets={setWidgets} setTransformedWidgetData={setTransformedWidgetData} filters={{ startDate, endDate, platformIds: reportValuesData?.platformIds }} />
 
       <div className="flex justify-end pt-10 items-center">
         <Button
@@ -138,7 +143,7 @@ const widgetsReports: React.FC = () => {
           <div className="font-Poppins font-medium text-white leading-5 text-search ">Generate Report</div>
         </Button>
       </div>
-      {isOpen && <WidgetPreview isOpen={isOpen} setIsOpen={setIsOpen} widgets={widgets} />}
+      {isOpen && <WidgetPreview isOpen={isOpen} setIsOpen={setIsOpen} widgets={widgets} filters={{ startDate, endDate, platformIds: reportValuesData?.platformIds }} />}
       <ModalDrawer
         isOpen={modalOpen}
         isClose={handleModalClose}

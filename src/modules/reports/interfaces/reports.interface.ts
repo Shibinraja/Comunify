@@ -1,5 +1,6 @@
 /* eslint-disable */
 
+import { WidgetFilters } from 'common/widgetLayout/WidgetTypes';
 import { Dispatch, SetStateAction } from 'react';
 
 export enum ReportFilterDropDownEnum {
@@ -76,12 +77,14 @@ export type createReportInitialValues = {
   platform: Array<string>;
   startDate: Date | undefined;
   endDate: Date | undefined;
+  platformId?: Array<string>
 };
 
 export type WidgetPreviewType = {
   isOpen:boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   widgets:any[]
+  filters?: WidgetFilters;
 }
 
 //request body
@@ -114,16 +117,18 @@ type reportPlatformType = {
   workspacePlatformId: string;
   createdAt: string;
   workspacePlatforms: {
-    platform: {
-      id: string;
-      createdAt: string;
-      updatedAt: string;
-      name: string;
-      platformLogoUrl: string;
-      status: string;
-      errorMessage: string;
-      isActive: true;
-    };
+    platformSettings:{
+      platforms: {
+        id: string,
+        createdAt: string,
+        updatedAt: string,
+        name: string,
+        platformLogoUrl: string,
+        status: string,
+        errorMessage: string,
+        isActive: boolean
+      }
+    }
   };
 };
 

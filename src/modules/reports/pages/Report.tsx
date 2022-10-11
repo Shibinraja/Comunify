@@ -608,7 +608,7 @@ const Report: React.FC = () => {
                                   className="py-3 font-Poppins font-medium text-trial  leading-1.31 cursor-pointer w-1.375"
                                   key={platform.workspacePlatformId}
                                 >
-                                  <img src={platform.workspacePlatforms.platform.platformLogoUrl} alt="" />
+                                  <img src={platform.workspacePlatforms.platformSettings.platforms.platformLogoUrl} alt="" />
                                 </div>
                               ))
                             )}
@@ -663,7 +663,7 @@ const Report: React.FC = () => {
           </div>
 
           <div className="px-6 py-6 flex items-center justify-center gap-0.66 w-full rounded-b-lg bg-white dark:bg-thirdDark bottom-0">
-            <Pagination currentPage={page} totalPages={Number(reportsList.totalPages)} limit={limit} onPageChange={(page) => setPage(Number(page))} />
+            <Pagination currentPage={page} totalPages={Number(reportsList?.totalPages)} limit={limit} onPageChange={(page) => setPage(Number(page))} />
           </div>
         </div>
       </div>

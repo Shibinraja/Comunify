@@ -11,7 +11,7 @@ import { ScheduleReportDateType, WidgetPreviewType } from '../../interfaces/repo
 
 Modal.setAppElement('#root');
 
-const WidgetPreview: React.FC<WidgetPreviewType> = ({ isOpen, setIsOpen, widgets }) => {
+const WidgetPreview: React.FC<WidgetPreviewType> = ({ isOpen, setIsOpen, widgets, filters }) => {
   const { PlatformsConnected } = usePlatform();
   const [isManageMode, setIsManageMode] = useState<boolean>(true);
   const [searchParams] = useSearchParams();
@@ -68,8 +68,8 @@ const WidgetPreview: React.FC<WidgetPreviewType> = ({ isOpen, setIsOpen, widgets
                   if (platform.id === platformId) {
                     return (
                       <div className="flex items-center ml-3" key={platform.id}>
-                        <img src={platform.platform.platformLogoUrl} alt="" className="w-[21px] h-[21px] rounded-full" />
-                        <span className="text-xs font-semibold capitalize ml-2">{platform.id === platformId ? platform.platform.name : ''}</span>
+                        <img src={platform.platformLogoUrl} alt="" className="w-[21px] h-[21px] rounded-full" />
+                        <span className="text-xs font-semibold capitalize ml-2">{platform.id === platformId ? platform.name : ''}</span>
                       </div>
                     );
                   }
@@ -83,6 +83,7 @@ const WidgetPreview: React.FC<WidgetPreviewType> = ({ isOpen, setIsOpen, widgets
           <WidgetContainer
             isManageMode={isManageMode}
             widgets={widgets}
+            filters={filters}
           />
         </div>
 

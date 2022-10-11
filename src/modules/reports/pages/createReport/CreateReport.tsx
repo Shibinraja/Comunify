@@ -41,6 +41,7 @@ const CreateReport = () => {
   const [checkedRadioId, setCheckedRadioId] = useState<Record<string, unknown>>({ Yes: true });
   const [selectedReport, setSelectedReport] = useState('');
   const [checkedPlatform, setCheckedPlatform] = useState<Record<string, unknown>>({});
+  const [platformId, setPlatformId] = useState<Record<string, unknown>>({});
   const [customDate, setCustomDate] = useState<{ startDate: Date | undefined; endDate: Date | undefined; singleDate: Date | undefined }>({
     startDate: undefined,
     endDate: undefined,
@@ -60,7 +61,6 @@ const CreateReport = () => {
 
   const formikRef: any = useRef();
 
-
   useEffect(() => {
     document.addEventListener('click', handleOutsideClick);
     return () => {
@@ -74,24 +74,30 @@ const CreateReport = () => {
         values: {
           name: reportUpdateValuesData.name,
           description: reportUpdateValuesData.description,
-          ...({ emails: reportUpdateValuesData.workspaceReportSettings[0].emailRecipients.map((email: { email: string }) => email.email) })
+          ...{ emails: reportUpdateValuesData.workspaceReportSettings[0].emailRecipients.map((email: { email: string }) => email.email) }
         }
       });
       const reportResponseValues = reportUpdateValuesData?.workspaceReportSettings[0];
 
-      reportResponseValues?.reportPlatforms?.map((platform: {workspacePlatformId:string}) => {
-        const platformId = platform.workspacePlatformId;
-        return setCheckedPlatform((preValue) => ({ ...preValue, [platformId]: true }));
+      reportResponseValues?.reportPlatforms?.map((platform: { workspacePlatformId: string; workspacePlatforms: { platform: { id: string } } }) => {
+        const connectedPlatformId = platform.workspacePlatformId;
+        const platformId = platform.workspacePlatforms.platform.id;
+        setCheckedPlatform((preValue) => ({ ...preValue, [connectedPlatformId]: true }));
+        setPlatformId((preValue) => ({ ...preValue, [platformId]: true }));
       });
       if (reportResponseValues?.scheduleRepeat !== ScheduleReportDateType['NoSchedule']) {
         setCheckedRadioId({ ['Yes']: true });
         const scheduleReportId = reportResponseValues?.scheduleRepeat;
         setSelectedReport(ScheduleReportDateType[scheduleReportId]);
-      }
-      else{
+      } else {
         setCheckedRadioId({ ['No']: true });
         setSelectedReport('NoSchedule');
-        setCustomDate((prevDate) => ({ ...prevDate, startDate: new Date(reportResponseValues.createdAt), endDate: new Date(reportResponseValues.reportEndAt), singleDate: undefined }));
+        setCustomDate((prevDate) => ({
+          ...prevDate,
+          startDate: new Date(reportResponseValues.createdAt),
+          endDate: new Date(reportResponseValues.reportEndAt),
+          singleDate: undefined
+        }));
       }
     }
   }, [reportUpdateValuesData]);
@@ -105,17 +111,21 @@ const CreateReport = () => {
           emails: reportValuesData.emails
         }
       });
-      reportValuesData.platform.map((platformId:string) => setCheckedPlatform((preValue) => ({ ...preValue, [platformId]: true })));
-
+      reportValuesData.platform.map((platformId: string) => setCheckedPlatform((preValue) => ({ ...preValue, [platformId]: true })));
+      reportValuesData.platformId.map((platformId: string) => setPlatformId((preValue) => ({ ...preValue, [platformId]: true })));
       if (reportValuesData?.schedule !== ScheduleReportDateType['NoSchedule']) {
         setCheckedRadioId({ ['Yes']: true });
         const scheduleReportId = reportValuesData?.schedule;
         setSelectedReport(ScheduleReportDateType[scheduleReportId]);
-      }
-      else{
+      } else {
         setCheckedRadioId({ ['No']: true });
         setSelectedReport('NoSchedule');
-        setCustomDate((prevDate) => ({ ...prevDate, startDate: new Date(reportValuesData.startDate), endDate: new Date(reportValuesData.endDate), singleDate: undefined }));
+        setCustomDate((prevDate) => ({
+          ...prevDate,
+          startDate: new Date(reportValuesData.startDate),
+          endDate: new Date(reportValuesData.endDate),
+          singleDate: undefined
+        }));
       }
     }
   }, [reportValuesData]);
@@ -146,9 +156,10 @@ const CreateReport = () => {
     setCheckedRadioId({ [checked_id]: event.target.checked });
   };
 
-  const handlePlatformsCheckBox = (event: ChangeEvent<HTMLInputElement>) => {
-    const platform: string = event.target.name;
+  const handlePlatformsCheckBox = (event: ChangeEvent<HTMLInputElement>, platformConnectedId: string, platformId: string) => {
+    const platform: string = platformConnectedId;
     setCheckedPlatform((preValue) => ({ ...preValue, [platform]: event.target.checked }));
+    setPlatformId((preValue) => ({ ...preValue, [platformId]: event.target.checked }));
   };
 
   const selectCustomBetweenDate = (event: ChangeEvent<Date>, date: Date, dateTime: string) => {
@@ -196,6 +207,7 @@ const CreateReport = () => {
   const handleSubmit = (values: Partial<createReportInitialValues>): void => {
     const newValues = { ...values };
     const checkPlatform: Array<string> = [];
+    const checkPlatformId: Array<string> = [];
 
     if (Object.keys(checkedPlatform).length > 0) {
       Object.keys(checkedPlatform).map((platform: string) => {
@@ -205,7 +217,15 @@ const CreateReport = () => {
       });
     }
 
-    if(selectedReport === 'NoSchedule') {
+    if (Object.keys(platformId).length > 0) {
+      Object.keys(platformId).map((platform: string) => {
+        if (platformId[platform] === true) {
+          checkPlatformId.push(platform);
+        }
+      });
+    }
+
+    if (selectedReport === 'NoSchedule') {
       delete newValues['emails'];
     }
     newValues['schedule'] = ScheduleReportDateType[selectedReport as unknown as ScheduleReportDateType];
@@ -213,23 +233,32 @@ const CreateReport = () => {
     (newValues['startDate'] as string | undefined) = customDate.startDate
       ? convertStartDate(customDate.startDate)
       : customDate.singleDate && convertStartDate(customDate.singleDate);
-    (newValues['endDate'] as string | undefined) = customDate.endDate ? convertEndDate(customDate.endDate): customDateLink[CustomReportDateType.Day] ? customDate.singleDate && convertEndDate(customDate.singleDate) : convertEndDate(new Date());
+    (newValues['endDate'] as string | undefined) = customDate.endDate
+      ? convertEndDate(customDate.endDate)
+      : customDateLink[CustomReportDateType.Day]
+        ? customDate.singleDate && convertEndDate(customDate.singleDate)
+        : convertEndDate(new Date());
+    newValues['platformId'] = checkPlatformId;
 
-    if(reportUpdateValuesData) {
+    if (reportUpdateValuesData) {
       localStorage.setItem('reportValues', JSON.stringify(newValues));
-      navigate(`/${workspaceId}/reports/report-widgets?reportId=${reportUpdateValuesData.id}`);
+      navigate(
+        `/${workspaceId}/reports/report-widgets?reportId=${reportUpdateValuesData.id}&startDate=${newValues.startDate}&endDate=${newValues.endDate}`
+      );
     }
 
-    if(!reportUpdateValuesData) {
+    if (!reportUpdateValuesData) {
       localStorage.setItem('reportValues', JSON.stringify(newValues));
-      navigate(`/${workspaceId}/reports/report-widgets`);
+      navigate(`/${workspaceId}/reports/report-widgets?startDate=${newValues.startDate}&endDate=${newValues.endDate}`);
     }
   };
 
   return (
     <div className="report mt-4.56 ">
       <div className="flex flex-col">
-        <h3 className="font-Poppins font-semibold text-infoBlack leading-2.18 text-infoData">{reportUpdateValuesData ? 'Edit Report' : 'Create Report'}</h3>
+        <h3 className="font-Poppins font-semibold text-infoBlack leading-2.18 text-infoData">
+          {reportUpdateValuesData ? 'Edit Report' : 'Create Report'}
+        </h3>
         <Formik
           innerRef={formikRef}
           initialValues={initialValues}
@@ -421,7 +450,7 @@ const CreateReport = () => {
                                   id={platform.id as string}
                                   name={platform.id as string}
                                   checked={(checkedPlatform[platform.id] as boolean) || false}
-                                  onChange={handlePlatformsCheckBox}
+                                  onChange={(event) => handlePlatformsCheckBox(event, platform.id, platform.platformId)}
                                   disabled={reportUpdateValuesData ? true : false}
                                 />
                               </div>
@@ -429,7 +458,7 @@ const CreateReport = () => {
                                 className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer"
                                 htmlFor={platform.id as string}
                               >
-                                {platform?.platform?.name}
+                                {platform?.name}
                               </label>
                             </div>
                           </Fragment>
@@ -459,7 +488,7 @@ const CreateReport = () => {
                                 setSelectedReport(options.name);
                               }}
                               defaultValue={selectedReport}
-                              key={options.toString()}
+                              key={options.id}
                             >
                               <li value={selectedReport} className="text-searchBlack font-Poppins font-normal leading-1.31 text-trial p-3">
                                 {options.name}
