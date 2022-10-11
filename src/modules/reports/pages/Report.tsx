@@ -85,7 +85,7 @@ const Report: React.FC = () => {
 
   const getReportsList = async(props: any) => {
     setLoading(true);
-    const data = await getReportsListService({
+    const reportData = await getReportsListService({
       workspaceId: workspaceId!,
       params: {
         page: props.page,
@@ -98,7 +98,12 @@ const Report: React.FC = () => {
       }
     });
     setLoading(false);
-    setReportsList(data as getReportsListServiceResponseProps);
+    setReportsList({
+      data: (reportData?.data as Array<ReportListServiceResponsePropsData>),
+      totalPages: reportData?.totalPages as string,
+      nextPage: reportData?.nextPage as string,
+      previousPage: reportData?.previousPage as string
+    });
   };
 
   const generateInstantReport = async(id: string) => {
@@ -108,7 +113,7 @@ const Report: React.FC = () => {
       reportId: id
     });
     if(data?.reportUrl) {
-      navigate(data.reportUrl);
+      window.open(data.reportUrl, '_blank');
     }
     setLoading(false);
   };
@@ -307,6 +312,7 @@ const Report: React.FC = () => {
           limit
         });
         showSuccessToast('Report removed successfully');
+        setModalOpen((prevState) => ({ ...prevState, removeModalOpen: false }));
       }
     });
   };
@@ -573,7 +579,7 @@ const Report: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {reportsList?.data?.map((data: ReportListServiceResponsePropsData, i) => (
+                  {!loading && reportsList?.data?.map((data: ReportListServiceResponsePropsData, i) => (
                     <tr className="border-b dark:border-[#dbd8fc1a]" key={i}>
                       <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
                         <div className="flex ">
@@ -608,7 +614,7 @@ const Report: React.FC = () => {
                                   className="py-3 font-Poppins font-medium text-trial  leading-1.31 cursor-pointer w-1.375"
                                   key={platform.workspacePlatformId}
                                 >
-                                  <img src={platform.workspacePlatforms.platformSettings.platforms.platformLogoUrl} alt="" />
+                                  <img src={platform.workspacePlatform.platformSettings.platforms.platformLogoUrl} alt="" />
                                 </div>
                               ))
                             )}

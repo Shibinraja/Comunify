@@ -115,7 +115,7 @@ const widgetsReports: React.FC = () => {
       <div className="flex items-center justify-between pl-2.5 relative">
         <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Customize your Report</h3>
       </div>
-      <WidgetContainer isManageMode={isManageMode} widgets={widgets} setWidgets={setWidgets} setTransformedWidgetData={setTransformedWidgetData} filters={{ startDate, endDate, platformIds: reportValuesData?.platformIds }} />
+      <WidgetContainer isManageMode={isManageMode} widgets={widgets} setWidgets={setWidgets} setTransformedWidgetData={setTransformedWidgetData} filters={{ startDate, endDate, platformId: reportValuesData?.platformIds }} />
 
       <div className="flex justify-end pt-10 items-center">
         <Button
@@ -143,7 +143,7 @@ const widgetsReports: React.FC = () => {
           <div className="font-Poppins font-medium text-white leading-5 text-search ">Generate Report</div>
         </Button>
       </div>
-      {isOpen && <WidgetPreview isOpen={isOpen} setIsOpen={setIsOpen} widgets={widgets} filters={{ startDate, endDate, platformIds: reportValuesData?.platformIds }} />}
+      {isOpen && <WidgetPreview isOpen={isOpen} setIsOpen={setIsOpen} widgets={widgets} filters={{ startDate, endDate, platformId: reportValuesData?.platformId }} />}
       <ModalDrawer
         isOpen={modalOpen}
         isClose={handleModalClose}

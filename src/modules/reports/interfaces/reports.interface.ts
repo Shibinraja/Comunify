@@ -116,7 +116,7 @@ type reportPlatformType = {
   userWorkspaceReportSettingsId: string;
   workspacePlatformId: string;
   createdAt: string;
-  workspacePlatforms: {
+  workspacePlatform: {
     platformSettings:{
       platforms: {
         id: string,

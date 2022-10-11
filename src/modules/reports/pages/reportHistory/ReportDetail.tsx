@@ -1,20 +1,25 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import WidgetContainer from 'common/widgets/widgetContainer/WidgetContainer';
 import { format, parseISO } from 'date-fns';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
 
 import { reportHistoryDetailsResponseProp, ScheduleReportDateType } from '../../interfaces/reports.interface';
 import { getReportHistoryDetailsListService, getReportWidgetsListService } from '../../services/reports.service';
 
-const widgetPreview = () => {
+const ReportDetail = () => {
+  const limit = 10;
+  const page = 1;
   const { workspaceId, reportHistoryId } = useParams();
   const [isManageMode, setIsManageMode] = useState<boolean>(true);
   const [widgets, setWidgets] = useState<any[] | []>([]);
   const [saveHistoryDetail, setSaveHistoryDetail] = useState<reportHistoryDetailsResponseProp>();
-  const [transformedWidgetData, setTransformedWidgetData] = React.useState<any>(new Array(null));
+  const [platformIds, setPlatformIds] = useState<Array<string>>([]);
+  const [searchParams] = useSearchParams();
+  const startDate = searchParams.get('startDate');
+  const endDate = searchParams.get('endDate') || '';
 
   // Function to call the api and list the membersSuggestionList
   const getReportWidgetsList = async(props: { page: number; limit: number; reportId: string }) => {
@@ -44,9 +49,13 @@ const widgetPreview = () => {
         reportHistoryId: reportHistoryId!
       }).then((reportHistory) => {
         setSaveHistoryDetail(reportHistory);
+
+        reportHistory?.report.workspaceReportSettings[0].reportPlatforms.forEach((platformId) =>
+          setPlatformIds((prevId) => [...prevId, platformId.workspacePlatform.platformSettings.platforms.id])
+        );
         getReportWidgetsList({
-          limit: 10,
-          page: 1,
+          limit,
+          page,
           reportId: reportHistory?.report.id as string
         });
       });
@@ -76,16 +85,16 @@ const widgetPreview = () => {
         <div className="flex items-center pt-6">
           <span className="text-sm font-medium ">Platform Selected :</span>
           {saveHistoryDetail?.report?.workspaceReportSettings[0]?.reportPlatforms?.map((platform) => (
-            <div className="flex items-center ml-3" key={platform.workspacePlatforms.platformSettings.platforms.id}>
-              <img src={platform.workspacePlatforms.platformSettings.platforms.platformLogoUrl} alt="" className="w-[21px] h-[21px] rounded-full" />
-              <span className="text-xs font-semibold capitalize ml-2">{platform.workspacePlatforms.platformSettings.platforms.name}</span>
+            <div className="flex items-center ml-3" key={platform.workspacePlatform.platformSettings.platforms.id}>
+              <img src={platform.workspacePlatform.platformSettings.platforms.platformLogoUrl} alt="" className="w-[21px] h-[21px] rounded-full" />
+              <span className="text-xs font-semibold capitalize ml-2">{platform.workspacePlatform.platformSettings.platforms.name}</span>
             </div>
           ))}
         </div>
       </header>
 
       <div className="px-[30px] py-[35px]">
-        <WidgetContainer isManageMode={isManageMode} widgets={widgets} setWidgets={setWidgets} setTransformedWidgetData={setTransformedWidgetData} />
+        <WidgetContainer isManageMode={isManageMode} widgets={widgets} filters={{ startDate, endDate, platformId: platformIds }} />
       </div>
 
       <footer className="px-[30px] py-[35px]">
@@ -109,4 +118,4 @@ const widgetPreview = () => {
   );
 };
 
-export default widgetPreview;
+export default ReportDetail;

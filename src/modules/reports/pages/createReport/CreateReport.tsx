@@ -79,9 +79,9 @@ const CreateReport = () => {
       });
       const reportResponseValues = reportUpdateValuesData?.workspaceReportSettings[0];
 
-      reportResponseValues?.reportPlatforms?.map((platform: { workspacePlatformId: string; workspacePlatforms: { platform: { id: string } } }) => {
+      reportResponseValues?.reportPlatforms?.map((platform: { workspacePlatformId: string; workspacePlatform: { platformSettings:{platforms: { id: string } } } }) => {
         const connectedPlatformId = platform.workspacePlatformId;
-        const platformId = platform.workspacePlatforms.platform.id;
+        const platformId = platform.workspacePlatform.platformSettings.platforms.id;
         setCheckedPlatform((preValue) => ({ ...preValue, [connectedPlatformId]: true }));
         setPlatformId((preValue) => ({ ...preValue, [platformId]: true }));
       });
@@ -232,7 +232,7 @@ const CreateReport = () => {
     newValues['platform'] = checkPlatform;
     (newValues['startDate'] as string | undefined) = customDate.startDate
       ? convertStartDate(customDate.startDate)
-      : customDate.singleDate && convertStartDate(customDate.singleDate);
+      : customDate.singleDate ? convertStartDate(customDate.singleDate) : convertEndDate(new Date());
     (newValues['endDate'] as string | undefined) = customDate.endDate
       ? convertEndDate(customDate.endDate)
       : customDateLink[CustomReportDateType.Day]

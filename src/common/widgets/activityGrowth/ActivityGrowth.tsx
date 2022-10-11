@@ -75,7 +75,7 @@ const ActivityGrowth: React.FC<WidgetComponentProps> = (props: WidgetComponentPr
                 height="100%"
               />
             )}
-            {Boolean(activityGrowthWidgetData?.series.length) === false && (
+            {Boolean(activityGrowthWidgetData?.series?.length) === false && (
               <div
                 className={`absolute font-Poppins text-infoBlack ${
                   isManageMode ? 'text-lg top-24 ' : 'text-xs top-28'

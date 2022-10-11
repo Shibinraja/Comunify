@@ -98,7 +98,6 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
   const renderWidget = (widgetLocation: string, isAssigned: boolean, props: React.PropsWithoutRef<WidgetComponentProps>) => {
     // use this while developing because vite doesn't hot reload dynamically imported components
     const Widget = WidgetComponents[widgetLocation];
-
     // Use dynamic import while pushing to prod
     // const Widget = React.lazy(() => import(`../../common/widgets/${widgetLocation}/${widgetLocation}`));
     return <Suspense fallback={<Skeleton width={400} height={300} count={1} enableAnimation />}>{<Widget {...props} />}</Suspense>;

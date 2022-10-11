@@ -48,8 +48,8 @@ const ReportHistory: React.FC = () => {
     navigate(`/${workspaceId}/reports/create-report`);
   };
 
-  const handleNavigateToReportPreview = (reportId:string) => {
-    window.open(`/${workspaceId}/reports/${reportId}/report-details`, '_blank');
+  const handleNavigateToReportPreview = (reportId:string, startDate:string, endDate:string) => {
+    window.open(`/${workspaceId}/reports/${reportId}/report-details?startDate=${startDate}&endDate=${endDate}`, '_blank');
   };
 
   return (
@@ -117,7 +117,7 @@ const ReportHistory: React.FC = () => {
                       <td className="px-6 py-3">
                         <Button
                           text="View"
-                          onClick={() => handleNavigateToReportPreview(data.id)}
+                          onClick={() => handleNavigateToReportPreview(data.id, data.startAt, data.endAt)}
                           className="font-Poppins text-sm font-medium text-download leading-5 border-download w-[6.5625rem] h-10 rounded-[0.1875rem] hover:border-infoBlack transition ease-in-out duration-300"
                         />
                       </td>

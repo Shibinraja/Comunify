@@ -1,4 +1,5 @@
 /* eslint-disable space-before-function-paren */
+import { transformRequestOptions } from '@/lib/helper';
 import { showErrorToast } from '../../../common/toast/toastFunctions';
 import { HealthScoreWidgetData, WidgetFilters } from '../../../common/widgetLayout/WidgetTypes';
 import { API_ENDPOINT } from '../../../lib/config';
@@ -44,7 +45,7 @@ export const getWidgetsLayoutService = async (workspaceId: string) => {
 
 export const quickInfoWidgetService = async (workspaceId: string, filters: WidgetFilters): Promise<QuickInfoData[]> => {
   try {
-    const { data } = await request.get(`${API_ENDPOINT}/v1/${workspaceId}/widgets/quick-info`, { params: filters });
+    const { data } = await request.get(`${API_ENDPOINT}/v1/${workspaceId}/widgets/quick-info`, { params: filters, paramsSerializer: (params) => transformRequestOptions(params) });
     return data?.data as QuickInfoData[];
   } catch {
     showErrorToast('Failed to load quick info widget data');
@@ -54,7 +55,7 @@ export const quickInfoWidgetService = async (workspaceId: string, filters: Widge
 
 export const healthScoreWidgetDataService = async (workspaceId: string, filters: WidgetFilters): Promise<HealthScoreWidgetData[]> => {
   try {
-    const { data } = await request.get(`${API_ENDPOINT}/v1/${workspaceId}/widgets/health-score`, { params: filters });
+    const { data } = await request.get(`${API_ENDPOINT}/v1/${workspaceId}/widgets/health-score`, { params: filters, paramsSerializer: (params) => transformRequestOptions(params) });
     return data?.data as HealthScoreWidgetData[];
   } catch {
     showErrorToast('Failed to load health score widget data');
@@ -64,7 +65,7 @@ export const healthScoreWidgetDataService = async (workspaceId: string, filters:
 
 export const activitiesWidgetDataService = async (workspaceId: string, filters: WidgetFilters): Promise<ActivitiesWidgetData[]> => {
   try {
-    const { data } = await request.get(`${API_ENDPOINT}/v1/${workspaceId}/widgets/activity`, { params: { ...filters } });
+    const { data } = await request.get(`${API_ENDPOINT}/v1/${workspaceId}/widgets/activity`, { params: { ...filters }, paramsSerializer: (params) => transformRequestOptions(params) });
     return data?.data?.data as ActivitiesWidgetData[];
   } catch {
     showErrorToast('Failed to load activity widget data');
@@ -74,7 +75,7 @@ export const activitiesWidgetDataService = async (workspaceId: string, filters: 
 
 export const membersWidgetDataService = async (workspaceId: string, filters: WidgetFilters): Promise<MemberWidgetData[]> => {
   try {
-    const { data } = await request.get(`${API_ENDPOINT}/v1/${workspaceId}/widgets/member`, { params: { ...filters } });
+    const { data } = await request.get(`${API_ENDPOINT}/v1/${workspaceId}/widgets/member`, { params: { ...filters }, paramsSerializer: (params) => transformRequestOptions(params) });
     return data?.data?.data as MemberWidgetData[];
   } catch {
     showErrorToast('Failed to load members widget data');
@@ -84,7 +85,7 @@ export const membersWidgetDataService = async (workspaceId: string, filters: Wid
 
 export const activityGrowthWidgetDataService = async (workspaceId: string, filters: WidgetFilters): Promise<MembersProfileActivityGraphData> => {
   try {
-    const { data } = await request.get(`${API_ENDPOINT}/v1/${workspaceId}/widgets/activity-growth`, { params: filters });
+    const { data } = await request.get(`${API_ENDPOINT}/v1/${workspaceId}/widgets/activity-growth`, { params: filters, paramsSerializer: (params) => transformRequestOptions(params) });
     return data?.data as MembersProfileActivityGraphData;
   } catch {
     showErrorToast('Failed to load activity growth widget data');
@@ -94,7 +95,7 @@ export const activityGrowthWidgetDataService = async (workspaceId: string, filte
 
 export const memberGrowthWidgetDataService = async (workspaceId: string, filters: WidgetFilters): Promise<MembersProfileActivityGraphData> => {
   try {
-    const { data } = await request.get(`${API_ENDPOINT}/v1/${workspaceId}/widgets/member-growth`, { params: filters });
+    const { data } = await request.get(`${API_ENDPOINT}/v1/${workspaceId}/widgets/member-growth`, { params: filters, paramsSerializer: (params) => transformRequestOptions(params) });
     return data?.data as MembersProfileActivityGraphData;
   } catch {
     showErrorToast('Failed to load member growth widget data');

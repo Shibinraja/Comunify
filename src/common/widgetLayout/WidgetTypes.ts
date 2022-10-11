@@ -58,7 +58,7 @@ export interface WidgetFilters {
   endDate: string | null;
   type?: string;
   limit?: number;
-  platformIds?: string[];
+  platformId?: string[];
 }
 
 export interface WidgetContainerProps {
