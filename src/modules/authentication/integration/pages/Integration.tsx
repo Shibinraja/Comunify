@@ -4,6 +4,7 @@ import slackIcon from '../../../../assets/images/slack.svg';
 import nextIcon from '../../../../assets/images/next.svg';
 import vanillaIcon from '../../../../assets/images/vanilla-forum.svg';
 import bgIntegrationImage from '../../../../assets/images/bg-sign.svg';
+import discordIcon from '../../../../assets/images/discord.svg';
 import './Integration.css';
 import Button from 'common/button';
 import Modal from 'react-modal';
@@ -161,24 +162,19 @@ const Integration: React.FC = () => {
         workspaceId
       };
       const response: IntegrationResponse<DiscordConnectResponse> = await request.post(`${API_ENDPOINT}/v1/discord/connect`, body);
-      //   if (response) {
-      //     navigate(`/${workspaceId}/settings/discord-integration`);
-      //   }
-      //   localStorage.setItem('workspacePlatformAuthSettingsId', response?.data?.data?.id);
-      //   localStorage.setItem('workspacePlatformSettingsId', response?.data?.data?.workspacePlatformSettingsId);
       if (response?.data?.data) {
-        // setIsModalOpen((prevState) => ({ ...prevState, discord: false }));
+        setIsModalOpen((prevState) => ({ ...prevState, discord: false }));
         navigate(`/${workspaceId}/settings/discord-integration`, {
           state: { discordConnectResponse: response?.data?.data }
         });
         showSuccessToast('Authenticated successfully');
       } else {
         showErrorToast('Integration failed');
-        // setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
+        setIsModalOpen((prevState) => ({ ...prevState, discord: false }));
       }
     } catch {
       showErrorToast('Integration failed');
-      //   setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
+      setIsModalOpen((prevState) => ({ ...prevState, discord: false }));
     }
   };
 
@@ -342,6 +338,39 @@ const Integration: React.FC = () => {
                           />
                         </div>
                       </form>
+                    </div>
+                  </div>
+                </Modal>
+                <Modal
+                  isOpen={isModalOpen.discord}
+                  shouldCloseOnOverlayClick={true}
+                  onRequestClose={() => setIsModalOpen((prevState) => ({ ...prevState, discord: false }))}
+                  className="h-14.56 w-22.31 shadow-modal flex items-center justify-center rounded-lg border-fetching-card mx-auto  bg-white outline-none"
+                  style={{
+                    overlay: {
+                      display: 'flex',
+                      position: 'fixed',
+                      top: 0,
+                      left: 0,
+                      bottom: 0,
+                      right: 0,
+                      alignItems: 'center'
+                    }
+                  }}
+                >
+                  <div className="loading">
+                    <div className="flex flex-col items-center justify-center  ">
+                      <div className=" bg-no-repeat bg-center bg-contain ">
+                        <img src={discordIcon} alt="" className="rounded-full w-2.68 h-2.68" />
+                      </div>
+                      <div className="mt-4 text-integrationGray font-Poppins fomt-normal text-desc leadind-1.68">
+                        Fetching data from <span className="text-black font-normal">Discord</span>
+                      </div>
+                      <div className="mt-1.8">
+                        <div className="dot-pulse">
+                          <div className="dot-pulse__dot"></div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </Modal>

@@ -79,7 +79,7 @@ const DiscordIntegrationDetails: React.FC = () => {
           <img src={discordIcon} alt="" className="w-[2.6494rem] h-[2.6494rem]" />
         </div>
         <div className="font-Inter font-bold text-signIn leading-7 text-neutralBlack pt-3">Manage Discord Integration</div>
-        <div className="font-Inter font-normal text-signIn text-workSpace">“Workspace name”</div>
+        <div className="font-Inter font-normal text-signIn text-workSpace">{connectResponse?.guildName}</div>
         <div className="settings-card px-7 py-10 mt-6 box-border border-table rounded-0.9 shadow-paymentSubscriptionCard">
           <div className="flex flex-col pb-5">
             <div className="flex justify-end font-Poppins font-semibold text-base text-slimGray leading-6">Discord</div>
@@ -144,15 +144,16 @@ const DiscordIntegrationDetails: React.FC = () => {
           </span>
         </div>
         <div className="flex justify-end pt-4">
-          {/* <Button
-            text="Back to Integrations"
-            type="submit"
-            className="cancel mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  h-2.81 w-[181.83px]  rounded border-none"
-          /> */}
           <Button
             text="Complete Setup"
             type="submit"
-            onClick={discordCompleteSetup}
+            onClick={() => {
+              if (!selectedChannel) {
+                showErrorToast('Please select a channel');
+              } else {
+                discordCompleteSetup();
+              }
+            }}
             className="text-white font-Poppins text-error font-medium leading-5 btn-save-modal cursor-pointer rounded shadow-contactBtn py-3 px-4 border-none h-2.81"
           />
         </div>
