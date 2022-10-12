@@ -93,16 +93,16 @@ const DiscordIntegrationDetails: React.FC = () => {
             <div className="font-Poppins font-semibold text-slackStatus text-base leading-6">Connected</div>
           </div>
           <div className="flex justify-between py-5 border-top-card">
-            <div className="font-Poppins font-semibold text-base text-manageTitle leading-6">Community</div>
+            <div className="font-Poppins font-semibold text-base text-manageTitle leading-6">Channel</div>
             <div className="font-Poppins font-semibold text-base text-slimGray leading-6 capitalize">
               {' '}
               {selectedChannel ? selectedChannel : 'Not Selected'}
             </div>
           </div>
-          <div className="flex justify-between py-5 border-top-card">
+          {/* <div className="flex justify-between py-5 border-top-card">
             <div className="font-Poppins font-semibold text-base text-manageTitle leading-6">Last Activity Retrieved</div>
             <div className="font-Poppins font-semibold text-base text-slimGray leading-6 ">August 15, 2022 4:18 pm</div>
-          </div>
+          </div> */}
         </div>
 
         <div className="py-6">
@@ -144,16 +144,16 @@ const DiscordIntegrationDetails: React.FC = () => {
           </span>
         </div>
         <div className="flex justify-end pt-4">
-          <Button
+          {/* <Button
             text="Back to Integrations"
             type="submit"
             className="cancel mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  h-2.81 w-[181.83px]  rounded border-none"
-          />
+          /> */}
           <Button
             text="Complete Setup"
             type="submit"
             onClick={discordCompleteSetup}
-            className="text-white font-Poppins text-error font-medium leading-5 btn-save-modal cursor-pointer rounded shadow-contactBtn w-[123px] border-none h-2.81"
+            className="text-white font-Poppins text-error font-medium leading-5 btn-save-modal cursor-pointer rounded shadow-contactBtn py-3 px-4 border-none h-2.81"
           />
         </div>
       </div>

@@ -22,7 +22,7 @@ import {
   VanillaForumsConnectData
 } from '../../interface/settings.interface';
 import { getLocalWorkspaceId } from '../../../../lib/helper';
-import { PlatformConnectResponse } from '../../../../interface/interface';
+import { DiscordConnectResponse, PlatformConnectResponse } from '../../../../interface/interface';
 import { IntegrationResponse, NetworkResponse } from '../../../../lib/api';
 import { showErrorToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
 import { useNavigate } from 'react-router';
@@ -301,26 +301,22 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
         code: codeParams,
         workspaceId
       };
-      const response: IntegrationResponse<PlatformConnectResponse> = await request.post(`${API_ENDPOINT}/v1/discord/connect`, body);
-      if (response) {
-        navigate(`/${workspaceId}/settings/discord-integration`);
+      const response: IntegrationResponse<DiscordConnectResponse> = await request.post(`${API_ENDPOINT}/v1/discord/connect`, body);
+      if (response?.data?.data) {
+        // setIsModalOpen((prevState) => ({ ...prevState, discord: false }));
+        navigate(`/${workspaceId}/settings/discord-integration`, {
+          state: { discordConnectResponse: response?.data?.data }
+        });
+        showSuccessToast('Authenticated successfully');
+      } else {
+        showErrorToast('Integration failed');
+        // setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
       }
-      //   localStorage.setItem('workspacePlatformAuthSettingsId', response?.data?.data?.id);
-      //   localStorage.setItem('workspacePlatformSettingsId', response?.data?.data?.workspacePlatformSettingsId);
-      //   if (response?.data?.data?.id) {
-      //     setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
-      //     navigate(`/${workspaceId}/settings/discord-integration`, { state: { workspacePlatformAuthSettingsId: response?.data?.data?.id } });
-      //     showSuccessToast('Authenticated successfully');
-      //   } else {
-      //     showErrorToast('Integration failed');
-      //     setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
-      //   }
     } catch {
       showErrorToast('Integration failed');
       //   setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
     }
   };
-
   const connectedBtnClassName = `dark:bg-secondaryDark bg-connectButton shadow-contactCard font-Poppins text-white font-medium leading-5 ${
     isLoading ? 'opacity-50 cursor-not-allowed ' : ''
   }
