@@ -105,19 +105,20 @@ const DiscordIntegrationDetails: React.FC = () => {
           </div> */}
         </div>
 
+
         <div className="py-6">
-          <div className="mt-5 flex flex-col pl-5 " onClick={() => setIsChannelActive(!isChannelActive)}>
+          <div className="mt-5 flex flex-col w-80" onClick={() => setIsChannelActive(!isChannelActive)}>
             <label htmlFor="name" className="text-base font-Poppins text-infoBlack font-medium leading-1.31">
               Select Channel
             </label>
-            <div className="relative w-20.5 2xl:w-full h-3.06 app-result-card-border flex items-center px-3 mt-0.375 shadow-ChannelInput rounded-0.3 font-Poppins font-normal text-trial text-thinGray leading-1.31 cursor-pointer ">
+            <div className="relative w-20.5 2xl:w-full h-3.06 app-result-card-border flex items-center px-3 mt-2 shadow-ChannelInput rounded-0.3 font-Poppins font-normal text-trial text-thinGray leading-1.31 cursor-pointer ">
               {selectedChannel ? selectedChannel : 'Select'}
               <div className="absolute right-4">
                 <img src={dropdownIcon} alt="" className={isChannelActive ? 'rotate-0' : 'rotate-180'} />
               </div>
             </div>
             {isChannelActive && (
-              <div className="flex flex-col app-result-card-border box-border w-20.5 rounded-0.3 shadow-ChannelInput cursor-pointer absolute -bottom-[2.6rem] bg-white">
+              <div className="flex flex-col app-result-card-border box-border w-20.5 rounded-0.3 shadow-ChannelInput cursor-pointer absolute -bottom-[2.6rem] bg-white min-h-[50px] max-h-60 overflow-auto">
                 {channelDetails.map((options: ChannelDetails) => (
                   <ul
                     className="cursor-pointer hover:bg-signUpDomain  transition ease-in duration-100 "
