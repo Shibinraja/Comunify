@@ -63,8 +63,8 @@ const ReportDetail = () => {
   }, [reportHistoryId]);
 
   return (
-    <div className="flex flex-col  text-white font-Popins rounded-lg shadow-modal">
-      <header className="bg-[#141010] px-[30px] py-[35px] rounded-tl-lg rounded-tr-lg h-[164px]">
+    <div className="flex flex-col font-Popins  shadow-modal">
+      <header className="bg-[#141010] px-[30px] py-[35px]  h-[164px] text-white">
         <div className="flex justify-between items-center">
           <div className="flex flex-col">
             <span className="font-semibold text-2xl capitalize">{saveHistoryDetail?.report.name}</span>

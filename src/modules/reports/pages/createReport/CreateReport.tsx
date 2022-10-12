@@ -134,6 +134,7 @@ const CreateReport = () => {
     if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
       setIsPlatformActive(false);
     }
+
   };
 
   const handleClickDatePickerIcon = (type: string) => {
@@ -268,8 +269,8 @@ const CreateReport = () => {
         >
           {({ handleBlur, handleChange, handleSubmit, values, errors, touched }): JSX.Element => (
             <Form onSubmit={handleSubmit}>
-              <div className="grid grid-cols-2 relative mt-1.8 w-full  xl:w-[70%] 2xl:w-1/2">
-                <div className="flex flex-col">
+              <div className="grid grid-cols-2 relative mt-1.8 w-full  xl:w-[686px] 3xl:w-1/2">
+                <div className="flex flex-col w-full">
                   <label htmlFor="name" className="text-trial font-Poppins text-infoBlack font-normal leading-1.31">
                     Report Name
                   </label>
@@ -277,7 +278,7 @@ const CreateReport = () => {
                     type="text"
                     name="name"
                     id="reportNameId"
-                    className="w-20.5 2xl:w-full h-3.06 mt-0.375 shadow-reportInput rounded-0.3 focus:outline-none p-3 placeholder:font-Poppins placeholder:text-thinGray placeholder:text-trial placeholder:font-normal placeholder:leading-1.31 app-result-card-border"
+                    className="w-full h-3.06 mt-0.375 shadow-reportInput text-trial font-Poppins rounded-0.3 focus:outline-none p-3 placeholder:font-Poppins placeholder:text-thinGray placeholder:text-trial placeholder:font-normal placeholder:leading-1.31 app-result-card-border"
                     placeholder="Report Name"
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -286,7 +287,7 @@ const CreateReport = () => {
                     helperText={touched.name && errors.name}
                   />
                 </div>
-                <div className="flex flex-col pl-5">
+                <div className="flex flex-col ml-5 w-20.5 2xl:w-full">
                   <label htmlFor="description" className="text-trial font-Poppins text-infoBlack font-normal leading-1.31">
                     Description
                   </label>
@@ -294,7 +295,7 @@ const CreateReport = () => {
                     type="text"
                     name="description"
                     id="descriptionId"
-                    className="w-20.5 2xl:w-full h-3.06 mt-0.375 shadow-reportInput rounded-0.3 focus:outline-none p-3 placeholder:font-Poppins placeholder:text-thinGray placeholder:text-trial placeholder:font-normal placeholder:leading-1.31 app-result-card-border"
+                    className="w-full h-3.06 mt-0.375 text-trial font-Poppins shadow-reportInput rounded-0.3 focus:outline-none p-3 placeholder:font-Poppins placeholder:text-thinGray placeholder:text-trial placeholder:font-normal placeholder:leading-1.31 app-result-card-border"
                     placeholder="Description"
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -334,41 +335,41 @@ const CreateReport = () => {
                     No
                   </label>
                 </div>
-                <div className="flex flex-col pl-5"></div>
+                <div className="flex flex-col ml-5 "></div>
                 {(checkedRadioId[ScheduleReportsEnum.No] as ReactNode) && (
                   <Fragment>
                     <div className=" flex-flex-col mt-1.8">
                       <label htmlFor="chooseCondition" className="text-trial font-Poppins text-infoBlack font-normal leading-1.31">
                         Choose Condition
                       </label>
-                      <div className="flex gap-[1.375rem] mt-0.375 ">
+                      <div className="flex gap-[0.63rem] mt-0.375 ">
                         <div
-                          className={`w-4.06 2xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${
-                            customDateLink[CustomReportDateType.Day] ? 'border-gradient-rounded-member' : 'app-input-card-border'
+                          className={`w-4.06 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${
+                            customDateLink[CustomReportDateType.Day] ? '' : 'app-input-card-border'
                           } `}
                           onClick={() => selectCustomDate('1day')}
                         >
                           1 Day
                         </div>
                         <div
-                          className={`w-4.06 2xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${
-                            customDateLink[CustomReportDateType.Week] ? 'border-gradient-rounded-member' : 'app-input-card-border'
+                          className={`w-[71px] 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${
+                            customDateLink[CustomReportDateType.Week] ? '' : 'app-input-card-border'
                           } `}
                           onClick={() => selectCustomDate('7day')}
                         >
                           1 Week
                         </div>
                         <div
-                          className={`w-4.06 2xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${
-                            customDateLink[CustomReportDateType.Month] ? 'border-gradient-rounded-member' : 'app-input-card-border'
+                          className={`w-[75px] 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${
+                            customDateLink[CustomReportDateType.Month] ? '' : 'app-input-card-border'
                           } `}
                           onClick={() => selectCustomDate('1month')}
                         >
                           1 Month
                         </div>
                         <div
-                          className={`w-4.06 2xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${
-                            customDateLink[CustomReportDateType.Year] ? 'border-gradient-rounded-member' : 'app-input-card-border'
+                          className={`w-[75px] 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${
+                            customDateLink[CustomReportDateType.Year] ? '' : 'app-input-card-border'
                           }`}
                           onClick={() => selectCustomDate('1year')}
                         >
@@ -380,8 +381,8 @@ const CreateReport = () => {
                       <label htmlFor="name" className="text-trial font-Poppins text-infoBlack font-normal leading-1.31">
                         Custom Date
                       </label>
-                      <div className="flex mt-0.375 gap-2">
-                        <div className="relative flex items-center 2xl:w-1/2 ">
+                      <div className="flex mt-0.375 gap-[0.64rem] ">
+                        <div className="relative flex items-center w-[158.76px] 3xl:w-1/2 ">
                           <DatePicker
                             selected={customDate.startDate}
                             onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'start')}
@@ -400,7 +401,7 @@ const CreateReport = () => {
                             onClick={() => handleClickDatePickerIcon('start')}
                           />
                         </div>
-                        <div className="relative flex items-center 2xl:w-1/2 ">
+                        <div className="relative flex items-center w-[158.76px] 3xl:w-1/2">
                           <DatePicker
                             selected={customDate.endDate}
                             onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'end')}
@@ -424,12 +425,14 @@ const CreateReport = () => {
                     </div>
                   </Fragment>
                 )}
-                <div className="mt-5 flex flex-col relative" ref={dropDownRef}>
+                <div className="mt-5 flex flex-col w-full relative" ref={dropDownRef}>
                   <label htmlFor="name" className="text-trial font-Poppins text-infoBlack font-normal leading-1.31">
                     Choose Platform
                   </label>
                   <div
-                    className={`w-20.5 2xl:w-full h-3.06 app-result-card-border flex items-center px-3 mt-0.375 shadow-reportInput rounded-0.3 font-Poppins font-normal text-trial text-thinGray leading-1.31 relative ${reportUpdateValuesData ? 'opacity-50 cursor-not-allowed': 'cursor-pointer'}`}
+                    className={`w-full h-3.06 app-result-card-border flex items-center px-3 mt-0.375 shadow-reportInput rounded-0.3 font-Poppins font-normal text-trial text-thinGray leading-1.31 relative ${
+                      reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                    }`}
                     onClick={() => setIsPlatformActive((prevActive) => !prevActive)}
                   >
                     Select
@@ -438,11 +441,23 @@ const CreateReport = () => {
                     </div>
                   </div>
                   {isPlatformActive && (
-                    <div className="flex-flex-col  app-result-card-border box-border w-20.5 rounded-0.3 shadow-reportInput cursor-pointer absolute -bottom-[3.5rem] bg-white z-40">
-                      {PlatformsConnected &&
+                      <div className="flex-flex-col  app-result-card-border box-border w-full rounded-0.3 shadow-reportInput cursor-pointer absolute top-[4.8rem] bg-white z-40">
+                        <div className="flex items-center gap-2 hover:bg-signUpDomain  transition ease-in duration-100 p-3  opacity-50">
+                          <div>
+                            <input type="checkbox" className="checkbox" id="all" name="all" />
+                          </div>
+                          <label className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-not-allowed" htmlFor="All">
+                          All
+                          </label>
+                        </div>
+                        {PlatformsConnected &&
                         PlatformsConnected.map((platform: ConnectedPlatforms) => (
                           <Fragment key={platform.id}>
-                            <div className={`flex items-center gap-2 hover:bg-signUpDomain  transition ease-in duration-100 p-3  ${reportUpdateValuesData ? 'opacity-50 cursor-not-allowed': 'cursor-pointer'}`}>
+                            <div
+                              className={`flex items-center gap-2 hover:bg-signUpDomain  transition ease-in duration-100 p-3  ${
+                                reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                              }`}
+                            >
                               <div>
                                 <input
                                   type="checkbox"
@@ -463,24 +478,27 @@ const CreateReport = () => {
                             </div>
                           </Fragment>
                         ))}
-                    </div>
-                  )}
+                      </div>
+                    )}
                 </div>
 
                 {(checkedRadioId[ScheduleReportsEnum.Yes] as ReactNode) && (
                   <Fragment>
-                    <div className="mt-5 flex flex-col pl-5 " onClick={() => setIsReportActive(!isReportActive)}>
+                    <div className="mt-5 flex flex-col ml-5 w-20.5 2xl:w-full relative">
                       <label htmlFor="name" className="text-trial font-Poppins text-infoBlack font-normal leading-1.31">
                         Schedule Report
                       </label>
-                      <div className="relative w-20.5 2xl:w-full h-3.06 app-result-card-border flex items-center px-3 mt-0.375 shadow-reportInput rounded-0.3 font-Poppins font-normal text-trial text-thinGray leading-1.31 cursor-pointer ">
+                      <div
+                        onClick={() => setIsReportActive(!isReportActive)}
+                        className="relative w-full h-3.06 app-result-card-border flex items-center px-3 mt-0.375 shadow-reportInput rounded-0.3 font-Poppins font-normal text-trial text-thinGray leading-1.31 cursor-pointer "
+                      >
                         {selectedReport ? selectedReport : 'Select'}
                         <div className="absolute right-4">
                           <img src={dropdownIcon} alt="" className={isReportActive ? 'rotate-0' : 'rotate-180'} />
                         </div>
                       </div>
                       {isReportActive && (
-                        <div className="flex flex-col app-result-card-border box-border w-20.5 rounded-0.3 shadow-reportInput cursor-pointer absolute -bottom-[2.6rem] bg-white">
+                        <div className="flex flex-col app-result-card-border box-border w-full rounded-0.3 shadow-reportInput cursor-pointer absolute top-[4.8rem] bg-white">
                           {ReportOptions.map((options) => (
                             <ul
                               className="cursor-pointer hover:bg-signUpDomain  transition ease-in duration-100 "
@@ -498,7 +516,7 @@ const CreateReport = () => {
                         </div>
                       )}
                     </div>
-                    <div className="mt-5 flex flex-col">
+                    <div className="mt-5 flex flex-col w-full">
                       <label htmlFor="emails" className="text-trial font-Poppins text-infoBlack font-normal leading-1.31">
                         Alternate Recipient Mail IDs
                       </label>
@@ -507,7 +525,7 @@ const CreateReport = () => {
                         name="emails"
                         id="email-id"
                         placeholder="Email Id"
-                        className="w-20.5 2xl:w-full h-3.06 mt-0.375 shadow-reportInput rounded-0.3 focus:outline-none p-3 placeholder:font-Poppins placeholder:text-thinGray placeholder:text-trial placeholder:font-normal placeholder:leading-1.31 app-result-card-border"
+                        className="w-full h-3.06 mt-0.375 text-trial font-Poppins shadow-reportInput rounded-0.3 focus:outline-none p-3 placeholder:font-Poppins placeholder:text-thinGray placeholder:text-trial placeholder:font-normal placeholder:leading-1.31 app-result-card-border"
                         onBlur={handleBlur}
                         onChange={handleEmailChange}
                         value={values.emails}
@@ -519,7 +537,7 @@ const CreateReport = () => {
                 )}
               </div>
 
-              <div className="buttons flex justify-end w-full 2xl:w-[60%] mt-20">
+              <div className="buttons flex justify-end w-full mt-20 mr-10">
                 <Button
                   type="button"
                   text="CANCEL"
