@@ -1,7 +1,8 @@
+/* eslint-disable no-unused-vars */
 import { SidePanelWidgetsData } from '../../modules/dashboard/interface/dashboard.interface';
 
 export type WidgetIdentification = {
-  widgetKey: string;
+  widgetKey: string[];
   sidePanelWidgetsData?: SidePanelWidgetsData[];
   widgetRemoved: string;
 };
@@ -47,8 +48,17 @@ export interface WidgetComponentProps {
   widget: PanelWidgetsType;
   isShrunk?: boolean;
   isSidePanelOpen: boolean;
+  filters: WidgetFilters;
   // eslint-disable-next-line no-unused-vars
   removeWidgetFromDashboard: (selectedWidget: PanelWidgetsType) => void;
+}
+
+export interface WidgetFilters {
+  startDate: string | null;
+  endDate: string | null;
+  type?: string;
+  limit?: number;
+  platformId?: string[];
 }
 
 export interface WidgetContainerProps {
@@ -56,4 +66,5 @@ export interface WidgetContainerProps {
   widgets: PanelWidgetsType[];
   setWidgets?: React.Dispatch<React.SetStateAction<PanelWidgetsType[] | []>>;
   setTransformedWidgetData?: React.Dispatch<React.SetStateAction<unknown[] | []>>;
+  filters?: WidgetFilters;
 }

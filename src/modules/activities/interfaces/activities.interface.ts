@@ -79,7 +79,6 @@ export interface ActiveStreamData {
   sourceUrl: null | string;
   platformLogoUrl: string;
   description: string;
-  comunifyMemberId: string;
   organization: string;
   profilePictureUrl: string;
   platformId: string;

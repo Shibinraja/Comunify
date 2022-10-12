@@ -44,7 +44,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
   const { membersLocationFilterResponse, membersOrganizationFilterResponse } = useAppSelector((state) => state.members);
   const { data: TagFilterResponse } = useAppSelector((state) => state.settings.TagFilterResponse);
   const memberColumnsLoader = useSkeletonLoading(membersSlice.actions.membersList.type);
-  const PlatformFilterResponse = usePlatform();
+  const { PlatformFilterResponse } = usePlatform();
   const debouncedLocationValue = useDebounce(locationSearchText, 300);
   const debouncedOrganizationValue = useDebounce(organizationSearchText, 300);
   const debouncedTagValue = useDebounce(tagSearchText, 300);
@@ -90,12 +90,6 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
 
   const handleFilterDropdown = (): void => {
     setIsFilterDropdownActive((prev) => !prev);
-    dispatch(
-      settingsSlice.actions.tagFilterData({
-        settingsQuery: { page: 1, limit, tags: { searchedTags: '', checkedTags: '' } },
-        workspaceId: workspaceId!
-      })
-    );
   };
 
   const handlePlatformActive = (val: boolean) => {
