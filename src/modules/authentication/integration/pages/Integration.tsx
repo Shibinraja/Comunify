@@ -79,7 +79,6 @@ const Integration: React.FC = () => {
         setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: true }));
         break;
       case 'discord':
-        setIsLoading(true);
         NavigateToDiscordConnectPage();
         break;
 

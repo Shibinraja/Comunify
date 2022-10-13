@@ -350,11 +350,9 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
       setIsModalOpen((prevState) => ({ ...prevState, discord: false }));
     }
   };
-  const connectedBtnClassName = `dark:bg-secondaryDark bg-connectButton shadow-contactCard font-Poppins text-white font-medium leading-5 ${
-    isLoading ? 'opacity-50 cursor-not-allowed ' : ''
-  }
-  text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer
-   hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient dark:bg-secondaryDark`;
+  const connectedBtnClassName = `dark:bg-secondaryDark bg-connectButton shadow-contactCard font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded 
+    h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient dark:bg-secondaryDark`;
+
   const disConnectedBtnClassName = `btn-disconnect-gradient shadow-contactCard font-Poppins text-white font-medium leading-5 text-error mt-0.81
      rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in 
      duration-300 dark:bg-secondaryDark dark:border dark:border-[#9B9B9B]`;
@@ -407,7 +405,6 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
                 <Button
                   type="button"
                   text="Connect"
-                  disabled={isLoading ? true : false}
                   className={!isButtonConnect ? disConnectedBtnClassName : connectedBtnClassName}
                   onClick={() => handleModals(data?.name.trim(), data?.platformLogoUrl, data?.isConnected)}
                 />
