@@ -2,7 +2,6 @@
 /* eslint-disable no-unused-vars */
 import Button from 'common/button';
 import React, { useEffect, useState } from 'react';
-import unsplashIcon from '../../../../assets/images/unsplash.svg';
 import slackIcon from '../../../../assets/images/slack.svg';
 import discordIcon from '../../../../assets/images/discord.svg';
 import redditLogoIcon from '../../../../assets/images/reddit_logo.png';
