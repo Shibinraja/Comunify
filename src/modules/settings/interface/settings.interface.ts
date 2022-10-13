@@ -3,6 +3,7 @@
 export interface PlatformIcons {
   slack: string | undefined;
   vanillaForums: string | undefined;
+  discord: string | undefined;
 }
 
 export interface PlatformsStatus {

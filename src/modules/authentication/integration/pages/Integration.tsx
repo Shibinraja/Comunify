@@ -28,7 +28,7 @@ Modal.setAppElement('#root');
 const Integration: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanillaForums: false, discord: false });
   // eslint-disable-next-line no-unused-vars
-  const [platformIcons, setPlatformIcons] = useState<PlatformIcons>({ slack: undefined, vanillaForums: undefined });
+  const [platformIcons, setPlatformIcons] = useState<PlatformIcons>({ slack: undefined, vanillaForums: undefined, discord: undefined });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const dispatch = useDispatch();
   const platformData = usePlatform();

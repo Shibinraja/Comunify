@@ -57,7 +57,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
     platformIcon: ''
   });
   // eslint-disable-next-line no-unused-vars
-  const [platformIcons, setPlatformIcons] = useState<PlatformIcons>({ slack: undefined, vanillaForums: undefined });
+  const [platformIcons, setPlatformIcons] = useState<PlatformIcons>({ slack: undefined, vanillaForums: undefined, discord: undefined });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   //   const [platformStatus, setPlatformStatus] = useState<PlatformsStatus>({ platform: undefined, status: undefined });
   const [vanillaForumsData, setVanillaForumsData] = useState<VanillaForumsConnectData>({
@@ -139,10 +139,20 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
           setIsLoading(false);
         }
         break;
-
       case 'Discord':
         setIsLoading(true);
-        NavigateToDiscordConnectPage();
+        if (!checkForConnectedPlatform(name)) {
+          setPlatformIcons((prevState) => ({ ...prevState, discord: icon }));
+          if (isIntegrated === true) {
+            handlePlatformReconnectForDiscord(name);
+          } else {
+            NavigateToDiscordConnectPage();
+            setIsLoading(false);
+          }
+        } else {
+          showWarningToast(`${name} is already connected to your workspace`);
+          setIsLoading(false);
+        }
         break;
       default:
         break;
@@ -290,6 +300,29 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
       }
     } catch {
       showErrorToast('Failed to connect to the platform');
+    }
+  };
+
+  // eslint-disable-next-line space-before-function-paren
+  const handlePlatformReconnectForDiscord = async (platform: string) => {
+    setIsModalOpen((prevState) => ({ ...prevState, discord: true }));
+    const body = {
+      workspaceId
+    };
+    try {
+      const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
+      if (response?.data?.message) {
+        setIsModalOpen((prevState) => ({ ...prevState, discord: false }));
+        dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+        showSuccessToast(`${platform} was successfully connected`);
+        setIsLoading(false);
+      } else {
+        showErrorToast('Failed to connect to the platform');
+        setIsModalOpen((prevState) => ({ ...prevState, discord: false }));
+      }
+    } catch {
+      showErrorToast('Failed to connect to the platform');
+      setIsModalOpen((prevState) => ({ ...prevState, discord: false }));
     }
   };
 
