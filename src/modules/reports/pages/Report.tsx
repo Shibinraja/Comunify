@@ -383,7 +383,7 @@ const Report: React.FC = () => {
               type="text"
               name="search"
               id="searchId"
-              className="app-input-card-border focus:outline-none px-4 mr-0.76 box-border h-3.06 w-19.06 dark:bg-secondaryDark text-dropGray bg-white  dark:text-inputText dark:placeholder:text-inputText shadow-shadowInput rounded-0.6 placeholder:text-dropGray placeholder:text-card placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.12 font-Poppins"
+              className="app-input-card-border focus:outline-none px-4 mr-0.76 box-border h-3.06 w-19.06 dark:bg-secondaryDark text-dropGray bg-white  dark:text-inputText dark:placeholder:text-inputText shadow-shadowInput rounded-0.6 placeholder:text-[#7C8DB5] placeholder:text-card placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.12 font-Poppins"
               placeholder="Search By Name or Email"
               onChange={handleSearchTextChange}
             />
@@ -393,7 +393,7 @@ const Report: React.FC = () => {
               className="flex justify-between items-center px-1.08 app-input-card-border rounded-0.6 box-border w-9.59 h-3.06 cursor-pointer bg-white dark:bg-secondaryDark  shadow-shadowInput"
               onClick={handleFilterDropdown}
             >
-              <div className="font-Poppins font-normal text-card text-dropGray leading-1.12  dark:text-inputText">Filters</div>
+              <div className="font-Poppins font-semibold text-card text-dropGray leading-1.12  dark:text-inputText">Filters</div>
               <div className="drop-icon">
                 <img src={filterDownIcon} alt="" className={isFilterDropdownActive ? 'rotate-180' : 'rotate-0'} />
               </div>
@@ -592,7 +592,7 @@ const Report: React.FC = () => {
                     <tr className="border-b dark:border-[#dbd8fc1a]" key={i}>
                       <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
                         <div className="flex ">
-                          <div className="py-3 font-Poppins font-medium text-trial  leading-1.31 cursor-pointer">
+                          <div className="py-3 font-Poppins font-medium text-trial  leading-1.31 cursor-pointer capitalize">
                             {loading ? (
                               <Skeleton width={width_90} />
                             ) : (
@@ -647,16 +647,16 @@ const Report: React.FC = () => {
                         <div className="flex   cursor-pointer relative">
                           <div
                             onClick={() => (isDropdownActive ? handleDropDownActive('') : handleDropDownActive(data.id))}
-                            className="flex items-center justify-center action  h-3.12 box-border bg-white dark:bg-secondaryDark rounded-sm dark:border-[#dbd8fc1a] shadow-deleteButton w-3.12 "
+                            className="flex items-center justify-center action  h-[40px] w-[46px] box-border bg-white dark:bg-secondaryDark dark:border-[#dbd8fc1a] shadow-deleteButton rounded"
                           >
                             <img src={actionDotIcon} alt="" className="relative" />
                           </div>
                           {isDropdownActive === data.id && (
-                            <div className="absolute top-6 app-result-card-border bg-white dark:bg-secondaryDark rounded-0.6 box-border w-9.62  right-[0.5rem] shadow-shadowInput z-40">
+                            <div className="absolute top-6 app-result-card-border bg-white dark:bg-secondaryDark -m-[3px] rounded-[6px] box-border w-9.62  right-[0.5rem] shadow-shadowInput z-40">
                               {RenderedOption(data.workspaceReportSettings[0].scheduleRepeat)?.map((options, i) => (
                                 <div className="flex flex-col" onClick={() => handleDropDownActive('')} key={i}>
                                   <div
-                                    className="h-3.06 p-2 flex items-center text-searchBlack dark:text-white font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain dark:hover:bg-thirdDark transition ease-in duration-300 rounded-md"
+                                    className="h-3.06 p-2 flex items-center border border-transparent text-searchBlack dark:text-white font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain hover:app-result-card-border dark:hover:bg-thirdDark transition ease-in duration-300 "
                                     onClick={() => handleAction(options, data.id, data, data.workspaceReportSettings[0].isScheduleActive)}
                                   >
                                     {options}
