@@ -1,10 +1,8 @@
-/* eslint-disable indent */
 import React, { useEffect, useState } from 'react';
 import slackIcon from '../../../../assets/images/slack.svg';
 import nextIcon from '../../../../assets/images/next.svg';
 import vanillaIcon from '../../../../assets/images/vanilla-forum.svg';
 import bgIntegrationImage from '../../../../assets/images/bg-sign.svg';
-import discordIcon from '../../../../assets/images/discord.svg';
 import './Integration.css';
 import Button from 'common/button';
 import Modal from 'react-modal';
@@ -16,19 +14,25 @@ import { API_ENDPOINT } from '../../../../lib/config';
 import { getLocalWorkspaceId, setRefreshToken } from '@/lib/helper';
 import Input from 'common/input';
 import { IntegrationResponse, NetworkResponse } from '../../../../lib/api';
-import { DiscordConnectResponse, PlatformConnectResponse } from '../../../../interface/interface';
-import { ModalState, PlatformResponse, PlatformIcons, VanillaForumsConnectData, ConnectBody } from '../../../settings/interface/settings.interface';
+import { PlatformConnectResponse } from '../../../../interface/interface';
+import {
+  ModalState,
+  PlatformResponse,
+  PlatformIcons,
+  VanillaForumsConnectData,
+  SlackConnectData
+} from '../../../settings/interface/settings.interface';
 import usePlatform from '../../../../hooks/usePlatform';
 import { useDispatch } from 'react-redux';
 import settingsSlice from '../../../settings/store/slice/settings.slice';
-import { NavigateToConnectPage, NavigateToDiscordConnectPage } from '../../../settings/services/settings.services';
+import { NavigateToConnectPage } from '../../../settings/services/settings.services';
 
 Modal.setAppElement('#root');
 
 const Integration: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanillaForums: false, discord: false });
+  const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanillaForums: false });
   // eslint-disable-next-line no-unused-vars
-  const [platformIcons, setPlatformIcons] = useState<PlatformIcons>({ slack: undefined, vanillaForums: undefined, discord: undefined });
+  const [platformIcons, setPlatformIcons] = useState<PlatformIcons>({ slack: undefined, vanillaForums: undefined });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const dispatch = useDispatch();
   const { PlatformFilterResponse } = usePlatform();
@@ -47,23 +51,10 @@ const Integration: React.FC = () => {
   useEffect(() => {
     setRefreshToken();
     dispatch(settingsSlice.actions.platformData({ workspaceId }));
-    if (window.location.href.includes('state')) {
-      if (searchParams.get('code')) {
-        const codeParams: null | string = searchParams.get('code');
-        if (codeParams !== '') {
-          getData(codeParams);
-        }
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    if (window.location.href.includes('guild_id') && window.location.href.includes('permissions')) {
-      if (searchParams.get('code')) {
-        const codeParams: null | string = searchParams.get('code');
-        if (codeParams !== '') {
-          connectToDiscord(codeParams);
-        }
+    if (searchParams.get('code')) {
+      const codeParams: null | string = searchParams.get('code');
+      if (codeParams !== '') {
+        getData(codeParams);
       }
     }
   }, []);
@@ -78,9 +69,6 @@ const Integration: React.FC = () => {
         setPlatformIcons((prevState) => ({ ...prevState, vanillaForums: icon }));
         setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: true }));
         break;
-      case 'discord':
-        NavigateToDiscordConnectPage();
-        break;
 
       default:
         break;
@@ -91,7 +79,7 @@ const Integration: React.FC = () => {
   const getData = async (codeParams: string | null) => {
     try {
       setIsModalOpen((prevState) => ({ ...prevState, slack: true }));
-      const body: ConnectBody = {
+      const body: SlackConnectData = {
         code: codeParams,
         workspaceId
       };
@@ -149,31 +137,6 @@ const Integration: React.FC = () => {
     } catch (error) {
       showErrorToast('Integration Failed');
       setIsLoading(false);
-    }
-  };
-
-  // eslint-disable-next-line space-before-function-paren
-  const connectToDiscord = async (codeParams: string | null) => {
-    try {
-      setIsModalOpen((prevState) => ({ ...prevState, discord: true }));
-      const body: ConnectBody = {
-        code: codeParams,
-        workspaceId
-      };
-      const response: IntegrationResponse<DiscordConnectResponse> = await request.post(`${API_ENDPOINT}/v1/discord/connect`, body);
-      if (response?.data?.data) {
-        setIsModalOpen((prevState) => ({ ...prevState, discord: false }));
-        navigate(`/${workspaceId}/settings/discord-integration`, {
-          state: { discordConnectResponse: response?.data?.data }
-        });
-        showSuccessToast('Authenticated successfully');
-      } else {
-        showErrorToast('Integration failed');
-        setIsModalOpen((prevState) => ({ ...prevState, discord: false }));
-      }
-    } catch {
-      showErrorToast('Integration failed');
-      setIsModalOpen((prevState) => ({ ...prevState, discord: false }));
     }
   };
 
@@ -328,48 +291,15 @@ const Integration: React.FC = () => {
                             onClick={(e) => sendVanillaData(e)}
                             className={`text-white font-Poppins text-error font-medium leading-5 btn-save-modal cursor-pointer rounded 
                             shadow-contactBtn w-5.25 ${
-                              isLoading
-                                ? 'opacity-50 cursor-not-allowed '
-                                : !vanillaForumsData.vanillaAccessToken || !vanillaForumsData.vanillaBaseUrl
-                                ? 'opacity-50 cursor-not-allowed '
-                                : ''
-                            } border-none h-2.81`}
+    isLoading
+      ? 'opacity-50 cursor-not-allowed '
+      : !vanillaForumsData.vanillaAccessToken || !vanillaForumsData.vanillaBaseUrl
+        ? 'opacity-50 cursor-not-allowed '
+        : ''
+    } border-none h-2.81`}
                           />
                         </div>
                       </form>
-                    </div>
-                  </div>
-                </Modal>
-                <Modal
-                  isOpen={isModalOpen.discord}
-                  shouldCloseOnOverlayClick={true}
-                  onRequestClose={() => setIsModalOpen((prevState) => ({ ...prevState, discord: false }))}
-                  className="h-14.56 w-22.31 shadow-modal flex items-center justify-center rounded-lg border-fetching-card mx-auto  bg-white outline-none"
-                  style={{
-                    overlay: {
-                      display: 'flex',
-                      position: 'fixed',
-                      top: 0,
-                      left: 0,
-                      bottom: 0,
-                      right: 0,
-                      alignItems: 'center'
-                    }
-                  }}
-                >
-                  <div className="loading">
-                    <div className="flex flex-col items-center justify-center  ">
-                      <div className=" bg-no-repeat bg-center bg-contain ">
-                        <img src={discordIcon} alt="" className="rounded-full w-2.68 h-2.68" />
-                      </div>
-                      <div className="mt-4 text-integrationGray font-Poppins fomt-normal text-desc leadind-1.68">
-                        Fetching data from <span className="text-black font-normal">Discord</span>
-                      </div>
-                      <div className="mt-1.8">
-                        <div className="dot-pulse">
-                          <div className="dot-pulse__dot"></div>
-                        </div>
-                      </div>
                     </div>
                   </div>
                 </Modal>

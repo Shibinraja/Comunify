@@ -49,7 +49,7 @@ export interface ActiveState {
 export interface PlatformConnectResponse {
   id: string;
   workspacePlatformSettingsId: string;
-  type?: string;
+  type: string;
   domain: string;
   channelId: string | null;
   auth_token: string;
@@ -58,27 +58,4 @@ export interface PlatformConnectResponse {
   status: string;
   createdAt: string;
   updatedAt: string;
-}
-
-export interface DiscordChannel {
-  id: string;
-  last_message_id: string;
-  type: number;
-  name: string;
-  position: number;
-  flags: number;
-  parent_id: string;
-  topic: null | string;
-  guild_id: string;
-  permission_overwrites: string[];
-  rate_limit_per_user: number;
-  nsfw: boolean;
-}
-
-export interface DiscordConnectResponse extends PlatformConnectResponse {
-  platformAuthSettingsId: string;
-  guildName: string;
-  refreshToken: string;
-  guildId: string;
-  channels: DiscordChannel[];
 }
