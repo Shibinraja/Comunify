@@ -15,6 +15,7 @@ const DiscordIntegrationDetails: React.FC = () => {
   const [selectedChannel, setSelectedChannel] = useState('');
   const [channelDetails, setChannelDetails] = useState<ChannelDetails[]>([]);
   const [selectedChannelDetails, setSelectedChannelDetails] = useState<ChannelDetails>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const location: Location | any = useLocation();
   const workspaceId = getLocalWorkspaceId();
@@ -52,6 +53,7 @@ const DiscordIntegrationDetails: React.FC = () => {
 
   //   eslint-disable-next-line space-before-function-paren
   const discordCompleteSetup = async () => {
+    setIsLoading(true);
     try {
       const body: CompleteSetupBody = {
         workspaceId,
@@ -63,12 +65,15 @@ const DiscordIntegrationDetails: React.FC = () => {
       const response: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/discord/complete-setup`, body);
       if (response?.data?.message) {
         showSuccessToast('Successfully integrated');
+        setIsLoading(false);
         navigate(`/${workspaceId}/settings`);
       } else {
         showErrorToast('Integration failed');
+        setIsLoading(false);
       }
     } catch {
       showErrorToast('Integration Failed');
+      setIsLoading(false);
     }
   };
 
@@ -104,7 +109,6 @@ const DiscordIntegrationDetails: React.FC = () => {
             <div className="font-Poppins font-semibold text-base text-slimGray leading-6 ">August 15, 2022 4:18 pm</div>
           </div> */}
         </div>
-
 
         <div className="py-6">
           <div className="mt-5 flex flex-col w-80" onClick={() => setIsChannelActive(!isChannelActive)}>
@@ -148,6 +152,7 @@ const DiscordIntegrationDetails: React.FC = () => {
           <Button
             text="Complete Setup"
             type="submit"
+            disabled={isLoading ? true : false}
             onClick={() => {
               if (!selectedChannel) {
                 showErrorToast('Please select a channel');
@@ -155,7 +160,9 @@ const DiscordIntegrationDetails: React.FC = () => {
                 discordCompleteSetup();
               }
             }}
-            className="text-white font-Poppins text-error font-medium leading-5 btn-save-modal cursor-pointer rounded shadow-contactBtn py-3 px-4 border-none h-2.81"
+            className={`text-white font-Poppins text-error font-medium ${
+              isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+            } leading-5 btn-save-modal rounded shadow-contactBtn py-3 px-4 border-none h-2.81`}
           />
         </div>
       </div>
