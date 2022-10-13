@@ -4,8 +4,7 @@ import { convertEndDate, convertStartDate } from '@/lib/helper';
 import Button from 'common/button';
 import Input from 'common/input';
 import { email_regex, reportName_regex } from 'constants/constants';
-import { subDays, subMonths } from 'date-fns';
-import { subYears } from 'date-fns/esm';
+import { subDays, subMonths, subYears } from 'date-fns';
 import { Form, Formik } from 'formik';
 import {
   createReportInitialValues,
@@ -63,6 +62,7 @@ const CreateReport = () => {
   const reportValuesData = JSON.parse(localStorage.getItem('reportValues')!);
   const { PlatformsConnected } = usePlatform();
   const dropDownRef = useRef<HTMLDivElement>(null);
+  const reportOptionRef = useRef<HTMLDivElement>(null);
 
   const formikRef: any = useRef();
 
@@ -158,7 +158,7 @@ const CreateReport = () => {
     if (checkedRadioId[ScheduleReportsEnum.No]) {
       formikRef?.current?.setFieldTouched('startDate');
       formikRef?.current?.setFieldTouched('endDate');
-      formikRef?.current?.setFieldTouched('singleDate');
+      // formikRef?.current?.setFieldTouched('singleDate');
     }
   }, [checkedRadioId]);
 
@@ -171,7 +171,7 @@ const CreateReport = () => {
     }
 
     if (customDate.singleDate) {
-      formikRef?.current?.setFieldValue('singleDate', customDate.singleDate, true);
+      formikRef?.current?.setFieldValue('singleDate', customDate.startDate ? customDate.startDate : customDate.singleDate, true);
     }
   }, [customDate]);
 
@@ -180,6 +180,7 @@ const CreateReport = () => {
     formikRef?.current?.setFieldTouched('schedule');
     formikRef?.current?.setFieldValue('schedule', selectedReport);
     setSelectedReport(selectedReport);
+    setIsReportActive(false);
   };
 
   const handleOutsideClick = (event: MouseEvent) => {
@@ -187,6 +188,9 @@ const CreateReport = () => {
       setIsPlatformActive(false);
     }
 
+    if (reportOptionRef && reportOptionRef.current && !reportOptionRef.current.contains(event.target as Node)) {
+      setIsReportActive(false);
+    }
   };
 
   const handleClickDatePickerIcon = (type: string) => {
@@ -300,6 +304,22 @@ const CreateReport = () => {
       delete newValues['emails'];
     } else if (!newValues['emails'] || (newValues['emails'] as Array<string>).length < 1) {
       delete newValues['emails'];
+    }
+    if (checkedRadioId[ScheduleReportsEnum.Yes]) {
+      const todayDate = new Date();
+      if (Number(newValues['schedule']) === ScheduleReportDateType.Daily) {
+        const date = subDays(todayDate, 1);
+        newValues['startDate'] = convertStartDate(date);
+      }
+      if (Number(newValues['schedule']) === ScheduleReportDateType.Weekly) {
+        const date = subDays(todayDate, 7);
+        newValues['startDate'] = convertStartDate(date);
+      }
+      if (Number(newValues['schedule']) === ScheduleReportDateType.Monthly) {
+        const date = subMonths(todayDate, 1);
+        newValues['startDate'] = convertStartDate(date);
+      }
+      newValues['endDate'] = convertEndDate(todayDate);
     }
 
     if (reportUpdateValuesData) {
@@ -451,7 +471,7 @@ const CreateReport = () => {
                       <div className="flex gap-[0.63rem] mt-0.375 ">
                         <div
                           className={`w-4.06 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${
-                            customDateLink[CustomReportDateType.Day] ? '' : 'app-input-card-border'
+                            customDateLink[CustomReportDateType.Day] ? 'border-gradient-rounded-member' : 'app-input-card-border'
                           } `}
                           onClick={() => selectCustomDate('1day')}
                         >
@@ -459,7 +479,7 @@ const CreateReport = () => {
                         </div>
                         <div
                           className={`w-[71px] 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${
-                            customDateLink[CustomReportDateType.Week] ? '' : 'app-input-card-border'
+                            customDateLink[CustomReportDateType.Week] ? 'border-gradient-rounded-member' : 'app-input-card-border'
                           } `}
                           onClick={() => selectCustomDate('7day')}
                         >
@@ -467,7 +487,7 @@ const CreateReport = () => {
                         </div>
                         <div
                           className={`w-[75px] 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${
-                            customDateLink[CustomReportDateType.Month] ? '' : 'app-input-card-border'
+                            customDateLink[CustomReportDateType.Month] ? 'border-gradient-rounded-member' : 'app-input-card-border'
                           } `}
                           onClick={() => selectCustomDate('1month')}
                         >
@@ -475,7 +495,7 @@ const CreateReport = () => {
                         </div>
                         <div
                           className={`w-[75px] 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${
-                            customDateLink[CustomReportDateType.Year] ? '' : 'app-input-card-border'
+                            customDateLink[CustomReportDateType.Year] ? 'border-gradient-rounded-member' : 'app-input-card-border'
                           }`}
                           onClick={() => selectCustomDate('1year')}
                         >
@@ -598,7 +618,7 @@ const CreateReport = () => {
 
                 {(checkedRadioId[ScheduleReportsEnum.Yes] as ReactNode) && (
                   <Fragment>
-                    <div className="mt-5 flex flex-col ml-5 w-20.5 2xl:w-full relative">
+                    <div className="mt-5 flex flex-col ml-5 w-20.5 2xl:w-full relative" ref={reportOptionRef}>
                       <label htmlFor="name" className="text-trial font-Poppins text-infoBlack font-normal leading-1.31">
                         Schedule Report
                       </label>

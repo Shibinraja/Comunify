@@ -607,7 +607,7 @@ const Report: React.FC = () => {
               />
             </div>
           </div>
-          {reportsList.data.length ? (
+          {reportsList?.data?.length ? (
             <div className="relative">
               <div className="py-2 overflow-x-auto mt-1.868">
                 <div className="inline-block min-w-full overflow-hidden dark:border-[#dbd8fc1a] align-middle w-61.68 rounded-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixReportTableHead min-h-[31.25rem]">
@@ -687,17 +687,24 @@ const Report: React.FC = () => {
                               </div>
                             )}
                           </td>
-                          <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
-                            <div className="flex   cursor-pointer relative">
+                          <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white" >
+                            <div className="flex cursor-pointer relative" ref={kebabMenuRef}>
                               <div
-                                onClick={() => (isDropdownActive ? handleDropDownActive('') : handleDropDownActive(data.id))}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if(isDropdownActive) {
+                                    handleDropDownActive('');
+                                  }  else{
+                                    handleDropDownActive(data.id);
+                                  }
+                                }
+                                }
                                 className="flex items-center justify-center action  h-3.12 box-border bg-white dark:bg-secondaryDark rounded-sm dark:border-[#dbd8fc1a] shadow-deleteButton w-3.12 "
-                                ref={kebabMenuRef}
                               >
                                 <img src={actionDotIcon} alt="" className="relative" />
                               </div>
                               {isDropdownActive === data.id && (
-                                <div className="absolute top-6 app-result-card-border bg-white dark:bg-secondaryDark rounded-0.6 box-border w-9.62  right-[0.5rem] shadow-shadowInput z-40">
+                                <div className="absolute top-6 app-result-card-border bg-white dark:bg-secondaryDark rounded-0.6 box-border w-9.62  right-[0.5rem] shadow-shadowInput z-40" >
                                   {RenderedOption(data.workspaceReportSettings[0].scheduleRepeat, data.workspaceReportSettings[0].isScheduleActive)?.map((options, i) => (
                                     <div className="flex flex-col" onClick={() => handleDropDownActive('')} key={i}>
                                       <div
@@ -711,6 +718,7 @@ const Report: React.FC = () => {
                                 </div>
                               )}
                             </div>
+
                           </td>
                         </tr>
                       ))}
