@@ -31,7 +31,7 @@ const MembersReview: React.FC = () => {
     mergeListLoader: false,
     confirmationLoader: false
   });
-  const [checkedRadioId, setCheckedRadioId] = useState<Record<string, unknown>>({ [memberProfileCardData[0]?.comunifyMemberId]: true });
+  const [checkedRadioId, setCheckedRadioId] = useState<Record<string, unknown>>({ [memberProfileCardData[0]?.id]: true });
   const [modalOpen, setModalOpen] = useState<{ UnMergeModalOpen: boolean; confirmMerge: boolean; ChangePrimaryMember: boolean }>({
     UnMergeModalOpen: false,
     confirmMerge: false,
@@ -276,10 +276,10 @@ const MembersReview: React.FC = () => {
           <div className="flex flex-wrap gap-5 relative">
             {loading.mergeListLoader
               ? Array.from({ length: MergeMembersList?.length }, (_, i) => i + 1).map((type: number) => (
-                <Fragment key={type}>
-                  <MemberSuggestionLoader />
-                </Fragment>
-              ))
+                  <Fragment key={type}>
+                    <MemberSuggestionLoader />
+                  </Fragment>
+                ))
               : MergeMembersList &&
                 MergeMembersList.map((members: MergeMembersDataResult) => (
                   <div key={members.id}>
@@ -338,10 +338,10 @@ const MembersReview: React.FC = () => {
           modalOpen.confirmMerge
             ? 'Are you sure want to merge members'
             : modalOpen.UnMergeModalOpen
-              ? 'Are you sure you want to remove the member?'
-              : modalOpen.ChangePrimaryMember
-                ? 'Are you sure you want to change the primary member'
-                : ''
+            ? 'Are you sure you want to remove the member?'
+            : modalOpen.ChangePrimaryMember
+            ? 'Are you sure you want to change the primary member'
+            : ''
         }
       />
     </div>
