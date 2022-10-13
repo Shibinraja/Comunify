@@ -168,11 +168,11 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
             </div>
           </div>
         </div>
-        
+
         <div className="overflow-scroll widget-height overflow-x-hidden">
-        {!sidePanelWidgets?.length && (
-          <div className="flex justify-center items-center font-Poppins font-semibold text-lg mt-3 text-infoBlack">No Widgets to be displayed</div>
-        )}
+          {!sidePanelWidgets?.length && (
+            <div className="flex justify-center items-center font-Poppins font-semibold text-lg mt-3 text-infoBlack">No Widgets to be displayed</div>
+          )}
           {sidePanelWidgets?.map((component: PanelWidgetsType) => {
             widgetProps.widget = component;
             return (

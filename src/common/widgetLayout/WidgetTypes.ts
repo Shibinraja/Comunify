@@ -63,8 +63,9 @@ export interface WidgetFilters {
 
 export interface WidgetContainerProps {
   isManageMode: boolean | undefined;
-  widgets: PanelWidgetsType[];
-  setWidgets?: React.Dispatch<React.SetStateAction<PanelWidgetsType[] | []>>;
+  widgets: Array<Omit<PanelWidgetsType, 'isAssigned'>> ;
+  setWidgets?: React.Dispatch<React.SetStateAction<Array<Omit<PanelWidgetsType, 'isAssigned'>>> | []>;
   setTransformedWidgetData?: React.Dispatch<React.SetStateAction<unknown[] | []>>;
   filters?: WidgetFilters;
 }
+

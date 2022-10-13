@@ -4,8 +4,7 @@ import { convertEndDate, convertStartDate } from '@/lib/helper';
 import Button from 'common/button';
 import Input from 'common/input';
 import { email_regex, reportName_regex } from 'constants/constants';
-import { subDays, subMonths } from 'date-fns';
-import { subYears } from 'date-fns/esm';
+import { subDays, subMonths, subYears } from 'date-fns';
 import { Form, Formik } from 'formik';
 import {
   createReportInitialValues,
@@ -28,7 +27,12 @@ import './CreateReport.css';
 const initialValues: Partial<createReportInitialValues> = {
   name: '',
   description: '',
-  emails: ['']
+  emails: [],
+  schedule: '',
+  platform: [''],
+  startDate: '',
+  endDate: '',
+  singleDate: ''
 };
 
 const CreateReport = () => {
@@ -58,6 +62,7 @@ const CreateReport = () => {
   const reportValuesData = JSON.parse(localStorage.getItem('reportValues')!);
   const { PlatformsConnected } = usePlatform();
   const dropDownRef = useRef<HTMLDivElement>(null);
+  const reportOptionRef = useRef<HTMLDivElement>(null);
 
   const formikRef: any = useRef();
 
@@ -79,25 +84,29 @@ const CreateReport = () => {
       });
       const reportResponseValues = reportUpdateValuesData?.workspaceReportSettings[0];
 
-      reportResponseValues?.reportPlatforms?.map((platform: { workspacePlatformId: string; workspacePlatform: { platformSettings:{platforms: { id: string } } } }) => {
-        const connectedPlatformId = platform.workspacePlatformId;
-        const platformId = platform.workspacePlatform.platformSettings.platforms.id;
-        setCheckedPlatform((preValue) => ({ ...preValue, [connectedPlatformId]: true }));
-        setPlatformId((preValue) => ({ ...preValue, [platformId]: true }));
-      });
+      reportResponseValues?.reportPlatforms?.map(
+        (platform: { workspacePlatformId: string; workspacePlatform: { platformSettings: { platforms: { id: string } } } }) => {
+          const connectedPlatformId = platform.workspacePlatformId;
+          const platformId = platform.workspacePlatform.platformSettings.platforms.id;
+          setCheckedPlatform((preValue) => ({ ...preValue, [connectedPlatformId]: true }));
+          setPlatformId((preValue) => ({ ...preValue, [platformId]: true }));
+        }
+      );
       if (reportResponseValues?.scheduleRepeat !== ScheduleReportDateType['NoSchedule']) {
         setCheckedRadioId({ ['Yes']: true });
         const scheduleReportId = reportResponseValues?.scheduleRepeat;
-        setSelectedReport(ScheduleReportDateType[scheduleReportId]);
+        handleSelectedReport(ScheduleReportDateType[scheduleReportId]);
       } else {
         setCheckedRadioId({ ['No']: true });
-        setSelectedReport('NoSchedule');
+        handleSelectedReport('NoSchedule');
         setCustomDate((prevDate) => ({
           ...prevDate,
           startDate: new Date(reportResponseValues.createdAt),
           endDate: new Date(reportResponseValues.reportEndAt),
           singleDate: undefined
         }));
+        formikRef?.current?.setFieldTouched('startDate');
+        formikRef?.current?.setFieldTouched('endDate');
       }
     }
   }, [reportUpdateValuesData]);
@@ -116,25 +125,75 @@ const CreateReport = () => {
       if (reportValuesData?.schedule !== ScheduleReportDateType['NoSchedule']) {
         setCheckedRadioId({ ['Yes']: true });
         const scheduleReportId = reportValuesData?.schedule;
-        setSelectedReport(ScheduleReportDateType[scheduleReportId]);
+        handleSelectedReport(ScheduleReportDateType[scheduleReportId]);
       } else {
         setCheckedRadioId({ ['No']: true });
-        setSelectedReport('NoSchedule');
+        handleSelectedReport('NoSchedule');
         setCustomDate((prevDate) => ({
           ...prevDate,
           startDate: new Date(reportValuesData.startDate),
           endDate: new Date(reportValuesData.endDate),
           singleDate: undefined
         }));
+        formikRef?.current?.setFieldTouched('startDate');
+        formikRef?.current?.setFieldTouched('endDate');
       }
     }
   }, [reportValuesData]);
+
+  useEffect(() => {
+    const checkPlatform: Array<string> = [];
+    if (Object.keys(checkedPlatform).length > 0) {
+      Object.keys(checkedPlatform).map((platform: string) => {
+        if (checkedPlatform[platform] === true) {
+          checkPlatform.push(platform);
+        }
+      });
+    }
+    // Formik ref to enable to make the custom dropdown with field touch and set the value for the fields.
+    formikRef?.current?.setFieldValue('platform', checkPlatform, true);
+  }, [checkedPlatform]);
+
+  useEffect(() => {
+    if (checkedRadioId[ScheduleReportsEnum.No]) {
+      formikRef?.current?.setFieldTouched('startDate');
+      formikRef?.current?.setFieldTouched('endDate');
+      if(reportValuesData || reportUpdateValuesData) {
+        formikRef?.current?.setFieldTouched('singleDate');
+      }
+      // formikRef?.current?.setFieldTouched('singleDate');
+    }
+  }, [checkedRadioId]);
+
+  useEffect(() => {
+    if (customDate.startDate) {
+      formikRef?.current?.setFieldValue('startDate', customDate.startDate, true);
+    }
+    if (customDate.endDate) {
+      formikRef?.current?.setFieldValue('endDate', customDate.endDate, true);
+    }
+
+    if (customDate.singleDate) {
+      formikRef?.current?.setFieldValue('singleDate', customDate.startDate ? customDate.startDate : customDate.singleDate, true);
+    }
+  }, [customDate]);
+
+  const handleSelectedReport = (selectedReport: string): void => {
+    // Formik ref to enable to make the custom dropdown with field touch and set the value for the fields.
+    formikRef?.current?.setFieldTouched('schedule');
+    formikRef?.current?.setFieldValue('schedule', selectedReport);
+    setSelectedReport(selectedReport);
+    setIsReportActive(false);
+  };
 
   const handleOutsideClick = (event: MouseEvent) => {
     if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
       setIsPlatformActive(false);
     }
 
+    if (reportOptionRef && reportOptionRef.current && !reportOptionRef.current.contains(event.target as Node)) {
+      setIsReportActive(false);
+    }
   };
 
   const handleClickDatePickerIcon = (type: string) => {
@@ -161,11 +220,14 @@ const CreateReport = () => {
     const platform: string = platformConnectedId;
     setCheckedPlatform((preValue) => ({ ...preValue, [platform]: event.target.checked }));
     setPlatformId((preValue) => ({ ...preValue, [platformId]: event.target.checked }));
+    formikRef?.current?.setFieldTouched('platform');
   };
 
   const selectCustomBetweenDate = (event: ChangeEvent<Date>, date: Date, dateTime: string) => {
     event.stopPropagation();
     setCustomDateLink({});
+    formikRef?.current?.setFieldTouched('startDate');
+    formikRef?.current?.setFieldTouched('endDate');
     if (dateTime === 'start') {
       setCustomDate((prevDate) => ({ ...prevDate, startDate: !date ? undefined : date, singleDate: undefined }));
     }
@@ -173,14 +235,15 @@ const CreateReport = () => {
     if (dateTime === 'end') {
       setCustomDate((prevDate) => ({ ...prevDate, endDate: !date ? undefined : date, singleDate: undefined }));
     }
-    setSelectedReport('NoSchedule');
+    handleSelectedReport('NoSchedule');
   };
 
   // Function to convert the day and subtract based on no of days/ months.
   const selectCustomDate = (date: string) => {
     const todayDate = new Date();
     setCustomDate({ startDate: undefined, endDate: undefined, singleDate: undefined });
-    setSelectedReport('NoSchedule');
+    handleSelectedReport('NoSchedule');
+    formikRef?.current?.setFieldTouched('startDate');
     if (date === CustomReportDateType.Day) {
       setCustomDate((prevDate) => ({ ...prevDate, singleDate: subDays(todayDate, 1) }));
       setCustomDateLink({ [date]: true });
@@ -225,21 +288,42 @@ const CreateReport = () => {
         }
       });
     }
-
-    if (selectedReport === 'NoSchedule') {
-      delete newValues['emails'];
-    }
+    delete newValues['singleDate'];
     newValues['schedule'] = ScheduleReportDateType[selectedReport as unknown as ScheduleReportDateType];
     newValues['platform'] = checkPlatform;
     (newValues['startDate'] as string | undefined) = customDate.startDate
       ? convertStartDate(customDate.startDate)
-      : customDate.singleDate ? convertStartDate(customDate.singleDate) : convertEndDate(new Date());
+      : customDate.singleDate
+        ? convertStartDate(customDate.singleDate)
+        : convertEndDate(new Date());
     (newValues['endDate'] as string | undefined) = customDate.endDate
       ? convertEndDate(customDate.endDate)
       : customDateLink[CustomReportDateType.Day]
         ? customDate.singleDate && convertEndDate(customDate.singleDate)
         : convertEndDate(new Date());
     newValues['platformId'] = checkPlatformId;
+
+    if (selectedReport === 'NoSchedule') {
+      delete newValues['emails'];
+    } else if (!newValues['emails'] || (newValues['emails'] as Array<string>).length < 1) {
+      delete newValues['emails'];
+    }
+    if (checkedRadioId[ScheduleReportsEnum.Yes]) {
+      const todayDate = new Date();
+      if (Number(newValues['schedule']) === ScheduleReportDateType.Daily) {
+        const date = subDays(todayDate, 1);
+        newValues['startDate'] = convertStartDate(date);
+      }
+      if (Number(newValues['schedule']) === ScheduleReportDateType.Weekly) {
+        const date = subDays(todayDate, 7);
+        newValues['startDate'] = convertStartDate(date);
+      }
+      if (Number(newValues['schedule']) === ScheduleReportDateType.Monthly) {
+        const date = subMonths(todayDate, 1);
+        newValues['startDate'] = convertStartDate(date);
+      }
+      newValues['endDate'] = convertEndDate(todayDate);
+    }
 
     if (reportUpdateValuesData) {
       localStorage.setItem('reportValues', JSON.stringify(newValues));
@@ -265,7 +349,52 @@ const CreateReport = () => {
           initialValues={initialValues}
           onSubmit={handleSubmit}
           validateOnChange={true}
-          validationSchema={createReportSchema}
+          validationSchema={Yup.object().shape({
+            name: Yup.string()
+              .required('Report name is required')
+              .min(4, 'Report name should be more than 4 character long')
+              .max(25, 'Report name should not exceed 25 characters')
+              .matches(reportName_regex, 'Report name is not valid')
+              .trim(),
+            description: Yup.string()
+              .max(250, 'Description should not exceed 250 characters')
+              .matches(reportName_regex, 'Description is not valid')
+              .trim(),
+            schedule: Yup.lazy((value: string) => {
+              if (!value) {
+                return Yup.string().required('Schedule Report is required');
+              }
+              if (Object.keys(checkedRadioId).includes('Yes') && value === 'NoSchedule') {
+                return Yup.string().required('Schedule Report is required');
+              }
+
+              return Yup.string().notRequired();
+            }),
+            emails: Yup.array()
+              .transform(function(value, originalValue) {
+                if (this.isType(value) && value !== null) {
+                  return value;
+                }
+                return originalValue ? originalValue.split(/[\s,]+/) : [];
+              })
+              .of(
+                Yup.string()
+                  .email(({ value }) => `${value} is not a valid email`)
+                  .matches(email_regex, 'Must be a valid email')
+                  .max(255)
+              ),
+            platform: Yup.array().min(1, 'Platform is required'),
+            singleDate: Yup.string().when(['startDate', 'endDate'], {
+              is: (startDate: string, endDate: string) => !startDate || !endDate,
+              then: Yup.lazy(() => {
+                if (Object.keys(checkedRadioId).includes('Yes')) {
+                  return Yup.string().notRequired();
+                }
+                return Yup.string().required('Custom Date is required');
+              }),
+              otherwise: Yup.string().notRequired()
+            })
+          })}
         >
           {({ handleBlur, handleChange, handleSubmit, values, errors, touched }): JSX.Element => (
             <Form onSubmit={handleSubmit}>
@@ -345,7 +474,7 @@ const CreateReport = () => {
                       <div className="flex gap-[0.63rem] mt-0.375 ">
                         <div
                           className={`w-4.06 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${
-                            customDateLink[CustomReportDateType.Day] ? '' : 'app-input-card-border'
+                            customDateLink[CustomReportDateType.Day] ? 'border-gradient-rounded-member' : 'app-input-card-border'
                           } `}
                           onClick={() => selectCustomDate('1day')}
                         >
@@ -353,7 +482,7 @@ const CreateReport = () => {
                         </div>
                         <div
                           className={`w-[71px] 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${
-                            customDateLink[CustomReportDateType.Week] ? '' : 'app-input-card-border'
+                            customDateLink[CustomReportDateType.Week] ? 'border-gradient-rounded-member' : 'app-input-card-border'
                           } `}
                           onClick={() => selectCustomDate('7day')}
                         >
@@ -361,7 +490,7 @@ const CreateReport = () => {
                         </div>
                         <div
                           className={`w-[75px] 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${
-                            customDateLink[CustomReportDateType.Month] ? '' : 'app-input-card-border'
+                            customDateLink[CustomReportDateType.Month] ? 'border-gradient-rounded-member' : 'app-input-card-border'
                           } `}
                           onClick={() => selectCustomDate('1month')}
                         >
@@ -369,13 +498,16 @@ const CreateReport = () => {
                         </div>
                         <div
                           className={`w-[75px] 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${
-                            customDateLink[CustomReportDateType.Year] ? '' : 'app-input-card-border'
+                            customDateLink[CustomReportDateType.Year] ? 'border-gradient-rounded-member' : 'app-input-card-border'
                           }`}
                           onClick={() => selectCustomDate('1year')}
                         >
                           1 Year
                         </div>
                       </div>
+                      {Boolean(touched.singleDate && errors.singleDate) && (
+                        <p className="text-lightRed font-normal text-error relative font-Inter mt-0.287  pl-1">{errors?.singleDate}</p>
+                      )}
                     </div>
                     <div className="mt-1.8 flex-flex-col pl-5">
                       <label htmlFor="name" className="text-trial font-Poppins text-infoBlack font-normal leading-1.31">
@@ -422,6 +554,11 @@ const CreateReport = () => {
                           />
                         </div>
                       </div>
+                      {Boolean((touched.startDate && errors.startDate) || (touched.endDate && errors.endDate)) && (
+                        <p className="text-lightRed font-normal text-error relative font-Inter mt-0.287  pl-1">
+                          {errors?.startDate || errors?.endDate}
+                        </p>
+                      )}
                     </div>
                   </Fragment>
                 )}
@@ -441,16 +578,16 @@ const CreateReport = () => {
                     </div>
                   </div>
                   {isPlatformActive && (
-                      <div className="flex-flex-col  app-result-card-border box-border w-full rounded-0.3 shadow-reportInput cursor-pointer absolute top-[4.8rem] bg-white z-40">
-                        <div className="flex items-center gap-2 hover:bg-signUpDomain  transition ease-in duration-100 p-3  opacity-50">
-                          <div>
-                            <input type="checkbox" className="checkbox" id="all" name="all" />
-                          </div>
-                          <label className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-not-allowed" htmlFor="All">
-                          All
-                          </label>
+                    <div className="flex-flex-col  app-result-card-border box-border w-full rounded-0.3 shadow-reportInput cursor-pointer absolute top-[4.8rem] bg-white z-40">
+                      <div className="flex items-center gap-2 hover:bg-signUpDomain  transition ease-in duration-100 p-3  opacity-50">
+                        <div>
+                          <input type="checkbox" className="checkbox" id="all" name="all" />
                         </div>
-                        {PlatformsConnected &&
+                        <label className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-not-allowed" htmlFor="All">
+                          All
+                        </label>
+                      </div>
+                      {PlatformsConnected &&
                         PlatformsConnected.map((platform: ConnectedPlatforms) => (
                           <Fragment key={platform.id}>
                             <div
@@ -469,22 +606,22 @@ const CreateReport = () => {
                                   disabled={reportUpdateValuesData ? true : false}
                                 />
                               </div>
-                              <label
-                                className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-not-allowed"
-                                htmlFor={platform.id as string}
-                              >
+                              <label className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial" htmlFor={platform.id as string}>
                                 {platform?.name}
                               </label>
                             </div>
                           </Fragment>
                         ))}
-                      </div>
-                    )}
+                    </div>
+                  )}
+                  {Boolean(touched.platform && errors.platform) && (
+                    <p className="text-lightRed font-normal text-error relative font-Inter mt-0.287  pl-1">{errors?.platform}</p>
+                  )}
                 </div>
 
                 {(checkedRadioId[ScheduleReportsEnum.Yes] as ReactNode) && (
                   <Fragment>
-                    <div className="mt-5 flex flex-col ml-5 w-20.5 2xl:w-full relative">
+                    <div className="mt-5 flex flex-col ml-5 w-20.5 2xl:w-full relative" ref={reportOptionRef}>
                       <label htmlFor="name" className="text-trial font-Poppins text-infoBlack font-normal leading-1.31">
                         Schedule Report
                       </label>
@@ -497,13 +634,16 @@ const CreateReport = () => {
                           <img src={dropdownIcon} alt="" className={isReportActive ? 'rotate-0' : 'rotate-180'} />
                         </div>
                       </div>
+                      {Boolean(touched.schedule && errors.schedule) && (
+                        <p className="text-lightRed font-normal text-error relative font-Inter mt-0.287  pl-1">{errors?.schedule}</p>
+                      )}
                       {isReportActive && (
                         <div className="flex flex-col app-result-card-border box-border w-full rounded-0.3 shadow-reportInput cursor-pointer absolute top-[4.8rem] bg-white">
                           {ReportOptions.map((options) => (
                             <ul
                               className="cursor-pointer hover:bg-signUpDomain  transition ease-in duration-100 "
                               onClick={() => {
-                                setSelectedReport(options.name);
+                                handleSelectedReport(options.name);
                               }}
                               defaultValue={selectedReport}
                               key={options.id}
@@ -557,28 +697,5 @@ const CreateReport = () => {
     </div>
   );
 };
-
-const createReportSchema = Yup.object().shape({
-  name: Yup.string()
-    .required('Report name is required')
-    .min(4, 'Report name should be more than 4 character long')
-    .max(25, 'Report name should not exceed 25 characters')
-    .matches(reportName_regex, 'Report name is not valid')
-    .trim(),
-  description: Yup.string().max(250, 'Description should not exceed 250 characters').matches(reportName_regex, 'Description is not valid').trim(),
-  emails: Yup.array()
-    .transform(function(value, originalValue) {
-      if (this.isType(value) && value !== null) {
-        return value;
-      }
-      return originalValue ? originalValue.split(/[\s,]+/) : [];
-    })
-    .of(
-      Yup.string()
-        .email(({ value }) => `${value} is not a valid email`)
-        .matches(email_regex, 'Must be a valid email')
-        .max(255)
-    )
-});
 
 export default CreateReport;
