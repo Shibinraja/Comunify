@@ -1,6 +1,6 @@
 /* eslint-disable space-before-function-paren */
 import { getLocalWorkspaceId } from '@/lib/helper';
-import React, { useState } from 'react';
+import React from 'react';
 import { Location, useLocation, useNavigate } from 'react-router';
 import Button from '../../../../common/button';
 import { showErrorToast, showSuccessToast } from '../../../../common/toast/toastFunctions';
@@ -25,15 +25,12 @@ const CompleteSetup: React.FC = () => {
     workspaceId: string;
     workspacePlatformAuthSettingsId: string | null;
   }
-
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const location: Location | any = useLocation();
   const workspaceId = getLocalWorkspaceId();
 
   const sendCredentialsToSlack = async () => {
-    setIsLoading(true);
     try {
       const body: Body = {
         workspaceId,
@@ -44,15 +41,12 @@ const CompleteSetup: React.FC = () => {
       if (response?.data?.message) {
         dispatch(settingsSlice.actions.platformData({ workspaceId }));
         showSuccessToast('Successfully integrated');
-        setIsLoading(false);
         navigate(`/${workspaceId}/settings`);
       } else {
         showErrorToast('Integration failed');
-        setIsLoading(false);
       }
     } catch {
       showErrorToast('Integration Failed');
-      setIsLoading(false);
     }
   };
   return (
@@ -143,12 +137,8 @@ const CompleteSetup: React.FC = () => {
         <Button
           text="Complete Setup"
           type="submit"
-          disabled={isLoading ? true : false}
           onClick={sendCredentialsToSlack}
-          className={`font-Poppins mt-6 rounded-lg ${
-            isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-          } text-error font-medium leading-5 text-white transition ease-in duration-300 hover:shadow-buttonShadowHover 
-          btn-gradient h-2.81 w-[158px]`}
+          className="font-Poppins mt-6 rounded-lg text-error font-medium leading-5 text-white transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient h-2.81 w-[158px]"
         />
       </div>
     </div>

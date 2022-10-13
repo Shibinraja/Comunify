@@ -5,7 +5,6 @@ import { string } from 'yup';
 export interface PlatformIcons {
   slack: string | undefined;
   vanillaForums: string | undefined;
-  discord: string | undefined;
 }
 
 export interface PlatformsStatus {
@@ -13,7 +12,7 @@ export interface PlatformsStatus {
   status: string | undefined;
 }
 
-export interface ConnectBody {
+export interface SlackConnectData {
   code: string | null;
   workspaceId: string;
 }
@@ -94,7 +93,6 @@ export interface unAssignTagProps extends workspaceId {
 export interface ModalState {
   slack: boolean;
   vanillaForums: boolean;
-  discord: boolean;
 }
 
 // Response Body

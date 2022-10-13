@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import { DISCORD_CONNECT_ENDPOINT, SLACK_CONNECT_ENDPOINT } from '@/lib/config';
+import { SLACK_CONNECT_ENDPOINT } from '@/lib/config';
 import { GeneratorResponse } from '../../../lib/api';
 import { request } from '../../../lib/request';
 import {
@@ -16,10 +16,6 @@ import {
 
 export const NavigateToConnectPage = () => {
   window.location.href = SLACK_CONNECT_ENDPOINT;
-};
-
-export const NavigateToDiscordConnectPage = () => {
-  window.location.href = DISCORD_CONNECT_ENDPOINT;
 };
 
 export function* PlatformsDataService(workspaceId: string): GeneratorResponse<Array<PlatformResponse>> {
