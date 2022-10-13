@@ -6,8 +6,6 @@ import { count_5 } from 'constants/constants';
 import { memberGrowthWidgetDataService } from '../../../modules/dashboard/services/dashboard.services';
 import { getLocalWorkspaceId } from '../../../lib/helper';
 import { MembersProfileActivityGraphData } from '../../../modules/members/interface/members.interface';
-import { useSearchParams } from 'react-router-dom';
-
 import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
 
 function InlineWrapperWithMargin({ children }: PropsWithChildren<unknown>) {
@@ -15,7 +13,7 @@ function InlineWrapperWithMargin({ children }: PropsWithChildren<unknown>) {
 }
 
 const MemberGrowth: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
-  const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen } = props;
+  const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen, filters } = props;
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
 
   const [memberGrowthWidgetData, setMemberGrowthWidgetData] = React.useState<MembersProfileActivityGraphData>();
@@ -29,10 +27,6 @@ const MemberGrowth: React.FC<WidgetComponentProps> = (props: WidgetComponentProp
     }
   };
 
-  const [searchParams] = useSearchParams();
-  const startDate = searchParams.get('startDate');
-  const endDate = searchParams.get('endDate');
-
   React.useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
       getMemberGrowthWidgetData();
@@ -41,22 +35,18 @@ const MemberGrowth: React.FC<WidgetComponentProps> = (props: WidgetComponentProp
 
   React.useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
-      if (startDate && endDate) {
+      if (filters?.startDate && filters?.endDate) {
         getMemberGrowthWidgetData();
       }
     }
-  }, [startDate, endDate]);
+  }, filters && Object.values(filters));
 
   const workspaceId = getLocalWorkspaceId();
 
   // eslint-disable-next-line space-before-function-paren
   const getMemberGrowthWidgetData = async () => {
     setIsLoading(true);
-    const data: MembersProfileActivityGraphData = await memberGrowthWidgetDataService(
-      workspaceId,
-      startDate ? startDate : undefined,
-      endDate ? endDate : undefined
-    );
+    const data: MembersProfileActivityGraphData = await memberGrowthWidgetDataService(workspaceId, filters);
     setMemberGrowthWidgetData(data);
     setIsLoading(false);
   };
@@ -66,12 +56,12 @@ const MemberGrowth: React.FC<WidgetComponentProps> = (props: WidgetComponentProp
   };
 
   return (
-    <div className={`my-6 ${
-      !isManageMode ? '' : 'cursor-grabbing'
-   }  `}>
+    <div className={`my-6 ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
       <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white ">Member Growth</h3>
-      <div className={`my-6 pb-10 bg-white dark:bg-secondaryDark dark:text-white rounded-0.6 border  
-         dark:border-borderDark shadow-profileCard ${isManageMode ? 'widget-border relative' : 'border-borderPrimary'}`}>
+      <div
+        className={`my-6 pb-10 bg-white dark:bg-secondaryDark dark:text-white rounded-0.6 border  
+         dark:border-borderDark shadow-profileCard ${isManageMode ? 'widget-border relative' : 'border-borderPrimary'}`}
+      >
         {!isManageMode && !isSidePanelOpen ? (
           <div className="relative h-[15rem] mt-7 bg-white rounded-xl">
             {isLoading ? (
@@ -85,7 +75,7 @@ const MemberGrowth: React.FC<WidgetComponentProps> = (props: WidgetComponentProp
                 height="100%"
               />
             )}
-            {Boolean(memberGrowthWidgetData?.series.length) === false && !isLoading && (
+            {Boolean(memberGrowthWidgetData?.series?.length) === false && !isLoading && (
               <div
                 className={`absolute top-24 font-Poppins text-infoBlack  ${
                   isManageMode ? 'text-lg top-24 ' : 'text-xs top-28'

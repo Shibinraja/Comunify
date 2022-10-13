@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 
+import { string } from 'yup';
+
 export interface PlatformIcons {
   slack: string | undefined;
   vanillaForums: string | undefined;
@@ -132,18 +134,18 @@ export type PlatformResponse = {
 
 export interface ConnectedPlatforms {
   id: string;
-  workspaceId: string;
-  platformId: string;
   name: string;
+  workspaceId: string;
+  platformSettingsId: string;
+  communityId: string | null;
+  overRideMaxRetries: string | null;
+  overRideMaxRetryValues: null;
+  isActive: boolean;
   status: string;
-  lastFetched: string;
   createdAt: Date;
   updatedAt: Date;
   platformLogoUrl: string;
-  platform: {
-    name: string;
-    platformLogoUrl: string;
-  };
+  platformId:string
 }
 
 export enum AssignTagsTypeEnum {

@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+
 import { SubscriptionPackages } from 'modules/authentication/interface/auth.interface';
 
 export interface RoutesArray {
@@ -15,7 +16,7 @@ export interface Props {
   errors?: boolean;
   disabled?: boolean;
   placeholder?: string;
-  value?: string;
+  value?: string | string[];
   id: string;
   helperText?: any;
   handleSubmit?: any;

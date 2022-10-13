@@ -7,11 +7,22 @@ import slackIcon from '../../../../assets/images/slack.svg';
 import discordIcon from '../../../../assets/images/discord.svg';
 import redditLogoIcon from '../../../../assets/images/reddit_logo.png';
 import { TabPanel } from 'common/tabs/TabPanel';
+import { NavigateToConnectPage, NavigateToDiscordConnectPage } from 'modules/settings/services/settings.services';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 import Modal from 'react-modal';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
 import vanillaIcon from '../../../../assets/images/vanilla-forum.svg';
-import Input from 'common/input';
-import './Integration.css';
+import { showErrorToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
 import usePlatform from '../../../../hooks/usePlatform';
+import { DiscordConnectResponse, PlatformConnectResponse } from '../../../../interface/interface';
+import { IntegrationResponse, NetworkResponse } from '../../../../lib/api';
+import { API_ENDPOINT } from '../../../../lib/config';
+import { getLocalWorkspaceId } from '../../../../lib/helper';
+import { request } from '../../../../lib/request';
+import { AppDispatch } from '../../../../store';
 import {
   ConnectedPlatforms,
   ModalState,
@@ -21,21 +32,8 @@ import {
   ConnectBody,
   VanillaForumsConnectData
 } from '../../interface/settings.interface';
-import { getLocalWorkspaceId } from '../../../../lib/helper';
-import { DiscordConnectResponse, PlatformConnectResponse } from '../../../../interface/interface';
-import { IntegrationResponse, NetworkResponse } from '../../../../lib/api';
-import { showErrorToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
-import { useNavigate } from 'react-router';
-import { API_ENDPOINT } from '../../../../lib/config';
-import { request } from '../../../../lib/request';
-import { useDispatch } from 'react-redux';
 import settingsSlice from '../../store/slice/settings.slice';
-import { useSearchParams } from 'react-router-dom';
-import { useAppSelector } from '../../../../hooks/useRedux';
-import { AppDispatch, State } from '../../../../store';
-import { NavigateToConnectPage, NavigateToDiscordConnectPage } from 'modules/settings/services/settings.services';
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
+import Input from '../../../../common/input';
 
 Modal.setAppElement('#root');
 
@@ -66,7 +64,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
     workspaceId: ''
   });
   const [integrationDisconnect, setIntegrationDisconnect] = useState<boolean>(false);
-  const platformData = usePlatform();
+  const { PlatformFilterResponse } = usePlatform();
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -99,10 +97,10 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
     }
   }, []);
 
-  const { PlatformsConnected } = useAppSelector((state: State) => state.settings);
+  const { PlatformsConnected } = usePlatform();
   const checkForConnectedPlatform = (platformName: string) => {
     const data = PlatformsConnected?.find(
-      (obj: ConnectedPlatforms) => obj?.platform?.name.toLocaleLowerCase().trim() === `${platformName.toLocaleLowerCase().trim()}`
+      (obj: ConnectedPlatforms) => obj?.name.toLocaleLowerCase().trim() === `${platformName.toLocaleLowerCase().trim()}`
     );
     return data;
   };
@@ -393,7 +391,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
           </p>
 
           <div className="flex mt-1.8 flex-wrap w-full">
-            {platformData?.map((data: PlatformResponse) => (
+            {PlatformFilterResponse?.map((data: PlatformResponse) => (
               <div
                 key={`${data?.id + data?.name}`}
                 className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5"

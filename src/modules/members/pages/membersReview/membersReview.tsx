@@ -31,7 +31,7 @@ const MembersReview: React.FC = () => {
     mergeListLoader: false,
     confirmationLoader: false
   });
-  const [checkedRadioId, setCheckedRadioId] = useState<Record<string, unknown>>({ [memberProfileCardData[0]?.comunifyMemberId]: true });
+  const [checkedRadioId, setCheckedRadioId] = useState<Record<string, unknown>>({ [memberProfileCardData[0]?.id]: true });
   const [modalOpen, setModalOpen] = useState<{ UnMergeModalOpen: boolean; confirmMerge: boolean; ChangePrimaryMember: boolean }>({
     UnMergeModalOpen: false,
     confirmMerge: false,
