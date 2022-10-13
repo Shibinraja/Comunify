@@ -32,9 +32,10 @@ const NewActivities: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
   // eslint-disable-next-line space-before-function-paren
   const getActivityWidgetData = async () => {
     setIsLoading(true);
-    filters['type'] = selectedTab ? selectedTab : undefined;
-    filters['limit'] = 20;
-    const data: ActivitiesWidgetData[] = await activitiesWidgetDataService(workspaceId, filters);
+    const newFilter = { ...filters };
+    newFilter['type'] = selectedTab ? selectedTab : undefined;
+    newFilter['limit'] = 20;
+    const data: ActivitiesWidgetData[] = await activitiesWidgetDataService(workspaceId, newFilter);
     setActivitiesWidgetResponse(data);
     setIsLoading(false);
   };

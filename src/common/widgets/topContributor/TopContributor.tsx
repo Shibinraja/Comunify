@@ -35,9 +35,10 @@ const TopContributor: React.FC<WidgetComponentProps> = (props: WidgetComponentPr
   // eslint-disable-next-line space-before-function-paren
   const getMembersWidgetData = async () => {
     setIsLoading(true);
-    filters['type'] = selectedTab ? selectedTab : undefined;
-    filters['limit'] = 20;
-    const data: MemberWidgetData[] = await membersWidgetDataService(workspaceId, filters);
+    const newFilter = { ...filters };
+    newFilter['type'] = selectedTab ? selectedTab : undefined;
+    newFilter['limit'] = 20;
+    const data: MemberWidgetData[] = await membersWidgetDataService(workspaceId, newFilter);
     setMemberWidgetData(data);
     setIsLoading(false);
   };
