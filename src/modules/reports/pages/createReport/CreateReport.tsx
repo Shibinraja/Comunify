@@ -158,6 +158,9 @@ const CreateReport = () => {
     if (checkedRadioId[ScheduleReportsEnum.No]) {
       formikRef?.current?.setFieldTouched('startDate');
       formikRef?.current?.setFieldTouched('endDate');
+      if(reportValuesData || reportUpdateValuesData) {
+        formikRef?.current?.setFieldTouched('singleDate');
+      }
       // formikRef?.current?.setFieldTouched('singleDate');
     }
   }, [checkedRadioId]);
