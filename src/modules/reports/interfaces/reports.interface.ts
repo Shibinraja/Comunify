@@ -13,7 +13,8 @@ export enum ActionDropDownEnum {
   Edit = 'Edit',
   Generate = 'Generate',
   Remove = 'Remove',
-  ScheduleOff = 'Schedule Off'
+  ScheduleOff = 'Schedule Off',
+  ScheduleOn = 'Schedule On'
 }
 
 export enum ScheduleReportsEnum {
@@ -75,9 +76,10 @@ export type createReportInitialValues = {
   emails: Array<string>;
   schedule: string;
   platform: Array<string>;
-  startDate: Date | undefined;
-  endDate: Date | undefined;
-  platformId?: Array<string>
+  startDate: string | undefined;
+  endDate: string | undefined;
+  platformId?: Array<string>;
+  singleDate?:string
 };
 
 export type WidgetPreviewType = {

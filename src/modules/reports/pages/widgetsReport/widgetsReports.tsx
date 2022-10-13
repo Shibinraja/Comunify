@@ -2,6 +2,7 @@
 import Button from 'common/button/Button';
 import { ModalDrawer } from 'common/modals/ModalDrawer';
 import { showSuccessToast } from 'common/toast/toastFunctions';
+import { PanelWidgetsType } from 'common/widgetLayout/WidgetTypes';
 import WidgetContainer from 'common/widgets/widgetContainer/WidgetContainer';
 import { dispatchReportsListService, dispatchUpdateReportsListService, getReportWidgetsListService } from 'modules/reports/services/reports.service';
 import React, { useEffect, useState } from 'react';
@@ -13,7 +14,7 @@ const widgetsReports: React.FC = () => {
   const { workspaceId } = useParams();
   const navigate = useNavigate();
   const [isManageMode, setIsManageMode] = useState<boolean>(false);
-  const [widgets, setWidgets] = useState<any[] | []>([]);
+  const [widgets, setWidgets] = useState<Array<Omit<PanelWidgetsType,  'isAssigned'>>>([]);
   const [transformedWidgetData, setTransformedWidgetData] = React.useState<any>(new Array(null));
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -43,8 +44,8 @@ const widgetsReports: React.FC = () => {
       id: widget?.id,
       layout: { ...widget.config, i: widget?.id },
       widget: { ...widget?.widget, widgetId: widget?.widgetId }
-    }));
-    setWidgets(widgetDataArray as any[]);
+    })) || [];
+    setWidgets(widgetDataArray as unknown as PanelWidgetsType[]);
   };
 
   useEffect(() => {
@@ -137,8 +138,8 @@ const widgetsReports: React.FC = () => {
         <Button
           text=""
           type="submit"
-          onClick={() => setModalOpen(true)}
-          className="justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow "
+          onClick={() => transformedWidgetData.length  && setModalOpen(true)}
+          className={`justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow ${!transformedWidgetData.length ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           <div className="font-Poppins font-medium text-white leading-5 text-search ">Generate Report</div>
         </Button>
