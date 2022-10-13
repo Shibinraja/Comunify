@@ -30,7 +30,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
   const [checkedLocation, setCheckedLocation] = useState<Record<string, unknown>>({});
   const [checkedOrganization, setCheckedOrganization] = useState<Record<string, unknown>>({});
   const [startDate, setStartDate] = useState<Date>();
-  const [endDate, setEndDate] = useState<Date>(new Date());
+  const [endDate, setEndDate] = useState<Date>();
   const [tagSearchText, setTagSearchText] = useState<string>('');
   const [locationSearchText, setLocationSearchText] = useState<string>('');
   const [organizationSearchText, setOrganizationSearchText] = useState<string>('');
@@ -438,7 +438,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                   <div className="relative flex items-center">
                     <DatePicker
                       selected={startDate}
-                      maxDate={endDate}
+                      maxDate={new Date()}
                       onChange={(date: Date, event: ChangeEvent<Date>) => selectActiveBetweenDate(event, date, 'start')}
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
@@ -459,7 +459,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                     <DatePicker
                       selected={endDate}
                       minDate={startDate}
-                      maxDate={endDate}
+                      maxDate={new Date()}
                       selectsEnd
                       startDate={startDate}
                       endDate={endDate}
