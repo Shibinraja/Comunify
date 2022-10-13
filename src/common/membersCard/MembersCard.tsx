@@ -23,10 +23,8 @@ const MembersCard: React.FC = () => {
       { v: 1e9, s: 'B' }
     ];
     let index;
-    for (index = series.length - 1; index > 0; index--) {
-      if (num >= series[index].v) {
-        break;
-      }
+    for (index = series.length - 1; index > 0 && num < series[index].v; index--) {
+      /*empty statement*/
     }
     return (num / series[index].v).toFixed(2).replace(/\.0+$|(\.[0-9]*[1-9])0+$/, '$1') + series[index].s;
   };
