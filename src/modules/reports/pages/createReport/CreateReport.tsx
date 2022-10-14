@@ -45,6 +45,7 @@ const CreateReport = () => {
   const [checkedRadioId, setCheckedRadioId] = useState<Record<string, unknown>>({ Yes: true });
   const [selectedReport, setSelectedReport] = useState('');
   const [checkedPlatform, setCheckedPlatform] = useState<Record<string, unknown>>({});
+  const [checkedAllPlatform, setCheckedAllPlatform] = useState<boolean>(false);
   const [platformId, setPlatformId] = useState<Record<string, unknown>>({});
   const [customDate, setCustomDate] = useState<{ startDate: Date | undefined; endDate: Date | undefined; singleDate: Date | undefined }>({
     startDate: undefined,
@@ -98,7 +99,7 @@ const CreateReport = () => {
         handleSelectedReport(ScheduleReportDateType[scheduleReportId]);
       } else {
         setCheckedRadioId({ ['No']: true });
-        handleSelectedReport('NoSchedule');
+        handleSelectedReport('');
         setCustomDate((prevDate) => ({
           ...prevDate,
           startDate: new Date(reportResponseValues.createdAt),
@@ -107,6 +108,7 @@ const CreateReport = () => {
         }));
         formikRef?.current?.setFieldTouched('startDate');
         formikRef?.current?.setFieldTouched('endDate');
+        formikRef?.current?.setFieldValue('schedule', '', true);
       }
     }
   }, [reportUpdateValuesData]);
@@ -128,7 +130,7 @@ const CreateReport = () => {
         handleSelectedReport(ScheduleReportDateType[scheduleReportId]);
       } else {
         setCheckedRadioId({ ['No']: true });
-        handleSelectedReport('NoSchedule');
+        handleSelectedReport('');
         setCustomDate((prevDate) => ({
           ...prevDate,
           startDate: new Date(reportValuesData.startDate),
@@ -216,11 +218,20 @@ const CreateReport = () => {
     setCheckedRadioId({ [checked_id]: event.target.checked });
   };
 
+  const handlePlatformAllCheckBox = (event:ChangeEvent<HTMLInputElement>) => {
+    PlatformsConnected.forEach((platformId) => {
+      setCheckedPlatform((preValue) => ({ ...preValue, [platformId.id]: event.target.checked }));
+      setPlatformId((preValue) => ({ ...preValue, [platformId.platformId]: event.target.checked }));
+    });
+    setCheckedAllPlatform(event.target.checked);
+  };
+
   const handlePlatformsCheckBox = (event: ChangeEvent<HTMLInputElement>, platformConnectedId: string, platformId: string) => {
     const platform: string = platformConnectedId;
     setCheckedPlatform((preValue) => ({ ...preValue, [platform]: event.target.checked }));
     setPlatformId((preValue) => ({ ...preValue, [platformId]: event.target.checked }));
     formikRef?.current?.setFieldTouched('platform');
+    setCheckedAllPlatform(false);
   };
 
   const selectCustomBetweenDate = (event: ChangeEvent<Date>, date: Date, dateTime: string) => {
@@ -579,11 +590,11 @@ const CreateReport = () => {
                   </div>
                   {isPlatformActive && (
                     <div className="flex-flex-col  app-result-card-border box-border w-full rounded-0.3 shadow-reportInput cursor-pointer absolute top-[4.8rem] bg-white z-40">
-                      <div className="flex items-center gap-2 hover:bg-signUpDomain  transition ease-in duration-100 p-3  opacity-50">
+                      <div className="flex items-center gap-2 hover:bg-signUpDomain  transition ease-in duration-100 p-3 ">
                         <div>
-                          <input type="checkbox" className="checkbox" id="all" name="all" />
+                          <input type="checkbox" className="checkbox" id="all" name="all" onChange={(event) => handlePlatformAllCheckBox(event)} checked={checkedAllPlatform} />
                         </div>
-                        <label className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-not-allowed" htmlFor="All">
+                        <label className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial" htmlFor="All">
                           All
                         </label>
                       </div>
@@ -603,7 +614,7 @@ const CreateReport = () => {
                                   name={platform.id as string}
                                   checked={(checkedPlatform[platform.id] as boolean) || false}
                                   onChange={(event) => handlePlatformsCheckBox(event, platform.id, platform.platformId)}
-                                  disabled={reportUpdateValuesData ? true : false}
+                                  disabled={reportUpdateValuesData ? true : checkedAllPlatform ? true : false}
                                 />
                               </div>
                               <label className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial" htmlFor={platform.id as string}>

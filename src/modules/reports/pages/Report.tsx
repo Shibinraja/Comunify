@@ -8,7 +8,7 @@ import Input from 'common/input';
 import Pagination from 'common/pagination/pagination';
 import { width_90 } from 'constants/constants';
 import { PlatformResponse } from 'modules/settings/interface/settings.interface';
-import React, { ChangeEvent, Fragment, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { useNavigate, useParams } from 'react-router';
 import DatePicker, { ReactDatePicker } from 'react-datepicker';
@@ -87,7 +87,7 @@ const Report: React.FC = () => {
 
   const debouncedValue = useDebounce(searchText, 300);
 
-  // const ReportFilterList = Object.values(checkedPlatform).concat(Object.values(checkedStatus));
+  const ReportFilterList = Object.values(checkedPlatform).concat(Object.values(checkedStatus));
 
   const getReportsList = async(props: { search: string; page: number; limit: number }) => {
     setLoading(true);
@@ -165,8 +165,25 @@ const Report: React.FC = () => {
     setIsDropdownActive(value);
   };
 
+  const disableApplyBtn = useMemo(() => {
+    if (date.startDate === null && date.endDate === null && ReportFilterList.length === 0) {
+      return true;
+    }
+
+    if (date.startDate && date.endDate) {
+      return false;
+    }
+
+    if (date.startDate || date.endDate) {
+      return true;
+    }
+    return false;
+  }, [date, ReportFilterList]);
+
+
   const handleFilterDropdown = (): void => {
     setIsFilterDropdownActive((prev) => !prev);
+    setActivateFilter({ isActiveBetween: false, isStatusActive: false, isPlatformActive: activateFilter.isPlatformActive ? false : true });
   };
 
   const handleFilterDropDownStatus = (type: string) => {
@@ -267,6 +284,7 @@ const Report: React.FC = () => {
   };
 
   const submitFilterChange = async(): Promise<void> => {
+    handleFilterDropdown();
     const checkPlatform: Array<string> = [];
     const checkStatusId: Array<string> = [];
 
@@ -288,32 +306,30 @@ const Report: React.FC = () => {
 
     setCheckedFilterOption({ checkPlatform, checkStatus: checkStatusId });
 
-    const reportData = await getReportsListService(
-      {
-        workspaceId: workspaceId!,
-        params: {
-          page,
-          limit,
-          search: searchText,
-          ...(checkPlatform.length ? { platformId: checkPlatform } : {}),
-          ...(checkStatusId.length ? { reportStatus: checkStatusId } : {}),
-          ...(date.startDate ? { startDate: date.startDate && convertStartDate(date.startDate) } : {}),
-          ...(date.endDate ? { endDate: date.endDate && convertEndDate(date.endDate) } : {})
-        }
-      },
-      setLoading
-    );
+    if (!disableApplyBtn) {
+      const reportData = await getReportsListService(
+        {
+          workspaceId: workspaceId!,
+          params: {
+            page,
+            limit,
+            search: searchText,
+            ...(checkPlatform.length ? { platformId: checkPlatform } : {}),
+            ...(checkStatusId.length ? { reportStatus: checkStatusId } : {}),
+            ...(date.startDate ? { startDate: date.startDate && convertStartDate(date.startDate) } : {}),
+            ...(date.endDate ? { endDate: date.endDate && convertEndDate(date.endDate) } : {})
+          }
+        },
+        setLoading
+      );
 
-    setReportsList({
-      data: reportData?.data as Array<ReportListServiceResponsePropsData>,
-      totalPages: reportData?.totalPages as string,
-      nextPage: reportData?.nextPage as string,
-      previousPage: reportData?.previousPage as string
-    });
-
-    // if (!disableApplyBtn) {
-    // }
-    handleFilterDropdown();
+      setReportsList({
+        data: reportData?.data as Array<ReportListServiceResponsePropsData>,
+        totalPages: reportData?.totalPages as string,
+        nextPage: reportData?.nextPage as string,
+        previousPage: reportData?.previousPage as string
+      });
+    }
   };
 
   const loaderSetAction = (type: string, loader: boolean) => {
@@ -371,20 +387,6 @@ const Report: React.FC = () => {
     });
   };
 
-  // const disableApplyBtn = useMemo(() => {
-  //   if (date.startDate === undefined && date.endDate === undefined && ReportFilterList.length === 0) {
-  //     return true;
-  //   }
-
-  //   if (date.startDate && date.endDate) {
-  //     return false;
-  //   }
-
-  //   if (date.startDate || date.endDate) {
-  //     return true;
-  //   }
-  //   return false;
-  // }, [date, ReportFilterList]);
 
   //On Submit functionality
   const handleOnSubmit = () => {
@@ -580,7 +582,7 @@ const Report: React.FC = () => {
                                 onChange={handleStatusCheckBox}
                               />
                             </div>
-                            <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">{options.name}</div>
+                            <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">{options.name === 'NoSchedule' ? 'No Schedule' : options.name}</div>
                           </div>
                         ))}
                       </div>

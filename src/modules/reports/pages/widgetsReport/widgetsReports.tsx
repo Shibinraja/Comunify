@@ -2,7 +2,7 @@
 import Button from 'common/button/Button';
 import { ModalDrawer } from 'common/modals/ModalDrawer';
 import { showSuccessToast } from 'common/toast/toastFunctions';
-import { PanelWidgetsType } from 'common/widgetLayout/WidgetTypes';
+import { PanelWidgetsType, TransformWidgetDataType } from 'common/widgetLayout/WidgetTypes';
 import WidgetContainer from 'common/widgets/widgetContainer/WidgetContainer';
 import { dispatchReportsListService, dispatchUpdateReportsListService, getReportWidgetsListService } from 'modules/reports/services/reports.service';
 import React, { useEffect, useState } from 'react';
@@ -14,19 +14,18 @@ const widgetsReports: React.FC = () => {
   const { workspaceId } = useParams();
   const navigate = useNavigate();
   const [isManageMode, setIsManageMode] = useState<boolean>(false);
-  const [widgets, setWidgets] = useState<Array<Omit<PanelWidgetsType,  'isAssigned'>>>([]);
+  const [widgets, setWidgets] = useState<Array<Omit<PanelWidgetsType, 'isAssigned'>>>([]);
   const [transformedWidgetData, setTransformedWidgetData] = React.useState<any>(new Array(null));
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [previewWidgetsData, setPreviewWidgetsData] = useState<Array<Omit<PanelWidgetsType, 'isAssigned'>>>([]);
 
   const reportValuesData = JSON.parse(localStorage.getItem('reportValues')!);
   const [searchParams] = useSearchParams();
   const reportId = searchParams.get('reportId');
   const startDate = searchParams.get('startDate');
   const endDate = searchParams.get('endDate') || '';
-
-  // console.log('err', platformId, startDate, endDate);
 
   // Function to call the api and list the membersSuggestionList
   const getReportWidgetsList = async(props: { page: number; limit: number }) => {
@@ -40,11 +39,12 @@ const widgetsReports: React.FC = () => {
       }
     });
     setLoading(false);
-    const widgetDataArray = data?.result.map((widget) => ({
-      id: widget?.id,
-      layout: { ...widget.config, i: widget?.id },
-      widget: { ...widget?.widget, widgetId: widget?.widgetId }
-    })) || [];
+    const widgetDataArray =
+      data?.result.map((widget) => ({
+        id: widget?.id,
+        layout: { ...widget.config, i: widget?.id },
+        widget: { ...widget?.widget, widgetId: widget?.widgetId }
+      })) || [];
     setWidgets(widgetDataArray as unknown as PanelWidgetsType[]);
   };
 
@@ -57,6 +57,26 @@ const widgetsReports: React.FC = () => {
       });
     }
   }, [reportId]);
+
+  useEffect(() => {
+    if (transformedWidgetData?.length) {
+      const newWidgetDataArray = transformedWidgetData?.reduce?.(
+        (acc: Array<Omit<PanelWidgetsType, 'isAssigned'>>, curr: TransformWidgetDataType) => {
+          const widgets = {
+            id: curr?.id,
+            layout: { x: 0, y: 0, w: 0, h: 0, i: curr?.id },
+            widget: { widgetLocation: curr?.widget?.widgetLocation, invocationType: curr?.widget?.invocationType, widgetId: curr?.widget?.widgetId }
+          };
+          widgets['layout'] = curr?.config;
+          acc.push(widgets);
+          return acc;
+        },
+        []
+      );
+
+      setPreviewWidgetsData(newWidgetDataArray);
+    }
+  }, [transformedWidgetData]);
 
   const handleModalClose = () => {
     setModalOpen(false);
@@ -116,10 +136,15 @@ const widgetsReports: React.FC = () => {
       <div className="flex items-center justify-between pl-2.5 relative py-10">
         <h3 className="text-center font-Inter font-semibold text-[23.47px] text-[#08080D] leading-6">Customize your Report</h3>
       </div>
-      
-      <WidgetContainer isManageMode={isManageMode} widgets={widgets} setWidgets={setWidgets} setTransformedWidgetData={setTransformedWidgetData} filters={{ startDate, endDate, platformId: reportValuesData?.platformIds }} />
-      
-      <div className="flex justify-end pt-10 items-center mb-10">
+      <WidgetContainer
+        isManageMode={isManageMode}
+        widgets={widgets}
+        setWidgets={setWidgets}
+        setTransformedWidgetData={setTransformedWidgetData}
+        filters={{ startDate, endDate, platformId: reportValuesData?.platformIds }}
+      />
+
+      <div className="flex justify-end pt-10 items-center">
         <Button
           type="button"
           text=""
@@ -139,13 +164,22 @@ const widgetsReports: React.FC = () => {
         <Button
           text=""
           type="submit"
-          onClick={() => transformedWidgetData.length  && setModalOpen(true)}
-          className={`justify-between w-[146px] btn-save-modal h-3.12 items-center rounded-0.3 shadow-connectButtonShadow ${!transformedWidgetData.length ? 'opacity-50 cursor-not-allowed' : ''}`}
+          onClick={() => transformedWidgetData.length && setModalOpen(true)}
+          className={`justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow ${
+            !transformedWidgetData.length ? 'opacity-50 cursor-not-allowed' : ''
+          }`}
         >
           <div className="font-Poppins font-medium text-white leading-5 text-[13px] ">Generate Report</div>
         </Button>
       </div>
-      {isOpen && <WidgetPreview isOpen={isOpen} setIsOpen={setIsOpen} widgets={widgets} filters={{ startDate, endDate, platformId: reportValuesData?.platformId }} />}
+      {isOpen && (
+        <WidgetPreview
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          filters={{ startDate, endDate, platformId: reportValuesData?.platformId }}
+          transformData={previewWidgetsData}
+        />
+      )}
       <ModalDrawer
         isOpen={modalOpen}
         isClose={handleModalClose}

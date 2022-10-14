@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { SidePanelWidgetsData } from '../../modules/dashboard/interface/dashboard.interface';
+import ReactGridLayout from 'react-grid-layout';
 
 export type WidgetIdentification = {
   widgetKey: string[];
@@ -63,9 +64,17 @@ export interface WidgetFilters {
 
 export interface WidgetContainerProps {
   isManageMode: boolean | undefined;
-  widgets: Array<Omit<PanelWidgetsType, 'isAssigned'>> ;
+  widgets: Array<Omit<PanelWidgetsType, 'isAssigned'>>;
   setWidgets?: React.Dispatch<React.SetStateAction<Array<Omit<PanelWidgetsType, 'isAssigned'>>> | []>;
-  setTransformedWidgetData?: React.Dispatch<React.SetStateAction<unknown[] | []>>;
+  setTransformedWidgetData?: React.Dispatch<React.SetStateAction<Array<TransformWidgetDataType>>>;
   filters?: WidgetFilters;
 }
 
+export interface TransformWidgetDataType {
+  id: string;
+  widgetId: string;
+  status: string;
+  order: number;
+  config: ReactGridLayout.Layout;
+  widget: { widgetLocation: string; invocationType: number; widgetId: string };
+}

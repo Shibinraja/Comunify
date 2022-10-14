@@ -18,6 +18,8 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
   const [memberWidgetData, setMemberWidgetData] = React.useState<MemberWidgetData[]>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
+  const widgetPreviewLocation = window.location.href.includes('/report-details');
+
   React.useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
       getMembersWidgetData();
@@ -37,7 +39,12 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
     setIsLoading(true);
     const newFilter = { ...filters };
     newFilter['type'] = selectedTab ? selectedTab : undefined;
-    newFilter['limit'] = 20;
+    if(widgetPreviewLocation) {
+      newFilter['limit'] = 4;
+    }
+    if(!widgetPreviewLocation) {
+      newFilter['limit'] = 20;
+    }
     const data: MemberWidgetData[] = await membersWidgetDataService(workspaceId, newFilter);
     setMemberWidgetData(data);
     setIsLoading(false);
@@ -92,7 +99,7 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
               Inactive
             </TabSelector>
           </nav>
-          <div className="h-14.375 items-center relative overflow-y-auto ml-1.661 block section">
+          <div className={`h-14.375 items-center relative ml-1.661 block section ${!widgetPreviewLocation ? 'overflow-y-auto' : ''}`}>
             {!memberWidgetData?.length && !isLoading && !isManageMode && !isSidePanelOpen && (
               <div className="flex items-center justify-center font-Poppins font-normal text-xs text-infoBlack h-full">No data available</div>
             )}

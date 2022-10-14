@@ -110,7 +110,7 @@ const ReportHistory: React.FC = () => {
                       <td className="px-6 py-3">
                         <div className="flex ">
                           <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
-                            {loading ? <Skeleton width={width_90} /> : ScheduleReportDateType[`${data?.userWorkspaceReport?.workspaceReportSettings[0]?.scheduleRepeat}`]}
+                            {loading ? <Skeleton width={width_90} /> : ScheduleReportDateType[`${data?.userWorkspaceReport?.workspaceReportSettings[0]?.scheduleRepeat}`] === 'NoSchedule' ? 'No Schedule': ScheduleReportDateType[data?.userWorkspaceReport?.workspaceReportSettings[0]?.scheduleRepeat]}
                           </div>
                         </div>
                       </td>
