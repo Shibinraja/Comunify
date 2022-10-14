@@ -76,6 +76,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
                   <div className="ml-0.71 ">
                     <img className="h-[1.835rem] w-[1.9175rem] rounded-full" src={item?.url} alt="" />
                   </div>
+                  ``{' '}
                   <div className="ml-0.865">
                     <div>
                       <p className="font-medium text-xs font-Poppins">{item?.message}</p>
