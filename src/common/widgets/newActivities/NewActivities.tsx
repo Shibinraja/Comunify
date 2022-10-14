@@ -1,15 +1,15 @@
 import React from 'react';
 import { useTabs } from '@/hooks/useTabs';
 import { TabSelector } from 'common/tabs/TabSelector';
-import NewActivitiesList from './NewActivitiesList';
+import NewActivitiesList from '../activitiesTab/NewActivitiesList';
 import { activitiesWidgetDataService } from '../../../modules/dashboard/services/dashboard.services';
 import { getLocalWorkspaceId } from '../../../lib/helper';
 import { ActivitiesWidgetData } from '../../../modules/dashboard/interface/dashboard.interface';
-import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
+import { WidgetComponentProps } from '../../widgetLayout/WidgetTypes';
 
-const ActivitiesTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
+const NewActivities: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen, filters } = props;
-  const [selectedTab, setSelectedTab] = useTabs(['newActivities', 'highlights']);
+  const [selectedTab, setSelectedTab] = useTabs(['newActivities']);
   const [activitiesWidgetResponse, setActivitiesWidgetResponse] = React.useState<ActivitiesWidgetData[]>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
@@ -63,14 +63,6 @@ const ActivitiesTab: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
             >
               New Activities
             </TabSelector>
-            <TabSelector
-              isActive={selectedTab === 'highlights'}
-              onClick={() => setSelectedTab('highlights')}
-              style={`ml-1.625 mt-0.438 ${isManageMode ? 'text-sm' : 'text-xs'} pb-2  border-transparent`}
-              styleActive={'gradient-bottom-border'}
-            >
-              Highlights
-            </TabSelector>
           </nav>
           <div className="h-14.375 items-center relative overflow-y-auto block section ">
             {!activitiesWidgetResponse?.length && !isLoading && !isManageMode && !isSidePanelOpen && (
@@ -99,4 +91,4 @@ const ActivitiesTab: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
   );
 };
 
-export default ActivitiesTab;
+export default NewActivities;

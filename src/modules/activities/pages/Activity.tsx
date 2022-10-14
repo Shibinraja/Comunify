@@ -86,7 +86,6 @@ const Activity: React.FC = () => {
   const loader = useSkeletonLoading(activitiesSlice.actions.getActiveStreamData.type);
 
   const { data, totalPages } = useAppSelector((state) => state.activities.activeStreamData);
-
   const {
     TagFilterResponse: { data: TagFilterResponseData },
     clearValue

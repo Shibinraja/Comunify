@@ -65,3 +65,17 @@ export const setRefreshToken = async () => {
 export const convertStartDate = (fromDate: Date): string => startOfDay(fromDate).toISOString();
 
 export const convertEndDate = (endDate: Date): string => endOfDay(endDate).toISOString();
+
+export const transformRequestOptions = (params: Record<string, unknown>) => {
+  let options = '';
+  for (const key in params) {
+    if (typeof params[key] !== 'object' && params[key]) {
+      options += `${key}=${params[key]}&`;
+    } else if (typeof params[key] === 'object' && params[key] && (params[key] as Array<Record<string, unknown>>).length) {
+      (params[key] as Array<Record<string, unknown>>).forEach((el: Record<string, unknown>) => {
+        options += `${key}=${el}&`;
+      });
+    }
+  }
+  return options ? options.slice(0, -1) : options;
+};

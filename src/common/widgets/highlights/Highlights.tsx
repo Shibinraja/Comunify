@@ -1,15 +1,15 @@
 import React from 'react';
 import { useTabs } from '@/hooks/useTabs';
 import { TabSelector } from 'common/tabs/TabSelector';
-import NewActivitiesList from './NewActivitiesList';
+import NewActivitiesList from '../activitiesTab/NewActivitiesList';
 import { activitiesWidgetDataService } from '../../../modules/dashboard/services/dashboard.services';
 import { getLocalWorkspaceId } from '../../../lib/helper';
 import { ActivitiesWidgetData } from '../../../modules/dashboard/interface/dashboard.interface';
 import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
 
-const ActivitiesTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
+const Highlights: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen, filters } = props;
-  const [selectedTab, setSelectedTab] = useTabs(['newActivities', 'highlights']);
+  const [selectedTab, setSelectedTab] = useTabs(['highlights']);
   const [activitiesWidgetResponse, setActivitiesWidgetResponse] = React.useState<ActivitiesWidgetData[]>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
@@ -56,14 +56,6 @@ const ActivitiesTab: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
         <div className="w-full mt-6 flex flex-col ">
           <nav>
             <TabSelector
-              isActive={selectedTab === 'newActivities'}
-              onClick={() => setSelectedTab('newActivities')}
-              style={`ml-1.625 mt-0.438 ${isManageMode ? 'text-sm' : 'text-xs'} pb-2  border-transparent`}
-              styleActive={'gradient-bottom-border'}
-            >
-              New Activities
-            </TabSelector>
-            <TabSelector
               isActive={selectedTab === 'highlights'}
               onClick={() => setSelectedTab('highlights')}
               style={`ml-1.625 mt-0.438 ${isManageMode ? 'text-sm' : 'text-xs'} pb-2  border-transparent`}
@@ -99,4 +91,4 @@ const ActivitiesTab: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
   );
 };
 
-export default ActivitiesTab;
+export default Highlights;
