@@ -610,6 +610,7 @@ input {
 }
 .ReactModalPortal .ReactModal__Overlay {
   /* background-color: rgb(0, 0, 0, 0.7) !important; */
+  z-index: 50;
 }
 .boder-lightRed {
   border-color: #ff5f5f !important;
@@ -620,9 +621,22 @@ input {
 }
 
 .widget-height {
-  height: calc(100vh - 13rem);
+  height: calc(100vh - 16rem);
 }
 
 .fixWidgetNoDataHeight {
   height: calc(100vh - 30rem);
+}
+.preview-box{
+  height: calc(100vh - 22rem);
+}
+/* Drag and Drop */
+.react-grid-item.react-grid-placeholder {
+  background: transparent !important;
+  opacity: 1 !important;
+  border: 1px dashed #C2C2C2 !important;
+  border-radius: 15px !important;
+ }
+.report-email p{
+  top: 3.5rem;
 }

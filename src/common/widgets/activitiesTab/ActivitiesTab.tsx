@@ -5,19 +5,13 @@ import NewActivitiesList from './NewActivitiesList';
 import { activitiesWidgetDataService } from '../../../modules/dashboard/services/dashboard.services';
 import { getLocalWorkspaceId } from '../../../lib/helper';
 import { ActivitiesWidgetData } from '../../../modules/dashboard/interface/dashboard.interface';
-import { useSearchParams } from 'react-router-dom';
 import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
 
 const ActivitiesTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
-  const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen } = props;
-
+  const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen, filters } = props;
   const [selectedTab, setSelectedTab] = useTabs(['newActivities', 'highlights']);
   const [activitiesWidgetResponse, setActivitiesWidgetResponse] = React.useState<ActivitiesWidgetData[]>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-
-  const [searchParams] = useSearchParams();
-  const startDate = searchParams.get('startDate');
-  const endDate = searchParams.get('endDate');
 
   React.useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
@@ -27,23 +21,21 @@ const ActivitiesTab: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
 
   React.useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
-      if (startDate && endDate) {
+      if (filters?.startDate && filters?.endDate) {
         getActivityWidgetData();
       }
     }
-  }, [startDate, endDate]);
+  }, filters && Object.values(filters));
 
   const workspaceId = getLocalWorkspaceId();
 
   // eslint-disable-next-line space-before-function-paren
   const getActivityWidgetData = async () => {
     setIsLoading(true);
-    const data: ActivitiesWidgetData[] = await activitiesWidgetDataService(
-      workspaceId,
-      selectedTab ? selectedTab : '',
-      startDate ? startDate : undefined,
-      endDate ? endDate : undefined
-    );
+    const newFilter = { ...filters };
+    newFilter['type'] = selectedTab ? selectedTab : undefined;
+    newFilter['limit'] = 20;
+    const data: ActivitiesWidgetData[] = await activitiesWidgetDataService(workspaceId, newFilter);
     setActivitiesWidgetResponse(data);
     setIsLoading(false);
   };
@@ -53,7 +45,7 @@ const ActivitiesTab: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
   };
 
   return (
-    <div className="my-6">
+    <div className={`my-6 ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
       <div>
         <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Activities</h3>
       </div>
@@ -80,10 +72,11 @@ const ActivitiesTab: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
               Highlights
             </TabSelector>
           </nav>
-          {!activitiesWidgetResponse?.length && !isLoading && (
-            <div className="flex items-center justify-center font-Poppins font-normal text-xs text-infoBlack pt-5">No data available</div>
-          )}
           <div className="h-14.375 items-center relative overflow-y-auto block section ">
+            {!activitiesWidgetResponse?.length && !isLoading && !isManageMode && !isSidePanelOpen && (
+              <div className="flex items-center justify-center font-Poppins font-normal text-xs text-infoBlack h-full">No data available</div>
+            )}
+
             <NewActivitiesList
               hidden={false}
               activitiesWidgetData={activitiesWidgetResponse ? activitiesWidgetResponse : []}

@@ -6,9 +6,7 @@ import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 import { convertEndDate, convertStartDate } from '@/lib/helper';
 import Button from 'common/button';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
-import {
-  ChangeEvent, FC, Fragment, useEffect, useMemo, useRef, useState
-} from 'react';
+import { ChangeEvent, FC, Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import DatePicker, { ReactDatePicker } from 'react-datepicker';
 import { useParams } from 'react-router-dom';
 import calendarIcon from '../../../assets/images/calandar.svg';
@@ -32,6 +30,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
   const [tagSearchText, setTagSearchText] = useState<string>('');
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
+  const [filterCount, setFilterCount] = useState<number>(0);
 
   const dropDownRef = useRef<HTMLDivElement>(null);
   const datePickerRefStart = useRef<ReactDatePicker>(null);
@@ -40,7 +39,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
   const debouncedTagValue = useDebounce(tagSearchText, 300);
 
   const { data: TagFilterResponse } = useAppSelector((state) => state.settings.TagFilterResponse);
-  const PlatformFilterResponse = usePlatform();
+  const { PlatformFilterResponse } = usePlatform();
 
   const ActivityFilterList = Object.values(checkedPlatform).concat(Object.values(checkedTags));
 
@@ -208,13 +207,36 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
     handleFilterDropdown();
   };
 
+  useEffect(() => {
+    handleFilterCount();
+  }, [checkedPlatform, checkedTags]);
+
+  const handleFilterCount = () => {
+    const getFilterCount = (filterObject: any) =>
+      Object.entries(filterObject).reduce((preValue, arr) => {
+        let count: number = preValue;
+        if (arr[1] === true) {
+          count++;
+        }
+        return count;
+      }, 0);
+
+    const dateEntered = startDate || endDate ? 1 : 0;
+
+    const count = dateEntered + getFilterCount(checkedPlatform) + getFilterCount(checkedTags);
+    setFilterCount(count);
+  };
+
   return (
     <div className="relative mr-5" ref={dropDownRef}>
       <div
         className="flex justify-between items-center px-1.08 app-input-card-border rounded-0.6 box-border w-9.59 h-3.06 cursor-pointer bg-white "
         onClick={handleFilterDropdown}
       >
-        <div className="font-Poppins font-semibold text-card text-dropGray leading-1.12">Filters</div>
+        <div className="box-border flex rounded-0.6 shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">
+          Filters
+          <p className="ml-1 bg-signUpDomain px-2 w-content rounded-lg text-memberDay">{`${filterCount}`}</p>
+        </div>{' '}
         <div>
           <img src={filterDownIcon} alt="" className={isFilterDropdownActive ? 'rotate-180' : 'rotate-0'} />
         </div>
@@ -338,7 +360,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                   <div className="relative flex items-center">
                     <DatePicker
                       selected={startDate}
-                      maxDate={endDate}
+                      maxDate={new Date()}
                       onChange={(date: Date, event: ChangeEvent<Date>) => selectActiveBetweenDate(event, date, 'start')}
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
@@ -359,6 +381,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                     <DatePicker
                       selected={endDate}
                       minDate={startDate}
+                      maxDate={new Date()}
                       selectsEnd
                       startDate={startDate}
                       endDate={endDate}
@@ -379,13 +402,26 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
               </Fragment>
             )}
 
-            <div className="buttons px-3 ">
+            <div className="buttons px-2 flex mt-1.56">
+              <Button
+                disabled={loader ? true : false}
+                type="button"
+                onClick={() => {
+                  setCheckedPlatform({});
+                  setCheckedTags({});
+                  setStartDate(undefined);
+                  setEndDate(undefined);
+                  setFilterCount(0);
+                }}
+                text="Reset"
+                className="border border-backdropColor text-black rounded-0.31 h-2.063 w-1/2 mr-1 mt-1 cursor-pointer text-card font-Manrope font-semibold leading-1.31 hover:text-white hover:bg-backdropColor"
+              />
               <Button
                 disabled={loader ? true : false}
                 onClick={submitFilterChange}
                 type="button"
                 text="Apply"
-                className={`border-none btn-save-modal rounded-0.31 h-2.063 w-full mt-1.56 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${
+                className={`border-none btn-save-modal rounded-0.31 h-2.063 w-1/2 mt-1 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${
                   loader ? ' opacity-50 cursor-not-allowed' : ''
                 }`}
               />

@@ -51,12 +51,12 @@ const PublicRoute: React.FC<Props> = ({ children }) => {
   //Functionality to check the workspace and packages subscription and route dynamically to the respected page.
 
   const checkWorkspaceCreation = () => {
-    if (!decodedToken?.isVerified) {
+    if (!decodedToken?.isEmailVerified) {
       dispatchReducer({ type: 'SET_RESEND_VERIFICATION_ROUTE', payload: '/resend-mail' });
       dispatch(authSlice.actions.setIsAuthenticated(true));
       return false;
     }
-    if (!decodedToken?.isSubscribed && decodedToken?.isVerified) {
+    if (!decodedToken?.isSubscribed && decodedToken?.isEmailVerified) {
       dispatchReducer({ type: 'SET_WELCOME_ROUTE', payload: '/welcome' });
       dispatch(authSlice.actions.setIsAuthenticated(true));
       return false;

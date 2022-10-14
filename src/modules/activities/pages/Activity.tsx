@@ -86,7 +86,6 @@ const Activity: React.FC = () => {
   const loader = useSkeletonLoading(activitiesSlice.actions.getActiveStreamData.type);
 
   const { data, totalPages } = useAppSelector((state) => state.activities.activeStreamData);
-
   const {
     TagFilterResponse: { data: TagFilterResponseData },
     clearValue
@@ -260,7 +259,7 @@ const Activity: React.FC = () => {
 
   const handleProfileModal = (data: ProfileModal) => {
     setProfileModal({
-      isOpen: data.isOpen,
+      isOpen: data?.isOpen,
       id: data?.id,
       memberName: data.memberName,
       email: data.email,
@@ -500,7 +499,7 @@ const Activity: React.FC = () => {
                               <div className="relative">
                                 <div
                                   ref={dropDownRef}
-                                  onClick={(e) => {
+                                  onMouseOver={(e) => {
                                     e.stopPropagation();
                                     handleProfileModal({
                                       isOpen: true,
@@ -756,8 +755,10 @@ const Activity: React.FC = () => {
                       ></div>
                     </div>
                     <div
-                      className="mt-5 font-Poppins font-medium text-infoBlack text-card leading-1.12"
-                      dangerouslySetInnerHTML={{ __html: ActivityCard?.value ? ActivityCard?.value : '--' }}
+                      className="mt-5 w-full truncate font-Poppins font-medium text-infoBlack text-card leading-1.12"
+                      dangerouslySetInnerHTML={{
+                        __html: ActivityCard?.value ? ActivityCard?.value : '--'
+                      }}
                     ></div>
                     <div className="mt-1.18 flex justify-between items-center">
                       <a

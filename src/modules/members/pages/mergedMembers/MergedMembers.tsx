@@ -39,7 +39,7 @@ const MergedMembers: React.FC = () => {
   });
 
   const [activityNextCursor, setActivityNextCursor] = useState<string | null>('');
-  const [checkedRadioId, setCheckedRadioId] = useState<Record<string, unknown>>({ [memberProfileCardData[0]?.comunifyMemberId]: true });
+  const [checkedRadioId, setCheckedRadioId] = useState<Record<string, unknown>>({ [memberProfileCardData[0]?.id]: true });
   const [suggestionList, setSuggestionList] = useState<MergeMembersDataResponse>({
     result: [],
     nextCursor: null
@@ -90,14 +90,14 @@ const MergedMembers: React.FC = () => {
       const platform = memberProfileData[0].platforms;
       memberProfileData[0].platform = { platformLogoUrl: platform[0].platformLogoUrl };
       setPrimaryMemberId(memberProfileData);
-      setCheckedRadioId({ [memberProfileData[0]?.comunifyMemberId]: true });
+      setCheckedRadioId({ [memberProfileData[0]?.id]: true });
     }
   }, [memberProfileCardDataResult]);
 
   useEffect(() => {
     //Function to concat the api response data with the Member Chosen and filter out the with the primary member selected.
     const filteredDuplicateMembers = suggestionList?.result?.concat(primaryMemberId).filter((member: MergeMembersDataResult) => {
-      if (member.comunifyMemberId !== Object.keys(checkedRadioId)[0]) {
+      if (member.id !== Object.keys(checkedRadioId)[0]) {
         return member;
       }
     });
@@ -109,7 +109,7 @@ const MergedMembers: React.FC = () => {
 
     //Function to concat the api response data with the Member Chosen and filter out the with the primary member not selected.
     const filteredPrimaryMember = suggestionList?.result?.concat(primaryMemberId).filter((member: MergeMembersDataResult) => {
-      if (member.comunifyMemberId === Object.keys(checkedRadioId)[0]) {
+      if (member.id === Object.keys(checkedRadioId)[0]) {
         return member;
       }
     });
@@ -118,12 +118,12 @@ const MergedMembers: React.FC = () => {
 
     const mergeList = filteredDuplicateMembers?.map((member: MergeMembersDataResult) => ({
       primaryMemberId: Object.keys(checkedRadioId)[0],
-      memberId: member.comunifyMemberId
+      memberId: member.id
     }));
 
     mergeList.push({
-      primaryMemberId: filteredPrimaryMember[0]?.comunifyMemberId,
-      memberId: filteredPrimaryMember[0]?.comunifyMemberId
+      primaryMemberId: filteredPrimaryMember[0]?.id,
+      memberId: filteredPrimaryMember[0]?.id
     });
 
     if (filteredPrimaryMember?.length && checkedId) {
@@ -288,15 +288,15 @@ const MergedMembers: React.FC = () => {
                 </div>
                 <div className="flex mt-2.5">
                   <div className="w-1.001 h-1.001 mr-0.34">
-                    {!primaryMemberId?.length ? <Skeleton circle height="100%" /> : (
-                      <div className='flex gap-1 '>
-                        {primaryMemberId[0]?.platforms?.map((platform:{id:string; name:string; platformLogoUrl:string}) => (
+                    {!primaryMemberId?.length ? (
+                      <Skeleton circle height="100%" />
+                    ) : (
+                      <div className="flex gap-1 ">
+                        {primaryMemberId[0]?.platforms?.map((platform: { id: string; name: string; platformLogoUrl: string }) => (
                           <Fragment key={platform.id}>
                             <img src={platform.platformLogoUrl} alt="" />
                           </Fragment>
-                        )
-                        )
-                        }
+                        ))}
                       </div>
                     )}
                   </div>
@@ -309,10 +309,10 @@ const MergedMembers: React.FC = () => {
                       <input
                         type="radio"
                         className="hidden peer"
-                        name={primaryMemberId[0]?.comunifyMemberId}
+                        name={primaryMemberId[0]?.id}
                         id={primaryMemberId[0]?.id}
-                        value={primaryMemberId[0]?.comunifyMemberId}
-                        checked={(checkedRadioId[primaryMemberId[0]?.comunifyMemberId] as boolean) || false}
+                        value={primaryMemberId[0]?.id}
+                        checked={(checkedRadioId[primaryMemberId[0]?.id] as boolean) || false}
                         onChange={handleRadioBtn}
                       />{' '}
                       <span className="w-3 h-3 mr-1.5 border font-normal font-Poppins text-card leading-1.31 border-[#ddd] rounded-full inline-flex peer-checked:bg-[#ABCF6B]"></span>
@@ -356,9 +356,9 @@ const MergedMembers: React.FC = () => {
                             type="radio"
                             className="hidden peer"
                             id={members.id}
-                            value={members.comunifyMemberId}
-                            name={members.comunifyMemberId}
-                            checked={(checkedRadioId[members.comunifyMemberId] as boolean) || false}
+                            value={members.id}
+                            name={members.id}
+                            checked={(checkedRadioId[members.id] as boolean) || false}
                             onChange={handleRadioBtn}
                           />{' '}
                           <span className="w-3 h-3 mr-1.5 border font-normal font-Poppins text-card leading-1.31 border-[#ddd] rounded-full inline-flex peer-checked:bg-[#ABCF6B]"></span>

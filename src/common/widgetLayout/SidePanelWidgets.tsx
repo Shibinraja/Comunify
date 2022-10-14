@@ -20,6 +20,7 @@ import Skeleton from 'react-loading-skeleton';
 import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
 import { whiteSpace_single_regex } from '../../constants/constants';
+import TextArea from '../textArea/TextArea';
 
 Modal.setAppElement('#root');
 
@@ -33,7 +34,7 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
 
   const workspaceId: string = getLocalWorkspaceId();
   React.useEffect(() => {
-    if (widgetKey !== '') {
+    if (widgetKey.length) {
       filterWidgets(widgetKey);
     }
   }, [widgetKey]);
@@ -54,18 +55,18 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
     }
   }, [widgetRemoved]);
 
-  const filterWidgets = (widgetName: string) => {
+  const filterWidgets = (widgetName: string[]) => {
     if (widgetName && sidePanelWidgets?.length) {
       const sidePanelWidgetList = [...sidePanelWidgets];
-      const filteredWidgetsList = sidePanelWidgetList.filter((widget) => widget?.widget?.widgetLocation !== widgetName);
+      const filteredWidgetsList = sidePanelWidgetList.filter((widget) => !widgetName.includes(widget?.widget?.widgetLocation));
       setSidePanelWidgets(filteredWidgetsList);
     }
   };
 
   // eslint-disable-next-line space-before-function-paren
   const getWidgetsData = async (searchText?: string) => {
-    const scope = 1;
-    const widgetsData: SidePanelWidgetsList[] = await getSidePanelWidgetsService(scope, workspaceId, searchText);
+    const scope = window.location.href.includes('/reports') ? [1, 2] : window.location.href.includes('/dashboard') ? [1, 3] : [];
+    const widgetsData: SidePanelWidgetsList[] = await getSidePanelWidgetsService(scope.toString(), workspaceId, searchText);
     setSidePanelWidgetsData(widgetsData);
     const sidePanelWidgetList = widgetsData?.reduce((acc: PanelWidgetsType[], curr: SidePanelWidgetsData) => {
       const widgets = {
@@ -86,7 +87,8 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
       acc.push(widgets);
       return acc;
     }, []);
-    setSidePanelWidgets(sidePanelWidgetList);
+    const filteredWidgetsList = sidePanelWidgetList.filter((widget) => !widgetKey.includes(widget?.widget?.widgetLocation));
+    setSidePanelWidgets(filteredWidgetsList);
   };
 
   const handleSearch = (searchText: string) => {
@@ -96,10 +98,9 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
   const renderWidget = (widgetLocation: string, isAssigned: boolean, props: React.PropsWithoutRef<WidgetComponentProps>) => {
     // use this while developing because vite doesn't hot reload dynamically imported components
     const Widget = WidgetComponents[widgetLocation];
-
     // Use dynamic import while pushing to prod
     // const Widget = React.lazy(() => import(`../../common/widgets/${widgetLocation}/${widgetLocation}`));
-    return <Suspense fallback={<Skeleton width={400} height={300} count={1} enableAnimation />}>{!isAssigned && <Widget {...props} />}</Suspense>;
+    return <Suspense fallback={<Skeleton width={400} height={300} count={1} enableAnimation />}>{<Widget {...props} />}</Suspense>;
   };
 
   const widgetProps = {
@@ -148,7 +149,7 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
   };
 
   return (
-    <div className="w-[28%] xl:w-[23%]  widgetDrawerGradient left-0 top-0 pb-2 max-h-[156.25rem] min-h-screen px-7 absolute z-40 ">
+    <div className="w-[28%] xl:w-[23%] 3xl:w-[22%] 4xl:w-[21%]  widgetDrawerGradient left-0 top-0 pb-2 max-h-[156.25rem] min-h-screen px-7 absolute z-40 ">
       <div className="flex flex-col">
         <div className="flex flex-col pb-2">
           <div className="text-center font-Poppins font-semibold text-2xl pt-24">Add Widget</div>
@@ -167,10 +168,11 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
             </div>
           </div>
         </div>
-        {!sidePanelWidgets?.length && (
-          <div className="flex justify-center items-center font-Poppins font-semibold text-lg mt-3 text-infoBlack">No Widgets to be displayed</div>
-        )}
+
         <div className="overflow-scroll widget-height overflow-x-hidden">
+          {!sidePanelWidgets?.length && (
+            <div className="flex justify-center items-center font-Poppins font-semibold text-lg mt-3 text-infoBlack">No Widgets to be displayed</div>
+          )}
           {sidePanelWidgets?.map((component: PanelWidgetsType) => {
             widgetProps.widget = component;
             return (
@@ -193,13 +195,14 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
               </div>
             );
           })}
-          <Button
-            text="Request for a Widget"
-            type="submit"
-            className="font-Poppins rounded-lg sticky bottom-0  w-full text-base font-semibold text-white py-3.5 mt-7 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient"
-            onClick={() => setWidgetModalOpen(true)}
-          />
+
         </div>
+        <Button
+          text="Request for a Widget"
+          type="submit"
+          className="font-Poppins rounded-lg sticky bottom-0  w-full text-base font-semibold text-white py-3.5 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient"
+          onClick={() => setWidgetModalOpen(true)}
+        />
         <Modal
           isOpen={isWidgetModalOpen}
           shouldCloseOnOverlayClick={false}
@@ -240,8 +243,7 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
                   <label htmlFor="description" className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack mt-1.06">
                     Description
                   </label>
-                  <Input
-                    type="text"
+                  <TextArea
                     name="description"
                     id="descriptionId"
                     value={values.description}
@@ -251,7 +253,7 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
                     onBlur={handleBlur}
                     errors={Boolean(touched.description && errors.description)}
                     helperText={touched.description && errors.description}
-                  ></Input>
+                  />
                   <div className="flex items-center justify-end mt-1.8">
                     <Button
                       text="Cancel"
@@ -290,7 +292,7 @@ const widgetSchema = Yup.object().shape({
   description: Yup.string()
     .trim('WhiteSpaces are not allowed')
     .min(4, 'Widget Description must be at least 4 characters')
-    .max(25, 'Widget Description should not exceed above 100 characters')
+    .max(100, 'Widget Description should not exceed above 100 characters')
     .matches(whiteSpace_single_regex, 'White spaces are not allowed')
     .required('Widget Description is a required field')
     .nullable(true)

@@ -139,7 +139,11 @@ const SignUp: React.FC = () => {
                       helperText={touched.userName && errors.userName}
                     />
                   </div>
-                  <div className="email mt-1.258">
+                  <div className={`email  ${
+                    touched.userName && errors.userName
+                      ? 'mt-8 '
+                      : 'mt-1.258'
+                  }`}>
                     <Input
                       type="email"
                       placeholder="Email"
@@ -158,7 +162,11 @@ const SignUp: React.FC = () => {
                       helperText={touched.email && errors.email}
                     />
                   </div>
-                  <div className="w-full password mt-1.258 relative">
+                  <div className={`w-full password  relative  ${
+                    touched.email && errors.email
+                      ? 'mt-8 '
+                      : 'mt-1.258'
+                  }`}>
                     <Input
                       type={passwordType}
                       placeholder="Create Password"
@@ -192,7 +200,7 @@ const SignUp: React.FC = () => {
                       </p>
                     </div>
                   </div>
-                  <div className={`cname  ${!errors.password?.includes('Password must have one uppercase, one lowercase') ? 'mt-1.258' : ''}`}>
+                  <div className={`cname  ${!errors.password?.includes('Password must have one uppercase, one lowercase') ? 'mt-1.258' : 'mt-4'}`}>
                     <Input
                       type="text"
                       placeholder="Company Name"
@@ -201,7 +209,7 @@ const SignUp: React.FC = () => {
                       name="companyName"
                       className={`h-4.5 rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border ${
                         touched.companyName && errors.companyName
-                          ? 'boder-lightRed  h-4.5 rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border'
+                          ? 'boder-lightRed mt-4 h-4.5 rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border'
                           : ''
                       }`}
                       onBlur={handleBlur}
@@ -211,7 +219,12 @@ const SignUp: React.FC = () => {
                       helperText={touched.companyName && errors.companyName}
                     />
                   </div>
-                  <div className="domain mt-1.258 relative">
+                  <div
+                    className={`domain relative  ${
+                      touched.companyName && errors.companyName
+                        ? 'mt-8 '
+                        : 'mt-1.258'
+                    }`}>
                     <div className="cursor-pointer ">
                       <div
                         className={`flex items-center w-full  justify-between border border-signUpDomain  box-border rounded-lg h-4.5  bg-white p-2.5 focus:outline-none font-normal text-secondaryGray text-base leading-6 font-Inter shadow-trialButtonShadow relative ${
@@ -259,7 +272,12 @@ const SignUp: React.FC = () => {
                   <Button
                     text="Sign Up"
                     type="submit"
-                    className="font-Poppins rounded-lg text-base font-semibold text-white mt-1.8 h-3.6 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient"
+
+                    className={`font-Poppins rounded-lg text-base font-semibold text-white h-3.6 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient  ${
+                      touched.domainSector && errors.domainSector
+                        ? 'mt-8 '
+                        : 'mt-1.8 '
+                    }`}
                   />
                   <div className="relative flex items-center pt-2.4 -z-40">
                     <div className="borders flex-grow border-t"></div>

@@ -1,4 +1,4 @@
-import React, { Suspense, useCallback, useState } from 'react';
+import React, { Suspense, useCallback, useEffect, useState } from 'react';
 
 import ReactGridLayout, { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import Skeleton from 'react-loading-skeleton';
@@ -15,10 +15,17 @@ import { PanelWidgetsType, WidgetComponentProps, WidgetContainerProps } from 'co
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 export default function WidgetContainer(props: WidgetContainerProps) {
-  const { isManageMode, widgets, setWidgets, setTransformedWidgetData } = props;
+  const { isManageMode, widgets, setWidgets, setTransformedWidgetData, filters } = props;
 
-  const [widgetKey, setWidgetKey] = useState<string | null>(null);
+  const [widgetKey, setWidgetKey] = useState<string[]>(['']);
   const [widgetRemoved, setWidgetRemoved] = React.useState<string>();
+
+  useEffect(() => {
+    if(widgets.length) {
+      const widgetLocations = widgets.map((widget) => widget.widget.widgetLocation);
+      setWidgetKey(widgetLocations);
+    }
+  }, [widgets]);
 
   const renderWidget = (widgetLocation: string, props: React.PropsWithoutRef<WidgetComponentProps>) => {
     /* @vite-ignore */
@@ -48,7 +55,7 @@ export default function WidgetContainer(props: WidgetContainerProps) {
           return;
         }
         const droppableWidget: any = JSON.parse(raw);
-        setWidgetKey(droppableWidget?.widget?.widgetLocation);
+        setWidgetKey(new Array(droppableWidget?.widget?.widgetLocation));
 
         const newWidgetArray = [...widgets];
         const droppedWidget: PanelWidgetsType = {
@@ -98,11 +105,12 @@ export default function WidgetContainer(props: WidgetContainerProps) {
   const widgetProps = {
     isManageMode,
     removeWidgetFromDashboard,
+    filters,
     widget: {}
   };
   return (
     <>
-      {isManageMode && <SidePanelWidgets widgetKey={widgetKey !== null ? widgetKey : ''} widgetRemoved={widgetRemoved ? widgetRemoved : ''} />}
+      {isManageMode && <SidePanelWidgets widgetKey={widgetKey.length ?  widgetKey : ['']} widgetRemoved={widgetRemoved ? widgetRemoved : ''} />}
       <ResponsiveReactGridLayout
         autoSize={true}
         preventCollision={false}
@@ -122,7 +130,7 @@ export default function WidgetContainer(props: WidgetContainerProps) {
         onLayoutChange={onLayoutChange}
         resizeHandles={['ne']}
         style={{
-          minHeight: `${window.location.href.includes('stage') ? '0px' : isManageMode ? '160vh' : '0'}`,
+          minHeight: `${isManageMode ? '100vh' : '0'}`,
           width: '100%'
         }}
       >
@@ -138,9 +146,7 @@ export default function WidgetContainer(props: WidgetContainerProps) {
       {!widgets?.length && !isManageMode && (
         <div className="flex flex-col items-center justify-center fixWidgetNoDataHeight {">
           <img src={noWidgetIcon} alt="" className="w-[3.8125rem] h-[3.8125rem]" />
-          <div className="font-Poppins font-medium text-tableDuration text-noReports leading-10 pt-5">{`${
-            window.location.href.includes('stage') ? 'Widgets coming soon...' : 'No widgets added'
-          }`}</div>
+          <div className="font-Poppins font-medium text-tableDuration text-noReports leading-10 pt-5">No widgets added</div>
         </div>
       )}
     </>

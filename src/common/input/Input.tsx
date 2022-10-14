@@ -1,6 +1,4 @@
-import React, { Fragment } from 'react';
 import { Props } from '../../interface/interface';
-// import { useField, ErrorMessage } from 'formik';
 
 const Input = ({
   id,
@@ -17,23 +15,21 @@ const Input = ({
   helperText
 }: // ...rest
 Props) => (
-  <Fragment>
-    <div className="flex flex-col relative">
-      <input
-        id={id}
-        type={type}
-        name={name}
-        className={className}
-        placeholder={placeholder}
-        disabled={disabled}
-        autoComplete="off"
-        value={value}
-        onBlur={onBlur}
-        onChange={onChange}
-      />
-      {errors && <p className="text-lightRed absolute -bottom-4 font-normal text-xs font-Inter mt-0.287 pl-1">{helperText}</p>}
-    </div>
-  </Fragment>
+  <div className="flex flex-col relative">
+    <input
+      id={id}
+      type={type}
+      name={name}
+      className={className}
+      placeholder={placeholder}
+      disabled={disabled}
+      autoComplete="off"
+      value={value}
+      onBlur={onBlur}
+      onChange={onChange}
+    />
+    {errors && <p className="text-lightRed absolute -bottom-4 font-normal text-xs font-Inter mt-0.287 pl-1">{helperText}</p>}
+  </div>
 );
 
 export default Input;
