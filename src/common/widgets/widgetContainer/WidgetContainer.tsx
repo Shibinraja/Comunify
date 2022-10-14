@@ -10,7 +10,7 @@ import noWidgetIcon from '../../../assets/images/no-widget.svg';
 
 import '../../../../node_modules/react-grid-layout/css/styles.css';
 
-import { PanelWidgetsType, WidgetComponentProps, WidgetContainerProps } from 'common/widgetLayout/WidgetTypes';
+import { PanelWidgetsType, TransformWidgetDataType, WidgetComponentProps, WidgetContainerProps } from 'common/widgetLayout/WidgetTypes';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -21,8 +21,8 @@ export default function WidgetContainer(props: WidgetContainerProps) {
   const [widgetRemoved, setWidgetRemoved] = React.useState<string>();
 
   useEffect(() => {
-    if(widgets.length) {
-      const widgetLocations = widgets.map((widget) => widget.widget.widgetLocation);
+    if(widgets?.length) {
+      const widgetLocations = widgets?.map((widget) => widget.widget.widgetLocation);
       setWidgetKey(widgetLocations);
     }
   }, [widgets]);
@@ -59,6 +59,7 @@ export default function WidgetContainer(props: WidgetContainerProps) {
 
         const newWidgetArray = [...widgets];
         const droppedWidget: PanelWidgetsType = {
+          id: droppableWidget.layout.i,
           layout: { ...droppableWidget.layout },
           widget: { ...droppableWidget.widget },
           isAssigned: { ...droppableWidget.isAssigned }
@@ -86,17 +87,19 @@ export default function WidgetContainer(props: WidgetContainerProps) {
         const widgetsToBeSaved = currentLayout.map((layout: Layout) => {
           const existingWidget = widgets.find((widget) => layout.i === widget.id);
           return {
-            id: existingWidget?.id,
-            widgetId: existingWidget?.widget?.widgetId || layout.i,
+            id: existingWidget?.id || layout.i,
+            widgetId: existingWidget?.widget?.widgetId,
             status: 'Active',
             order: 1,
             config: {
               ...layout
+            },
+            widget: {
+              ...existingWidget?.widget
             }
           };
         });
-
-        setTransformedWidgetData(widgetsToBeSaved);
+        setTransformedWidgetData(widgetsToBeSaved as TransformWidgetDataType[]);
       }
     },
     [widgets]

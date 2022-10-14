@@ -65,7 +65,7 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
 
   // eslint-disable-next-line space-before-function-paren
   const getWidgetsData = async (searchText?: string) => {
-    const scope = window.location.href.includes('/reports') ? [1, 2] : window.location.href.includes('/dashboard') ? [1, 3] : [];
+    const scope = window.location.href.includes('/report-widgets') ? [1, 2] : window.location.href.includes('/dashboard') ? [1, 3] : [];
     const widgetsData: SidePanelWidgetsList[] = await getSidePanelWidgetsService(scope.toString(), workspaceId, searchText);
     setSidePanelWidgetsData(widgetsData);
     const sidePanelWidgetList = widgetsData?.reduce((acc: PanelWidgetsType[], curr: SidePanelWidgetsData) => {

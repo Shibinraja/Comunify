@@ -13,6 +13,8 @@ const ActivitiesTab: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
   const [activitiesWidgetResponse, setActivitiesWidgetResponse] = React.useState<ActivitiesWidgetData[]>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
+  const widgetPreviewLocation = window.location.href.includes('/report-details');
+
   React.useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
       getActivityWidgetData();
@@ -34,7 +36,12 @@ const ActivitiesTab: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
     setIsLoading(true);
     const newFilter = { ...filters };
     newFilter['type'] = selectedTab ? selectedTab : undefined;
-    newFilter['limit'] = 20;
+    if(widgetPreviewLocation) {
+      newFilter['limit'] = 4;
+    }
+    if(!widgetPreviewLocation) {
+      newFilter['limit'] = 20;
+    }
     const data: ActivitiesWidgetData[] = await activitiesWidgetDataService(workspaceId, newFilter);
     setActivitiesWidgetResponse(data);
     setIsLoading(false);
@@ -72,7 +79,7 @@ const ActivitiesTab: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
               Highlights
             </TabSelector>
           </nav>
-          <div className="h-14.375 items-center relative overflow-y-auto block section ">
+          <div className={`h-14.375 items-center relative  block section ${!widgetPreviewLocation ? 'overflow-y-auto' : ''}`}>
             {!activitiesWidgetResponse?.length && !isLoading && !isManageMode && !isSidePanelOpen && (
               <div className="flex items-center justify-center font-Poppins font-normal text-xs text-infoBlack h-full">No data available</div>
             )}

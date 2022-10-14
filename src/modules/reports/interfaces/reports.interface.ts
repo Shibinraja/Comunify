@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import { WidgetFilters } from 'common/widgetLayout/WidgetTypes';
+import { PanelWidgetsType, WidgetFilters } from 'common/widgetLayout/WidgetTypes';
 import { Dispatch, SetStateAction } from 'react';
 
 export enum ReportFilterDropDownEnum {
@@ -48,6 +48,10 @@ export const ReportOptions = [
   {
     id: 3,
     name: 'Monthly'
+  },
+  {
+    id: 4,
+    name: 'NoSchedule'
   }
 ];
 
@@ -79,14 +83,15 @@ export type createReportInitialValues = {
   startDate: string | undefined;
   endDate: string | undefined;
   platformId?: Array<string>;
-  singleDate?:string
+  singleDate?:string;
+  checkedRadio?:string
 };
 
 export type WidgetPreviewType = {
   isOpen:boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-  widgets:any[]
   filters?: WidgetFilters;
+  transformData: Array<Omit<PanelWidgetsType, 'isAssigned'>>
 }
 
 //request body
