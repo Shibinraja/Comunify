@@ -88,7 +88,7 @@ const ReportHistory: React.FC = () => {
                     <tr className="border-b" key={i}>
                       <td className="px-6 py-3">
                         <div className="flex ">
-                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 ">
                             {loading ? <Skeleton width={width_90} /> : generateDateAndTime(`${data?.createdAt}`, 'MM-DD-YYYY')}
                           </div>
                         </div>
