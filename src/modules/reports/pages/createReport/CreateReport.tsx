@@ -656,7 +656,11 @@ const CreateReport = () => {
                         </div>
                       )}
                     </div>
-                    <div className="mt-5 flex flex-col w-full">
+                    <div className={`mt-5 flex flex-col w-full  ${
+                      touched.emails && errors.emails
+                        ? 'report-email'
+                        : ' '
+                    }`}>
                       <label htmlFor="emails" className="text-trial font-Poppins text-infoBlack font-normal leading-1.31">
                         Alternate Recipient Mail IDs
                       </label>

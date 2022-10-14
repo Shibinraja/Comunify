@@ -113,35 +113,36 @@ const widgetsReports: React.FC = () => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex items-center justify-between pl-2.5 relative">
-        <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Customize your Report</h3>
+      <div className="flex items-center justify-between pl-2.5 relative py-10">
+        <h3 className="text-center font-Inter font-semibold text-[23.47px] text-[#08080D] leading-6">Customize your Report</h3>
       </div>
+      
       <WidgetContainer isManageMode={isManageMode} widgets={widgets} setWidgets={setWidgets} setTransformedWidgetData={setTransformedWidgetData} filters={{ startDate, endDate, platformId: reportValuesData?.platformIds }} />
-
-      <div className="flex justify-end pt-10 items-center">
+      
+      <div className="flex justify-end pt-10 items-center mb-10">
         <Button
           type="button"
           text=""
-          className="mr-2.5 w-6.875 h-3.12 border-backBorder border-2 items-center px-5 rounded-0.3 shadow-connectButtonShadow "
+          className="mr-2.5 w-6.875 h-3.12 border-[#9B9B9B] border-2 items-center px-5 rounded-0.3 shadow-connectButtonShadow "
           onClick={() => navigate(-1)}
         >
-          <div className="font-Poppins font-medium text-black leading-5 text-search ">Back</div>
+          <div className="font-Poppins font-medium text-[#808080] leading-5 text-[13px] ">Back</div>
         </Button>
         <Button
           type="button"
           text=""
-          className="mr-2.5 w-6.875 bg-black border-backBorder h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow"
+          className="mr-2.5 w-6.875 bg-[#161616] border-backBorder h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow"
           onClick={() => setIsOpen(true)}
         >
-          <div className="font-Poppins font-medium text-white leading-5 text-search ">Preview</div>
+          <div className="font-Poppins font-medium text-white leading-5 text-[13px] ">Preview</div>
         </Button>
         <Button
           text=""
           type="submit"
           onClick={() => transformedWidgetData.length  && setModalOpen(true)}
-          className={`justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow ${!transformedWidgetData.length ? 'opacity-50 cursor-not-allowed' : ''}`}
+          className={`justify-between w-[146px] btn-save-modal h-3.12 items-center rounded-0.3 shadow-connectButtonShadow ${!transformedWidgetData.length ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
-          <div className="font-Poppins font-medium text-white leading-5 text-search ">Generate Report</div>
+          <div className="font-Poppins font-medium text-white leading-5 text-[13px] ">Generate Report</div>
         </Button>
       </div>
       {isOpen && <WidgetPreview isOpen={isOpen} setIsOpen={setIsOpen} widgets={widgets} filters={{ startDate, endDate, platformId: reportValuesData?.platformId }} />}
