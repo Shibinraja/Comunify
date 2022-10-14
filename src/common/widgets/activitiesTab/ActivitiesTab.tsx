@@ -37,7 +37,7 @@ const ActivitiesTab: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
     const newFilter = { ...filters };
     newFilter['type'] = selectedTab ? selectedTab : undefined;
     if(widgetPreviewLocation) {
-      newFilter['limit'] = 4;
+      newFilter['limit'] = 5;
     }
     if(!widgetPreviewLocation) {
       newFilter['limit'] = 20;
@@ -79,7 +79,7 @@ const ActivitiesTab: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
               Highlights
             </TabSelector>
           </nav>
-          <div className={`h-14.375 items-center relative  block section ${!widgetPreviewLocation ? 'overflow-y-auto' : ''}`}>
+          <div className={`h-14.375 items-center relative block section ${!widgetPreviewLocation ? 'overflow-y-auto' : 'overflow-hidden'}`}>
             {!activitiesWidgetResponse?.length && !isLoading && !isManageMode && !isSidePanelOpen && (
               <div className="flex items-center justify-center font-Poppins font-normal text-xs text-infoBlack h-full">No data available</div>
             )}

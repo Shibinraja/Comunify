@@ -37,7 +37,7 @@ const Highlights: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
     const newFilter = { ...filters };
     newFilter['type'] = selectedTab ? selectedTab : undefined;
     if(widgetPreviewLocation) {
-      newFilter['limit'] = 4;
+      newFilter['limit'] = 5;
     }
     if(!widgetPreviewLocation) {
       newFilter['limit'] = 20;
@@ -60,7 +60,7 @@ const Highlights: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
         className={`w-full h-full box-border bg-white dark:bg-secondaryDark dark:text-white  rounded-0.6 mt-1.868 border
            ${isManageMode ? 'widget-border relative' : 'border-borderPrimary'} dark:border-borderDark shadow-profileCard `}
       >
-        <div className="w-full mt-6 flex flex-col ">
+        <div className="w-full mt-6 flex flex-col">
           <nav>
             <TabSelector
               isActive={selectedTab === 'highlights'}
@@ -71,7 +71,7 @@ const Highlights: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
               Highlights
             </TabSelector>
           </nav>
-          <div className={`h-14.375 items-center relative  block section ${!widgetPreviewLocation ? 'overflow-y-auto' : ''}`}>
+          <div className={`h-14.375 items-center relative block section ${!widgetPreviewLocation ? 'overflow-y-auto' : 'overflow-hidden'}`}>
             {!activitiesWidgetResponse?.length && !isLoading && !isManageMode && !isSidePanelOpen && (
               <div className="flex items-center justify-center font-Poppins font-normal text-xs text-infoBlack h-full">No data available</div>
             )}
