@@ -636,7 +636,7 @@ const Report: React.FC = () => {
                         <tr className="border-b dark:border-[#dbd8fc1a] bg-white" key={i}>
                           <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
                             <div className="flex ">
-                              <div className="py-3 font-Poppins font-medium text-trial  leading-1.31 cursor-pointer">
+                              <div className="py-3 font-Poppins font-medium text-trial  leading-1.31 cursor-pointer capitalize">
                                 {loading ? (
                                   <Skeleton width={width_90} />
                                 ) : (

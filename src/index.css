@@ -637,4 +637,6 @@ input {
   border: 1px dashed #C2C2C2 !important;
   border-radius: 15px !important;
  }
- 
+.report-email p{
+  top: 3.5rem;
+}
