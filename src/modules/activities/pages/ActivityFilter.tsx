@@ -39,7 +39,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
   const debouncedTagValue = useDebounce(tagSearchText, 300);
 
   const { data: TagFilterResponse } = useAppSelector((state) => state.settings.TagFilterResponse);
-  const PlatformFilterResponse = usePlatform();
+  const { PlatformFilterResponse } = usePlatform();
 
   const ActivityFilterList = Object.values(checkedPlatform).concat(Object.values(checkedTags));
 
@@ -360,7 +360,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                   <div className="relative flex items-center">
                     <DatePicker
                       selected={startDate}
-                      maxDate={endDate}
+                      maxDate={new Date()}
                       onChange={(date: Date, event: ChangeEvent<Date>) => selectActiveBetweenDate(event, date, 'start')}
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
@@ -381,6 +381,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                     <DatePicker
                       selected={endDate}
                       minDate={startDate}
+                      maxDate={new Date()}
                       selectsEnd
                       startDate={startDate}
                       endDate={endDate}

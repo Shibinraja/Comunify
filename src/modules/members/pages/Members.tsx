@@ -415,7 +415,7 @@ const Members: React.FC = () => {
                       <div className="relative flex items-center">
                         <DatePicker
                           selected={customStartDate}
-                          maxDate={customEndDate}
+                          maxDate={customEndDate ? customEndDate : new Date()}
                           onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'start')}
                           className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                           placeholderText="DD/MM/YYYY"
@@ -436,6 +436,7 @@ const Members: React.FC = () => {
                         <DatePicker
                           selected={customEndDate}
                           minDate={customStartDate}
+                          maxDate={new Date()}
                           selectsEnd
                           startDate={customStartDate}
                           endDate={customEndDate}

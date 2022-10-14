@@ -46,7 +46,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
   const { membersLocationFilterResponse, membersOrganizationFilterResponse } = useAppSelector((state) => state.members);
   const { data: TagFilterResponse } = useAppSelector((state) => state.settings.TagFilterResponse);
   const memberColumnsLoader = useSkeletonLoading(membersSlice.actions.membersList.type);
-  const PlatformFilterResponse = usePlatform();
+  const { PlatformFilterResponse } = usePlatform();
   const debouncedLocationValue = useDebounce(locationSearchText, 300);
   const debouncedOrganizationValue = useDebounce(organizationSearchText, 300);
   const debouncedTagValue = useDebounce(tagSearchText, 300);
@@ -92,12 +92,6 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
 
   const handleFilterDropdown = (): void => {
     setIsFilterDropdownActive((prev) => !prev);
-    dispatch(
-      settingsSlice.actions.tagFilterData({
-        settingsQuery: { page: 1, limit, tags: { searchedTags: '', checkedTags: '' } },
-        workspaceId: workspaceId!
-      })
-    );
   };
 
   const handlePlatformActive = (val: boolean) => {
@@ -483,7 +477,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                   <div className="relative flex items-center">
                     <DatePicker
                       selected={startDate}
-                      maxDate={endDate}
+                      maxDate={new Date()}
                       onChange={(date: Date, event: ChangeEvent<Date>) => selectActiveBetweenDate(event, date, 'start')}
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
@@ -504,6 +498,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                     <DatePicker
                       selected={endDate}
                       minDate={startDate}
+                      maxDate={new Date()}
                       selectsEnd
                       startDate={startDate}
                       endDate={endDate}

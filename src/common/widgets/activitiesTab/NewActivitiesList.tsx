@@ -33,11 +33,11 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
                     <div className="ml-0.865">
                       <div>
                         <p className="font-medium text-xs font-Poppins">
-                          {item?.displayValue ? item?.displayValue : <Skeleton count={1} width={200} height={25} />}
+                          {item?.displayValue ? item?.displayValue : <Skeleton count={1} width={200} height={15} />}
                         </p>
                       </div>
                       <div className="font-Poppins text-createdAt not-italic font-normal text-createdAtGrey dark:text-greyDark">
-                        <p> {generateDateAndTime(`${item?.activityTime}`, 'HH:MM')}</p>
+                        <p>{item?.activityTime ? generateDateAndTime(`${item?.activityTime}`, 'HH:MM') : 'Activity time is not available'}</p>
                       </div>
                     </div>
                   </div>
@@ -46,7 +46,21 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
             ))}
           </ul>
         ) : (
-          <Skeleton count={4} width={350} height={22} className="m-4" />
+          <><div className="w-full flex justify-start items-center ">
+            <div className="">
+              <Skeleton width={30} height={30} circle />
+            </div>
+
+            <div className="ml-2 mt-1">
+              <div>
+                <Skeleton width={150} height={15}   />
+              </div>
+              <div className="font-Poppins text-membersCreatedAt not-italic font-normal text-createdAtGrey dark:text-greyDark">
+                <Skeleton width={100} height={5}   />
+              </div>
+            </div>
+          </div>
+          </>
         )}
       </div>
     ) : (

@@ -45,8 +45,8 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
     if (action === 'clearSearch') {
       const CheckedDuplicateMembers = new Set();
       const MembersList = selectedMembers.concat(data?.result as unknown as MergeMembersDataResult).filter((member: MergeMembersDataResult) => {
-        const duplicate = CheckedDuplicateMembers.has(member.comunifyMemberId);
-        CheckedDuplicateMembers.add(member.comunifyMemberId);
+        const duplicate = CheckedDuplicateMembers.has(member.id);
+        CheckedDuplicateMembers.add(member.id);
         return !duplicate;
       });
       setSuggestionList({
@@ -63,8 +63,8 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
         const CheckedDuplicateMembers = new Set();
 
         const MemberList = prevState.result.concat(data?.result as unknown as MergeMembersDataResult).filter((member: MergeMembersDataResult) => {
-          const duplicate = CheckedDuplicateMembers.has(member.comunifyMemberId);
-          CheckedDuplicateMembers.add(member.comunifyMemberId);
+          const duplicate = CheckedDuplicateMembers.has(member.id);
+          CheckedDuplicateMembers.add(member.id);
           return !duplicate;
         });
         return {

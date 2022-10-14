@@ -9,21 +9,18 @@ import Modal from 'react-modal';
 import { convertEndDate, convertStartDate, getLocalWorkspaceId } from '../../../lib/helper';
 import { showErrorToast, showSuccessToast } from '../../../common/toast/toastFunctions';
 import { getWidgetsLayoutService, saveWidgetsLayoutService } from '../services/dashboard.services';
-import { useLocation, useNavigate, createSearchParams } from 'react-router-dom';
 import moment from 'moment';
 import Button from '../../../common/button';
-
 import WidgetContainer from '../../../common/widgets/widgetContainer/WidgetContainer';
 
 Modal.setAppElement('#root');
 
 const Dashboard: React.FC = () => {
   const [isSelectDropDownActive, setSelectDropDownActive] = useState<boolean>(false);
-  // eslint-disable-next-line no-unused-vars
   const [selected, setSelected] = useState<string>('');
   const [dateRange, setDateRange] = useState([null, null]);
   const datePickerRef = useRef<ReactDatePicker>(null);
-  const [startDate, endDate] = dateRange;
+  const [startDateRange, endDateRange] = dateRange;
 
   const selectOptions = [
     { id: Math.random(), dateRange: 'This Week' },
@@ -37,9 +34,8 @@ const Dashboard: React.FC = () => {
   const [startingDate, setStartingDate] = React.useState<string>();
   const [endingDate, setEndingDate] = React.useState<string>();
   const [isButtonLoading, setIsButtonLoading] = React.useState<boolean>(false);
-
-  const location = useLocation();
-  const navigate = useNavigate();
+  const [startDate, setStartDate] = React.useState<string>(moment().startOf('week').toISOString());
+  const [endDate, setEndDate] = React.useState<string>(convertEndDate(new Date()));
 
   useEffect(() => {
     document.addEventListener('click', handleOutsideClick);
@@ -49,28 +45,23 @@ const Dashboard: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    //to clear any params in the url when the page is being reload/loaded first time
-    navigate({
-      pathname: location.pathname,
-      search: ``
-    });
     fetchWidgetLayoutData();
     setSelectedDateRange('this week');
   }, []);
 
   useEffect(() => {
     if (selected) {
-      setNavigation(startingDate, endingDate);
+      setDateFilter(startingDate, endingDate);
     }
   }, [selected]);
 
   useEffect(() => {
-    if (startDate && endDate) {
-      const start: string = convertStartDate(startDate);
-      const end: string = convertEndDate(endDate);
-      setNavigation(start, end);
+    if (startDateRange && endDateRange) {
+      const start: string = convertStartDate(startDateRange);
+      const end: string = convertEndDate(endDateRange);
+      setDateFilter(start, end);
     }
-  }, [startDate, endDate]);
+  }, [startDateRange, endDateRange]);
 
   const handleDropDownActive = (): void => {
     if (widgets.length) {
@@ -79,13 +70,10 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  const setNavigation = (start?: string, end?: string) => {
+  const setDateFilter = (start?: string, end?: string) => {
     if (start && end) {
-      const params = { startDate: start, endDate: end };
-      navigate({
-        pathname: location.pathname,
-        search: `?${createSearchParams(params)}`
-      });
+      setStartDate(start);
+      setEndDate(end);
     }
   };
 
@@ -145,11 +133,6 @@ const Dashboard: React.FC = () => {
   };
 
   const setSelectedDateRange = (option: string) => {
-    // if (option.toLocaleLowerCase().trim() === '') {
-    //   setStartingDate(moment().startOf('week').toISOString());
-    //   setEndingDate(convertEndDate(new Date()));
-
-    // }
     if (option === 'this week') {
       setSelected('This Week');
       setStartingDate(moment().startOf('week').toISOString());
@@ -206,8 +189,9 @@ const Dashboard: React.FC = () => {
                 selectsRange={true}
                 onCalendarOpen={handleCalendarOpenAndClearOtherFiler}
                 disabled={!widgets?.length ? true : false}
-                startDate={startDate}
-                endDate={endDate}
+                startDate={startDateRange}
+                endDate={endDateRange}
+                maxDate={new Date()}
                 onChange={(update: any) => {
                   setDateRange(update);
                 }}
@@ -235,10 +219,7 @@ const Dashboard: React.FC = () => {
           <Button
             text=""
             onClick={handleWidgetDrawer}
-            className={`flex justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow ${
-              window.location.href.includes('stage') ? 'cursor-not-allowed' : 'cursor-pointer'
-            } `}
-            disabled={window.location.href.includes('stage') ? true : false}
+            className={`flex justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow cursor-pointer`}
           >
             <div className="font-Poppins font-medium text-white leading-5 text-search ">Manage Widget</div>
             <div className="brick-icon bg-cover">
@@ -262,7 +243,13 @@ const Dashboard: React.FC = () => {
         )}
       </div>
       <div className="mb-4">
-        <WidgetContainer isManageMode={isManageMode} widgets={widgets} setWidgets={setWidgets} setTransformedWidgetData={setTransformedWidgetData} />
+        <WidgetContainer
+          isManageMode={isManageMode}
+          widgets={widgets}
+          setWidgets={setWidgets}
+          setTransformedWidgetData={setTransformedWidgetData}
+          filters={{ startDate, endDate }}
+        />
       </div>
     </>
   );

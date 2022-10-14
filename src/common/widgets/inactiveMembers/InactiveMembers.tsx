@@ -2,19 +2,19 @@
 import React from 'react';
 import { TabSelector } from 'common/tabs/TabSelector';
 import { useTabs } from '@/hooks/useTabs';
-import ActiveMembersList from './ActiveMembersList';
+import ActiveMembersList from '../membersTab/ActiveMembersList';
 import infoIcon from '../../../assets/images/info.svg';
 import { getLocalWorkspaceId } from '../../../lib/helper';
 import { membersWidgetDataService } from '../../../modules/dashboard/services/dashboard.services';
 import { MemberWidgetData } from '../../../modules/dashboard/interface/dashboard.interface';
-import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
+import { WidgetComponentProps } from '../../widgetLayout/WidgetTypes';
 
-const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
+const InActiveMembers: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen, filters } = props;
 
   const workspaceId = getLocalWorkspaceId();
 
-  const [selectedTab, setSelectedTab] = useTabs(['topContributor', 'active', 'inActive']);
+  const [selectedTab, setSelectedTab] = useTabs(['inActive']);
   const [memberWidgetData, setMemberWidgetData] = React.useState<MemberWidgetData[]>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
@@ -62,34 +62,18 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
         <div className="w-full mt-6 flex flex-col ">
           <nav>
             <TabSelector
-              isActive={selectedTab === 'topContributor'}
-              onClick={() => setSelectedTab('topContributor')}
-              style={`ml-1.625 mt-0.438 ${isManageMode ? 'text-sm' : 'text-xs'} pb-2  border-transparent`}
-              styleActive={'gradient-bottom-border'}
-            >
-              Top Contributors
-              <span className="pl-2 group relative z-10">
-                <img src={infoIcon} alt="" />
-                <div className="absolute z-10 group-hover:visible invisible mt-4 bg-toolTip text-left p-5 text-white dark:text-white font-Poppins text-email font-normal leading-4 rounded-0.6">
-                  Top contributors are the Members <br /> with most number of activities
-                </div>
-              </span>
-            </TabSelector>
-            <TabSelector
-              isActive={selectedTab === 'active'}
-              onClick={() => setSelectedTab('active')}
-              style={`ml-1.625 mt-0.438 ${isManageMode ? 'text-sm' : 'text-xs'} pb-2  border-transparent`}
-              styleActive={'gradient-bottom-border'}
-            >
-              Active
-            </TabSelector>
-            <TabSelector
               isActive={selectedTab === 'inActive'}
               onClick={() => setSelectedTab('inActive')}
               style={`ml-1.625 mt-0.438 ${isManageMode ? 'text-sm' : 'text-xs'} pb-2  border-transparent`}
               styleActive={'gradient-bottom-border'}
             >
               Inactive
+              <span className="pl-2 group relative z-10">
+                <img src={infoIcon} alt="" />
+                <div className="absolute z-10 group-hover:visible invisible mt-4 bg-toolTip text-left p-5 text-white dark:text-white font-Poppins text-email font-normal leading-4 rounded-0.6">
+                  Inactive Members constitute those members who have not contributed an activity during the last 24 hours
+                </div>
+              </span>
             </TabSelector>
           </nav>
           <div className="h-14.375 items-center relative overflow-y-auto ml-1.661 block section">
@@ -119,4 +103,4 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
   );
 };
 
-export default MembersTab;
+export default InActiveMembers;

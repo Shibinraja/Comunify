@@ -46,7 +46,7 @@ const MembersProfile: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isTagModalOpen, setTagModalOpen] = useState<boolean>(false);
   const [fromDate, setFromDate] = useState<Date>();
-  const [toDate, setToDate] = useState<Date>();
+  const [toDate, setToDate] = useState<Date>(new Date());
   const [searchText, setSearchText] = useState<string>('');
   const [tags, setTags] = useState<{
     tagName: string;
@@ -73,7 +73,7 @@ const MembersProfile: React.FC = () => {
   const tagsAssignLoader = useSkeletonLoading(settingsSlice.actions.assignTags.type);
   // const tagsUnAssignLoader = useSkeletonLoading(settingsSlice.actions.unAssignTags.type);
 
-  const platformData = usePlatform();
+  const { PlatformFilterResponse } = usePlatform();
 
   const tagDropDownRef = useRef<HTMLDivElement>(null);
   const dropDownRef = useRef<HTMLDivElement>(null);
@@ -398,7 +398,7 @@ const MembersProfile: React.FC = () => {
                   >
                     All
                   </div>
-                  {platformData?.map((data: PlatformResponse) => (
+                  {PlatformFilterResponse?.map((data: PlatformResponse) => (
                     <div key={`${data?.id + data?.name}`}>
                       {data?.isConnected && (
                         <div
@@ -472,7 +472,7 @@ const MembersProfile: React.FC = () => {
                       All Integrations
                     </div>
                   </div>
-                  {platformData.map((options: PlatformResponse) => (
+                  {PlatformFilterResponse?.map((options: PlatformResponse) => (
                     <div key={`${options?.id + options?.name}`} className="w-full hover:bg-signUpDomain rounded-0.3 transition ease-in duration-100">
                       {options?.isConnected && (
                         <div
@@ -521,6 +521,7 @@ const MembersProfile: React.FC = () => {
                       selected={toDate}
                       ref={datePickerRefEnd}
                       minDate={fromDate}
+                      maxDate={toDate}
                       selectsEnd
                       startDate={fromDate}
                       endDate={toDate}
