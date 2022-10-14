@@ -31,7 +31,7 @@ const ActiveMembersList: React.FC<Props> = ({ hidden, membersWidgetData, isLoadi
                       <div>
                         <p className="font-medium pt-0.5 text-xs font-Poppins capitalize">{item?.name}</p>
                       </div>
-                      <div className="font-Poppins text-membersCreatedAt not-italic font-normal text-createdAtGrey dark:text-greyDark">
+                      <div className="font-Poppins text-[10px] not-italic font-normal text-[#544e4e] dark:text-greyDark">
                         <p>{item?.lastActivity ? generateDateAndTime(`${item?.lastActivity}`, 'HH:MM') : 'Last activity time is not available'}</p>
                       </div>
                     </div>
@@ -73,7 +73,7 @@ const ActiveMembersList: React.FC<Props> = ({ hidden, membersWidgetData, isLoadi
                     <div>
                       <p className="font-medium pt-0.5 text-xs font-Poppins capitalize">{item?.memberName}</p>
                     </div>
-                    <div className="font-Poppins text-membersCreatedAt not-italic font-normal text-createdAtGrey dark:text-greyDark">
+                    <div className="font-Poppins text-[10px] not-italic font-normal text-[#544e4e] dark:text-greyDark">
                       <p>{item?.duration.time}</p>
                     </div>
                   </div>
