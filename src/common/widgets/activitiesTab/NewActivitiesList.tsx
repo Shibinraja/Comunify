@@ -116,7 +116,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
                 <>
                   {Object.entries(dateMapObj).map((item: any) => (
                     <>
-                      <h3 className="font-medium pl-7 text-m font-Poppins py-1"> ${item[0]}</h3>
+                      <h3 className="font-medium pl-7 text-m font-Poppins py-1"> {item[0]}</h3>
                       {item[1].map((item: any) => (
                         <li key={`${item?.id + item.channelId + Math.random()}`} className="my-1.68 active-list relative">
                           <div className="w-full flex justify-start items-center">
