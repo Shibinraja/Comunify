@@ -368,7 +368,8 @@ module.exports = {
         Outfit: ['Outfit', 'sans-serif'],
         Poppins: ['Poppins', 'sans-serif'],
         Manrope: ['Manrope', 'sans-serif'],
-        Lato: ['Lato', 'sans-serif']
+        Lato: ['Lato', 'sans-serif'],
+        Roboto: ['Roboto', 'sans-serif']
       },
       lineHeight: {
         1.6: '1.688rem',
