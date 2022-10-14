@@ -73,7 +73,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
                                 {item?.displayValue ? item?.displayValue : <Skeleton count={1} width={200} height={15} />}
                               </p>
                             </div>
-                            <div className="font-Poppins text-createdAt not-italic font-normal text-createdAtGrey dark:text-greyDark">
+                            <div className="font-Poppins text-[10px] not-italic font-normal text-[#544e4e] dark:text-greyDark">
                               <p>{item?.activityTime ? generateDateAndTime(`${item?.activityTime}`, 'HH:MM') : 'Activity time is not available'}</p>
                             </div>
                           </div>
@@ -102,7 +102,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
                                 {item?.displayValue ? item?.displayValue : <Skeleton count={1} width={200} height={15} />}
                               </p>
                             </div>
-                            <div className="font-Poppins text-createdAt not-italic font-normal text-createdAtGrey dark:text-greyDark">
+                            <div className="font-Poppins text-[10px] not-italic font-normal text-[#544e4e] dark:text-greyDark">
                               <p>{item?.activityTime ? generateDateAndTime(`${item?.activityTime}`, 'HH:MM') : 'Activity time is not available'}</p>
                             </div>
                           </div>
@@ -132,7 +132,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
                                   {item?.displayValue ? item?.displayValue : <Skeleton count={1} width={200} height={15} />}
                                 </p>
                               </div>
-                              <div className="font-Poppins text-createdAt not-italic font-normal text-createdAtGrey dark:text-greyDark">
+                              <div className="font-Poppins text-[10px] not-italic font-normal text-[#544e4e] dark:text-greyDark">
                                 <p>{item?.activityTime ? generateDateAndTime(`${item?.activityTime}`, 'HH:MM') : 'Activity time is not available'}</p>
                               </div>
                             </div>
@@ -182,7 +182,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
                           <div>
                             <p className="font-medium text-xs font-Poppins">{item?.message}</p>
                           </div>
-                          <div className="font-Poppins text-createdAt not-italic font-normal text-createdAtGrey dark:text-greyDark">
+                          <div className="font-Poppins text-[10px] not-italic font-normal text-[#544e4e] dark:text-greyDark">
                             <p> {generateDateAndTime(`${item?.createdAt}`, 'HH:MM')}</p>
                           </div>
                         </div>
@@ -209,7 +209,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
                           <div>
                             <p className="font-medium text-xs font-Poppins">{item?.message}</p>
                           </div>
-                          <div className="font-Poppins text-createdAt not-italic font-normal text-createdAtGrey dark:text-greyDark">
+                          <div className="font-Poppins text-[10px] not-italic font-normal text-[#544e4e] dark:text-greyDark">
                             <p> {generateDateAndTime(`${item?.createdAt}`, 'HH:MM')}</p>
                           </div>
                         </div>
@@ -238,7 +238,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
                             <div>
                               <p className="font-medium text-xs font-Poppins">{item?.message}</p>
                             </div>
-                            <div className="font-Poppins text-createdAt not-italic font-normal text-createdAtGrey dark:text-greyDark">
+                            <div className="font-Poppins text-[10px] not-italic font-normal text-[#544e4e] dark:text-greyDark">
                               <p> {generateDateAndTime(`${item?.createdAt}`, 'HH:MM')}</p>
                             </div>
                           </div>
