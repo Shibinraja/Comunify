@@ -188,7 +188,7 @@ const MembersProfile: React.FC = () => {
   };
 
   // switch case for member graph
-  const selectPlatformToDisplayOnGraph = (name: string) => {
+  const selectPlatformToDisplayOnGraph = (name: string, id: string | null = null) => {
     setSelected(name);
     switch (name) {
       case 'All':
@@ -199,7 +199,7 @@ const MembersProfile: React.FC = () => {
           membersSlice.actions.getMembersActivityGraphDataPerPlatform({
             workspaceId: workspaceId as string,
             memberId: memberId as string,
-            platform: name.toLocaleLowerCase().trim()
+            platform: id || name.toLocaleLowerCase().trim()
           })
         );
         break;
@@ -209,14 +209,15 @@ const MembersProfile: React.FC = () => {
   };
 
   // switch case for member platforms
-  const selectPlatformForActivityScroll = (name: string) => {
+  const selectPlatformForActivityScroll = (name: string, id: string | null = null) => {
     setSelectedIntegration(name);
+    setActivityNextCursor(null);
     switch (name) {
       case 'All Integration':
         setPlatform(undefined);
         break;
       case `${name !== undefined && name !== 'All Integration' && name}`:
-        setPlatform(name.toLocaleLowerCase().trim());
+        setPlatform(id || name.toLocaleLowerCase().trim());
         break;
       default:
         break;
@@ -403,7 +404,7 @@ const MembersProfile: React.FC = () => {
                       {data?.isConnected && (
                         <div
                           className="rounded-0.3 h-1.93 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack hover:bg-signUpDomain px-2"
-                          onClick={() => selectPlatformToDisplayOnGraph(data?.name)}
+                          onClick={() => selectPlatformToDisplayOnGraph(data?.name, data?.id)}
                         >
                           {data?.name}
                         </div>
@@ -477,7 +478,7 @@ const MembersProfile: React.FC = () => {
                       {options?.isConnected && (
                         <div
                           className="h-1.93 px-3 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack "
-                          onClick={() => selectPlatformForActivityScroll(options?.name)}
+                          onClick={() => selectPlatformForActivityScroll(options?.name, options?.id)}
                         >
                           {options?.name}
                         </div>

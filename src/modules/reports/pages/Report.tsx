@@ -699,7 +699,7 @@ const Report: React.FC = () => {
                           </td>
                           <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
                             <div className="flex ">
-                              <div className="py-3 font-Poppins font-medium text-trial  leading-1.31 cursor-pointer">
+                              <div className="py-3 font-Poppins font-medium text-trial  leading-1.31">
                                 {loading ? <Skeleton width={width_90} /> : generateDateAndTime(`${data?.createdAt}`, 'MM-DD-YYYY')}
                               </div>
                             </div>
@@ -707,7 +707,7 @@ const Report: React.FC = () => {
                           <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
                             {loading ? (
                               <div className="flex gap-x-1">
-                                <div className="py-3 font-Poppins font-medium text-trial  leading-1.31 cursor-pointer w-1.375">
+                                <div className="py-3 font-Poppins font-medium text-trial  leading-1.31 w-1.375">
                                   <Skeleton circle width={'100%'} height={'100%'} />
                                 </div>
                               </div>
@@ -716,7 +716,7 @@ const Report: React.FC = () => {
                                 {data?.workspaceReportSettings?.map((report) =>
                                   report.reportPlatforms.map((platform) => (
                                     <div
-                                      className="py-3 font-Poppins font-medium text-trial  leading-1.31 cursor-pointer w-1.375"
+                                      className="py-3 font-Poppins font-medium text-trial  leading-1.31 w-1.375"
                                       key={platform.workspacePlatformId}
                                     >
                                       <img src={platform.workspacePlatform.platformSettings.platforms.platformLogoUrl} alt="" />
@@ -732,10 +732,8 @@ const Report: React.FC = () => {
                             ) : (
                               <div className="flex">
                                 {data?.workspaceReportSettings?.map((report) => (
-                                  <div className="py-3 font-Poppins font-medium text-trial leading-1.31 cursor-pointer" key={report.id}>
-                                    {ScheduleReportDateType[data?.workspaceReportSettings[0]?.scheduleRepeat] === 'NoSchedule'
-                                      ? 'No Schedule'
-                                      : ScheduleReportDateType[data?.workspaceReportSettings[0]?.scheduleRepeat]}
+                                  <div className="py-3 font-Poppins font-medium text-trial leading-1.31" key={report.id}>
+                                    {ScheduleReportDateType[data?.workspaceReportSettings[0]?.scheduleRepeat] === 'NoSchedule' ? 'No Schedule': ScheduleReportDateType[data?.workspaceReportSettings[0]?.scheduleRepeat] }
                                   </div>
                                 ))}
                               </div>

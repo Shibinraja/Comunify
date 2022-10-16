@@ -60,7 +60,7 @@ const ReportHistory: React.FC = () => {
           <div className="">
             <Button
               type="button"
-              text="create report"
+              text="Create Report"
               className="btn-save-modal border-none text-white w-8.37 font-Poppins font-medium shadow-contactBtn rounded leading-1.12 h-3.06 text-error cursor-pointer transition ease-in duration-300 hover:shadow-buttonShadowHover"
               onClick={navigateToCreateReport}
             />
@@ -88,28 +88,28 @@ const ReportHistory: React.FC = () => {
                     <tr className="border-b" key={i}>
                       <td className="px-6 py-3">
                         <div className="flex ">
-                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 ">
                             {loading ? <Skeleton width={width_90} /> : generateDateAndTime(`${data?.createdAt}`, 'MM-DD-YYYY')}
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-3">
                         <div className="flex ">
-                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 ">
                             {loading ? <Skeleton width={width_90} /> : generateDateAndTime(`${data?.startAt}`, 'MM-DD-YYYY')}
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-3">
                         <div className="flex ">
-                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 ">
                             {loading ? <Skeleton width={width_90} /> : generateDateAndTime(`${data?.endAt}`, 'MM-DD-YYYY')}
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-3">
                         <div className="flex ">
-                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer">
+                          <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 ">
                             {loading ? <Skeleton width={width_90} /> : ScheduleReportDateType[`${data?.userWorkspaceReport?.workspaceReportSettings[0]?.scheduleRepeat}`] === 'NoSchedule' ? 'No Schedule': ScheduleReportDateType[data?.userWorkspaceReport?.workspaceReportSettings[0]?.scheduleRepeat]}
                           </div>
                         </div>
