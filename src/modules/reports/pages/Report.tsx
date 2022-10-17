@@ -68,7 +68,7 @@ const Report: React.FC = () => {
     startDate: null,
     endDate: null
   });
-  const [modalOpen, setModalOpen] = useState<{ removeModalOpen: boolean; scheduleOffModalOpen: boolean; generateReportModalOpen:boolean }>({
+  const [modalOpen, setModalOpen] = useState<{ removeModalOpen: boolean; scheduleOffModalOpen: boolean; generateReportModalOpen: boolean }>({
     removeModalOpen: false,
     scheduleOffModalOpen: false,
     generateReportModalOpen: false
@@ -89,20 +89,35 @@ const Report: React.FC = () => {
 
   const ReportFilterList = Object.values(checkedPlatform).concat(Object.values(checkedStatus));
 
-  const getReportsList = async(props: { search: string; page: number; limit: number }) => {
+  const getReportsList = async(props: { search: string; page: number; limit: number }, reset: boolean) => {
     setLoading(true);
-    const reportData = await getReportsListService({
-      workspaceId: workspaceId!,
-      params: {
-        page: props.page,
-        limit: props.limit,
-        search: props.search,
-        ...(checkedFilterOption.checkPlatform.length ? { platformId: checkedFilterOption.checkPlatform } : {}),
-        ...(checkedFilterOption.checkStatus.length ? { reportStatus: checkedFilterOption.checkStatus } : {}),
-        ...(date.startDate ? { startDate: date.startDate && convertStartDate(date.startDate) } : {}),
-        ...(date.endDate ? { endDate: date.endDate && convertEndDate(date.endDate) } : {})
-      }
-    });
+    let reportData;
+    if (!reset) {
+      reportData = await getReportsListService({
+        workspaceId: workspaceId!,
+        params: {
+          page: props.page,
+          limit: props.limit,
+          search: props.search,
+          ...(checkedFilterOption.checkPlatform.length ? { platformId: checkedFilterOption.checkPlatform } : {}),
+          ...(checkedFilterOption.checkStatus.length ? { reportStatus: checkedFilterOption.checkStatus } : {}),
+          ...(date.startDate ? { startDate: date.startDate && convertStartDate(date.startDate) } : {}),
+          ...(date.endDate ? { endDate: date.endDate && convertEndDate(date.endDate) } : {})
+        }
+      });
+    }
+    if(reset) {
+      handleFilterDropdown();
+      reportData = await getReportsListService({
+        workspaceId: workspaceId!,
+        params: {
+          page: props.page,
+          limit: props.limit,
+          search: props.search
+        }
+      });
+    }
+
     setLoading(false);
 
     setReportsList({
@@ -147,17 +162,20 @@ const Report: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    getReportsList({
-      search: searchText,
-      page,
-      limit
-    });
+    getReportsList(
+      {
+        search: searchText,
+        page,
+        limit
+      },
+      false
+    );
   }, [page]);
 
   // Returns the debounced value of the search text.
   useEffect(() => {
     if (debouncedValue) {
-      getReportsList({ page: 1, limit, search: debouncedValue });
+      getReportsList({ page: 1, limit, search: debouncedValue }, false);
     }
   }, [debouncedValue]);
 
@@ -180,10 +198,9 @@ const Report: React.FC = () => {
     return false;
   }, [date, ReportFilterList]);
 
-
   const handleFilterDropdown = (): void => {
     setIsFilterDropdownActive((prev) => !prev);
-    setActivateFilter({ isActiveBetween: false, isStatusActive: false, isPlatformActive: activateFilter.isPlatformActive ? false : true });
+    setActivateFilter((prevList) => ({ ...prevList, isPlatformActive: true }));
   };
 
   const handleFilterDropDownStatus = (type: string) => {
@@ -203,11 +220,14 @@ const Report: React.FC = () => {
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
     if (!searchText) {
-      getReportsList({
-        search: searchText,
-        page,
-        limit
-      });
+      getReportsList(
+        {
+          search: searchText,
+          page,
+          limit
+        },
+        false
+      );
     }
     setPage(1);
     setSearchText(searchText);
@@ -322,7 +342,7 @@ const Report: React.FC = () => {
         },
         setLoading
       );
-
+      setActivateFilter({ isActiveBetween: false, isStatusActive: false, isPlatformActive: false });
       setReportsList({
         data: reportData?.data as Array<ReportListServiceResponsePropsData>,
         totalPages: reportData?.totalPages as string,
@@ -352,11 +372,14 @@ const Report: React.FC = () => {
       loaderSetAction
     ).then((data) => {
       if (data) {
-        getReportsList({
-          search: searchText,
-          page,
-          limit
-        });
+        getReportsList(
+          {
+            search: searchText,
+            page,
+            limit
+          },
+          false
+        );
         showSuccessToast('Report removed successfully');
         setModalOpen((prevState) => ({ ...prevState, removeModalOpen: false }));
       }
@@ -370,23 +393,25 @@ const Report: React.FC = () => {
         workspaceId: workspaceId as string,
         reportId: selectId.id as string,
         body: {
-          schedule: selectId.scheduleActive ? false :true
+          schedule: selectId.scheduleActive ? false : true
         }
       },
       loaderSetAction
     ).then((data) => {
       if (data) {
-        getReportsList({
-          search: searchText,
-          page,
-          limit
-        });
+        getReportsList(
+          {
+            search: searchText,
+            page,
+            limit
+          },
+          false
+        );
         showSuccessToast('Report is scheduled off');
         setModalOpen((prevState) => ({ ...prevState, scheduleOffModalOpen: false }));
       }
     });
   };
-
 
   //On Submit functionality
   const handleOnSubmit = () => {
@@ -402,8 +427,8 @@ const Report: React.FC = () => {
     }
   };
 
-  const RenderedOption = (schedule: number, isScheduled:boolean) => {
-    if (isScheduled &&  schedule !== ScheduleReportDateType['NoSchedule']) {
+  const RenderedOption = (schedule: number, isScheduled: boolean) => {
+    if (isScheduled && schedule !== ScheduleReportDateType['NoSchedule']) {
       return ['Edit', 'Generate', 'Remove', 'Schedule Off'];
     }
 
@@ -472,29 +497,29 @@ const Report: React.FC = () => {
                     {activateFilter.isPlatformActive && (
                       <div className="flex flex-col gap-y-5 justify-center px-3 mb-3 ">
                         {PlatformFilterResponse &&
-                            PlatformFilterResponse.map(
-                              (platform: PlatformResponse, index: number) =>
-                                platform?.isConnected && (
-                                  <div className="flex items-center  pt-[18px]" key={index}>
-                                    <div className="mr-2">
-                                      <input
-                                        type="checkbox"
-                                        className="checkbox"
-                                        id={platform.id as string}
-                                        name={platform.id as string}
-                                        checked={(checkedPlatform[platform.id] as boolean) || false}
-                                        onChange={handlePlatformsCheckBox}
-                                      />
-                                    </div>
-                                    <label
-                                      className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer"
-                                      htmlFor={platform.id as string}
-                                    >
-                                      {platform?.name}
-                                    </label>
+                          PlatformFilterResponse.map(
+                            (platform: PlatformResponse, index: number) =>
+                              platform?.isConnected && (
+                                <div className="flex items-center  pt-[18px]" key={index}>
+                                  <div className="mr-2">
+                                    <input
+                                      type="checkbox"
+                                      className="checkbox"
+                                      id={platform.id as string}
+                                      name={platform.id as string}
+                                      checked={(checkedPlatform[platform.id] as boolean) || false}
+                                      onChange={handlePlatformsCheckBox}
+                                    />
                                   </div>
-                                )
-                            )}
+                                  <label
+                                    className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer"
+                                    htmlFor={platform.id as string}
+                                  >
+                                    {platform?.name}
+                                  </label>
+                                </div>
+                              )
+                          )}
                       </div>
                     )}
 
@@ -582,18 +607,43 @@ const Report: React.FC = () => {
                                 onChange={handleStatusCheckBox}
                               />
                             </div>
-                            <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">{options.name === 'NoSchedule' ? 'No Schedule' : options.name}</div>
+                            <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
+                              {options.name === 'NoSchedule' ? 'No Schedule' : options.name}
+                            </div>
                           </div>
                         ))}
                       </div>
                     )}
 
-                    <div className="buttons px-3 ">
+                    <div className="buttons px-3 flex mt-1.56">
                       <Button
+                        disabled={loading ? true : false}
+                        type="button"
+                        onClick={() => {
+                          setCheckedFilterOption({ checkPlatform: [], checkStatus: [] });
+                          setCheckedPlatform({});
+                          setDate({ startDate: null, endDate: null });
+                          setCheckedStatusOption({});
+                          getReportsList(
+                            {
+                              search: searchText,
+                              page,
+                              limit
+                            },
+                            true
+                          );
+                        }}
+                        text="Reset"
+                        className="border border-backdropColor text-black rounded-0.31 h-2.063 w-1/2 mr-1 cursor-pointer text-card font-Manrope font-semibold leading-1.31 hover:text-white hover:bg-backdropColor"
+                      />
+                      <Button
+                        disabled={loading ? true : false}
                         onClick={submitFilterChange}
                         type="button"
                         text="Apply"
-                        className="border-none btn-save-modal rounded-0.31 h-2.063 w-full mt-1.56 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white"
+                        className={`border-none btn-save-modal rounded-0.31 h-2.063 w-1/2 ml-1 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${
+                          loading ? 'cursor-not-allowed' : ''
+                        }`}
                       />
                     </div>
                   </div>
@@ -689,25 +739,27 @@ const Report: React.FC = () => {
                               </div>
                             )}
                           </td>
-                          <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white" >
+                          <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
                             <div className="flex cursor-pointer relative" ref={kebabMenuRef}>
                               <div
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  if(isDropdownActive) {
+                                  if (isDropdownActive) {
                                     handleDropDownActive('');
-                                  }  else{
+                                  } else {
                                     handleDropDownActive(data.id);
                                   }
-                                }
-                                }
+                                }}
                                 className="flex items-center justify-center action  h-[40px] w-[46px] box-border bg-white dark:bg-secondaryDark dark:border-[#dbd8fc1a] shadow-deleteButton rounded"
                               >
                                 <img src={actionDotIcon} alt="" className="relative" />
                               </div>
                               {isDropdownActive === data.id && (
-                                <div className="absolute top-6 app-result-card-border bg-white dark:bg-secondaryDark -m-[3px] rounded-[6px] box-border w-9.62  right-[0.5rem] shadow-shadowInput z-40" >
-                                  {RenderedOption(data.workspaceReportSettings[0].scheduleRepeat, data.workspaceReportSettings[0].isScheduleActive)?.map((options, i) => (
+                                <div className="absolute top-6 app-result-card-border bg-white dark:bg-secondaryDark -m-[3px] rounded-[6px] box-border w-9.62  right-[0.5rem] shadow-shadowInput z-40">
+                                  {RenderedOption(
+                                    data.workspaceReportSettings[0].scheduleRepeat,
+                                    data.workspaceReportSettings[0].isScheduleActive
+                                  )?.map((options, i) => (
                                     <div className="flex flex-col" onClick={() => handleDropDownActive('')} key={i}>
                                       <div
                                         className="h-3.06 p-2 flex items-center border border-transparent text-searchBlack dark:text-white font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain hover:app-result-card-border dark:hover:bg-thirdDark transition ease-in duration-300 "
@@ -720,7 +772,6 @@ const Report: React.FC = () => {
                                 </div>
                               )}
                             </div>
-
                           </td>
                         </tr>
                       ))}
@@ -740,7 +791,7 @@ const Report: React.FC = () => {
                 />
               </div>
             </div>
-          ): (
+          ) : (
             <div className="flex flex-col items-center justify-center w-full fixTableHead-nomember">
               <div>
                 <img src={noReportIcon} alt="No Report" />
@@ -762,7 +813,9 @@ const Report: React.FC = () => {
                 ? 'Are you sure you want to turn on the scheduling for the report?'
                 : modalOpen.scheduleOffModalOpen && selectId.scheduleActive
                   ? 'Are you sure you want to turn off the scheduling for the report?'
-                  : modalOpen.generateReportModalOpen ? 'Are you sure you want to generate the report?': ''
+                  : modalOpen.generateReportModalOpen
+                    ? 'Are you sure you want to generate the report?'
+                    : ''
           }
         />
       </Fragment>

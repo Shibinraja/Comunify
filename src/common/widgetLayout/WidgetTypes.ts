@@ -71,10 +71,10 @@ export interface WidgetContainerProps {
 }
 
 export interface TransformWidgetDataType {
-  id: string;
+  id: string | undefined;
   widgetId: string;
   status: string;
   order: number;
   config: ReactGridLayout.Layout;
-  widget: { widgetLocation: string; invocationType: number; widgetId: string };
+  widget: { widgetLocation: string; invocationType: number; widgetId: string } | undefined;
 }

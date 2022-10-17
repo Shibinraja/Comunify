@@ -15,7 +15,7 @@ const widgetsReports: React.FC = () => {
   const navigate = useNavigate();
   const [isManageMode, setIsManageMode] = useState<boolean>(false);
   const [widgets, setWidgets] = useState<Array<Omit<PanelWidgetsType, 'isAssigned'>>>([]);
-  const [transformedWidgetData, setTransformedWidgetData] = React.useState<any>(new Array(null));
+  const [transformedWidgetData, setTransformedWidgetData] = React.useState<Array<TransformWidgetDataType>>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -68,7 +68,9 @@ const widgetsReports: React.FC = () => {
             widget: { widgetLocation: curr?.widget?.widgetLocation, invocationType: curr?.widget?.invocationType, widgetId: curr?.widget?.widgetId }
           };
           widgets['layout'] = curr?.config;
-          acc.push(widgets);
+          delete curr.id;
+          delete curr.widget;
+          acc.push(widgets as Omit<PanelWidgetsType, 'isAssigned'>);
           return acc;
         },
         []
