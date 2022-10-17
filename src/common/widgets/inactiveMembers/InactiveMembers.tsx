@@ -8,6 +8,7 @@ import { getLocalWorkspaceId } from '../../../lib/helper';
 import { membersWidgetDataService } from '../../../modules/dashboard/services/dashboard.services';
 import { MemberWidgetData } from '../../../modules/dashboard/interface/dashboard.interface';
 import { WidgetComponentProps } from '../../widgetLayout/WidgetTypes';
+import { useAppSelector } from '@/hooks/useRedux';
 
 const InActiveMembers: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen, filters } = props;
@@ -18,13 +19,11 @@ const InActiveMembers: React.FC<WidgetComponentProps> = (props: WidgetComponentP
   const [memberWidgetData, setMemberWidgetData] = React.useState<MemberWidgetData[]>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
-  const widgetPreviewLocation = window.location.href.includes('/report-details');
+  const defaultTab = 'inActive';
 
-  React.useEffect(() => {
-    if (isManageMode === false && !isSidePanelOpen) {
-      getMembersWidgetData();
-    }
-  }, [selectedTab]);
+  const workspaceIdToken = useAppSelector((state) => state.auth.workspaceId);
+
+  const widgetPreviewLocation = window.location.href.includes('/report-details');
 
   React.useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
@@ -38,14 +37,14 @@ const InActiveMembers: React.FC<WidgetComponentProps> = (props: WidgetComponentP
   const getMembersWidgetData = async () => {
     setIsLoading(true);
     const newFilter = { ...filters };
-    newFilter['type'] = selectedTab ? selectedTab : undefined;
+    newFilter['type'] = defaultTab ? defaultTab : selectedTab as string;
     if(widgetPreviewLocation) {
       newFilter['limit'] = 5;
     }
     if(!widgetPreviewLocation) {
       newFilter['limit'] = 20;
     }
-    const data: MemberWidgetData[] = await membersWidgetDataService(workspaceId, newFilter);
+    const data: MemberWidgetData[] = await membersWidgetDataService(workspaceId || workspaceIdToken, newFilter);
     setMemberWidgetData(data);
     setIsLoading(false);
   };
@@ -55,14 +54,14 @@ const InActiveMembers: React.FC<WidgetComponentProps> = (props: WidgetComponentP
   };
 
   return (
-    <div className={`my-6 ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
+    <div className={`${!isManageMode ? 'h-full' : 'cursor-grabbing my-6 '}  `}>
       <div>
         <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Members</h3>
       </div>
       <div
-        className={`w-full h-full box-border
+        className={`w-full box-border
         ${
-          isManageMode ? 'widget-border relative' : 'border-borderPrimary'
+          isManageMode ? 'widget-border relative h-full' : 'border-borderPrimary'
         } bg-white dark:bg-secondaryDark dark:text-white rounded-0.6 mt-1.868 border  
          dark:border-borderDark shadow-profileCard `}
       >
@@ -83,7 +82,7 @@ const InActiveMembers: React.FC<WidgetComponentProps> = (props: WidgetComponentP
               </span>
             </TabSelector>
           </nav>
-          <div className={`h-14.375 items-center ml-1.661 relative block section ${!widgetPreviewLocation ? 'overflow-y-auto' : 'overflow-hidden'}`}>
+          <div className={`items-center ml-1.661 relative block section overflow-y-auto ${!widgetPreviewLocation ? 'h-14.375' : ''}`}>
             {!memberWidgetData?.length && !isLoading && !isManageMode && !isSidePanelOpen && (
               <div className="flex items-center justify-center font-Poppins font-normal text-xs text-infoBlack h-full">No data available</div>
             )}

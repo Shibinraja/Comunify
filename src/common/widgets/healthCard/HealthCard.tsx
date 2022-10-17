@@ -12,10 +12,13 @@ import { HealthScoreWidgetData } from '../../widgetLayout/WidgetTypes';
 // import { useSearchParams } from 'react-router-dom';
 
 import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
+import { useAppSelector } from '@/hooks/useRedux';
 
 const HealthCard: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const { isManageMode, removeWidgetFromDashboard, widget, isShrunk, isSidePanelOpen, filters } = props;
   const gradientTransform = `rotate(90)`;
+
+  const workspaceIdToken = useAppSelector((state) => state.auth.workspaceId);
   const workspaceId = getLocalWorkspaceId();
 
   const [healthScoreData, setHealthScoreData] = React.useState<HealthScoreWidgetData[] | []>([]);
@@ -28,7 +31,7 @@ const HealthCard: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
 
   // eslint-disable-next-line space-before-function-paren
   const fetchHealthScoreWidgetData = async () => {
-    const response: HealthScoreWidgetData[] = await healthScoreWidgetDataService(workspaceId, filters);
+    const response: HealthScoreWidgetData[] = await healthScoreWidgetDataService(workspaceId || workspaceIdToken, filters);
     setHealthScoreData(response);
   };
   const activitiesScoreData: HealthScoreWidgetData | undefined = healthScoreData.find(

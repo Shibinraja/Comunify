@@ -6,6 +6,7 @@ import { activitiesWidgetDataService } from '../../../modules/dashboard/services
 import { getLocalWorkspaceId } from '../../../lib/helper';
 import { ActivitiesWidgetData } from '../../../modules/dashboard/interface/dashboard.interface';
 import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
+import { useAppSelector } from '@/hooks/useRedux';
 
 const Highlights: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen, filters } = props;
@@ -13,13 +14,11 @@ const Highlights: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
   const [activitiesWidgetResponse, setActivitiesWidgetResponse] = React.useState<ActivitiesWidgetData[]>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
-  const widgetPreviewLocation = window.location.href.includes('/report-details');
+  const defaultTab = 'highlights';
 
-  React.useEffect(() => {
-    if (isManageMode === false && !isSidePanelOpen) {
-      getActivityWidgetData();
-    }
-  }, [selectedTab]);
+  const workspaceIdToken = useAppSelector((state) => state.auth.workspaceId);
+
+  const widgetPreviewLocation = window.location.href.includes('/report-details');
 
   React.useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
@@ -35,14 +34,14 @@ const Highlights: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
   const getActivityWidgetData = async () => {
     setIsLoading(true);
     const newFilter = { ...filters };
-    newFilter['type'] = selectedTab ? selectedTab : undefined;
-    if(widgetPreviewLocation) {
+    newFilter['type'] = defaultTab ? defaultTab : selectedTab as string;
+    if (widgetPreviewLocation) {
       newFilter['limit'] = 5;
     }
-    if(!widgetPreviewLocation) {
+    if (!widgetPreviewLocation) {
       newFilter['limit'] = 20;
     }
-    const data: ActivitiesWidgetData[] = await activitiesWidgetDataService(workspaceId, newFilter);
+    const data: ActivitiesWidgetData[] = await activitiesWidgetDataService(workspaceId || workspaceIdToken, newFilter);
     setActivitiesWidgetResponse(data);
     setIsLoading(false);
   };
@@ -52,13 +51,13 @@ const Highlights: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
   };
 
   return (
-    <div className={`my-6 ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
+    <div className={`${!isManageMode ? 'h-full' : 'cursor-grabbing my-6 '}  `}>
       <div>
         <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Activities</h3>
       </div>
       <div
-        className={`w-full h-full box-border bg-white dark:bg-secondaryDark dark:text-white  rounded-0.6 mt-1.868 border
-           ${isManageMode ? 'widget-border relative' : 'border-borderPrimary'} dark:border-borderDark shadow-profileCard `}
+        className={`w-full  box-border bg-white dark:bg-secondaryDark dark:text-white  rounded-0.6 mt-1.868 border
+         ${isManageMode ? 'widget-border relative h-full' : 'border-borderPrimary '} dark:border-borderDark shadow-profileCard `}
       >
         <div className="w-full mt-6 flex flex-col">
           <nav>
@@ -68,10 +67,10 @@ const Highlights: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
               style={`ml-1.625 mt-0.438 ${isManageMode ? 'text-sm' : 'text-xs'} pb-2  border-transparent`}
               styleActive={'gradient-bottom-border'}
             >
-              Highlights
+            Highlights
             </TabSelector>
           </nav>
-          <div className={`h-14.375 items-center relative block section ${!widgetPreviewLocation ? 'overflow-y-auto' : 'overflow-hidden'}`}>
+          <div className={`items-center relative block section overflow-y-auto ${!widgetPreviewLocation ? 'h-14.375' : ''}`}>
             {!activitiesWidgetResponse?.length && !isLoading && !isManageMode && !isSidePanelOpen && (
               <div className="flex items-center justify-center font-Poppins font-normal text-xs text-infoBlack h-full">No data available</div>
             )}
@@ -90,7 +89,7 @@ const Highlights: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
             onClick={handleRemove}
             className="absolute -right-3 bg-widgetClose rounded-full flex items-center justify-center h-6 w-6 text-white text-2xl -top-3 cursor-pointer"
           >
-            -
+          -
           </div>
         )}
       </div>

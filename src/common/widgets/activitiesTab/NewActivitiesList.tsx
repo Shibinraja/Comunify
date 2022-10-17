@@ -56,7 +56,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
             <ul>
               {todayDate.length > 0 && (
                 <>
-                  <h3 className="font-medium pl-7 text-m font-Poppins py-1"> Today</h3>
+                  <h3 className="font-medium pl-7 text-m font-Poppins  text-xs py-1 mt-2"> Today</h3>
                   {todayDate.map((item: ActivitiesWidgetData) => (
                     <>
                       <li key={`${item?.id + item.channelId + Math.random()}`} className="my-1.68 active-list relative">
@@ -85,7 +85,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
               )}
               {yesterdayDate?.length > 0 && (
                 <>
-                  <h3 className="font-medium pl-7 text-m font-Poppins py-1"> Yesterday</h3>
+                  <h3 className="font-medium pl-7 text-m font-Poppins  text-xs py-1 mt-2"> Yesterday</h3>
                   {yesterdayDate.map((item: ActivitiesWidgetData) => (
                     <>
                       <li key={`${item?.id + item.channelId + Math.random()}`} className="my-1.68 active-list relative">
@@ -116,7 +116,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
                 <>
                   {Object.entries(dateMapObj).map((item: any) => (
                     <>
-                      <h3 className="font-medium pl-7 text-m font-Poppins py-1"> {item[0]}</h3>
+                      <h3 className="font-medium pl-7 text-m font-Poppins  text-xs py-1 mt-2"> {item[0]}</h3>
                       {item[1].map((item: any) => (
                         <li key={`${item?.id + item.channelId + Math.random()}`} className="my-1.68 active-list relative">
                           <div className="w-full flex justify-start items-center">
@@ -167,7 +167,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
           <ul>
             {todayActivities.length > 0 && (
               <>
-                <h3 className="font-medium pl-7 text-m font-Poppins">Today</h3>
+                <h3 className="font-medium pl-7 text-m font-Poppins  text-xs mt-2">Today</h3>
                 {todayActivities.map((item) => (
                   <>
                     <li key={`${Math.random()}`} className="my-1.68 active-list relative">
@@ -194,7 +194,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
             )}
             {yesterdayActivities.length > 0 && (
               <>
-                <h3 className="font-medium pl-7 text-m font-Poppins">Yesterday</h3>
+                <h3 className="font-medium pl-7 text-m font-Poppins  text-xs mt-2">Yesterday</h3>
                 {yesterdayActivities.map((item) => (
                   <>
                     <li key={`${Math.random()}`} className="my-1.68 active-list relative">
@@ -223,7 +223,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
               <>
                 {Object.entries(dateActivities).map((item: any) => (
                   <>
-                    <h3 className="font-medium pl-7 text-m font-Poppins"> {item[0] ? item[0] : ''}</h3>
+                    <h3 className="font-medium pl-7 text-m font-Poppins  text-xs mt-2"> {item[0] ? item[0] : ''}</h3>
 
                     {item[1].map((item: any) => (
                       <li key={`${Math.random()}`} className="my-1.68 active-list relative">
