@@ -64,7 +64,7 @@ const CreateReport = () => {
   const { PlatformsConnected } = usePlatform();
   const dropDownRef = useRef<HTMLDivElement>(null);
   const reportOptionRef = useRef<HTMLDivElement>(null);
-
+  const scheduledReportOptions = [...ReportOptions].splice(0, 3);
   const formikRef: any = useRef();
 
   useEffect(() => {
@@ -76,11 +76,20 @@ const CreateReport = () => {
 
   useEffect(() => {
     if (reportUpdateValuesData && !formikRef?.current?.values.name) {
-      formikRef.current.resetForm({
+      formikRef?.current?.resetForm({
         values: {
           name: reportUpdateValuesData.name,
           description: reportUpdateValuesData.description,
-          ...{ emails: reportUpdateValuesData.workspaceReportSettings[0].emailRecipients.map((email: { email: string }) => email.email) }
+          ...{ emails: reportUpdateValuesData.workspaceReportSettings[0].emailRecipients.map((email: { email: string }) => email.email) },
+          ...(reportUpdateValuesData?.workspaceReportSettings[0]?.createdAt
+            ? { startDate: reportUpdateValuesData?.workspaceReportSettings[0]?.createdAt }
+            : {}),
+          ...(reportUpdateValuesData?.workspaceReportSettings[0]?.reportEndAt
+            ? { endDate: reportUpdateValuesData?.workspaceReportSettings[0]?.reportEndAt }
+            : {}),
+          ...(reportUpdateValuesData?.workspaceReportSettings[0]?.scheduleRepeat
+            ? { schedule: reportUpdateValuesData?.workspaceReportSettings[0]?.scheduleRepeat }
+            : { schedule: '' })
         }
       });
       const reportResponseValues = reportUpdateValuesData?.workspaceReportSettings[0];
@@ -106,9 +115,6 @@ const CreateReport = () => {
           endDate: new Date(reportResponseValues.reportEndAt),
           singleDate: undefined
         }));
-        formikRef?.current?.setFieldTouched('startDate');
-        formikRef?.current?.setFieldTouched('endDate');
-        formikRef?.current?.setFieldValue('schedule', '', true);
       }
     }
   }, [reportUpdateValuesData]);
@@ -119,7 +125,9 @@ const CreateReport = () => {
         values: {
           name: reportValuesData.name,
           description: reportValuesData.description,
-          emails: reportValuesData.emails
+          emails: reportValuesData.emails,
+          ...(reportValuesData.startDate ? { startDate: reportValuesData.startDate } : {}),
+          ...(reportValuesData.endDate ? { endDate: reportValuesData.endDate } : {})
         }
       });
       reportValuesData.platform.map((platformId: string) => setCheckedPlatform((preValue) => ({ ...preValue, [platformId]: true })));
@@ -137,8 +145,6 @@ const CreateReport = () => {
           endDate: new Date(reportValuesData.endDate),
           singleDate: undefined
         }));
-        formikRef?.current?.setFieldTouched('startDate');
-        formikRef?.current?.setFieldTouched('endDate');
       }
     }
   }, [reportValuesData]);
@@ -157,34 +163,22 @@ const CreateReport = () => {
   }, [checkedPlatform]);
 
   useEffect(() => {
-    if (checkedRadioId[ScheduleReportsEnum.No]) {
-      formikRef?.current?.setFieldTouched('startDate');
-      formikRef?.current?.setFieldTouched('endDate');
-      if(reportValuesData || reportUpdateValuesData) {
-        formikRef?.current?.setFieldTouched('singleDate');
-      }
-      // formikRef?.current?.setFieldTouched('singleDate');
-    }
-  }, [checkedRadioId]);
-
-  useEffect(() => {
-    if (customDate.startDate) {
-      formikRef?.current?.setFieldValue('startDate', customDate.startDate, true);
-    }
-    if (customDate.endDate) {
-      formikRef?.current?.setFieldValue('endDate', customDate.endDate, true);
-    }
-
     if (customDate.singleDate) {
-      formikRef?.current?.setFieldValue('singleDate', customDate.startDate ? customDate.startDate : customDate.singleDate, true);
+      formikRef?.current?.setValues({
+        ...formikRef?.current?.values,
+        singleDate: convertStartDate(customDate.singleDate),
+        startDate: convertStartDate(customDate.singleDate),
+        endDate: convertEndDate(customDate.singleDate)
+      });
+      // formikRef?.current?.setFieldValue('singleDate', customDate.startDate ? customDate.startDate : customDate.singleDate, true);
     }
-  }, [customDate]);
+  }, [customDate.singleDate]);
 
   const handleSelectedReport = (selectedReport: string): void => {
     // Formik ref to enable to make the custom dropdown with field touch and set the value for the fields.
     formikRef?.current?.setFieldTouched('schedule');
     formikRef?.current?.setFieldValue('schedule', selectedReport);
-    setSelectedReport(selectedReport);
+    setSelectedReport(selectedReport === '' ? 'NoSchedule' : selectedReport);
     setIsReportActive(false);
   };
 
@@ -218,7 +212,7 @@ const CreateReport = () => {
     setCheckedRadioId({ [checked_id]: event.target.checked });
   };
 
-  const handlePlatformAllCheckBox = (event:ChangeEvent<HTMLInputElement>) => {
+  const handlePlatformAllCheckBox = (event: ChangeEvent<HTMLInputElement>) => {
     PlatformsConnected.forEach((platformId) => {
       setCheckedPlatform((preValue) => ({ ...preValue, [platformId.id]: event.target.checked }));
       setPlatformId((preValue) => ({ ...preValue, [platformId.platformId]: event.target.checked }));
@@ -237,14 +231,17 @@ const CreateReport = () => {
   const selectCustomBetweenDate = (event: ChangeEvent<Date>, date: Date, dateTime: string) => {
     event.stopPropagation();
     setCustomDateLink({});
-    formikRef?.current?.setFieldTouched('startDate');
-    formikRef?.current?.setFieldTouched('endDate');
+
     if (dateTime === 'start') {
       setCustomDate((prevDate) => ({ ...prevDate, startDate: !date ? undefined : date, singleDate: undefined }));
+      formikRef?.current?.setFieldValue('startDate', !date ? undefined : date, true);
+      formikRef?.current?.setFieldTouched('startDate');
     }
 
     if (dateTime === 'end') {
       setCustomDate((prevDate) => ({ ...prevDate, endDate: !date ? undefined : date, singleDate: undefined }));
+      formikRef?.current?.setFieldValue('endDate', !date ? undefined : date, true);
+      formikRef?.current?.setFieldTouched('endDate');
     }
     handleSelectedReport('NoSchedule');
   };
@@ -360,6 +357,7 @@ const CreateReport = () => {
           initialValues={initialValues}
           onSubmit={handleSubmit}
           validateOnChange={true}
+          enableReinitialize
           validationSchema={Yup.object().shape({
             name: Yup.string()
               .required('Report name is required')
@@ -372,10 +370,19 @@ const CreateReport = () => {
               .matches(reportName_regex, 'Description is not valid')
               .trim(),
             schedule: Yup.lazy((value: string) => {
-              if (!value) {
+              if (Object.keys(checkedRadioId).includes('Yes') && value === 'NoSchedule') {
                 return Yup.string().required('Schedule Report is required');
               }
-              if (Object.keys(checkedRadioId).includes('Yes') && value === 'NoSchedule') {
+
+              if (Object.keys(checkedRadioId).includes('No') && value === 'NoSchedule') {
+                return Yup.string().notRequired();
+              }
+
+              if (Object.keys(checkedRadioId).includes('No') && !value) {
+                return Yup.string().notRequired();
+              }
+
+              if (!value) {
                 return Yup.string().required('Schedule Report is required');
               }
 
@@ -395,16 +402,40 @@ const CreateReport = () => {
                   .max(255)
               ),
             platform: Yup.array().min(1, 'Platform is required'),
-            singleDate: Yup.string().when(['startDate', 'endDate'], {
-              is: (startDate: string, endDate: string) => !startDate || !endDate,
-              then: Yup.lazy(() => {
-                if (Object.keys(checkedRadioId).includes('Yes')) {
-                  return Yup.string().notRequired();
-                }
+            // startDate: Yup.string().required('Custom Date is required'),
+            // endDate: Yup.string().required('Custom Date is required'),
+            startDate: Yup.lazy((value: string) => {
+              if (Object.keys(checkedRadioId).includes('Yes') && !value) {
+                return Yup.string().notRequired();
+              }
+              if (!value) {
                 return Yup.string().required('Custom Date is required');
-              }),
-              otherwise: Yup.string().notRequired()
+              }
+
+              return Yup.string().notRequired();
+            }),
+            endDate: Yup.lazy((value: string) => {
+              if (Object.keys(checkedRadioId).includes('Yes') && !value) {
+                return Yup.string().notRequired();
+              }
+              if (!value) {
+                return Yup.string().required('Custom Date is required');
+              }
+
+              return Yup.string().notRequired();
             })
+            // singleDate: Yup.string().when(['startDate', 'endDate'], {
+            //   is: (startDate: string, endDate: string) =>
+            //     // console.log('err', startDate, endDate);
+            //     !startDate || !endDate,
+            //   then: Yup.lazy(() => {
+            //     if (Object.keys(checkedRadioId).includes('Yes')) {
+            //       return Yup.string().notRequired();
+            //     }
+            //     return Yup.string().required('Custom Date is required');
+            //   }),
+            //   otherwise: Yup.string().notRequired()
+            // })
           })}
         >
           {({ handleBlur, handleChange, handleSubmit, values, errors, touched }): JSX.Element => (
@@ -516,8 +547,10 @@ const CreateReport = () => {
                           1 Year
                         </div>
                       </div>
-                      {Boolean(touched.singleDate && errors.singleDate) && (
-                        <p className="text-lightRed font-normal text-error relative font-Inter mt-0.287  pl-1">{errors?.singleDate}</p>
+                      {Boolean((touched.startDate && errors.startDate) || (touched.endDate && errors.endDate)) && (
+                        <p className="text-lightRed font-normal text-error relative font-Inter mt-0.287  pl-1">
+                          {errors?.startDate || errors?.endDate}
+                        </p>
                       )}
                     </div>
                     <div className="mt-1.8 flex-flex-col pl-5">
@@ -565,11 +598,6 @@ const CreateReport = () => {
                           />
                         </div>
                       </div>
-                      {Boolean((touched.startDate && errors.startDate) || (touched.endDate && errors.endDate)) && (
-                        <p className="text-lightRed font-normal text-error relative font-Inter mt-0.287  pl-1">
-                          {errors?.startDate || errors?.endDate}
-                        </p>
-                      )}
                     </div>
                   </Fragment>
                 )}
@@ -590,11 +618,28 @@ const CreateReport = () => {
                   </div>
                   {isPlatformActive && (
                     <div className="flex-flex-col  app-result-card-border box-border w-full rounded-0.3 shadow-reportInput cursor-pointer absolute top-[4.8rem] bg-white z-40">
-                      <div className="flex items-center gap-2 hover:bg-signUpDomain  transition ease-in duration-100 p-3 ">
+                      <div
+                        className={`flex items-center gap-2 hover:bg-signUpDomain  transition ease-in duration-100 p-3  ${
+                          reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                        }`}
+                      >
                         <div>
-                          <input type="checkbox" className="checkbox" id="all" name="all" onChange={(event) => handlePlatformAllCheckBox(event)} checked={checkedAllPlatform} />
+                          <input
+                            type="checkbox"
+                            className={`checkbox ${reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                            id="all"
+                            name="all"
+                            onChange={(event) => handlePlatformAllCheckBox(event)}
+                            checked={checkedAllPlatform}
+                            disabled={reportUpdateValuesData ? true : false}
+                          />
                         </div>
-                        <label className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial" htmlFor="All">
+                        <label
+                          className={`font-Poppins font-normal text-searchBlack leading-1.31 text-trial  ${
+                            reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                          }`}
+                          htmlFor="All"
+                        >
                           All
                         </label>
                       </div>
@@ -609,7 +654,7 @@ const CreateReport = () => {
                               <div>
                                 <input
                                   type="checkbox"
-                                  className="checkbox"
+                                  className={`checkbox ${reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                                   id={platform.id as string}
                                   name={platform.id as string}
                                   checked={(checkedPlatform[platform.id] as boolean) || false}
@@ -617,7 +662,12 @@ const CreateReport = () => {
                                   disabled={reportUpdateValuesData ? true : checkedAllPlatform ? true : false}
                                 />
                               </div>
-                              <label className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial" htmlFor={platform.id as string}>
+                              <label
+                                className={`font-Poppins font-normal text-searchBlack leading-1.31 text-trial  ${
+                                  reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                                }`}
+                                htmlFor={platform.id as string}
+                              >
                                 {platform?.name}
                               </label>
                             </div>
@@ -640,7 +690,7 @@ const CreateReport = () => {
                         onClick={() => setIsReportActive(!isReportActive)}
                         className="relative w-full h-3.06 app-result-card-border flex items-center px-3 mt-0.375 shadow-reportInput rounded-0.3 font-Poppins font-normal text-trial text-thinGray leading-1.31 cursor-pointer "
                       >
-                        {selectedReport ? selectedReport : 'Select'}
+                        {selectedReport === 'NoSchedule' ? 'Select' : !selectedReport ? 'Select' : selectedReport}
                         <div className="absolute right-4">
                           <img src={dropdownIcon} alt="" className={isReportActive ? 'rotate-0' : 'rotate-180'} />
                         </div>
@@ -650,7 +700,7 @@ const CreateReport = () => {
                       )}
                       {isReportActive && (
                         <div className="flex flex-col app-result-card-border box-border w-full rounded-0.3 shadow-reportInput cursor-pointer absolute top-[4.8rem] bg-white">
-                          {ReportOptions.map((options) => (
+                          {scheduledReportOptions.map((options) => (
                             <ul
                               className="cursor-pointer hover:bg-signUpDomain  transition ease-in duration-100 "
                               onClick={() => {
@@ -667,11 +717,7 @@ const CreateReport = () => {
                         </div>
                       )}
                     </div>
-                    <div className={`mt-5 flex flex-col w-full  ${
-                      touched.emails && errors.emails
-                        ? 'report-email'
-                        : ' '
-                    }`}>
+                    <div className={`mt-5 flex flex-col w-full  ${touched.emails && errors.emails ? 'report-email' : ' '}`}>
                       <label htmlFor="emails" className="text-trial font-Poppins text-infoBlack font-normal leading-1.31">
                         Alternate Recipient Mail IDs
                       </label>
