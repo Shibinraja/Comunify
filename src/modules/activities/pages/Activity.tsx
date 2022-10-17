@@ -86,7 +86,6 @@ const Activity: React.FC = () => {
   const loader = useSkeletonLoading(activitiesSlice.actions.getActiveStreamData.type);
 
   const { data, totalPages } = useAppSelector((state) => state.activities.activeStreamData);
-
   const {
     TagFilterResponse: { data: TagFilterResponseData },
     clearValue
@@ -260,7 +259,7 @@ const Activity: React.FC = () => {
 
   const handleProfileModal = (data: ProfileModal) => {
     setProfileModal({
-      isOpen: data.isOpen,
+      isOpen: data?.isOpen,
       id: data?.id,
       memberName: data.memberName,
       email: data.email,
@@ -500,7 +499,7 @@ const Activity: React.FC = () => {
                               <div className="relative">
                                 <div
                                   ref={dropDownRef}
-                                  onClick={(e) => {
+                                  onMouseOver={(e) => {
                                     e.stopPropagation();
                                     handleProfileModal({
                                       isOpen: true,

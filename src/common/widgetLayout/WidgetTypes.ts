@@ -1,7 +1,9 @@
+/* eslint-disable no-unused-vars */
 import { SidePanelWidgetsData } from '../../modules/dashboard/interface/dashboard.interface';
+import ReactGridLayout from 'react-grid-layout';
 
 export type WidgetIdentification = {
-  widgetKey: string;
+  widgetKey: string[];
   sidePanelWidgetsData?: SidePanelWidgetsData[];
   widgetRemoved: string;
 };
@@ -47,13 +49,32 @@ export interface WidgetComponentProps {
   widget: PanelWidgetsType;
   isShrunk?: boolean;
   isSidePanelOpen: boolean;
+  filters: WidgetFilters;
   // eslint-disable-next-line no-unused-vars
   removeWidgetFromDashboard: (selectedWidget: PanelWidgetsType) => void;
 }
 
+export interface WidgetFilters {
+  startDate: string | null;
+  endDate: string | null;
+  type?: string;
+  limit?: number;
+  platformId?: string[];
+}
+
 export interface WidgetContainerProps {
   isManageMode: boolean | undefined;
-  widgets: PanelWidgetsType[];
-  setWidgets?: React.Dispatch<React.SetStateAction<PanelWidgetsType[] | []>>;
-  setTransformedWidgetData?: React.Dispatch<React.SetStateAction<unknown[] | []>>;
+  widgets: Array<Omit<PanelWidgetsType, 'isAssigned'>>;
+  setWidgets?: React.Dispatch<React.SetStateAction<Array<Omit<PanelWidgetsType, 'isAssigned'>>> | []>;
+  setTransformedWidgetData?: React.Dispatch<React.SetStateAction<Array<TransformWidgetDataType>>>;
+  filters?: WidgetFilters;
+}
+
+export interface TransformWidgetDataType {
+  id: string | undefined;
+  widgetId: string;
+  status: string;
+  order: number;
+  config: ReactGridLayout.Layout;
+  widget: { widgetLocation: string; invocationType: number; widgetId: string } | undefined;
 }

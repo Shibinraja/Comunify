@@ -35,7 +35,7 @@ const Integration: React.FC = () => {
   const [platformIcons, setPlatformIcons] = useState<PlatformIcons>({ slack: undefined, vanillaForums: undefined });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const dispatch = useDispatch();
-  const platformData = usePlatform();
+  const { PlatformFilterResponse } = usePlatform();
   const navigate = useNavigate();
   const workspaceId = getLocalWorkspaceId();
   const [searchParams] = useSearchParams();
@@ -153,7 +153,7 @@ const Integration: React.FC = () => {
                 <h3 className="font-Inter text-signIn font-bold text-neutralBlack leading-2.8">Integrations</h3>
                 <div className="flex flex-col gap-0.93 relative w-fit mt-1.8">
                   <div className="flex gap-0.93">
-                    {platformData.map((data: PlatformResponse) => (
+                    {PlatformFilterResponse?.map((data: PlatformResponse) => (
                       <div
                         key={`${data?.id + data?.name}`}
                         className="integration shadow-integrationCardShadow app-input-card-border border-integrationBorder w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center"
@@ -287,10 +287,16 @@ const Integration: React.FC = () => {
                           />
                           <Button
                             text="Save"
-                            disabled={isLoading ? true : (!vanillaForumsData.vanillaAccessToken || !vanillaForumsData.vanillaBaseUrl) ? true : false }
+                            disabled={isLoading ? true : !vanillaForumsData.vanillaAccessToken || !vanillaForumsData.vanillaBaseUrl ? true : false}
                             onClick={(e) => sendVanillaData(e)}
                             className={`text-white font-Poppins text-error font-medium leading-5 btn-save-modal cursor-pointer rounded 
-                            shadow-contactBtn w-5.25 ${isLoading ? 'opacity-50 cursor-not-allowed ' : (!vanillaForumsData.vanillaAccessToken || !vanillaForumsData.vanillaBaseUrl) ? 'opacity-50 cursor-not-allowed ' : ''} border-none h-2.81`}
+                            shadow-contactBtn w-5.25 ${
+    isLoading
+      ? 'opacity-50 cursor-not-allowed '
+      : !vanillaForumsData.vanillaAccessToken || !vanillaForumsData.vanillaBaseUrl
+        ? 'opacity-50 cursor-not-allowed '
+        : ''
+    } border-none h-2.81`}
                           />
                         </div>
                       </form>

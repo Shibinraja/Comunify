@@ -73,7 +73,7 @@ const MembersProfile: React.FC = () => {
   const tagsAssignLoader = useSkeletonLoading(settingsSlice.actions.assignTags.type);
   // const tagsUnAssignLoader = useSkeletonLoading(settingsSlice.actions.unAssignTags.type);
 
-  const platformData = usePlatform();
+  const { PlatformFilterResponse } = usePlatform();
 
   const tagDropDownRef = useRef<HTMLDivElement>(null);
   const dropDownRef = useRef<HTMLDivElement>(null);
@@ -188,7 +188,7 @@ const MembersProfile: React.FC = () => {
   };
 
   // switch case for member graph
-  const selectPlatformToDisplayOnGraph = (name: string) => {
+  const selectPlatformToDisplayOnGraph = (name: string, id: string | null = null) => {
     setSelected(name);
     switch (name) {
       case 'All':
@@ -199,7 +199,7 @@ const MembersProfile: React.FC = () => {
           membersSlice.actions.getMembersActivityGraphDataPerPlatform({
             workspaceId: workspaceId as string,
             memberId: memberId as string,
-            platform: name.toLocaleLowerCase().trim()
+            platform: id || name.toLocaleLowerCase().trim()
           })
         );
         break;
@@ -209,14 +209,15 @@ const MembersProfile: React.FC = () => {
   };
 
   // switch case for member platforms
-  const selectPlatformForActivityScroll = (name: string) => {
+  const selectPlatformForActivityScroll = (name: string, id: string | null = null) => {
     setSelectedIntegration(name);
+    setActivityNextCursor(null);
     switch (name) {
       case 'All Integration':
         setPlatform(undefined);
         break;
       case `${name !== undefined && name !== 'All Integration' && name}`:
-        setPlatform(name.toLocaleLowerCase().trim());
+        setPlatform(id || name.toLocaleLowerCase().trim());
         break;
       default:
         break;
@@ -398,12 +399,12 @@ const MembersProfile: React.FC = () => {
                   >
                     All
                   </div>
-                  {platformData?.map((data: PlatformResponse) => (
+                  {PlatformFilterResponse?.map((data: PlatformResponse) => (
                     <div key={`${data?.id + data?.name}`}>
                       {data?.isConnected && (
                         <div
                           className="rounded-0.3 h-1.93 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack hover:bg-signUpDomain px-2"
-                          onClick={() => selectPlatformToDisplayOnGraph(data?.name)}
+                          onClick={() => selectPlatformToDisplayOnGraph(data?.name, data?.id)}
                         >
                           {data?.name}
                         </div>
@@ -472,12 +473,12 @@ const MembersProfile: React.FC = () => {
                       All Integrations
                     </div>
                   </div>
-                  {platformData.map((options: PlatformResponse) => (
+                  {PlatformFilterResponse?.map((options: PlatformResponse) => (
                     <div key={`${options?.id + options?.name}`} className="w-full hover:bg-signUpDomain rounded-0.3 transition ease-in duration-100">
                       {options?.isConnected && (
                         <div
                           className="h-1.93 px-3 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack "
-                          onClick={() => selectPlatformForActivityScroll(options?.name)}
+                          onClick={() => selectPlatformForActivityScroll(options?.name, options?.id)}
                         >
                           {options?.name}
                         </div>

@@ -7,12 +7,10 @@ import infoIcon from '../../../assets/images/info.svg';
 import { getLocalWorkspaceId } from '../../../lib/helper';
 import { membersWidgetDataService } from '../../../modules/dashboard/services/dashboard.services';
 import { MemberWidgetData } from '../../../modules/dashboard/interface/dashboard.interface';
-import { useSearchParams } from 'react-router-dom';
-
 import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
 
 const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
-  const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen } = props;
+  const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen, filters } = props;
 
   const workspaceId = getLocalWorkspaceId();
 
@@ -20,9 +18,8 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
   const [memberWidgetData, setMemberWidgetData] = React.useState<MemberWidgetData[]>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
-  const [searchParams] = useSearchParams();
-  const startDate = searchParams.get('startDate');
-  const endDate = searchParams.get('endDate');
+  const widgetPreviewLocation = window.location.href.includes('/report-details');
+
   React.useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
       getMembersWidgetData();
@@ -30,22 +27,25 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
   }, [selectedTab]);
 
   React.useEffect(() => {
-    if (isManageMode === false && isSidePanelOpen) {
-      if (startDate && endDate) {
+    if (isManageMode === false && !isSidePanelOpen) {
+      if (filters?.startDate && filters?.endDate) {
         getMembersWidgetData();
       }
     }
-  }, [startDate, endDate]);
+  }, filters && Object.values(filters));
 
   // eslint-disable-next-line space-before-function-paren
   const getMembersWidgetData = async () => {
     setIsLoading(true);
-    const data: MemberWidgetData[] = await membersWidgetDataService(
-      workspaceId,
-      selectedTab ? selectedTab : '',
-      startDate ? startDate : undefined,
-      endDate ? endDate : undefined
-    );
+    const newFilter = { ...filters };
+    newFilter['type'] = selectedTab ? selectedTab : undefined;
+    if(widgetPreviewLocation) {
+      newFilter['limit'] = 5;
+    }
+    if(!widgetPreviewLocation) {
+      newFilter['limit'] = 20;
+    }
+    const data: MemberWidgetData[] = await membersWidgetDataService(workspaceId, newFilter);
     setMemberWidgetData(data);
     setIsLoading(false);
   };
@@ -55,7 +55,7 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
   };
 
   return (
-    <div className="my-6">
+    <div className={`my-6 ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
       <div>
         <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Members</h3>
       </div>
@@ -75,9 +75,9 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
               styleActive={'gradient-bottom-border'}
             >
               Top Contributors
-              <span className="pl-2 group relative">
+              <span className="pl-2 group relative z-10">
                 <img src={infoIcon} alt="" />
-                <div className="absolute group-hover:visible invisible mt-4 bg-toolTip text-left p-5 text-white dark:text-white font-Poppins text-email font-normal leading-4 rounded-0.6">
+                <div className="absolute z-10 group-hover:visible invisible mt-4 bg-toolTip text-left p-5 text-white dark:text-white font-Poppins text-email font-normal leading-4 rounded-0.6">
                   Top contributors are the Members <br /> with most number of activities
                 </div>
               </span>
@@ -99,7 +99,7 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
               Inactive
             </TabSelector>
           </nav>
-          <div className="h-14.375 items-center relative overflow-y-auto ml-1.661 block section">
+          <div className={`h-14.375 items-center relative ml-1.661 block section ${!widgetPreviewLocation ? 'overflow-y-auto' : 'overflow-hidden'}`}>
             {!memberWidgetData?.length && !isLoading && !isManageMode && !isSidePanelOpen && (
               <div className="flex items-center justify-center font-Poppins font-normal text-xs text-infoBlack h-full">No data available</div>
             )}

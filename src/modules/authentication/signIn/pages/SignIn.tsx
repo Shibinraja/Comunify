@@ -97,7 +97,12 @@ const SignIn: React.FC = () => {
                       helperText={touched.userName && errors.userName}
                     />
                   </div>
-                  <div className="password mt-1.13 relative ">
+                  <div
+                    className={`password relative  ${
+                      touched.userName && errors.userName
+                        ? 'mt-8'
+                        : 'mt-1.13'
+                    }`}>
                     <Input
                       type={passwordType}
                       placeholder="Password"
@@ -124,7 +129,12 @@ const SignIn: React.FC = () => {
                       )}
                     </div>
                   </div>
-                  <div className="flex justify-between items-center">
+                  <div
+                    className={`flex justify-between items-center  ${
+                      touched.password && errors.password
+                        ? 'mt-4 '
+                        : ''
+                    }`}>
                     <div className="flex items-center">
                       <div className="mr-2 mt-1">
                         <input type="checkbox" className="checkbox cursor-pointer" />

@@ -70,20 +70,27 @@ const SideNav: React.FC = () => {
       <div className="flex flex-col pl-2.58 pt-12 " onClick={() => setDrawerOpen(false)}>
         <div className="flex items-center">
           <div className="w-1.81 h-1.81">
-            <img src={comunifyLogo} alt="" />
+            <NavLink to={`${workspaceId}/dashboard`}>
+              <img src={comunifyLogo} alt="" />
+            </NavLink>
           </div>
-          <div className="pl-0.66 font-Outfit font-bold text-dashboardLogo text-lightBlack dark:text-white leading-1.43">COMUNIFY</div>
+          <NavLink to={`${workspaceId}/dashboard`}>
+            <div className="pl-0.66 font-Outfit font-bold text-dashboardLogo text-lightBlack dark:text-white leading-1.43">COMUNIFY</div>
+          </NavLink>
         </div>
         <div className="flex flex-col mt-5.8 menu-box overflow-y-auto">
           <div className={window.location.href.includes('/dashboard') ? 'flex flex-center active-menu' : 'flex flex-center inactive-menu'}>
-            <div>
-              <img src={location.pathname === `/${workspaceId}/dashboard` ? dashboardDarkIcon : dashboardIcon} alt="" />
-            </div>
+            <NavLink to={`${workspaceId}/dashboard`}>
+              <div>
+                <img src={location.pathname === `/${workspaceId}/dashboard` ? dashboardDarkIcon : dashboardIcon} alt="" />
+              </div>
+            </NavLink>
+
             <NavLink
               to={`${workspaceId}/dashboard`}
               className={({ isActive }) =>
                 `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${
-                  isActive ? 'text-black dark:text-white' : 'text-slimGray'
+                  isActive ? 'text-black dark:text-white' : 'text-tableDuration'
                 }`
               }
             >
@@ -93,12 +100,14 @@ const SideNav: React.FC = () => {
           <div
             className={window.location.href.includes('/members') ? 'flex flex-center active-menu mt-2.18' : 'flex flex-center inactive-menu mt-2.18'}
           >
-            <img src={location.pathname === `/${workspaceId}/members` ? memberDarkIcon : memberIcon} alt="" />
+            <NavLink to={`${workspaceId}/members`}>
+              <img className="inline-flex" src={location.pathname === `/${workspaceId}/members` ? memberDarkIcon : memberIcon} alt="" />
+            </NavLink>
             <NavLink
               to={`${workspaceId}/members`}
               className={({ isActive }) =>
                 `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${
-                  isActive ? 'text-black dark:text-white' : 'text-slimGray'
+                  isActive ? 'text-black dark:text-white' : 'text-tableDuration'
                 }`
               }
             >
@@ -108,12 +117,14 @@ const SideNav: React.FC = () => {
           <div
             className={window.location.href.includes('/activity') ? 'flex flex-center active-menu mt-2.18' : 'flex flex-center inactive-menu mt-2.18'}
           >
-            <img src={location.pathname === `/${workspaceId}/activity` ? activeStreamDarkIcon : streamIcon} alt="" />
+            <NavLink to={`${workspaceId}/activity`}>
+              <img className="inline-flex" src={location.pathname === `/${workspaceId}/activity` ? activeStreamDarkIcon : streamIcon} alt="" />
+            </NavLink>
             <NavLink
               to={`${workspaceId}/activity`}
               className={({ isActive }) =>
                 `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${
-                  isActive ? 'text-black dark:text-white' : 'text-slimGray'
+                  isActive ? 'text-black dark:text-white' : 'text-tableDuration'
                 }`
               }
             >
@@ -123,12 +134,14 @@ const SideNav: React.FC = () => {
           <div
             className={window.location.href.includes('/reports') ? 'flex flex-center active-menu mt-2.18' : 'flex flex-center inactive-menu mt-2.18'}
           >
-            <img src={location.pathname === `/${workspaceId}/reports` ? reportsDarkIcon : chartIcon} alt="" />
+            <NavLink to={`${workspaceId}/reports`}>
+              <img className="inline-flex" src={location.pathname === `/${workspaceId}/reports` ? reportsDarkIcon : chartIcon} alt="" />
+            </NavLink>
             <NavLink
               to={`${workspaceId}/reports`}
               className={({ isActive }) =>
                 `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${
-                  isActive ? 'text-black dark:text-white' : 'text-slimGray'
+                  isActive ? 'text-black dark:text-white' : 'text-tableDuration'
                 }`
               }
             >
@@ -138,12 +151,14 @@ const SideNav: React.FC = () => {
           <div
             className={window.location.href.includes('/settings') ? 'flex flex-center active-menu mt-2.18' : 'flex flex-center inactive-menu mt-2.18'}
           >
-            <img src={location.pathname === `/${workspaceId}/settings` ? settingsDarkIcon : settingsIcon} alt="" />
+            <NavLink to={`${workspaceId}/settings`}>
+              <img className="inline-flex" src={location.pathname === `/${workspaceId}/settings` ? settingsDarkIcon : settingsIcon} alt="" />
+            </NavLink>
             <NavLink
               to={`${workspaceId}/settings`}
               className={({ isActive }) =>
                 `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${
-                  isActive ? 'text-black dark:text-white' : 'text-slimGray'
+                  isActive ? 'text-black dark:text-white' : 'text-tableDuration'
                 }`
               }
             >

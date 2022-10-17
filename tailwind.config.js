@@ -78,7 +78,9 @@ module.exports = {
         download: '#2B3646',
         textHighlightColor: '#F3DC07',
         widgetClose: '#F09E34',
-        activityGray: '#848B91'
+        activityGray: '#848B91',
+        previewBlack: '#161616',
+        backBorder: '#9B9B9B'
       },
       margin: {
         2.6: '43px',
@@ -366,7 +368,8 @@ module.exports = {
         Outfit: ['Outfit', 'sans-serif'],
         Poppins: ['Poppins', 'sans-serif'],
         Manrope: ['Manrope', 'sans-serif'],
-        Lato: ['Lato', 'sans-serif']
+        Lato: ['Lato', 'sans-serif'],
+        Roboto: ['Roboto', 'sans-serif']
       },
       lineHeight: {
         1.6: '1.688rem',

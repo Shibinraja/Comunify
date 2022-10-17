@@ -25,7 +25,7 @@ export type DecodeToken = {
   isExpired: boolean;
   isSubscribed: boolean;
   isWorkSpaceCreated: boolean;
-  isVerified: boolean;
+  isEmailVerified: boolean;
   workspaceId: string;
 };
 
@@ -93,7 +93,7 @@ export interface SignUpResponse {
   userName: string;
   companyName?: string;
   domainSector?: string;
-  isVerified: boolean;
+  isEmailVerified: boolean;
   isAdmin?: boolean;
 }
 
