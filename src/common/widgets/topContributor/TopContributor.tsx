@@ -8,6 +8,7 @@ import { getLocalWorkspaceId } from '../../../lib/helper';
 import { membersWidgetDataService } from '../../../modules/dashboard/services/dashboard.services';
 import { MemberWidgetData } from '../../../modules/dashboard/interface/dashboard.interface';
 import { WidgetComponentProps } from '../../widgetLayout/WidgetTypes';
+import { useAppSelector } from '@/hooks/useRedux';
 
 const TopContributor: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen, filters } = props;
@@ -17,6 +18,8 @@ const TopContributor: React.FC<WidgetComponentProps> = (props: WidgetComponentPr
   const [selectedTab, setSelectedTab] = useTabs(['topContributor']);
   const [memberWidgetData, setMemberWidgetData] = React.useState<MemberWidgetData[]>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+
+  const workspaceIdToken = useAppSelector((state) => state.auth.workspaceId);
 
   const widgetPreviewLocation = window.location.href.includes('/report-details');
 
@@ -45,7 +48,7 @@ const TopContributor: React.FC<WidgetComponentProps> = (props: WidgetComponentPr
     if (!widgetPreviewLocation) {
       newFilter['limit'] = 20;
     }
-    const data: MemberWidgetData[] = await membersWidgetDataService(workspaceId, newFilter);
+    const data: MemberWidgetData[] = await membersWidgetDataService(workspaceId || workspaceIdToken, newFilter);
     setMemberWidgetData(data);
     setIsLoading(false);
   };
@@ -99,7 +102,7 @@ const TopContributor: React.FC<WidgetComponentProps> = (props: WidgetComponentPr
               Inactive
             </TabSelector> */}
           </nav>
-          <div className={`h-14.375 items-center relative ml-1.661 block section ${!widgetPreviewLocation ? 'overflow-y-auto' : 'overflow-hidden'}`}>
+          <div className={`h-14.375 items-center relative ml-1.661 block section overflow-y-auto`}>
             {!memberWidgetData?.length && !isLoading && !isManageMode && !isSidePanelOpen && (
               <div className="flex items-center justify-center font-Poppins font-normal text-xs text-infoBlack h-full">No data available</div>
             )}

@@ -6,10 +6,12 @@ import { QuickInfoData } from '../../../modules/dashboard/interface/dashboard.in
 
 import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
 import Skeleton from 'react-loading-skeleton';
+import { useAppSelector } from '@/hooks/useRedux';
 
 const QuickInfo: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const { isManageMode, removeWidgetFromDashboard, widget, isShrunk, isSidePanelOpen, filters } = props;
   const [quickInfoWidgetData, setQuickInfoWidgetData] = React.useState<QuickInfoData[] | []>();
+  const workspaceIdToken = useAppSelector((state) => state.auth.workspaceId);
 
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
@@ -24,7 +26,7 @@ const QuickInfo: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) 
   // eslint-disable-next-line space-before-function-paren
   const getQuickInfoWidgetData = async () => {
     setIsLoading(true);
-    const data: QuickInfoData[] = await quickInfoWidgetService(workspaceId, filters);
+    const data: QuickInfoData[] = await quickInfoWidgetService(workspaceId || workspaceIdToken, filters);
     setQuickInfoWidgetData(data);
     setIsLoading(false);
   };

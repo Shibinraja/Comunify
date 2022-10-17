@@ -8,4 +8,5 @@ export interface InitialState {
   workspaceData: Array<[]>;
   clearFormikValue: boolean;
   userEmail: string;
+  workspaceId:string
 }
