@@ -28,7 +28,7 @@ const widgetsReports: React.FC = () => {
   const endDate = searchParams.get('endDate') || '';
 
   // Function to call the api and list the membersSuggestionList
-  const getReportWidgetsList = async(props: { page: number; limit: number }) => {
+  const getReportWidgetsList = async (props: { page: number; limit: number }) => {
     setLoading(true);
     const data = await getReportWidgetsListService({
       workspaceId: workspaceId!,
@@ -51,10 +51,12 @@ const widgetsReports: React.FC = () => {
   useEffect(() => {
     setIsManageMode(true);
     if (reportId) {
-      getReportWidgetsList({
-        limit: 10,
-        page: 1
-      });
+      setTimeout(() => {
+        getReportWidgetsList({
+          limit: 10,
+          page: 1
+        });
+      }, 1000);
     }
   }, [reportId]);
 

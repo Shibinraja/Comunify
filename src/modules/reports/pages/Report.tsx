@@ -89,7 +89,7 @@ const Report: React.FC = () => {
 
   const ReportFilterList = Object.values(checkedPlatform).concat(Object.values(checkedStatus));
 
-  const getReportsList = async(props: { search: string; page: number; limit: number }, reset: boolean) => {
+  const getReportsList = async (props: { search: string; page: number; limit: number }, reset: boolean) => {
     setLoading(true);
     let reportData;
     if (!reset) {
@@ -106,7 +106,7 @@ const Report: React.FC = () => {
         }
       });
     }
-    if(reset) {
+    if (reset) {
       handleFilterDropdown();
       reportData = await getReportsListService({
         workspaceId: workspaceId!,
@@ -128,7 +128,7 @@ const Report: React.FC = () => {
     });
   };
 
-  const generateInstantReport = async(id: string) => {
+  const generateInstantReport = async (id: string) => {
     setLoading(true);
     const data = await generateInstantReportsService({
       workspaceId: workspaceId!,
@@ -303,7 +303,7 @@ const Report: React.FC = () => {
     }
   };
 
-  const submitFilterChange = async(): Promise<void> => {
+  const submitFilterChange = async (): Promise<void> => {
     handleFilterDropdown();
     const checkPlatform: Array<string> = [];
     const checkStatusId: Array<string> = [];
@@ -470,21 +470,9 @@ const Report: React.FC = () => {
               </div>
               {isFilterDropdownActive && (
                 <div className="absolute app-result-card-border box-border bg-white dark:bg-secondaryDark  rounded-0.3 w-16.56 shadow-shadowInput z-40 pb-1.56 ">
-                  <div className="flex flex-col mt-1.43">
-                    <div className="flex relative items-center mx-auto">
-                      <Input
-                        type="text"
-                        name="reportName"
-                        id="report"
-                        className="mx-auto focus:outline-none px-3 box-border dark:bg-secondaryDark bg-white shadow-shadowInput rounded-0.6 app-input-card-border h-2.81 w-15.06 dark:text-inputText dark:palceholder:text-inputText placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal dark:palceholder:text-inputText placeholder:text-card placeholder:leading-1.12"
-                        placeholder="Report Name"
-                      />
-                      <div className="absolute right-5 top-4 w-0.78 h-3 z-40 drop-icon">
-                        <img src={searchIcon} alt="" />
-                      </div>
-                    </div>
+                  <div className="flex flex-col">
                     <div
-                      className="flex justify-between items-center app-result-card-border w-full box-border bg-signUpDomain h-3.06 mt-5 px-3 mx-auto  cursor-pointer"
+                      className="flex justify-between items-center app-result-card-border w-full box-border bg-signUpDomain h-3.06 px-3 mx-auto  cursor-pointer"
                       onClick={() => {
                         handleFilterDropDownStatus('platform');
                       }}
@@ -733,7 +721,9 @@ const Report: React.FC = () => {
                               <div className="flex">
                                 {data?.workspaceReportSettings?.map((report) => (
                                   <div className="py-3 font-Poppins font-medium text-trial leading-1.31" key={report.id}>
-                                    {ScheduleReportDateType[data?.workspaceReportSettings[0]?.scheduleRepeat] === 'NoSchedule' ? 'No Schedule': ScheduleReportDateType[data?.workspaceReportSettings[0]?.scheduleRepeat] }
+                                    {ScheduleReportDateType[data?.workspaceReportSettings[0]?.scheduleRepeat] === 'NoSchedule'
+                                      ? 'No Schedule'
+                                      : ScheduleReportDateType[data?.workspaceReportSettings[0]?.scheduleRepeat]}
                                   </div>
                                 ))}
                               </div>
@@ -810,12 +800,12 @@ const Report: React.FC = () => {
             modalOpen.removeModalOpen
               ? 'Are you sure you want to permanently delete the report with the history?'
               : modalOpen.scheduleOffModalOpen && !selectId.scheduleActive
-                ? 'Are you sure you want to turn on the scheduling for the report?'
-                : modalOpen.scheduleOffModalOpen && selectId.scheduleActive
-                  ? 'Are you sure you want to turn off the scheduling for the report?'
-                  : modalOpen.generateReportModalOpen
-                    ? 'Are you sure you want to generate the report?'
-                    : ''
+              ? 'Are you sure you want to turn on the scheduling for the report?'
+              : modalOpen.scheduleOffModalOpen && selectId.scheduleActive
+              ? 'Are you sure you want to turn off the scheduling for the report?'
+              : modalOpen.generateReportModalOpen
+              ? 'Are you sure you want to generate the report?'
+              : ''
           }
         />
       </Fragment>
