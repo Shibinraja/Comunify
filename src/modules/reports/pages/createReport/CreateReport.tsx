@@ -302,13 +302,13 @@ const CreateReport = () => {
     (newValues['startDate'] as string | undefined) = customDate.startDate
       ? convertStartDate(customDate.startDate)
       : customDate.singleDate
-      ? convertStartDate(customDate.singleDate)
-      : convertEndDate(new Date());
+        ? convertStartDate(customDate.singleDate)
+        : convertEndDate(new Date());
     (newValues['endDate'] as string | undefined) = customDate.endDate
       ? convertEndDate(customDate.endDate)
       : customDateLink[CustomReportDateType.Day]
-      ? customDate.singleDate && convertEndDate(customDate.singleDate)
-      : convertEndDate(new Date());
+        ? customDate.singleDate && convertEndDate(customDate.singleDate)
+        : convertEndDate(new Date());
     newValues['platformId'] = checkPlatformId;
 
     if (selectedReport === 'NoSchedule') {
@@ -389,7 +389,7 @@ const CreateReport = () => {
               return Yup.string().notRequired();
             }),
             emails: Yup.array()
-              .transform(function (value, originalValue) {
+              .transform(function(value, originalValue) {
                 if (this.isType(value) && value !== null) {
                   return value;
                 }
