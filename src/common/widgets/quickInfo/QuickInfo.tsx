@@ -64,14 +64,14 @@ const QuickInfo: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) 
       <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Quick Info</h3>
       <div
         className={`grid ${
-          isShrunk ? 'grid-cols-2 ' : !isManageMode ? 'grid-cols-4 w-full' : 'grid-cols-4 widget-border relative w-full'
+          isShrunk ? 'grid-cols-2 h-[137px]' : !isManageMode ? 'grid-cols-4 w-full' : 'grid-cols-4 widget-border relative w-full'
         }  info-data py-6 box-border bg-white dark:bg-secondaryDark
         rounded-0.6 mt-1.868 border border-borderPrimary dark:border-borderDark shadow-profileCard`}
       >
         <div className="flex flex-col justify-center items-center">
           <Fragment>
             <div
-              className={`leading-3.18 text-infoBlack font-Poppins ${isShrunk ? 'text-[1.5858rem]' : 'text-signIn'}  font-semibold dark:text-white`}
+              className={`leading-1 text-infoBlack font-Poppins ${isShrunk ? 'text-[1.5858rem]' : 'text-signIn'}  font-semibold dark:text-white`}
             >
               {!isManageMode && !isSidePanelOpen ? (
                 !isLoading ? (
@@ -126,7 +126,7 @@ const QuickInfo: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) 
         <div className="flex flex-col justify-center items-center">
           <Fragment>
             <div
-              className={`leading-3.18 text-infoBlack font-Poppins ${isShrunk ? 'text-[1.5858rem]' : 'text-signIn'} font-semibold dark:text-white`}
+              className={`leading-2 text-infoBlack font-Poppins ${isShrunk ? 'text-[1.5858rem]' : 'text-signIn'} font-semibold dark:text-white`}
             >
               {!isManageMode && !isSidePanelOpen ? (
                 !isLoading ? (
@@ -180,7 +180,7 @@ const QuickInfo: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) 
         </div>
         <div className={`flex flex-col justify-center items-center ${isShrunk ? 'hidden' : 'block'}`}>
           <Fragment>
-            <div className="leading-3.18 text-infoBlack font-Poppins text-signIn font-semibold dark:text-white">
+            <div className="leading-2 text-infoBlack font-Poppins text-signIn font-semibold dark:text-white">
               {!isManageMode && !isSidePanelOpen ? (
                 !isLoading ? (
                   activeMembersData?.count ? (
@@ -229,7 +229,7 @@ const QuickInfo: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) 
         </div>
         <div className={`flex flex-col justify-center items-center ${isShrunk ? 'hidden' : 'block'}`}>
           <Fragment>
-            <div className="leading-3.18 text-infoBlack font-Poppins text-signIn font-semibold dark:text-white">
+            <div className="leading-2 text-infoBlack font-Poppins text-signIn font-semibold dark:text-white">
               {!isManageMode && !isSidePanelOpen ? (
                 !isLoading ? (
                   inActiveMembersData?.count ? (
