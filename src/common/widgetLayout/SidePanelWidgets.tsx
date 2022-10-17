@@ -155,7 +155,7 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
     <div className="w-[28%] xl:w-[23%] 3xl:w-[22%] 4xl:w-[21%]  widgetDrawerGradient left-0 top-0 pb-2 max-h-[156.25rem] min-h-screen px-7 absolute z-40 ">
       <div className="flex flex-col">
         <div className="flex flex-col pb-2">
-          <div className="text-center font-Poppins font-semibold text-2xl pt-24">Add Widget</div>
+          <div className="text-center font-Poppins font-semibold text-[23.47px] pt-24">Add Widget</div>
           <div className="pt-4 relative">
             <Input
               type="text"
@@ -164,7 +164,7 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
               placeholder="Search widgets"
               value={searchWidget}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSearch(e?.target?.value)}
-              className="py-3 bg-white text-xs focus:outline-none px-4 rounded-0.6 pr-8 placeholder:font-Poppins placeholder:font-normal placeholder:text-widgetSearch placeholder:text-xs"
+              className="py-3 bg-white text-xs h-[49px] focus:outline-none px-4 rounded-0.6 pr-8 placeholder:font-Poppins placeholder:font-normal placeholder:text-widgetSearch placeholder:text-xs"
             />
             <div className="absolute top-8 right-5">
               <img src={widgetSearchIcon} alt="" />
@@ -203,7 +203,7 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
         <Button
           text="Request for a Widget"
           type="submit"
-          className="font-Poppins rounded-lg sticky bottom-0  w-full text-base font-semibold text-white py-3.5 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient"
+          className="font-Poppins rounded-lg sticky mt-4  w-full h-[50px] text-[15px] font-semibold text-white py-3.5 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient"
           onClick={() => setWidgetModalOpen(true)}
         />
         <Modal

@@ -233,7 +233,7 @@ input {
   border-image-slice: 1;
 }
 
-.active-list:after {
+/* .active-list:after {
   content: '';
   width: 1px;
   position: absolute;
@@ -241,7 +241,7 @@ input {
   bottom: 25px;
   height: 35px;
   background: rgba(0, 0, 0, 0.12);
-}
+} */
 .active-list:first-child:after {
   height: 0;
 }
@@ -621,7 +621,7 @@ input {
 }
 
 .widget-height {
-  height: calc(100vh - 16rem);
+  height: calc(100vh - 20rem);
 }
 
 .fixWidgetNoDataHeight {
