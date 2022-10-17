@@ -315,6 +315,7 @@ report: {
   id: string,
   name: string,
   description: string,
+  workspaceId:string,
   workspaceReportSettings: Array<workspaceReportSettingsType>
 }
 }

@@ -2,7 +2,9 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import WidgetContainer from 'common/widgets/widgetContainer/WidgetContainer';
 import { format, parseISO } from 'date-fns';
+import authSlice from 'modules/authentication/store/slices/auth.slice';
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 
@@ -12,6 +14,7 @@ import { getReportHistoryDetailsListService, getReportWidgetsListService } from 
 const ReportDetail = () => {
   const limit = 10;
   const page = 1;
+  const dispatch = useDispatch();
   const { workspaceId, reportHistoryId } = useParams();
   const [isManageMode, setIsManageMode] = useState<boolean>(true);
   const [widgets, setWidgets] = useState<any[] | []>([]);
@@ -35,7 +38,7 @@ const ReportDetail = () => {
     // setLoading(false);
     const widgetDataArray = data?.result.map((widget) => ({
       id: widget?.id,
-      layout: { ...widget.config, i: widget?.id },
+      layout: { ...widget.config, i: widget?.id, h: 25, minH: 25 },
       widget: { ...widget?.widget, widgetId: widget?.widgetId }
     }));
     setWidgets(widgetDataArray as any[]);
@@ -53,6 +56,7 @@ const ReportDetail = () => {
         reportHistory?.report.workspaceReportSettings[0].reportPlatforms.forEach((platformId) =>
           setPlatformIds((prevId) => [...prevId, platformId.workspacePlatform.platformSettings.platforms.id])
         );
+        dispatch(authSlice.actions.setWorkspaceId({ workspaceId: reportHistory?.report.workspaceId as string }));
         getReportWidgetsList({
           limit,
           page,
