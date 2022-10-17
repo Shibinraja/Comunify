@@ -38,7 +38,7 @@ const ReportDetail = () => {
     // setLoading(false);
     const widgetDataArray = data?.result.map((widget) => ({
       id: widget?.id,
-      layout: { ...widget.config, i: widget?.id, h: 25, minH: 25 },
+      layout: { ...widget.config, i: widget?.id },
       widget: { ...widget?.widget, widgetId: widget?.widgetId }
     }));
     setWidgets(widgetDataArray as any[]);

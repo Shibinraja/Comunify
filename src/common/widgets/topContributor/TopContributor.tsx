@@ -19,15 +19,11 @@ const TopContributor: React.FC<WidgetComponentProps> = (props: WidgetComponentPr
   const [memberWidgetData, setMemberWidgetData] = React.useState<MemberWidgetData[]>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
+  const defaultTab = 'active';
+
   const workspaceIdToken = useAppSelector((state) => state.auth.workspaceId);
 
   const widgetPreviewLocation = window.location.href.includes('/report-details');
-
-  React.useEffect(() => {
-    if (isManageMode === false && !isSidePanelOpen) {
-      getMembersWidgetData();
-    }
-  }, [selectedTab]);
 
   React.useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
@@ -41,7 +37,7 @@ const TopContributor: React.FC<WidgetComponentProps> = (props: WidgetComponentPr
   const getMembersWidgetData = async () => {
     setIsLoading(true);
     const newFilter = { ...filters };
-    newFilter['type'] = selectedTab ? selectedTab : undefined;
+    newFilter['type'] = defaultTab ? defaultTab : selectedTab as string;
     if (widgetPreviewLocation) {
       newFilter['limit'] = 5;
     }

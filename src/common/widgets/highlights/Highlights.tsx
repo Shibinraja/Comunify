@@ -14,15 +14,11 @@ const Highlights: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
   const [activitiesWidgetResponse, setActivitiesWidgetResponse] = React.useState<ActivitiesWidgetData[]>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
+  const defaultTab = 'highlights';
+
   const workspaceIdToken = useAppSelector((state) => state.auth.workspaceId);
 
   const widgetPreviewLocation = window.location.href.includes('/report-details');
-
-  React.useEffect(() => {
-    if (isManageMode === false && !isSidePanelOpen) {
-      getActivityWidgetData();
-    }
-  }, [selectedTab]);
 
   React.useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
@@ -38,7 +34,7 @@ const Highlights: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
   const getActivityWidgetData = async () => {
     setIsLoading(true);
     const newFilter = { ...filters };
-    newFilter['type'] = selectedTab ? selectedTab : undefined;
+    newFilter['type'] = defaultTab ? defaultTab : selectedTab as string;
     if (widgetPreviewLocation) {
       newFilter['limit'] = 5;
     }
@@ -56,11 +52,11 @@ const Highlights: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
 
   return (
     <div className={`my-6 h-full ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
+      <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Activities</h3>
       <div
         className={`w-full h-full box-border bg-white dark:bg-secondaryDark dark:text-white  rounded-0.6 mt-1.868 border
            ${isManageMode ? 'widget-border relative' : 'border-borderPrimary'} dark:border-borderDark shadow-profileCard `}
       >
-        <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Activities</h3>
 
         <div className="w-full mt-6 flex flex-col">
           <nav>

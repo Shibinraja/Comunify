@@ -19,15 +19,11 @@ const ActiveMembers: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
   const [memberWidgetData, setMemberWidgetData] = React.useState<MemberWidgetData[]>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
+  const defaultTab = 'active';
+
   const workspaceIdToken = useAppSelector((state) => state.auth.workspaceId);
 
   const widgetPreviewLocation = window.location.href.includes('/report-details');
-
-  React.useEffect(() => {
-    if (isManageMode === false && !isSidePanelOpen) {
-      getMembersWidgetData();
-    }
-  }, [selectedTab]);
 
   React.useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
@@ -41,7 +37,7 @@ const ActiveMembers: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
   const getMembersWidgetData = async () => {
     setIsLoading(true);
     const newFilter = { ...filters };
-    newFilter['type'] = selectedTab ? selectedTab : undefined;
+    newFilter['type'] = defaultTab ? defaultTab : selectedTab as string;
     if(widgetPreviewLocation) {
       newFilter['limit'] = 5;
     }
@@ -58,7 +54,7 @@ const ActiveMembers: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
   };
 
   return (
-    <div className={`my-6 ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
+    <div className={`my-6 h-full ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
       <div>
         <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Members</h3>
       </div>
@@ -86,7 +82,7 @@ const ActiveMembers: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
               </span>
             </TabSelector>
           </nav>
-          <div className={`h-14.375 items-center relative ml-1.661 block section overflow-y-auto`}>
+          <div className={`h-14.375 items-center relative ml-1.661 block section`}>
             {!memberWidgetData?.length && !isLoading && !isManageMode && !isSidePanelOpen && (
               <div className="flex items-center justify-center font-Poppins font-normal text-xs text-infoBlack h-full">No data available</div>
             )}
