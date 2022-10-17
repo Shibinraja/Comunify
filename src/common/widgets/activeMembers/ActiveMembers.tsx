@@ -54,14 +54,14 @@ const ActiveMembers: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
   };
 
   return (
-    <div className={`my-6 h-full ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
+    <div className={`${!isManageMode ? 'h-full' : 'cursor-grabbing my-6 '}  `}>
       <div>
         <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Members</h3>
       </div>
       <div
-        className={`w-full h-full box-border
+        className={`w-full box-border
         ${
-          isManageMode ? 'widget-border relative' : 'border-borderPrimary'
+          isManageMode ? 'widget-border relative h-full' : 'border-borderPrimary'
         } bg-white dark:bg-secondaryDark dark:text-white rounded-0.6 mt-1.868 border  
          dark:border-borderDark shadow-profileCard `}
       >
@@ -82,7 +82,7 @@ const ActiveMembers: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
               </span>
             </TabSelector>
           </nav>
-          <div className={`h-14.375 items-center relative ml-1.661 block section`}>
+          <div className={`items-center relative ml-1.661 block section overflow-y-auto ${!widgetPreviewLocation ? 'h-14.375' : ''}`}>
             {!memberWidgetData?.length && !isLoading && !isManageMode && !isSidePanelOpen && (
               <div className="flex items-center justify-center font-Poppins font-normal text-xs text-infoBlack h-full">No data available</div>
             )}
