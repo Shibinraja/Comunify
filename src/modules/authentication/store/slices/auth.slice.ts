@@ -17,7 +17,8 @@ const initialState: InitialState = {
   subscriptionData: [],
   workspaceData: [],
   clearFormikValue: false,
-  userEmail: ''
+  userEmail: '',
+  workspaceId: ''
 };
 
 const login = (state: InitialState, action: PayloadAction<SignInInput>) => state;
@@ -73,6 +74,12 @@ const setSubscriptions = (state: InitialState, action: PayloadAction<{ subscript
   state.subscriptionData = action.payload.subscriptionData;
 };
 
+const setWorkspaceId = (state: InitialState, action: PayloadAction<{workspaceId:string}>) => ({
+  ...state,
+  workspaceId: action.payload.workspaceId
+});
+
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -93,7 +100,8 @@ const authSlice = createSlice({
     getSubscriptions,
     setSubscriptions,
     chooseSubscription,
-    getWorkspaceId
+    getWorkspaceId,
+    setWorkspaceId
   }
 });
 

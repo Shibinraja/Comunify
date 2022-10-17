@@ -7,6 +7,7 @@ import { activityGrowthWidgetDataService } from '../../../modules/dashboard/serv
 import { getLocalWorkspaceId } from '../../../lib/helper';
 import { MembersProfileActivityGraphData } from '../../../modules/members/interface/members.interface';
 import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
+import { useAppSelector } from '@/hooks/useRedux';
 
 function InlineWrapperWithMargin({ children }: PropsWithChildren<unknown>) {
   return <span style={{ marginRight: '0.5rem' }}>{children}</span>;
@@ -18,6 +19,8 @@ const ActivityGrowth: React.FC<WidgetComponentProps> = (props: WidgetComponentPr
   const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen, filters } = props;
   const [activityGrowthWidgetData, setActivityGrowthWidgetData] = React.useState<MembersProfileActivityGraphData>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+
+  const workspaceIdToken = useAppSelector((state) => state.auth.workspaceId);
 
   const options = {
     xaxis: {
@@ -46,7 +49,7 @@ const ActivityGrowth: React.FC<WidgetComponentProps> = (props: WidgetComponentPr
   // eslint-disable-next-line space-before-function-paren
   const getActivityGrowthData = async () => {
     setIsLoading(true);
-    const data: MembersProfileActivityGraphData = await activityGrowthWidgetDataService(workspaceId, filters);
+    const data: MembersProfileActivityGraphData = await activityGrowthWidgetDataService(workspaceId || workspaceIdToken, filters);
     setActivityGrowthWidgetData(data);
     setIsLoading(false);
   };

@@ -8,11 +8,13 @@ import { getLocalWorkspaceId } from '../../../lib/helper';
 import { membersWidgetDataService } from '../../../modules/dashboard/services/dashboard.services';
 import { MemberWidgetData } from '../../../modules/dashboard/interface/dashboard.interface';
 import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
+import { useAppSelector } from '@/hooks/useRedux';
 
 const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen, filters } = props;
 
   const workspaceId = getLocalWorkspaceId();
+  const workspaceIdToken = useAppSelector((state) => state.auth.workspaceId);
 
   const [selectedTab, setSelectedTab] = useTabs(['topContributor', 'active', 'inActive']);
   const [memberWidgetData, setMemberWidgetData] = React.useState<MemberWidgetData[]>();
@@ -45,7 +47,7 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
     if(!widgetPreviewLocation) {
       newFilter['limit'] = 20;
     }
-    const data: MemberWidgetData[] = await membersWidgetDataService(workspaceId, newFilter);
+    const data: MemberWidgetData[] = await membersWidgetDataService(workspaceId || workspaceIdToken, newFilter);
     setMemberWidgetData(data);
     setIsLoading(false);
   };
@@ -99,7 +101,7 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
               Inactive
             </TabSelector>
           </nav>
-          <div className={`h-14.375 items-center relative ml-1.661 block section ${!widgetPreviewLocation ? 'overflow-y-auto' : 'overflow-hidden'}`}>
+          <div className={`h-14.375 items-center relative ml-1.661 block section overflow-y-auto`}>
             {!memberWidgetData?.length && !isLoading && !isManageMode && !isSidePanelOpen && (
               <div className="flex items-center justify-center font-Poppins font-normal text-xs text-infoBlack h-full">No data available</div>
             )}

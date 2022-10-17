@@ -31,6 +31,7 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
   const [searchWidget, setSearchWidget] = React.useState<string>();
   const debouncedSearchTextValue: string | undefined = useDebounce(searchWidget, 300);
   const [isButtonLoading, setIsButtonLoading] = React.useState<boolean>(false);
+  const reportDetails = window.location.href;
 
   const workspaceId: string = getLocalWorkspaceId();
   React.useEffect(() => {
@@ -40,7 +41,9 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
   }, [widgetKey]);
 
   React.useEffect(() => {
-    getWidgetsData();
+    if(!reportDetails.includes('/report-details')) {
+      getWidgetsData();
+    }
   }, []);
 
   React.useEffect(() => {
