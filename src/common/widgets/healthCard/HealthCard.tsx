@@ -61,7 +61,7 @@ const HealthCard: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
   };
 
   return (
-    <div className={`my-6 heathCard ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
+    <div className={`mt-6 heathCard ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
       <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Health</h3>
       <div
         className={`flex  ${

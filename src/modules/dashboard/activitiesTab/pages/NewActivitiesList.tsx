@@ -15,67 +15,67 @@ export const activities = [
     key: 'Today',
     url: unsplashIcon,
     message: 'John sj posted a reply in "Last update"',
-    createdAt: '2022-10-12T09:35:30.224Z'
+    activityTime: moment().format()
   },
   {
     key: 'Today',
     url: slackIcon,
     message: 'Nishita joined the channel Support"',
-    createdAt: '2022-10-13T09:35:30.224Z'
+    activityTime: moment().format()
   },
   {
     key: 'Today',
     url: nextIcon,
     message: 'John 10 posted a reply in "Last update"',
-    createdAt: '2022-10-11T09:35:30.224Z'
+    activityTime: moment().subtract(1, 'days').format()
   },
   {
     key: 'Today',
     url: nextIcon,
     message: 'John 10 posted a reply in "Last update"',
-    createdAt: '2022-09-12T09:35:30.224Z'
+    activityTime: moment().subtract(1, 'days').format()
   },
   {
     key: 'Today',
     url: unsplashIcon,
     message: 'John posted a reply in "Last update"',
-    createdAt: '2022-10-13T09:45:30.224Z'
+    activityTime: '2022-10-13T09:45:30.224Z'
   },
   {
     key: 'Today',
     url: slackIcon,
     message: 'Nishita joined the channel Support"',
-    createdAt: '2022-10-12T09:35:30.224Z'
+    activityTime: '2022-10-12T09:35:30.224Z'
   }
 ];
 
 //flittering today date from the data
-export const todayActivities = activities.filter((data) => moment(data.createdAt).format('YYYY-MM-DD') === moment.utc().format('YYYY-MM-DD'));
+export const todayActivities = activities.filter((data) => moment(data.activityTime).format('YYYY-MM-DD') === moment.utc().format('YYYY-MM-DD'));
 
 //flittering yesterday date from the data
 export const yesterdayActivities = activities.filter(
-  (data) => moment(data.createdAt).format('YYYY-MM-DD') === moment().subtract(1, 'days').format('YYYY-MM-DD')
+  (data) => moment(data.activityTime).format('YYYY-MM-DD') === moment().subtract(1, 'days').format('YYYY-MM-DD')
 );
 
 //removing today and yesterdayDate from the data
 const allDate: any = activities
   .filter(
-    (data: { createdAt: moment.MomentInput }) =>
-      moment(data?.createdAt).isBefore(moment.utc().subtract(1, 'days')) || moment(data?.createdAt).isAfter(moment.utc().add(1, 'days'))
+    (data: { activityTime: moment.MomentInput }) =>
+      moment(data?.activityTime).isBefore(moment.utc().subtract(1, 'days')) || moment(data?.activityTime).isAfter(moment.utc().add(1, 'days'))
   )
   .sort(
-    (a: { createdAt: string | number | Date }, b: { createdAt: string | number | Date }) =>
-      new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    (a: { activityTime: string | number | Date }, b: { activityTime: string | number | Date }) =>
+      new Date(a.activityTime).getTime() - new Date(b.activityTime).getTime()
   );
 
 //creating an object after sorting all the dates storing into an object
 export const dateActivities: any = {};
-allDate.forEach((element: { createdAt: string | number }) => {
-  const arr: [] = dateActivities[moment(element.createdAt).format('YYYY-MM-DD')];
+allDate.forEach((element: { activityTime: string | number }) => {
+  const arr: [] = dateActivities[moment(element.activityTime).format('YYYY-MM-DD')];
   if (arr) {
-    dateActivities[moment(element.createdAt).format('YYYY-MM-DD')] = [...arr, element];
+    dateActivities[moment(element.activityTime).format('YYYY-MM-DD')] = [...arr, element];
   } else {
-    dateActivities[moment(element.createdAt).format('YYYY-MM-DD')] = [element];
+    dateActivities[moment(element.activityTime).format('YYYY-MM-DD')] = [element];
   }
 });
 
@@ -100,7 +100,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden }) => (
                     <p className="font-medium text-xs font-Poppins">{item.message}</p>
                   </div>
                   <div className="font-Poppins text-[10px] not-italic font-normal text-[#544e4e] dark:text-greyDark">
-                    <p>{item.createdAt}</p>
+                    <p>{item.activityTime}</p>
                   </div>
                 </div>
               </div>
@@ -124,7 +124,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden }) => (
                     <p className="font-medium text-xs font-Poppins">{item.message}</p>
                   </div>
                   <div className="font-Poppins text-[10px] not-italic font-normal text-[#544e4e] dark:text-greyDark">
-                    <p>{item.createdAt}</p>
+                    <p>{item.activityTime}.</p>
                   </div>
                 </div>
               </div>
@@ -148,7 +148,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden }) => (
                     <p className="font-medium text-xs font-Poppins">{item.message}</p>
                   </div>
                   <div className="font-Poppins text-[10px] not-italic font-normal text-[#544e4e] dark:text-greyDark">
-                    <p>{item.createdAt}</p>
+                    <p>{item.activityTime}</p>
                   </div>
                 </div>
               </div>

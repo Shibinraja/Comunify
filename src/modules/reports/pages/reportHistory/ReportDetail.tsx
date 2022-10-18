@@ -97,7 +97,7 @@ const ReportDetail = () => {
         </div>
       </header>
 
-      <div className="px-[30px] py-[35px]">
+      <div className="px-[30px] pb-[35px]">
         <WidgetContainer isManageMode={isManageMode} widgets={widgets} filters={{ startDate, endDate, platformId: platformIds }} />
       </div>
 
