@@ -18,33 +18,34 @@ type Props = {
 const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLoading, isManageMode, isSidePanelOpen }) => {
   //flittering today date from the data
   const todayDate = activitiesWidgetData?.filter(
-    (data: { createdAt: moment.MomentInput }) => moment(data.createdAt).format('YYYY-MM-DD') === moment.utc().format('YYYY-MM-DD')
+    (data: { activityTime: moment.MomentInput }) => moment(data.activityTime).format('YYYY-MM-DD') === moment.utc().format('YYYY-MM-DD')
   );
 
   //flittering yesterday date from the data
   const yesterdayDate = activitiesWidgetData?.filter(
-    (data: { createdAt: moment.MomentInput }) => moment(data.createdAt).format('YYYY-MM-DD') === moment().subtract(1, 'days').format('YYYY-MM-DD')
+    (data: { activityTime: moment.MomentInput }) =>
+      moment(data.activityTime).format('YYYY-MM-DD') === moment().subtract(1, 'days').format('YYYY-MM-DD')
   );
 
   //removing today and yesterdayDate from the data
   const allDate = activitiesWidgetData
     ?.filter(
-      (data: { createdAt: moment.MomentInput }) =>
-        moment(data?.createdAt).isBefore(moment.utc().subtract(1, 'days')) || moment(data?.createdAt).isAfter(moment.utc().add(1, 'days'))
+      (data: { activityTime: moment.MomentInput }) =>
+        moment(data?.activityTime).isBefore(moment.utc().subtract(1, 'days')) || moment(data?.activityTime).isAfter(moment.utc().add(1, 'days'))
     )
     .sort(
-      (a: { createdAt: string | number | Date }, b: { createdAt: string | number | Date }) =>
-        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      (a: { activityTime: string | number | Date }, b: { activityTime: string | number | Date }) =>
+        new Date(a.activityTime).getTime() - new Date(b.activityTime).getTime()
     );
 
   //creating an object after sorting all the dates storing into an object
   const dateMapObj: any = {};
   allDate.forEach((element) => {
-    const arr: [] = dateMapObj[moment(element.createdAt).format('YYYY-MM-DD')];
+    const arr: [] = dateMapObj[moment(element.activityTime).format('YYYY-MM-DD')];
     if (arr) {
-      dateMapObj[moment(element.createdAt).format('YYYY-MM-DD')] = [...arr, element];
+      dateMapObj[moment(element.activityTime).format('YYYY-MM-DD')] = [...arr, element];
     } else {
-      dateMapObj[moment(element.createdAt).format('YYYY-MM-DD')] = [element];
+      dateMapObj[moment(element.activityTime).format('YYYY-MM-DD')] = [element];
     }
   });
 
@@ -183,7 +184,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
                             <p className="font-medium text-xs font-Poppins">{item?.message}</p>
                           </div>
                           <div className="font-Poppins text-[10px] not-italic font-normal text-[#544e4e] dark:text-greyDark">
-                            <p> {generateDateAndTime(`${item?.createdAt}`, 'HH:MM')}</p>
+                            <p> {generateDateAndTime(`${item?.activityTime}`, 'HH:MM')}</p>
                           </div>
                         </div>
                       </div>
@@ -210,7 +211,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
                             <p className="font-medium text-xs font-Poppins">{item?.message}</p>
                           </div>
                           <div className="font-Poppins text-[10px] not-italic font-normal text-[#544e4e] dark:text-greyDark">
-                            <p> {generateDateAndTime(`${item?.createdAt}`, 'HH:MM')}</p>
+                            <p> {generateDateAndTime(`${item?.activityTime}`, 'HH:MM')}</p>
                           </div>
                         </div>
                       </div>
@@ -239,7 +240,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
                               <p className="font-medium text-xs font-Poppins">{item?.message}</p>
                             </div>
                             <div className="font-Poppins text-[10px] not-italic font-normal text-[#544e4e] dark:text-greyDark">
-                              <p> {generateDateAndTime(`${item?.createdAt}`, 'HH:MM')}</p>
+                              <p> {generateDateAndTime(`${item?.activityTime}`, 'HH:MM')}</p>
                             </div>
                           </div>
                         </div>
