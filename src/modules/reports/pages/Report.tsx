@@ -16,7 +16,6 @@ import 'react-datepicker/dist/react-datepicker.css';
 import actionDotIcon from '../../../assets/images/action-dot.svg';
 import downArrow from '../../../assets/images/filter-dropdown.svg';
 import filterDownIcon from '../../../assets/images/report-dropdown.svg';
-import searchIcon from '../../../assets/images/search.svg';
 import {
   ActionDropDownEnum,
   getReportsListServiceResponseProps,
@@ -89,7 +88,7 @@ const Report: React.FC = () => {
 
   const ReportFilterList = Object.values(checkedPlatform).concat(Object.values(checkedStatus));
 
-  const getReportsList = async (props: { search: string; page: number; limit: number }, reset: boolean) => {
+  const getReportsList = async(props: { search: string; page: number; limit: number }, reset: boolean) => {
     setLoading(true);
     let reportData;
     if (!reset) {
@@ -128,7 +127,7 @@ const Report: React.FC = () => {
     });
   };
 
-  const generateInstantReport = async (id: string) => {
+  const generateInstantReport = async(id: string) => {
     setLoading(true);
     const data = await generateInstantReportsService({
       workspaceId: workspaceId!,
@@ -303,7 +302,7 @@ const Report: React.FC = () => {
     }
   };
 
-  const submitFilterChange = async (): Promise<void> => {
+  const submitFilterChange = async(): Promise<void> => {
     handleFilterDropdown();
     const checkPlatform: Array<string> = [];
     const checkStatusId: Array<string> = [];
@@ -442,6 +441,154 @@ const Report: React.FC = () => {
     navigate(`/${workspaceId}/reports/create-report`);
   };
 
+  const renderReportList = () => {
+    if(!loading && Number(reportsList?.data?.length) === 0) {
+      return (
+        <div className="flex flex-col items-center justify-center w-full fixTableHead-nomember">
+          <div>
+            <img src={noReportIcon} alt="No Report" />
+          </div>
+          <div className="pt-5 font-Poppins font-medium text-tableDuration text-lg leading-10">No Report</div>
+        </div>
+      );
+    }
+    return (
+      <div className="relative">
+        <div className="py-2 overflow-x-auto mt-1.868">
+          <div className="inline-block min-w-full overflow-hidden dark:border-[#dbd8fc1a] align-middle w-61.68 rounded-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixReportTableHead min-h-[31.25rem]">
+            <table className="min-w-full relative  rounded-t-0.6 ">
+              <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky z-40">
+                <tr className="min-w-full">
+                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray ">
+            Report Name
+                  </th>
+                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray">
+            Date
+                  </th>
+                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray">
+            Platforms
+                  </th>
+                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray">
+            Report Status
+                  </th>
+                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray w-6.25">
+            Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {reportsList?.data?.map((data: ReportListServiceResponsePropsData, i) => (
+                  <tr className="border-b dark:border-[#dbd8fc1a] bg-white" key={i}>
+                    <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
+                      <div className="flex ">
+                        <div className="py-3 font-Poppins font-medium text-trial  leading-1.31 cursor-pointer capitalize">
+                          {loading ? (
+                            <Skeleton width={width_90} />
+                          ) : (
+                            <NavLink to={`/${workspaceId}/reports/${data.id}/report-history`}>{data.name}</NavLink>
+                          )}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
+                      <div className="flex ">
+                        <div className="py-3 font-Poppins font-medium text-trial  leading-1.31">
+                          {loading ? <Skeleton width={width_90} /> : generateDateAndTime(`${data?.createdAt}`, 'MM-DD-YYYY')}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
+                      {loading ? (
+                        <div className="flex gap-x-1">
+                          <div className="py-3 font-Poppins font-medium text-trial  leading-1.31 w-1.375">
+                            <Skeleton circle width={'100%'} height={'100%'} />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex gap-x-1">
+                          {data?.workspaceReportSettings?.map((report) =>
+                            report.reportPlatforms.map((platform) => (
+                              <div
+                                className="py-3 font-Poppins font-medium text-trial  leading-1.31 w-1.375"
+                                key={platform.workspacePlatformId}
+                              >
+                                <img src={platform.workspacePlatform.platformSettings.platforms.platformLogoUrl} alt="" />
+                              </div>
+                            ))
+                          )}
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
+                      {loading ? (
+                        <Skeleton width={width_90} />
+                      ) : (
+                        <div className="flex">
+                          {data?.workspaceReportSettings?.map((report) => (
+                            <div className="py-3 font-Poppins font-medium text-trial leading-1.31" key={report.id}>
+                              {ScheduleReportDateType[data?.workspaceReportSettings[0]?.scheduleRepeat] === 'NoSchedule'
+                                ? 'No Schedule'
+                                : ScheduleReportDateType[data?.workspaceReportSettings[0]?.scheduleRepeat]}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
+                      <div className="flex cursor-pointer relative" ref={kebabMenuRef}>
+                        <div
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (isDropdownActive) {
+                              handleDropDownActive('');
+                            } else {
+                              handleDropDownActive(data.id);
+                            }
+                          }}
+                          className="flex items-center justify-center action  h-[40px] w-[46px] box-border bg-white dark:bg-secondaryDark dark:border-[#dbd8fc1a] shadow-deleteButton rounded"
+                        >
+                          <img src={actionDotIcon} alt="" className="relative" />
+                        </div>
+                        {isDropdownActive === data.id && (
+                          <div className="absolute top-6 app-result-card-border bg-white dark:bg-secondaryDark -m-[3px] rounded-[6px] box-border w-9.62  right-[0.5rem] shadow-shadowInput z-40">
+                            {RenderedOption(
+                              data.workspaceReportSettings[0].scheduleRepeat,
+                              data.workspaceReportSettings[0].isScheduleActive
+                            )?.map((options, i) => (
+                              <div className="flex flex-col" onClick={() => handleDropDownActive('')} key={i}>
+                                <div
+                                  className="h-3.06 p-2 flex items-center border border-transparent text-searchBlack dark:text-white font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain hover:app-result-card-border dark:hover:bg-thirdDark transition ease-in duration-300 "
+                                  onClick={() => handleAction(options, data.id, data, data.workspaceReportSettings[0].isScheduleActive)}
+                                >
+                                  {options}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+                <tr className="px-6 py-3  dark:text-white">
+                  <td className="px-6 py-3 "></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div className="px-6 py-6 flex items-center justify-center gap-0.66 w-full rounded-b-lg bg-white dark:bg-thirdDark bottom-0">
+          <Pagination
+            currentPage={page}
+            totalPages={Number(reportsList?.totalPages)}
+            limit={limit}
+            onPageChange={(page) => setPage(Number(page))}
+          />
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="mt-2.62 w-full">
       <Fragment>
@@ -454,7 +601,7 @@ const Report: React.FC = () => {
                 name="search"
                 id="searchId"
                 className="app-input-card-border focus:outline-none px-4 mr-0.76 box-border h-3.06 w-19.06 dark:bg-secondaryDark text-dropGray bg-white  dark:text-inputText dark:placeholder:text-inputText shadow-shadowInput rounded-0.6 placeholder:text-[#7C8DB5] placeholder:text-card placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.12 font-Poppins"
-                placeholder="Search By Name or Email"
+                placeholder="Search By Report Name"
                 onChange={handleSearchTextChange}
               />
             </div>
@@ -647,148 +794,7 @@ const Report: React.FC = () => {
               />
             </div>
           </div>
-          {reportsList?.data?.length ? (
-            <div className="relative">
-              <div className="py-2 overflow-x-auto mt-1.868">
-                <div className="inline-block min-w-full overflow-hidden dark:border-[#dbd8fc1a] align-middle w-61.68 rounded-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixReportTableHead min-h-[31.25rem]">
-                  <table className="min-w-full relative  rounded-t-0.6 ">
-                    <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky z-40">
-                      <tr className="min-w-full">
-                        <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray ">
-                          Report Name
-                        </th>
-                        <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray">
-                          Date
-                        </th>
-                        <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray">
-                          Platforms
-                        </th>
-                        <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray">
-                          Report Status
-                        </th>
-                        <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray w-6.25">
-                          Actions
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {reportsList?.data?.map((data: ReportListServiceResponsePropsData, i) => (
-                        <tr className="border-b dark:border-[#dbd8fc1a] bg-white" key={i}>
-                          <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
-                            <div className="flex ">
-                              <div className="py-3 font-Poppins font-medium text-trial  leading-1.31 cursor-pointer capitalize">
-                                {loading ? (
-                                  <Skeleton width={width_90} />
-                                ) : (
-                                  <NavLink to={`/${workspaceId}/reports/${data.id}/report-history`}>{data.name}</NavLink>
-                                )}
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
-                            <div className="flex ">
-                              <div className="py-3 font-Poppins font-medium text-trial  leading-1.31">
-                                {loading ? <Skeleton width={width_90} /> : generateDateAndTime(`${data?.createdAt}`, 'MM-DD-YYYY')}
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
-                            {loading ? (
-                              <div className="flex gap-x-1">
-                                <div className="py-3 font-Poppins font-medium text-trial  leading-1.31 w-1.375">
-                                  <Skeleton circle width={'100%'} height={'100%'} />
-                                </div>
-                              </div>
-                            ) : (
-                              <div className="flex gap-x-1">
-                                {data?.workspaceReportSettings?.map((report) =>
-                                  report.reportPlatforms.map((platform) => (
-                                    <div
-                                      className="py-3 font-Poppins font-medium text-trial  leading-1.31 w-1.375"
-                                      key={platform.workspacePlatformId}
-                                    >
-                                      <img src={platform.workspacePlatform.platformSettings.platforms.platformLogoUrl} alt="" />
-                                    </div>
-                                  ))
-                                )}
-                              </div>
-                            )}
-                          </td>
-                          <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
-                            {loading ? (
-                              <Skeleton width={width_90} />
-                            ) : (
-                              <div className="flex">
-                                {data?.workspaceReportSettings?.map((report) => (
-                                  <div className="py-3 font-Poppins font-medium text-trial leading-1.31" key={report.id}>
-                                    {ScheduleReportDateType[data?.workspaceReportSettings[0]?.scheduleRepeat] === 'NoSchedule'
-                                      ? 'No Schedule'
-                                      : ScheduleReportDateType[data?.workspaceReportSettings[0]?.scheduleRepeat]}
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-                          </td>
-                          <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
-                            <div className="flex cursor-pointer relative" ref={kebabMenuRef}>
-                              <div
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  if (isDropdownActive) {
-                                    handleDropDownActive('');
-                                  } else {
-                                    handleDropDownActive(data.id);
-                                  }
-                                }}
-                                className="flex items-center justify-center action  h-[40px] w-[46px] box-border bg-white dark:bg-secondaryDark dark:border-[#dbd8fc1a] shadow-deleteButton rounded"
-                              >
-                                <img src={actionDotIcon} alt="" className="relative" />
-                              </div>
-                              {isDropdownActive === data.id && (
-                                <div className="absolute top-6 app-result-card-border bg-white dark:bg-secondaryDark -m-[3px] rounded-[6px] box-border w-9.62  right-[0.5rem] shadow-shadowInput z-40">
-                                  {RenderedOption(
-                                    data.workspaceReportSettings[0].scheduleRepeat,
-                                    data.workspaceReportSettings[0].isScheduleActive
-                                  )?.map((options, i) => (
-                                    <div className="flex flex-col" onClick={() => handleDropDownActive('')} key={i}>
-                                      <div
-                                        className="h-3.06 p-2 flex items-center border border-transparent text-searchBlack dark:text-white font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain hover:app-result-card-border dark:hover:bg-thirdDark transition ease-in duration-300 "
-                                        onClick={() => handleAction(options, data.id, data, data.workspaceReportSettings[0].isScheduleActive)}
-                                      >
-                                        {options}
-                                      </div>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                      <tr className="px-6 py-3  dark:text-white">
-                        <td className="px-6 py-3 "></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-              <div className="px-6 py-6 flex items-center justify-center gap-0.66 w-full rounded-b-lg bg-white dark:bg-thirdDark bottom-0">
-                <Pagination
-                  currentPage={page}
-                  totalPages={Number(reportsList?.totalPages)}
-                  limit={limit}
-                  onPageChange={(page) => setPage(Number(page))}
-                />
-              </div>
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center w-full fixTableHead-nomember">
-              <div>
-                <img src={noReportIcon} alt="No Report" />
-              </div>
-              <div className="pt-5 font-Poppins font-medium text-tableDuration text-lg leading-10">No Report</div>
-            </div>
-          )}
+          {renderReportList()}
         </div>
         <ModalDrawer
           isOpen={modalOpen.removeModalOpen || modalOpen.scheduleOffModalOpen || modalOpen.generateReportModalOpen}
@@ -800,12 +806,12 @@ const Report: React.FC = () => {
             modalOpen.removeModalOpen
               ? 'Are you sure you want to permanently delete the report with the history?'
               : modalOpen.scheduleOffModalOpen && !selectId.scheduleActive
-              ? 'Are you sure you want to turn on the scheduling for the report?'
-              : modalOpen.scheduleOffModalOpen && selectId.scheduleActive
-              ? 'Are you sure you want to turn off the scheduling for the report?'
-              : modalOpen.generateReportModalOpen
-              ? 'Are you sure you want to generate the report?'
-              : ''
+                ? 'Are you sure you want to turn on the scheduling for the report?'
+                : modalOpen.scheduleOffModalOpen && selectId.scheduleActive
+                  ? 'Are you sure you want to turn off the scheduling for the report?'
+                  : modalOpen.generateReportModalOpen
+                    ? 'Are you sure you want to generate the report?'
+                    : ''
           }
         />
       </Fragment>

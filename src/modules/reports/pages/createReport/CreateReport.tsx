@@ -111,7 +111,7 @@ const CreateReport = () => {
         handleSelectedReport('');
         setCustomDate((prevDate) => ({
           ...prevDate,
-          startDate: new Date(reportResponseValues.createdAt),
+          startDate: new Date(reportResponseValues.reportStartAt),
           endDate: new Date(reportResponseValues.reportEndAt),
           singleDate: undefined
         }));

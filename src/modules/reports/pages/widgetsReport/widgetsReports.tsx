@@ -28,7 +28,7 @@ const widgetsReports: React.FC = () => {
   const endDate = searchParams.get('endDate') || '';
 
   // Function to call the api and list the membersSuggestionList
-  const getReportWidgetsList = async (props: { page: number; limit: number }) => {
+  const getReportWidgetsList = async(props: { page: number; limit: number }) => {
     setLoading(true);
     const data = await getReportWidgetsListService({
       workspaceId: workspaceId!,
@@ -56,7 +56,7 @@ const widgetsReports: React.FC = () => {
           limit: 10,
           page: 1
         });
-      }, 1000);
+      }, 3000);
     }
   }, [reportId]);
 
@@ -161,7 +161,7 @@ const widgetsReports: React.FC = () => {
           type="button"
           text=""
           className="mr-2.5 w-6.875 bg-[#161616] border-backBorder h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow"
-          onClick={() => setIsOpen(true)}
+          onClick={() => {setIsManageMode(false); setIsOpen(true);}}
         >
           <div className="font-Poppins font-medium text-white leading-5 text-[13px] ">Preview</div>
         </Button>
@@ -182,6 +182,7 @@ const widgetsReports: React.FC = () => {
           setIsOpen={setIsOpen}
           filters={{ startDate, endDate, platformId: reportValuesData?.platformId }}
           transformData={previewWidgetsData}
+          setManageMode={setIsManageMode}
         />
       )}
       <ModalDrawer
