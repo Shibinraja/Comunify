@@ -4,7 +4,7 @@ import { convertEndDate, convertStartDate } from '@/lib/helper';
 import Button from 'common/button';
 import Input from 'common/input';
 import { email_regex, reportName_regex } from 'constants/constants';
-import { subDays, subMonths, subYears } from 'date-fns';
+import { startOfDay, startOfMonth, startOfWeek, subDays, subMonths, subYears } from 'date-fns';
 import { Form, Formik } from 'formik';
 import {
   createReportInitialValues,
@@ -319,16 +319,13 @@ const CreateReport = () => {
     if (checkedRadioId[ScheduleReportsEnum.Yes]) {
       const todayDate = new Date();
       if (Number(newValues['schedule']) === ScheduleReportDateType.Daily) {
-        const date = subDays(todayDate, 1);
-        newValues['startDate'] = convertStartDate(date);
+        newValues['startDate'] = convertStartDate(startOfDay(todayDate));
       }
       if (Number(newValues['schedule']) === ScheduleReportDateType.Weekly) {
-        const date = subDays(todayDate, 7);
-        newValues['startDate'] = convertStartDate(date);
+        newValues['startDate'] = convertStartDate(startOfWeek(todayDate, { weekStartsOn: 1 }));
       }
       if (Number(newValues['schedule']) === ScheduleReportDateType.Monthly) {
-        const date = subMonths(todayDate, 1);
-        newValues['startDate'] = convertStartDate(date);
+        newValues['startDate'] = convertStartDate(startOfMonth(todayDate));
       }
       newValues['endDate'] = convertEndDate(todayDate);
     }
@@ -402,8 +399,6 @@ const CreateReport = () => {
                   .max(255)
               ),
             platform: Yup.array().min(1, 'Platform is required'),
-            // startDate: Yup.string().required('Custom Date is required'),
-            // endDate: Yup.string().required('Custom Date is required'),
             startDate: Yup.lazy((value: string) => {
               if (Object.keys(checkedRadioId).includes('Yes') && !value) {
                 return Yup.string().notRequired();
