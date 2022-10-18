@@ -92,6 +92,7 @@ export type WidgetPreviewType = {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   filters?: WidgetFilters;
   transformData: Array<Omit<PanelWidgetsType, 'isAssigned'>>
+  setManageMode: Dispatch<SetStateAction<boolean>>
 }
 
 //request body

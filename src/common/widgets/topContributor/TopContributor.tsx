@@ -19,7 +19,7 @@ const TopContributor: React.FC<WidgetComponentProps> = (props: WidgetComponentPr
   const [memberWidgetData, setMemberWidgetData] = React.useState<MemberWidgetData[]>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
-  const defaultTab = 'active';
+  const defaultTab = 'topContributor';
 
   const workspaceIdToken = useAppSelector((state) => state.auth.workspaceId);
 
