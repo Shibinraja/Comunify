@@ -63,7 +63,7 @@ const InActiveMembers: React.FC<WidgetComponentProps> = (props: WidgetComponentP
         ${
           isManageMode ? 'widget-border relative h-full' : 'border-borderPrimary'
         } bg-white dark:bg-secondaryDark dark:text-white rounded-0.6 mt-1.868 border  
-         dark:border-borderDark shadow-profileCard `}
+         dark:border-borderDark shadow-profileCard  h-[85%]`}
       >
         <div className="w-full mt-6 flex flex-col ">
           <nav>

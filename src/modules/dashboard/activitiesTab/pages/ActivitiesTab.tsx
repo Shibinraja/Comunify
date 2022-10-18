@@ -7,7 +7,7 @@ export default function ActivitiesTab() {
   const [selectedTab, setSelectedTab] = useTabs(['activites', 'highlights']);
 
   return (
-    <div className="w-full h-full   box-border bg-white dark:bg-secondaryDark dark:text-white  rounded-0.6 mt-1.868 border  border-borderPrimary dark:border-borderDark shadow-profileCard ">
+    <div className="w-full h-full   box-border bg-white dark:bg-secondaryDark dark:text-white  rounded-0.6 mt-1.868 border  border-borderPrimary dark:border-borderDark shadow-profileCard  h-[85%]">
       <div className="w-full mt-6 flex flex-col ">
         <nav>
           <TabSelector

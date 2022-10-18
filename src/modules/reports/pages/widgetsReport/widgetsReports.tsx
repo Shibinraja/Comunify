@@ -9,6 +9,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import WidgetPreview from '../createReport/WidgetPreview';
+import noWidgetIcon from '../../../../assets/images/no-widget.svg';
 
 const widgetsReports: React.FC = () => {
   const { workspaceId } = useParams();
@@ -140,6 +141,12 @@ const widgetsReports: React.FC = () => {
       <div className="flex items-center justify-between pl-2.5 relative py-10">
         <h3 className="text-center font-Inter font-semibold text-[23.47px] text-[#08080D] leading-6">Customize your Report</h3>
       </div>
+      {!widgets?.length && !isManageMode && (
+        <div className="flex flex-col items-center justify-center fixWidgetNoDataHeight-report">
+          <img src={noWidgetIcon} alt="" className="w-[3.8125rem] h-[3.8125rem]" />
+          <div className="font-Poppins font-medium text-tableDuration text-noReports leading-10 pt-5">No widgets added</div>
+        </div>
+      )}
       <WidgetContainer
         isManageMode={isManageMode}
         widgets={widgets}
@@ -148,7 +155,7 @@ const widgetsReports: React.FC = () => {
         filters={{ startDate, endDate, platformId: reportValuesData?.platformIds }}
       />
 
-      <div className="flex justify-end pt-10 items-center">
+      <div className="flex justify-end pt-10 items-center mb-10">
         <Button
           type="button"
           text=""
