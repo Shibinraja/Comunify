@@ -68,7 +68,7 @@ input {
 }
 
 .app-result-card-border {
-  border: 2px solid #eff0f7;
+  border: .5px solid #eff0f7;
 }
 
 .border-bottom-card {
@@ -242,7 +242,7 @@ input {
   height: 35px;
   background: rgba(0, 0, 0, 0.12);
 }
-.active-list:first-child:after {
+.active-list:nth-child(2):after {
   height: 0;
 }
 
@@ -639,4 +639,7 @@ input {
  }
 .report-email p{
   top: 3.5rem;
+}
+.fixWidgetNoDataHeight-report{
+  height: calc(100vh - 19rem);
 }
