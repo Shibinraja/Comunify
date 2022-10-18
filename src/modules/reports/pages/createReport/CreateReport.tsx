@@ -399,8 +399,6 @@ const CreateReport = () => {
                   .max(255)
               ),
             platform: Yup.array().min(1, 'Platform is required'),
-            // startDate: Yup.string().required('Custom Date is required'),
-            // endDate: Yup.string().required('Custom Date is required'),
             startDate: Yup.lazy((value: string) => {
               if (Object.keys(checkedRadioId).includes('Yes') && !value) {
                 return Yup.string().notRequired();
