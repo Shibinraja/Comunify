@@ -57,7 +57,7 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
   };
 
   return (
-    <div className={`my-6 ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
+    <div className={`mt-6 ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
       <div>
         <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Members</h3>
       </div>

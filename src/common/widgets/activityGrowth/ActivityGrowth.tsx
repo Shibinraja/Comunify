@@ -59,7 +59,7 @@ const ActivityGrowth: React.FC<WidgetComponentProps> = (props: WidgetComponentPr
   };
 
   return (
-    <div className={`my-6 ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
+    <div className={`mt-6 ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
       <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Activity Growth</h3>
       <div
         className={`my-6 pb-10 bg-white dark:bg-secondaryDark dark:text-white rounded-0.6 border  
