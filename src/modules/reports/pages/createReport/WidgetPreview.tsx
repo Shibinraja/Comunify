@@ -9,12 +9,11 @@ import { useSearchParams } from 'react-router-dom';
 import Modal from 'react-modal';
 import { ScheduleReportDateType, WidgetPreviewType } from '../../interfaces/reports.interface';
 
-
 Modal.setAppElement('#root');
 
-const WidgetPreview: React.FC<WidgetPreviewType> = ({ isOpen, setIsOpen, filters, transformData }) => {
+const WidgetPreview: React.FC<WidgetPreviewType> = ({ isOpen, setIsOpen, filters, transformData, setManageMode }) => {
   const { PlatformsConnected } = usePlatform();
-  const [isManageMode, setIsManageMode] = useState<boolean>(true);
+  const [isManageMode, setIsManageMode] = useState<boolean>(false);
   const [searchParams] = useSearchParams();
   const startDate = searchParams.get('startDate') || '';
   const endDate = searchParams.get('endDate') || '';
@@ -81,11 +80,7 @@ const WidgetPreview: React.FC<WidgetPreviewType> = ({ isOpen, setIsOpen, filters
         </header>
 
         <div className="px-[30px] py-[10px] preview-box overflow-auto">
-          <WidgetContainer
-            isManageMode={isManageMode}
-            widgets={transformData}
-            filters={filters}
-          />
+          <WidgetContainer isManageMode={isManageMode} widgets={transformData} filters={filters} />
         </div>
 
         <footer className="px-[30px] py-[35px]">
@@ -94,7 +89,10 @@ const WidgetPreview: React.FC<WidgetPreviewType> = ({ isOpen, setIsOpen, filters
               <Button
                 type="button"
                 text="Back"
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  setManageMode(true);
+                  setIsOpen(false);
+                }}
                 className="cancel cursor-pointer font-Poppins font-medium text-error leading-5 border-cancel text-thinGray box-border rounded w-6.875 h-3.12"
               />
               {/* <Button
