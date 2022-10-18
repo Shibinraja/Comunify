@@ -68,7 +68,7 @@ input {
 }
 
 .app-result-card-border {
-  border: 2px solid #eff0f7;
+  border: .5px solid #eff0f7;
 }
 
 .border-bottom-card {
