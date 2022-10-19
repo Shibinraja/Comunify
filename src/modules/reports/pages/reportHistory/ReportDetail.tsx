@@ -51,17 +51,19 @@ const ReportDetail = () => {
         workspaceId: workspaceId!,
         reportHistoryId: reportHistoryId!
       }).then((reportHistory) => {
-        setSaveHistoryDetail(reportHistory);
+        if(reportHistory?.report) {
+          setSaveHistoryDetail(reportHistory);
 
-        reportHistory?.report.workspaceReportSettings[0].reportPlatforms.forEach((platformId) =>
-          setPlatformIds((prevId) => [...prevId, platformId.workspacePlatform.platformSettings.platforms.id])
-        );
-        dispatch(authSlice.actions.setWorkspaceId({ workspaceId: reportHistory?.report.workspaceId as string }));
-        getReportWidgetsList({
-          limit,
-          page,
-          reportId: reportHistory?.report.id as string
-        });
+          reportHistory?.report.workspaceReportSettings[0].reportPlatforms.forEach((platformId) =>
+            setPlatformIds((prevId) => [...prevId, platformId.workspacePlatform.platformSettings.platforms.id])
+          );
+          dispatch(authSlice.actions.setWorkspaceId({ workspaceId: reportHistory?.report.workspaceId as string }));
+          getReportWidgetsList({
+            limit,
+            page,
+            reportId: reportHistory?.report.id as string
+          });
+        }
       });
     }
   }, [reportHistoryId]);
