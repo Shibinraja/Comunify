@@ -20,8 +20,6 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
   const [memberWidgetData, setMemberWidgetData] = React.useState<MemberWidgetData[]>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
-  const widgetPreviewLocation = window.location.href.includes('/report-details');
-
   React.useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
       getMembersWidgetData();
@@ -41,12 +39,7 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
     setIsLoading(true);
     const newFilter = { ...filters };
     newFilter['type'] = selectedTab ? selectedTab : undefined;
-    if(widgetPreviewLocation) {
-      newFilter['limit'] = 5;
-    }
-    if(!widgetPreviewLocation) {
-      newFilter['limit'] = 20;
-    }
+    newFilter['limit'] = 20;
     const data: MemberWidgetData[] = await membersWidgetDataService(workspaceId || workspaceIdToken, newFilter);
     setMemberWidgetData(data);
     setIsLoading(false);
