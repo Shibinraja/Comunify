@@ -18,34 +18,36 @@ type Props = {
 const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLoading, isManageMode, isSidePanelOpen }) => {
   //flittering today date from the data
   const todayDate = activitiesWidgetData?.filter(
-    (data: { activityTime: moment.MomentInput }) => moment(data.activityTime).format('YYYY-MM-DD') === moment.utc().format('YYYY-MM-DD')
+    (data: { activityTime: moment.MomentInput }) => moment(data.activityTime).format('DD-MMM-YYYY') === moment.utc().format('DD-MMM-YYYY')
   );
 
   //flittering yesterday date from the data
   const yesterdayDate = activitiesWidgetData?.filter(
     (data: { activityTime: moment.MomentInput }) =>
-      moment(data.activityTime).format('YYYY-MM-DD') === moment().subtract(1, 'days').format('YYYY-MM-DD')
+      moment(data.activityTime).format('DD-MMM-YYYY') === moment().subtract(1, 'days').format('DD-MMM-YYYY')
   );
 
   //removing today and yesterdayDate from the data
   const allDate = activitiesWidgetData
     ?.filter(
       (data: { activityTime: moment.MomentInput }) =>
-        moment(data?.activityTime).isBefore(moment.utc().subtract(1, 'days')) || moment(data?.activityTime).isAfter(moment.utc().add(1, 'days'))
+        moment(data?.activityTime).isBefore(moment.utc().subtract(1, 'days').format('DD-MMM-YYYY')) ||
+        moment(data?.activityTime).isAfter(moment.utc().add(1, 'days').format('DD-MMM-YYYY'))
     )
     .sort(
       (a: { activityTime: string | number | Date }, b: { activityTime: string | number | Date }) =>
         new Date(a.activityTime).getTime() - new Date(b.activityTime).getTime()
-    );
+    )
+    .reverse();
 
   //creating an object after sorting all the dates storing into an object
   const dateMapObj: any = {};
   allDate.forEach((element) => {
-    const arr: [] = dateMapObj[moment(element.activityTime).format('YYYY-MM-DD')];
+    const arr: [] = dateMapObj[moment(element.activityTime).format('DD-MMM-YYYY')];
     if (arr) {
-      dateMapObj[moment(element.activityTime).format('YYYY-MM-DD')] = [...arr, element];
+      dateMapObj[moment(element.activityTime).format('DD-MMM-YYYY')] = [...arr, element];
     } else {
-      dateMapObj[moment(element.activityTime).format('YYYY-MM-DD')] = [element];
+      dateMapObj[moment(element.activityTime).format('DD-MMM-YYYY')] = [element];
     }
   });
 
@@ -57,7 +59,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
             <ul>
               {todayDate.length > 0 && (
                 <>
-                  <h3 className="font-medium pl-7 text-m font-Poppins  text-xs py-1 mt-2"> Today</h3>
+                  <h3 className="font-medium pl-7 text-m font-Poppins  text-xs mt-2"> Today</h3>
                   {todayDate.map((item: ActivitiesWidgetData) => (
                     <>
                       <li key={`${item?.id + item.channelId + Math.random()}`} className="my-1.68 active-list relative">
@@ -86,7 +88,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
               )}
               {yesterdayDate?.length > 0 && (
                 <>
-                  <h3 className="font-medium pl-7 text-m font-Poppins  text-xs py-1 mt-2"> Yesterday</h3>
+                  <h3 className="font-medium pl-7 text-m font-Poppins  text-xs pb-4"> Yesterday</h3>
                   {yesterdayDate.map((item: ActivitiesWidgetData) => (
                     <>
                       <li key={`${item?.id + item.channelId + Math.random()}`} className="my-1.68 active-list relative">
@@ -117,9 +119,9 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
                 <>
                   {Object.entries(dateMapObj).map((item: any) => (
                     <>
-                      <h3 className="font-medium pl-7 text-m font-Poppins  text-xs py-1 mt-2"> {item[0]}</h3>
+                      <h3 className="font-medium pl-7 text-m font-Poppins  text-xs py-1 "> {item[0]}</h3>
                       {item[1].map((item: any) => (
-                        <li key={`${item?.id + item.channelId + Math.random()}`} className="my-1.68 active-list relative">
+                        <li key={`${item?.id + item.channelId + Math.random()}`} className="my-4 active-list relative">
                           <div className="w-full flex justify-start items-center">
                             <div className="ml-2.024 bottom-line ">
                               {yellowDotted ? <img src={yellowDotted} alt="" /> : <Skeleton width={10} height={10} count={1} />}
@@ -171,7 +173,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
                 <h3 className="font-medium pl-7 text-m font-Poppins  text-xs mt-2">Today</h3>
                 {todayActivities.map((item) => (
                   <>
-                    <li key={`${Math.random()}`} className="my-1.68 active-list relative">
+                    <li key={`${Math.random()}`} className="my-4 active-list relative">
                       <div className="w-full flex justify-start items-center">
                         <div className="ml-2.024 bottom-line ">
                           <img src={yellowDotted} />
@@ -195,10 +197,10 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
             )}
             {yesterdayActivities.length > 0 && (
               <>
-                <h3 className="font-medium pl-7 text-m font-Poppins  text-xs mt-2">Yesterday</h3>
+                <h3 className="font-medium pl-7 text-m font-Poppins  text-xs pb-4">Yesterday</h3>
                 {yesterdayActivities.map((item) => (
                   <>
-                    <li key={`${Math.random()}`} className="my-1.68 active-list relative">
+                    <li key={`${Math.random()}`} className="my-4 active-list relative">
                       <div className="w-full flex justify-start items-center">
                         <div className="ml-2.024 bottom-line ">
                           <img src={yellowDotted} />
@@ -224,7 +226,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
               <>
                 {Object.entries(dateActivities).map((item: any) => (
                   <>
-                    <h3 className="font-medium pl-7 text-m font-Poppins  text-xs mt-2"> {item[0] ? item[0] : ''}</h3>
+                    <h3 className="font-medium pl-7 text-m font-Poppins  text-xs pb-2"> {item[0] ? item[0] : ''}</h3>
 
                     {item[1].map((item: any) => (
                       <li key={`${Math.random()}`} className="my-1.68 active-list relative">
