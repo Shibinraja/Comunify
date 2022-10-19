@@ -23,6 +23,14 @@ const QuickInfo: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) 
     }
   }, [isManageMode]);
 
+  React.useEffect(() => {
+    if (isManageMode === false) {
+      if (filters?.startDate && filters?.endDate) {
+        getQuickInfoWidgetData();
+      }
+    }
+  }, filters && Object.values(filters));
+
   // eslint-disable-next-line space-before-function-paren
   const getQuickInfoWidgetData = async () => {
     setIsLoading(true);
@@ -46,14 +54,6 @@ const QuickInfo: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) 
   const newActivitiesData: QuickInfoData | undefined = quickInfoWidgetData?.find(
     (data: QuickInfoData) => data?.title.toLocaleLowerCase().trim() === 'new activities'
   );
-
-  React.useEffect(() => {
-    if (isManageMode === false) {
-      if (filters?.startDate && filters?.endDate) {
-        getQuickInfoWidgetData();
-      }
-    }
-  }, filters && Object.values(filters));
 
   const handleRemove = () => {
     removeWidgetFromDashboard(widget);

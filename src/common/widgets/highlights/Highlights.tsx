@@ -35,12 +35,7 @@ const Highlights: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
     setIsLoading(true);
     const newFilter = { ...filters };
     newFilter['type'] = defaultTab ? defaultTab : selectedTab as string;
-    if (widgetPreviewLocation) {
-      newFilter['limit'] = 5;
-    }
-    if (!widgetPreviewLocation) {
-      newFilter['limit'] = 20;
-    }
+    newFilter['limit'] = 5;
     const data: ActivitiesWidgetData[] = await activitiesWidgetDataService(workspaceId || workspaceIdToken, newFilter);
     setActivitiesWidgetResponse(data);
     setIsLoading(false);
