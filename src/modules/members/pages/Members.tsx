@@ -384,7 +384,8 @@ const Members: React.FC = () => {
                   membersSlice.actions.membersList({
                     membersQuery: {
                       page,
-                      limit
+                      limit,
+                      search: searchText
                     },
                     workspaceId: workspaceId!
                   })
@@ -407,7 +408,8 @@ const Members: React.FC = () => {
                   membersSlice.actions.membersList({
                     membersQuery: {
                       page,
-                      limit
+                      limit,
+                      search: searchText
                     },
                     workspaceId: workspaceId!
                   })
@@ -430,7 +432,8 @@ const Members: React.FC = () => {
                   membersSlice.actions.membersList({
                     membersQuery: {
                       page,
-                      limit
+                      limit,
+                      search: searchText
                     },
                     workspaceId: workspaceId!
                   })
