@@ -1,4 +1,6 @@
 /* eslint-disable no-unused-vars */
+import { PaginationResponse } from 'interface/interface';
+
 export interface PlatformIcons {
   slack: string | undefined;
   vanillaForums: string | undefined;
@@ -112,12 +114,7 @@ export enum TagType {
   Default = 'Default'
 }
 
-export type TagResponse = {
-  data: Array<TagResponseData>;
-  totalPages: number;
-  previousPage: number;
-  nextPage: number;
-};
+export type TagResponse = PaginationResponse<TagResponseData>;
 
 export type PlatformResponse = {
   id: string;
@@ -244,3 +241,18 @@ export interface UpgradeData {
   upgrade?: boolean;
   paymentMethod?: string;
 }
+export interface BillingHistoryQuery {
+  page: number;
+  limit: number;
+}
+
+export interface BillingHistoryData {
+  id: string;
+  invoiceId: string;
+  planName: string;
+  date: Date;
+  amount: number;
+  expiresAt: Date;
+}
+
+export type BillingHistoryResponse = PaginationResponse<BillingHistoryData>;

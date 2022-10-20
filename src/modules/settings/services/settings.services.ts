@@ -20,8 +20,10 @@ import {
   UpdateSubscriptionAutoRenewal,
   ClientSecret,
   AddedCardDetails
+  BillingHistoryQuery,
+  BillingHistoryResponse
 } from '../interface/settings.interface';
-
+import { billingHistoryData } from '../../settings/pages/billingHistory/BillingHistoryTableData';
 export const NavigateToConnectPage = () => {
   window.location.href = SLACK_CONNECT_ENDPOINT;
 };
@@ -138,5 +140,32 @@ export const selectCardService = async (id: string): Promise<AddedCardDetails> =
     return data?.data?.data as AddedCardDetails;
   } catch {
     return {} as AddedCardDetails;
+  }
+}
+// Billing history services
+
+export const getBillingHistoryData = async (params: BillingHistoryQuery) => {
+  try {
+    const { data } = await request.get(`${API_ENDPOINT}/v1/subscription/billinghistory?page=${params.page}&limit=${params.limit}`);
+    // return data?.data as BillingHistoryResponse;
+    return billingHistoryData as unknown as BillingHistoryResponse;
+  } catch {
+    showErrorToast('Billing history failed');
+    return {} as BillingHistoryResponse;
+  }
+};
+
+export const getBillingInvoice = async (invoiceId: string) => {
+  try {
+    const { data } = await request.get(`${API_ENDPOINT}/v1/subscription/downloadinvoice/${invoiceId}`, {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      responseType: 'arraybuffer'
+    });
+    return data;
+  } catch (error) {
+    showErrorToast('Failed to download Pdf');
+    return {};
   }
 };
