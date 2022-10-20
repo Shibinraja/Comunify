@@ -35,12 +35,7 @@ const Highlights: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
     setIsLoading(true);
     const newFilter = { ...filters };
     newFilter['type'] = defaultTab ? defaultTab : selectedTab as string;
-    if (widgetPreviewLocation) {
-      newFilter['limit'] = 5;
-    }
-    if (!widgetPreviewLocation) {
-      newFilter['limit'] = 20;
-    }
+    newFilter['limit'] = 5;
     const data: ActivitiesWidgetData[] = await activitiesWidgetDataService(workspaceId || workspaceIdToken, newFilter);
     setActivitiesWidgetResponse(data);
     setIsLoading(false);
@@ -89,7 +84,7 @@ const Highlights: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
             onClick={handleRemove}
             className="absolute -right-3 bg-widgetClose rounded-full flex items-center justify-center h-6 w-6 text-white text-2xl -top-3 cursor-pointer"
           >
-          -
+            -
           </div>
         )}
       </div>

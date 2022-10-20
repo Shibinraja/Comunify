@@ -36,12 +36,7 @@ const NewActivities: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
     setIsLoading(true);
     const newFilter = { ...filters };
     newFilter['type'] = defaultTab ? defaultTab : selectedTab as string;
-    if(widgetPreviewLocation) {
-      newFilter['limit'] = 5;
-    }
-    if(!widgetPreviewLocation) {
-      newFilter['limit'] = 20;
-    }
+    newFilter['limit'] = 5;
     const data: ActivitiesWidgetData[] = await activitiesWidgetDataService(workspaceId || workspaceIdToken, newFilter);
     setActivitiesWidgetResponse(data);
     setIsLoading(false);
@@ -52,7 +47,7 @@ const NewActivities: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
   };
 
   return (
-    <div className={`${!isManageMode ? 'h-full' : 'cursor-grabbing my-6 '}  `}>
+    <div className={`${!isManageMode ? 'h-full' : 'cursor-grabbing'}  `}>
       <div className='mt-6'>
         <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Activities</h3>
       </div>

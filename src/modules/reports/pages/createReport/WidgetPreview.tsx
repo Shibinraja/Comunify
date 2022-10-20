@@ -30,7 +30,7 @@ const WidgetPreview: React.FC<WidgetPreviewType> = ({ isOpen, setIsOpen, filters
       isOpen={isOpen}
       shouldCloseOnOverlayClick={false}
       onRequestClose={() => setIsOpen(false)}
-      className="w-4/6 mx-auto rounded-lg modals-tag bg-white shadow-modal flex items-center justify-center"
+      className="w-10/12 mx-auto rounded-lg modals-tag bg-white shadow-modal flex items-center justify-center"
       style={{
         overlay: {
           display: 'flex',

@@ -16,8 +16,6 @@ const ActivitiesTab: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
 
   const workspaceIdToken = useAppSelector((state) => state.auth.workspaceId);
 
-  const widgetPreviewLocation = window.location.href.includes('/report-details');
-
   React.useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
       getActivityWidgetData();
@@ -39,12 +37,7 @@ const ActivitiesTab: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
     setIsLoading(true);
     const newFilter = { ...filters };
     newFilter['type'] = selectedTab ? selectedTab : undefined;
-    if(widgetPreviewLocation) {
-      newFilter['limit'] = 5;
-    }
-    if(!widgetPreviewLocation) {
-      newFilter['limit'] = 20;
-    }
+    newFilter['limit'] = 20;
     const data: ActivitiesWidgetData[] = await activitiesWidgetDataService(workspaceId || workspaceIdToken, newFilter);
     setActivitiesWidgetResponse(data);
     setIsLoading(false);

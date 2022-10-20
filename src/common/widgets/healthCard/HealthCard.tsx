@@ -29,6 +29,14 @@ const HealthCard: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
     }
   }, [isManageMode]);
 
+  React.useEffect(() => {
+    if (!isManageMode && !isSidePanelOpen) {
+      if (filters?.startDate && filters?.endDate) {
+        fetchHealthScoreWidgetData();
+      }
+    }
+  }, filters && Object.values(filters));
+
   // eslint-disable-next-line space-before-function-paren
   const fetchHealthScoreWidgetData = async () => {
     const response: HealthScoreWidgetData[] = await healthScoreWidgetDataService(workspaceId || workspaceIdToken, filters);
@@ -47,14 +55,6 @@ const HealthCard: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
   //   const [searchParams] = useSearchParams();
   //   const startDate = searchParams.get('startDate');
   //   const endDate = searchParams.get('endDate');
-
-  React.useEffect(() => {
-    if (!isManageMode && !isSidePanelOpen) {
-      if (filters?.startDate && filters?.endDate) {
-        fetchHealthScoreWidgetData();
-      }
-    }
-  }, filters && Object.values(filters));
 
   const handleRemove = () => {
     removeWidgetFromDashboard(widget);
