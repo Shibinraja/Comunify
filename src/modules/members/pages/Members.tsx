@@ -377,7 +377,22 @@ const Members: React.FC = () => {
             className={`day w-[49px] h-3.06 flex items-center justify-center ml-0 xl:ml-0.652 box-border rounded-0.6 ${
               customDateLink['1day'] ? 'border-gradient-rounded-member' : 'app-input-card-border'
             } shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
-            onClick={() => selectCustomDate('1day')}
+            onClick={() => {
+              if (customDateLink['1day']) {
+                setCustomDateLink({ '1day': false });
+                dispatch(
+                  membersSlice.actions.membersList({
+                    membersQuery: {
+                      page,
+                      limit
+                    },
+                    workspaceId: workspaceId!
+                  })
+                );
+              } else {
+                selectCustomDate('1day');
+              }
+            }}
           >
             1D
           </div>
@@ -385,7 +400,22 @@ const Members: React.FC = () => {
             className={`day w-[49px] h-3.06 flex items-center justify-center ml-0.652 box-border rounded-0.6 ${
               customDateLink['7day'] ? 'border-gradient-rounded-member' : 'app-input-card-border'
             } shadow-shadowInput font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
-            onClick={() => selectCustomDate('7day')}
+            onClick={() => {
+              if (customDateLink['7day']) {
+                setCustomDateLink({ '7day': false });
+                dispatch(
+                  membersSlice.actions.membersList({
+                    membersQuery: {
+                      page,
+                      limit
+                    },
+                    workspaceId: workspaceId!
+                  })
+                );
+              } else {
+                selectCustomDate('7day');
+              }
+            }}
           >
             7D
           </div>
@@ -393,7 +423,22 @@ const Members: React.FC = () => {
             className={`day w-[49px] h-3.06 flex items-center justify-center ml-0.652 box-border rounded-0.6 ${
               customDateLink['1month'] ? 'border-gradient-rounded-member' : 'app-input-card-border'
             } shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
-            onClick={() => selectCustomDate('1month')}
+            onClick={() => {
+              if (customDateLink['1month']) {
+                setCustomDateLink({ '1month': false });
+                dispatch(
+                  membersSlice.actions.membersList({
+                    membersQuery: {
+                      page,
+                      limit
+                    },
+                    workspaceId: workspaceId!
+                  })
+                );
+              } else {
+                selectCustomDate('1month');
+              }
+            }}
           >
             1M
           </div>
