@@ -1,11 +1,13 @@
 /* eslint-disable no-unused-vars */
 import { SidePanelWidgetsData } from '../../modules/dashboard/interface/dashboard.interface';
 import ReactGridLayout from 'react-grid-layout';
+import { Dispatch, SetStateAction } from 'react';
 
 export type WidgetIdentification = {
   widgetKey: string[];
   sidePanelWidgetsData?: SidePanelWidgetsData[];
   widgetRemoved: string;
+  setIsDragMode?: Dispatch<SetStateAction<boolean>>;
 };
 
 export type PanelWidgetsType = {
@@ -65,9 +67,10 @@ export interface WidgetFilters {
 export interface WidgetContainerProps {
   isManageMode: boolean | undefined;
   widgets: Array<Omit<PanelWidgetsType, 'isAssigned'>>;
-  setWidgets?: React.Dispatch<React.SetStateAction<Array<Omit<PanelWidgetsType, 'isAssigned'>>> | []>;
-  setTransformedWidgetData?: React.Dispatch<React.SetStateAction<Array<TransformWidgetDataType>>>;
+  setWidgets?: Dispatch<SetStateAction<Array<Omit<PanelWidgetsType, 'isAssigned'>>> | []>;
+  setTransformedWidgetData?: Dispatch<SetStateAction<Array<TransformWidgetDataType>>>;
   filters?: WidgetFilters;
+  setIsDragMode?: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface TransformWidgetDataType {
