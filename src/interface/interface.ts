@@ -48,11 +48,11 @@ export interface ActiveState {
 
 export interface PlatformConnectResponse {
   id: string;
-  workspacePlatformSettingsId: string;
-  type?: string;
+  workspacePlatformId: string;
+  type: string;
   domain: string;
   channelId: string | null;
-  auth_token: string;
+  authToken: string;
   clientSecret: null;
   clientId: null;
   status: string;
@@ -81,4 +81,16 @@ export interface DiscordConnectResponse extends PlatformConnectResponse {
   refreshToken: string;
   guildId: string;
   channels: DiscordChannel[];
+}
+
+export type RedditCommunities = {
+  communityName: string;
+  communityId: string;
+};
+
+export interface RedditConnectResponseData extends PlatformConnectResponse {
+  workspacePlatformAuthSettingsId: string;
+  refreshToken: string;
+  guildId: null;
+  communities: RedditCommunities[];
 }
