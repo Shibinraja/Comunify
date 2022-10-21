@@ -6,7 +6,9 @@ import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 import { convertEndDate, convertStartDate } from '@/lib/helper';
 import Button from 'common/button';
 import settingsSlice from 'modules/settings/store/slice/settings.slice';
-import { ChangeEvent, FC, Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  ChangeEvent, FC, Fragment, useEffect, useMemo, useRef, useState
+} from 'react';
 import DatePicker, { ReactDatePicker } from 'react-datepicker';
 import { useParams } from 'react-router-dom';
 import calendarIcon from '../../../assets/images/calandar.svg';

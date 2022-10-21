@@ -6,6 +6,7 @@ import IntegrationDetails from '../pages/integrationDetails/IntegrationDetails';
 
 const Settings = Loadable(lazy(() => import('../pages/Settings')));
 const CompleteSetupForSlack = Loadable(lazy(() => import('../pages/completeSetupForSlack/CompleteSetupForSlack')));
+const RedditIntegration = Loadable(lazy(() => import('../pages/integration/RedditIntegration')));
 
 const settingRoutes: RoutesArray = {
   path: 'settings',
@@ -25,6 +26,10 @@ const settingRoutes: RoutesArray = {
     {
       element: <DiscordIntegrationDetails />,
       path: 'discord-integration'
+    },
+    {
+      element: <RedditIntegration />,
+      path: 'reddit-integration'
     }
   ]
 };
