@@ -633,7 +633,7 @@ const CreateReport = () => {
                           className={`font-Poppins font-normal text-searchBlack leading-1.31 text-trial  ${
                             reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
                           }`}
-                          htmlFor="All"
+                          htmlFor="all"
                         >
                           All
                         </label>
@@ -654,7 +654,7 @@ const CreateReport = () => {
                                   name={platform.id as string}
                                   checked={(checkedPlatform[platform.id] as boolean) || false}
                                   onChange={(event) => handlePlatformsCheckBox(event, platform.id, platform.platformId)}
-                                  disabled={reportUpdateValuesData ? true : checkedAllPlatform ? true : false}
+                                  disabled={reportUpdateValuesData ? true : false}
                                 />
                               </div>
                               <label

@@ -83,7 +83,7 @@ const ReportDetail = () => {
           </div>
           <div className="bg-[#E5F6FF] rounded-md text-xs font-medium text-[#0A0A0A] py-2 px-4 capitalize">
             <span>{`Report Status : ${
-              ScheduleReportDateType[saveHistoryDetail?.report.workspaceReportSettings[0].scheduleRepeat as unknown as number]
+              ScheduleReportDateType[`${saveHistoryDetail?.report.workspaceReportSettings[0].scheduleRepeat as unknown as number}`] === 'NoSchedule' ? 'No Schedule': ScheduleReportDateType[saveHistoryDetail?.report.workspaceReportSettings[0].scheduleRepeat as unknown as number]
             }`}</span>
           </div>
         </div>
