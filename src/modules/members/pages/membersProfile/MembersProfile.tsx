@@ -31,6 +31,7 @@ import { AssignTypeEnum, PlatformResponse, TagResponseData } from '../../../sett
 import { ActivityResult, MemberProfileCard } from '../../interface/members.interface';
 import membersSlice from '../../store/slice/members.slice';
 import MembersProfileGraph from '../membersProfileGraph/MembersProfileGraph';
+import moment from 'moment';
 
 Modal.setAppElement('#root');
 
@@ -46,7 +47,7 @@ const MembersProfile: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isTagModalOpen, setTagModalOpen] = useState<boolean>(false);
   const [fromDate, setFromDate] = useState<Date>();
-  const [toDate, setToDate] = useState<Date>(new Date());
+  const [toDate, setToDate] = useState<Date>();
   const [searchText, setSearchText] = useState<string>('');
   const [tags, setTags] = useState<{
     tagName: string;
@@ -188,7 +189,7 @@ const MembersProfile: React.FC = () => {
   };
 
   // switch case for member graph
-  const selectPlatformToDisplayOnGraph = (name: string) => {
+  const selectPlatformToDisplayOnGraph = (name: string, id: string | null = null) => {
     setSelected(name);
     switch (name) {
       case 'All':
@@ -199,7 +200,7 @@ const MembersProfile: React.FC = () => {
           membersSlice.actions.getMembersActivityGraphDataPerPlatform({
             workspaceId: workspaceId as string,
             memberId: memberId as string,
-            platform: name.toLocaleLowerCase().trim()
+            platform: id || name.toLocaleLowerCase().trim()
           })
         );
         break;
@@ -209,14 +210,15 @@ const MembersProfile: React.FC = () => {
   };
 
   // switch case for member platforms
-  const selectPlatformForActivityScroll = (name: string) => {
+  const selectPlatformForActivityScroll = (name: string, id: string | null = null) => {
     setSelectedIntegration(name);
+    setActivityNextCursor(null);
     switch (name) {
       case 'All Integration':
         setPlatform(undefined);
         break;
       case `${name !== undefined && name !== 'All Integration' && name}`:
-        setPlatform(name.toLocaleLowerCase().trim());
+        setPlatform(id || name.toLocaleLowerCase().trim());
         break;
       default:
         break;
@@ -370,6 +372,40 @@ const MembersProfile: React.FC = () => {
     }
   }, [isModalOpen]);
 
+  //flittering today date from the data
+  const todayDate = activityData?.result?.filter(
+    (data: { activityTime: moment.MomentInput }) => moment(data.activityTime).format('DD-MMM-YYYY') === moment.utc().format('DD-MMM-YYYY')
+  );
+
+  //flittering yesterday date from the data
+  const yesterdayDate = activityData?.result?.filter(
+    (data: { activityTime: moment.MomentInput }) =>
+      moment(data.activityTime).format('DD-MMM-YYYY') === moment().subtract(1, 'days').format('DD-MMM-YYYY')
+  );
+
+  //removing today and yesterdayDate from the data
+  const allDate = activityData?.result
+    ?.filter(
+      (data: { activityTime: moment.MomentInput }) =>
+        moment(data?.activityTime).isBefore(moment.utc().subtract(1, 'days')) || moment(data?.activityTime).isAfter(moment.utc().add(1, 'days'))
+    )
+    .sort(
+      (a: { activityTime: string | number | Date }, b: { activityTime: string | number | Date }) =>
+        new Date(a.activityTime).getTime() - new Date(b.activityTime).getTime()
+    )
+    .reverse();
+
+  //creating an object after sorting all the dates storing into an object
+  const dateMapObj: any = {};
+  allDate.forEach((element) => {
+    const arr: [] = dateMapObj[moment(element.activityTime).format('DD-MMM-YYYY')];
+    if (arr) {
+      dateMapObj[moment(element.activityTime).format('DD-MMM-YYYY')] = [...arr, element];
+    } else {
+      dateMapObj[moment(element.activityTime).format('DD-MMM-YYYY')] = [element];
+    }
+  });
+
   return (
     <div className="flex pt-3.93 w-full mb-8">
       <div className="flex flex-col w-full">
@@ -403,7 +439,7 @@ const MembersProfile: React.FC = () => {
                       {data?.isConnected && (
                         <div
                           className="rounded-0.3 h-1.93 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack hover:bg-signUpDomain px-2"
-                          onClick={() => selectPlatformToDisplayOnGraph(data?.name)}
+                          onClick={() => selectPlatformToDisplayOnGraph(data?.name, data?.id)}
                         >
                           {data?.name}
                         </div>
@@ -434,7 +470,7 @@ const MembersProfile: React.FC = () => {
                   {memberProfileCardLoader ? (
                     <Skeleton width={width_90} />
                   ) : data?.lastActivity ? (
-                    generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY')
+                    moment(data.lastActivity).format('DD-MMM-YYYY')
                   ) : (
                     'Last active date is not available'
                   )}
@@ -477,7 +513,7 @@ const MembersProfile: React.FC = () => {
                       {options?.isConnected && (
                         <div
                           className="h-1.93 px-3 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack "
-                          onClick={() => selectPlatformForActivityScroll(options?.name)}
+                          onClick={() => selectPlatformForActivityScroll(options?.name, options?.id)}
                         >
                           {options?.name}
                         </div>
@@ -503,7 +539,7 @@ const MembersProfile: React.FC = () => {
                     <DatePicker
                       ref={datePickerRefStart}
                       selected={fromDate}
-                      maxDate={toDate}
+                      maxDate={new Date()}
                       onChange={(date: Date) => setFromDate(date)}
                       className=" h-3.06 app-result-card-border shadow-reportInput w-full rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="From"
@@ -521,7 +557,7 @@ const MembersProfile: React.FC = () => {
                       selected={toDate}
                       ref={datePickerRefEnd}
                       minDate={fromDate}
-                      maxDate={toDate}
+                      maxDate={new Date()}
                       selectsEnd
                       startDate={fromDate}
                       endDate={toDate}
@@ -550,7 +586,7 @@ const MembersProfile: React.FC = () => {
                 {memberProfileCardLoader ? (
                   <Skeleton width={width_90} />
                 ) : data?.lastActivity ? (
-                  generateDateAndTime(`${data?.lastActivity}`, 'MM-DD-YYYY')
+                  moment(data.lastActivity).format('DD-MMM-YYYY')
                 ) : (
                   'Last active date is not available'
                 )}
@@ -570,22 +606,92 @@ const MembersProfile: React.FC = () => {
             {activityDataLoader ? (
               <Skeleton width={500} className={'my-4'} count={6} />
             ) : activityData?.result.length !== 0 ? (
-              activityData.result.map((data: ActivityResult) => (
-                <div key={data?.id} className="flex items-center">
-                  <div>
-                    <img src={yellowDottedIcon} alt="" />
-                  </div>
-                  <div className="pl-0.68">
-                    <img src={data?.platforms?.platformLogoUrl} alt="" className="rounded-full w-[1.835rem] h-[1.835rem]" />
-                  </div>
-                  <div className="flex flex-col pl-0.89">
-                    <div className="font-Poppins font-normal text-card leading-4">{data?.displayValue}</div>
-                    <div className="font-Poppins left-4 font-normal text-profileEmail text-duration">
-                      {generateDateAndTime(`${data?.activityTime}`, 'HH:MM')}
-                    </div>
-                  </div>
-                </div>
-              ))
+              <ul>
+                {todayDate.length > 0 && (
+                  <>
+                    <h3 className="font-medium pl-7 text-m font-Poppins  text-xs pb-2">Today</h3>
+                    {todayDate.map((item: ActivityResult) => (
+                      <>
+                        <li key={`${Math.random()}`} className="my-4 active-list relative">
+                          <div className="w-full flex justify-start items-center">
+                            <div className="ml-2.024 bottom-line ">
+                              <img src={yellowDottedIcon} />
+                            </div>
+                            <div className="ml-0.71 ">
+                              <img className="h-[1.835rem] w-[1.9175rem] rounded-full" src={item?.platforms?.platformLogoUrl} alt="" />
+                            </div>
+                            <div className="ml-0.865">
+                              <div>
+                                <p className="font-medium text-xs font-Poppins">{item?.displayValue}</p>
+                              </div>
+                              <div className="font-Poppins text-[10px] not-italic font-normal text-[#544e4e] dark:text-greyDark">
+                                <p> {generateDateAndTime(`${item?.activityTime}`, 'HH:MM')}</p>
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                      </>
+                    ))}
+                  </>
+                )}
+                {yesterdayDate.length > 0 && (
+                  <>
+                    <h3 className="font-medium pl-7 text-m font-Poppins  text-xs pb-2">Yesterday</h3>
+                    {yesterdayDate.map((item: ActivityResult) => (
+                      <>
+                        <li key={`${Math.random()}`} className=" first-mt-0 my-4 active-list relative">
+                          <div className="w-full flex justify-start items-center">
+                            <div className="ml-2.024 bottom-line ">
+                              <img src={yellowDottedIcon} />
+                            </div>
+                            <div className="ml-0.71 ">
+                              <img className="h-[1.835rem] w-[1.9175rem] rounded-full" src={item?.platforms?.platformLogoUrl} alt="" />
+                            </div>
+                            <div className="ml-0.865">
+                              <div>
+                                <p className="font-medium text-xs font-Poppins">{item?.displayValue}</p>
+                              </div>
+                              <div className="font-Poppins text-[10px] not-italic font-normal text-[#544e4e] dark:text-greyDark">
+                                <p> {generateDateAndTime(`${item?.activityTime}`, 'HH:MM')}</p>
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                      </>
+                    ))}
+                  </>
+                )}
+                {dateMapObj && (
+                  <>
+                    {Object.entries(dateMapObj).map((item: any) => (
+                      <>
+                        <h3 className="font-medium pl-7 text-m font-Poppins  text-xs mb-2"> {item[0] ? item[0] : ''}</h3>
+
+                        {item[1].map((item: any) => (
+                          <li key={`${Math.random()}`} className=" my-4 active-list relative">
+                            <div className="w-full flex justify-start items-center">
+                              <div className="ml-2.024 bottom-line ">
+                                <img src={yellowDottedIcon} />
+                              </div>
+                              <div className="ml-0.71 ">
+                                <img className="h-[1.835rem] w-[1.9175rem] rounded-full" src={item?.platforms?.platformLogoUrl} alt="" />
+                              </div>
+                              <div className="ml-0.865">
+                                <div>
+                                  <p className="font-medium text-xs font-Poppins">{item?.displayValue}</p>
+                                </div>
+                                <div className="font-Poppins text-[10px] not-italic font-normal text-[#544e4e] dark:text-greyDark">
+                                  <p> {generateDateAndTime(`${item?.activityTime}`, 'HH:MM')}</p>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                        ))}
+                      </>
+                    ))}
+                  </>
+                )}
+              </ul>
             ) : (
               <div className="font-Poppins font-semibold text-base leading-9 text-listGray flex justify-center">Member activity is not available</div>
             )}

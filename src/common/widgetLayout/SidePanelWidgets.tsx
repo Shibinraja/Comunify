@@ -1,6 +1,6 @@
 import Button from 'common/button';
 import Input from 'common/input';
-import React, { Suspense } from 'react';
+import React, { FC, PropsWithoutRef, Suspense, useEffect, useState } from 'react';
 import widgetSearchIcon from '../../assets/images/widget-search.svg';
 import Modal from 'react-modal';
 import { getLocalWorkspaceId } from '../../lib/helper';
@@ -24,32 +24,35 @@ import TextArea from '../textArea/TextArea';
 
 Modal.setAppElement('#root');
 
-const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRemoved }) => {
-  const [isWidgetModalOpen, setWidgetModalOpen] = React.useState<boolean>(false);
-  const [sidePanelWidgetsData, setSidePanelWidgetsData] = React.useState<SidePanelWidgetsList[] | undefined>([]);
-  const [sidePanelWidgets, setSidePanelWidgets] = React.useState<PanelWidgetsType[] | undefined>([]);
-  const [searchWidget, setSearchWidget] = React.useState<string>();
+const SidePanelWidgets: FC<WidgetIdentification> = ({ widgetKey, widgetRemoved, setIsDragMode }) => {
+  const [isWidgetModalOpen, setWidgetModalOpen] = useState<boolean>(false);
+  const [sidePanelWidgetsData, setSidePanelWidgetsData] = useState<SidePanelWidgetsList[] | undefined>([]);
+  const [sidePanelWidgets, setSidePanelWidgets] = useState<PanelWidgetsType[] | undefined>([]);
+  const [searchWidget, setSearchWidget] = useState<string>();
   const debouncedSearchTextValue: string | undefined = useDebounce(searchWidget, 300);
-  const [isButtonLoading, setIsButtonLoading] = React.useState<boolean>(false);
+  const [isButtonLoading, setIsButtonLoading] = useState<boolean>(false);
+  const reportDetails = window.location.href;
 
   const workspaceId: string = getLocalWorkspaceId();
-  React.useEffect(() => {
+  useEffect(() => {
     if (widgetKey.length) {
       filterWidgets(widgetKey);
     }
   }, [widgetKey]);
 
-  React.useEffect(() => {
-    getWidgetsData();
+  useEffect(() => {
+    if (!reportDetails.includes('/report-details')) {
+      getWidgetsData();
+    }
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (debouncedSearchTextValue !== undefined) {
       getWidgetsData(debouncedSearchTextValue);
     }
   }, [debouncedSearchTextValue]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (widgetRemoved) {
       handleWidgetRemovedFromDashboard(widgetRemoved);
     }
@@ -65,7 +68,7 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
 
   // eslint-disable-next-line space-before-function-paren
   const getWidgetsData = async (searchText?: string) => {
-    const scope = window.location.href.includes('/reports') ? [1, 2] : window.location.href.includes('/dashboard') ? [1, 3] : [];
+    const scope = window.location.href.includes('/report-widgets') ? [1, 2] : window.location.href.includes('/dashboard') ? [1, 3] : [];
     const widgetsData: SidePanelWidgetsList[] = await getSidePanelWidgetsService(scope.toString(), workspaceId, searchText);
     setSidePanelWidgetsData(widgetsData);
     const sidePanelWidgetList = widgetsData?.reduce((acc: PanelWidgetsType[], curr: SidePanelWidgetsData) => {
@@ -95,11 +98,11 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
     setSearchWidget(searchText);
   };
 
-  const renderWidget = (widgetLocation: string, isAssigned: boolean, props: React.PropsWithoutRef<WidgetComponentProps>) => {
+  const renderWidget = (widgetLocation: string, isAssigned: boolean, props: PropsWithoutRef<WidgetComponentProps>) => {
     // use this while developing because vite doesn't hot reload dynamically imported components
     const Widget = WidgetComponents[widgetLocation];
     // Use dynamic import while pushing to prod
-    // const Widget = React.lazy(() => import(`../../common/widgets/${widgetLocation}/${widgetLocation}`));
+    // const Widget = lazy(() => import(`../../common/widgets/${widgetLocation}/${widgetLocation}`));
     return <Suspense fallback={<Skeleton width={400} height={300} count={1} enableAnimation />}>{<Widget {...props} />}</Suspense>;
   };
 
@@ -149,10 +152,10 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
   };
 
   return (
-    <div className="w-[28%] xl:w-[23%] 3xl:w-[22%] 4xl:w-[21%]  widgetDrawerGradient left-0 top-0 pb-2 max-h-[156.25rem] min-h-screen px-7 absolute z-40 ">
+    <div className="w-[28%] lg:w-[350px] xl:w-[23%] 3xl:w-[22%] 4xl:w-[21%]  widgetDrawerGradient left-0 top-0 pb-2 max-h-[156.25rem] min-h-screen px-7 absolute z-40 ">
       <div className="flex flex-col">
         <div className="flex flex-col pb-2">
-          <div className="text-center font-Poppins font-semibold text-2xl pt-24">Add Widget</div>
+          <div className="text-center font-Poppins font-semibold text-[23.47px] pt-24">Add Widget</div>
           <div className="pt-4 relative">
             <Input
               type="text"
@@ -161,7 +164,7 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
               placeholder="Search widgets"
               value={searchWidget}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSearch(e?.target?.value)}
-              className="py-3 bg-white text-xs focus:outline-none px-4 rounded-0.6 pr-8 placeholder:font-Poppins placeholder:font-normal placeholder:text-widgetSearch placeholder:text-xs"
+              className="py-3 bg-white text-xs h-[49px] focus:outline-none px-4 rounded-0.6 pr-8 placeholder:font-Poppins placeholder:font-normal placeholder:text-widgetSearch placeholder:text-xs"
             />
             <div className="absolute top-8 right-5">
               <img src={widgetSearchIcon} alt="" />
@@ -182,6 +185,7 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
                 // eslint-disable-next-line react/no-unknown-property
                 unselectable="on"
                 onDragStart={(e: React.DragEvent<HTMLDivElement>) => {
+                  setIsDragMode?.(true);
                   e?.dataTransfer.setData('droppableWidget', JSON.stringify(component));
                   return true;
                 }}
@@ -195,12 +199,11 @@ const SidePanelWidgets: React.FC<WidgetIdentification> = ({ widgetKey, widgetRem
               </div>
             );
           })}
-
         </div>
         <Button
           text="Request for a Widget"
           type="submit"
-          className="font-Poppins rounded-lg sticky bottom-0  w-full text-base font-semibold text-white py-3.5 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient"
+          className="font-Poppins rounded-lg sticky mt-4  w-full h-[50px] text-[15px] font-semibold text-white py-3.5 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient"
           onClick={() => setWidgetModalOpen(true)}
         />
         <Modal

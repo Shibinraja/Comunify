@@ -8,11 +8,13 @@ import { getLocalWorkspaceId } from '../../../lib/helper';
 import { membersWidgetDataService } from '../../../modules/dashboard/services/dashboard.services';
 import { MemberWidgetData } from '../../../modules/dashboard/interface/dashboard.interface';
 import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
+import { useAppSelector } from '@/hooks/useRedux';
 
 const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen, filters } = props;
 
   const workspaceId = getLocalWorkspaceId();
+  const workspaceIdToken = useAppSelector((state) => state.auth.workspaceId);
 
   const [selectedTab, setSelectedTab] = useTabs(['topContributor', 'active', 'inActive']);
   const [memberWidgetData, setMemberWidgetData] = React.useState<MemberWidgetData[]>();
@@ -38,7 +40,7 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
     const newFilter = { ...filters };
     newFilter['type'] = selectedTab ? selectedTab : undefined;
     newFilter['limit'] = 20;
-    const data: MemberWidgetData[] = await membersWidgetDataService(workspaceId, newFilter);
+    const data: MemberWidgetData[] = await membersWidgetDataService(workspaceId || workspaceIdToken, newFilter);
     setMemberWidgetData(data);
     setIsLoading(false);
   };
@@ -48,7 +50,7 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
   };
 
   return (
-    <div className={`my-6 ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
+    <div className={`mt-6 ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
       <div>
         <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Members</h3>
       </div>
@@ -57,7 +59,7 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
         ${
           isManageMode ? 'widget-border relative' : 'border-borderPrimary'
         } bg-white dark:bg-secondaryDark dark:text-white rounded-0.6 mt-1.868 border  
-         dark:border-borderDark shadow-profileCard `}
+         dark:border-borderDark shadow-profileCard  h-[85%]`}
       >
         <div className="w-full mt-6 flex flex-col ">
           <nav>
@@ -92,7 +94,7 @@ const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
               Inactive
             </TabSelector>
           </nav>
-          <div className="h-14.375 items-center relative overflow-y-auto ml-1.661 block section">
+          <div className={`h-14.375 items-center relative ml-1.661 block section overflow-y-auto`}>
             {!memberWidgetData?.length && !isLoading && !isManageMode && !isSidePanelOpen && (
               <div className="flex items-center justify-center font-Poppins font-normal text-xs text-infoBlack h-full">No data available</div>
             )}

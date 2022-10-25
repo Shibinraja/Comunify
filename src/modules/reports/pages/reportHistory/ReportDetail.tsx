@@ -2,7 +2,9 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import WidgetContainer from 'common/widgets/widgetContainer/WidgetContainer';
 import { format, parseISO } from 'date-fns';
+import authSlice from 'modules/authentication/store/slices/auth.slice';
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 
@@ -12,6 +14,7 @@ import { getReportHistoryDetailsListService, getReportWidgetsListService } from 
 const ReportDetail = () => {
   const limit = 10;
   const page = 1;
+  const dispatch = useDispatch();
   const { workspaceId, reportHistoryId } = useParams();
   const [isManageMode, setIsManageMode] = useState<boolean>(true);
   const [widgets, setWidgets] = useState<any[] | []>([]);
@@ -48,16 +51,19 @@ const ReportDetail = () => {
         workspaceId: workspaceId!,
         reportHistoryId: reportHistoryId!
       }).then((reportHistory) => {
-        setSaveHistoryDetail(reportHistory);
+        if(reportHistory?.report) {
+          setSaveHistoryDetail(reportHistory);
 
-        reportHistory?.report.workspaceReportSettings[0].reportPlatforms.forEach((platformId) =>
-          setPlatformIds((prevId) => [...prevId, platformId.workspacePlatform.platformSettings.platforms.id])
-        );
-        getReportWidgetsList({
-          limit,
-          page,
-          reportId: reportHistory?.report.id as string
-        });
+          reportHistory?.report.workspaceReportSettings[0].reportPlatforms.forEach((platformId) =>
+            setPlatformIds((prevId) => [...prevId, platformId.workspacePlatform.platformSettings.platforms.id])
+          );
+          dispatch(authSlice.actions.setWorkspaceId({ workspaceId: reportHistory?.report.workspaceId as string }));
+          getReportWidgetsList({
+            limit,
+            page,
+            reportId: reportHistory?.report.id as string
+          });
+        }
       });
     }
   }, [reportHistoryId]);
@@ -77,7 +83,7 @@ const ReportDetail = () => {
           </div>
           <div className="bg-[#E5F6FF] rounded-md text-xs font-medium text-[#0A0A0A] py-2 px-4 capitalize">
             <span>{`Report Status : ${
-              ScheduleReportDateType[saveHistoryDetail?.report.workspaceReportSettings[0].scheduleRepeat as unknown as number]
+              ScheduleReportDateType[`${saveHistoryDetail?.report.workspaceReportSettings[0].scheduleRepeat as unknown as number}`] === 'NoSchedule' ? 'No Schedule': ScheduleReportDateType[saveHistoryDetail?.report.workspaceReportSettings[0].scheduleRepeat as unknown as number]
             }`}</span>
           </div>
         </div>
@@ -93,7 +99,7 @@ const ReportDetail = () => {
         </div>
       </header>
 
-      <div className="px-[30px] py-[35px]">
+      <div className="px-[30px] pb-[35px]">
         <WidgetContainer isManageMode={isManageMode} widgets={widgets} filters={{ startDate, endDate, platformId: platformIds }} />
       </div>
 

@@ -6,12 +6,15 @@ import { activitiesWidgetDataService } from '../../../modules/dashboard/services
 import { getLocalWorkspaceId } from '../../../lib/helper';
 import { ActivitiesWidgetData } from '../../../modules/dashboard/interface/dashboard.interface';
 import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
+import { useAppSelector } from '@/hooks/useRedux';
 
 const ActivitiesTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen, filters } = props;
   const [selectedTab, setSelectedTab] = useTabs(['newActivities', 'highlights']);
   const [activitiesWidgetResponse, setActivitiesWidgetResponse] = React.useState<ActivitiesWidgetData[]>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+
+  const workspaceIdToken = useAppSelector((state) => state.auth.workspaceId);
 
   React.useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
@@ -35,7 +38,7 @@ const ActivitiesTab: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
     const newFilter = { ...filters };
     newFilter['type'] = selectedTab ? selectedTab : undefined;
     newFilter['limit'] = 20;
-    const data: ActivitiesWidgetData[] = await activitiesWidgetDataService(workspaceId, newFilter);
+    const data: ActivitiesWidgetData[] = await activitiesWidgetDataService(workspaceId || workspaceIdToken, newFilter);
     setActivitiesWidgetResponse(data);
     setIsLoading(false);
   };
@@ -45,13 +48,13 @@ const ActivitiesTab: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
   };
 
   return (
-    <div className={`my-6 ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
-      <div>
+    <div className={`mt-6 ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
+      <div >
         <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Activities</h3>
       </div>
       <div
         className={`w-full h-full box-border bg-white dark:bg-secondaryDark dark:text-white  rounded-0.6 mt-1.868 border
-           ${isManageMode ? 'widget-border relative' : 'border-borderPrimary'} dark:border-borderDark shadow-profileCard `}
+           ${isManageMode ? 'widget-border relative' : 'border-borderPrimary'} dark:border-borderDark shadow-profileCard  h-[85%]`}
       >
         <div className="w-full mt-6 flex flex-col ">
           <nav>
@@ -72,7 +75,7 @@ const ActivitiesTab: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
               Highlights
             </TabSelector>
           </nav>
-          <div className="h-14.375 items-center relative overflow-y-auto block section ">
+          <div className={`h-14.375 items-center relative block section overflow-y-auto`}>
             {!activitiesWidgetResponse?.length && !isLoading && !isManageMode && !isSidePanelOpen && (
               <div className="flex items-center justify-center font-Poppins font-normal text-xs text-infoBlack h-full">No data available</div>
             )}

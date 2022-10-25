@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import { SLACK_CONNECT_ENDPOINT } from '@/lib/config';
+import { DISCORD_CONNECT_ENDPOINT, REDDIT_CONNECT_ENDPOINT, SLACK_CONNECT_ENDPOINT } from '@/lib/config';
 import { GeneratorResponse } from '../../../lib/api';
 import { request } from '../../../lib/request';
 import {
@@ -16,6 +16,14 @@ import {
 
 export const NavigateToConnectPage = () => {
   window.location.href = SLACK_CONNECT_ENDPOINT;
+};
+
+export const NavigateToDiscordConnectPage = () => {
+  window.location.href = DISCORD_CONNECT_ENDPOINT;
+};
+
+export const NavigateToRedditConnectPage = () => {
+  window.location.href = REDDIT_CONNECT_ENDPOINT;
 };
 
 export function* PlatformsDataService(workspaceId: string): GeneratorResponse<Array<PlatformResponse>> {

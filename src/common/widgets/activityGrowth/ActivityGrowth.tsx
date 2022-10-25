@@ -7,6 +7,7 @@ import { activityGrowthWidgetDataService } from '../../../modules/dashboard/serv
 import { getLocalWorkspaceId } from '../../../lib/helper';
 import { MembersProfileActivityGraphData } from '../../../modules/members/interface/members.interface';
 import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
+import { useAppSelector } from '@/hooks/useRedux';
 
 function InlineWrapperWithMargin({ children }: PropsWithChildren<unknown>) {
   return <span style={{ marginRight: '0.5rem' }}>{children}</span>;
@@ -18,6 +19,8 @@ const ActivityGrowth: React.FC<WidgetComponentProps> = (props: WidgetComponentPr
   const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen, filters } = props;
   const [activityGrowthWidgetData, setActivityGrowthWidgetData] = React.useState<MembersProfileActivityGraphData>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+
+  const workspaceIdToken = useAppSelector((state) => state.auth.workspaceId);
 
   const options = {
     xaxis: {
@@ -46,7 +49,7 @@ const ActivityGrowth: React.FC<WidgetComponentProps> = (props: WidgetComponentPr
   // eslint-disable-next-line space-before-function-paren
   const getActivityGrowthData = async () => {
     setIsLoading(true);
-    const data: MembersProfileActivityGraphData = await activityGrowthWidgetDataService(workspaceId, filters);
+    const data: MembersProfileActivityGraphData = await activityGrowthWidgetDataService(workspaceId || workspaceIdToken, filters);
     setActivityGrowthWidgetData(data);
     setIsLoading(false);
   };
@@ -56,11 +59,11 @@ const ActivityGrowth: React.FC<WidgetComponentProps> = (props: WidgetComponentPr
   };
 
   return (
-    <div className={`my-6 ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
+    <div className={`mt-6 ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
       <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Activity Growth</h3>
       <div
         className={`my-6 pb-10 bg-white dark:bg-secondaryDark dark:text-white rounded-0.6 border  
-         dark:border-borderDark shadow-profileCard ${isManageMode ? 'widget-border relative' : 'border-borderPrimary'}`}
+         dark:border-borderDark shadow-profileCard  h-[85%]  ${isManageMode ? 'widget-border relative h-full' : 'border-borderPrimary '}`}
       >
         {!isManageMode && !isSidePanelOpen ? (
           <div className="relative h-[15rem] mt-7 bg-white rounded-xl">

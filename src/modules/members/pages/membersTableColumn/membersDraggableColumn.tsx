@@ -90,7 +90,7 @@ const MembersDraggableColumn: React.FC<DraggableComponentsProps> = ({ MembersCol
                     name={item.id}
                     id={item.id}
                     disabled={item.id === 'name' ? true : item.id === 'platforms' ? true : false}
-                    className="checkbox"
+                    className={`checkbox  ${item.id === 'name' || item.id === 'platforms' ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                     checked={item.isDisplayed}
                     onChange={handleCheckBox}
                   />

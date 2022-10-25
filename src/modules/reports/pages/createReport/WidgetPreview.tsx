@@ -9,12 +9,11 @@ import { useSearchParams } from 'react-router-dom';
 import Modal from 'react-modal';
 import { ScheduleReportDateType, WidgetPreviewType } from '../../interfaces/reports.interface';
 
-
 Modal.setAppElement('#root');
 
-const WidgetPreview: React.FC<WidgetPreviewType> = ({ isOpen, setIsOpen, widgets, filters }) => {
+const WidgetPreview: React.FC<WidgetPreviewType> = ({ isOpen, setIsOpen, filters, transformData, setManageMode }) => {
   const { PlatformsConnected } = usePlatform();
-  const [isManageMode, setIsManageMode] = useState<boolean>(true);
+  const [isManageMode, setIsManageMode] = useState<boolean>(false);
   const [searchParams] = useSearchParams();
   const startDate = searchParams.get('startDate') || '';
   const endDate = searchParams.get('endDate') || '';
@@ -31,7 +30,7 @@ const WidgetPreview: React.FC<WidgetPreviewType> = ({ isOpen, setIsOpen, widgets
       isOpen={isOpen}
       shouldCloseOnOverlayClick={false}
       onRequestClose={() => setIsOpen(false)}
-      className="w-4/6 mx-auto rounded-lg modals-tag bg-white shadow-modal flex items-center justify-center"
+      className="w-10/12 mx-auto rounded-lg modals-tag bg-white shadow-modal flex items-center justify-center"
       style={{
         overlay: {
           display: 'flex',
@@ -81,11 +80,7 @@ const WidgetPreview: React.FC<WidgetPreviewType> = ({ isOpen, setIsOpen, widgets
         </header>
 
         <div className="px-[30px] py-[10px] preview-box overflow-auto">
-          <WidgetContainer
-            isManageMode={isManageMode}
-            widgets={widgets}
-            filters={filters}
-          />
+          <WidgetContainer isManageMode={isManageMode} widgets={transformData} filters={filters} />
         </div>
 
         <footer className="px-[30px] py-[35px]">
@@ -94,7 +89,10 @@ const WidgetPreview: React.FC<WidgetPreviewType> = ({ isOpen, setIsOpen, widgets
               <Button
                 type="button"
                 text="Back"
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  setManageMode(true);
+                  setIsOpen(false);
+                }}
                 className="cancel cursor-pointer font-Poppins font-medium text-error leading-5 border-cancel text-thinGray box-border rounded w-6.875 h-3.12"
               />
               {/* <Button

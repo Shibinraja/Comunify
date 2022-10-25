@@ -8,7 +8,7 @@ import Input from 'common/input';
 import Pagination from 'common/pagination/pagination';
 import { width_90 } from 'constants/constants';
 import { PlatformResponse } from 'modules/settings/interface/settings.interface';
-import React, { ChangeEvent, Fragment, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { useNavigate, useParams } from 'react-router';
 import DatePicker, { ReactDatePicker } from 'react-datepicker';
@@ -16,7 +16,6 @@ import 'react-datepicker/dist/react-datepicker.css';
 import actionDotIcon from '../../../assets/images/action-dot.svg';
 import downArrow from '../../../assets/images/filter-dropdown.svg';
 import filterDownIcon from '../../../assets/images/report-dropdown.svg';
-import searchIcon from '../../../assets/images/search.svg';
 import {
   ActionDropDownEnum,
   getReportsListServiceResponseProps,
@@ -68,7 +67,7 @@ const Report: React.FC = () => {
     startDate: null,
     endDate: null
   });
-  const [modalOpen, setModalOpen] = useState<{ removeModalOpen: boolean; scheduleOffModalOpen: boolean; generateReportModalOpen:boolean }>({
+  const [modalOpen, setModalOpen] = useState<{ removeModalOpen: boolean; scheduleOffModalOpen: boolean; generateReportModalOpen: boolean }>({
     removeModalOpen: false,
     scheduleOffModalOpen: false,
     generateReportModalOpen: false
@@ -87,22 +86,37 @@ const Report: React.FC = () => {
 
   const debouncedValue = useDebounce(searchText, 300);
 
-  // const ReportFilterList = Object.values(checkedPlatform).concat(Object.values(checkedStatus));
+  const ReportFilterList = Object.values(checkedPlatform).concat(Object.values(checkedStatus));
 
-  const getReportsList = async(props: { search: string; page: number; limit: number }) => {
+  const getReportsList = async(props: { search: string; page: number; limit: number }, reset: boolean) => {
     setLoading(true);
-    const reportData = await getReportsListService({
-      workspaceId: workspaceId!,
-      params: {
-        page: props.page,
-        limit: props.limit,
-        search: props.search,
-        ...(checkedFilterOption.checkPlatform.length ? { platformId: checkedFilterOption.checkPlatform } : {}),
-        ...(checkedFilterOption.checkStatus.length ? { reportStatus: checkedFilterOption.checkStatus } : {}),
-        ...(date.startDate ? { startDate: date.startDate && convertStartDate(date.startDate) } : {}),
-        ...(date.endDate ? { endDate: date.endDate && convertEndDate(date.endDate) } : {})
-      }
-    });
+    let reportData;
+    if (!reset) {
+      reportData = await getReportsListService({
+        workspaceId: workspaceId!,
+        params: {
+          page: props.page,
+          limit: props.limit,
+          search: props.search,
+          ...(checkedFilterOption.checkPlatform.length ? { platformId: checkedFilterOption.checkPlatform } : {}),
+          ...(checkedFilterOption.checkStatus.length ? { reportStatus: checkedFilterOption.checkStatus } : {}),
+          ...(date.startDate ? { startDate: date.startDate && convertStartDate(date.startDate) } : {}),
+          ...(date.endDate ? { endDate: date.endDate && convertEndDate(date.endDate) } : {})
+        }
+      });
+    }
+    if (reset) {
+      handleFilterDropdown();
+      reportData = await getReportsListService({
+        workspaceId: workspaceId!,
+        params: {
+          page: props.page,
+          limit: props.limit,
+          search: props.search
+        }
+      });
+    }
+
     setLoading(false);
 
     setReportsList({
@@ -147,17 +161,20 @@ const Report: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    getReportsList({
-      search: searchText,
-      page,
-      limit
-    });
+    getReportsList(
+      {
+        search: searchText,
+        page,
+        limit
+      },
+      false
+    );
   }, [page]);
 
   // Returns the debounced value of the search text.
   useEffect(() => {
     if (debouncedValue) {
-      getReportsList({ page: 1, limit, search: debouncedValue });
+      getReportsList({ page: 1, limit, search: debouncedValue }, false);
     }
   }, [debouncedValue]);
 
@@ -165,8 +182,24 @@ const Report: React.FC = () => {
     setIsDropdownActive(value);
   };
 
+  const disableApplyBtn = useMemo(() => {
+    if (date.startDate === null && date.endDate === null && ReportFilterList.length === 0) {
+      return true;
+    }
+
+    if (date.startDate && date.endDate) {
+      return false;
+    }
+
+    if (date.startDate || date.endDate) {
+      return true;
+    }
+    return false;
+  }, [date, ReportFilterList]);
+
   const handleFilterDropdown = (): void => {
     setIsFilterDropdownActive((prev) => !prev);
+    setActivateFilter((prevList) => ({ ...prevList, isPlatformActive: true }));
   };
 
   const handleFilterDropDownStatus = (type: string) => {
@@ -186,11 +219,14 @@ const Report: React.FC = () => {
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
     if (!searchText) {
-      getReportsList({
-        search: searchText,
-        page,
-        limit
-      });
+      getReportsList(
+        {
+          search: searchText,
+          page,
+          limit
+        },
+        false
+      );
     }
     setPage(1);
     setSearchText(searchText);
@@ -267,6 +303,7 @@ const Report: React.FC = () => {
   };
 
   const submitFilterChange = async(): Promise<void> => {
+    handleFilterDropdown();
     const checkPlatform: Array<string> = [];
     const checkStatusId: Array<string> = [];
 
@@ -288,32 +325,30 @@ const Report: React.FC = () => {
 
     setCheckedFilterOption({ checkPlatform, checkStatus: checkStatusId });
 
-    const reportData = await getReportsListService(
-      {
-        workspaceId: workspaceId!,
-        params: {
-          page,
-          limit,
-          search: searchText,
-          ...(checkPlatform.length ? { platformId: checkPlatform } : {}),
-          ...(checkStatusId.length ? { reportStatus: checkStatusId } : {}),
-          ...(date.startDate ? { startDate: date.startDate && convertStartDate(date.startDate) } : {}),
-          ...(date.endDate ? { endDate: date.endDate && convertEndDate(date.endDate) } : {})
-        }
-      },
-      setLoading
-    );
-
-    setReportsList({
-      data: reportData?.data as Array<ReportListServiceResponsePropsData>,
-      totalPages: reportData?.totalPages as string,
-      nextPage: reportData?.nextPage as string,
-      previousPage: reportData?.previousPage as string
-    });
-
-    // if (!disableApplyBtn) {
-    // }
-    handleFilterDropdown();
+    if (!disableApplyBtn) {
+      const reportData = await getReportsListService(
+        {
+          workspaceId: workspaceId!,
+          params: {
+            page,
+            limit,
+            search: searchText,
+            ...(checkPlatform.length ? { platformId: checkPlatform } : {}),
+            ...(checkStatusId.length ? { reportStatus: checkStatusId } : {}),
+            ...(date.startDate ? { startDate: date.startDate && convertStartDate(date.startDate) } : {}),
+            ...(date.endDate ? { endDate: date.endDate && convertEndDate(date.endDate) } : {})
+          }
+        },
+        setLoading
+      );
+      setActivateFilter({ isActiveBetween: false, isStatusActive: false, isPlatformActive: false });
+      setReportsList({
+        data: reportData?.data as Array<ReportListServiceResponsePropsData>,
+        totalPages: reportData?.totalPages as string,
+        nextPage: reportData?.nextPage as string,
+        previousPage: reportData?.previousPage as string
+      });
+    }
   };
 
   const loaderSetAction = (type: string, loader: boolean) => {
@@ -336,11 +371,14 @@ const Report: React.FC = () => {
       loaderSetAction
     ).then((data) => {
       if (data) {
-        getReportsList({
-          search: searchText,
-          page,
-          limit
-        });
+        getReportsList(
+          {
+            search: searchText,
+            page,
+            limit
+          },
+          false
+        );
         showSuccessToast('Report removed successfully');
         setModalOpen((prevState) => ({ ...prevState, removeModalOpen: false }));
       }
@@ -354,37 +392,25 @@ const Report: React.FC = () => {
         workspaceId: workspaceId as string,
         reportId: selectId.id as string,
         body: {
-          schedule: selectId.scheduleActive ? false :true
+          schedule: selectId.scheduleActive ? false : true
         }
       },
       loaderSetAction
     ).then((data) => {
       if (data) {
-        getReportsList({
-          search: searchText,
-          page,
-          limit
-        });
+        getReportsList(
+          {
+            search: searchText,
+            page,
+            limit
+          },
+          false
+        );
         showSuccessToast('Report is scheduled off');
         setModalOpen((prevState) => ({ ...prevState, scheduleOffModalOpen: false }));
       }
     });
   };
-
-  // const disableApplyBtn = useMemo(() => {
-  //   if (date.startDate === undefined && date.endDate === undefined && ReportFilterList.length === 0) {
-  //     return true;
-  //   }
-
-  //   if (date.startDate && date.endDate) {
-  //     return false;
-  //   }
-
-  //   if (date.startDate || date.endDate) {
-  //     return true;
-  //   }
-  //   return false;
-  // }, [date, ReportFilterList]);
 
   //On Submit functionality
   const handleOnSubmit = () => {
@@ -400,8 +426,8 @@ const Report: React.FC = () => {
     }
   };
 
-  const RenderedOption = (schedule: number, isScheduled:boolean) => {
-    if (isScheduled &&  schedule !== ScheduleReportDateType['NoSchedule']) {
+  const RenderedOption = (schedule: number, isScheduled: boolean) => {
+    if (isScheduled && schedule !== ScheduleReportDateType['NoSchedule']) {
       return ['Edit', 'Generate', 'Remove', 'Schedule Off'];
     }
 
@@ -413,6 +439,154 @@ const Report: React.FC = () => {
 
   const navigateToCreateReport = () => {
     navigate(`/${workspaceId}/reports/create-report`);
+  };
+
+  const renderReportList = () => {
+    if(!loading && Number(reportsList?.data?.length) === 0) {
+      return (
+        <div className="flex flex-col items-center justify-center w-full fixTableHead-nomember">
+          <div>
+            <img src={noReportIcon} alt="No Report" />
+          </div>
+          <div className="pt-5 font-Poppins font-medium text-tableDuration text-lg leading-10">No Report</div>
+        </div>
+      );
+    }
+    return (
+      <div className="relative">
+        <div className="py-2 overflow-x-auto mt-1.868">
+          <div className="inline-block min-w-full overflow-hidden dark:border-[#dbd8fc1a] align-middle w-61.68 rounded-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixReportTableHead min-h-[31.25rem]">
+            <table className="min-w-full relative  rounded-t-0.6 ">
+              <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky z-40">
+                <tr className="min-w-full">
+                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray ">
+            Report Name
+                  </th>
+                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray">
+            Date
+                  </th>
+                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray">
+            Platforms
+                  </th>
+                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray">
+            Report Status
+                  </th>
+                  <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray w-6.25">
+            Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {reportsList?.data?.map((data: ReportListServiceResponsePropsData, i) => (
+                  <tr className="border-b dark:border-[#dbd8fc1a] bg-white" key={i}>
+                    <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
+                      <div className="flex ">
+                        <div className="py-3 font-Poppins font-medium text-trial  leading-1.31 cursor-pointer capitalize">
+                          {loading ? (
+                            <Skeleton width={width_90} />
+                          ) : (
+                            <NavLink to={`/${workspaceId}/reports/${data.id}/report-history`}>{data.name}</NavLink>
+                          )}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
+                      <div className="flex ">
+                        <div className="py-3 font-Poppins font-medium text-trial  leading-1.31">
+                          {loading ? <Skeleton width={width_90} /> : generateDateAndTime(`${data?.createdAt}`, 'MM-DD-YYYY')}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
+                      {loading ? (
+                        <div className="flex gap-x-1">
+                          <div className="py-3 font-Poppins font-medium text-trial  leading-1.31 w-1.375">
+                            <Skeleton circle width={'100%'} height={'100%'} />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex gap-x-1">
+                          {data?.workspaceReportSettings?.map((report) =>
+                            report.reportPlatforms.map((platform) => (
+                              <div
+                                className="py-3 font-Poppins font-medium text-trial  leading-1.31 w-1.375"
+                                key={platform.workspacePlatformId}
+                              >
+                                <img src={platform.workspacePlatform.platformSettings.platforms.platformLogoUrl} alt="" />
+                              </div>
+                            ))
+                          )}
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
+                      {loading ? (
+                        <Skeleton width={width_90} />
+                      ) : (
+                        <div className="flex">
+                          {data?.workspaceReportSettings?.map((report) => (
+                            <div className="py-3 font-Poppins font-medium text-trial leading-1.31" key={report.id}>
+                              {ScheduleReportDateType[data?.workspaceReportSettings[0]?.scheduleRepeat] === 'NoSchedule'
+                                ? 'No Schedule'
+                                : ScheduleReportDateType[data?.workspaceReportSettings[0]?.scheduleRepeat]}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
+                      <div className="flex cursor-pointer relative" ref={kebabMenuRef}>
+                        <div
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (isDropdownActive) {
+                              handleDropDownActive('');
+                            } else {
+                              handleDropDownActive(data.id);
+                            }
+                          }}
+                          className="flex items-center justify-center action  h-[40px] w-[46px] box-border bg-white dark:bg-secondaryDark dark:border-[#dbd8fc1a] shadow-deleteButton rounded"
+                        >
+                          <img src={actionDotIcon} alt="" className="relative" />
+                        </div>
+                        {isDropdownActive === data.id && (
+                          <div className="absolute top-6 app-result-card-border bg-white dark:bg-secondaryDark -m-[3px] rounded-[6px] box-border w-9.62  right-[0.5rem] shadow-shadowInput z-40">
+                            {RenderedOption(
+                              data.workspaceReportSettings[0].scheduleRepeat,
+                              data.workspaceReportSettings[0].isScheduleActive
+                            )?.map((options, i) => (
+                              <div className="flex flex-col" onClick={() => handleDropDownActive('')} key={i}>
+                                <div
+                                  className="h-3.06 p-2 flex items-center border border-transparent text-searchBlack dark:text-white font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain hover:app-result-card-border dark:hover:bg-thirdDark transition ease-in duration-300 "
+                                  onClick={() => handleAction(options, data.id, data, data.workspaceReportSettings[0].isScheduleActive)}
+                                >
+                                  {options}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+                <tr className="px-6 py-3  dark:text-white">
+                  <td className="px-6 py-3 "></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div className="px-6 py-6 flex items-center justify-center gap-0.66 w-full rounded-b-lg bg-white dark:bg-thirdDark bottom-0">
+          <Pagination
+            currentPage={page}
+            totalPages={Number(reportsList?.totalPages)}
+            limit={limit}
+            onPageChange={(page) => setPage(Number(page))}
+          />
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -427,7 +601,7 @@ const Report: React.FC = () => {
                 name="search"
                 id="searchId"
                 className="app-input-card-border focus:outline-none px-4 mr-0.76 box-border h-3.06 w-19.06 dark:bg-secondaryDark text-dropGray bg-white  dark:text-inputText dark:placeholder:text-inputText shadow-shadowInput rounded-0.6 placeholder:text-[#7C8DB5] placeholder:text-card placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.12 font-Poppins"
-                placeholder="Search By Name or Email"
+                placeholder="Search By Report Name"
                 onChange={handleSearchTextChange}
               />
             </div>
@@ -443,21 +617,9 @@ const Report: React.FC = () => {
               </div>
               {isFilterDropdownActive && (
                 <div className="absolute app-result-card-border box-border bg-white dark:bg-secondaryDark  rounded-0.3 w-16.56 shadow-shadowInput z-40 pb-1.56 ">
-                  <div className="flex flex-col mt-1.43">
-                    <div className="flex relative items-center mx-auto">
-                      <Input
-                        type="text"
-                        name="reportName"
-                        id="report"
-                        className="mx-auto focus:outline-none px-3 box-border dark:bg-secondaryDark bg-white shadow-shadowInput rounded-0.6 app-input-card-border h-2.81 w-15.06 dark:text-inputText dark:palceholder:text-inputText placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal dark:palceholder:text-inputText placeholder:text-card placeholder:leading-1.12"
-                        placeholder="Report Name"
-                      />
-                      <div className="absolute right-5 top-4 w-0.78 h-3 z-40 drop-icon">
-                        <img src={searchIcon} alt="" />
-                      </div>
-                    </div>
+                  <div className="flex flex-col">
                     <div
-                      className="flex justify-between items-center app-result-card-border w-full box-border bg-signUpDomain h-3.06 mt-5 px-3 mx-auto  cursor-pointer"
+                      className="flex justify-between items-center app-result-card-border w-full box-border bg-signUpDomain h-3.06 px-3 mx-auto  cursor-pointer"
                       onClick={() => {
                         handleFilterDropDownStatus('platform');
                       }}
@@ -470,29 +632,29 @@ const Report: React.FC = () => {
                     {activateFilter.isPlatformActive && (
                       <div className="flex flex-col gap-y-5 justify-center px-3 mb-3 ">
                         {PlatformFilterResponse &&
-                            PlatformFilterResponse.map(
-                              (platform: PlatformResponse, index: number) =>
-                                platform?.isConnected && (
-                                  <div className="flex items-center  pt-[18px]" key={index}>
-                                    <div className="mr-2">
-                                      <input
-                                        type="checkbox"
-                                        className="checkbox"
-                                        id={platform.id as string}
-                                        name={platform.id as string}
-                                        checked={(checkedPlatform[platform.id] as boolean) || false}
-                                        onChange={handlePlatformsCheckBox}
-                                      />
-                                    </div>
-                                    <label
-                                      className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer"
-                                      htmlFor={platform.id as string}
-                                    >
-                                      {platform?.name}
-                                    </label>
+                          PlatformFilterResponse.map(
+                            (platform: PlatformResponse, index: number) =>
+                              platform?.isConnected && (
+                                <div className="flex items-center  pt-[18px]" key={index}>
+                                  <div className="mr-2">
+                                    <input
+                                      type="checkbox"
+                                      className="checkbox"
+                                      id={platform.id as string}
+                                      name={platform.id as string}
+                                      checked={(checkedPlatform[platform.id] as boolean) || false}
+                                      onChange={handlePlatformsCheckBox}
+                                    />
                                   </div>
-                                )
-                            )}
+                                  <label
+                                    className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer"
+                                    htmlFor={platform.id as string}
+                                  >
+                                    {platform?.name}
+                                  </label>
+                                </div>
+                              )
+                          )}
                       </div>
                     )}
 
@@ -580,18 +742,43 @@ const Report: React.FC = () => {
                                 onChange={handleStatusCheckBox}
                               />
                             </div>
-                            <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">{options.name}</div>
+                            <div className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
+                              {options.name === 'NoSchedule' ? 'No Schedule' : options.name}
+                            </div>
                           </div>
                         ))}
                       </div>
                     )}
 
-                    <div className="buttons px-3 ">
+                    <div className="buttons px-3 flex mt-1.56">
                       <Button
+                        disabled={loading ? true : false}
+                        type="button"
+                        onClick={() => {
+                          setCheckedFilterOption({ checkPlatform: [], checkStatus: [] });
+                          setCheckedPlatform({});
+                          setDate({ startDate: null, endDate: null });
+                          setCheckedStatusOption({});
+                          getReportsList(
+                            {
+                              search: searchText,
+                              page,
+                              limit
+                            },
+                            true
+                          );
+                        }}
+                        text="Reset"
+                        className="border border-backdropColor text-black rounded-0.31 h-2.063 w-1/2 mr-1 cursor-pointer text-card font-Manrope font-semibold leading-1.31 hover:text-white hover:bg-backdropColor"
+                      />
+                      <Button
+                        disabled={loading ? true : false}
                         onClick={submitFilterChange}
                         type="button"
                         text="Apply"
-                        className="border-none btn-save-modal rounded-0.31 h-2.063 w-full mt-1.56 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white"
+                        className={`border-none btn-save-modal rounded-0.31 h-2.063 w-1/2 ml-1 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${
+                          loading ? 'cursor-not-allowed' : ''
+                        }`}
                       />
                     </div>
                   </div>
@@ -607,145 +794,7 @@ const Report: React.FC = () => {
               />
             </div>
           </div>
-          {reportsList?.data?.length ? (
-            <div className="relative">
-              <div className="py-2 overflow-x-auto mt-1.868">
-                <div className="inline-block min-w-full overflow-hidden dark:border-[#dbd8fc1a] align-middle w-61.68 rounded-0.6 border-table no-scroll-bar overflow-x-auto overflow-y-auto h-screen sticky top-0 fixReportTableHead min-h-[31.25rem]">
-                  <table className="min-w-full relative  rounded-t-0.6 ">
-                    <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky z-40">
-                      <tr className="min-w-full">
-                        <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray ">
-                          Report Name
-                        </th>
-                        <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray">
-                          Date
-                        </th>
-                        <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray">
-                          Platforms
-                        </th>
-                        <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray">
-                          Report Status
-                        </th>
-                        <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray w-6.25">
-                          Actions
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {reportsList?.data?.map((data: ReportListServiceResponsePropsData, i) => (
-                        <tr className="border-b dark:border-[#dbd8fc1a] bg-white" key={i}>
-                          <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
-                            <div className="flex ">
-                              <div className="py-3 font-Poppins font-medium text-trial  leading-1.31 cursor-pointer capitalize">
-                                {loading ? (
-                                  <Skeleton width={width_90} />
-                                ) : (
-                                  <NavLink to={`/${workspaceId}/reports/${data.id}/report-history`}>{data.name}</NavLink>
-                                )}
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
-                            <div className="flex ">
-                              <div className="py-3 font-Poppins font-medium text-trial  leading-1.31 cursor-pointer">
-                                {loading ? <Skeleton width={width_90} /> : generateDateAndTime(`${data?.createdAt}`, 'MM-DD-YYYY')}
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
-                            {loading ? (
-                              <div className="flex gap-x-1">
-                                <div className="py-3 font-Poppins font-medium text-trial  leading-1.31 cursor-pointer w-1.375">
-                                  <Skeleton circle width={'100%'} height={'100%'} />
-                                </div>
-                              </div>
-                            ) : (
-                              <div className="flex gap-x-1">
-                                {data?.workspaceReportSettings?.map((report) =>
-                                  report.reportPlatforms.map((platform) => (
-                                    <div
-                                      className="py-3 font-Poppins font-medium text-trial  leading-1.31 cursor-pointer w-1.375"
-                                      key={platform.workspacePlatformId}
-                                    >
-                                      <img src={platform.workspacePlatform.platformSettings.platforms.platformLogoUrl} alt="" />
-                                    </div>
-                                  ))
-                                )}
-                              </div>
-                            )}
-                          </td>
-                          <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white">
-                            {loading ? (
-                              <Skeleton width={width_90} />
-                            ) : (
-                              <div className="flex">
-                                {data?.workspaceReportSettings?.map((report) => (
-                                  <div className="py-3 font-Poppins font-medium text-trial leading-1.31 cursor-pointer" key={report.id}>
-                                    {ScheduleReportDateType[data?.workspaceReportSettings[0]?.scheduleRepeat] === 'NoSchedule' ? 'No Schedule': ScheduleReportDateType[data?.workspaceReportSettings[0]?.scheduleRepeat] }
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-                          </td>
-                          <td className="px-6 py-3 dark:bg-secondaryDark dark:text-white" >
-                            <div className="flex cursor-pointer relative" ref={kebabMenuRef}>
-                              <div
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  if(isDropdownActive) {
-                                    handleDropDownActive('');
-                                  }  else{
-                                    handleDropDownActive(data.id);
-                                  }
-                                }
-                                }
-                                className="flex items-center justify-center action  h-[40px] w-[46px] box-border bg-white dark:bg-secondaryDark dark:border-[#dbd8fc1a] shadow-deleteButton rounded"
-                              >
-                                <img src={actionDotIcon} alt="" className="relative" />
-                              </div>
-                              {isDropdownActive === data.id && (
-                                <div className="absolute top-6 app-result-card-border bg-white dark:bg-secondaryDark -m-[3px] rounded-[6px] box-border w-9.62  right-[0.5rem] shadow-shadowInput z-40" >
-                                  {RenderedOption(data.workspaceReportSettings[0].scheduleRepeat, data.workspaceReportSettings[0].isScheduleActive)?.map((options, i) => (
-                                    <div className="flex flex-col" onClick={() => handleDropDownActive('')} key={i}>
-                                      <div
-                                        className="h-3.06 p-2 flex items-center border border-transparent text-searchBlack dark:text-white font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain hover:app-result-card-border dark:hover:bg-thirdDark transition ease-in duration-300 "
-                                        onClick={() => handleAction(options, data.id, data, data.workspaceReportSettings[0].isScheduleActive)}
-                                      >
-                                        {options}
-                                      </div>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-
-                          </td>
-                        </tr>
-                      ))}
-                      <tr className="px-6 py-3  dark:text-white">
-                        <td className="px-6 py-3 "></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-              <div className="px-6 py-6 flex items-center justify-center gap-0.66 w-full rounded-b-lg bg-white dark:bg-thirdDark bottom-0">
-                <Pagination
-                  currentPage={page}
-                  totalPages={Number(reportsList?.totalPages)}
-                  limit={limit}
-                  onPageChange={(page) => setPage(Number(page))}
-                />
-              </div>
-            </div>
-          ): (
-            <div className="flex flex-col items-center justify-center w-full fixTableHead-nomember">
-              <div>
-                <img src={noReportIcon} alt="No Report" />
-              </div>
-              <div className="pt-5 font-Poppins font-medium text-tableDuration text-lg leading-10">No Report</div>
-            </div>
-          )}
+          {renderReportList()}
         </div>
         <ModalDrawer
           isOpen={modalOpen.removeModalOpen || modalOpen.scheduleOffModalOpen || modalOpen.generateReportModalOpen}
@@ -760,7 +809,9 @@ const Report: React.FC = () => {
                 ? 'Are you sure you want to turn on the scheduling for the report?'
                 : modalOpen.scheduleOffModalOpen && selectId.scheduleActive
                   ? 'Are you sure you want to turn off the scheduling for the report?'
-                  : modalOpen.generateReportModalOpen ? 'Are you sure you want to generate the report?': ''
+                  : modalOpen.generateReportModalOpen
+                    ? 'Are you sure you want to generate the report?'
+                    : ''
           }
         />
       </Fragment>

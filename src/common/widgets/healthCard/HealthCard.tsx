@@ -12,10 +12,13 @@ import { HealthScoreWidgetData } from '../../widgetLayout/WidgetTypes';
 // import { useSearchParams } from 'react-router-dom';
 
 import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
+import { useAppSelector } from '@/hooks/useRedux';
 
 const HealthCard: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const { isManageMode, removeWidgetFromDashboard, widget, isShrunk, isSidePanelOpen, filters } = props;
   const gradientTransform = `rotate(90)`;
+
+  const workspaceIdToken = useAppSelector((state) => state.auth.workspaceId);
   const workspaceId = getLocalWorkspaceId();
 
   const [healthScoreData, setHealthScoreData] = React.useState<HealthScoreWidgetData[] | []>([]);
@@ -26,9 +29,17 @@ const HealthCard: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
     }
   }, [isManageMode]);
 
+  React.useEffect(() => {
+    if (!isManageMode && !isSidePanelOpen) {
+      if (filters?.startDate && filters?.endDate) {
+        fetchHealthScoreWidgetData();
+      }
+    }
+  }, filters && Object.values(filters));
+
   // eslint-disable-next-line space-before-function-paren
   const fetchHealthScoreWidgetData = async () => {
-    const response: HealthScoreWidgetData[] = await healthScoreWidgetDataService(workspaceId, filters);
+    const response: HealthScoreWidgetData[] = await healthScoreWidgetDataService(workspaceId || workspaceIdToken, filters);
     setHealthScoreData(response);
   };
   const activitiesScoreData: HealthScoreWidgetData | undefined = healthScoreData.find(
@@ -45,20 +56,12 @@ const HealthCard: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
   //   const startDate = searchParams.get('startDate');
   //   const endDate = searchParams.get('endDate');
 
-  React.useEffect(() => {
-    if (!isManageMode && !isSidePanelOpen) {
-      if (filters?.startDate && filters?.endDate) {
-        fetchHealthScoreWidgetData();
-      }
-    }
-  }, filters && Object.values(filters));
-
   const handleRemove = () => {
     removeWidgetFromDashboard(widget);
   };
 
   return (
-    <div className={`my-6 heathCard ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
+    <div className={`mt-6 heathCard ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
       <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Health</h3>
       <div
         className={`flex  ${

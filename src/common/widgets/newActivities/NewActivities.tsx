@@ -6,6 +6,7 @@ import { activitiesWidgetDataService } from '../../../modules/dashboard/services
 import { getLocalWorkspaceId } from '../../../lib/helper';
 import { ActivitiesWidgetData } from '../../../modules/dashboard/interface/dashboard.interface';
 import { WidgetComponentProps } from '../../widgetLayout/WidgetTypes';
+import { useAppSelector } from '@/hooks/useRedux';
 
 const NewActivities: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen, filters } = props;
@@ -13,11 +14,12 @@ const NewActivities: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
   const [activitiesWidgetResponse, setActivitiesWidgetResponse] = React.useState<ActivitiesWidgetData[]>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
-  React.useEffect(() => {
-    if (isManageMode === false && !isSidePanelOpen) {
-      getActivityWidgetData();
-    }
-  }, [selectedTab]);
+  const defaultTab = 'newActivities';
+
+  const workspaceIdToken = useAppSelector((state) => state.auth.workspaceId);
+
+  const widgetPreviewLocation = window.location.href.includes('/report-details');
+
 
   React.useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
@@ -33,9 +35,9 @@ const NewActivities: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
   const getActivityWidgetData = async () => {
     setIsLoading(true);
     const newFilter = { ...filters };
-    newFilter['type'] = selectedTab ? selectedTab : undefined;
-    newFilter['limit'] = 20;
-    const data: ActivitiesWidgetData[] = await activitiesWidgetDataService(workspaceId, newFilter);
+    newFilter['type'] = defaultTab ? defaultTab : selectedTab as string;
+    newFilter['limit'] = 5;
+    const data: ActivitiesWidgetData[] = await activitiesWidgetDataService(workspaceId || workspaceIdToken, newFilter);
     setActivitiesWidgetResponse(data);
     setIsLoading(false);
   };
@@ -45,13 +47,13 @@ const NewActivities: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
   };
 
   return (
-    <div className={`my-6 ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
-      <div>
+    <div className={`${!isManageMode ? 'h-full' : 'cursor-grabbing'}  `}>
+      <div className='mt-6'>
         <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Activities</h3>
       </div>
       <div
-        className={`w-full h-full box-border bg-white dark:bg-secondaryDark dark:text-white  rounded-0.6 mt-1.868 border
-           ${isManageMode ? 'widget-border relative' : 'border-borderPrimary'} dark:border-borderDark shadow-profileCard `}
+        className={`w-full  box-border bg-white dark:bg-secondaryDark dark:text-white  rounded-0.6 mt-1.868 border
+         ${isManageMode ? 'widget-border relative h-full' : 'border-borderPrimary '} dark:border-borderDark shadow-profileCard  h-[85%]`}
       >
         <div className="w-full mt-6 flex flex-col ">
           <nav>
@@ -64,7 +66,7 @@ const NewActivities: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
               New Activities
             </TabSelector>
           </nav>
-          <div className="h-14.375 items-center relative overflow-y-auto block section ">
+          <div className={`items-center relative block section overflow-y-auto ${!widgetPreviewLocation ? 'h-14.375' : ''}`}>
             {!activitiesWidgetResponse?.length && !isLoading && !isManageMode && !isSidePanelOpen && (
               <div className="flex items-center justify-center font-Poppins font-normal text-xs text-infoBlack h-full">No data available</div>
             )}

@@ -1,13 +1,13 @@
 import React from 'react';
 import { useTabs } from '@/hooks/useTabs';
 import { TabSelector } from 'common/tabs/TabSelector';
-import NewActivitesList from './NewActivitesList';
+import NewActivitiesList from './NewActivitiesList';
 
 export default function ActivitiesTab() {
   const [selectedTab, setSelectedTab] = useTabs(['activites', 'highlights']);
 
   return (
-    <div className="w-full h-full   box-border bg-white dark:bg-secondaryDark dark:text-white  rounded-0.6 mt-1.868 border  border-borderPrimary dark:border-borderDark shadow-profileCard ">
+    <div className="w-full box-border bg-white dark:bg-secondaryDark dark:text-white  rounded-0.6 mt-1.868 border  border-borderPrimary dark:border-borderDark shadow-profileCard  h-[85%]">
       <div className="w-full mt-6 flex flex-col ">
         <nav>
           <TabSelector
@@ -28,7 +28,7 @@ export default function ActivitiesTab() {
           </TabSelector>
         </nav>
         <div className="h-14.375 items-center relative overflow-y-auto block section ">
-          <NewActivitesList hidden={selectedTab !== 'activites'} />
+          <NewActivitiesList hidden={selectedTab !== 'activites'} />
         </div>
       </div>
     </div>
