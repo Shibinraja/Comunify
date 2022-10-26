@@ -152,7 +152,7 @@ const SidePanelWidgets: FC<WidgetIdentification> = ({ widgetKey, widgetRemoved, 
   };
 
   return (
-    <div className="w-[28%] lg:w-[350px] xl:w-[23%] 3xl:w-[22%] 4xl:w-[21%]  widgetDrawerGradient left-0 top-0 pb-2 max-h-[156.25rem] min-h-screen px-7 absolute z-40 ">
+    <div className="w-[28%] lg:w-[350px]  3xl:w-[22%] 4xl:w-[21%]  widgetDrawerGradient left-0 top-0 pb-2 max-h-[156.25rem] min-h-screen px-7 absolute z-40 ">
       <div className="flex flex-col">
         <div className="flex flex-col pb-2">
           <div className="text-center font-Poppins font-semibold text-[23.47px] pt-24">Add Widget</div>
