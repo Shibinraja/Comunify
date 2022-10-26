@@ -56,7 +56,7 @@ export const membersListResponse = {
       lastActivity: '2022-06-15T00:00:00.000Z',
       email: '',
       organization: '',
-      profileUrl: '',
+      profilePictureUrl: '',
       workspaceId: '',
       createdAt: '',
       updatedAt: '',
