@@ -15,7 +15,7 @@ export function* uploadProfilePicService(body: profilePicInput): GeneratorRespon
   return data;
 }
 
-export const userProfileDataService = async (userId: string) => {
+export const userProfileDataService = async(userId: string) => {
   const { data } = await request.get(`${users_module}/${userId}`);
   return data?.data;
 };
