@@ -226,8 +226,8 @@ const MembersReview: React.FC = () => {
               onClick={() => MergeMembersList.length && handleModal('Merge')}
             />
           </div>
-          <div className="">
-            <img src={mergeIcon} alt="" />
+          <div className="w-[14px] h-[14px]">
+            <img className='w-full h-full' src={mergeIcon} alt="" />
           </div>
         </div>
       </div>
