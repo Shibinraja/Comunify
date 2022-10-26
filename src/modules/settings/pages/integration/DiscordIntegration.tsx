@@ -120,24 +120,25 @@ const DiscordIntegrationDetails: React.FC = () => {
               <div className="absolute right-4">
                 <img src={dropdownIcon} alt="" className={isChannelActive ? 'rotate-0' : 'rotate-180'} />
               </div>
+              {isChannelActive && (
+                <div className="flex flex-col app-result-card-border box-border w-[320px] right-0 top-[3.15rem] rounded-0.3 shadow-ChannelInput cursor-pointer absolute  bg-white min-h-[50px] max-h-60 overflow-auto">
+                  {channelDetails.map((options: ChannelDetails) => (
+                    <ul
+                      className="cursor-pointer hover:bg-signUpDomain  transition ease-in duration-100 "
+                      onClick={() => {
+                        selectChannel(options?.channelName);
+                      }}
+                      key={`${options?.channelId + Math.random()}`}
+                    >
+                      <li value={selectedChannel} className="text-searchBlack font-Poppins font-normal leading-1.31 text-trial p-3 capitalize">
+                        {options?.channelName}
+                      </li>
+                    </ul>
+                  ))}
+                </div>
+              )}
             </div>
-            {isChannelActive && (
-              <div className="flex flex-col app-result-card-border box-border w-20.5 rounded-0.3 shadow-ChannelInput cursor-pointer absolute -bottom-[2.6rem] bg-white min-h-[50px] max-h-60 overflow-auto">
-                {channelDetails.map((options: ChannelDetails) => (
-                  <ul
-                    className="cursor-pointer hover:bg-signUpDomain  transition ease-in duration-100 "
-                    onClick={() => {
-                      selectChannel(options?.channelName);
-                    }}
-                    key={`${options?.channelId + Math.random()}`}
-                  >
-                    <li value={selectedChannel} className="text-searchBlack font-Poppins font-normal leading-1.31 text-trial p-3 capitalize">
-                      {options?.channelName}
-                    </li>
-                  </ul>
-                ))}
-              </div>
-            )}
+
           </div>
         </div>
 
