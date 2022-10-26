@@ -21,6 +21,7 @@ const widgetsReports: React.FC = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [previewWidgetsData, setPreviewWidgetsData] = useState<Array<Omit<PanelWidgetsType, 'isAssigned'>>>([]);
+  const [isDragMode, setIsDragMode] = useState<boolean>(false);
 
   const reportValuesData = JSON.parse(localStorage.getItem('reportValues')!);
   const [searchParams] = useSearchParams();
@@ -141,7 +142,7 @@ const widgetsReports: React.FC = () => {
       <div className="flex items-center justify-between pl-2.5 relative py-10">
         <h3 className="text-center font-Inter font-semibold text-[23.47px] text-[#08080D] leading-6">Customize your Report</h3>
       </div>
-      {!widgets?.length && !isManageMode && (
+      {!widgets?.length && !isDragMode && (
         <div className="flex flex-col items-center justify-center fixWidgetNoDataHeight-report">
           <img src={noWidgetIcon} alt="" className="w-[3.8125rem] h-[3.8125rem]" />
           <div className="font-Poppins font-medium text-tableDuration text-noReports leading-10 pt-5">No widgets added</div>
@@ -153,6 +154,7 @@ const widgetsReports: React.FC = () => {
         setWidgets={setWidgets}
         setTransformedWidgetData={setTransformedWidgetData}
         filters={{ startDate, endDate, platformId: reportValuesData?.platformIds }}
+        setIsDragMode={setIsDragMode}
       />
 
       <div className="flex justify-end pt-10 items-center mb-10">
@@ -168,7 +170,10 @@ const widgetsReports: React.FC = () => {
           type="button"
           text=""
           className="mr-2.5 w-6.875 bg-[#161616] border-backBorder h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow"
-          onClick={() => {setIsManageMode(false); setIsOpen(true);}}
+          onClick={() => {
+            setIsManageMode(false);
+            setIsOpen(true);
+          }}
         >
           <div className="font-Poppins font-medium text-white leading-5 text-[13px] ">Preview</div>
         </Button>

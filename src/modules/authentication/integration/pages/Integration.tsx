@@ -1,34 +1,42 @@
 /* eslint-disable indent */
-import React, { useEffect, useState } from 'react';
-import slackIcon from '../../../../assets/images/slack.svg';
-import nextIcon from '../../../../assets/images/next.svg';
-import vanillaIcon from '../../../../assets/images/vanilla-forum.svg';
-import bgIntegrationImage from '../../../../assets/images/bg-sign.svg';
-import discordIcon from '../../../../assets/images/discord.svg';
-import './Integration.css';
+import { getLocalWorkspaceId, setRefreshToken } from '@/lib/helper';
 import Button from 'common/button';
+import Input from 'common/input';
+import { PlatformsEnumType } from 'modules/settings/pages/integration/IntegrationDrawerTypes';
+import { IntegrationModalDrawer } from 'modules/settings/pages/integration/IntegrationModalDrawer';
+import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
-import { request } from '../../../../lib/request';
+import bgIntegrationImage from '../../../../assets/images/bg-sign.svg';
+import discordIcon from '../../../../assets/images/discord.svg';
+import redditLogoIcon from '../../../../assets/images/reddit_logo.png';
+import nextIcon from '../../../../assets/images/next.svg';
+import slackIcon from '../../../../assets/images/slack.svg';
+import vanillaIcon from '../../../../assets/images/vanilla-forum.svg';
 import { showErrorToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
-import { API_ENDPOINT } from '../../../../lib/config';
-import { getLocalWorkspaceId, setRefreshToken } from '@/lib/helper';
-import Input from 'common/input';
-import { IntegrationResponse, NetworkResponse } from '../../../../lib/api';
-import { DiscordConnectResponse, PlatformConnectResponse } from '../../../../interface/interface';
-import { ModalState, PlatformResponse, PlatformIcons, VanillaForumsConnectData, ConnectBody } from '../../../settings/interface/settings.interface';
 import usePlatform from '../../../../hooks/usePlatform';
-import { useDispatch } from 'react-redux';
+import { DiscordConnectResponse, PlatformConnectResponse, RedditConnectResponseData } from '../../../../interface/interface';
+import { IntegrationResponse, NetworkResponse } from '../../../../lib/api';
+import { API_ENDPOINT } from '../../../../lib/config';
+import { request } from '../../../../lib/request';
+import { ConnectBody, ModalState, PlatformIcons, PlatformResponse, VanillaForumsConnectData } from '../../../settings/interface/settings.interface';
+import { NavigateToConnectPage, NavigateToDiscordConnectPage, NavigateToRedditConnectPage } from '../../../settings/services/settings.services';
 import settingsSlice from '../../../settings/store/slice/settings.slice';
-import { NavigateToConnectPage, NavigateToDiscordConnectPage } from '../../../settings/services/settings.services';
+import './Integration.css';
 
 Modal.setAppElement('#root');
 
 const Integration: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanillaForums: false, discord: false });
+  const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanillaForums: false, discord: false, reddit: false });
   // eslint-disable-next-line no-unused-vars
-  const [platformIcons, setPlatformIcons] = useState<PlatformIcons>({ slack: undefined, vanillaForums: undefined, discord: undefined });
+  const [platformIcons, setPlatformIcons] = useState<PlatformIcons>({
+    slack: undefined,
+    vanillaForums: undefined,
+    discord: undefined,
+    reddit: undefined
+  });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const dispatch = useDispatch();
   const { PlatformFilterResponse } = usePlatform();
@@ -47,17 +55,7 @@ const Integration: React.FC = () => {
   useEffect(() => {
     setRefreshToken();
     dispatch(settingsSlice.actions.platformData({ workspaceId }));
-    if (window.location.href.includes('state')) {
-      if (searchParams.get('code')) {
-        const codeParams: null | string = searchParams.get('code');
-        if (codeParams !== '') {
-          getData(codeParams);
-        }
-      }
-    }
-  }, []);
 
-  useEffect(() => {
     if (window.location.href.includes('guild_id') && window.location.href.includes('permissions')) {
       if (searchParams.get('code')) {
         const codeParams: null | string = searchParams.get('code');
@@ -66,29 +64,49 @@ const Integration: React.FC = () => {
         }
       }
     }
+
+    if (window.location.href.includes('state') && window.location.href.includes('code')) {
+      if (searchParams.get('code') && searchParams.get('state')) {
+        const codeParams: null | string = searchParams.get('code');
+        if (codeParams !== '') {
+          connectToReddit(codeParams);
+        }
+      }
+
+      if (searchParams.get('code') && !searchParams.get('state')) {
+        const codeParams: null | string = searchParams.get('code');
+        if (codeParams !== '') {
+          connectToSlack(codeParams);
+        }
+      }
+    }
   }, []);
 
   const handleModals = (name: string, icon: string) => {
     switch (name) {
-      case 'slack':
+      case PlatformsEnumType.SLACK:
         NavigateToConnectPage();
         setPlatformIcons((prevState) => ({ ...prevState, slack: icon }));
         break;
-      case 'vanilla':
+      case PlatformsEnumType.VANILLA:
         setPlatformIcons((prevState) => ({ ...prevState, vanillaForums: icon }));
         setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: true }));
         break;
-      case 'discord':
+      case PlatformsEnumType.DISCORD:
         NavigateToDiscordConnectPage();
         break;
 
+      case PlatformsEnumType.REDDIT:
+        NavigateToRedditConnectPage();
+        setPlatformIcons((prevState) => ({ ...prevState, reddit: icon }));
+        break;
       default:
         break;
     }
   };
 
   // eslint-disable-next-line space-before-function-paren
-  const getData = async (codeParams: string | null) => {
+  const connectToSlack = async (codeParams: string | null) => {
     try {
       setIsModalOpen((prevState) => ({ ...prevState, slack: true }));
       const body: ConnectBody = {
@@ -97,7 +115,7 @@ const Integration: React.FC = () => {
       };
       const response: IntegrationResponse<PlatformConnectResponse> = await request.post(`${API_ENDPOINT}/v1/slack/connect`, body);
       localStorage.setItem('workspacePlatformAuthSettingsId', response?.data?.data?.id);
-      localStorage.setItem('workspacePlatformSettingsId', response?.data?.data?.workspacePlatformSettingsId);
+      localStorage.setItem('workspacePlatformSettingsId', response?.data?.data?.workspacePlatformId);
       if (response?.data?.data?.id) {
         setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
         navigate(`/${workspaceId}/settings/complete-setup`, { state: { workspacePlatformAuthSettingsId: response?.data?.data?.id } });
@@ -177,6 +195,50 @@ const Integration: React.FC = () => {
     }
   };
 
+  // eslint-disable-next-line space-before-function-paren
+  const connectToReddit = async (codeParams: string | null) => {
+    try {
+      setIsModalOpen((prevState) => ({ ...prevState, reddit: true }));
+      const body: ConnectBody = {
+        code: codeParams,
+        workspaceId
+      };
+      const response: IntegrationResponse<RedditConnectResponseData> = await request.post(`${API_ENDPOINT}/v1/reddit/connect`, body);
+      if (response?.data?.data) {
+        setIsModalOpen((prevState) => ({ ...prevState, reddit: false }));
+        navigate(`/${workspaceId}/settings/reddit-integration`, {
+          state: { redditConnectResponse: response?.data?.data }
+        });
+        showSuccessToast('Authenticated successfully');
+      } else {
+        showErrorToast('Integration failed');
+        setIsModalOpen((prevState) => ({ ...prevState, reddit: false }));
+      }
+    } catch {
+      showErrorToast('Integration failed');
+      setIsModalOpen((prevState) => ({ ...prevState, reddit: false }));
+    }
+  };
+
+  const handleModalClose = () => {
+    if (isModalOpen.slack) {
+      setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
+    }
+    if (isModalOpen.discord) {
+      setIsModalOpen((prevState) => ({ ...prevState, discord: false }));
+    }
+    if (isModalOpen.reddit) {
+      setIsModalOpen((prevState) => ({ ...prevState, reddit: false }));
+    }
+  };
+
+  const connectedBtnClassName = `dark:bg-secondaryDark bg-connectButton shadow-contactCard font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded 
+  h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient dark:bg-secondaryDark`;
+
+  const disConnectedBtnClassName = `btn-disconnect-gradient shadow-contactCard font-Poppins text-white font-medium leading-5 text-error mt-0.81
+   rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in 
+   duration-300 dark:bg-secondaryDark dark:border dark:border-[#9B9B9B]`;
+
   return (
     <div className="create-password">
       <div className="auth-layout-integration">
@@ -201,8 +263,8 @@ const Integration: React.FC = () => {
                         <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">{data?.name}</div>
                         <Button
                           type="button"
-                          text="CONNECT"
-                          className="bg-connectButton shadow-connectButtonShadow font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient"
+                          text= {data.isConnected ? 'Disconnect' : 'Connect'}
+                          className={data.isConnected  ? disConnectedBtnClassName : connectedBtnClassName}
                           onClick={() => handleModals(data?.name.toLocaleLowerCase().trim(), data?.platformLogoUrl)}
                         />
                       </div>
@@ -217,40 +279,6 @@ const Integration: React.FC = () => {
                     </div>
                   </div>
                 </div>
-
-                <Modal
-                  isOpen={isModalOpen.slack}
-                  shouldCloseOnOverlayClick={true}
-                  onRequestClose={() => setIsModalOpen((prevState) => ({ ...prevState, slack: false }))}
-                  className="rounded-lg modals-tag bg-white shadow-modal  flex justify-center outline-none"
-                  style={{
-                    overlay: {
-                      display: 'flex',
-                      position: 'fixed',
-                      top: 0,
-                      left: '60%',
-                      bottom: 0,
-                      right: 0,
-                      alignItems: 'center',
-                      backgroundColor: 'transparent'
-                    }
-                  }}
-                >
-                  <div className="flex flex-col items-center justify-center  h-14.56 w-22.31 shadow-modal rounded-lg border-fetching-card">
-                    <div className=" bg-no-repeat bg-center bg-contain ">
-                      <img src={slackIcon} alt="" className="rounded-full w-2.68 h-2.68" />
-                    </div>
-                    <div className="mt-4 text-integrationGray font-Poppins fomt-normal text-desc leadind-1.68">
-                      Fetching data from <span className="text-black font-normal">Slack</span>
-                    </div>
-                    <div className="mt-1.8">
-                      <div className="dot-pulse">
-                        <div className="dot-pulse__dot"></div>
-                      </div>
-                    </div>
-                  </div>
-                </Modal>
-
                 <Modal
                   isOpen={isModalOpen.vanillaForums}
                   shouldCloseOnOverlayClick={false}
@@ -340,44 +368,25 @@ const Integration: React.FC = () => {
                     </div>
                   </div>
                 </Modal>
-                <Modal
-                  isOpen={isModalOpen.discord}
-                  shouldCloseOnOverlayClick={true}
-                  onRequestClose={() => setIsModalOpen((prevState) => ({ ...prevState, discord: false }))}
-                  className="h-14.56 w-22.31 shadow-modal flex items-center justify-center rounded-lg border-fetching-card mx-auto  bg-white outline-none"
-                  style={{
-                    overlay: {
-                      display: 'flex',
-                      position: 'fixed',
-                      top: 0,
-                      left: 0,
-                      bottom: 0,
-                      right: 0,
-                      alignItems: 'center'
-                    }
-                  }}
-                >
-                  <div className="loading">
-                    <div className="flex flex-col items-center justify-center  ">
-                      <div className=" bg-no-repeat bg-center bg-contain ">
-                        <img src={discordIcon} alt="" className="rounded-full w-2.68 h-2.68" />
-                      </div>
-                      <div className="mt-4 text-integrationGray font-Poppins fomt-normal text-desc leadind-1.68">
-                        Fetching data from <span className="text-black font-normal">Discord</span>
-                      </div>
-                      <div className="mt-1.8">
-                        <div className="dot-pulse">
-                          <div className="dot-pulse__dot"></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </Modal>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <IntegrationModalDrawer
+        isOpen={isModalOpen.slack || isModalOpen.reddit || isModalOpen.discord}
+        isClose={handleModalClose}
+        iconSrc={isModalOpen.slack ? slackIcon : isModalOpen.reddit ? redditLogoIcon : isModalOpen.discord ? discordIcon : ''}
+        contextText={
+          isModalOpen.slack
+            ? 'Slack'
+            : isModalOpen.reddit
+            ? 'Reddit'
+            : isModalOpen.discord
+            ? 'Discord'
+            : ''
+        }
+      />
     </div>
   );
 };

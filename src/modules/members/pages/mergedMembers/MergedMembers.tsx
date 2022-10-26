@@ -387,9 +387,9 @@ const MergedMembers: React.FC = () => {
         onSubmit={handleOnSubmit}
         contextText={
           modalOpen.ChangePrimaryMember
-            ? 'Are you sure you want to change the primary member'
+            ? 'Are you sure you want to change the primary member?'
             : modalOpen.UnMergeModalOpen
-              ? 'Are you sure want to unmerge members'
+              ? 'Are you sure want to unmerge members?'
               : ''
         }
       />
