@@ -55,12 +55,12 @@ const Account = () => {
   const ref: any = useRef();
   const dispatch = useDispatch();
 
-  const handleSubmit = async(values: ChangePassword): Promise<void> => {
+  const handleSubmit = async (values: ChangePassword): Promise<void> => {
     const newValues = { ...values };
     dispatch(accountSlice.actions.changePassword(newValues));
   };
 
-  const handleUserDataSubmit = async(values: userProfileDataInput): Promise<void> => {
+  const handleUserDataSubmit = async (values: userProfileDataInput): Promise<void> => {
     const userUpdateData = {
       fullName: values.fullName,
       userName: values.userName,
@@ -101,10 +101,10 @@ const Account = () => {
     setPasswordType2('currentPassword');
   };
 
-  const imageUploadHandler = async(e: any) => {
+  const imageUploadHandler = async (e: any) => {
     const imageFile = e.target.files[0];
     setProfileUploadImage(URL.createObjectURL(imageFile));
-    const base64 = await convertBase64(imageFile);
+    const base64: any = await convertBase64(imageFile);
     const uploadData = { profilePic: base64?.toString() || '', fileName: imageFile?.name };
     dispatch(accountSlice.actions.uploadProfilePic(uploadData));
   };
@@ -139,7 +139,7 @@ const Account = () => {
       .trim('White spaces are not allowed')
   });
 
-  const fetchProfileData = async() => {
+  const fetchProfileData = async () => {
     try {
       const userId = decodedToken.id.toString();
       const response = await userProfileDataService(userId);
