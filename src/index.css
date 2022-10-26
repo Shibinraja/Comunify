@@ -643,3 +643,13 @@ input {
 .fixWidgetNoDataHeight-report{
   height: calc(100vh - 19rem);
 }
+.verify-box{
+  display: none;
+}
+.paymentSubscription:hover .verify-box{
+  display: block;
+}
+.tick-box{
+  background: linear-gradient(277.31deg, #69B5E5 1.11%, #ABCF6B 100%);
+
+}
