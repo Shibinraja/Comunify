@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import slackIcon from '../../../../assets/images/slack.svg';
 import discordIcon from '../../../../assets/images/discord.svg';
 import redditLogoIcon from '../../../../assets/images/reddit_logo.png';
+import githubLogoIcon from '../../../../assets/images/github_logo.png';
 import { TabPanel } from 'common/tabs/TabPanel';
 import { NavigateToConnectPage, NavigateToDiscordConnectPage, NavigateToRedditConnectPage } from 'modules/settings/services/settings.services';
 import Skeleton from 'react-loading-skeleton';
@@ -57,7 +58,12 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
     platformIcon: ''
   });
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [platformIcons, setPlatformIcons] = useState<PlatformIcons>({ slack: undefined, vanillaForums: undefined, discord: undefined, reddit: undefined });
+  const [platformIcons, setPlatformIcons] = useState<PlatformIcons>({
+    slack: undefined,
+    vanillaForums: undefined,
+    discord: undefined,
+    reddit: undefined
+  });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   //   const [platformStatus, setPlatformStatus] = useState<PlatformsStatus>({ platform: undefined, status: undefined });
   const [vanillaForumsData, setVanillaForumsData] = useState<VanillaForumsConnectData>({
@@ -131,7 +137,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
           setIsLoading(false);
         }
         break;
-        case PlatformsEnumType.VANILLA:
+      case PlatformsEnumType.VANILLA:
         setIsLoading(true);
         if (!checkForConnectedPlatform(name)) {
           setPlatformIcons((prevState) => ({ ...prevState, vanillaForums: icon }));
@@ -146,7 +152,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
           setIsLoading(false);
         }
         break;
-        case PlatformsEnumType.DISCORD:
+      case PlatformsEnumType.DISCORD:
         setIsLoading(true);
         if (!checkForConnectedPlatform(name)) {
           setPlatformIcons((prevState) => ({ ...prevState, discord: icon }));
@@ -161,63 +167,63 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
           setIsLoading(false);
         }
         break;
-        case PlatformsEnumType.REDDIT:
-          setIsLoading(true);
-          if (!checkForConnectedPlatform(name)) {
-            setPlatformIcons((prevState) => ({ ...prevState, reddit: icon }));
-            if (isIntegrated === true) {
-              handlePlatformReconnectForReddit(name);
-            } else {
-              NavigateToRedditConnectPage();
-              setIsLoading(false);
-            }
+      case PlatformsEnumType.REDDIT:
+        setIsLoading(true);
+        if (!checkForConnectedPlatform(name)) {
+          setPlatformIcons((prevState) => ({ ...prevState, reddit: icon }));
+          if (isIntegrated === true) {
+            handlePlatformReconnectForReddit(name);
           } else {
-            showWarningToast(`${name} is already connected to your workspace`);
+            NavigateToRedditConnectPage();
             setIsLoading(false);
           }
-          break;
+        } else {
+          showWarningToast(`${name} is already connected to your workspace`);
+          setIsLoading(false);
+        }
+        break;
       default:
         break;
     }
   };
 
-    // eslint-disable-next-line space-before-function-paren
-    const handleDisconnect = async (platform: string, workspacePlatformSettingsId: string, platformIcon: string) => {
-      setConfirmPlatformToDisconnect({ platform, workspacePlatformSettingsId, platformIcon });
-      setIsWarningModalOpen(true);
-    };
+  // eslint-disable-next-line space-before-function-paren
+  const handleDisconnect = async (platform: string, workspacePlatformSettingsId: string, platformIcon: string) => {
+    setConfirmPlatformToDisconnect({ platform, workspacePlatformSettingsId, platformIcon });
+    setIsWarningModalOpen(true);
+  };
 
-    // eslint-disable-next-line space-before-function-paren
-    const handleConfirmation = async (state: boolean) => {
-      const body: PlatformDisconnect = {
-        workspacePlatformSettingsId: confirmPlatformToDisconnect.workspacePlatformSettingsId
-      };
-      if (!state) {
-        setIsWarningModalOpen(false);
-      } else {
-        try {
-          setIntegrationDisconnect(true);
-          const disconnectResponse: IntegrationResponse<PlatformsStatus> = await request.post(
-            `${API_ENDPOINT}/v1/${confirmPlatformToDisconnect.platform.toLocaleLowerCase().trim()}/disconnect`,
-            body
-          );
-          if (disconnectResponse?.data?.data?.status?.toLocaleLowerCase().trim() === 'disabled') {
-            setIsWarningModalOpen(false);
-            setIntegrationDisconnect(false);
-            if (disconnectResponse?.data?.data?.platform?.toLocaleLowerCase().trim() === 'vanilla') {
-              showSuccessToast(`${confirmPlatformToDisconnect.platform} Forums was successfully disconnected from your workspace`);
-              dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
-            } else {
-              showSuccessToast(`${confirmPlatformToDisconnect.platform} was successfully disconnected from your workspace`);
-              dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
-            }
-          }
-        } catch {
-          setIntegrationDisconnect(false);
-          showErrorToast(`${confirmPlatformToDisconnect.platform} disconnection failed`);
-        }
-      }
+  // eslint-disable-next-line space-before-function-paren
+  const handleConfirmation = async (state: boolean) => {
+    const body: PlatformDisconnect = {
+      workspacePlatformSettingsId: confirmPlatformToDisconnect.workspacePlatformSettingsId
     };
+    if (!state) {
+      setIsWarningModalOpen(false);
+    } else {
+      try {
+        setIntegrationDisconnect(true);
+        const disconnectResponse: IntegrationResponse<PlatformsStatus> = await request.post(
+          `${API_ENDPOINT}/v1/${confirmPlatformToDisconnect.platform.toLocaleLowerCase().trim()}/disconnect`,
+          body
+        );
+        if (disconnectResponse?.data?.data?.status?.toLocaleLowerCase().trim() === 'disabled') {
+          setIsWarningModalOpen(false);
+          setIntegrationDisconnect(false);
+          if (disconnectResponse?.data?.data?.platform?.toLocaleLowerCase().trim() === 'vanilla') {
+            showSuccessToast(`${confirmPlatformToDisconnect.platform} Forums was successfully disconnected from your workspace`);
+            dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+          } else {
+            showSuccessToast(`${confirmPlatformToDisconnect.platform} was successfully disconnected from your workspace`);
+            dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+          }
+        }
+      } catch {
+        setIntegrationDisconnect(false);
+        showErrorToast(`${confirmPlatformToDisconnect.platform} disconnection failed`);
+      }
+    }
+  };
 
   // eslint-disable-next-line space-before-function-paren
   const getData = async (codeParams: string | null) => {
@@ -334,8 +340,8 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
     }
   };
 
-   // eslint-disable-next-line space-before-function-paren
-   const handlePlatformReconnectForSlack = async (platform: string) => {
+  // eslint-disable-next-line space-before-function-paren
+  const handlePlatformReconnectForSlack = async (platform: string) => {
     setIsModalOpen((prevState) => ({ ...prevState, slack: true }));
     const body = {
       workspaceId
@@ -398,28 +404,28 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
     }
   };
 
-    // eslint-disable-next-line space-before-function-paren
-    const handlePlatformReconnectForReddit = async (platform: string) => {
-      setIsModalOpen((prevState) => ({ ...prevState, reddit: true }));
-      const body = {
-        workspaceId
-      };
-      try {
-        const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
-        if (response?.data?.message) {
-          setIsModalOpen((prevState) => ({ ...prevState, reddit: false }));
-          dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
-          showSuccessToast(`${platform} was successfully connected`);
-          setIsLoading(false);
-        } else {
-          showErrorToast('Failed to connect to the platform');
-          setIsModalOpen((prevState) => ({ ...prevState, reddit: false }));
-        }
-      } catch {
+  // eslint-disable-next-line space-before-function-paren
+  const handlePlatformReconnectForReddit = async (platform: string) => {
+    setIsModalOpen((prevState) => ({ ...prevState, reddit: true }));
+    const body = {
+      workspaceId
+    };
+    try {
+      const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
+      if (response?.data?.message) {
+        setIsModalOpen((prevState) => ({ ...prevState, reddit: false }));
+        dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+        showSuccessToast(`${platform} was successfully connected`);
+        setIsLoading(false);
+      } else {
         showErrorToast('Failed to connect to the platform');
         setIsModalOpen((prevState) => ({ ...prevState, reddit: false }));
       }
-    };
+    } catch {
+      showErrorToast('Failed to connect to the platform');
+      setIsModalOpen((prevState) => ({ ...prevState, reddit: false }));
+    }
+  };
 
   const handleModalClose = () => {
     if (isModalOpen.slack) {
@@ -496,9 +502,9 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
 
             <div className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5">
               <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                <img src={redditLogoIcon} alt="" className="h-2.31" />
+                <img src={githubLogoIcon} alt="" className="h-2.31" />
               </div>
-              <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">Reddit</div>
+              <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">Github</div>
               <Button
                 disabled={isLoading ? true : false}
                 type="button"
@@ -649,15 +655,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
         isOpen={isModalOpen.slack || isModalOpen.reddit || isModalOpen.discord}
         isClose={handleModalClose}
         iconSrc={isModalOpen.slack ? slackIcon : isModalOpen.reddit ? redditLogoIcon : isModalOpen.discord ? discordIcon : ''}
-        contextText={
-          isModalOpen.slack
-            ? 'Slack'
-            : isModalOpen.reddit
-            ? 'Reddit'
-            : isModalOpen.discord
-            ? 'Discord'
-            : ''
-        }
+        contextText={isModalOpen.slack ? 'Slack' : isModalOpen.reddit ? 'Reddit' : isModalOpen.discord ? 'Discord' : ''}
       />
     </TabPanel>
   );
