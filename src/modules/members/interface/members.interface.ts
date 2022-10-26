@@ -108,7 +108,7 @@ export type MembersListData = {
   lastActivity: string;
   email: string;
   organization: string;
-  profileUrl: string;
+  profilePictureUrl: string;
   workspaceId: string;
   createdAt: string;
   updatedAt: string;
@@ -176,7 +176,7 @@ export type MergeMembersDataResult = {
   organization: string;
   location: string;
   email: string;
-  profileUrl: string;
+  profilePictureUrl: string;
   isMerged: boolean;
   parentMemberId: null | string;
   isPrimary: boolean;
@@ -262,7 +262,7 @@ export interface MemberProfileCard {
   location: string | null;
   lastActivity: Date | string;
   email: string;
-  profileUrl: string;
+  profilePictureUrl: string;
   isMerged: boolean;
   parentMemberId: string | null;
   isPrimary: boolean;
