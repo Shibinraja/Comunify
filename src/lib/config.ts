@@ -19,5 +19,8 @@ export const subscription_module = '/v1/subscription';
 //Members Module URL
 export const members_module = '/v1/members';
 
+//Users Module URL
+export const users_module = '/v1/users';
+
 //Platforms Module URL
 export const platforms_module = '/v1/platforms';

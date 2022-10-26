@@ -10,6 +10,11 @@ import { useAppDispatch } from '../../hooks/useRedux';
 import authSlice from '../../modules/authentication/store/slices/auth.slice';
 import { AppDispatch } from '../../store';
 import { useNavigate } from 'react-router';
+import { getLocalWorkspaceId } from '@/lib/helper';
+import { userProfileDataService } from 'modules/account/services/account.services';
+import { DecodeToken } from 'modules/authentication/interface/auth.interface';
+import cookie from 'react-cookies';
+import { decodeToken } from '@/lib/decodeToken';
 // import { useTheme } from 'contexts/ThemeContext';
 
 const TopBar: React.FC = () => {
@@ -18,6 +23,10 @@ const TopBar: React.FC = () => {
   const options: string[] = ['Profile Settings', 'Sign Out'];
   const dispatch: AppDispatch = useAppDispatch();
   const dropDownRef = useRef<HTMLImageElement | null>(null);
+  const workspaceId = getLocalWorkspaceId();
+  const [profileImage, setProfileImage] = useState<string>('');
+  const accessToken = localStorage.getItem('accessToken') || cookie.load('x-auth-cookie');
+  const decodedToken: DecodeToken = accessToken && decodeToken(accessToken);
 
   // eslint-disable-next-line space-before-function-paren
   const handleDropDownActive = async (data?: string): Promise<void> => {
@@ -26,13 +35,25 @@ const TopBar: React.FC = () => {
         dispatch(authSlice.actions.signOut());
         break;
       case 'Profile Settings':
-        navigate('/account');
+        navigate(`${workspaceId}/account`);
         break;
       default:
         break;
     }
     setIsDropdownActive((prev) => !prev);
   };
+
+  const fetchProfileData = async() => {
+    const userId = decodedToken.id.toString();
+    const response = await userProfileDataService(userId);
+    if (response.profilePhotoUrl) {
+      setProfileImage(response.profilePhotoUrl);
+    }
+  };
+
+  useEffect(() => {
+    fetchProfileData();
+  });
 
   const handleOutsideClick = (event: MouseEvent) => {
     if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
@@ -109,9 +130,9 @@ const TopBar: React.FC = () => {
           </div>
           <div className="pl-2.56 relative">
             <img
-              src={profilePic}
+              src={profileImage.length ? profileImage : profilePic}
               alt=""
-              className="rounded-full bg-cover bg-center relative cursor-pointer"
+              className="rounded-full bg-cover h-12 w-12 bg-center relative cursor-pointer"
               ref={dropDownRef}
               onClick={() => handleDropDownActive()}
             />
