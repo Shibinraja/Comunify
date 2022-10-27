@@ -96,7 +96,7 @@ const RedditIntegration: React.FC = () => {
             <div className="font-Poppins font-semibold text-slackStatus text-base leading-6">Connected</div>
           </div>
           <div className="flex justify-between py-5 border-top-card">
-            <div className="font-Poppins font-semibold text-base text-manageTitle leading-6">Channel</div>
+            <div className="font-Poppins font-semibold text-base text-manageTitle leading-6">Community</div>
             <div className="font-Poppins font-semibold text-base text-slimGray leading-6 capitalize">
               {' '}
               {community ? community : 'Not Selected'}
@@ -111,7 +111,7 @@ const RedditIntegration: React.FC = () => {
         <div className="py-6">
           <div className="mt-5 flex flex-col w-80" onClick={() => setIsCommunityActive(!isCommunityActive)}>
             <label htmlFor="name" className="text-base font-Poppins text-infoBlack font-medium leading-1.31">
-              Select Channel
+              Select Community
             </label>
             <div className="relative w-20.5 2xl:w-full h-3.06 app-result-card-border flex items-center px-3 mt-2 shadow-ChannelInput rounded-0.3 font-Poppins font-normal text-trial text-thinGray leading-1.31 cursor-pointer ">
               {community ? community : 'Select'}
