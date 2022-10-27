@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useTabs } from '@/hooks/useTabs';
 import { TabSelector } from 'common/tabs/TabSelector';
 import NewActivitiesList from '../activitiesTab/NewActivitiesList';
@@ -8,11 +8,11 @@ import { ActivitiesWidgetData } from '../../../modules/dashboard/interface/dashb
 import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
 import { useAppSelector } from '@/hooks/useRedux';
 
-const Highlights: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
+const Highlights: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen, filters } = props;
   const [selectedTab, setSelectedTab] = useTabs(['highlights']);
-  const [activitiesWidgetResponse, setActivitiesWidgetResponse] = React.useState<ActivitiesWidgetData[]>();
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [activitiesWidgetResponse, setActivitiesWidgetResponse] = useState<ActivitiesWidgetData[]>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const defaultTab = 'highlights';
 
@@ -20,7 +20,7 @@ const Highlights: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
 
   const widgetPreviewLocation = window.location.href.includes('/report-details');
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
       if (filters?.startDate && filters?.endDate) {
         getActivityWidgetData();
@@ -84,7 +84,7 @@ const Highlights: React.FC<WidgetComponentProps> = (props: WidgetComponentProps)
             onClick={handleRemove}
             className="absolute -right-3 bg-widgetClose rounded-full flex items-center justify-center h-6 w-6 text-white text-2xl -top-3 cursor-pointer"
           >
-          -
+            -
           </div>
         )}
       </div>

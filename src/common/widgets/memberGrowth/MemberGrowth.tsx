@@ -1,5 +1,5 @@
 /* eslint-disable indent */
-import React, { PropsWithChildren } from 'react';
+import React, { FC, PropsWithChildren, useEffect, useState } from 'react';
 import Chart from 'react-apexcharts';
 import Skeleton from 'react-loading-skeleton';
 import { count_5 } from 'constants/constants';
@@ -13,12 +13,12 @@ function InlineWrapperWithMargin({ children }: PropsWithChildren<unknown>) {
   return <span style={{ marginRight: '0.5rem' }}>{children}</span>;
 }
 
-const MemberGrowth: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
+const MemberGrowth: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen, filters } = props;
-  const [isLoading, setIsLoading] = React.useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const workspaceIdToken = useAppSelector((state) => state.auth.workspaceId);
-  const [memberGrowthWidgetData, setMemberGrowthWidgetData] = React.useState<MembersProfileActivityGraphData>();
+  const [memberGrowthWidgetData, setMemberGrowthWidgetData] = useState<MembersProfileActivityGraphData>();
   const options = {
     xaxis: {
       categories: !isManageMode
@@ -29,13 +29,13 @@ const MemberGrowth: React.FC<WidgetComponentProps> = (props: WidgetComponentProp
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
       getMemberGrowthWidgetData();
     }
   }, [isManageMode]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
       if (filters?.startDate && filters?.endDate) {
         getMemberGrowthWidgetData();
@@ -62,7 +62,7 @@ const MemberGrowth: React.FC<WidgetComponentProps> = (props: WidgetComponentProp
       <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white ">Member Growth</h3>
       <div
         className={`my-6 pb-10 bg-white dark:bg-secondaryDark dark:text-white rounded-0.6 border  
-         dark:border-borderDark shadow-profileCard  h-[85%]${isManageMode ? 'widget-border relative' : 'border-borderPrimary'}`}
+         dark:border-borderDark shadow-profileCard  h-[85%]  ${isManageMode ? 'widget-border relative h-full' : 'border-borderPrimary '}`}
       >
         {!isManageMode && !isSidePanelOpen ? (
           <div className="relative h-[15rem] mt-7 bg-white rounded-xl">

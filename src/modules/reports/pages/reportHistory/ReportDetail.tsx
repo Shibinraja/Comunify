@@ -51,17 +51,19 @@ const ReportDetail = () => {
         workspaceId: workspaceId!,
         reportHistoryId: reportHistoryId!
       }).then((reportHistory) => {
-        setSaveHistoryDetail(reportHistory);
+        if(reportHistory?.report) {
+          setSaveHistoryDetail(reportHistory);
 
-        reportHistory?.report.workspaceReportSettings[0].reportPlatforms.forEach((platformId) =>
-          setPlatformIds((prevId) => [...prevId, platformId.workspacePlatform.platformSettings.platforms.id])
-        );
-        dispatch(authSlice.actions.setWorkspaceId({ workspaceId: reportHistory?.report.workspaceId as string }));
-        getReportWidgetsList({
-          limit,
-          page,
-          reportId: reportHistory?.report.id as string
-        });
+          reportHistory?.report.workspaceReportSettings[0].reportPlatforms.forEach((platformId) =>
+            setPlatformIds((prevId) => [...prevId, platformId.workspacePlatform.platformSettings.platforms.id])
+          );
+          dispatch(authSlice.actions.setWorkspaceId({ workspaceId: reportHistory?.report.workspaceId as string }));
+          getReportWidgetsList({
+            limit,
+            page,
+            reportId: reportHistory?.report.id as string
+          });
+        }
       });
     }
   }, [reportHistoryId]);
@@ -71,7 +73,7 @@ const ReportDetail = () => {
       <header className="bg-[#141010] px-[30px] py-[35px]  h-[164px] text-white">
         <div className="flex justify-between items-center">
           <div className="flex flex-col">
-            <span className="font-semibold text-2xl capitalize">{saveHistoryDetail?.report.name}</span>
+            <span className="font-semibold text-[23.47px] capitalize">{saveHistoryDetail?.report.name}</span>
             <div className="font-medium text-sm pt-1">
               {saveHistoryDetail?.history.startAt ? `Start Date: ${format(parseISO(saveHistoryDetail?.history.startAt), 'dd MMM yyyy')}` : '--'}
               <span className="pl-3">
@@ -81,7 +83,7 @@ const ReportDetail = () => {
           </div>
           <div className="bg-[#E5F6FF] rounded-md text-xs font-medium text-[#0A0A0A] py-2 px-4 capitalize">
             <span>{`Report Status : ${
-              ScheduleReportDateType[saveHistoryDetail?.report.workspaceReportSettings[0].scheduleRepeat as unknown as number]
+              ScheduleReportDateType[`${saveHistoryDetail?.report.workspaceReportSettings[0].scheduleRepeat as unknown as number}`] === 'NoSchedule' ? 'No Schedule': ScheduleReportDateType[saveHistoryDetail?.report.workspaceReportSettings[0].scheduleRepeat as unknown as number]
             }`}</span>
           </div>
         </div>

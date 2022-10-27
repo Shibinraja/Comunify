@@ -1,3 +1,4 @@
+import accountSlice from 'modules/account/store/slice/account.slice';
 import loaderSlice from 'modules/authentication/store/slices/loader.slice';
 import membersSlice from 'modules/members/store/slice/members.slice';
 import { combineReducers } from 'redux';
@@ -10,7 +11,8 @@ const rootReducer = combineReducers({
   loader: loaderSlice.reducer,
   members: membersSlice.reducer,
   activities: activitiesSlice.reducer,
-  settings: settingsSlice.reducer
+  settings: settingsSlice.reducer,
+  accounts: accountSlice.reducer
 });
 
 export default rootReducer;

@@ -24,7 +24,6 @@ import { NavLink, useParams } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip';
 import * as Yup from 'yup';
 import closeIcon from '../../../assets/images/close.svg';
-import profileImage from '../../../assets/images/ellip.svg';
 import exportImage from '../../../assets/images/export.svg';
 import noActivityIcon from '../../../assets/images/no-reports.svg';
 import { useAppSelector } from '../../../hooks/useRedux';
@@ -34,6 +33,7 @@ import activitiesSlice from '../store/slice/activities.slice';
 import './Activity.css';
 import { activityFilterExportProps } from './activity.types';
 import ActivityFilter from './ActivityFilter';
+import profileImage from '../../../assets/images/user-image.svg';
 
 Modal.setAppElement('#root');
 
@@ -525,7 +525,7 @@ const Activity: React.FC = () => {
                                   <div className="w-12.87 pb-5 rounded-b-0.6 profile-card-body profile-inner shadow-profileCard flex flex-col items-center bg-white">
                                     <div className="-mt-10 flex items-center justify-center">
                                       <img
-                                        src={ProfileModal?.profilePictureUrl === null ? profileImage : ProfileModal?.profilePictureUrl}
+                                        src={ProfileModal?.profilePictureUrl ?? profileImage }
                                         alt=""
                                         className="rounded-full w-4.43 h-4.43 bg-cover bg-center border-4 border-white"
                                       />

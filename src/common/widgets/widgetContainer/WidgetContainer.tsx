@@ -15,13 +15,13 @@ import { PanelWidgetsType, TransformWidgetDataType, WidgetComponentProps, Widget
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 export default function WidgetContainer(props: WidgetContainerProps) {
-  const { isManageMode, widgets, setWidgets, setTransformedWidgetData, filters } = props;
+  const { isManageMode, widgets, setWidgets, setTransformedWidgetData, filters, setIsDragMode } = props;
 
   const [widgetKey, setWidgetKey] = useState<string[]>(['']);
   const [widgetRemoved, setWidgetRemoved] = React.useState<string>();
 
   useEffect(() => {
-    if(widgets?.length) {
+    if (widgets?.length) {
       const widgetLocations = widgets?.map((widget) => widget.widget.widgetLocation);
       setWidgetKey(widgetLocations);
     }
@@ -56,6 +56,7 @@ export default function WidgetContainer(props: WidgetContainerProps) {
         }
         const droppableWidget: any = JSON.parse(raw);
         setWidgetKey(new Array(droppableWidget?.widget?.widgetLocation));
+        setIsDragMode?.(false);
 
         const newWidgetArray = [...widgets];
         const droppedWidget: PanelWidgetsType = {
@@ -113,7 +114,13 @@ export default function WidgetContainer(props: WidgetContainerProps) {
   };
   return (
     <>
-      {isManageMode && <SidePanelWidgets widgetKey={widgetKey.length ?  widgetKey : ['']} widgetRemoved={widgetRemoved ? widgetRemoved : ''} />}
+      {isManageMode && (
+        <SidePanelWidgets
+          widgetKey={widgetKey.length ? widgetKey : ['']}
+          widgetRemoved={widgetRemoved ? widgetRemoved : ''}
+          setIsDragMode={setIsDragMode}
+        />
+      )}
       <ResponsiveReactGridLayout
         autoSize={true}
         preventCollision={false}

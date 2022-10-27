@@ -108,7 +108,7 @@ export interface MemberWidgetData {
   platformId: string;
   platformMemberId: string;
   platformName: string;
-  profileUrl: string;
+  profilePictureUrl: string;
   totalCount: number;
   updatedAt: Date;
   workspaceId: string;

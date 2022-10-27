@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useTabs } from '@/hooks/useTabs';
 import { TabSelector } from 'common/tabs/TabSelector';
 import NewActivitiesList from './NewActivitiesList';
@@ -8,21 +8,22 @@ import { ActivitiesWidgetData } from '../../../modules/dashboard/interface/dashb
 import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
 import { useAppSelector } from '@/hooks/useRedux';
 
-const ActivitiesTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
+const ActivitiesTab: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen, filters } = props;
   const [selectedTab, setSelectedTab] = useTabs(['newActivities', 'highlights']);
-  const [activitiesWidgetResponse, setActivitiesWidgetResponse] = React.useState<ActivitiesWidgetData[]>();
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [activitiesWidgetResponse, setActivitiesWidgetResponse] = useState<ActivitiesWidgetData[]>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const workspaceIdToken = useAppSelector((state) => state.auth.workspaceId);
 
-  React.useEffect(() => {
+  useEffect(() => {
+
     if (isManageMode === false && !isSidePanelOpen) {
       getActivityWidgetData();
     }
   }, [selectedTab]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
       if (filters?.startDate && filters?.endDate) {
         getActivityWidgetData();

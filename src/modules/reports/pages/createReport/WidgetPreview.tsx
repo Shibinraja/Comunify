@@ -30,7 +30,7 @@ const WidgetPreview: React.FC<WidgetPreviewType> = ({ isOpen, setIsOpen, filters
       isOpen={isOpen}
       shouldCloseOnOverlayClick={false}
       onRequestClose={() => setIsOpen(false)}
-      className="w-4/6 mx-auto rounded-lg modals-tag bg-white shadow-modal flex items-center justify-center"
+      className="w-10/12 mx-auto rounded-lg modals-tag bg-white shadow-modal flex items-center justify-center"
       style={{
         overlay: {
           display: 'flex',
@@ -47,7 +47,7 @@ const WidgetPreview: React.FC<WidgetPreviewType> = ({ isOpen, setIsOpen, filters
         <header className="bg-[#141010] px-[30px] py-[35px] rounded-tl-lg rounded-tr-lg h-[164px] text-white">
           <div className="flex justify-between items-center">
             <div className="flex flex-col">
-              <span className="font-semibold text-2xl capitalize">{reportValuesData.name}</span>
+              <span className="font-semibold text-[23.47px] capitalize">{reportValuesData.name}</span>
               <div className="font-medium text-sm pt-1">
                 {startDate && `Date : ${format(parseISO(startDate as string), 'dd MMM yyyy')}`}
                 <span className="pl-3">{endDate && `To : ${format(parseISO(endDate as string), 'dd MMM yyyy')}`}</span>

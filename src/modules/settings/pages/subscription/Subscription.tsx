@@ -3,7 +3,8 @@ import { TabPanel } from 'common/tabs/TabPanel';
 import ToggleButton from 'common/ToggleButton/ToggleButton';
 import React, { useState } from 'react';
 import { buildStyles, CircularProgressbarWithChildren } from 'react-circular-progressbar';
-import tickIcon from '../../../..//assets/images/tostr.png';
+import Cornercon from '../../../..//assets/images/corner-img.svg';
+import TickWhiteIcon from '../../../..//assets/images/tick-white.svg';
 import ProgressProvider from './ProgressProvider';
 
 type Props = {
@@ -38,20 +39,20 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
               <div className="font-semibold font-Poppins leading-1.56 text-infoBlack dark:text-white text-base">Features</div>
               <div className="flex gap-4 font-Poppins   ">
                 <div className="flex items-center gap-x-1">
-                  <div className="w-[12px]">
-                    <img src={tickIcon} alt="" className="bg-cover" />
+                  <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center ">
+                    <img src={TickWhiteIcon} alt="" className="bg-cover" />
                   </div>
                   <div className="text-listGray text-error font-normal leading-1.31">Single User</div>
                 </div>
                 <div className="flex items-center gap-x-1">
-                  <div className="w-[12px]">
-                    <img src={tickIcon} alt="" className="bg-cover" />
+                  <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
+                    <img src={TickWhiteIcon} alt="" className="bg-cover" />
                   </div>
                   <div className="text-listGray text-error font-normal leading-1.31">5 Platforms</div>
                 </div>
                 <div className="flex items-center gap-x-1">
-                  <div className="w-[12px]">
-                    <img src={tickIcon} alt="" className="bg-cover" />
+                  <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
+                    <img src={TickWhiteIcon} alt="" className="bg-cover" />
                   </div>
                   <div className="text-listGray text-error font-normal leading-1.31">Customizable Reports</div>
                 </div>
@@ -93,39 +94,46 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
         <div className="upgrade mt-1.8 ">
           <h3 className="font-Poppins font-semibold text-infoBlack leading-2.18 text-infoData dark:text-white">Upgrade</h3>
           <div className="flex mt-1.8">
-            <div className="bg-paymentSubscription dark:bg-thirdDark box-border w-13.31 pb-5 shadow-paymentSubscriptionCard flex flex-col items-center justify-center border-gradient-rounded">
+            <div className="relative bg-paymentSubscription paymentSubscription h-[229px] px-[18px] py-[30px] dark:bg-thirdDark box-border w-13.31 pb-5 shadow-paymentSubscriptionCard flex flex-col items-center justify-center border-gradient-rounded">
+
+
+              <img className='absolute -right-[2.05rem] -top-[1.8rem] verify-box' src={Cornercon} alt=""  />
+              <div className='absolute right-2 top-2 w-[19px] h-[19px] border border-white rounded-full verify-box'>
+                <img className='w-3/4 mt-[4px] ml-[3px]' src={TickWhiteIcon} alt="" />
+              </div>
+
               <h5 className="flex items-center justify-center">
                 <span className="price font-Poppins font-semibold leading-2.8 text-renewalPrice ">$49</span>
                 <span className="text-renewalPlan font-medium font-Poppins leading-1.43">/month</span>
               </h5>
-              <div className="font-semibold font-Poppins leading-1.56 text-infoBlack text-base dark:text-white">Comunify Plus</div>
-              <p className="text-center text-card font-Poppins font-normal w-[200px] text-listGray mt-5 dark:text-greyDark">
+              <div className="font-semibold font-Poppins leading-1.56 text-infoBlack text-base dark:text-white pb-5">Comunify Plus</div>
+              <p className="text-center text-card font-Poppins font-normal  text-listGray pt-5 dark:text-greyDark border-t border-[#DFE3E5]">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ac nisi in turpis viverra convallis id sit amet eros.
               </p>
             </div>
-            <div className="flex flex-col ml-5 bg-paymentSubscription dark:bg-thirdDark w-13.31 h-14.31 box-border pb-10 shadow-paymentSubscriptionCard pt-[49px] pl-5 border-gradient-rounded">
+            <div className="flex flex-col ml-5 bg-paymentSubscription h-[229px] dark:bg-thirdDark w-13.31 h-14.31 box-border pb-10 shadow-paymentSubscriptionCard pt-[49px] pl-5 border-gradient-rounded">
               <div className="font-semibold font-Poppins leading-1.56 text-infoBlack text-base dark:text-white">Features</div>
-              <div className="flex items-center gap-x-1 mt-[8px]">
-                <div className="w-[12px]">
-                  <img src={tickIcon} alt="" />
+              <div className="flex items-center gap-x-1 mt-[8px] pb-1">
+                <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
+                  <img src={TickWhiteIcon} alt="" />
                 </div>
                 <div className="font-Poppins text-error text-listGray dark:text-greyDark leading-1.31 font-normal">Single User</div>
               </div>
-              <div className="flex items-center gap-x-1">
-                <div className="w-[12px]">
-                  <img src={tickIcon} alt="" />
+              <div className="flex items-center gap-x-2 pb-1">
+                <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
+                  <img src={TickWhiteIcon} alt="" />
                 </div>
                 <div className="font-Poppins text-error text-listGray dark:text-greyDark leading-1.31 font-normal">5 Platforms</div>
               </div>
-              <div className="flex items-center gap-x-1">
-                <div className="w-[12px]">
-                  <img src={tickIcon} alt="" />
+              <div className="flex items-center gap-x-2 pb-1">
+                <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
+                  <img src={TickWhiteIcon} alt="" />
                 </div>
                 <div className="font-Poppins text-error text-listGray dark:text-greyDark leading-1.31 font-normal">Customizable Reports</div>
               </div>
-              <div className="flex items-center gap-x-1">
-                <div className="w-[12px]">
-                  <img src={tickIcon} alt="" />
+              <div className="flex items-center gap-x-2 pb-1">
+                <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
+                  <img src={TickWhiteIcon} alt="" />
                 </div>
                 <div className="font-Poppins text-error text-listGray dark:text-greyDark leading-1.31 font-normal">Configurable Dashboard</div>
               </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useTabs } from '@/hooks/useTabs';
 import { TabSelector } from 'common/tabs/TabSelector';
 import NewActivitiesList from '../activitiesTab/NewActivitiesList';
@@ -8,11 +8,11 @@ import { ActivitiesWidgetData } from '../../../modules/dashboard/interface/dashb
 import { WidgetComponentProps } from '../../widgetLayout/WidgetTypes';
 import { useAppSelector } from '@/hooks/useRedux';
 
-const NewActivities: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
+const NewActivities: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen, filters } = props;
   const [selectedTab, setSelectedTab] = useTabs(['newActivities']);
-  const [activitiesWidgetResponse, setActivitiesWidgetResponse] = React.useState<ActivitiesWidgetData[]>();
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [activitiesWidgetResponse, setActivitiesWidgetResponse] = useState<ActivitiesWidgetData[]>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const defaultTab = 'newActivities';
 
@@ -21,7 +21,7 @@ const NewActivities: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
   const widgetPreviewLocation = window.location.href.includes('/report-details');
 
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
       if (filters?.startDate && filters?.endDate) {
         getActivityWidgetData();
@@ -47,7 +47,7 @@ const NewActivities: React.FC<WidgetComponentProps> = (props: WidgetComponentPro
   };
 
   return (
-    <div className={`${!isManageMode ? 'h-full' : 'cursor-grabbing my-6 '}  `}>
+    <div className={`${!isManageMode ? 'h-full' : 'cursor-grabbing'}  `}>
       <div className='mt-6'>
         <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Activities</h3>
       </div>

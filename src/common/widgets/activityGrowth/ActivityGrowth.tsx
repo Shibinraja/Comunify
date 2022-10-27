@@ -1,5 +1,5 @@
 /* eslint-disable indent */
-import React, { PropsWithChildren } from 'react';
+import React, { FC, PropsWithChildren, useEffect, useState } from 'react';
 import Chart from 'react-apexcharts';
 import Skeleton from 'react-loading-skeleton';
 import { count_5 } from 'constants/constants';
@@ -15,10 +15,10 @@ function InlineWrapperWithMargin({ children }: PropsWithChildren<unknown>) {
 
 const workspaceId = getLocalWorkspaceId();
 
-const ActivityGrowth: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
+const ActivityGrowth: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen, filters } = props;
-  const [activityGrowthWidgetData, setActivityGrowthWidgetData] = React.useState<MembersProfileActivityGraphData>();
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [activityGrowthWidgetData, setActivityGrowthWidgetData] = useState<MembersProfileActivityGraphData>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const workspaceIdToken = useAppSelector((state) => state.auth.workspaceId);
 
@@ -32,13 +32,13 @@ const ActivityGrowth: React.FC<WidgetComponentProps> = (props: WidgetComponentPr
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
       getActivityGrowthData();
     }
   }, [isManageMode]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
       if (filters?.startDate && filters?.endDate) {
         getActivityGrowthData();
@@ -63,7 +63,7 @@ const ActivityGrowth: React.FC<WidgetComponentProps> = (props: WidgetComponentPr
       <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Activity Growth</h3>
       <div
         className={`my-6 pb-10 bg-white dark:bg-secondaryDark dark:text-white rounded-0.6 border  
-         dark:border-borderDark shadow-profileCard  h-[85%]${isManageMode ? 'widget-border relative' : 'border-borderPrimary'}`}
+         dark:border-borderDark shadow-profileCard  h-[85%]  ${isManageMode ? 'widget-border relative h-full' : 'border-borderPrimary '}`}
       >
         {!isManageMode && !isSidePanelOpen ? (
           <div className="relative h-[15rem] mt-7 bg-white rounded-xl">

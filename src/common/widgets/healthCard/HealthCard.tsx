@@ -1,6 +1,6 @@
 /* eslint-disable indent */
 /* eslint-disable max-len */
-import React from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { buildStyles, CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import healthUpArrowIcon from '../../../assets/images/health-bar-up.svg';
@@ -14,22 +14,23 @@ import { HealthScoreWidgetData } from '../../widgetLayout/WidgetTypes';
 import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
 import { useAppSelector } from '@/hooks/useRedux';
 
-const HealthCard: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
+const HealthCard: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const { isManageMode, removeWidgetFromDashboard, widget, isShrunk, isSidePanelOpen, filters } = props;
   const gradientTransform = `rotate(90)`;
 
   const workspaceIdToken = useAppSelector((state) => state.auth.workspaceId);
   const workspaceId = getLocalWorkspaceId();
 
-  const [healthScoreData, setHealthScoreData] = React.useState<HealthScoreWidgetData[] | []>([]);
+  const [healthScoreData, setHealthScoreData] = useState<HealthScoreWidgetData[] | []>([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isManageMode && !isSidePanelOpen) {
       fetchHealthScoreWidgetData();
     }
   }, [isManageMode]);
 
-  React.useEffect(() => {
+  useEffect(() => {
+
     if (!isManageMode && !isSidePanelOpen) {
       if (filters?.startDate && filters?.endDate) {
         fetchHealthScoreWidgetData();
