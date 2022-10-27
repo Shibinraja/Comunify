@@ -226,8 +226,8 @@ const MembersReview: React.FC = () => {
               onClick={() => MergeMembersList.length && handleModal('Merge')}
             />
           </div>
-          <div className="">
-            <img src={mergeIcon} alt="" />
+          <div className="w-[14px] h-[14px]">
+            <img className="w-full h-full" src={mergeIcon} alt="" />
           </div>
         </div>
       </div>
@@ -237,7 +237,7 @@ const MembersReview: React.FC = () => {
           <div className="flex flex-wrap gap-5">
             <div className="flex items-center app-input-card-border box-border w-26.25 h-7.5 shadow-profileCard rounded-0.6  mt-5 p-5">
               <div className="w-1/5">
-                <img src={primaryMemberId[0]?.profileUrl} alt="" className="w-16 h-16 rounded-full" />
+                <img src={primaryMemberId[0]?.profilePictureUrl} alt="" className="w-16 h-16 rounded-full" />
               </div>
               <div className="flex flex-col w-4/5 relative">
                 <div className="font-Poppins font-semibold text-trial text-profileBlack leading-1.31 capitalize">{primaryMemberId[0]?.name}</div>
@@ -276,16 +276,16 @@ const MembersReview: React.FC = () => {
           <div className="flex flex-wrap gap-5 relative">
             {loading.mergeListLoader
               ? Array.from({ length: MergeMembersList?.length }, (_, i) => i + 1).map((type: number) => (
-                <Fragment key={type}>
-                  <MemberSuggestionLoader />
-                </Fragment>
-              ))
+                  <Fragment key={type}>
+                    <MemberSuggestionLoader />
+                  </Fragment>
+                ))
               : MergeMembersList &&
                 MergeMembersList.map((members: MergeMembersDataResult) => (
                   <div key={members.id}>
                     <div className="flex items-center primary-card box-border border border-borderPrimary w-26.25 h-7.5 shadow-profileCard rounded-0.6 p-5  ">
                       <div className="w-1/5">
-                        <img src={members.profileUrl} alt="" className="w-16 h-16 rounded-full" />
+                        <img src={members.profilePictureUrl} alt="" className="w-16 h-16 rounded-full" />
                       </div>
                       <div className="flex flex-col  w-4/5 relative">
                         <div className="font-Poppins font-semibold text-trial text-profileBlack leading-1.31 capitalize">{members.name}</div>
@@ -338,10 +338,10 @@ const MembersReview: React.FC = () => {
           modalOpen.confirmMerge
             ? 'Are you sure want to merge members'
             : modalOpen.UnMergeModalOpen
-              ? 'Are you sure you want to remove the member?'
-              : modalOpen.ChangePrimaryMember
-                ? 'Are you sure you want to change the primary member'
-                : ''
+            ? 'Are you sure you want to remove the member?'
+            : modalOpen.ChangePrimaryMember
+            ? 'Are you sure you want to change the primary member'
+            : ''
         }
       />
     </div>
