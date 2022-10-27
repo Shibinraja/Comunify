@@ -3,8 +3,8 @@ import { TabPanel } from 'common/tabs/TabPanel';
 import ToggleButton from 'common/ToggleButton/ToggleButton';
 import React, { useState } from 'react';
 import { buildStyles, CircularProgressbarWithChildren } from 'react-circular-progressbar';
-import Cornercon from '../../../..//assets/images/corner-img.svg';
-import TickWhiteIcon from '../../../..//assets/images/tick-white.svg';
+import Cornercon from '../../../../assets/images/corner-img.svg';
+import TickWhiteIcon from '../../../../assets/images/tick-white.svg';
 import ProgressProvider from './ProgressProvider';
 
 type Props = {
@@ -95,11 +95,9 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
           <h3 className="font-Poppins font-semibold text-infoBlack leading-2.18 text-infoData dark:text-white">Upgrade</h3>
           <div className="flex mt-1.8">
             <div className="relative bg-paymentSubscription paymentSubscription h-[229px] px-[18px] py-[30px] dark:bg-thirdDark box-border w-13.31 pb-5 shadow-paymentSubscriptionCard flex flex-col items-center justify-center border-gradient-rounded">
-
-
-              <img className='absolute -right-[2.05rem] -top-[1.8rem] verify-box' src={Cornercon} alt=""  />
-              <div className='absolute right-2 top-2 w-[19px] h-[19px] border border-white rounded-full verify-box'>
-                <img className='w-3/4 mt-[4px] ml-[3px]' src={TickWhiteIcon} alt="" />
+              <img className="absolute -right-[2.05rem] -top-[1.8rem] verify-box" src={Cornercon} alt="" />
+              <div className="absolute right-2 top-2 w-[19px] h-[19px] border border-white rounded-full verify-box">
+                <img className="w-3/4 mt-[4px] ml-[3px]" src={TickWhiteIcon} alt="" />
               </div>
 
               <h5 className="flex items-center justify-center">
