@@ -640,6 +640,9 @@ input {
 .report-email p{
   top: 3.5rem;
 }
+.cr-currentPassword p{
+  bottom: -2rem;
+}
 .fixWidgetNoDataHeight-report{
   height: calc(100vh - 19rem);
 }

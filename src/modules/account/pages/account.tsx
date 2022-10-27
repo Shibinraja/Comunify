@@ -325,7 +325,7 @@ const Account = () => {
                         <div
                           className={`currentPassword relative w-1/2 ${
                             errors.currentPassword === 'Password must have one uppercase, one lowercase, a digit and special characters'
-                              ? 'cr-currentPassword mb-10'
+                              ? 'cr-currentPassword '
                               : ''
                           }`}
                         >
@@ -339,9 +339,9 @@ const Account = () => {
                             id="currentPassword"
                             name="currentPassword"
                             // eslint-disable-next-line max-len
-                            className={`h-4.5 relative mr-1 rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${
+                            className={`h-2.81 relative  rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${
                               touched.currentPassword && errors.currentPassword
-                                ? 'boder-lightRed h-4.5 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
+                                ? 'boder-lightRed h-2.81 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
                                 : ''
                             }`}
                             onBlur={handleBlur}
@@ -350,15 +350,19 @@ const Account = () => {
                             errors={Boolean(touched.currentPassword && errors.currentPassword)}
                             helperText={touched.currentPassword && errors.currentPassword}
                           />
-                          <div onClick={togglePassword1} className="absolute top-12 right-3">
+                          <div onClick={togglePassword1} className="absolute top-[2.6rem] right-4">
                             {currentPassword === 'currentPassword' ? (
-                              <img className="cursor-pointer " src={eyeIcon} alt="" />
+                              <img className="cursor-pointer w-[13.39px] h-[9.47px]" src={eyeIcon} alt="" />
                             ) : (
-                              <img className="cursor-pointer " src={closeEyeIcon} alt="" />
+                              <img className="cursor-pointer w-[13.39px] h-[9.47px]" src={closeEyeIcon} alt="" />
                             )}
                           </div>
                         </div>
-                        <div className={`currentPassword relative w-1/2 ${errors.currentPassword ? ' mt-0' : 'mt-0'}`}>
+                        <div className={`currentPassword relative w-1/2 pl-[19px] ${
+                          errors.currentPassword === 'Password must have one uppercase, one lowercase, a digit and special characters'
+                            ? 'cr-currentPassword '
+                            : ''
+                        }`}>
                           <label htmlFor="currentPassword" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
                             New Password
                           </label>
@@ -369,9 +373,9 @@ const Account = () => {
                             id="newPassword"
                             name="newPassword"
                             // eslint-disable-next-line max-len
-                            className={`h-4.5 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${
+                            className={`h-2.81 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${
                               touched.newPassword && errors.newPassword
-                                ? 'boder-lightRed h-4.5 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
+                                ? 'boder-lightRed h-2.81 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
                                 : ''
                             }`}
                             onBlur={handleBlur}
@@ -380,11 +384,11 @@ const Account = () => {
                             errors={Boolean(touched.newPassword && errors.newPassword)}
                             helperText={touched.newPassword && errors.newPassword}
                           />
-                          <div onClick={togglePassword2} className="absolute top-12 right-3">
+                          <div onClick={togglePassword2} className="absolute top-[2.6rem] right-4">
                             {newPassword === 'currentPassword' ? (
-                              <img className="cursor-pointer " src={eyeIcon} alt="" />
+                              <img className="cursor-pointer w-[13.39px] h-[9.47px]" src={eyeIcon} alt="" />
                             ) : (
-                              <img className="cursor-pointer " src={closeEyeIcon} alt="" />
+                              <img className="cursor-pointer w-[13.39px] h-[9.47px]" src={closeEyeIcon} alt="" />
                             )}
                           </div>
                         </div>
