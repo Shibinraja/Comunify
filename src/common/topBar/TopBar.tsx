@@ -35,7 +35,13 @@ const TopBar: React.FC = () => {
         dispatch(authSlice.actions.signOut());
         break;
       case 'Profile Settings':
-        navigate(`${workspaceId}/account`);
+        if (!decodedToken.isAdmin) {
+          navigate(`${workspaceId}/account`);
+        }
+
+        if (decodedToken.isAdmin) {
+          navigate(`admin/settings`);
+        }
         break;
       default:
         break;

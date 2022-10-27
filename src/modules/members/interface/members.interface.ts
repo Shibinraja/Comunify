@@ -1,6 +1,37 @@
 import { TagResponseData } from 'modules/settings/interface/settings.interface';
+import { Dispatch, SetStateAction } from 'react';
 
 /* eslint-disable no-unused-vars */
+
+/* eslint-disable no-unused-vars */
+export type memberFilterExportProps = {
+  checkTags: string;
+  checkPlatform: string;
+  checkOrganization: string;
+  checkLocation: string;
+  endDate: string | undefined;
+  startDate: string | undefined;
+};
+
+export type MemberTypesProps = {
+  page: number;
+  limit: number;
+  searchText: string;
+  filteredDate: filterDateProps;
+  memberFilterExport: (arg0: memberFilterExportProps) => void;
+  setPage: Dispatch<SetStateAction<number>>;
+};
+
+export type customDateLinkProps = {
+  '1day': boolean;
+  '7day': boolean;
+  '1month': boolean;
+};
+
+export type filterDateProps = {
+  filterStartDate: string;
+  filterEndDate: string;
+};
 export interface workspaceId {
   workspaceId: string;
 }

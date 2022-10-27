@@ -1,5 +1,5 @@
 import './account.css';
-import profileImage from '../../../assets/images/profile-member.svg';
+import profileImage from '../../../assets/images/user-image.svg';
 import { useEffect, useRef, useState } from 'react';
 import dropdownIcon from '../../../assets/images/Vector.svg';
 import Input from 'common/input';
