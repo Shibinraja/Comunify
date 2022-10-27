@@ -23,7 +23,7 @@ import {
   BillingHistoryQuery,
   BillingHistoryResponse
 } from '../interface/settings.interface';
-import { billingHistoryData } from '../../settings/pages/billingHistory/BillingHistoryTableData';
+
 export const NavigateToConnectPage = () => {
   window.location.href = SLACK_CONNECT_ENDPOINT;
 };
@@ -147,8 +147,7 @@ export const selectCardService = async (id: string): Promise<AddedCardDetails> =
 export const getBillingHistoryData = async (params: BillingHistoryQuery) => {
   try {
     const { data } = await request.get(`${API_ENDPOINT}/v1/subscription/billinghistory?page=${params.page}&limit=${params.limit}`);
-    // return data?.data as BillingHistoryResponse;
-    return billingHistoryData as unknown as BillingHistoryResponse;
+    return data?.data as BillingHistoryResponse;
   } catch {
     showErrorToast('Billing history failed');
     return {} as BillingHistoryResponse;

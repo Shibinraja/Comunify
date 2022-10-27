@@ -101,7 +101,7 @@ const BillingHistory: React.FC<Props> = ({ hidden }) => {
                             type="button"
                             text="Invoice"
                             className="w-[4.4375rem] h-[1.625rem] border-none text-white font-Poppins btn-save-modal font-medium leading-1.31 text-error rounded cursor-pointer"
-                            onClick={() => downloadInvoice(data.invoiceId, data.date)}
+                            onClick={() => downloadInvoice(data.invoiceId, new Date(data.date).toISOString())}
                           />
                         </td>
                       </tr>
