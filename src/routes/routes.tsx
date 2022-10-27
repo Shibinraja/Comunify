@@ -12,6 +12,7 @@ import PrivateRoute from './PrivateRoute';
 import Loadable from './suspenseLoader';
 import accountRoutes from 'modules/account/routes/account.routes';
 import GuestRoute from './GuestGuard';
+import superAdminMembersRoutes from 'modules/superadmin/routes/superadmin.routes';
 
 const MainLayout = Loadable(lazy(() => import('../layout/MainLayout')));
 const ReportDetail = Loadable(lazy(() => import ('../modules/reports/pages/reportHistory/ReportDetail')));
@@ -37,6 +38,10 @@ const routes: RoutesArray[] = [
       {
         path: ':workspaceId',
         children: [dashboardRoutes, membersRoutes, settingRoutes, activityRoutes, reportRoutes, accountRoutes]
+      },
+      {
+        path: '/admin',
+        children: [superAdminMembersRoutes]
       }
     ]
   },

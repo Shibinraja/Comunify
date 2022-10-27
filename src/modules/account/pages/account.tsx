@@ -1,6 +1,6 @@
 import './account.css';
-import profileImage from '../../../assets/images/profile-member.svg';
-import { useEffect, useRef, useState } from 'react';
+import profileImage from '../../../assets/images/user-image.svg';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import dropdownIcon from '../../../assets/images/Vector.svg';
 import Input from 'common/input';
 import Button from 'common/button';
@@ -10,7 +10,7 @@ import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { companyName_regex, password_regex, userName_regex, whiteSpace_regex } from 'constants/constants';
 import accountSlice from '../store/slice/account.slice';
-import { ChangePassword, userProfileDataInput } from '../interfaces/account.interface';
+import { ChangePassword, profilePicInput, userProfileDataInput } from '../interfaces/account.interface';
 import { useDispatch } from 'react-redux';
 import { decodeToken } from '@/lib/decodeToken';
 import { DecodeToken } from 'modules/authentication/interface/auth.interface';
@@ -55,12 +55,12 @@ const Account = () => {
   const ref: any = useRef();
   const dispatch = useDispatch();
 
-  const handleSubmit = async (values: ChangePassword): Promise<void> => {
+  const handleSubmit = async(values: ChangePassword): Promise<void> => {
     const newValues = { ...values };
     dispatch(accountSlice.actions.changePassword(newValues));
   };
 
-  const handleUserDataSubmit = async (values: userProfileDataInput): Promise<void> => {
+  const handleUserDataSubmit = async(values: userProfileDataInput): Promise<void> => {
     const userUpdateData = {
       fullName: values.fullName,
       userName: values.userName,
@@ -101,12 +101,12 @@ const Account = () => {
     setPasswordType2('currentPassword');
   };
 
-  const imageUploadHandler = async (e: any) => {
-    const imageFile = e.target.files[0];
-    setProfileUploadImage(URL.createObjectURL(imageFile));
+  const imageUploadHandler = async(e: ChangeEvent<HTMLInputElement>) => {
+    const imageFile = e.target.files?.[0];
+    setProfileUploadImage(URL.createObjectURL(imageFile as Blob));
     const base64: any = await convertBase64(imageFile);
     const uploadData = { profilePic: base64?.toString() || '', fileName: imageFile?.name };
-    dispatch(accountSlice.actions.uploadProfilePic(uploadData));
+    dispatch(accountSlice.actions.uploadProfilePic(uploadData as profilePicInput));
   };
 
   const convertBase64 = (file: any) =>
@@ -139,7 +139,7 @@ const Account = () => {
       .trim('White spaces are not allowed')
   });
 
-  const fetchProfileData = async () => {
+  const fetchProfileData = async() => {
     try {
       const userId = decodedToken.id.toString();
       const response = await userProfileDataService(userId);
