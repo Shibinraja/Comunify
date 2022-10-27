@@ -73,7 +73,7 @@ const ReportDetail = () => {
       <header className="bg-[#141010] px-[30px] py-[35px]  h-[164px] text-white">
         <div className="flex justify-between items-center">
           <div className="flex flex-col">
-            <span className="font-semibold text-2xl capitalize">{saveHistoryDetail?.report.name}</span>
+            <span className="font-semibold text-[23.47px] capitalize">{saveHistoryDetail?.report.name}</span>
             <div className="font-medium text-sm pt-1">
               {saveHistoryDetail?.history.startAt ? `Start Date: ${format(parseISO(saveHistoryDetail?.history.startAt), 'dd MMM yyyy')}` : '--'}
               <span className="pl-3">

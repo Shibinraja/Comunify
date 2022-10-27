@@ -24,7 +24,7 @@ const ActiveMembersList: React.FC<Props> = ({ hidden, membersWidgetData, isLoadi
                 <li key={`${item?.comunifyMemberId + item?.email + Math.random()}}`} className="mb-4 ">
                   <div className="w-full flex justify-start items-center">
                     <div className="">
-                      <img className="h-[1.875rem] w-[1.9594rem] rounded-full" src={item?.profileUrl} alt="" />
+                      <img className="h-[1.875rem] w-[1.9594rem] rounded-full" src={item?.profilePictureUrl} alt="" />
                     </div>
 
                     <div className="ml-0.865">
@@ -41,20 +41,21 @@ const ActiveMembersList: React.FC<Props> = ({ hidden, membersWidgetData, isLoadi
             ))}
           </ul>
         ) : (
-          <><div className="w-full flex justify-start items-center ">
-            <div className="">
-              <Skeleton width={30} height={30} circle />
-            </div>
+          <>
+            <div className="w-full flex justify-start items-center ">
+              <div className="">
+                <Skeleton width={30} height={30} circle />
+              </div>
 
-            <div className="ml-2 mt-1">
-              <div>
-                <Skeleton width={150} height={15}   />
-              </div>
-              <div className="font-Poppins text-membersCreatedAt not-italic font-normal text-createdAtGrey dark:text-greyDark">
-                <Skeleton width={100} height={5}   />
+              <div className="ml-2 mt-1">
+                <div>
+                  <Skeleton width={150} height={15} />
+                </div>
+                <div className="font-Poppins text-membersCreatedAt not-italic font-normal text-createdAtGrey dark:text-greyDark">
+                  <Skeleton width={100} height={5} />
+                </div>
               </div>
             </div>
-          </div>
           </>
         )}
       </div>
