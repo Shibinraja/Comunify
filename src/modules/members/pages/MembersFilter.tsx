@@ -15,11 +15,11 @@ import searchIcon from '../../../assets/images/search.svg';
 import downArrow from '../../../assets/images/sub-down-arrow.svg';
 import dropdownIcon from '../../../assets/images/Vector.svg';
 import usePlatform from '../../../hooks/usePlatform';
+import { MemberTypesProps } from '../interface/members.interface';
 import membersSlice from '../store/slice/members.slice';
 import './Members.css';
-import { MemberTypesProps } from './membertypes';
 
-const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, searchText, filteredDate }) => {
+const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, searchText, filteredDate, setPage }) => {
   const [isFilterDropdownActive, setIsFilterDropdownActive] = useState<boolean>(false);
   const [isPlatformActive, setPlatformActive] = useState<boolean>(true);
   const [isTagActive, setTagActive] = useState<boolean>(false);
@@ -330,6 +330,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
           workspaceId: workspaceId!
         })
       );
+      setPage(1);
     }
     handleFilterDropdown();
   };

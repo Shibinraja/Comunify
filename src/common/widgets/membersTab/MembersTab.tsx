@@ -1,5 +1,5 @@
 /* eslint-disable indent */
-import React from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { TabSelector } from 'common/tabs/TabSelector';
 import { useTabs } from '@/hooks/useTabs';
 import ActiveMembersList from './ActiveMembersList';
@@ -10,23 +10,23 @@ import { MemberWidgetData } from '../../../modules/dashboard/interface/dashboard
 import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
 import { useAppSelector } from '@/hooks/useRedux';
 
-const MembersTab: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
+const MembersTab: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen, filters } = props;
 
   const workspaceId = getLocalWorkspaceId();
   const workspaceIdToken = useAppSelector((state) => state.auth.workspaceId);
 
   const [selectedTab, setSelectedTab] = useTabs(['topContributor', 'active', 'inActive']);
-  const [memberWidgetData, setMemberWidgetData] = React.useState<MemberWidgetData[]>();
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [memberWidgetData, setMemberWidgetData] = useState<MemberWidgetData[]>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
       getMembersWidgetData();
     }
   }, [selectedTab]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
       if (filters?.startDate && filters?.endDate) {
         getMembersWidgetData();

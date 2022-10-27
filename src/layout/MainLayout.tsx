@@ -1,4 +1,7 @@
+import { decodeToken } from '@/lib/decodeToken';
+import { getLocalRefreshToken } from '@/lib/request';
 import { getResolution } from '@/lib/resolution';
+import SuperAdminSideNav from 'common/sideNav/SuperAdminSideNav';
 import { maximum_screen_height } from 'constants/constants';
 import { ThemeContextProvider } from 'contexts/ThemeContext';
 import React, { Fragment } from 'react';
@@ -9,6 +12,8 @@ import ResolutionLayout from './ResolutionLayout';
 
 const MainLayout: React.FC = () => {
   const { width: screenWidth } = getResolution();
+  const tokenData = getLocalRefreshToken() || null;
+  const decodedToken =  decodeToken(tokenData as string);
 
   return (
     <ThemeContextProvider>
@@ -18,7 +23,7 @@ const MainLayout: React.FC = () => {
         ) : (
           <div className="flex h-screen">
             <div className="w-1/4 xl:w-1/5">
-              <SideNav />
+              {!decodedToken?.isAdmin ? <SideNav /> : <SuperAdminSideNav/>}
             </div>
             <div className="w-3/4 xl:w-4/5 dark:bg-primaryDark">
               <TopBar />

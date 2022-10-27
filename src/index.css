@@ -640,6 +640,19 @@ input {
 .report-email p{
   top: 3.5rem;
 }
+.cr-currentPassword p{
+  bottom: -2rem;
+}
 .fixWidgetNoDataHeight-report{
   height: calc(100vh - 19rem);
+}
+.verify-box{
+  display: none;
+}
+.paymentSubscription:hover .verify-box{
+  display: block;
+}
+.tick-box{
+  background: linear-gradient(277.31deg, #69B5E5 1.11%, #ABCF6B 100%);
+
 }
