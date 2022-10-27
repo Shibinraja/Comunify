@@ -17,6 +17,7 @@ const ActivitiesTab: FC<WidgetComponentProps> = (props: WidgetComponentProps) =>
   const workspaceIdToken = useAppSelector((state) => state.auth.workspaceId);
 
   useEffect(() => {
+
     if (isManageMode === false && !isSidePanelOpen) {
       getActivityWidgetData();
     }

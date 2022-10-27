@@ -21,6 +21,7 @@ const MembersTab: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
+
     if (isManageMode === false && !isSidePanelOpen) {
       getMembersWidgetData();
     }

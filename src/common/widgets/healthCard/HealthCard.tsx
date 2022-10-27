@@ -30,6 +30,7 @@ const HealthCard: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   }, [isManageMode]);
 
   useEffect(() => {
+
     if (!isManageMode && !isSidePanelOpen) {
       if (filters?.startDate && filters?.endDate) {
         fetchHealthScoreWidgetData();
