@@ -32,6 +32,7 @@ import { ActivityResult, MemberProfileCard } from '../../interface/members.inter
 import membersSlice from '../../store/slice/members.slice';
 import MembersProfileGraph from '../membersProfileGraph/MembersProfileGraph';
 import moment from 'moment';
+import profileImage from '../../../../assets/images/user-image.svg';
 
 Modal.setAppElement('#root');
 
@@ -618,7 +619,7 @@ const MembersProfile: React.FC = () => {
                               <img src={yellowDottedIcon} />
                             </div>
                             <div className="ml-0.71 ">
-                              <img className="h-[1.835rem] w-[1.9175rem] rounded-full" src={item?.platforms?.platformLogoUrl} alt="" />
+                              <img className="h-[1.835rem] w-[1.9175rem] rounded-full" src={item?.platforms?.platformLogoUrl ?? ''} alt="" />
                             </div>
                             <div className="ml-0.865">
                               <div>
@@ -645,7 +646,7 @@ const MembersProfile: React.FC = () => {
                               <img src={yellowDottedIcon} />
                             </div>
                             <div className="ml-0.71 ">
-                              <img className="h-[1.835rem] w-[1.9175rem] rounded-full" src={item?.platforms?.platformLogoUrl} alt="" />
+                              <img className="h-[1.835rem] w-[1.9175rem] rounded-full" src={item?.platforms?.platformLogoUrl ?? ''} alt="" />
                             </div>
                             <div className="ml-0.865">
                               <div>
@@ -674,7 +675,7 @@ const MembersProfile: React.FC = () => {
                                 <img src={yellowDottedIcon} />
                               </div>
                               <div className="ml-0.71 ">
-                                <img className="h-[1.835rem] w-[1.9175rem] rounded-full" src={item?.platforms?.platformLogoUrl} alt="" />
+                                <img className="h-[1.835rem] w-[1.9175rem] rounded-full" src={item?.platforms?.platformLogoUrl ?? ''} alt="" />
                               </div>
                               <div className="ml-0.865">
                                 <div>
@@ -726,7 +727,7 @@ const MembersProfile: React.FC = () => {
               <div className="flex flex-col profile-card items-center justify-center bg-white rounded-b-0.6 w-18.125 shadow-contactCard box-border h-11.06">
                 <div className="-mt-24">
                   <img
-                    src={data?.profilePictureUrl}
+                    src={data?.profilePictureUrl ?? profileImage}
                     alt="profileImage"
                     className="bg-cover bg-center border-5 border-white rounded-full w-100 h-100"
                   />
@@ -738,7 +739,7 @@ const MembersProfile: React.FC = () => {
                 <div className="flex gap-1 pt-1.12">
                   {data?.platforms.map((platformData) => (
                     <div key={`${platformData?.id + platformData?.name}`}>
-                      <img src={platformData?.platformLogoUrl} alt="" className="rounded-full w-[1.0012rem] h-[1.0012rem]" />
+                      <img src={platformData?.platformLogoUrl ?? ''} alt="" className="rounded-full w-[1.0012rem] h-[1.0012rem]" />
                     </div>
                   ))}
                 </div>

@@ -1,5 +1,5 @@
 /* eslint-disable indent */
-import React, { PropsWithChildren } from 'react';
+import React, { FC, PropsWithChildren, useEffect, useState } from 'react';
 import Chart from 'react-apexcharts';
 import Skeleton from 'react-loading-skeleton';
 import { count_5 } from 'constants/constants';
@@ -15,10 +15,10 @@ function InlineWrapperWithMargin({ children }: PropsWithChildren<unknown>) {
 
 const workspaceId = getLocalWorkspaceId();
 
-const ActivityGrowth: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
+const ActivityGrowth: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen, filters } = props;
-  const [activityGrowthWidgetData, setActivityGrowthWidgetData] = React.useState<MembersProfileActivityGraphData>();
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [activityGrowthWidgetData, setActivityGrowthWidgetData] = useState<MembersProfileActivityGraphData>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const workspaceIdToken = useAppSelector((state) => state.auth.workspaceId);
 
@@ -32,13 +32,13 @@ const ActivityGrowth: React.FC<WidgetComponentProps> = (props: WidgetComponentPr
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
       getActivityGrowthData();
     }
   }, [isManageMode]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
       if (filters?.startDate && filters?.endDate) {
         getActivityGrowthData();

@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { FC, Fragment, useEffect, useState } from 'react';
 // import { useSearchParams } from 'react-router-dom';
 import { quickInfoWidgetService } from '../../../modules/dashboard/services/dashboard.services';
 import { getLocalWorkspaceId } from '../../../lib/helper';
@@ -8,22 +8,22 @@ import { WidgetComponentProps } from '../../../common/widgetLayout/WidgetTypes';
 import Skeleton from 'react-loading-skeleton';
 import { useAppSelector } from '@/hooks/useRedux';
 
-const QuickInfo: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
+const QuickInfo: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const { isManageMode, removeWidgetFromDashboard, widget, isShrunk, isSidePanelOpen, filters } = props;
-  const [quickInfoWidgetData, setQuickInfoWidgetData] = React.useState<QuickInfoData[] | []>();
+  const [quickInfoWidgetData, setQuickInfoWidgetData] = useState<QuickInfoData[] | []>();
   const workspaceIdToken = useAppSelector((state) => state.auth.workspaceId);
 
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const workspaceId = getLocalWorkspaceId();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
       getQuickInfoWidgetData();
     }
   }, [isManageMode]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isManageMode === false) {
       if (filters?.startDate && filters?.endDate) {
         getQuickInfoWidgetData();
