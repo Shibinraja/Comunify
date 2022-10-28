@@ -9,7 +9,7 @@ import { useLocation } from 'react-router';
 
 const Settings = () => {
   const [selectedTab, setSelectedTab] = useTabs(['integrations', 'subscription', 'billing_history', 'tags']);
-  const location = useLocation();
+  const location: any | Location = useLocation();
   const redirectPath = location?.state?.selectedTab;
 
   useEffect(() => {
