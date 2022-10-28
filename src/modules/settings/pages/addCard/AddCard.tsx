@@ -1,4 +1,4 @@
-import ToggleButton from '../../../../common/ToggleButton/ToggleButton';
+// import ToggleButton from '../../../../common/ToggleButton/ToggleButton';
 import React, { useEffect, useState } from 'react';
 import MasterCardIcon from '../../../../assets/images/masterCard.svg';
 import VisaCardIcon from '../../../../assets/images/visa.svg';
@@ -11,15 +11,15 @@ import {
   deleteCardService,
   getCardDetailsService,
   getChoseSubscriptionPlanDetailsService,
-  selectCardService,
-  setPlanAutoRenewalService
+  selectCardService
+  //   setPlanAutoRenewalService
 } from '../../services/settings.services';
 import {
   AddedCardDetails,
   ClientSecret,
   SubscriptionDetails,
-  UpdateSubscriptionAutoRenewal,
-  UpdateSubscriptionBody,
+  //   UpdateSubscriptionAutoRenewal,
+  //   UpdateSubscriptionBody,
   UpgradeData
 } from '../../interface/settings.interface';
 import { showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
@@ -88,26 +88,26 @@ const AddCard: React.FC = () => {
   };
 
   // eslint-disable-next-line space-before-function-paren
-  const setPlanAutoRenewal = async () => {
-    // if (subscriptionDetails?.stripeSubscriptionId && subscriptionDetails?.id) {
-    setIsLoading((prev) => ({ ...prev, autoRenewal: true }));
-    const updateSubscriptionBody: UpdateSubscriptionBody = {
-      autoRenewal: toggle ? false : true,
-      subscriptionId: subscriptionDetails?.stripeSubscriptionId ?? '',
-      userSubscriptionId: subscriptionDetails?.id ?? ''
-    };
-    const response: UpdateSubscriptionAutoRenewal = await setPlanAutoRenewalService(updateSubscriptionBody);
-    if (response) {
-      setToggle(response?.autoRenewSubscription);
-      if (response?.autoRenewSubscription === false) {
-        showSuccessToast('Plan auto renewal de-activated');
-      } else if (response?.autoRenewSubscription === true) {
-        showSuccessToast('Plan auto renewal activated');
-      }
-      setIsLoading((prev) => ({ ...prev, autoRenewal: false }));
-    }
-    // }
-  };
+  //   const setPlanAutoRenewal = async () => {
+  //     // if (subscriptionDetails?.stripeSubscriptionId && subscriptionDetails?.id) {
+  //     setIsLoading((prev) => ({ ...prev, autoRenewal: true }));
+  //     const updateSubscriptionBody: UpdateSubscriptionBody = {
+  //       autoRenewal: toggle ? false : true,
+  //       subscriptionId: subscriptionDetails?.stripeSubscriptionId ?? '',
+  //       userSubscriptionId: subscriptionDetails?.id ?? ''
+  //     };
+  //     const response: UpdateSubscriptionAutoRenewal = await setPlanAutoRenewalService(updateSubscriptionBody);
+  //     if (response) {
+  //       setToggle(response?.autoRenewSubscription);
+  //       if (response?.autoRenewSubscription === false) {
+  //         showSuccessToast('Plan auto renewal de-activated');
+  //       } else if (response?.autoRenewSubscription === true) {
+  //         showSuccessToast('Plan auto renewal activated');
+  //       }
+  //       setIsLoading((prev) => ({ ...prev, autoRenewal: false }));
+  //     }
+  //     // }
+  //   };
 
   // eslint-disable-next-line space-before-function-paren
   const getCardDetails = async () => {
@@ -202,7 +202,7 @@ const AddCard: React.FC = () => {
 
   return (
     <div className="flex flex-col pl-[25px] pr-[29px]  font-Poppins w-full h-full overflow-y-auto ">
-      <div className="pt-10 pb-8 border-b border-greyDark">
+      {/* <div className="pt-10 pb-8 border-b border-greyDark">
         <div className="flex justify-between  items-center">
           <div className="flex flex-col">
             <h3 className=" text-base text-renewalBlack leading-1.31 font-semibold dark:text-white">Auto Renewal</h3>
@@ -216,8 +216,8 @@ const AddCard: React.FC = () => {
             <div className="text-trial font-medium leading-1.31  dark:text-white">Yes</div>
           </div>
         </div>
-      </div>
-      <div className="pt-[27px] pb-8 border-b border-greyDark">
+      </div> */}
+      {/* <div className="pt-[27px] pb-8 border-b border-greyDark">
         <div className="flex justify-between  items-center">
           <div className="flex flex-col">
             <h3 className=" text-base text-renewalBlack leading-1.31 font-semibold dark:text-white">Selected Plan</h3>
@@ -237,7 +237,7 @@ const AddCard: React.FC = () => {
             </h5>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className="pt-[27px] pb-6">
         <div className="flex justify-between  items-center">

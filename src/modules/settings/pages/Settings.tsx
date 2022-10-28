@@ -15,6 +15,8 @@ const Settings = () => {
   useEffect(() => {
     if (redirectPath === 'billing_history') {
       setSelectedTab('billing_history');
+    } else if (redirectPath === 'subscription') {
+      setSelectedTab('subscription');
     }
   }, [redirectPath]);
 

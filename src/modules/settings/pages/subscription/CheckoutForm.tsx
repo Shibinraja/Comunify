@@ -38,6 +38,8 @@ const CheckoutForm: React.FC<Props> = ({
     }
   }, [submitForm]);
 
+  console.log(redirectCondition);
+
   // eslint-disable-next-line space-before-function-paren
   const saveCardCredentialsOnStripe = async (event: React.SyntheticEvent<HTMLButtonElement>) => {
     setIsLoading(true);
@@ -63,7 +65,7 @@ const CheckoutForm: React.FC<Props> = ({
       showErrorToast(response?.error?.message);
     } else {
       if (redirectCondition === 'add-card') {
-        navigate(`/${workspaceId}/settings/add-card`);
+        navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'subscription' } });
       } else {
         if (handleCheckoutFormModal) {
           handleCheckoutFormModal();
