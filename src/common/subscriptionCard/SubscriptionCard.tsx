@@ -4,7 +4,6 @@ import successIcon from '../../assets/images/tick-white.svg';
 import { SubscriptionProps } from 'interface/interface';
 import { NavigateFunction, useLocation, useNavigate } from 'react-router';
 import { getLocalWorkspaceId } from '../../lib/helper';
-import { chooseSubscription } from '../../modules/authentication/services/auth.service';
 
 const SubscriptionCard: React.FC<SubscriptionProps> = ({ subscriptionData }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -16,10 +15,8 @@ const SubscriptionCard: React.FC<SubscriptionProps> = ({ subscriptionData }) => 
   const selectPlan = async () => {
     if (location?.pathname?.includes('expired')) {
       setIsLoading(true);
-      //   const response = await chooseSubscription(subscriptionData?.id);
-      //   if (response) {
-      navigate(`/${workspaceId}/settings/add-card`);
-      //   }
+      navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'subscription' } });
+      window.location.reload();
     } else {
       navigate('/subscription', { state: { subscriptionData } });
     }
@@ -48,7 +45,7 @@ const SubscriptionCard: React.FC<SubscriptionProps> = ({ subscriptionData }) => 
             ))}
           </div>
           <Button
-            text="Choose the plan"
+            text="Choose plan"
             onClick={selectPlan}
             disabled={isLoading}
             type="submit"

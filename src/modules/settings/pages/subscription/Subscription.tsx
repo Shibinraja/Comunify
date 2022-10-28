@@ -6,13 +6,19 @@ import CornerIcon from '../../../..//assets/images/corner-img.svg';
 import TickWhiteIcon from '../../../..//assets/images/tick-white.svg';
 import { showSuccessToast } from '../../../../common/toast/toastFunctions';
 import {
+  AddedCardDetails,
   BillingDetails,
   ClientSecret,
   SubscriptionDetails,
   UpdateSubscriptionAutoRenewal,
   UpdateSubscriptionBody
 } from '../../interface/settings.interface';
-import { createCardService, getChoseSubscriptionPlanDetailsService, setPlanAutoRenewalService } from '../../services/settings.services';
+import {
+  createCardService,
+  getCardDetailsService,
+  getChoseSubscriptionPlanDetailsService,
+  setPlanAutoRenewalService
+} from '../../services/settings.services';
 import { buildStyles, CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import ProgressProvider from './ProgressProvider';
 import moment from 'moment';
@@ -24,8 +30,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import CheckoutForm from './CheckoutForm';
 import { email_regex, whiteSpace_single_regex } from '../../../../constants/constants';
-import { NavigateFunction, useNavigate } from 'react-router';
-import { getLocalWorkspaceId } from '../../../../lib/helper';
+import AddCard from '../addCard/AddCard';
 
 type Props = {
   hidden: boolean;
@@ -34,6 +39,7 @@ type Props = {
 const Subscription: React.FC<Props> = ({ hidden }) => {
   const gradientTransform = `rotate(90)`;
   const [subscriptionDetails, setSubscriptionDetails] = useState<SubscriptionDetails | undefined>();
+  const [addedCardDetails, setAddedCardDetails] = useState<AddedCardDetails[]>();
   const [toggle, setToggle] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isBillingDetailsModal, setIsBillingDetailsModal] = useState<{ billingDetails: boolean; cardDetails: boolean }>({
@@ -43,8 +49,6 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
   const [billingDetails, setBillingDetails] = useState<BillingDetails>({ billingName: '', billingEmail: '' });
   const [clientSecret, setClientSecret] = useState<string | undefined>(undefined);
   const stripePromise = loadStripe(`${import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY}`);
-  const navigate: NavigateFunction = useNavigate();
-  const workspaceId: string = getLocalWorkspaceId();
 
   useEffect(() => {
     getCurrentSubscriptionPlanDetails();
@@ -52,6 +56,10 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
 
   useEffect(() => {
     getSecretKeyForStripe();
+  }, []);
+
+  useEffect(() => {
+    getCardDetails();
   }, []);
 
   // eslint-disable-next-line space-before-function-paren
@@ -62,8 +70,13 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
   };
 
   // eslint-disable-next-line space-before-function-paren
+  const getCardDetails = async () => {
+    const response: AddedCardDetails[] = await getCardDetailsService();
+    setAddedCardDetails(response);
+  };
+
+  // eslint-disable-next-line space-before-function-paren
   const setPlanAutoRenewal = async () => {
-    // if (subscriptionDetails?.stripeSubscriptionId && subscriptionDetails?.id) {
     setIsLoading(true);
     const updateSubscriptionBody: UpdateSubscriptionBody = {
       autoRenewal: toggle ? false : true,
@@ -80,7 +93,6 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
       }
       setIsLoading(false);
     }
-    // }
   };
 
   const calculateDaysToSubscriptionExpiry = () => {
@@ -128,9 +140,11 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
     <TabPanel hidden={hidden}>
       <div className="subscription mt-2.625 ">
         <h3 className="text-infoBlack font-Poppins font-semibold text-base leading-1.56 dark:text-white">Subscription</h3>
-        <p className="font-Poppins text-error text-black dark:text-greyDark leading-1.31 font-normal">
-          To keep using this account after the trial ends, set up a subscription
-        </p>
+        {subscriptionDetails?.subscriptionPackage?.name.toLocaleLowerCase().trim() === 'free trial' && (
+          <p className="font-Poppins text-error text-black dark:text-greyDark leading-1.31 font-normal">
+            To keep using this account after the trial ends, set up a subscription
+          </p>
+        )}
 
         <div className="flex border bg-paymentSubscription dark:bg-thirdDark w-full h-8.37 shadow-paymentSubscriptionCard box-border rounded-0.9 justify-between items-center px-[27px] mt-1.8">
           <div className="flex">
@@ -144,36 +158,39 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
                 />
               </div>
             </div>
-            <div className="flex flex-col pl-[98px] dark:text-createdAtGrey">
-              <div className="font-semibold font-Poppins leading-1.56 text-infoBlack dark:text-white text-base">Features</div>
-              <div className="flex gap-4 font-Poppins   ">
-                <div className="flex items-center gap-x-1">
-                  <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center ">
-                    <img src={TickWhiteIcon} alt="" className="bg-cover" />
+            {subscriptionDetails !== null && (
+              <div className="flex flex-col pl-[98px] dark:text-createdAtGrey">
+                <div className="font-semibold font-Poppins leading-1.56 text-infoBlack dark:text-white text-base">Features</div>
+                <div className="flex gap-4 font-Poppins   ">
+                  <div className="flex items-center gap-x-1">
+                    <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center ">
+                      <img src={TickWhiteIcon} alt="" className="bg-cover" />
+                    </div>
+                    <div className="text-listGray text-error font-normal leading-1.31">Single User</div>
                   </div>
-                  <div className="text-listGray text-error font-normal leading-1.31">Single User</div>
-                </div>
-                <div className="flex items-center gap-x-1">
-                  <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
-                    <img src={TickWhiteIcon} alt="" className="bg-cover" />
+                  <div className="flex items-center gap-x-1">
+                    <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
+                      <img src={TickWhiteIcon} alt="" className="bg-cover" />
+                    </div>
+                    <div className="text-listGray text-error font-normal leading-1.31">5 Platforms</div>
                   </div>
-                  <div className="text-listGray text-error font-normal leading-1.31">5 Platforms</div>
-                </div>
-                <div className="flex items-center gap-x-1">
-                  <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
-                    <img src={TickWhiteIcon} alt="" className="bg-cover" />
+                  <div className="flex items-center gap-x-1">
+                    <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
+                      <img src={TickWhiteIcon} alt="" className="bg-cover" />
+                    </div>
+                    <div className="text-listGray text-error font-normal leading-1.31">Customizable Reports</div>
                   </div>
-                  <div className="text-listGray text-error font-normal leading-1.31">Customizable Reports</div>
-                </div>
-                <div className="flex items-center gap-x-1">
-                  <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
-                    <img src={TickWhiteIcon} alt="" className="bg-cover" />
+                  <div className="flex items-center gap-x-1">
+                    <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
+                      <img src={TickWhiteIcon} alt="" className="bg-cover" />
+                    </div>
+                    <div className="text-listGray text-error font-normal leading-1.31">Configurable Dashboard</div>
                   </div>
-                  <div className="text-listGray text-error font-normal leading-1.31">Configurable Dashboard</div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
+
           <div className="flex flex-col justify-end">
             <div className="relative">
               <svg className="absolute">
@@ -207,7 +224,11 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
         </div>
         <div className="border-t border-[#E6E6E6] mt-8"></div>
 
-        {subscriptionDetails?.subscriptionPackage?.name.toLocaleLowerCase().trim() === 'free trial' && (
+        {addedCardDetails?.length ? (
+          <div>
+            <AddCard subscriptionDetails={subscriptionDetails ?? undefined} />
+          </div>
+        ) : (
           <div className="upgrade mt-1.8 ">
             <h3 className="font-Poppins font-semibold text-infoBlack leading-2.18 text-infoData dark:text-white">Upgrade</h3>
             <div className="flex mt-1.8">
@@ -370,7 +391,7 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
           </div>
         </div>
 
-        {subscriptionDetails?.subscriptionPackage?.name.toLocaleLowerCase().trim() !== 'free trial' && (
+        {subscriptionDetails?.subscriptionPackage?.name.toLocaleLowerCase().trim() === 'comunify plus' && (
           <div className="renewal mt-[44px] mb-10">
             <div className="flex justify-between  items-center">
               <div className="flex flex-col">
@@ -384,16 +405,6 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
                 <ToggleButton value={toggle} onChange={() => setPlanAutoRenewal()} isLoading={isLoading} />
                 <div className="text-trial font-medium leading-1.31 font-Poppins dark:text-white">YES</div>
               </div>
-            </div>
-            <div className="w-full flex justify-end">
-              <button
-                className="font-medium text-error text-tag hover:text-download"
-                onClick={() => {
-                  navigate(`/${workspaceId}/settings/add-card`);
-                }}
-              >
-                ADD CARD
-              </button>
             </div>
           </div>
         )}
