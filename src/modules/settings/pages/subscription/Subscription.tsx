@@ -13,7 +13,12 @@ import {
   UpdateSubscriptionAutoRenewal,
   UpdateSubscriptionBody
 } from '../../interface/settings.interface';
-import { createCardService, getChoseSubscriptionPlanDetailsService, setPlanAutoRenewalService } from '../../services/settings.services';
+import {
+  createCardService,
+  getCardDetailsService,
+  getChoseSubscriptionPlanDetailsService,
+  setPlanAutoRenewalService
+} from '../../services/settings.services';
 import { buildStyles, CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import ProgressProvider from './ProgressProvider';
 import moment from 'moment';
@@ -25,8 +30,6 @@ import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import CheckoutForm from './CheckoutForm';
 import { email_regex, whiteSpace_single_regex } from '../../../../constants/constants';
-import { NavigateFunction, useNavigate } from 'react-router';
-import { getLocalWorkspaceId } from '../../../../lib/helper';
 import AddCard from '../addCard/AddCard';
 
 type Props = {
@@ -46,8 +49,6 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
   const [billingDetails, setBillingDetails] = useState<BillingDetails>({ billingName: '', billingEmail: '' });
   const [clientSecret, setClientSecret] = useState<string | undefined>(undefined);
   const stripePromise = loadStripe(`${import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY}`);
-  const navigate: NavigateFunction = useNavigate();
-  const workspaceId: string = getLocalWorkspaceId();
 
   useEffect(() => {
     getCurrentSubscriptionPlanDetails();
@@ -55,6 +56,10 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
 
   useEffect(() => {
     getSecretKeyForStripe();
+  }, []);
+
+  useEffect(() => {
+    getCardDetails();
   }, []);
 
   // eslint-disable-next-line space-before-function-paren
@@ -65,8 +70,13 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
   };
 
   // eslint-disable-next-line space-before-function-paren
+  const getCardDetails = async () => {
+    const response: AddedCardDetails[] = await getCardDetailsService();
+    setAddedCardDetails(response);
+  };
+
+  // eslint-disable-next-line space-before-function-paren
   const setPlanAutoRenewal = async () => {
-    // if (subscriptionDetails?.stripeSubscriptionId && subscriptionDetails?.id) {
     setIsLoading(true);
     const updateSubscriptionBody: UpdateSubscriptionBody = {
       autoRenewal: toggle ? false : true,
@@ -83,7 +93,6 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
       }
       setIsLoading(false);
     }
-    // }
   };
 
   const calculateDaysToSubscriptionExpiry = () => {
@@ -149,36 +158,39 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
                 />
               </div>
             </div>
-            <div className="flex flex-col pl-[98px] dark:text-createdAtGrey">
-              <div className="font-semibold font-Poppins leading-1.56 text-infoBlack dark:text-white text-base">Features</div>
-              <div className="flex gap-4 font-Poppins   ">
-                <div className="flex items-center gap-x-1">
-                  <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center ">
-                    <img src={TickWhiteIcon} alt="" className="bg-cover" />
+            {subscriptionDetails !== null && (
+              <div className="flex flex-col pl-[98px] dark:text-createdAtGrey">
+                <div className="font-semibold font-Poppins leading-1.56 text-infoBlack dark:text-white text-base">Features</div>
+                <div className="flex gap-4 font-Poppins   ">
+                  <div className="flex items-center gap-x-1">
+                    <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center ">
+                      <img src={TickWhiteIcon} alt="" className="bg-cover" />
+                    </div>
+                    <div className="text-listGray text-error font-normal leading-1.31">Single User</div>
                   </div>
-                  <div className="text-listGray text-error font-normal leading-1.31">Single User</div>
-                </div>
-                <div className="flex items-center gap-x-1">
-                  <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
-                    <img src={TickWhiteIcon} alt="" className="bg-cover" />
+                  <div className="flex items-center gap-x-1">
+                    <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
+                      <img src={TickWhiteIcon} alt="" className="bg-cover" />
+                    </div>
+                    <div className="text-listGray text-error font-normal leading-1.31">5 Platforms</div>
                   </div>
-                  <div className="text-listGray text-error font-normal leading-1.31">5 Platforms</div>
-                </div>
-                <div className="flex items-center gap-x-1">
-                  <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
-                    <img src={TickWhiteIcon} alt="" className="bg-cover" />
+                  <div className="flex items-center gap-x-1">
+                    <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
+                      <img src={TickWhiteIcon} alt="" className="bg-cover" />
+                    </div>
+                    <div className="text-listGray text-error font-normal leading-1.31">Customizable Reports</div>
                   </div>
-                  <div className="text-listGray text-error font-normal leading-1.31">Customizable Reports</div>
-                </div>
-                <div className="flex items-center gap-x-1">
-                  <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
-                    <img src={TickWhiteIcon} alt="" className="bg-cover" />
+                  <div className="flex items-center gap-x-1">
+                    <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
+                      <img src={TickWhiteIcon} alt="" className="bg-cover" />
+                    </div>
+                    <div className="text-listGray text-error font-normal leading-1.31">Configurable Dashboard</div>
                   </div>
-                  <div className="text-listGray text-error font-normal leading-1.31">Configurable Dashboard</div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
+
           <div className="flex flex-col justify-end">
             <div className="relative">
               <svg className="absolute">
@@ -212,58 +224,62 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
         </div>
         <div className="border-t border-[#E6E6E6] mt-8"></div>
 
-        <div>
-          <AddCard />
-        </div>
+        {addedCardDetails?.length ? (
+          <div>
+            <AddCard subscriptionDetails={subscriptionDetails ?? undefined} />
+          </div>
+        ) : (
+          <div className="upgrade mt-1.8 ">
+            <h3 className="font-Poppins font-semibold text-infoBlack leading-2.18 text-infoData dark:text-white">Upgrade</h3>
+            <div className="flex mt-1.8">
+              <div
+                onClick={() => setIsBillingDetailsModal((prev) => ({ ...prev, billingDetails: true }))}
+                className="relative bg-paymentSubscription paymentSubscription h-[229px] px-[18px] py-[30px] dark:bg-thirdDark box-border w-13.31 pb-5 shadow-paymentSubscriptionCard flex flex-col items-center justify-center border-gradient-rounded"
+              >
+                <img className="absolute -right-[2.05rem] -top-[1.8rem] verify-box" src={CornerIcon} alt="" />
+                <div className="absolute right-2 top-2 w-[19px] h-[19px] border border-white rounded-full verify-box">
+                  <img className="w-3/4 mt-[4px] ml-[3px]" src={TickWhiteIcon} alt="" />
+                </div>
 
-        <div className="upgrade mt-1.8 ">
-          <h3 className="font-Poppins font-semibold text-infoBlack leading-2.18 text-infoData dark:text-white">Upgrade</h3>
-          <div className="flex mt-1.8">
-            <div
-              onClick={() => setIsBillingDetailsModal((prev) => ({ ...prev, billingDetails: true }))}
-              className="relative bg-paymentSubscription paymentSubscription h-[229px] px-[18px] py-[30px] dark:bg-thirdDark box-border w-13.31 pb-5 shadow-paymentSubscriptionCard flex flex-col items-center justify-center border-gradient-rounded"
-            >
-              <img className="absolute -right-[2.05rem] -top-[1.8rem] verify-box" src={CornerIcon} alt="" />
-              <div className="absolute right-2 top-2 w-[19px] h-[19px] border border-white rounded-full verify-box">
-                <img className="w-3/4 mt-[4px] ml-[3px]" src={TickWhiteIcon} alt="" />
+                <h5 className="flex items-center justify-center">
+                  <span className="price font-Poppins font-semibold leading-2.8 text-renewalPrice ">$49</span>
+                  <span className="text-renewalPlan font-medium font-Poppins leading-1.43">/month</span>
+                </h5>
+                <div className="font-semibold font-Poppins leading-1.56 text-infoBlack text-base dark:text-white">Comunify Plus</div>
+                <p className="text-center text-card font-Poppins font-normal w-[200px] text-renewalGray mt-5 dark:text-greyDark">
+                  Comunify Plus Plan
+                </p>
               </div>
-
-              <h5 className="flex items-center justify-center">
-                <span className="price font-Poppins font-semibold leading-2.8 text-renewalPrice ">$49</span>
-                <span className="text-renewalPlan font-medium font-Poppins leading-1.43">/month</span>
-              </h5>
-              <div className="font-semibold font-Poppins leading-1.56 text-infoBlack text-base dark:text-white">Comunify Plus</div>
-              <p className="text-center text-card font-Poppins font-normal w-[200px] text-renewalGray mt-5 dark:text-greyDark">Comunify Plus Plan</p>
-            </div>
-            <div className="flex flex-col ml-5 bg-paymentSubscription h-[229px] dark:bg-thirdDark w-13.31 h-14.31 box-border pb-10 shadow-paymentSubscriptionCard pt-[49px] pl-5 border-gradient-rounded">
-              <div className="font-semibold font-Poppins leading-1.56 text-infoBlack text-base dark:text-white">Features</div>
-              <div className="flex items-center gap-x-1 mt-[8px] pb-1">
-                <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
-                  <img src={TickWhiteIcon} alt="" />
+              <div className="flex flex-col ml-5 bg-paymentSubscription h-[229px] dark:bg-thirdDark w-13.31 h-14.31 box-border pb-10 shadow-paymentSubscriptionCard pt-[49px] pl-5 border-gradient-rounded">
+                <div className="font-semibold font-Poppins leading-1.56 text-infoBlack text-base dark:text-white">Features</div>
+                <div className="flex items-center gap-x-1 mt-[8px] pb-1">
+                  <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
+                    <img src={TickWhiteIcon} alt="" />
+                  </div>
+                  <div className="font-Poppins text-error text-listGray dark:text-greyDark leading-1.31 font-normal">Single User</div>
                 </div>
-                <div className="font-Poppins text-error text-listGray dark:text-greyDark leading-1.31 font-normal">Single User</div>
-              </div>
-              <div className="flex items-center gap-x-2 pb-1">
-                <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
-                  <img src={TickWhiteIcon} alt="" />
+                <div className="flex items-center gap-x-2 pb-1">
+                  <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
+                    <img src={TickWhiteIcon} alt="" />
+                  </div>
+                  <div className="font-Poppins text-error text-listGray dark:text-greyDark leading-1.31 font-normal">5 Platforms</div>
                 </div>
-                <div className="font-Poppins text-error text-listGray dark:text-greyDark leading-1.31 font-normal">5 Platforms</div>
-              </div>
-              <div className="flex items-center gap-x-2 pb-1">
-                <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
-                  <img src={TickWhiteIcon} alt="" />
+                <div className="flex items-center gap-x-2 pb-1">
+                  <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
+                    <img src={TickWhiteIcon} alt="" />
+                  </div>
+                  <div className="font-Poppins text-error text-listGray dark:text-greyDark leading-1.31 font-normal">Customizable Reports</div>
                 </div>
-                <div className="font-Poppins text-error text-listGray dark:text-greyDark leading-1.31 font-normal">Customizable Reports</div>
-              </div>
-              <div className="flex items-center gap-x-2 pb-1">
-                <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
-                  <img src={TickWhiteIcon} alt="" />
+                <div className="flex items-center gap-x-2 pb-1">
+                  <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
+                    <img src={TickWhiteIcon} alt="" />
+                  </div>
+                  <div className="font-Poppins text-error text-listGray dark:text-greyDark leading-1.31 font-normal">Configurable Dashboard</div>
                 </div>
-                <div className="font-Poppins text-error text-listGray dark:text-greyDark leading-1.31 font-normal">Configurable Dashboard</div>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
         <div>
           <div className="flex flex-col ">
@@ -375,7 +391,7 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
           </div>
         </div>
 
-        {subscriptionDetails?.subscriptionPackage?.name.toLocaleLowerCase().trim() !== 'free trial' && (
+        {subscriptionDetails?.subscriptionPackage?.name.toLocaleLowerCase().trim() === 'comunify plus' && (
           <div className="renewal mt-[44px] mb-10">
             <div className="flex justify-between  items-center">
               <div className="flex flex-col">

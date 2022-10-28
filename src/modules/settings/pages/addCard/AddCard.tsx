@@ -1,4 +1,3 @@
-// import ToggleButton from '../../../../common/ToggleButton/ToggleButton';
 import React, { useEffect, useState } from 'react';
 import MasterCardIcon from '../../../../assets/images/masterCard.svg';
 import VisaCardIcon from '../../../../assets/images/visa.svg';
@@ -6,22 +5,8 @@ import deleteIcon from '../../../../assets/images/delete.svg';
 import Button from 'common/button';
 import { NavigateFunction, useNavigate } from 'react-router';
 import { getLocalWorkspaceId } from '../../../../lib/helper';
-import {
-  createCardService,
-  deleteCardService,
-  getCardDetailsService,
-  getChoseSubscriptionPlanDetailsService,
-  selectCardService
-  //   setPlanAutoRenewalService
-} from '../../services/settings.services';
-import {
-  AddedCardDetails,
-  ClientSecret,
-  SubscriptionDetails,
-  //   UpdateSubscriptionAutoRenewal,
-  //   UpdateSubscriptionBody,
-  UpgradeData
-} from '../../interface/settings.interface';
+import { createCardService, deleteCardService, getCardDetailsService, selectCardService } from '../../services/settings.services';
+import { AddedCardDetails, ClientSecret, SubscriptionDetails, UpgradeData } from '../../interface/settings.interface';
 import { showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
 import Modal from 'react-modal';
 import { Elements } from '@stripe/react-stripe-js';
@@ -40,9 +25,11 @@ interface SelectedCard {
   cardNumber: number;
 }
 
-const AddCard: React.FC = () => {
-  const [toggle, setToggle] = useState<boolean>(false);
-  const [subscriptionDetails, setSubscriptionDetails] = useState<SubscriptionDetails | undefined>();
+interface Props {
+  subscriptionDetails?: SubscriptionDetails;
+}
+
+const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
   const [isLoading, setIsLoading] = useState<{ autoRenewal: boolean; upgrade: boolean; confirmationModal: boolean }>({
     autoRenewal: false,
     upgrade: false,
@@ -56,15 +43,12 @@ const AddCard: React.FC = () => {
   // eslint-disable-next-line no-unused-vars
   const [defaultCard, setDefaultCard] = useState<AddedCardDetails | undefined>(undefined);
   const [isConfirmationModal, setIsConfirmationModal] = useState<boolean>(false);
+  const [callEffect, setCallEffect] = useState<boolean>(false);
   const navigate: NavigateFunction = useNavigate();
   const workspaceId: string = getLocalWorkspaceId();
   const stripePromise = loadStripe(`${import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY}`);
 
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    getCurrentSubscriptionPlanDetails();
-  }, []);
 
   useEffect(() => {
     getSecretKeyForStripe();
@@ -78,36 +62,17 @@ const AddCard: React.FC = () => {
     dispatch(authSlice.actions.getSubscriptions());
   }, []);
 
+  useEffect(() => {
+    if (callEffect === true) {
+      setTimeout(() => {
+        getCardDetails();
+        showSuccessToast('Payment method list updated');
+        setCallEffect(false);
+      }, 6000);
+    }
+  }, [callEffect]);
+
   const subscriptionData = useAppSelector((state: State) => state.auth.subscriptionData);
-
-  // eslint-disable-next-line space-before-function-paren
-  const getCurrentSubscriptionPlanDetails = async () => {
-    const response: SubscriptionDetails = await getChoseSubscriptionPlanDetailsService();
-    setSubscriptionDetails(response);
-    setToggle(response?.autoRenewal);
-  };
-
-  // eslint-disable-next-line space-before-function-paren
-  //   const setPlanAutoRenewal = async () => {
-  //     // if (subscriptionDetails?.stripeSubscriptionId && subscriptionDetails?.id) {
-  //     setIsLoading((prev) => ({ ...prev, autoRenewal: true }));
-  //     const updateSubscriptionBody: UpdateSubscriptionBody = {
-  //       autoRenewal: toggle ? false : true,
-  //       subscriptionId: subscriptionDetails?.stripeSubscriptionId ?? '',
-  //       userSubscriptionId: subscriptionDetails?.id ?? ''
-  //     };
-  //     const response: UpdateSubscriptionAutoRenewal = await setPlanAutoRenewalService(updateSubscriptionBody);
-  //     if (response) {
-  //       setToggle(response?.autoRenewSubscription);
-  //       if (response?.autoRenewSubscription === false) {
-  //         showSuccessToast('Plan auto renewal de-activated');
-  //       } else if (response?.autoRenewSubscription === true) {
-  //         showSuccessToast('Plan auto renewal activated');
-  //       }
-  //       setIsLoading((prev) => ({ ...prev, autoRenewal: false }));
-  //     }
-  //     // }
-  //   };
 
   // eslint-disable-next-line space-before-function-paren
   const getCardDetails = async () => {
@@ -139,6 +104,7 @@ const AddCard: React.FC = () => {
       setIsLoading((prev) => ({ ...prev, confirmationModal: false }));
       setIsConfirmationModal(false);
       showSuccessToast('Payment card deleted');
+      handleEffect();
     } else {
       setIsLoading((prev) => ({ ...prev, confirmationModal: false }));
       setIsConfirmationModal(false);
@@ -178,7 +144,7 @@ const AddCard: React.FC = () => {
 
   // eslint-disable-next-line space-before-function-paren
   const handlePlanUpgrade = async () => {
-    if (subscriptionDetails?.subscriptionPackage?.name?.toLocaleLowerCase().trim() === 'free trial' || subscriptionDetails === null) {
+    if (subscriptionDetails?.subscriptionPackage?.name?.toLocaleLowerCase().trim() === 'free trial' || subscriptionDetails === undefined) {
       setIsLoading((prev) => ({ ...prev, upgrade: true }));
       const subscriptionId: string = subscriptionData?.filter(
         (data: SubscriptionPackages) => data?.viewName.toLocaleLowerCase().trim() !== 'free trial'
@@ -189,15 +155,20 @@ const AddCard: React.FC = () => {
       };
       const response: SubscriptionPackages = await chooseSubscription(subscriptionId, body);
       if (response?.status === 'paid') {
-        setIsLoading((prev) => ({ ...prev, upgrade: false }));
         showSuccessToast('Plan upgraded to Comunify Plus!');
         navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'billing_history' } });
+        setIsLoading((prev) => ({ ...prev, upgrade: false }));
+        location.reload();
       } else {
         setIsLoading((prev) => ({ ...prev, upgrade: false }));
       }
     } else {
       showWarningToast('Comunify Plus is already activated');
     }
+  };
+
+  const handleEffect = () => {
+    setCallEffect(true);
   };
 
   return (
@@ -310,20 +281,19 @@ const AddCard: React.FC = () => {
       ) : (
         <div>
           <p className="text-listGray font-Poppins font-semibold mt-8 text-2xl leading-1.31 dark:text-greyDark">No payment cards added</p>
-          {/* <Skeleton width={900} count={3} height={10} /> */}
         </div>
       )}
 
       <div className="pt-4 flex justify-end">
         <div className="flex">
-          <Button
+          {/* <Button
             type="button"
             text="Back"
             className="mr-2.5 font-Poppins text-error font-medium border-cancel  leading-1.31 text-thinGray cursor-pointer w-[123px] h-2.81 rounded box-border"
             onClick={() => {
-              navigate(`/${workspaceId}/settings`);
+              navigate(`/${workspaceId}/settings` , {state: {selectedTab: 'integrations'}});
             }}
-          />
+          /> */}
           <Button
             type="button"
             text="Upgrade"
@@ -358,7 +328,7 @@ const AddCard: React.FC = () => {
               <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Payment Information</h3>
               {stripePromise && options.clientSecret && (
                 <Elements stripe={stripePromise} options={options}>
-                  <CheckoutForm handleCheckoutFormModal={handleCheckoutFormModal} redirectCondition="" />
+                  <CheckoutForm handleCheckoutFormModal={handleCheckoutFormModal} redirectCondition="" handleEffect={handleEffect} />
                 </Elements>
               )}
             </div>

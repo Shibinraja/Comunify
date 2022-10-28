@@ -16,6 +16,7 @@ const SubscriptionCard: React.FC<SubscriptionProps> = ({ subscriptionData }) => 
     if (location?.pathname?.includes('expired')) {
       setIsLoading(true);
       navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'subscription' } });
+      window.location.reload();
     } else {
       navigate('/subscription', { state: { subscriptionData } });
     }
@@ -44,7 +45,7 @@ const SubscriptionCard: React.FC<SubscriptionProps> = ({ subscriptionData }) => 
             ))}
           </div>
           <Button
-            text="Choose the plan"
+            text="Choose plan"
             onClick={selectPlan}
             disabled={isLoading}
             type="submit"

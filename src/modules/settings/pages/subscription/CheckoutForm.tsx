@@ -16,6 +16,7 @@ interface Props {
   subscriptionId?: string;
   submitForm?: boolean;
   disableButtonLoader?: () => void;
+  handleEffect?: () => void;
 }
 
 const CheckoutForm: React.FC<Props> = ({
@@ -24,21 +25,20 @@ const CheckoutForm: React.FC<Props> = ({
   billingDetails,
   subscriptionId,
   submitForm,
-  disableButtonLoader
+  disableButtonLoader,
+  handleEffect
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const elements: StripeElements | null = useElements();
   const stripe: Stripe | null = useStripe();
   const navigate: NavigateFunction = useNavigate();
-  const workspaceId: string = getLocalWorkspaceId();
+  const workspaceId = getLocalWorkspaceId();
 
   useEffect(() => {
     if (redirectCondition === 'signup-card' && submitForm === true) {
       handlePaymentViaSignUp();
     }
   }, [submitForm]);
-
-  console.log(redirectCondition);
 
   // eslint-disable-next-line space-before-function-paren
   const saveCardCredentialsOnStripe = async (event: React.SyntheticEvent<HTMLButtonElement>) => {
@@ -65,14 +65,26 @@ const CheckoutForm: React.FC<Props> = ({
       showErrorToast(response?.error?.message);
     } else {
       if (redirectCondition === 'add-card') {
-        navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'subscription' } });
+        setTimeout(() => {
+          if (handleCheckoutFormModal) {
+            handleCheckoutFormModal();
+          }
+          showSuccessToast('Card added successfully');
+          navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'subscription' } });
+          setIsLoading(false);
+          location.reload();
+        }, 4000);
       } else {
+        if (handleEffect) {
+          handleEffect();
+        }
         if (handleCheckoutFormModal) {
           handleCheckoutFormModal();
         }
+
+        showSuccessToast('Card added successfully');
+        setIsLoading(false);
       }
-      setIsLoading(false);
-      showSuccessToast('Card added successfully');
     }
   };
 
