@@ -37,6 +37,7 @@ const ActiveMembers: FC<WidgetComponentProps> = (props: WidgetComponentProps) =>
   const getMembersWidgetData = async () => {
     setIsLoading(true);
     const newFilter = { ...filters };
+
     newFilter['type'] = defaultTab ? defaultTab : (selectedTab as string);
     newFilter['limit'] = 5;
     const data: MemberWidgetData[] = await membersWidgetDataService(workspaceId || workspaceIdToken, newFilter);
