@@ -1,15 +1,28 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import Button from 'common/button';
 import successIcon from '../../assets/images/tick-white.svg';
 import { SubscriptionProps } from 'interface/interface';
-import { useDispatch } from 'react-redux';
-import authSlice from '../../modules/authentication/store/slices/auth.slice';
+import { NavigateFunction, useLocation, useNavigate } from 'react-router';
+import { getLocalWorkspaceId } from '../../lib/helper';
+import { chooseSubscription } from '../../modules/authentication/services/auth.service';
 
 const SubscriptionCard: React.FC<SubscriptionProps> = ({ subscriptionData }) => {
-  const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const navigate: NavigateFunction = useNavigate();
+  const location = useLocation();
+  const workspaceId = getLocalWorkspaceId();
 
-  const selectPlan = (): void => {
-    dispatch(authSlice.actions.chooseSubscription(subscriptionData?.id));
+  // eslint-disable-next-line space-before-function-paren
+  const selectPlan = async () => {
+    if (location?.pathname?.includes('expired')) {
+      setIsLoading(true);
+      //   const response = await chooseSubscription(subscriptionData?.id);
+      //   if (response) {
+      navigate(`/${workspaceId}/settings/add-card`);
+      //   }
+    } else {
+      navigate('/subscription', { state: { subscriptionData } });
+    }
   };
 
   return (
@@ -27,19 +40,21 @@ const SubscriptionCard: React.FC<SubscriptionProps> = ({ subscriptionData }) => 
           <div className="mt-2 ">
             {subscriptionData?.features?.map((featuresData: { value: string; comunifyFeature: { name: string } }, index: number) => (
               <div key={`featuresData_${index}`} className="flex items-center font-normal text-listGray text-error font-Poppins leading-1.56 pt-1">
-                <div className='feature-box h-3 w-3 rounded-full flex justify-center items-center mr-2'>
-                  <img src={successIcon} alt=""  />
-
+                <div className="feature-box h-3 w-3 rounded-full flex justify-center items-center mr-2">
+                  <img src={successIcon} alt="" />
                 </div>
-                {` ${featuresData.value === '1' ? 'Single': featuresData.value} ${featuresData.comunifyFeature.name}`}
+                {` ${featuresData.value === '1' ? 'Single' : featuresData.value} ${featuresData.comunifyFeature.name}`}
               </div>
             ))}
           </div>
           <Button
             text="Choose the plan"
             onClick={selectPlan}
+            disabled={isLoading}
             type="submit"
-            className="font-Poppins rounded-lg text-base font-semibold text-white hover:shadow-buttonShadowHover transition ease-in duration-300 w-full mt-1.8  h-3.6 btn-gradient "
+            className={`font-Poppins rounded-lg text-base ${
+              isLoading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+            } font-semibold text-white hover:shadow-buttonShadowHover transition ease-in duration-300 w-full mt-1.8  h-3.6 btn-gradient`}
           />
         </div>
       </div>

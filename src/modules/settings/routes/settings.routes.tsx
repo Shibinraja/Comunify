@@ -1,6 +1,7 @@
 import React, { lazy } from 'react';
 import Loadable from 'routes/suspenseLoader';
 import { RoutesArray } from '../../../interface/interface';
+import AddCard from '../pages/addCard/AddCard';
 import DiscordIntegrationDetails from '../pages/integration/DiscordIntegration';
 import IntegrationDetails from '../pages/integrationDetails/IntegrationDetails';
 
@@ -30,6 +31,10 @@ const settingRoutes: RoutesArray = {
     {
       element: <RedditIntegration />,
       path: 'reddit-integration'
+    },
+    {
+      element: <AddCard />,
+      path: 'add-card'
     }
   ]
 };

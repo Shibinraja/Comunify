@@ -38,11 +38,8 @@ export type SignUpFormValues = {
 };
 
 export type SubscriptionValues = {
-  username: string;
-  password: string;
-  card_holder: string;
-  cardnumber: string;
-  cvv: string;
+  billingName: string;
+  billingEmail: string;
 };
 
 // Input Body
@@ -124,6 +121,9 @@ export interface SubscriptionPackages {
   periodType: SubscriptionPeriod;
   createdAt: Date;
   updatedAt: Date;
+  subscriptionId: string;
+  clientSecret: string;
+  status?: string;
 }
 export interface SubscriptionToken {
   email: string;

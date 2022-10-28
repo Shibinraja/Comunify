@@ -17,6 +17,8 @@
     },
     "dependencies": {
         "@hookform/resolvers": "^2.9.0",
+        "@stripe/react-stripe-js": "^1.13.0",
+        "@stripe/stripe-js": "^1.42.0",
         "@types/react-datepicker": "^4.4.2",
         "@uiball/loaders": "^1.2.6",
         "apexcharts": "^3.35.3",

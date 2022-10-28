@@ -1,13 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTabs } from '@/hooks/useTabs';
 import { TabSelector } from 'common/tabs/TabSelector';
 import BillingHistory from './billingHistory/BillingHistory';
 import Integration from './integration/Integration';
 import Subscription from './subscription/Subscription';
 import Tags from './tags/Tags';
+import { useLocation } from 'react-router';
 
 const Settings = () => {
   const [selectedTab, setSelectedTab] = useTabs(['integrations', 'subscription', 'billing_history', 'tags']);
+  const location = useLocation();
+  const redirectPath = location?.state?.selectedTab;
+
+  useEffect(() => {
+    if (redirectPath === 'billing_history') {
+      setSelectedTab('billing_history');
+    }
+  }, [redirectPath]);
 
   return (
     <div className="flex flex-col ">
