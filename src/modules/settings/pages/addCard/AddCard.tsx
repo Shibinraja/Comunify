@@ -40,7 +40,6 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
   const [addedCardDetails, setAddedCardDetails] = useState<AddedCardDetails[]>();
   const [selectedCard, setSelectedCard] = useState<SelectedCard | undefined>(undefined);
   const [selectedCardId, setSelectedCardId] = useState<string>('');
-  // eslint-disable-next-line no-unused-vars
   const [defaultCard, setDefaultCard] = useState<AddedCardDetails | undefined>(undefined);
   const [isConfirmationModal, setIsConfirmationModal] = useState<boolean>(false);
   const [callEffect, setCallEffect] = useState<boolean>(false);
@@ -90,6 +89,11 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
   const handleDeleteCard = async (id: string) => {
     if (addedCardDetails?.length && addedCardDetails?.length < 2) {
       showWarningToast('A minimum of one payment method is required');
+      // } else if (
+      //   addedCardDetails?.filter((data: AddedCardDetails) => data?.id === defaultCard?.id).length === 1 ||
+      //   selectedCard?.id === defaultCard?.id
+      // ) {
+      showWarningToast('Cannot delete a default payment method');
     } else {
       setIsConfirmationModal(true);
       setSelectedCardId(id);
@@ -103,7 +107,7 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
     if (response) {
       setIsLoading((prev) => ({ ...prev, confirmationModal: false }));
       setIsConfirmationModal(false);
-      showSuccessToast('Payment card deleted');
+      showSuccessToast('Payment card deleted. Updating payment method list...');
       handleEffect();
     } else {
       setIsLoading((prev) => ({ ...prev, confirmationModal: false }));
@@ -112,7 +116,8 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
   };
 
   // eslint-disable-next-line space-before-function-paren
-  const handleSelectCard = async (id: string, cardNumber: number) => {
+  const handleSelectDefaultPaymentCard = async (id: string, cardNumber: number, event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
     setSelectedCard({ id, cardNumber });
     const response: AddedCardDetails = await selectCardService(id);
     setDefaultCard(response);
@@ -173,43 +178,6 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
 
   return (
     <div className="flex flex-col pl-[25px] pr-[29px]  font-Poppins w-full h-full overflow-y-auto ">
-      {/* <div className="pt-10 pb-8 border-b border-greyDark">
-        <div className="flex justify-between  items-center">
-          <div className="flex flex-col">
-            <h3 className=" text-base text-renewalBlack leading-1.31 font-semibold dark:text-white">Auto Renewal</h3>
-            <p className="text-listGray font-normal  text-trial leading-1.31 mt-1 dark:text-greyDark">
-              Your auto renewal is {toggle ? 'active' : 'inactive'}
-            </p>
-          </div>
-          <div className="flex gap-3 items-center">
-            <div className="text-[#8692A6] text-trial font-medium leading-1.31  dark:text-white">No</div>
-            <ToggleButton value={toggle} onChange={() => setPlanAutoRenewal()} isLoading={isLoading.autoRenewal} />
-            <div className="text-trial font-medium leading-1.31  dark:text-white">Yes</div>
-          </div>
-        </div>
-      </div> */}
-      {/* <div className="pt-[27px] pb-8 border-b border-greyDark">
-        <div className="flex justify-between  items-center">
-          <div className="flex flex-col">
-            <h3 className=" text-base text-renewalBlack leading-1.31 font-semibold dark:text-white">Selected Plan</h3>
-            <p className="text-listGray font-medium  text-trial leading-1.31 mt-1 dark:text-greyDark">
-              Plan Name : <span className="text-download font-semibold  ">{subscriptionDetails?.subscriptionPackage?.name ?? 'No active plan'}</span>{' '}
-            </p>
-          </div>
-          <div className="flex gap-4 items-center">
-            <h5 className="flex items-center">
-              <span className="price font-semibold text-renewalPrice leading-3.1">
-                {subscriptionDetails?.subscriptionPackage?.name.toLocaleLowerCase().trim() === 'free trial' ? '$0' : '$49'}
-              </span>
-              <span className="font-medium text-subscriptionMonth text-base leading-6 mt-[5px]">
-                {' '}
-                /{subscriptionDetails?.subscriptionPackage?.name.toLocaleLowerCase().trim() === 'free trial' ? '14 days' : 'month'}
-              </span>{' '}
-            </h5>
-          </div>
-        </div>
-      </div> */}
-
       <div className="pt-[27px] pb-6">
         <div className="flex justify-between  items-center">
           <div className="flex flex-col">
@@ -220,6 +188,7 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
                 XXXX XXXX XXXX{' '}
                 {addedCardDetails?.filter((data: AddedCardDetails) => data?.isDefault === true)[0]?.cardLastFourDigits ??
                   selectedCard?.cardNumber ??
+                  defaultCard?.cardLastFourDigits ??
                   'XXXX'}{' '}
               </span>{' '}
             </p>
@@ -240,11 +209,11 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
                 <div className="flex items-center w-1/6 radio-btn">
                   <label>
                     <input
-                      onChange={() => handleSelectCard(data?.id, data?.cardLastFourDigits)}
+                      onChange={(e) => handleSelectDefaultPaymentCard(data?.id, data?.cardLastFourDigits, e)}
                       type="radio"
                       name="radio-button"
                       value="css"
-                      checked={data?.isDefault || selectedCard?.id === data?.id ? true : false}
+                      checked={defaultCard?.id !== data?.id ? false : data?.isDefault ? true : defaultCard?.isDefault ? true : true}
                     />
                     <span>
                       {' '}

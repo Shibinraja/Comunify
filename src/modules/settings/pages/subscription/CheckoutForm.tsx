@@ -69,8 +69,8 @@ const CheckoutForm: React.FC<Props> = ({
           if (handleCheckoutFormModal) {
             handleCheckoutFormModal();
           }
-          showSuccessToast('Card added successfully');
           navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'subscription' } });
+          showSuccessToast('Card added successfully. Updating payment method list...');
           setIsLoading(false);
           location.reload();
         }, 4000);
@@ -82,7 +82,7 @@ const CheckoutForm: React.FC<Props> = ({
           handleCheckoutFormModal();
         }
 
-        showSuccessToast('Card added successfully');
+        showSuccessToast('Card added successfully. Updating payment method list...');
         setIsLoading(false);
       }
     }

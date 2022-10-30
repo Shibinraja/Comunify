@@ -96,7 +96,6 @@ export const setPlanAutoRenewalService = async (body: UpdateSubscriptionBody): P
     });
     return data?.data?.data as UpdateSubscriptionAutoRenewal;
   } catch {
-    showErrorToast('Failed to alter your current plan auto renewal setting');
     return {} as UpdateSubscriptionAutoRenewal;
   }
 };
