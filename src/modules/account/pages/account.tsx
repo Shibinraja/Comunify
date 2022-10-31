@@ -358,11 +358,13 @@ const Account = () => {
                             )}
                           </div>
                         </div>
-                        <div className={`currentPassword relative w-1/2 pl-[19px] ${
-                          errors.currentPassword === 'Password must have one uppercase, one lowercase, a digit and special characters'
-                            ? 'cr-currentPassword '
-                            : ''
-                        }`}>
+                        <div
+                          className={`currentPassword relative w-1/2 pl-[19px] ${
+                            errors.currentPassword === 'Password must have one uppercase, one lowercase, a digit and special characters'
+                              ? 'cr-currentPassword '
+                              : ''
+                          }`}
+                        >
                           <label htmlFor="currentPassword" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
                             New Password
                           </label>
@@ -400,11 +402,13 @@ const Account = () => {
                           </a>
                         </div>
                         <div className="flex   items-center">
-                          <Button
-                            type="button"
-                            text="CANCEL"
-                            className="mr-2.5 cancel box-border px-3  py-2 w-ful border-cancel rounded border-none cursor-pointer font-Poppins font-medium leading-5 text-error text-thinGray"
-                          />
+                          <NavLink to={`${workspaceId}/dashboard`} className="p-0 m-0 mr-2">
+                            <Button
+                              type="button"
+                              text="CANCEL"
+                              className=" cancel box-border px-3  py-2 w-ful border-cancel rounded border-none cursor-pointer font-Poppins font-medium leading-5 text-error text-thinGray"
+                            />
+                          </NavLink>
                           <Button
                             type="submit"
                             text="UPDATE PASSWORD"
