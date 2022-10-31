@@ -15,12 +15,13 @@ export function* uploadProfilePicService(body: profilePicInput): GeneratorRespon
   return data;
 }
 
-export const userProfileDataService = async(userId: string) => {
-  const { data } = await request.get(`${users_module}/${userId}`);
-  return data?.data;
-};
-
 export function* updateProfileDataService(body: userProfileUpdateInput): GeneratorResponse<{}> {
   const { data } = yield request.patch(`${users_module}`, body);
   return data;
 }
+
+// Axios Request
+export const userProfileDataService = async(userId: string) => {
+  const { data } = await request.get(`${users_module}/${userId}`);
+  return data?.data;
+};

@@ -1,5 +1,5 @@
 /* eslint-disable indent */
-import React from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { TabSelector } from 'common/tabs/TabSelector';
 import { useTabs } from '@/hooks/useTabs';
 import ActiveMembersList from '../membersTab/ActiveMembersList';
@@ -10,14 +10,14 @@ import { MemberWidgetData } from '../../../modules/dashboard/interface/dashboard
 import { WidgetComponentProps } from '../../widgetLayout/WidgetTypes';
 import { useAppSelector } from '@/hooks/useRedux';
 
-const InActiveMembers: React.FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
+const InActiveMembers: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const { isManageMode, removeWidgetFromDashboard, widget, isSidePanelOpen, filters } = props;
 
   const workspaceId = getLocalWorkspaceId();
 
   const [selectedTab, setSelectedTab] = useTabs(['inActive']);
-  const [memberWidgetData, setMemberWidgetData] = React.useState<MemberWidgetData[]>();
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [memberWidgetData, setMemberWidgetData] = useState<MemberWidgetData[]>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const defaultTab = 'inActive';
 
@@ -25,7 +25,7 @@ const InActiveMembers: React.FC<WidgetComponentProps> = (props: WidgetComponentP
 
   const widgetPreviewLocation = window.location.href.includes('/report-details');
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isManageMode === false && !isSidePanelOpen) {
       if (filters?.startDate && filters?.endDate) {
         getMembersWidgetData();

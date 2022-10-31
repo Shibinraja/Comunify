@@ -3,7 +3,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import Button from 'common/button';
 import MembersCard from 'common/membersCard/MembersCard';
-// eslint-disable-next-line object-curly-newline
 import useDebounce from '@/hooks/useDebounce';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import useSkeletonLoading from '@/hooks/useSkeletonLoading';
@@ -31,13 +30,12 @@ import noMemberIcon from '../../../assets/images/no-member.svg';
 import searchIcon from '../../../assets/images/search.svg';
 import closeIcon from '../../../assets/images/tag-close.svg';
 import dropdownIcon from '../../../assets/images/Vector.svg';
-import { CustomDateType } from '../interface/members.interface';
+import { customDateLinkProps, CustomDateType, filterDateProps, memberFilterExportProps } from '../interface/members.interface';
 import membersSlice from '../store/slice/members.slice';
 import './Members.css';
 import MembersFilter from './MembersFilter';
 import MembersDraggableColumn from './membersTableColumn/membersDraggableColumn';
 import { ColumNames } from './MembersTableData';
-import { customDateLinkProps, filterDateProps, memberFilterExportProps } from './membertypes';
 
 Modal.setAppElement('#root');
 
@@ -349,10 +347,209 @@ const Members: React.FC = () => {
 
   const MemberFilter = useMemo(
     () => (
-      <MembersFilter page={page} limit={limit} memberFilterExport={setFilterExportParams} searchText={debouncedValue} filteredDate={filteredDate} />
+      <MembersFilter page={page} limit={limit} memberFilterExport={setFilterExportParams} searchText={debouncedValue} filteredDate={filteredDate} setPage={setPage} />
     ),
     [debouncedValue, filteredDate]
   );
+
+  const renderMembersTable = () => {
+    if (!memberColumnsLoader &&  !(customizedColumn?.[0]?.name as { name: string; id: string })?.name) {
+      return (
+        <div className="flex flex-col items-center justify-center w-full fixTableHead-nomember">
+          <div>
+            <img src={noMemberIcon} alt="No Member" />
+          </div>
+          <div className="pt-5 font-Poppins font-medium text-tableDuration text-lg leading-10">No Members</div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="memberTable mt-1.8">
+        <div className="py-2  mt-1.868">
+          <div className="inline-block min-w-full w-full align-middle rounded-0.6 border-table  overflow-x-auto overflow-y-auto sticky top-0 fixTableHead max-h-34 min-h-[31.25rem] mb-16">
+            <table className="min-w-full relative w-full rounded-t-0.6 ">
+              <thead className="h-3.25  top-0 w-full  sticky ">
+                <tr className="min-w-full w-full">
+                  {columns.map(
+                    (columnName: ColumnNameProps) =>
+                      columnName.isDisplayed && (
+                        <Fragment key={columnName.id}>
+                          <th className="px-3 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray ">
+                            {columnName.name}
+                          </th>
+                        </Fragment>
+                      )
+                  )}
+                </tr>
+              </thead>
+              {/* {Check with the custom column dynamic order and displays content/rows as per the index position of the arranged column name} */}
+              <tbody>
+                {customizedColumn.map((member: Record<string, unknown>) => (
+                  <tr className="border-b " key={(member?.name as { name: string; id: string })?.id as Key}>
+                    {Object.keys(member).map((column: keyof typeof member, index) => (
+                      <td className="px-3 py-4 " key={index}>
+                        {column === 'name' ? (
+                          memberColumnsLoader ? (
+                            <Skeleton width={width_90} />
+                          ) : (
+                            <div className="flex w-[150px]">
+                              <div
+                                className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer"
+                                onClick={() => navigateToProfile((member?.name as { name: string; id: string })?.id as string)}
+                              >
+                                {(member?.name as { name: string; id: string })?.name as string}
+                              </div>
+                            </div>
+                          )
+                        ) : column === 'platforms' ? (
+                          memberColumnsLoader ? (
+                            <Skeleton width={width_90} />
+                          ) : (
+                            <div className="flex gap-x-2 w-[150px]">
+                              {(member?.platforms as Array<{ id: string; name: string; platformLogoUrl: string }>)?.map(
+                                (platforms: { name: string; id: string; platformLogoUrl: string }, index: number) => (
+                                  <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31  rounded-full" key={index}>
+                                    <img src={platforms?.platformLogoUrl} alt="" className="rounded-full w-[1.3419rem] h-[1.3419rem]" />
+                                  </div>
+                                )
+                              )}
+                            </div>
+                          )
+                        ) : column === 'tags' ? (
+                          memberColumnsLoader ? (
+                            <Skeleton width={width_90} />
+                          ) : (
+                            <div className="flex w-[200px]">
+                              <div className="py-3 flex gap-2 items-center flex-wrap font-Poppins font-medium text-trial text-infoBlack leading-1.31">
+                                {member?.tags ? (
+                                  (member?.tags as Array<{ id: string; name: string }>)
+                                    ?.slice(0, 2)
+                                    .map((tags: { name: string; id: string }, index: number) => (
+                                      <>
+                                        <div
+                                          data-tip
+                                          data-for={tags.name}
+                                          className="bg-tagSection rounded h-8 flex justify-between px-3 items-center cursor-pointer"
+                                          key={index}
+                                        >
+                                          <div className="font-Poppins font-normal text-card text-profileBlack leading-5 pr-4 tags-ellipse">
+                                            {tags?.name}
+                                          </div>
+                                          <div>
+                                            <img
+                                              src={closeIcon}
+                                              alt=""
+                                              onClick={() =>
+                                                handleUnAssignTagsName((member?.name as { name: string; id: string })?.id as string, tags.id)
+                                              }
+                                            />
+                                          </div>
+                                        </div>
+                                        <ReactTooltip id={tags.name} textColor="" backgroundColor="" effect="solid">
+                                          <span className="font-Poppins text-card font-normal leading-5 pr-4">{tags.name}</span>
+                                        </ReactTooltip>
+                                      </>
+                                    ))
+                                ) : (
+                                  <div className="font-Poppins font-normal text-card text-infoBlack leading-5 pr-4 tags-ellipse">{'--'}</div>
+                                )}
+                                <div
+                                  className="font-Poppins font-medium text-trial text-infoBlack leading-1.31"
+                                  onClick={() => navigateToProfile((member?.name as { name: string; id: string })?.id as string)}
+                                >
+                                  {(member?.tags as Array<Record<string, unknown>>)?.length > 2
+                                    ? `${(member?.tags as Array<Record<string, unknown>>)?.length - 2} more`
+                                    : ''}{' '}
+                                </div>
+                              </div>
+                            </div>
+                          )
+                        ) : column === 'lastActivity' ? (
+                          memberColumnsLoader ? (
+                            <Skeleton width={width_90} />
+                          ) : (
+                            <div className="flex flex-col w-[150px]">
+                              <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
+                                {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'dd MMM yyyy') : '--'}
+                              </div>
+                              <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
+                                {(member?.lastActivity as ReactNode) && format(parseISO(member?.lastActivity as string), 'HH:MM')}
+                              </div>
+                            </div>
+                          )
+                        ) : memberColumnsLoader ? (
+                          <Skeleton width={width_90} />
+                        ) : (
+                          <div className="flex ">
+                            <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">{member[column] as ReactNode}</div>
+                          </div>
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+                <tr className="px-3 py-4">
+                  <td className="px-3 py-4"></td>
+                </tr>
+              </tbody>
+            </table>
+            {!memberColumnsLoader && (
+              <div className="px-3 py-6 flex items-center gap-0.66 pl-[30%] w-full rounded-b-lg fixed bg-white bottom-0">
+                <Pagination currentPage={page} totalPages={totalPages} limit={limit} onPageChange={(page) => setPage(Number(page))} />
+              </div>
+            )}
+            {!memberColumnsLoader && (
+              <div className="fixed bottom-10 right-32">
+                <div
+                  className="btn-drag p-3 flex items-center justify-center cursor-pointer shadow-dragButton rounded-0.6 "
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  <img src={editIcon} alt="" />
+                </div>
+              </div>
+            )}
+            <Modal
+              isOpen={isModalOpen}
+              shouldCloseOnOverlayClick={true}
+              onRequestClose={() => setIsModalOpen(false)}
+              className="w-24.31 mx-auto pb-20 bg-white border-fetching-card rounded-lg shadow-modal outline-none"
+              style={{
+                overlay: {
+                  display: 'flex',
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  bottom: 0,
+                  right: 0,
+                  alignItems: 'center'
+                }
+              }}
+            >
+              <div className="flex flex-col px-1.68 relative">
+                <h3 className="font-Inter font-semibold text-xl mt-1.8  leading-6">Customize Column</h3>
+                <div className="pb-10 members-list-height">{membersColumn}</div>
+                <div className="flex buttons absolute -bottom-16 right-[27px]">
+                  <Button
+                    text="Cancel"
+                    type="submit"
+                    className="cancel mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  h-2.81 w-5.25  rounded border-none"
+                    onClick={handleModalClose}
+                  />
+                  <Button
+                    onClick={handleCustomizeColumnSave}
+                    text="Save"
+                    type="submit"
+                    className="text-white font-Poppins text-error font-medium leading-5 btn-save-modal cursor-pointer rounded shadow-contactBtn w-5.25 border-none h-2.81"
+                  />
+                </div>
+              </div>
+            </Modal>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="flex flex-col mt-12">
@@ -459,7 +656,6 @@ const Members: React.FC = () => {
               </div>
             )}
           </div>
-
           <div className="ml-1.30 w-[155px]">{MemberFilter}</div>
           <div className="ml-0.652 w-[112px]">
             <div
@@ -475,200 +671,7 @@ const Members: React.FC = () => {
           </div>
         </div>
       </div>
-      {customizedColumn && (customizedColumn?.[0]?.name as { name: string; id: string })?.name ? (
-        <div className="memberTable mt-1.8">
-          <div className="py-2  mt-1.868">
-            <div className="inline-block min-w-full w-full align-middle rounded-0.6 border-table  overflow-x-auto overflow-y-auto sticky top-0 fixTableHead max-h-34 min-h-[31.25rem] mb-16">
-              <table className="min-w-full relative w-full rounded-t-0.6 ">
-                <thead className="h-3.25  top-0 w-full  sticky ">
-                  <tr className="min-w-full w-full">
-                    {columns.map(
-                      (columnName: ColumnNameProps) =>
-                        columnName.isDisplayed && (
-                          <Fragment key={columnName.id}>
-                            <th className="px-3 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray ">
-                              {columnName.name}
-                            </th>
-                          </Fragment>
-                        )
-                    )}
-                  </tr>
-                </thead>
-                {/* {Check with the custom column dynamic order and displays content/rows as per the index position of the arranged column name} */}
-                <tbody>
-                  {customizedColumn.map((member: Record<string, unknown>) => (
-                    <tr className="border-b " key={(member?.name as { name: string; id: string })?.id as Key}>
-                      {Object.keys(member).map((column: keyof typeof member, index) => (
-                        <td className="px-3 py-4 " key={index}>
-                          {column === 'name' ? (
-                            memberColumnsLoader ? (
-                              <Skeleton width={width_90} />
-                            ) : (
-                              <div className="flex w-[150px]">
-                                <div
-                                  className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer"
-                                  onClick={() => navigateToProfile((member?.name as { name: string; id: string })?.id as string)}
-                                >
-                                  {(member?.name as { name: string; id: string })?.name as string}
-                                </div>
-                              </div>
-                            )
-                          ) : column === 'platforms' ? (
-                            memberColumnsLoader ? (
-                              <Skeleton width={width_90} />
-                            ) : (
-                              <div className="flex gap-x-2 w-[150px]">
-                                {(member?.platforms as Array<{ id: string; name: string; platformLogoUrl: string }>)?.map(
-                                  (platforms: { name: string; id: string; platformLogoUrl: string }, index: number) => (
-                                    <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31  rounded-full" key={index}>
-                                      <img src={platforms?.platformLogoUrl} alt="" className="rounded-full w-[1.3419rem] h-[1.3419rem]" />
-                                    </div>
-                                  )
-                                )}
-                              </div>
-                            )
-                          ) : column === 'tags' ? (
-                            memberColumnsLoader ? (
-                              <Skeleton width={width_90} />
-                            ) : (
-                              <div className="flex w-[200px]">
-                                <div className="py-3 flex gap-2 items-center flex-wrap font-Poppins font-medium text-trial text-infoBlack leading-1.31">
-                                  {member?.tags ? (
-                                    (member?.tags as Array<{ id: string; name: string }>)
-                                      ?.slice(0, 2)
-                                      .map((tags: { name: string; id: string }, index: number) => (
-                                        <>
-                                          <div
-                                            data-tip
-                                            data-for={tags.name}
-                                            className="bg-tagSection rounded h-8 flex justify-between px-3 items-center cursor-pointer"
-                                            key={index}
-                                          >
-                                            <div className="font-Poppins font-normal text-card text-profileBlack leading-5 pr-4 tags-ellipse">
-                                              {tags?.name}
-                                            </div>
-                                            <div>
-                                              <img
-                                                src={closeIcon}
-                                                alt=""
-                                                onClick={() =>
-                                                  handleUnAssignTagsName((member?.name as { name: string; id: string })?.id as string, tags.id)
-                                                }
-                                              />
-                                            </div>
-                                          </div>
-                                          <ReactTooltip id={tags.name} textColor="" backgroundColor="" effect="solid">
-                                            <span className="font-Poppins text-card font-normal leading-5 pr-4">{tags.name}</span>
-                                          </ReactTooltip>
-                                        </>
-                                      ))
-                                  ) : (
-                                    <div className="font-Poppins font-normal text-card text-infoBlack leading-5 pr-4 tags-ellipse">{'--'}</div>
-                                  )}
-                                  <div
-                                    className="font-Poppins font-medium text-trial text-infoBlack leading-1.31"
-                                    onClick={() => navigateToProfile((member?.name as { name: string; id: string })?.id as string)}
-                                  >
-                                    {(member?.tags as Array<Record<string, unknown>>)?.length > 2
-                                      ? `${(member?.tags as Array<Record<string, unknown>>)?.length - 2} more`
-                                      : ''}{' '}
-                                  </div>
-                                </div>
-                              </div>
-                            )
-                          ) : column === 'lastActivity' ? (
-                            memberColumnsLoader ? (
-                              <Skeleton width={width_90} />
-                            ) : (
-                              <div className="flex flex-col w-[150px]">
-                                <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
-                                  {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'dd MMM yyyy') : '--'}
-                                </div>
-                                <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
-                                  {(member?.lastActivity as ReactNode) && format(parseISO(member?.lastActivity as string), 'HH:MM')}
-                                </div>
-                              </div>
-                            )
-                          ) : memberColumnsLoader ? (
-                            <Skeleton width={width_90} />
-                          ) : (
-                            <div className="flex ">
-                              <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
-                                {member[column] as ReactNode}
-                              </div>
-                            </div>
-                          )}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                  <tr className="px-3 py-4">
-                    <td className="px-3 py-4"></td>
-                  </tr>
-                </tbody>
-              </table>
-              {!memberColumnsLoader && (
-                <div className="px-3 py-6 flex items-center gap-0.66 pl-[30%] w-full rounded-b-lg fixed bg-white bottom-0">
-                  <Pagination currentPage={page} totalPages={totalPages} limit={limit} onPageChange={(page) => setPage(Number(page))} />
-                </div>
-              )}
-              {!memberColumnsLoader && (
-                <div className="fixed bottom-10 right-32">
-                  <div
-                    className="btn-drag p-3 flex items-center justify-center cursor-pointer shadow-dragButton rounded-0.6 "
-                    onClick={() => setIsModalOpen(true)}
-                  >
-                    <img src={editIcon} alt="" />
-                  </div>
-                </div>
-              )}
-              <Modal
-                isOpen={isModalOpen}
-                shouldCloseOnOverlayClick={true}
-                onRequestClose={() => setIsModalOpen(false)}
-                className="w-24.31 mx-auto pb-20 bg-white border-fetching-card rounded-lg shadow-modal outline-none"
-                style={{
-                  overlay: {
-                    display: 'flex',
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    bottom: 0,
-                    right: 0,
-                    alignItems: 'center'
-                  }
-                }}
-              >
-                <div className="flex flex-col px-1.68 relative">
-                  <h3 className="font-Inter font-semibold text-xl mt-1.8  leading-6">Customize Column</h3>
-                  <div className="pb-10 members-list-height">{membersColumn}</div>
-                  <div className="flex buttons absolute -bottom-16 right-[27px]">
-                    <Button
-                      text="Cancel"
-                      type="submit"
-                      className="cancel mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  h-2.81 w-5.25  rounded border-none"
-                      onClick={handleModalClose}
-                    />
-                    <Button
-                      onClick={handleCustomizeColumnSave}
-                      text="Save"
-                      type="submit"
-                      className="text-white font-Poppins text-error font-medium leading-5 btn-save-modal cursor-pointer rounded shadow-contactBtn w-5.25 border-none h-2.81"
-                    />
-                  </div>
-                </div>
-              </Modal>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="flex flex-col items-center justify-center w-full fixTableHead-nomember">
-          <div>
-            <img src={noMemberIcon} alt="No Member" />
-          </div>
-          <div className="pt-5 font-Poppins font-medium text-tableDuration text-lg leading-10">No Members</div>
-        </div>
-      )}
+      {renderMembersTable()}
     </div>
   );
 };
