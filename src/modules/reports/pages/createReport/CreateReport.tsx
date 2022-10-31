@@ -231,17 +231,15 @@ const CreateReport = () => {
   const selectCustomBetweenDate = (event: ChangeEvent<Date>, date: Date, dateTime: string) => {
     event.stopPropagation();
     setCustomDateLink({});
+    formikRef?.current?.setFieldTouched('startDate', true);
+    formikRef?.current?.setFieldTouched('endDate', true);
 
-    if (dateTime === 'start') {
+    if (date && dateTime === 'start') {
       setCustomDate((prevDate) => ({ ...prevDate, startDate: !date ? undefined : date, singleDate: undefined }));
-      formikRef?.current?.setFieldValue('startDate', !date ? undefined : date, true);
-      formikRef?.current?.setFieldTouched('startDate');
     }
 
-    if (dateTime === 'end') {
+    if (date && dateTime === 'end') {
       setCustomDate((prevDate) => ({ ...prevDate, endDate: !date ? undefined : date, singleDate: undefined }));
-      formikRef?.current?.setFieldValue('endDate', !date ? undefined : date, true);
-      formikRef?.current?.setFieldTouched('endDate');
     }
     handleSelectedReport('NoSchedule');
   };
@@ -353,8 +351,8 @@ const CreateReport = () => {
           innerRef={formikRef}
           initialValues={initialValues}
           onSubmit={handleSubmit}
-          validateOnChange={true}
           enableReinitialize
+          validateOnChange={true}
           validationSchema={Yup.object().shape({
             name: Yup.string()
               .required('Report name is required')
@@ -399,7 +397,7 @@ const CreateReport = () => {
                   .max(255)
               ),
             platform: Yup.array().min(1, 'Platform is required'),
-            startDate: Yup.lazy((value: string) => {
+            startDate: Yup.lazy((value) => {
               if (Object.keys(checkedRadioId).includes('Yes') && !value) {
                 return Yup.string().notRequired();
               }
@@ -409,7 +407,7 @@ const CreateReport = () => {
 
               return Yup.string().notRequired();
             }),
-            endDate: Yup.lazy((value: string) => {
+            endDate: Yup.lazy((value) => {
               if (Object.keys(checkedRadioId).includes('Yes') && !value) {
                 return Yup.string().notRequired();
               }
@@ -433,12 +431,12 @@ const CreateReport = () => {
             // })
           })}
         >
-          {({ handleBlur, handleChange, handleSubmit, values, errors, touched }): JSX.Element => (
+          {({ handleBlur, handleChange, handleSubmit, values, errors, touched, setFieldValue }): JSX.Element => (
             <Form onSubmit={handleSubmit}>
               <div className="grid grid-cols-2 relative mt-1.8 w-full  xl:w-[686px] 3xl:w-1/2">
                 <div className="flex flex-col w-full">
                   <label htmlFor="name" className="text-trial font-Poppins text-infoBlack font-normal leading-1.31">
-                    Report Name
+                      Report Name
                   </label>
                   <Input
                     type="text"
@@ -455,7 +453,7 @@ const CreateReport = () => {
                 </div>
                 <div className="flex flex-col ml-5 w-20.5 2xl:w-full">
                   <label htmlFor="description" className="text-trial font-Poppins text-infoBlack font-normal leading-1.31">
-                    Description
+                      Description
                   </label>
                   <Input
                     type="text"
@@ -472,7 +470,7 @@ const CreateReport = () => {
                 </div>
                 <div className="flex flex-row mt-1.8 w-20.5">
                   <label htmlFor="reportName" className="text-trial font-Poppins text-infoBlack font-normal leading-1.31">
-                    Schedule the report ?
+                      Schedule the report ?
                   </label>
                   <label htmlFor={'confirmSchedule'} className="flex items-center pl-1.56">
                     <input
@@ -485,7 +483,7 @@ const CreateReport = () => {
                       onChange={handleRadioBtn}
                     />{' '}
                     <span className="w-3 h-3 mr-1.5 border text-infoBlack font-Poppins text-card leading-1.31 border-[#ddd] rounded-full inline-flex peer-checked:bg-[#ABCF6B]"></span>
-                    Yes
+                      Yes
                   </label>
                   <label htmlFor={'cancelSchedule'} className="flex items-center pl-1.56">
                     <input
@@ -498,7 +496,7 @@ const CreateReport = () => {
                       onChange={handleRadioBtn}
                     />{' '}
                     <span className="w-3 h-3 mr-1.5 border text-infoBlack font-Poppins text-card leading-1.31 border-[#ddd] rounded-full inline-flex peer-checked:bg-[#ABCF6B]"></span>
-                    No
+                      No
                   </label>
                 </div>
                 <div className="flex flex-col ml-5 "></div>
@@ -506,7 +504,7 @@ const CreateReport = () => {
                   <Fragment>
                     <div className=" flex-flex-col mt-1.8">
                       <label htmlFor="chooseCondition" className="text-trial font-Poppins text-infoBlack font-normal leading-1.31">
-                        Choose Condition
+                          Choose Condition
                       </label>
                       <div className="flex gap-[0.63rem] mt-0.375 ">
                         <div
@@ -515,7 +513,7 @@ const CreateReport = () => {
                           } `}
                           onClick={() => selectCustomDate('1day')}
                         >
-                          1 Day
+                            1 Day
                         </div>
                         <div
                           className={`w-[71px] 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${
@@ -523,7 +521,7 @@ const CreateReport = () => {
                           } `}
                           onClick={() => selectCustomDate('7day')}
                         >
-                          1 Week
+                            1 Week
                         </div>
                         <div
                           className={`w-[75px] 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${
@@ -531,7 +529,7 @@ const CreateReport = () => {
                           } `}
                           onClick={() => selectCustomDate('1month')}
                         >
-                          1 Month
+                            1 Month
                         </div>
                         <div
                           className={`w-[75px] 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${
@@ -539,7 +537,7 @@ const CreateReport = () => {
                           }`}
                           onClick={() => selectCustomDate('1year')}
                         >
-                          1 Year
+                            1 Year
                         </div>
                       </div>
                       {Boolean((touched.startDate && errors.startDate) || (touched.endDate && errors.endDate)) && (
@@ -550,13 +548,13 @@ const CreateReport = () => {
                     </div>
                     <div className="mt-1.8 flex-flex-col pl-5">
                       <label htmlFor="name" className="text-trial font-Poppins text-infoBlack font-normal leading-1.31">
-                        Custom Date
+                          Custom Date
                       </label>
                       <div className="flex mt-0.375 gap-[0.64rem] ">
                         <div className="relative flex items-center w-[158.76px] 3xl:w-1/2 ">
                           <DatePicker
                             selected={customDate.startDate}
-                            onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'start')}
+                            onChange={(date: Date, event: ChangeEvent<Date>) => {selectCustomBetweenDate(event, date, 'start'); setFieldValue('startDate', date);}}
                             className="w-9.92 2xl:w-full h-3.06 app-result-card-border shadow-reportInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                             placeholderText="From"
                             ref={datePickerRefFrom}
@@ -575,7 +573,7 @@ const CreateReport = () => {
                         <div className="relative flex items-center w-[158.76px] 3xl:w-1/2">
                           <DatePicker
                             selected={customDate.endDate}
-                            onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'end')}
+                            onChange={(date: Date, event: ChangeEvent<Date>) => {selectCustomBetweenDate(event, date, 'end'); setFieldValue('endDate', date);}}
                             className="w-9.92 2xl:w-full h-3.06 app-result-card-border shadow-reportInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                             placeholderText="To"
                             ref={datePickerRefTo}
@@ -598,7 +596,7 @@ const CreateReport = () => {
                 )}
                 <div className="mt-5 flex flex-col w-full relative" ref={dropDownRef}>
                   <label htmlFor="name" className="text-trial font-Poppins text-infoBlack font-normal leading-1.31">
-                    Choose Platform
+                      Choose Platform
                   </label>
                   <div
                     className={`w-full h-3.06 app-result-card-border flex items-center px-3 mt-0.375 shadow-reportInput rounded-0.3 font-Poppins font-normal text-trial text-thinGray leading-1.31 relative ${
@@ -606,7 +604,7 @@ const CreateReport = () => {
                     }`}
                     onClick={() => setIsPlatformActive((prevActive) => !prevActive)}
                   >
-                    Select
+                      Select
                     <div className="absolute right-4">
                       <img src={dropdownIcon} alt="" className={isPlatformActive ? 'rotate-0' : 'rotate-180'} />
                     </div>
@@ -635,39 +633,39 @@ const CreateReport = () => {
                           }`}
                           htmlFor="all"
                         >
-                          All
+                            All
                         </label>
                       </div>
                       {PlatformsConnected &&
-                        PlatformsConnected.map((platform: ConnectedPlatforms) => (
-                          <Fragment key={platform.id}>
-                            <div
-                              className={`flex items-center gap-2 hover:bg-signUpDomain  transition ease-in duration-100 p-3  ${
-                                reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-                              }`}
-                            >
-                              <div>
-                                <input
-                                  type="checkbox"
-                                  className={`checkbox ${reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-                                  id={platform.id as string}
-                                  name={platform.id as string}
-                                  checked={(checkedPlatform[platform.id] as boolean) || false}
-                                  onChange={(event) => handlePlatformsCheckBox(event, platform.id, platform.platformId)}
-                                  disabled={reportUpdateValuesData ? true : false}
-                                />
-                              </div>
-                              <label
-                                className={`font-Poppins font-normal text-searchBlack leading-1.31 text-trial  ${
+                          PlatformsConnected.map((platform: ConnectedPlatforms) => (
+                            <Fragment key={platform.id}>
+                              <div
+                                className={`flex items-center gap-2 hover:bg-signUpDomain  transition ease-in duration-100 p-3  ${
                                   reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
                                 }`}
-                                htmlFor={platform.id as string}
                               >
-                                {platform?.name}
-                              </label>
-                            </div>
-                          </Fragment>
-                        ))}
+                                <div>
+                                  <input
+                                    type="checkbox"
+                                    className={`checkbox ${reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                                    id={platform.id as string}
+                                    name={platform.id as string}
+                                    checked={(checkedPlatform[platform.id] as boolean) || false}
+                                    onChange={(event) => handlePlatformsCheckBox(event, platform.id, platform.platformId)}
+                                    disabled={reportUpdateValuesData ? true : false}
+                                  />
+                                </div>
+                                <label
+                                  className={`font-Poppins font-normal text-searchBlack leading-1.31 text-trial  ${
+                                    reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                                  }`}
+                                  htmlFor={platform.id as string}
+                                >
+                                  {platform?.name}
+                                </label>
+                              </div>
+                            </Fragment>
+                          ))}
                     </div>
                   )}
                   {Boolean(touched.platform && errors.platform) && (
@@ -679,7 +677,7 @@ const CreateReport = () => {
                   <Fragment>
                     <div className="mt-5 flex flex-col ml-5 w-20.5 2xl:w-full relative" ref={reportOptionRef}>
                       <label htmlFor="name" className="text-trial font-Poppins text-infoBlack font-normal leading-1.31">
-                        Schedule Report
+                          Schedule Report
                       </label>
                       <div
                         onClick={() => setIsReportActive(!isReportActive)}
@@ -714,7 +712,7 @@ const CreateReport = () => {
                     </div>
                     <div className={`mt-5 flex flex-col w-full  ${touched.emails && errors.emails ? 'report-email' : ' '}`}>
                       <label htmlFor="emails" className="text-trial font-Poppins text-infoBlack font-normal leading-1.31">
-                        Alternate Recipient Mail IDs
+                          Alternate Recipient Mail IDs
                       </label>
                       <Input
                         type="text"
@@ -747,7 +745,7 @@ const CreateReport = () => {
                 />
               </div>
             </Form>
-          )}
+          ) }
         </Formik>
       </div>
     </div>

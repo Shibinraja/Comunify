@@ -71,6 +71,7 @@ const Members: React.FC = () => {
     startDate: ''
   });
   const [fetchLoader, setFetchLoader] = useState<boolean>(false);
+  const [saveRefObject, setSaveRefObject] = useState<HTMLDivElement | null>(null);
   const memberColumnsLoader = useSkeletonLoading(membersSlice.actions.membersList.type);
 
   const datePickerRefStart = useRef<ReactDatePicker>(null);
@@ -78,7 +79,7 @@ const Members: React.FC = () => {
 
   const debouncedValue = useDebounce(searchText, 300);
 
-  const dropDownRef = useRef<HTMLDivElement>(null);
+  const dropDownRef = useRef<HTMLDivElement | null>(null);
 
   const handleFilterDropdown = (): void => {
     setIsFilterDropdownActive((prev) => !prev);
@@ -92,6 +93,7 @@ const Members: React.FC = () => {
 
   useEffect(() => {
     document.addEventListener('click', handleOutsideClick);
+    setSaveRefObject(dropDownRef.current);
     return () => {
       document.removeEventListener('click', handleOutsideClick);
     };
@@ -248,6 +250,7 @@ const Members: React.FC = () => {
 
   const selectCustomBetweenDate = (event: ChangeEvent<Date>, date: Date, dateTime: string) => {
     event.stopPropagation();
+    dropDownRef.current = saveRefObject;
     if (dateTime === 'start') {
       setCustomStartDate(date);
       setIsFilterDropdownActive(true);
@@ -347,13 +350,20 @@ const Members: React.FC = () => {
 
   const MemberFilter = useMemo(
     () => (
-      <MembersFilter page={page} limit={limit} memberFilterExport={setFilterExportParams} searchText={debouncedValue} filteredDate={filteredDate} setPage={setPage} />
+      <MembersFilter
+        page={page}
+        limit={limit}
+        memberFilterExport={setFilterExportParams}
+        searchText={debouncedValue}
+        filteredDate={filteredDate}
+        setPage={setPage}
+      />
     ),
     [debouncedValue, filteredDate]
   );
 
   const renderMembersTable = () => {
-    if (!memberColumnsLoader &&  !(customizedColumn?.[0]?.name as { name: string; id: string })?.name) {
+    if (!memberColumnsLoader && !(customizedColumn?.[0]?.name as { name: string; id: string })?.name) {
       return (
         <div className="flex flex-col items-center justify-center w-full fixTableHead-nomember">
           <div>
@@ -613,11 +623,16 @@ const Members: React.FC = () => {
                         <DatePicker
                           selected={customStartDate}
                           maxDate={customEndDate ? customEndDate : new Date()}
-                          onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'start')}
+                          onChange={(date: Date, event: ChangeEvent<Date>) => {
+                            selectCustomBetweenDate(event, date, 'start');
+                          }}
                           className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                           placeholderText="DD/MM/YYYY"
                           ref={datePickerRefStart}
                           dateFormat="dd/MM/yyyy"
+                          onMonthChange={() => {
+                            dropDownRef.current = null;
+                          }}
                         />
                         <img
                           className="absolute icon-holder right-6 cursor-pointer"
@@ -642,6 +657,9 @@ const Members: React.FC = () => {
                           placeholderText="DD/MM/YYYY"
                           ref={datePickerRefEnd}
                           dateFormat="dd/MM/yyyy"
+                          onMonthChange={() => {
+                            dropDownRef.current = null;
+                          }}
                         />
                         <img
                           className="absolute icon-holder right-6 cursor-pointer"
