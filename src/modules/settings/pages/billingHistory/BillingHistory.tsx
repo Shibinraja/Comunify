@@ -28,7 +28,7 @@ const BillingHistory: React.FC<Props> = ({ hidden }) => {
       limit: params.limit,
       page: params.page
     });
-    // const response = billingHistoryData as unknown as BillingHistoryResponse;
+
     setBillingHistoryList({
       data: response?.data as BillingHistoryData[],
       totalPages: response?.totalPages,
