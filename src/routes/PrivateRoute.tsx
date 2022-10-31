@@ -2,6 +2,7 @@ import { decodeToken } from '@/lib/decodeToken';
 import { getLocalRefreshToken } from '@/lib/request';
 import { DecodeToken } from 'modules/authentication/interface/auth.interface';
 import React from 'react';
+import { Navigate } from 'react-router';
 import cookie from 'react-cookies';
 import { Props } from './routesTypes';
 
@@ -17,7 +18,8 @@ const PrivateRoute: React.FC<Props> = ({ children }) => {
     localStorage.setItem('workspaceId', decodedToken.workspaceId);
   }
 
-  return children;
+  return access_token ? children : <Navigate to='/' />;
+
 };
 
 export default PrivateRoute;

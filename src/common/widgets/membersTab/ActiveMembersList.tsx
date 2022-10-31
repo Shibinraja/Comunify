@@ -4,6 +4,7 @@ import { MemberWidgetData } from '../../../modules/dashboard/interface/dashboard
 import Skeleton from 'react-loading-skeleton';
 import { activityData } from '../../../modules/activities/pages/ActivityTableData';
 import { generateDateAndTime } from '../../../lib/helper';
+import profileImage from '../../../assets/images/user-image.svg';
 
 type Props = {
   hidden: boolean;
@@ -24,7 +25,7 @@ const ActiveMembersList: React.FC<Props> = ({ hidden, membersWidgetData, isLoadi
                 <li key={`${item?.comunifyMemberId + item?.email + Math.random()}}`} className="mb-4 ">
                   <div className="w-full flex justify-start items-center">
                     <div className="">
-                      <img className="h-[1.875rem] w-[1.9594rem] rounded-full" src={item?.profilePictureUrl} alt="" />
+                      <img className="h-[1.875rem] w-[1.9594rem] rounded-full" src={item?.profilePictureUrl || profileImage} alt="" />
                     </div>
 
                     <div className="ml-0.865">

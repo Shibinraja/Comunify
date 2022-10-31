@@ -1,7 +1,7 @@
 import Input from 'common/input';
 import React, { useEffect, useRef, useState } from 'react';
 import ellipseIcon from '../../assets/images/Ellipse 39.svg';
-import profilePic from '../../assets/images/profile image.svg';
+import profilePic from '../../assets/images/user-image.svg';
 import slackIcon from '../../assets/images/slack.svg';
 import sunIcon from '../../assets/images/sun.svg';
 import unplashMjIcon from '../../assets/images/unsplash.svg';
@@ -35,7 +35,13 @@ const TopBar: React.FC = () => {
         dispatch(authSlice.actions.signOut());
         break;
       case 'Profile Settings':
-        navigate(`${workspaceId}/account`);
+        if (!decodedToken.isAdmin) {
+          navigate(`${workspaceId}/account`);
+        }
+
+        if (decodedToken.isAdmin) {
+          navigate(`admin/settings`);
+        }
         break;
       default:
         break;
