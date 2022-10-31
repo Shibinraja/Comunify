@@ -312,8 +312,8 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                                         className="edit-btn w-6.25 h-2.87 mr-2.5 cursor-pointer text-masterCard font-Poppins font-medium text-trial leading-1.31 rounded box-border shadow-deleteButton"
                                         onClick={() => handleTagModalOpen(data.name, data.id)}
                                       />
-                                      <button className="flex items-center justify-center delete-btn border border-greyDark cursor-pointer w-3.12 h-2.87 rounded box-border shadow-deleteButton">
-                                        <img src={deleteBtn} alt="" onClick={() => handleDeleteTagName(data.id)} />
+                                      <button className="flex items-center justify-center delete-btn border border-greyDark cursor-pointer w-3.12 h-2.87 rounded box-border shadow-deleteButton" onClick={() => handleDeleteTagName(data.id)}>
+                                        <img src={deleteBtn} alt="" />
                                       </button>
                                     </div>
                                   </td>
