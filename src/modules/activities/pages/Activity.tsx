@@ -485,7 +485,22 @@ const Activity: React.FC = () => {
                           {loader ? (
                             <Skeleton width={width_90} />
                           ) : (
-                            <div className="flex ">
+                            <div
+                              className="flex  "
+                              onMouseLeave={(e) => {
+                                e.stopPropagation();
+                                handleProfileModal({
+                                  isOpen: false,
+                                  id: data?.id,
+                                  email: data?.email,
+                                  memberName: data?.memberName,
+                                  organization: data?.organization,
+                                  memberProfileUrl: `/${workspaceId}/members/${data.primaryMemberId}/profile`,
+                                  profilePictureUrl: data?.memberProfile,
+                                  platformLogoUrl: data?.platformLogoUrl
+                                });
+                              }}
+                            >
                               <div className="py-3 mr-2">
                                 <input
                                   type="checkbox"
@@ -499,7 +514,7 @@ const Activity: React.FC = () => {
                               <div className="relative">
                                 <div
                                   ref={dropDownRef}
-                                  onMouseOver={(e) => {
+                                  onMouseMove={(e) => {
                                     e.stopPropagation();
                                     handleProfileModal({
                                       isOpen: true,
