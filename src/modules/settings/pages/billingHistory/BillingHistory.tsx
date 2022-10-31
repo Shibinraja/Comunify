@@ -23,7 +23,7 @@ const BillingHistory: React.FC<Props> = ({ hidden }) => {
     getBillingHistory({ limit, page });
   }, [page]);
 
-  const getBillingHistory = async (params: BillingHistoryQuery) => {
+  const getBillingHistory = async(params: BillingHistoryQuery) => {
     const response = await getBillingHistoryData({
       limit: params.limit,
       page: params.page
@@ -37,7 +37,7 @@ const BillingHistory: React.FC<Props> = ({ hidden }) => {
     });
   };
 
-  const downloadInvoice = async (invoiceId: string, invoiceDate: string) => {
+  const downloadInvoice = async(invoiceId: string, invoiceDate: string) => {
     const decode = await getBillingInvoice(invoiceId);
     const response = new Blob([decode], { type: 'application/pdf' });
     const url = window.URL.createObjectURL(response);
