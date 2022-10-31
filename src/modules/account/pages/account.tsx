@@ -52,12 +52,20 @@ const Account = () => {
   const accessToken = localStorage.getItem('accessToken') || cookie.load('x-auth-cookie');
   const decodedToken: DecodeToken = accessToken && decodeToken(accessToken);
   const formikRef: any = useRef();
-  const ref: any = useRef();
+  const imageRef: any = useRef();
+  const passwordRef: any = useRef();
+
   const dispatch = useDispatch();
 
   const handleSubmit = async(values: ChangePassword): Promise<void> => {
     const newValues = { ...values };
     dispatch(accountSlice.actions.changePassword(newValues));
+    passwordRef.current.resetForm({
+      values: {
+        currentPassword: '',
+        newPassword: ''
+      }
+    });
   };
 
   const handleUserDataSubmit = async(values: userProfileDataInput): Promise<void> => {
@@ -80,7 +88,7 @@ const Account = () => {
       .min(8, 'Password must be at least 8 characters')
       .matches(password_regex, 'Password must have one uppercase, one lowercase, a digit and special characters'),
     newPassword: Yup.string()
-      .required('Current Password is required')
+      .required('New Password is required')
       .min(8, 'Password must be at least 8 characters')
       .matches(password_regex, 'Password must have one uppercase, one lowercase, a digit and special characters')
   });
@@ -318,7 +326,13 @@ const Account = () => {
               <div className="flex flex-col mt-20 w-full">
                 <div className="report-border"></div>
                 <h3 className="font-Poppins font-semibold text-infoBlack text-base leading-6 pt-7">Password</h3>
-                <Formik initialValues={initialValues} onSubmit={handleSubmit} validateOnChange={true} validationSchema={changePasswordSchema}>
+                <Formik
+                  initialValues={initialValues}
+                  onSubmit={handleSubmit}
+                  validateOnChange={true}
+                  validationSchema={changePasswordSchema}
+                  innerRef={passwordRef}
+                >
                   {({ errors, handleBlur, handleChange, touched, values }): JSX.Element => (
                     <Form className="w-full mt-1.9 " autoComplete="off">
                       <div className="flex justify-between">
@@ -433,7 +447,7 @@ const Account = () => {
                   // src={`${profileData?.profilePhotoUrl ? profileData?.profilePhotoUrl : profileImage}`}
                   src={`${profileData?.profilePhotoUrl ? (profileUploadImage ? profileUploadImage : profileData?.profilePhotoUrl) : profileImage}`}
                   onClick={() => {
-                    ref.current?.click();
+                    imageRef.current?.click();
                   }}
                   alt="profileImage"
                 />
@@ -441,7 +455,7 @@ const Account = () => {
               <div className="mt-0.688 text-profileBlack font-semibold font-Poppins leading-1.31 text-trial capitalize">
                 {profileData?.displayUserName}
               </div>
-              <div className="mt-1.125" onClick={() => ref.current?.click()}>
+              <div className="mt-1.125" onClick={() => imageRef.current?.click()}>
                 <Button
                   type="button"
                   text="CHOOSE PHOTO"
@@ -452,7 +466,7 @@ const Account = () => {
                   className="hidden absolute top-0 left-0 w-full flex-grow"
                   placeholder="uplaod image"
                   id="inputFile"
-                  ref={ref}
+                  ref={imageRef}
                   accept="image/*"
                   onChange={(e) => imageUploadHandler(e)}
                 />
@@ -462,16 +476,12 @@ const Account = () => {
               <h3 className="font-Poppins font-semibold text-contact text-infoBlack leading-2.06">Have a question?</h3>
               <div className="mt-2 text-slimGray font-Poppins font-normal text-trial leading-1.31">We can help you</div>
               <div className="mt-5">
-                <a
-                  href="https://comunifyllc.com/#getin
-                "
-                >
-                  <Button
-                    type="button"
-                    text="CONTACT US"
-                    className="shadow-contactBtn w-full px-8 py-2 bg-black rounded border-none text-white font-Poppins font-medium text-error leading-5 cursor-pointer"
-                  />
-                </a>
+                <Button
+                  onClick={() => window.open('https://comunifyllc.com/#getin')}
+                  type="button"
+                  text="CONTACT US"
+                  className="shadow-contactBtn w-full px-8 py-2 bg-black rounded border-none text-white font-Poppins font-medium text-error leading-5 cursor-pointer"
+                />
               </div>
             </div>
           </div>
