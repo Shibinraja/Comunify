@@ -9,6 +9,7 @@ import {
   createCardService,
   deleteCardService,
   getCardDetailsService,
+  getChoseSubscriptionPlanDetailsService,
   selectCardService,
   setPlanAutoRenewalService
 } from '../../../settings/services/settings.services';
@@ -39,16 +40,13 @@ interface SelectedCard {
   cardNumber: number;
 }
 
-interface Props {
-  subscriptionDetails?: SubscriptionDetails;
-}
-
-const SubscriptionExpiredActivate: React.FC<Props> = ({ subscriptionDetails }) => {
+const SubscriptionExpiredActivate: React.FC = () => {
   const [isLoading, setIsLoading] = useState<{ autoRenewal: boolean; upgrade: boolean; confirmationModal: boolean }>({
     autoRenewal: false,
     upgrade: false,
     confirmationModal: false
   });
+  const [subscriptionDetails, setSubscriptionDetails] = useState<SubscriptionDetails | undefined>();
   const [addCardForm, setAddCardForm] = useState<boolean>(false);
   const [clientSecret, setClientSecret] = useState<string | undefined>(undefined);
   const [addedCardDetails, setAddedCardDetails] = useState<AddedCardDetails[]>();
@@ -67,6 +65,10 @@ const SubscriptionExpiredActivate: React.FC<Props> = ({ subscriptionDetails }) =
 
   useEffect(() => {
     getSecretKeyForStripe();
+  }, []);
+
+  useEffect(() => {
+    getCurrentSubscriptionPlanDetails();
   }, []);
 
   useEffect(() => {
@@ -109,6 +111,13 @@ const SubscriptionExpiredActivate: React.FC<Props> = ({ subscriptionDetails }) =
       setIsConfirmationModal(true);
       setSelectedCardId(id);
     }
+  };
+
+  // eslint-disable-next-line space-before-function-paren
+  const getCurrentSubscriptionPlanDetails = async () => {
+    const response: SubscriptionDetails = await getChoseSubscriptionPlanDetailsService();
+    setSubscriptionDetails(response);
+    setToggle(response?.autoRenewal);
   };
 
   // eslint-disable-next-line space-before-function-paren
@@ -183,7 +192,7 @@ const SubscriptionExpiredActivate: React.FC<Props> = ({ subscriptionDetails }) =
 
   // eslint-disable-next-line space-before-function-paren
   const handlePlanUpgrade = async () => {
-    if (subscriptionDetails?.subscriptionPackage?.name?.toLocaleLowerCase().trim() === 'free trial' || subscriptionDetails === undefined) {
+    if (subscriptionDetails?.subscriptionPackage?.name?.toLocaleLowerCase().trim() === 'free trial' || !subscriptionDetails) {
       setIsLoading((prev) => ({ ...prev, upgrade: true }));
       const subscriptionId: string = subscriptionData?.filter(
         (data: SubscriptionPackages) => data?.viewName.toLocaleLowerCase().trim() !== 'free trial'

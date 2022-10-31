@@ -112,7 +112,7 @@ const BillingHistory: React.FC<Props> = ({ hidden }) => {
             </div>
           </div>
         ) : (
-          <h3 className="font-Poppins font-normal text-base text-infoBlack mt-6 text-center">No data found</h3>
+          <h3 className="font-Poppins font-normal text-base text-infoBlack mt-6 text-center">No billing history available</h3>
         )}
         <div className="px-6 py-6 flex items-center justify-center gap-0.66 w-full rounded-b-lg bg-white bottom-0">
           <Pagination currentPage={page} totalPages={billingHistoryList.totalPages} limit={limit} onPageChange={(page) => setPage(Number(page))} />
