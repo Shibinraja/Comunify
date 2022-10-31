@@ -7,14 +7,16 @@
         "build:css": "npx tailwindcss -i ./src/index.css -o ./src/styles.css",
         "build": "tsc && npm run build:css && vite build",
         "preview": "vite preview",
-        "lint": "eslint --ignore-path .gitignore --ext .ts,.tsx . --fix",
+        "lint": "eslint --ignore-path .gitignore --ext .ts,.tsx . --fix && npm run check-types",
         "format": "prettier --ignore-path .gitignore --write \"**/*.+(ts|tsx|json)\"",
         "release": "standard-version",
         "prettier-check": "prettier src --check",
         "prettier-fix": "prettier src --write",
         "prettier": "prettier src --list-different",
-        "husky-install": "husky install"
+        "husky-install": "husky install",
+        "check-types": "tsc --noemit"
     },
+
     "dependencies": {
         "@hookform/resolvers": "^2.9.0",
         "@stripe/react-stripe-js": "^1.13.0",

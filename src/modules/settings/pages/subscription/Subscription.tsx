@@ -4,7 +4,7 @@ import ToggleButton from 'common/ToggleButton/ToggleButton';
 import React, { useEffect, useState } from 'react';
 import CornerIcon from '../../../..//assets/images/corner-img.svg';
 import TickWhiteIcon from '../../../..//assets/images/tick-white.svg';
-import { showSuccessToast } from '../../../../common/toast/toastFunctions';
+import { showErrorToast, showSuccessToast } from '../../../../common/toast/toastFunctions';
 import {
   AddedCardDetails,
   BillingDetails,
@@ -84,7 +84,7 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
       userSubscriptionId: subscriptionDetails?.id ?? ''
     };
     const response: UpdateSubscriptionAutoRenewal = await setPlanAutoRenewalService(updateSubscriptionBody);
-    if (response) {
+    if (Object.keys(response).length) {
       setToggle(response?.autoRenewSubscription);
       if (response?.autoRenewSubscription === false) {
         showSuccessToast('Plan auto renewal de-activated');
@@ -92,6 +92,9 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
         showSuccessToast('Plan auto renewal activated');
       }
       setIsLoading(false);
+    } else {
+      showErrorToast('Failed to alter your current plan auto renewal setting');
+      setToggle((prev) => !prev);
     }
   };
 

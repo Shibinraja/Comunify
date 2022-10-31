@@ -3,19 +3,17 @@ import Button from 'common/button';
 import successIcon from '../../assets/images/tick-white.svg';
 import { SubscriptionProps } from 'interface/interface';
 import { NavigateFunction, useLocation, useNavigate } from 'react-router';
-import { getLocalWorkspaceId } from '../../lib/helper';
 
 const SubscriptionCard: React.FC<SubscriptionProps> = ({ subscriptionData }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate: NavigateFunction = useNavigate();
   const location = useLocation();
-  const workspaceId = getLocalWorkspaceId();
 
   // eslint-disable-next-line space-before-function-paren
   const selectPlan = async () => {
     if (location?.pathname?.includes('expired')) {
       setIsLoading(true);
-      navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'subscription' } });
+      navigate(`/subscription/expired/activate-subscription`);
       window.location.reload();
     } else {
       navigate('/subscription', { state: { subscriptionData } });
