@@ -33,8 +33,9 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [filterCount, setFilterCount] = useState<number>(0);
+  const [saveRefObject, setSaveRefObject] = useState<HTMLDivElement | null>(null);
 
-  const dropDownRef = useRef<HTMLDivElement>(null);
+  const dropDownRef = useRef<HTMLDivElement | null>(null);
   const datePickerRefStart = useRef<ReactDatePicker>(null);
   const datePickerRefEnd = useRef<ReactDatePicker>(null);
 
@@ -56,6 +57,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
 
   useEffect(() => {
     document.addEventListener('click', handleOutsideClick);
+    setSaveRefObject(dropDownRef.current);
     return () => {
       document.removeEventListener('click', handleOutsideClick);
     };
@@ -109,6 +111,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
 
   const selectActiveBetweenDate = (event: ChangeEvent<Date>, date: Date, dateTime: string) => {
     event.stopPropagation();
+    dropDownRef.current = saveRefObject;
     if (dateTime === 'start') {
       setStartDate(date);
     }
@@ -368,6 +371,9 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                       placeholderText="DD/MM/YYYY"
                       ref={datePickerRefStart}
                       dateFormat="dd/MM/yyyy"
+                      onMonthChange={() =>  {
+                        dropDownRef.current = null;
+                      }}
                     />
                     <img
                       className="absolute icon-holder right-6 cursor-pointer"
@@ -392,6 +398,9 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                       placeholderText="DD/MM/YYYY"
                       ref={datePickerRefEnd}
                       dateFormat="dd/MM/yyyy"
+                      onMonthChange={() =>  {
+                        dropDownRef.current = null;
+                      }}
                     />
                     <img
                       className="absolute icon-holder right-6 cursor-pointer"

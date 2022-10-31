@@ -36,6 +36,14 @@ export interface workspaceId {
   workspaceId: string;
 }
 
+export enum MemberFilterDropDownEnum {
+  platform = 'platform',
+  tag = 'status',
+  activeBetween = 'activeBetween',
+  location = 'location',
+  organization = 'organization'
+}
+
 // Input Body
 
 export interface GetMembersListQueryParams extends workspaceId {
