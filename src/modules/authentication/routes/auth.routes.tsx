@@ -19,8 +19,7 @@ const Welcome = Loadable(lazy(() => import('../welcome/pages/Welcome')));
 const Integration = Loadable(lazy(() => import('../integration/pages/Integration')));
 const Subscription = Loadable(lazy(() => import('../subscription/pages/Subscription')));
 const SubscriptionExpired = Loadable(lazy(() => import('../subscriptionExpired/pages/SubscriptionExpired')));
-const SubscriptionExpiredAactivate = Loadable(lazy(() => import('../../authentication/subscriptionExpired/pages/SubscriptionExpiredAactivate')));
-
+const SubscriptionExpiredActivate = Loadable(lazy(() => import('../subscriptionExpired/pages/SubscriptionExpiredActivate')));
 
 const authRoutes: RoutesArray[] = [
   {
@@ -110,7 +109,7 @@ const authRoutes: RoutesArray[] = [
       {
         element: (
           <PrivateRoute>
-            <SubscriptionExpiredAactivate/>
+            <SubscriptionExpiredActivate />
           </PrivateRoute>
         ),
         path: '/subscription/expired/activate-subscription'

@@ -93,7 +93,7 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
       //   addedCardDetails?.filter((data: AddedCardDetails) => data?.id === defaultCard?.id).length === 1 ||
       //   selectedCard?.id === defaultCard?.id
       // ) {
-      showWarningToast('Cannot delete a default payment method');
+      // showWarningToast('Cannot delete a default payment method');
     } else {
       setIsConfirmationModal(true);
       setSelectedCardId(id);
@@ -213,7 +213,8 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
                       type="radio"
                       name="radio-button"
                       value="css"
-                      checked={defaultCard?.id !== data?.id ? false : data?.isDefault ? true : defaultCard?.isDefault ? true : true}
+                      // checked={defaultCard?.id !== data?.id ? false : data?.isDefault ? true : defaultCard?.isDefault ? true : true}
+                      checked={(data?.isDefault && data?.isDefault) || selectedCard?.id === data?.id ? true : false}
                     />
                     <span>
                       {' '}

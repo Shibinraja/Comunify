@@ -43,7 +43,7 @@ interface Props {
   subscriptionDetails?: SubscriptionDetails;
 }
 
-const SubscriptionExpiredAactivate: React.FC<Props> = ({ subscriptionDetails }) => {
+const SubscriptionExpiredActivate: React.FC<Props> = ({ subscriptionDetails }) => {
   const [isLoading, setIsLoading] = useState<{ autoRenewal: boolean; upgrade: boolean; confirmationModal: boolean }>({
     autoRenewal: false,
     upgrade: false,
@@ -426,4 +426,4 @@ const SubscriptionExpiredAactivate: React.FC<Props> = ({ subscriptionDetails }) 
   );
 };
 
-export default SubscriptionExpiredAactivate;
+export default SubscriptionExpiredActivate;
