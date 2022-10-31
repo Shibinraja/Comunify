@@ -70,7 +70,7 @@ const BillingHistory: React.FC<Props> = ({ hidden }) => {
                         Plan Name
                       </th>
                       <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white border-b dark:border-[#dbd8fc1a] dark:bg-thirdDark">
-                        Date
+                        Purchase Date
                       </th>
                       <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white border-b dark:border-[#dbd8fc1a] dark:bg-thirdDark ">
                         Amount
@@ -91,10 +91,10 @@ const BillingHistory: React.FC<Props> = ({ hidden }) => {
                           {data?.date ? format(new Date(data?.date), 'dd MMM yyyy') : '--'}
                         </td>
                         <td className="px-6 py-4 font-Poppins leading-1.31 text-trial text-infoBlack font-medium dark:bg-secondaryDark dark:text-white">
-                          ${data.amount}
+                          ${(data?.amount / 100).toFixed(0) || 0}
                         </td>
                         <td className="px-6 py-4 font-Poppins leading-1.31 text-trial text-infoBlack font-medium dark:bg-secondaryDark dark:text-white">
-                          {differenceInDays(new Date(data.expiresAt), new Date(data.date))} Days
+                          {differenceInDays(new Date(data.expiresAt), new Date(data.date)) + 1} Days
                         </td>
                         <td className="dark:bg-secondaryDark">
                           <Button

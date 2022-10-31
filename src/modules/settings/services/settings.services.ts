@@ -19,7 +19,7 @@ import {
   UpdateSubscriptionBody,
   UpdateSubscriptionAutoRenewal,
   ClientSecret,
-  AddedCardDetails
+  AddedCardDetails,
   BillingHistoryQuery,
   BillingHistoryResponse
 } from '../interface/settings.interface';
@@ -141,7 +141,7 @@ export const selectCardService = async (id: string): Promise<AddedCardDetails> =
   } catch {
     return {} as AddedCardDetails;
   }
-}
+};
 // Billing history services
 
 export const getBillingHistoryData = async (params: BillingHistoryQuery) => {
