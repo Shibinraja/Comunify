@@ -18,6 +18,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import closeIcon from '../../../../assets/images/close-member.svg';
 import { MergeMemberModal } from './MergeMemberModal';
+import profileImage from '../../../../assets/images/user-image.svg';
 
 const MergedMembers: React.FC = () => {
   const { workspaceId, memberId } = useParams();
@@ -275,7 +276,7 @@ const MergedMembers: React.FC = () => {
                 {!primaryMemberId?.length ? (
                   <Skeleton circle height="100%" />
                 ) : (
-                  <img src={primaryMemberId[0]?.profilePictureUrl} alt="" className="w-16 h-16 rounded-full" />
+                  <img src={primaryMemberId[0]?.profilePictureUrl ?? profileImage} alt="" className="w-16 h-16 rounded-full" />
                 )}
               </div>
               <div className="flex flex-col pl-3">
@@ -337,7 +338,7 @@ const MergedMembers: React.FC = () => {
                 <div key={members.id}>
                   <div className="flex items-center primary-card box-border app-input-card-border w-26.25 h-7.5 shadow-profileCard rounded-0.6 pl-1.313 mt-5 relative">
                     <div className="w-16 h-16">
-                      <img src={members.profilePictureUrl} alt="" className="w-16 h-16 rounded-full" />
+                      <img src={members.profilePictureUrl ?? profileImage} alt="" className="w-16 h-16 rounded-full" />
                     </div>
                     <div className="flex flex-col pl-3">
                       <div className="font-Poppins font-semibold text-trial text-profileBlack leading-1.31">{members.name}</div>
