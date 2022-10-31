@@ -1,3 +1,5 @@
+import { PaginationResponse } from 'interface/interface';
+
 export interface ProfileModal {
   id: string;
   isOpen: boolean;
@@ -96,12 +98,7 @@ export interface ActiveStreamData {
   primaryMemberId: string;
 }
 
-export interface ActiveStreamResponse {
-  data: ActiveStreamData[];
-  totalPages: number;
-  previousPage: number;
-  nextPage: number;
-}
+export type ActiveStreamResponse = PaginationResponse<ActiveStreamData>;
 
 export type ActiveStreamTagResponse = {
   id: string;
