@@ -12,5 +12,13 @@
     "signup",
     "unselectable",
     "uuidv"
-  ]
+  ],
+  "prettier.singleQuote": true,
+  "editor.formatOnSave": true,
+  "terminal.integrated.cursorStyle": "line",
+  "terminal.integrated.enableBell": true,
+  "terminal.integrated.fontFamily": "monospace",
+  "editor.codeActionsOnSave": {
+  
+  }
 }

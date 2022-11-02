@@ -94,3 +94,9 @@ export interface RedditConnectResponseData extends PlatformConnectResponse {
   guildId: null;
   communities: RedditCommunities[];
 }
+export type PaginationResponse<T> = {
+  data: T[];
+  totalPages: number;
+  previousPage: number;
+  nextPage: number;
+};

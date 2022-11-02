@@ -19,7 +19,9 @@ import {
   UpdateSubscriptionBody,
   UpdateSubscriptionAutoRenewal,
   ClientSecret,
-  AddedCardDetails
+  AddedCardDetails,
+  BillingHistoryQuery,
+  BillingHistoryResponse
 } from '../interface/settings.interface';
 
 export const NavigateToConnectPage = () => {
@@ -96,7 +98,6 @@ export const setPlanAutoRenewalService = async (body: UpdateSubscriptionBody): P
     });
     return data?.data?.data as UpdateSubscriptionAutoRenewal;
   } catch {
-    showErrorToast('Failed to alter your current plan auto renewal setting');
     return {} as UpdateSubscriptionAutoRenewal;
   }
 };
@@ -138,5 +139,31 @@ export const selectCardService = async (id: string): Promise<AddedCardDetails> =
     return data?.data?.data as AddedCardDetails;
   } catch {
     return {} as AddedCardDetails;
+  }
+};
+// Billing history services
+
+export const getBillingHistoryData = async (params: BillingHistoryQuery) => {
+  try {
+    const { data } = await request.get(`${API_ENDPOINT}/v1/subscription/billinghistory?page=${params.page}&limit=${params.limit}`);
+    return data?.data as BillingHistoryResponse;
+  } catch {
+    showErrorToast('Billing history failed');
+    return {} as BillingHistoryResponse;
+  }
+};
+
+export const getBillingInvoice = async (invoiceId: string) => {
+  try {
+    const { data } = await request.get(`${API_ENDPOINT}/v1/subscription/downloadinvoice/${invoiceId}`, {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      responseType: 'arraybuffer'
+    });
+    return data;
+  } catch (error) {
+    showErrorToast('Failed to download Pdf');
+    return {};
   }
 };

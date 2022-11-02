@@ -436,7 +436,7 @@ const MembersProfile: React.FC = () => {
                     All
                   </div>
                   {PlatformFilterResponse?.map((data: PlatformResponse) => (
-                    <div key={`${data?.id + data?.name}`}>
+                    <div key={data.id}>
                       {data?.isConnected && (
                         <div
                           className="rounded-0.3 h-1.93 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack hover:bg-signUpDomain px-2"
@@ -465,7 +465,7 @@ const MembersProfile: React.FC = () => {
             </div>
           ) : memberProfileCardData?.length ? (
             memberProfileCardData?.map((data: MemberProfileCard) => (
-              <div key={data?.id + data?.name} className="flex flex-col ">
+              <div key={data.platformId} className="flex flex-col ">
                 <div className="font-Poppins font-normal text-xs leading-4 text-listGray">Last Active Date</div>
                 <div className="font-Poppins font-semibold text-base leading-6 text-accountBlack">
                   {memberProfileCardLoader ? (
@@ -510,7 +510,7 @@ const MembersProfile: React.FC = () => {
                     </div>
                   </div>
                   {PlatformFilterResponse?.map((options: PlatformResponse) => (
-                    <div key={`${options?.id + options?.name}`} className="w-full hover:bg-signUpDomain rounded-0.3 transition ease-in duration-100">
+                    <div key={`${Math.random()+ options.id}`} className="w-full hover:bg-signUpDomain rounded-0.3 transition ease-in duration-100">
                       {options?.isConnected && (
                         <div
                           className="h-1.93 px-3 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack "
@@ -581,7 +581,7 @@ const MembersProfile: React.FC = () => {
         </div>
         <div className="mt-1.56 pt-8 px-1.62 box-border w-full rounded-0.6 shadow-contactCard app-input-card-border pb-5">
           {memberProfileCardData?.map((data: MemberProfileCard) => (
-            <div key={data?.id + data?.name} className="flex justify-between ">
+            <div key={data.id} className="flex justify-between ">
               <div className="font-Poppins text-card leading-4 font-medium">
                 {' '}
                 {memberProfileCardLoader ? (
@@ -613,7 +613,7 @@ const MembersProfile: React.FC = () => {
                     <h3 className="font-medium pl-7 text-m font-Poppins  text-xs pb-2">Today</h3>
                     {todayDate.map((item: ActivityResult) => (
                       <>
-                        <li key={`${Math.random()}`} className="my-4 active-list relative">
+                        <li key={item.activityId} className="my-4 active-list relative">
                           <div className="w-full flex justify-start items-center">
                             <div className="ml-2.024 bottom-line ">
                               <img src={yellowDottedIcon} />
@@ -640,7 +640,7 @@ const MembersProfile: React.FC = () => {
                     <h3 className="font-medium pl-7 text-m font-Poppins  text-xs pb-2">Yesterday</h3>
                     {yesterdayDate.map((item: ActivityResult) => (
                       <>
-                        <li key={`${Math.random()}`} className=" first-mt-0 my-4 active-list relative">
+                        <li key={item.memberId} className=" first-mt-0 my-4 active-list relative">
                           <div className="w-full flex justify-start items-center">
                             <div className="ml-2.024 bottom-line ">
                               <img src={yellowDottedIcon} />
@@ -666,10 +666,10 @@ const MembersProfile: React.FC = () => {
                   <>
                     {Object.entries(dateMapObj).map((item: any) => (
                       <>
-                        <h3 className="font-medium pl-7 text-m font-Poppins  text-xs mb-2"> {item[0] ? item[0] : ''}</h3>
+                        <h3 className="font-medium pl-7 text-m font-Poppins  text-xs mb-2" key={Math.random()}> {item[0] ? item[0] : ''}</h3>
 
                         {item[1].map((item: any) => (
-                          <li key={`${Math.random()}`} className=" my-4 active-list relative">
+                          <li key={Math.random()} className=" my-4 active-list relative">
                             <div className="w-full flex justify-start items-center">
                               <div className="ml-2.024 bottom-line ">
                                 <img src={yellowDottedIcon} />
@@ -722,7 +722,7 @@ const MembersProfile: React.FC = () => {
           </div>
         ) : (
           memberProfileCardData?.map((data: MemberProfileCard) => (
-            <div key={data?.id + data?.createdAt} className=" flex flex-col">
+            <div key={`${Math.random()+ data.id}`} className=" flex flex-col">
               <div className="profile-card items-center btn-save-modal justify-center pro-bag rounded-t-0.6 w-18.125 shadow-contactBtn box-border h-6.438 "></div>
               <div className="flex flex-col profile-card items-center justify-center bg-white rounded-b-0.6 w-18.125 shadow-contactCard box-border h-11.06">
                 <div className="-mt-24">
@@ -738,7 +738,7 @@ const MembersProfile: React.FC = () => {
                 </div>
                 <div className="flex gap-1 pt-1.12">
                   {data?.platforms.map((platformData) => (
-                    <div key={`${platformData?.id + platformData?.name}`}>
+                    <div key={`${Math.random()+ platformData.id}`}>
                       <img src={platformData?.platformLogoUrl ?? ''} alt="" className="rounded-full w-[1.0012rem] h-[1.0012rem]" />
                     </div>
                   ))}
@@ -839,7 +839,7 @@ const MembersProfile: React.FC = () => {
                       data-tip
                       data-for={tag.name}
                       className="labels flex  items-center px-2  h-8 rounded bg-tagSection cursor-pointer"
-                      key={tag.id}
+                      key={`${Math.random() + data.id}`}
                     >
                       <div className="font-Poppins text-profileBlack font-normal text-card leading-4 pr-1 tags-ellipse capitalize">{tag.name}</div>
                       <div className="pl-2">
