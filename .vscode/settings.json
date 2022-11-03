@@ -16,9 +16,7 @@
   "prettier.singleQuote": true,
   "editor.formatOnSave": true,
   "terminal.integrated.cursorStyle": "line",
-  "terminal.integrated.enableBell": true,
+  "terminal.integrated.enableBell": false,
   "terminal.integrated.fontFamily": "monospace",
-  "editor.codeActionsOnSave": {
-  
-  }
+  "editor.codeActionsOnSave": {}
 }
