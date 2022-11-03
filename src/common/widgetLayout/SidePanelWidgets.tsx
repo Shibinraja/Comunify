@@ -269,7 +269,7 @@ const SidePanelWidgets: FC<WidgetIdentification> = ({ widgetKey, widgetRemoved, 
                       type="submit"
                       disabled={isButtonLoading ? true : false}
                       className={`text-white font-Poppins text-error font-medium leading-5 btn-save-modal rounded shadow-contactBtn w-5.25 ${isButtonLoading ? 'opacity-50 cursor-not-allowed ' : 'cursor-pointer'
-                        } border-none h-2.81`}
+                      } border-none h-2.81`}
                     />
                   </div>
                 </Form>

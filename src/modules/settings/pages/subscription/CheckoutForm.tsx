@@ -72,8 +72,8 @@ const CheckoutForm: React.FC<Props> = ({
           navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'subscription' } });
           showSuccessToast('Card added successfully. Updating payment method list...');
           setIsLoading(false);
-          location.reload();
-        }, 4000);
+          window.location.reload();
+        }, 6000);
       } else {
         if (handleEffect) {
           handleEffect();
@@ -113,7 +113,7 @@ const CheckoutForm: React.FC<Props> = ({
         };
         const response: SubscriptionPackages = await chooseSubscription(subscriptionId, body);
         if (response) {
-          showSuccessToast('Plan upgraded to Comunify Plus!');
+          showSuccessToast('Payment Successful and subscription plan activated');
           if (disableButtonLoader) {
             disableButtonLoader();
           }

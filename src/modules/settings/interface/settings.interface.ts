@@ -161,6 +161,22 @@ export type AssignTagsProps = {
   updatedAt: string;
 };
 
+export interface SubscriptionPackage {
+  id: string;
+  stripeProductId: string;
+  stripePriceId: string;
+  name: string;
+  viewName: string;
+  type: string;
+  description: string;
+  isActive: boolean;
+  amount: number;
+  periodType: string;
+  periodValue: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface SubscriptionDetails {
   id: string;
   startAt: Date;
@@ -168,21 +184,7 @@ export interface SubscriptionDetails {
   stripeSubscriptionId: string;
   autoRenewal: boolean;
   status: string;
-  subscriptionPackage: {
-    id: string;
-    stripeProductId: string;
-    stripePriceId: string;
-    name: string;
-    viewName: string;
-    type: string;
-    description: string;
-    isActive: boolean;
-    amount: number;
-    periodType: string;
-    periodValue: number;
-    createdAt: Date;
-    updatedAt: Date;
-  };
+  subscriptionPackage: SubscriptionPackage
 }
 
 export interface UpdateSubscriptionBody {

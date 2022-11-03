@@ -11,7 +11,6 @@ import { showSuccessToast, showWarningToast } from '../../../../common/toast/toa
 import Modal from 'react-modal';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
-import CheckoutForm from '../subscription/CheckoutForm';
 import { SubscriptionPackages } from '../../../authentication/interface/auth.interface';
 import { chooseSubscription } from '../../../authentication/services/auth.service';
 import { useDispatch } from 'react-redux';
@@ -20,6 +19,8 @@ import { useAppSelector } from '../../../../hooks/useRedux';
 import { State } from '../../../../store';
 import Skeleton from 'react-loading-skeleton';
 import { AnyAction } from 'redux';
+
+const CheckoutForm = React.lazy(() => import('../../pages/subscription/CheckoutForm'));
 
 interface SelectedCard {
   id: string;
@@ -66,7 +67,7 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
         getCardDetails();
         showSuccessToast('Payment method list updated');
         setCallEffect(false);
-      }, 6000);
+      }, 8000);
     }
   }, [callEffect]);
 
@@ -88,9 +89,6 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
 
   // eslint-disable-next-line space-before-function-paren
   const handleDeleteCard = async (id: string, isDefault: boolean) => {
-    if (addedCardDetails?.length && addedCardDetails?.length === 1) {
-      showWarningToast('A minimum of one payment method is required');
-    }
     if (isDefault) {
       showWarningToast('Cannot delete a default payment method');
     } else {
@@ -159,10 +157,15 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
       };
       const response: SubscriptionPackages = await chooseSubscription(subscriptionId, body);
       if (response?.status === 'paid') {
-        showSuccessToast('Plan upgraded to Comunify Plus!');
         navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'billing_history' } });
         setIsLoading((prev) => ({ ...prev, upgrade: false }));
-        location.reload();
+        showSuccessToast('Plan upgraded to Comunify Plus!');
+        setTimeout(() => {
+          showSuccessToast('This page will be reloaded soon. Please do not change the page');
+        }, 1000);
+        setTimeout(() => {
+          window.location.reload();
+        }, 5000);
       } else {
         setIsLoading((prev) => ({ ...prev, upgrade: false }));
       }
@@ -185,7 +188,9 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
               Primary Card :{' '}
               <span className="text-download font-semibold  ">
                 XXXX XXXX XXXX{' '}
-                {selectedCard?.cardNumber ?? addedCardDetails?.filter((data: AddedCardDetails) => data?.isDefault === true)[0]?.cardLastFourDigits}
+                {selectedCard?.cardNumber ??
+                  addedCardDetails?.filter((data: AddedCardDetails) => data?.isDefault === true)[0]?.cardLastFourDigits ??
+                  'XXXX'}
               </span>{' '}
             </p>
           </div>
@@ -233,13 +238,17 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
                 </div>
 
                 <div className="flex gap-4 items-center justify-end  w-1/6">
-                  <button
+                  <Button
                     type="submit"
                     onClick={() => handleDeleteCard(data?.id, data?.isDefault)}
-                    className="flex items-center justify-center border border-[#EAEDF3] hover:border hover:border-red-400 h-[46px] w-[46px] rounded-[3px]"
+                    disabled={addedCardDetails?.length === 1 ? true : false}
+                    className={`flex items-center ${
+                      addedCardDetails?.length === 1 ? 'cursor-not-allowed' : 'cursor-pointer'
+                    } justify-center border border-[#EAEDF3] hover:border hover:border-red-400 h-[46px] w-[46px] rounded-[3px]`}
+                    text={''}
                   >
                     <img src={deleteIcon} alt="" />
-                  </button>
+                  </Button>
                 </div>
               </div>
             ) : (

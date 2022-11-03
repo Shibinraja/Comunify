@@ -29,8 +29,9 @@ import * as Yup from 'yup';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import CheckoutForm from './CheckoutForm';
-import { email_regex, whiteSpace_single_regex } from '../../../../constants/constants';
-import AddCard from '../addCard/AddCard';
+import { alphabets_only_regex, email_regex, whiteSpace_regex } from '../../../../constants/constants';
+
+const AddCard = React.lazy(() => import('../../pages/addCard/AddCard'));
 
 type Props = {
   hidden: boolean;
@@ -68,6 +69,8 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
     if (response?.stripeSubscriptionId) {
       setSubscriptionDetails(response);
       setToggle(response?.autoRenewal);
+    } else {
+      setSubscriptionDetails(response);
     }
   };
 
@@ -239,7 +242,7 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
             <div className="flex mt-1.8">
               <div
                 onClick={() => setIsBillingDetailsModal((prev) => ({ ...prev, billingDetails: true }))}
-                className="relative bg-paymentSubscription paymentSubscription h-[229px] px-[18px] py-[30px] dark:bg-thirdDark box-border w-13.31 pb-5 shadow-paymentSubscriptionCard flex flex-col items-center justify-center border-gradient-rounded"
+                className="relative bg-paymentSubscription paymentSubscription h-[229px] px-[18px] py-[30px] dark:bg-thirdDark box-border w-13.31 pb-5 shadow-paymentSubscriptionCard flex flex-col items-center justify-center border-gradient-rounded cursor-pointer"
               >
                 <img className="absolute -right-[2.05rem] -top-[1.8rem] verify-box" src={CornerIcon} alt="" />
                 <div className="absolute right-2 top-2 w-[19px] h-[19px] border border-white rounded-full verify-box">
@@ -423,7 +426,8 @@ const billingDetailsScheme = Yup.object().shape({
     .trim('WhiteSpaces are not allowed')
     .min(4, 'Billing Name must be at least 4 characters')
     .max(25, 'Billing Name should not exceed above 25 characters')
-    .matches(whiteSpace_single_regex, 'White spaces are not allowed')
+    .matches(alphabets_only_regex, 'Numbers and special characters are not allowed')
+    .matches(whiteSpace_regex, 'White spaces are not allowed')
     .required('Billing Name is a required field')
     .nullable(true),
   billingEmail: Yup.string()

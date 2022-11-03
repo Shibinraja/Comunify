@@ -10,18 +10,18 @@ import {
   deleteCardService,
   getCardDetailsService,
   getChoseSubscriptionPlanDetailsService,
-  selectCardService,
-  setPlanAutoRenewalService
+  selectCardService
+  // setPlanAutoRenewalService
 } from '../../../settings/services/settings.services';
 import {
   AddedCardDetails,
   ClientSecret,
   SubscriptionDetails,
-  UpdateSubscriptionAutoRenewal,
-  UpdateSubscriptionBody,
+  // UpdateSubscriptionAutoRenewal,
+  // UpdateSubscriptionBody,
   UpgradeData
 } from '../../../settings/interface/settings.interface';
-import { showErrorToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
+import { showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
 import Modal from 'react-modal';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
@@ -33,7 +33,7 @@ import authSlice from '../../store/slices/auth.slice';
 import { useAppSelector } from '../../../../hooks/useRedux';
 import { State } from '../../../../store';
 import Skeleton from 'react-loading-skeleton';
-import ToggleButton from 'common/ToggleButton/ToggleButton';
+// import ToggleButton from 'common/ToggleButton/ToggleButton';
 import { AnyAction } from 'redux';
 
 interface SelectedCard {
@@ -57,7 +57,7 @@ const SubscriptionExpiredActivate: React.FC = () => {
   const [addedCardDetails, setAddedCardDetails] = useState<AddedCardDetails[]>();
   const [selectedCard, setSelectedCard] = useState<SelectedCard | undefined>(undefined);
   const [selectedCardId, setSelectedCardId] = useState<string>('');
-  const [toggle, setToggle] = useState<boolean>(true);
+  // const [toggle, setToggle] = useState<boolean>(true);
   const [isConfirmationModal, setIsConfirmationModal] = useState<boolean>(false);
   const [callEffect, setCallEffect] = useState<boolean>(false);
   const stripePromise = loadStripe(`${import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY}`);
@@ -84,7 +84,7 @@ const SubscriptionExpiredActivate: React.FC = () => {
         getCardDetails();
         showSuccessToast('Payment method list updated');
         setCallEffect(false);
-      }, 6000);
+      }, 8000);
     }
   }, [callEffect]);
 
@@ -106,9 +106,6 @@ const SubscriptionExpiredActivate: React.FC = () => {
 
   // eslint-disable-next-line space-before-function-paren
   const handleDeleteCard = async (id: string, isDefault: boolean) => {
-    if (addedCardDetails?.length && addedCardDetails?.length === 1) {
-      showWarningToast('A minimum of one payment method is required');
-    }
     if (isDefault) {
       showWarningToast('Cannot delete a default payment method');
     } else {
@@ -121,7 +118,7 @@ const SubscriptionExpiredActivate: React.FC = () => {
   const getCurrentSubscriptionPlanDetails = async () => {
     const response: SubscriptionDetails = await getChoseSubscriptionPlanDetailsService();
     setSubscriptionDetails(response);
-    setToggle(response?.autoRenewal);
+    // setToggle(response?.autoRenewal);
   };
 
   // eslint-disable-next-line space-before-function-paren
@@ -150,28 +147,28 @@ const SubscriptionExpiredActivate: React.FC = () => {
     await getCardDetails();
   };
 
-  // eslint-disable-next-line space-before-function-paren
-  const setPlanAutoRenewal = async () => {
-    setIsLoading((prev) => ({ ...prev, autoRenewal: true }));
-    const updateSubscriptionBody: UpdateSubscriptionBody = {
-      autoRenewal: toggle ? false : true,
-      subscriptionId: subscriptionDetails?.stripeSubscriptionId ?? '',
-      userSubscriptionId: subscriptionDetails?.id ?? ''
-    };
-    const response: UpdateSubscriptionAutoRenewal = await setPlanAutoRenewalService(updateSubscriptionBody);
-    if (Object.keys(response).length) {
-      setToggle(response?.autoRenewSubscription);
-      if (response?.autoRenewSubscription === false) {
-        showSuccessToast('Plan auto renewal de-activated');
-      } else if (response?.autoRenewSubscription === true) {
-        showSuccessToast('Plan auto renewal activated');
-      }
-      setIsLoading((prev) => ({ ...prev, autoRenewal: false }));
-    } else {
-      showErrorToast('Failed to alter your current plan auto renewal setting');
-      setToggle((prev) => !prev);
-    }
-  };
+  // // eslint-disable-next-line space-before-function-paren
+  // const setPlanAutoRenewal = async () => {
+  //   setIsLoading((prev) => ({ ...prev, autoRenewal: true }));
+  //   const updateSubscriptionBody: UpdateSubscriptionBody = {
+  //     autoRenewal: toggle ? false : true,
+  //     subscriptionId: subscriptionDetails?.stripeSubscriptionId ?? '',
+  //     userSubscriptionId: subscriptionDetails?.id ?? ''
+  //   };
+  //   const response: UpdateSubscriptionAutoRenewal = await setPlanAutoRenewalService(updateSubscriptionBody);
+  //   if (Object.keys(response).length) {
+  //     setToggle(response?.autoRenewSubscription);
+  //     if (response?.autoRenewSubscription === false) {
+  //       showSuccessToast('Plan auto renewal de-activated');
+  //     } else if (response?.autoRenewSubscription === true) {
+  //       showSuccessToast('Plan auto renewal activated');
+  //     }
+  //     setIsLoading((prev) => ({ ...prev, autoRenewal: false }));
+  //   } else {
+  //     showErrorToast('Failed to alter your current plan auto renewal setting');
+  //     setToggle((prev) => !prev);
+  //   }
+  // };
 
   const options = {
     clientSecret: clientSecret && clientSecret,
@@ -206,11 +203,24 @@ const SubscriptionExpiredActivate: React.FC = () => {
         upgrade: true
       };
       const response: SubscriptionPackages = await chooseSubscription(subscriptionId, body);
+      // if (response?.status === 'paid') {
+      //   navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'billing_history' } });
+      //   setIsLoading((prev) => ({ ...prev, upgrade: false }));
+      //   window.location.reload();
+      //   showSuccessToast('Plan upgraded to Comunify Plus!');
+      // } else {
+      //   setIsLoading((prev) => ({ ...prev, upgrade: false }));
+      // }
       if (response?.status === 'paid') {
         navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'billing_history' } });
         setIsLoading((prev) => ({ ...prev, upgrade: false }));
-        window.location.reload();
         showSuccessToast('Plan upgraded to Comunify Plus!');
+        setTimeout(() => {
+          showSuccessToast('This page will be reloaded soon. Please do not change the page');
+        }, 2000);
+        setTimeout(() => {
+          window.location.reload();
+        }, 5000);
       } else {
         setIsLoading((prev) => ({ ...prev, upgrade: false }));
       }
@@ -248,21 +258,13 @@ const SubscriptionExpiredActivate: React.FC = () => {
               <div className="flex flex-col">
                 <h3 className=" text-base text-renewalBlack leading-1.31 font-semibold dark:text-white">Selected Plan</h3>
                 <p className="text-listGray font-medium  text-trial leading-1.31 mt-1 dark:text-greyDark">
-                  Plan Name :{' '}
-                  <span className="text-download font-semibold  ">
-                    {subscriptionDetails?.subscriptionPackage?.name ?? location?.state?.selectedPlan ?? 'No active plan'}
-                  </span>{' '}
+                  Plan Name : <span className="text-download font-semibold  ">{location?.state?.selectedPlan}</span>{' '}
                 </p>
               </div>
               <div className="flex gap-4 items-center">
                 <h5 className="flex items-center">
-                  <span className="price font-semibold text-renewalPrice leading-3.1">
-                    {subscriptionDetails?.subscriptionPackage?.name.toLocaleLowerCase().trim() === 'free trial' ? '$0' : '$49'}
-                  </span>
-                  <span className="font-medium text-subscriptionMonth text-base leading-6 mt-[5px]">
-                    {' '}
-                    /{subscriptionDetails?.subscriptionPackage?.name.toLocaleLowerCase().trim() === 'free trial' ? '14 days' : 'month'}
-                  </span>{' '}
+                  <span className="price font-semibold text-renewalPrice leading-3.1">{'49$'}</span>
+                  <span className="font-medium text-subscriptionMonth text-base leading-6 mt-[5px]"> /{'month'}</span>{' '}
                 </h5>
               </div>
             </div>
@@ -276,9 +278,9 @@ const SubscriptionExpiredActivate: React.FC = () => {
                   Primary Card :{' '}
                   <span className="text-download font-semibold  ">
                     XXXX XXXX XXXX{' '}
-                    {addedCardDetails?.filter((data: AddedCardDetails) => data?.isDefault === true)[0]?.cardLastFourDigits ??
-                      selectedCard?.cardNumber ??
-                      'XXXX'}{' '}
+                    {selectedCard?.cardNumber ??
+                      addedCardDetails?.filter((data: AddedCardDetails) => data?.isDefault === true)[0]?.cardLastFourDigits ??
+                      'XXXX'}
                   </span>{' '}
                 </p>
               </div>
@@ -307,7 +309,6 @@ const SubscriptionExpiredActivate: React.FC = () => {
                           name="radio-button"
                           value="css"
                           checked={selectedCard?.id === data?.id ? true : false}
-                          // checked={(data?.isDefault && data?.isDefault) || selectedCard?.id === data?.id ? true : false}
                         />
                         <span>
                           {' '}
@@ -327,13 +328,17 @@ const SubscriptionExpiredActivate: React.FC = () => {
                     </div>
 
                     <div className="flex gap-4 items-center justify-end  w-1/6">
-                      <button
+                      <Button
                         type="submit"
                         onClick={() => handleDeleteCard(data?.id, data?.isDefault)}
-                        className="flex items-center justify-center border border-[#EAEDF3] hover:border hover:border-red-400 h-[46px] w-[46px] rounded-[3px]"
+                        disabled={addedCardDetails?.length === 1 ? true : false}
+                        className={`flex items-center ${
+                          addedCardDetails?.length === 1 ? 'cursor-not-allowed' : 'cursor-pointer'
+                        } justify-center border border-[#EAEDF3] hover:border hover:border-red-400 h-[46px] w-[46px] rounded-[3px]`}
+                        text={''}
                       >
                         <img src={deleteIcon} alt="" />
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 ) : (
@@ -360,10 +365,10 @@ const SubscriptionExpiredActivate: React.FC = () => {
               <Button
                 type="button"
                 text="Upgrade"
-                disabled={isLoading.upgrade}
+                disabled={isLoading.upgrade || !addedCardDetails?.length ? true : false}
                 onClick={handlePlanUpgrade}
                 className={`submit border-none text-white font-Poppins text-error font-medium leading-1.31 ${
-                  isLoading.upgrade ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                  isLoading.upgrade || !addedCardDetails?.length ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
                 }  w-[123px] h-2.81 rounded shadow-contactBtn btn-save-modal`}
               />
             </div>
