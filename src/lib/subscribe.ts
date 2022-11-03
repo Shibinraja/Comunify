@@ -1,9 +1,9 @@
 import { Centrifuge } from 'centrifuge';
 import { showInfoToast } from 'common/toast/toastFunctions';
+import { VITE_APP_ENV, VITE_OS_HOSTNAME } from './config';
 
 const subscribe = (centrifuge: Centrifuge, channel: string) => {
-  // use env
-  const sub = centrifuge.newSubscription(`${'ntpl-IdeaPad-5-15ITL05-Ua'}-${channel}`);
+  const sub = centrifuge.newSubscription(`${VITE_APP_ENV === 'local' ? VITE_OS_HOSTNAME : VITE_APP_ENV}-${channel}`);
   sub.on('publication', (ctx) => {
     showInfoToast(ctx.data.message);
   });

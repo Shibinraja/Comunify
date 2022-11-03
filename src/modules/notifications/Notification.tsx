@@ -1,5 +1,5 @@
 import { createContext, ReactElement, useEffect, useState } from 'react';
-import { getLocalRefreshToken } from '../../lib/request';
+import { fetch_refresh_token, getLocalRefreshToken } from '../../lib/request';
 import cookie from 'react-cookies';
 import { Props } from '../../routes/routesTypes';
 import { Centrifuge } from 'centrifuge';
@@ -16,15 +16,27 @@ export const Notifications: React.FC<Props> = ({ children }: NotificationContext
   const tokenData = getLocalRefreshToken();
   const access_token = tokenData || cookie.load('x-auth-cookie');
   const decodedToken: DecodeToken = access_token && decodeToken(access_token);
+
   const [centrifugo, setCentrifugo] = useState({} as Centrifuge);
 
   const getToken = (): Promise<string> =>
     new Promise((res, rej) => {
-      const token = getLocalRefreshToken();
+      const token = getLocalRefreshToken() as string;
       if (!token) {
         rej();
       }
-      res(token);
+      const decodedToken: DecodeToken = decodeToken(token) as DecodeToken;
+      // check if token in localstorage is expired
+      // if expired then call refresh token api
+      // For Idle scenario as refresh token is refreshed only during api calls
+      if (new Date(decodedToken.exp * 1000) < new Date()) {
+        fetch_refresh_token().then((data) => {
+          const responseData = (data?.data as { data: { token: string } }).data.token;
+          localStorage.setItem('accessToken', responseData);
+          res(responseData);
+        });
+      }
+      res(token as string);
     });
 
   useEffect(() => {

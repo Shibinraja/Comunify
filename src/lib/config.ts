@@ -27,3 +27,7 @@ export const DISCORD_CONNECT_ENDPOINT = import.meta.env.VITE_DISCORD_CONNECT;
 
 //Reddit connect
 export const REDDIT_CONNECT_ENDPOINT = import.meta.env.VITE_REDDIT_CONNECT;
+
+//Application Env's
+export const VITE_APP_ENV = import.meta.env.VITE_APP_ENV;
+export const VITE_OS_HOSTNAME = import.meta.env.VITE_OS_HOSTNAME;
