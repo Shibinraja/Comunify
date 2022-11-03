@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, useEffect, useState } from 'react';
 import MasterCardIcon from '../../../../assets/images/masterCard.svg';
 import VisaCardIcon from '../../../../assets/images/visa.svg';
 import deleteIcon from '../../../../assets/images/delete.svg';
 import Button from 'common/button';
-import { NavigateFunction, useNavigate } from 'react-router';
+import { NavigateFunction, useLocation, useNavigate } from 'react-router';
 import { getLocalWorkspaceId } from '../../../../lib/helper';
 import {
   createCardService,
@@ -34,6 +34,7 @@ import { useAppSelector } from '../../../../hooks/useRedux';
 import { State } from '../../../../store';
 import Skeleton from 'react-loading-skeleton';
 import ToggleButton from 'common/ToggleButton/ToggleButton';
+import { AnyAction } from 'redux';
 
 interface SelectedCard {
   id: string;
@@ -46,22 +47,20 @@ const SubscriptionExpiredActivate: React.FC = () => {
     upgrade: false,
     confirmationModal: false
   });
+  const location: Location | any = useLocation();
+  const navigate: NavigateFunction = useNavigate();
+  const dispatch: Dispatch<AnyAction> = useDispatch();
+  const workspaceId: string = getLocalWorkspaceId();
   const [subscriptionDetails, setSubscriptionDetails] = useState<SubscriptionDetails | undefined>();
   const [addCardForm, setAddCardForm] = useState<boolean>(false);
   const [clientSecret, setClientSecret] = useState<string | undefined>(undefined);
   const [addedCardDetails, setAddedCardDetails] = useState<AddedCardDetails[]>();
   const [selectedCard, setSelectedCard] = useState<SelectedCard | undefined>(undefined);
   const [selectedCardId, setSelectedCardId] = useState<string>('');
-  // eslint-disable-next-line no-unused-vars
-  const [defaultCard, setDefaultCard] = useState<AddedCardDetails | undefined>(undefined);
   const [toggle, setToggle] = useState<boolean>(true);
   const [isConfirmationModal, setIsConfirmationModal] = useState<boolean>(false);
   const [callEffect, setCallEffect] = useState<boolean>(false);
-  const navigate: NavigateFunction = useNavigate();
-  const workspaceId: string = getLocalWorkspaceId();
   const stripePromise = loadStripe(`${import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY}`);
-
-  const dispatch = useDispatch();
 
   useEffect(() => {
     getSecretKeyForStripe();
@@ -95,6 +94,8 @@ const SubscriptionExpiredActivate: React.FC = () => {
   const getCardDetails = async () => {
     const response: AddedCardDetails[] = await getCardDetailsService();
     setAddedCardDetails(response);
+    const defaultCard = response?.filter((data: AddedCardDetails) => data?.isDefault === true)[0];
+    setSelectedCard({ id: defaultCard?.id, cardNumber: defaultCard?.cardLastFourDigits });
   };
 
   // eslint-disable-next-line space-before-function-paren
@@ -104,9 +105,12 @@ const SubscriptionExpiredActivate: React.FC = () => {
   };
 
   // eslint-disable-next-line space-before-function-paren
-  const handleDeleteCard = async (id: string) => {
-    if (addedCardDetails?.length && addedCardDetails?.length < 2) {
+  const handleDeleteCard = async (id: string, isDefault: boolean) => {
+    if (addedCardDetails?.length && addedCardDetails?.length === 1) {
       showWarningToast('A minimum of one payment method is required');
+    }
+    if (isDefault) {
+      showWarningToast('Cannot delete a default payment method');
     } else {
       setIsConfirmationModal(true);
       setSelectedCardId(id);
@@ -140,10 +144,10 @@ const SubscriptionExpiredActivate: React.FC = () => {
     event.preventDefault();
     setSelectedCard({ id, cardNumber });
     const response: AddedCardDetails = await selectCardService(id);
-    setDefaultCard(response);
     if (response) {
       showSuccessToast('Default payment method updated');
     }
+    await getCardDetails();
   };
 
   // eslint-disable-next-line space-before-function-paren
@@ -205,7 +209,7 @@ const SubscriptionExpiredActivate: React.FC = () => {
       if (response?.status === 'paid') {
         navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'billing_history' } });
         setIsLoading((prev) => ({ ...prev, upgrade: false }));
-        location.reload();
+        window.location.reload();
         showSuccessToast('Plan upgraded to Comunify Plus!');
       } else {
         setIsLoading((prev) => ({ ...prev, upgrade: false }));
@@ -224,7 +228,7 @@ const SubscriptionExpiredActivate: React.FC = () => {
       <div className="w-3/4 mt-16 mb-32">
         <h3 className="text-neutralBlack font-bold font-Inter text-signIn leading-2.8 place-self-start mb-5">Subscription</h3>
         <div className="p-8 pb-40 flex flex-col font-Poppins h-full overflow-y-auto border-2 rounded-0.9 mb-13">
-          <div className="pt-10 pb-8 border-b border-greyDark">
+          {/* <div className="pt-10 pb-8 border-b border-greyDark">
             <div className="flex justify-between  items-center">
               <div className="flex flex-col">
                 <h3 className=" text-base text-renewalBlack leading-1.31 font-semibold dark:text-white">Auto Renewal</h3>
@@ -238,14 +242,16 @@ const SubscriptionExpiredActivate: React.FC = () => {
                 <div className="text-trial font-medium leading-1.31  dark:text-white">Yes</div>
               </div>
             </div>
-          </div>
+          </div> */}
           <div className="pt-[27px] pb-8 border-b border-greyDark">
             <div className="flex justify-between  items-center">
               <div className="flex flex-col">
                 <h3 className=" text-base text-renewalBlack leading-1.31 font-semibold dark:text-white">Selected Plan</h3>
                 <p className="text-listGray font-medium  text-trial leading-1.31 mt-1 dark:text-greyDark">
                   Plan Name :{' '}
-                  <span className="text-download font-semibold  ">{subscriptionDetails?.subscriptionPackage?.name ?? 'No active plan'}</span>{' '}
+                  <span className="text-download font-semibold  ">
+                    {subscriptionDetails?.subscriptionPackage?.name ?? location?.state?.selectedPlan ?? 'No active plan'}
+                  </span>{' '}
                 </p>
               </div>
               <div className="flex gap-4 items-center">
@@ -292,11 +298,16 @@ const SubscriptionExpiredActivate: React.FC = () => {
                     <div className="flex items-center w-1/6 radio-btn">
                       <label>
                         <input
-                          onChange={(e) => handleSelectDefaultPaymentCard(data?.id, data?.cardLastFourDigits, e)}
+                          onChange={(e) => {
+                            if (data?.id !== selectedCard?.id) {
+                              handleSelectDefaultPaymentCard(data?.id, data?.cardLastFourDigits, e);
+                            }
+                          }}
                           type="radio"
                           name="radio-button"
                           value="css"
-                          checked={(data?.isDefault && data?.isDefault) || selectedCard?.id === data?.id ? true : false}
+                          checked={selectedCard?.id === data?.id ? true : false}
+                          // checked={(data?.isDefault && data?.isDefault) || selectedCard?.id === data?.id ? true : false}
                         />
                         <span>
                           {' '}
@@ -318,7 +329,7 @@ const SubscriptionExpiredActivate: React.FC = () => {
                     <div className="flex gap-4 items-center justify-end  w-1/6">
                       <button
                         type="submit"
-                        onClick={() => handleDeleteCard(data?.id)}
+                        onClick={() => handleDeleteCard(data?.id, data?.isDefault)}
                         className="flex items-center justify-center border border-[#EAEDF3] hover:border hover:border-red-400 h-[46px] w-[46px] rounded-[3px]"
                       >
                         <img src={deleteIcon} alt="" />

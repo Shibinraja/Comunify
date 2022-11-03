@@ -138,6 +138,7 @@ export const selectCardService = async (id: string): Promise<AddedCardDetails> =
     const data = await request.post(`${API_ENDPOINT}/v1/subscription/default-card/${id}`);
     return data?.data?.data as AddedCardDetails;
   } catch {
+    showErrorToast('Failed to alter your current plan auto renewal setting');
     return {} as AddedCardDetails;
   }
 };

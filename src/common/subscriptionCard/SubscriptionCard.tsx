@@ -13,7 +13,7 @@ const SubscriptionCard: React.FC<SubscriptionProps> = ({ subscriptionData }) => 
   const selectPlan = async () => {
     if (location?.pathname?.includes('expired')) {
       setIsLoading(true);
-      navigate(`/subscription/expired/activate-subscription`);
+      navigate(`/subscription/expired/activate-subscription`, { state: { selectedPlan: 'Comunify Plus' } });
       window.location.reload();
     } else {
       navigate('/subscription', { state: { subscriptionData } });

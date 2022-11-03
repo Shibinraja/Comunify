@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, useEffect, useState } from 'react';
 import MasterCardIcon from '../../../../assets/images/masterCard.svg';
 import VisaCardIcon from '../../../../assets/images/visa.svg';
 import deleteIcon from '../../../../assets/images/delete.svg';
@@ -19,6 +19,7 @@ import authSlice from '../../../authentication/store/slices/auth.slice';
 import { useAppSelector } from '../../../../hooks/useRedux';
 import { State } from '../../../../store';
 import Skeleton from 'react-loading-skeleton';
+import { AnyAction } from 'redux';
 
 interface SelectedCard {
   id: string;
@@ -35,19 +36,17 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
     upgrade: false,
     confirmationModal: false
   });
+  const dispatch: Dispatch<AnyAction> = useDispatch();
+  const navigate: NavigateFunction = useNavigate();
+  const workspaceId: string = getLocalWorkspaceId();
   const [addCardForm, setAddCardForm] = useState<boolean>(false);
   const [clientSecret, setClientSecret] = useState<string | undefined>(undefined);
   const [addedCardDetails, setAddedCardDetails] = useState<AddedCardDetails[]>();
   const [selectedCard, setSelectedCard] = useState<SelectedCard | undefined>(undefined);
   const [selectedCardId, setSelectedCardId] = useState<string>('');
-  const [defaultCard, setDefaultCard] = useState<AddedCardDetails | undefined>(undefined);
   const [isConfirmationModal, setIsConfirmationModal] = useState<boolean>(false);
   const [callEffect, setCallEffect] = useState<boolean>(false);
-  const navigate: NavigateFunction = useNavigate();
-  const workspaceId: string = getLocalWorkspaceId();
   const stripePromise = loadStripe(`${import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY}`);
-
-  const dispatch = useDispatch();
 
   useEffect(() => {
     getSecretKeyForStripe();
@@ -77,6 +76,8 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
   const getCardDetails = async () => {
     const response: AddedCardDetails[] = await getCardDetailsService();
     setAddedCardDetails(response);
+    const defaultCard = response?.filter((data: AddedCardDetails) => data?.isDefault === true)[0];
+    setSelectedCard({ id: defaultCard?.id, cardNumber: defaultCard?.cardLastFourDigits });
   };
 
   // eslint-disable-next-line space-before-function-paren
@@ -86,14 +87,12 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
   };
 
   // eslint-disable-next-line space-before-function-paren
-  const handleDeleteCard = async (id: string) => {
-    if (addedCardDetails?.length && addedCardDetails?.length < 2) {
+  const handleDeleteCard = async (id: string, isDefault: boolean) => {
+    if (addedCardDetails?.length && addedCardDetails?.length === 1) {
       showWarningToast('A minimum of one payment method is required');
-      // } else if (
-      //   addedCardDetails?.filter((data: AddedCardDetails) => data?.id === defaultCard?.id).length === 1 ||
-      //   selectedCard?.id === defaultCard?.id
-      // ) {
-      // showWarningToast('Cannot delete a default payment method');
+    }
+    if (isDefault) {
+      showWarningToast('Cannot delete a default payment method');
     } else {
       setIsConfirmationModal(true);
       setSelectedCardId(id);
@@ -120,10 +119,10 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
     event.preventDefault();
     setSelectedCard({ id, cardNumber });
     const response: AddedCardDetails = await selectCardService(id);
-    setDefaultCard(response);
     if (response) {
       showSuccessToast('Default payment method updated');
     }
+    await getCardDetails();
   };
 
   const options = {
@@ -168,7 +167,7 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
         setIsLoading((prev) => ({ ...prev, upgrade: false }));
       }
     } else {
-      showWarningToast('Comunify Plus is already activated');
+      showWarningToast('Your subscription is already activated');
     }
   };
 
@@ -186,10 +185,7 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
               Primary Card :{' '}
               <span className="text-download font-semibold  ">
                 XXXX XXXX XXXX{' '}
-                {addedCardDetails?.filter((data: AddedCardDetails) => data?.isDefault === true)[0]?.cardLastFourDigits ??
-                  selectedCard?.cardNumber ??
-                  defaultCard?.cardLastFourDigits ??
-                  'XXXX'}{' '}
+                {selectedCard?.cardNumber ?? addedCardDetails?.filter((data: AddedCardDetails) => data?.isDefault === true)[0]?.cardLastFourDigits}
               </span>{' '}
             </p>
           </div>
@@ -209,12 +205,15 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
                 <div className="flex items-center w-1/6 radio-btn">
                   <label>
                     <input
-                      onChange={(e) => handleSelectDefaultPaymentCard(data?.id, data?.cardLastFourDigits, e)}
+                      onChange={(e) => {
+                        if (data?.id !== selectedCard?.id) {
+                          handleSelectDefaultPaymentCard(data?.id, data?.cardLastFourDigits, e);
+                        }
+                      }}
                       type="radio"
                       name="radio-button"
                       value="css"
-                      // checked={defaultCard?.id !== data?.id ? false : data?.isDefault ? true : defaultCard?.isDefault ? true : true}
-                      checked={(data?.isDefault && data?.isDefault) || selectedCard?.id === data?.id ? true : false}
+                      checked={selectedCard?.id === data?.id ? true : false}
                     />
                     <span>
                       {' '}
@@ -236,7 +235,7 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
                 <div className="flex gap-4 items-center justify-end  w-1/6">
                   <button
                     type="submit"
-                    onClick={() => handleDeleteCard(data?.id)}
+                    onClick={() => handleDeleteCard(data?.id, data?.isDefault)}
                     className="flex items-center justify-center border border-[#EAEDF3] hover:border hover:border-red-400 h-[46px] w-[46px] rounded-[3px]"
                   >
                     <img src={deleteIcon} alt="" />
@@ -256,14 +255,6 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
 
       <div className="pt-4 flex justify-end">
         <div className="flex">
-          {/* <Button
-            type="button"
-            text="Back"
-            className="mr-2.5 font-Poppins text-error font-medium border-cancel  leading-1.31 text-thinGray cursor-pointer w-[123px] h-2.81 rounded box-border"
-            onClick={() => {
-              navigate(`/${workspaceId}/settings` , {state: {selectedTab: 'integrations'}});
-            }}
-          /> */}
           <Button
             type="button"
             text="Upgrade"

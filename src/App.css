@@ -47,3 +47,15 @@ button {
   justify-content: center;
   margin-bottom: 0.5rem;
 }
+
+
+/* Card details */
+.p-PaymentElement .p-PaymentDetails-group{
+  font-family: 'Poppins', sans-serif !important;
+
+}
+
+.p-PaymentDetails-group .p-FieldLabel{
+ font-size: 14px;
+ font-weight: 400;
+}
