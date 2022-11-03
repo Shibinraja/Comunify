@@ -1,9 +1,9 @@
 import { getLocalWorkspaceId } from '@/lib/helper';
 import Button from 'common/button';
 import Input from 'common/input';
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavigateFunction, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import dashboardIcon from '../../assets/images/dashboard.svg';
 import dropdownIcon from '../../assets/images/dropdown.svg';
 import comunifyLogo from '../../assets/images/Group 2 (1).svg';
@@ -20,22 +20,43 @@ import widgetSearchIcon from '../../assets/images/widget-search.svg';
 import { useAppSelector } from '../../hooks/useRedux';
 import settingsSlice from '../../modules/settings/store/slice/settings.slice';
 import { State } from '../../store';
-import { ConnectedPlatforms, PlatformResponse } from '../../modules/settings/interface/settings.interface';
+import { ConnectedPlatforms, PlatformResponse, SubscriptionDetails } from '../../modules/settings/interface/settings.interface';
+import { getChoseSubscriptionPlanDetailsService } from 'modules/settings/services/settings.services';
+import moment from 'moment';
+import { AnyAction } from 'redux';
 
 const SideNav: React.FC = () => {
   const location = useLocation();
   const [isDrawerOpen, setDrawerOpen] = useState<boolean>(false);
+  const [subscriptionDetails, setSubscriptionDetails] = useState<SubscriptionDetails | undefined>();
   const [cls, setCls] = useState('platform-layout-close');
-  const dispatch = useDispatch();
-  const workspaceId = getLocalWorkspaceId();
+  const dispatch: Dispatch<AnyAction> = useDispatch();
+  const navigate: NavigateFunction = useNavigate();
+  const workspaceId: string = getLocalWorkspaceId();
 
   useEffect(() => {
     dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
     dispatch(settingsSlice.actions.platformData({ workspaceId }));
   }, []);
 
+  useEffect(() => {
+    getCurrentSubscriptionPlanDetails();
+  }, []);
+
   const connectedPlatforms: ConnectedPlatforms[] = useAppSelector((state: State) => state.settings.PlatformsConnected);
   const platformsData: PlatformResponse[] = useAppSelector((state: State) => state.settings.PlatformFilterResponse);
+
+  // eslint-disable-next-line space-before-function-paren
+  const getCurrentSubscriptionPlanDetails = async () => {
+    const response: SubscriptionDetails = await getChoseSubscriptionPlanDetailsService();
+    setSubscriptionDetails(response);
+  };
+
+  const calculateDaysToSubscriptionExpiry = () => {
+    const expiryDate = moment(subscriptionDetails?.endAt);
+    const currentDate = moment();
+    return expiryDate.diff(currentDate, 'days');
+  };
 
   return (
     <nav className="h-screen bg-secondary dark:bg-secondaryDark relative overflow-y-hidden side-nav-layout">
@@ -167,23 +188,32 @@ const SideNav: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="absolute subcribe-box w-full">
-        <div className="w-13.5 mx-auto h-8.75 rounded-xl bg-[#f1f5eb] dark:bg-[#3d473a] flex justify-center">
-          <div className="flex flex-col pt-1.43">
-            <h3 className="text-center  text-sm font-semibold text-black dark:text-white leading-1.31">10 days left </h3>
-            <h5 className="text-center  text-sm font-normal text-black dark:text-white leading-1.31">in your free trial</h5>
-            <div className="mt-5 flex justify-center pb-1.37 text-white  ">
-              <Button
-                text="Subscribe Now"
-                type="button"
-                className="w-11.43 h-2.063 cursor-pointer font-Manrope text-xs font-semibold leading-4 rounded-0.31 border-none btn-gradient hover:shadow-buttonShadowHover transition ease-in duration-300"
-              >
-                Subscribe Now
-              </Button>
+
+      {subscriptionDetails?.subscriptionPackage?.name?.toLocaleLowerCase().trim() === 'free trial' && !window.location.href.includes('settings') && (
+        <div className="absolute subcribe-box w-full">
+          <div className="w-13.5 mx-auto h-8.75 rounded-xl bg-[#f1f5eb] dark:bg-[#3d473a] flex justify-center">
+            <div className="flex flex-col pt-1.43">
+              <h3 className="text-center  text-sm font-semibold text-black dark:text-white leading-1.31">
+                {calculateDaysToSubscriptionExpiry()} days left{' '}
+              </h3>
+              <h5 className="text-center  text-sm font-normal text-black dark:text-white leading-1.31">in your free trial</h5>
+              <div className="mt-5 flex justify-center pb-1.37 text-white  ">
+                <Button
+                  text="Subscribe Now"
+                  onClick={() => {
+                    navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'subscription' } });
+                  }}
+                  type="button"
+                  className="w-11.43 h-2.063 cursor-pointer font-Manrope text-xs font-semibold leading-4 rounded-0.31 border-none btn-gradient hover:shadow-buttonShadowHover transition ease-in duration-300"
+                >
+                  Upgrade Now
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
+
       <div className="absolute bottom-0  w-full  flex items-center">
         <div className="flex flex-col w-full dark:bg-secondaryDark">
           <div className="flex justify-between items-center bg-lightBlack h-[60px] w-full rounded-t-lg pl-10 pr-6">
