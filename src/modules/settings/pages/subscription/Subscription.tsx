@@ -65,8 +65,10 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
   // eslint-disable-next-line space-before-function-paren
   const getCurrentSubscriptionPlanDetails = async () => {
     const response: SubscriptionDetails = await getChoseSubscriptionPlanDetailsService();
-    setSubscriptionDetails(response);
-    setToggle(response?.autoRenewal);
+    if (response?.stripeSubscriptionId) {
+      setSubscriptionDetails(response);
+      setToggle(response?.autoRenewal);
+    }
   };
 
   // eslint-disable-next-line space-before-function-paren
