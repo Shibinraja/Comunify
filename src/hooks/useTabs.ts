@@ -36,7 +36,7 @@ export function useTabs<K extends string>(tabs: K[], defaultTab?: K | null) {
       return;
     }
 
-    // If more thean two tabs, it check the previous tab selection and states the current index with the previous tab index number
+    // If more than two tabs, it check the previous tab selection and states the current index with the previous tab index number
     if (typeof previousActiveIndex === 'number' && previousActiveIndex >= 0 && (tabs[previousActiveIndex] || tabs[previousActiveIndex - 1])) {
       setSelectedTab(tabs[previousActiveIndex] || tabs[previousActiveIndex - 1]);
 

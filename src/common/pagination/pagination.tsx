@@ -16,11 +16,12 @@ const Pagination: FC<PaginationProps> = (props) => {
   const debouncedValue = useDebounce(pageNumber, 700);
 
   const paginationRange = usePagination({ currentPage, totalPages, skipCount, limit }) ?? [1];
+  const PaginationValidation = Yup.number().positive();
 
   // Returns the debounced value of the pageNumber.
   useEffect(() => {
     if (debouncedValue) {
-      if (Number(debouncedValue) === 0 || totalPages < Number(debouncedValue) || !debouncedValue) {
+      if (Number(debouncedValue) === 0 || totalPages < Number(debouncedValue) || !debouncedValue || Boolean(errorMessage)) {
         onPageChange(1);
       } else {
         onPageChange(debouncedValue);
@@ -54,8 +55,6 @@ const Pagination: FC<PaginationProps> = (props) => {
 
   const lastPage = paginationRange && paginationRange![paginationRange!.length - 1];
 
-  const PaginationValidation = Yup.number().positive();
-
   return (
     <>
       <div
@@ -70,11 +69,15 @@ const Pagination: FC<PaginationProps> = (props) => {
         paginationRange!.map((pageNumber, index) => {
           // If the pageItem is a DOT, render the DOTS unicode character
           if (pageNumber === '...') {
-            return <div className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">...</div>;
+            return (
+              <div key={`${index + Math.random()}`} className="font-Lato font-normal text-error leading-4 text-pagination cursor-pointer">
+                ...
+              </div>
+            );
           }
           return (
             <div
-              key={index}
+              key={`${index + Math.random()}`}
               className={`font-Lato font-normal text-error leading-4 cursor-pointer ${
                 currentPage === pageNumber ? 'text-paginationArrowButton font-extrabold' : 'text-pagination'
               }`}

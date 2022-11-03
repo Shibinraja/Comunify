@@ -1,8 +1,9 @@
 /* eslint-disable no-unused-vars */
-
 export interface PlatformIcons {
   slack: string | undefined;
   vanillaForums: string | undefined;
+  discord: string | undefined;
+  reddit: string | undefined;
 }
 
 export interface PlatformsStatus {
@@ -10,7 +11,7 @@ export interface PlatformsStatus {
   status: string | undefined;
 }
 
-export interface SlackConnectData {
+export interface ConnectBody {
   code: string | null;
   workspaceId: string;
 }
@@ -91,6 +92,8 @@ export interface unAssignTagProps extends workspaceId {
 export interface ModalState {
   slack: boolean;
   vanillaForums: boolean;
+  discord: boolean;
+  reddit: boolean;
 }
 
 // Response Body
@@ -130,17 +133,18 @@ export type PlatformResponse = {
 
 export interface ConnectedPlatforms {
   id: string;
-  workspaceId: string;
-  platformId: string;
   name: string;
+  workspaceId: string;
+  platformSettingsId: string;
+  communityId: string | null;
+  overRideMaxRetries: string | null;
+  overRideMaxRetryValues: null;
+  isActive: boolean;
   status: string;
-  lastFetched: string;
   createdAt: Date;
   updatedAt: Date;
-  platform: {
-    name: string;
-    platformLogoUrl: string;
-  };
+  platformLogoUrl: string;
+  platformId: string;
 }
 
 export enum AssignTagsTypeEnum {

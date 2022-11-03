@@ -9,7 +9,7 @@ type Props = {
   hidden: boolean;
 };
 
-const activities = [
+export const activities = [
   {
     key: 'Today',
     url: unsplashIcon,
@@ -61,7 +61,7 @@ const NewActivitesList: React.FC<Props> = ({ hidden }) => (
                   <div>
                     <p className="font-medium text-xs font-Poppins">{item.message}</p>
                   </div>
-                  <div className="font-Poppins text-createdAt not-italic font-normal text-createdAtGrey dark:text-greyDark">
+                  <div className="font-Poppins text-[10px]] not-italic font-normal text-[#544e4e] dark:text-greyDark">
                     <p>{item.createdAt}</p>
                   </div>
                 </div>

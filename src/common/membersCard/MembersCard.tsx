@@ -5,13 +5,29 @@ import { Fragment } from 'react';
 import membersSlice from 'modules/members/store/slice/members.slice';
 import { count_3, width_90 } from 'constants/constants';
 
-const MembersCard = () => {
+const MembersCard: React.FC = () => {
   const membersCountAnalyticsLoading = useSkeletonLoading(membersSlice.actions.membersCountAnalytics.type);
   const membersActivityAnalyticsLoading = useSkeletonLoading(membersSlice.actions.membersActivityAnalytics.type);
   const {
     membersCountAnalyticsData: { totalMembers, newMembers },
     membersActivityAnalyticsData: { activeMembers, inActiveMembers }
   } = useAppSelector((state) => state.members);
+
+  const handleCount = (num: number) => {
+    if (num < 1000) {
+      return num;
+    }
+    const series = [
+      { v: 1e3, s: 'K' },
+      { v: 1e6, s: 'M' },
+      { v: 1e9, s: 'B' }
+    ];
+    let index;
+    for (index = series.length - 1; index > 0 && num < series[index].v; index--) {
+      /*empty statement*/
+    }
+    return (num / series[index].v).toFixed(2).replace(/\.0+$|(\.[0-9]*[1-9])0+$/, '$1') + series[index].s;
+  };
 
   return (
     <div className="">
@@ -21,9 +37,9 @@ const MembersCard = () => {
             <Skeleton count={count_3} width={width_90} />
           ) : (
             <Fragment>
-              <div className="text-infoBlack font-Poppins font-semibold text-signIn leading-3.18">{totalMembers.count}</div>
-              <div className="text-Poppins font-semibold text-infoBlack text-member leading-4">{totalMembers.title}</div>
-              <div className="text-card font-Poppins font-normal leading-1.12 text-status mt-0.151">{totalMembers.analyticMessage}</div>
+              <div className="text-infoBlack font-Poppins font-semibold text-signIn leading-3.18">{handleCount(totalMembers.count)}</div>
+              <div className="font-Poppins font-semibold text-infoBlack text-member leading-4">{totalMembers.title}</div>
+              <div className="text-[8px] xl:text-card font-Poppins font-normal leading-1.12 text-status mt-0.151">{totalMembers.analyticMessage}</div>
             </Fragment>
           )}
         </div>
@@ -32,9 +48,9 @@ const MembersCard = () => {
             <Skeleton count={count_3} width={width_90} />
           ) : (
             <Fragment>
-              <div className="text-infoBlack font-Poppins font-semibold text-signIn leading-3.18">{newMembers.count}</div>
-              <div className="text-Poppins font-semibold text-infoBlack text-member leading-4">{newMembers.title}</div>
-              <div className="text-card font-Poppins font-normal leading-1.12 text-status mt-0.151">{newMembers.analyticMessage}</div>
+              <div className="text-infoBlack font-Poppins font-semibold text-signIn leading-3.18">{handleCount(newMembers.count)}</div>
+              <div className="font-Poppins font-semibold text-infoBlack text-member leading-4">{newMembers.title}</div>
+              <div className="text-[8px] xl:text-card  font-Poppins font-normal leading-1.12 text-status mt-0.151">{newMembers.analyticMessage}</div>
             </Fragment>
           )}
         </div>
@@ -43,9 +59,11 @@ const MembersCard = () => {
             <Skeleton count={count_3} width={width_90} />
           ) : (
             <Fragment>
-              <div className="text-infoBlack font-Poppins font-semibold text-signIn leading-3.18">{activeMembers.count}</div>
-              <div className="text-Poppins font-semibold text-infoBlack text-member leading-4">{activeMembers.title}</div>
-              <div className="text-card font-Poppins font-normal leading-1.12 text-status mt-0.151">{activeMembers.analyticMessage}</div>
+              <div className="text-infoBlack font-Poppins font-semibold text-signIn leading-3.18">{handleCount(activeMembers.count)}</div>
+              <div className="font-Poppins font-semibold text-infoBlack text-member leading-4">{activeMembers.title}</div>
+              <div className="text-[8px] xl:text-card  font-Poppins font-normal leading-1.12 text-status mt-0.151">
+                {activeMembers.analyticMessage}
+              </div>
             </Fragment>
           )}
         </div>
@@ -54,9 +72,11 @@ const MembersCard = () => {
             <Skeleton count={count_3} width={width_90} />
           ) : (
             <Fragment>
-              <div className="text-infoBlack font-Poppins font-semibold text-signIn leading-3.18">{inActiveMembers.count}</div>
-              <div className="text-Poppins font-semibold text-infoBlack text-member leading-4">{inActiveMembers.title}</div>
-              <div className="text-card font-Poppins font-normal leading-1.12 text-status mt-0.151">{inActiveMembers.analyticMessage}</div>
+              <div className="text-infoBlack font-Poppins font-semibold text-signIn leading-3.18">{handleCount(inActiveMembers.count)}</div>
+              <div className="font-Poppins font-semibold text-infoBlack text-member leading-4">{inActiveMembers.title}</div>
+              <div className="text-[8px] xl:text-card  font-Poppins font-normal leading-1.12 text-status mt-0.151">
+                {inActiveMembers.analyticMessage}
+              </div>
             </Fragment>
           )}
         </div>

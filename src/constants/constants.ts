@@ -5,9 +5,13 @@ export const password_regex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$
 
 export const whiteSpace_regex = /^\S+$/;
 
+export const whiteSpace_single_regex = /^(\w+\s)*\w+$/;
+
 export const userName_regex = /^[a-zA-Z0-9._]+$/;
 
 export const companyName_regex = /^[a-zA-Z0-9_ )(-;:.#$@&]+$/;
+
+export const reportName_regex = /^[a-zA-Z0-9 ]+$/;
 
 export const alphabet_regex = /^[a-z!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/g;
 

@@ -1,6 +1,7 @@
 import React, { lazy } from 'react';
 import Loadable from 'routes/suspenseLoader';
 import { RoutesArray } from '../../../interface/interface';
+import MergedMembers from '../pages/mergedMembers/MergedMembers';
 
 const Members = Loadable(lazy(() => import('../pages/Members')));
 const MembersProfileRoute = Loadable(lazy(() => import('../pages/membersProfile/MembersProfile')));
@@ -20,6 +21,10 @@ const membersRoutes: RoutesArray = {
     {
       path: ':memberId/members-review',
       element: <MembersReview />
+    },
+    {
+      path: ':memberId/merged-members',
+      element: <MergedMembers />
     }
   ]
 };

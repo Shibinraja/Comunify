@@ -1,6 +1,37 @@
 import { TagResponseData } from 'modules/settings/interface/settings.interface';
+import { Dispatch, SetStateAction } from 'react';
 
 /* eslint-disable no-unused-vars */
+
+/* eslint-disable no-unused-vars */
+export type memberFilterExportProps = {
+  checkTags: string;
+  checkPlatform: string;
+  checkOrganization: string;
+  checkLocation: string;
+  endDate: string | undefined;
+  startDate: string | undefined;
+};
+
+export type MemberTypesProps = {
+  page: number;
+  limit: number;
+  searchText: string;
+  filteredDate: filterDateProps;
+  memberFilterExport: (arg0: memberFilterExportProps) => void;
+  setPage: Dispatch<SetStateAction<number>>;
+};
+
+export type customDateLinkProps = {
+  '1day': boolean;
+  '7day': boolean;
+  '1month': boolean;
+};
+
+export type filterDateProps = {
+  filterStartDate: string;
+  filterEndDate: string;
+};
 export interface workspaceId {
   workspaceId: string;
 }
@@ -108,7 +139,7 @@ export type MembersListData = {
   lastActivity: string;
   email: string;
   organization: string;
-  profileUrl: string;
+  profilePictureUrl: string;
   workspaceId: string;
   createdAt: string;
   updatedAt: string;
@@ -148,7 +179,7 @@ export interface ActivityResult {
   displayValue: string;
   sourceUrl: string | null;
   description: string;
-  comunifyMemberId: string;
+  memberId: string;
   profilePictureUrl: string;
   platforms: {
     platformLogoUrl: string;
@@ -160,11 +191,45 @@ export interface ActivityResult {
   updatedAt: Date;
 }
 
+export type platformLogoType = {
+  platformLogoUrl: string;
+};
 export interface ActivityDataResponse {
   result: ActivityResult[];
   nextCursor: string | null;
 }
 
+export type MergeMembersDataResult = {
+  id: string;
+  workspaceId: string;
+  name: string;
+  platformName: string;
+  organization: string;
+  location: string;
+  email: string;
+  profilePictureUrl: string;
+  isMerged: boolean;
+  parentMemberId: null | string;
+  isPrimary: boolean;
+  platformId: string;
+  platformMemberId: string;
+  joinedAt: string;
+  createdAt: string;
+  updatedAt: string;
+  platform: {
+    platformLogoUrl: string;
+  };
+  platforms: {
+    id: string;
+    name: string;
+    platformLogoUrl: string;
+  }[];
+};
+
+export type MergeMembersDataResponse = {
+  result: MergeMembersDataResult[];
+  nextCursor: string | null;
+};
 export interface ActivityInfiniteScroll {
   workspaceId: string;
   memberId: string;
@@ -196,7 +261,7 @@ export interface ActivityResult {
   displayValue: string;
   sourceUrl: string | null;
   description: string;
-  comunifyMemberId: string;
+  memberId: string;
   profilePictureUrl: string;
   platformId: string;
   platformMemberId: string;
@@ -227,9 +292,8 @@ export interface MemberProfileCard {
   organization: string | null;
   location: string | null;
   lastActivity: Date | string;
-  comunifyMemberId: string;
   email: string;
-  profileUrl: string;
+  profilePictureUrl: string;
   isMerged: boolean;
   parentMemberId: string | null;
   isPrimary: boolean;
@@ -243,4 +307,7 @@ export interface MemberProfileCard {
     platformLogoUrl: string;
   }[];
   tags: TagResponseData[];
+  platform?: {
+    platformLogoUrl: string;
+  };
 }

@@ -16,7 +16,6 @@ export interface ActivityCard {
   organization: string;
   displayValue: string;
   description: string;
-  channelName: string;
   sourceUrl: string | null;
   activityTime: Date;
   profilePictureUrl: string | null;
@@ -80,7 +79,6 @@ export interface ActiveStreamData {
   sourceUrl: null | string;
   platformLogoUrl: string;
   description: string;
-  comunifyMemberId: string;
   organization: string;
   profilePictureUrl: string;
   platformId: string;
@@ -95,6 +93,7 @@ export interface ActiveStreamData {
   email: string;
   memberProfile: string;
   totalCount: number;
+  primaryMemberId: string;
 }
 
 export interface ActiveStreamResponse {

@@ -15,11 +15,11 @@ import searchIcon from '../../../assets/images/search.svg';
 import downArrow from '../../../assets/images/sub-down-arrow.svg';
 import dropdownIcon from '../../../assets/images/Vector.svg';
 import usePlatform from '../../../hooks/usePlatform';
+import { MemberTypesProps } from '../interface/members.interface';
 import membersSlice from '../store/slice/members.slice';
 import './Members.css';
-import { MemberTypesProps } from './membertypes';
 
-const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, searchText, filteredDate }) => {
+const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, searchText, filteredDate, setPage }) => {
   const [isFilterDropdownActive, setIsFilterDropdownActive] = useState<boolean>(false);
   const [isPlatformActive, setPlatformActive] = useState<boolean>(true);
   const [isTagActive, setTagActive] = useState<boolean>(false);
@@ -33,6 +33,8 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
   const [endDate, setEndDate] = useState<Date>();
   const [tagSearchText, setTagSearchText] = useState<string>('');
   const [locationSearchText, setLocationSearchText] = useState<string>('');
+  const [filterCount, setFilterCount] = useState<number>(0);
+
   const [organizationSearchText, setOrganizationSearchText] = useState<string>('');
   const [isActiveBetween, setActiveBetween] = useState<boolean>(false);
   const datePickerRefStart = useRef<ReactDatePicker>(null);
@@ -44,7 +46,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
   const { membersLocationFilterResponse, membersOrganizationFilterResponse } = useAppSelector((state) => state.members);
   const { data: TagFilterResponse } = useAppSelector((state) => state.settings.TagFilterResponse);
   const memberColumnsLoader = useSkeletonLoading(membersSlice.actions.membersList.type);
-  const PlatformFilterResponse = usePlatform();
+  const { PlatformFilterResponse } = usePlatform();
   const debouncedLocationValue = useDebounce(locationSearchText, 300);
   const debouncedOrganizationValue = useDebounce(organizationSearchText, 300);
   const debouncedTagValue = useDebounce(tagSearchText, 300);
@@ -90,12 +92,6 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
 
   const handleFilterDropdown = (): void => {
     setIsFilterDropdownActive((prev) => !prev);
-    dispatch(
-      settingsSlice.actions.tagFilterData({
-        settingsQuery: { page: 1, limit, tags: { searchedTags: '', checkedTags: '' } },
-        workspaceId: workspaceId!
-      })
-    );
   };
 
   const handlePlatformActive = (val: boolean) => {
@@ -152,6 +148,31 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
       getFilteredMembersFilterList(searchText);
     }
     setLocationSearchText(searchText);
+  };
+
+  useEffect(() => {
+    handleFilterCount();
+  }, [checkedPlatform, checkedLocation, checkedOrganization, checkedTags, startDate, endDate]);
+
+  const handleFilterCount = () => {
+    const getFilterCount = (filterObject: any) =>
+      Object.entries(filterObject).reduce((preValue, arr) => {
+        let count: number = preValue;
+        if (arr[1] === true) {
+          count++;
+        }
+        return count;
+      }, 0);
+
+    const dateEntered = startDate || endDate ? 1 : 0;
+
+    const count =
+      dateEntered +
+      getFilterCount(checkedPlatform) +
+      getFilterCount(checkedLocation) +
+      getFilterCount(checkedOrganization) +
+      getFilterCount(checkedTags);
+    setFilterCount(count);
   };
 
   const handleOrganizationSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -236,6 +257,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
     return false;
   }, [startDate, endDate, MemberFilterList]);
 
+
   const submitFilterChange = (): void => {
     const checkPlatform: Array<string> = [];
     const checkTags: Array<string> = [];
@@ -289,7 +311,6 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
       endDate: endDate && convertEndDate(endDate),
       startDate: startDate && convertStartDate(startDate)
     });
-
     if (!disableApplyBtn) {
       dispatch(
         membersSlice.actions.membersList({
@@ -309,14 +330,23 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
           workspaceId: workspaceId!
         })
       );
+      setPage(1);
     }
     handleFilterDropdown();
   };
 
   return (
     <div className="box-border cursor-pointer rounded-0.6 shadow-contactCard app-input-card-border relative " ref={dropDownRef}>
-      <div className="flex h-3.06  items-center justify-between px-5 " onClick={handleFilterDropdown}>
-        <div className="box-border rounded-0.6 shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">Filters {''}</div>
+      <div
+        className="flex h-3.06  items-center justify-between px-5 "
+        onClick={() => {
+          handleFilterDropdown();
+        }}
+      >
+        <div className="box-border flex rounded-0.6 shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">
+          Filters
+          <p className="ml-1 bg-signUpDomain px-2 w-content rounded-lg text-memberDay">{`${filterCount}`}</p>
+        </div>
         <div>
           <img src={dropdownIcon} alt="" className={isFilterDropdownActive ? 'rotate-180' : 'rotate-0'} />
         </div>
@@ -353,7 +383,9 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                               id={platform.id as string}
                               name={platform.name as string}
                               checked={(checkedPlatform[platform.name] as boolean) || false}
-                              onChange={handlePlatformsCheckBox}
+                              onChange={(e) => {
+                                handlePlatformsCheckBox(e);
+                              }}
                             />
                           </div>
                           <label
@@ -389,7 +421,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                     type="text"
                     name="search"
                     id="searchId"
-                    className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-profileCard rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
+                    className="inputs mx-auto focus:outline-none pl-3 pr-7 box-border bg-white shadow-profileCard rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
                     placeholder="Search Tags"
                     onChange={handleTagSearchTextChange}
                   />
@@ -408,7 +440,9 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                             id={tags.id as string}
                             name={tags.name as string}
                             checked={(checkedTags[tags.name] as boolean) || false}
-                            onChange={handleTagsCheckBox}
+                            onChange={(e) => {
+                              handleTagsCheckBox(e);
+                            }}
                           />
                         </div>
                         <label
@@ -444,6 +478,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                   <div className="relative flex items-center">
                     <DatePicker
                       selected={startDate}
+                      maxDate={new Date()}
                       onChange={(date: Date, event: ChangeEvent<Date>) => selectActiveBetweenDate(event, date, 'start')}
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
@@ -463,6 +498,11 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                   <div className="relative flex items-center">
                     <DatePicker
                       selected={endDate}
+                      minDate={startDate}
+                      maxDate={new Date()}
+                      selectsEnd
+                      startDate={startDate}
+                      endDate={endDate}
                       onChange={(date: Date, event: ChangeEvent<Date>) => selectActiveBetweenDate(event, date, 'end')}
                       className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                       placeholderText="DD/MM/YYYY"
@@ -522,7 +562,9 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                                 name={location.location as string}
                                 className="checkbox"
                                 checked={(checkedLocation[location.location] as boolean) || false}
-                                onChange={handleLocationCheckBox}
+                                onChange={(e) => {
+                                  handleLocationCheckBox(e);
+                                }}
                               />
                             </div>
                             <label
@@ -581,7 +623,9 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                                 id={organization.organization as string}
                                 name={organization.organization as string}
                                 checked={(checkedOrganization[organization.organization] as boolean) || false}
-                                onChange={handleOrganizationCheckBox}
+                                onChange={(e) => {
+                                  handleOrganizationCheckBox(e);
+                                }}
                               />
                             </div>
                             <label
@@ -596,13 +640,38 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                 </div>
               </div>
             )}
-            <div className="buttons px-2">
+            <div className="buttons px-2 flex mt-1.56">
+              <Button
+                disabled={memberColumnsLoader ? true : false}
+                type="button"
+                onClick={() => {
+                  setCheckedPlatform({});
+                  setCheckedTags({});
+                  setCheckedLocation({});
+                  setCheckedOrganization({});
+                  setStartDate(undefined);
+                  setEndDate(undefined);
+                  setFilterCount(0);
+                  dispatch(
+                    membersSlice.actions.membersList({
+                      membersQuery: {
+                        page,
+                        limit,
+                        search: searchText
+                      },
+                      workspaceId: workspaceId!
+                    })
+                  );
+                }}
+                text="Reset"
+                className="border border-backdropColor text-black rounded-0.31 h-2.063 w-1/2 mr-1 cursor-pointer text-card font-Manrope font-semibold leading-1.31 hover:text-white hover:bg-backdropColor"
+              />
               <Button
                 disabled={memberColumnsLoader ? true : false}
                 onClick={submitFilterChange}
                 type="button"
                 text="Apply"
-                className={`border-none btn-save-modal rounded-0.31 h-2.063 w-full mt-1.56 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${
+                className={`border-none btn-save-modal rounded-0.31 h-2.063 w-1/2 ml-1 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${
                   memberColumnsLoader ? 'cursor-not-allowed' : ''
                 }`}
               />

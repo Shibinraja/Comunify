@@ -11,11 +11,9 @@ module.exports = {
         thirdDark: '#1B1E25',
         borderDark: '#272727',
         inputText: '#7C8DB5',
-        greyDark: '#8A8B9F',
-
+        greyDark: '#E5E5E5',
         borderPrimary: '#dbd8fc',
         greyPrimary: '#6B6B6B',
-
         lightBlack: '#05060A',
         neutralBlack: '#170F49',
         lightGray: '#6F6C90',
@@ -26,7 +24,7 @@ module.exports = {
         thinGray: '#808080;',
         grayBorder: ' #D9DBE9',
         listGray: '#6B7280',
-        slimGray: '#8A8B9F',
+        slimGray: '  ',
         lightGreeny: '#AACF6F',
         success: '#A9CE70;',
         primary: '#6DB7DF;',
@@ -77,7 +75,12 @@ module.exports = {
         manageTitle: ' #0C0E14',
         slackStatus: ' #A9CE70',
         vanillaDescription: '#6F6C90',
-        download: '#2B3646'
+        download: '#2B3646',
+        textHighlightColor: '#F3DC07',
+        widgetClose: '#F09E34',
+        activityGray: '#848B91',
+        previewBlack: '#161616',
+        backBorder: '#9B9B9B'
       },
       margin: {
         2.6: '43px',
@@ -158,6 +161,7 @@ module.exports = {
         0.1512: '0.1512rem'
       },
       padding: {
+        53: '53px',
         14: '14.67px',
         5.2: '84.57px',
         2.6: '43px',
@@ -254,6 +258,7 @@ module.exports = {
         3.375: '54px',
         3.003: '48.04px',
         9.59: '153.53px',
+        173: '173px',
         15.06: '241px',
         1.51: '24.28px',
         1.47: '23.53px',
@@ -273,7 +278,8 @@ module.exports = {
         1.375: '22px',
         11: '176px',
         11.72: '187.59px',
-        1.81: '1.8125rem'
+        1.81: '1.8125rem',
+        100: '100px'
       },
       height: {
         4.5: '72.87px',
@@ -327,7 +333,8 @@ module.exports = {
         11: '176px',
         18.75: '18.75rem',
         1.81: '1.8125rem',
-        1.375: '22px'
+        1.375: '22px',
+        100: '100px'
       },
       fontSize: {
         logo: '21.35px',
@@ -361,7 +368,8 @@ module.exports = {
         Outfit: ['Outfit', 'sans-serif'],
         Poppins: ['Poppins', 'sans-serif'],
         Manrope: ['Manrope', 'sans-serif'],
-        Lato: ['Lato', 'sans-serif']
+        Lato: ['Lato', 'sans-serif'],
+        Roboto: ['Roboto', 'sans-serif']
       },
       lineHeight: {
         1.6: '1.688rem',
@@ -418,7 +426,8 @@ module.exports = {
       },
       borderWidth: {
         15: '15px',
-        20: '20px'
+        20: '20px',
+        5: '5px'
       },
       maxWidth: {
         40: '640px'
@@ -441,7 +450,8 @@ module.exports = {
         }
       },
       zIndex: {
-        9999: '9999'
+        9999: '9999',
+        100: '100'
       },
       backgroundImage: {
         'background-pattern': "url('src/assets/images/background-pattern.svg')"

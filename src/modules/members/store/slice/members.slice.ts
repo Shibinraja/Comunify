@@ -56,7 +56,7 @@ export const membersListResponse = {
       lastActivity: '2022-06-15T00:00:00.000Z',
       email: '',
       organization: '',
-      profileUrl: '',
+      profilePictureUrl: '',
       workspaceId: '',
       createdAt: '',
       updatedAt: '',
@@ -115,9 +115,9 @@ const initialState: InitialState = {
 
 //Saga Call
 
-const membersCountAnalytics = (state: InitialState, action: PayloadAction<workspaceId>) => state;
+const membersCountAnalytics = (state: InitialState, action: PayloadAction<{ workspaceId: string; startDate?: string; endDate?: string }>) => state;
 
-const membersActivityAnalytics = (state: InitialState, action: PayloadAction<workspaceId>) => state;
+const membersActivityAnalytics = (state: InitialState, action: PayloadAction<{ workspaceId: string; startDate?: string; endDate?: string }>) => state;
 
 const platformData = (state: InitialState) => state;
 

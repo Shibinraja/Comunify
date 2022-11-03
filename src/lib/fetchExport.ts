@@ -1,11 +1,13 @@
 import { request } from './request';
 import { Buffer } from 'buffer';
 import { AxiosResponse } from 'axios';
+import { transformRequestOptions } from './helper';
 
-const fetchExportList = (url: string, params: Record<string, unknown>, fileName: string) => {
-  request
+const fetchExportList = async(url: string, params: Record<string, unknown>, fileName: string) => {
+  await request
     .get(url, {
       params,
+      paramsSerializer: (params) => transformRequestOptions(params),
       headers: {
         Accept: 'application/json',
         responseType: 'blob'
