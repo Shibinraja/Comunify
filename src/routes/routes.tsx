@@ -17,7 +17,7 @@ import superAdminMembersRoutes from 'modules/superadmin/routes/superadmin.routes
 const MainLayout = Loadable(lazy(() => import('../layout/MainLayout')));
 const ReportDetail = Loadable(lazy(() => import ('../modules/reports/pages/reportHistory/ReportDetail')));
 
-const routes: RoutesArray[] = [
+const routes: RoutesArray[] | any= [
   ...authRoutes,
   {
     path: ':workspaceId/reports/:reportHistoryId/report-details',
