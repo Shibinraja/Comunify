@@ -1,6 +1,6 @@
-import { BrowserHistory, createBrowserHistory } from 'history';
+import { createBrowserHistory } from 'history';
 
 // Function to route from redux to other viable routes using history
-const history: BrowserHistory | any = createBrowserHistory();
+const history = createBrowserHistory();
 
 export default history;
