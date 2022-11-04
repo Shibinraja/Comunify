@@ -15,6 +15,8 @@ export const reportName_regex = /^[a-zA-Z0-9 ]+$/;
 
 export const alphabet_regex = /^[a-z!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/g;
 
+export const alphabets_only_regex = /^[A-Za-z]+$/;
+
 // eslint-disable-next-line no-useless-escape
 
 export const email_regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;

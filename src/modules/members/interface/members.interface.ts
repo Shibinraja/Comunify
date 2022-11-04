@@ -1,3 +1,4 @@
+import { PaginationResponse } from 'interface/interface';
 import { TagResponseData } from 'modules/settings/interface/settings.interface';
 import { Dispatch, SetStateAction } from 'react';
 
@@ -34,6 +35,14 @@ export type filterDateProps = {
 };
 export interface workspaceId {
   workspaceId: string;
+}
+
+export enum MemberFilterDropDownEnum {
+  platform = 'platform',
+  tag = 'status',
+  activeBetween = 'activeBetween',
+  location = 'location',
+  organization = 'organization'
 }
 
 // Input Body
@@ -157,12 +166,7 @@ export type MembersListData = {
   }[];
 };
 
-export type MembersListResponse = {
-  data: Array<MembersListData>;
-  totalPages: number;
-  previousPage: number;
-  nextPage: number;
-};
+export type MembersListResponse = PaginationResponse<MembersListData>;
 export interface DraggableComponentsProps {
   MembersColumn?: boolean;
   handleModalClose: () => void;

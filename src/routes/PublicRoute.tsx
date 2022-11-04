@@ -16,6 +16,8 @@ const reducer: Reducer<PublicRouteState, PublicRouteStateValues> = (state, actio
       return { ...state, route: action.payload };
     case 'SET_WORKSPACE_ROUTE':
       return { ...state, route: action.payload };
+    case 'SET_SUBSCRIPTION_ROUTE':
+      return { ...state, route: action.payload };
     case 'SET_DASHBOARD_ROUTE':
       return { ...state, route: action.payload };
     case 'SET_RESEND_VERIFICATION_ROUTE':
@@ -53,7 +55,7 @@ const PublicRoute: React.FC<Props> = ({ children }) => {
   //Functionality to check the workspace and packages subscription and route dynamically to the respected page.
 
   const checkWorkspaceCreation = () => {
-    if(!decodedToken?.isAdmin) {
+    if (!decodedToken?.isAdmin) {
       if (!decodedToken?.isEmailVerified) {
         dispatchReducer({ type: 'SET_RESEND_VERIFICATION_ROUTE', payload: '/resend-mail' });
         dispatch(authSlice.actions.setIsAuthenticated(true));
@@ -69,18 +71,22 @@ const PublicRoute: React.FC<Props> = ({ children }) => {
         dispatch(authSlice.actions.setIsAuthenticated(true));
         return false;
       }
+      // if (!decodedToken?.isSubscribed && decodedToken?.isEmailVerified) {
+      //   dispatchReducer({ type: 'SET_SUBSCRIPTION_ROUTE', payload: '/subscription' });
+      //   dispatch(authSlice.actions.setIsAuthenticated(true));
+      //   return false;
+      // }
       if (decodedToken?.isSubscribed && decodedToken?.isWorkSpaceCreated) {
         dispatchReducer({ type: 'SET_DASHBOARD_ROUTE', payload: `/${workspaceId}/dashboard` });
         dispatch(authSlice.actions.setIsAuthenticated(true));
         return false;
       }
     }
-    if(decodedToken.isAdmin) {
+    if (decodedToken.isAdmin) {
       dispatchReducer({ type: 'SET_SUPER_ADMIN_USER_ROUTE', payload: `/admin/users` });
       dispatch(authSlice.actions.setIsAuthenticated(true));
       return false;
     }
-
   };
 
   return isAuthenticated ? <Navigate to={state.route} /> : children;

@@ -231,17 +231,15 @@ const CreateReport = () => {
   const selectCustomBetweenDate = (event: ChangeEvent<Date>, date: Date, dateTime: string) => {
     event.stopPropagation();
     setCustomDateLink({});
+    formikRef?.current?.setFieldTouched('startDate', true);
+    formikRef?.current?.setFieldTouched('endDate', true);
 
-    if (dateTime === 'start') {
+    if (date && dateTime === 'start') {
       setCustomDate((prevDate) => ({ ...prevDate, startDate: !date ? undefined : date, singleDate: undefined }));
-      formikRef?.current?.setFieldValue('startDate', !date ? undefined : date, true);
-      formikRef?.current?.setFieldTouched('startDate');
     }
 
-    if (dateTime === 'end') {
+    if (date && dateTime === 'end') {
       setCustomDate((prevDate) => ({ ...prevDate, endDate: !date ? undefined : date, singleDate: undefined }));
-      formikRef?.current?.setFieldValue('endDate', !date ? undefined : date, true);
-      formikRef?.current?.setFieldTouched('endDate');
     }
     handleSelectedReport('NoSchedule');
   };
@@ -353,8 +351,8 @@ const CreateReport = () => {
           innerRef={formikRef}
           initialValues={initialValues}
           onSubmit={handleSubmit}
-          validateOnChange={true}
           enableReinitialize
+          validateOnChange={true}
           validationSchema={Yup.object().shape({
             name: Yup.string()
               .required('Report name is required')
@@ -399,7 +397,7 @@ const CreateReport = () => {
                   .max(255)
               ),
             platform: Yup.array().min(1, 'Platform is required'),
-            startDate: Yup.lazy((value: string) => {
+            startDate: Yup.lazy((value) => {
               if (Object.keys(checkedRadioId).includes('Yes') && !value) {
                 return Yup.string().notRequired();
               }
@@ -409,7 +407,7 @@ const CreateReport = () => {
 
               return Yup.string().notRequired();
             }),
-            endDate: Yup.lazy((value: string) => {
+            endDate: Yup.lazy((value) => {
               if (Object.keys(checkedRadioId).includes('Yes') && !value) {
                 return Yup.string().notRequired();
               }
@@ -433,7 +431,7 @@ const CreateReport = () => {
             // })
           })}
         >
-          {({ handleBlur, handleChange, handleSubmit, values, errors, touched }): JSX.Element => (
+          {({ handleBlur, handleChange, handleSubmit, values, errors, touched, setFieldValue }): JSX.Element => (
             <Form onSubmit={handleSubmit}>
               <div className="grid grid-cols-2 relative mt-1.8 w-full  xl:w-[686px] 3xl:w-1/2">
                 <div className="flex flex-col w-full">
@@ -556,7 +554,10 @@ const CreateReport = () => {
                         <div className="relative flex items-center w-[158.76px] 3xl:w-1/2 ">
                           <DatePicker
                             selected={customDate.startDate}
-                            onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'start')}
+                            onChange={(date: Date, event: ChangeEvent<Date>) => {
+                              selectCustomBetweenDate(event, date, 'start');
+                              setFieldValue('startDate', date);
+                            }}
                             className="w-9.92 2xl:w-full h-3.06 app-result-card-border shadow-reportInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                             placeholderText="From"
                             ref={datePickerRefFrom}
@@ -575,7 +576,10 @@ const CreateReport = () => {
                         <div className="relative flex items-center w-[158.76px] 3xl:w-1/2">
                           <DatePicker
                             selected={customDate.endDate}
-                            onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'end')}
+                            onChange={(date: Date, event: ChangeEvent<Date>) => {
+                              selectCustomBetweenDate(event, date, 'end');
+                              setFieldValue('endDate', date);
+                            }}
                             className="w-9.92 2xl:w-full h-3.06 app-result-card-border shadow-reportInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                             placeholderText="To"
                             ref={datePickerRefTo}

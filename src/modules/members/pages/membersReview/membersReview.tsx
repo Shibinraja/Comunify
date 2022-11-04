@@ -15,6 +15,7 @@ import closeIcon from '../../../../assets/images/close-member.svg';
 import mergeIcon from '../../../../assets/images/merged.svg';
 import { MergeMemberModal } from '../mergedMembers/MergeMemberModal';
 import './membersReview.css';
+import profileImage from '../../../../assets/images/user-image.svg';
 
 Modal.setAppElement('#root');
 
@@ -237,7 +238,7 @@ const MembersReview: React.FC = () => {
           <div className="flex flex-wrap gap-5">
             <div className="flex items-center app-input-card-border box-border w-26.25 h-7.5 shadow-profileCard rounded-0.6  mt-5 p-5">
               <div className="w-1/5">
-                <img src={primaryMemberId[0]?.profilePictureUrl} alt="" className="w-16 h-16 rounded-full" />
+                <img src={primaryMemberId[0]?.profilePictureUrl ?? profileImage} alt="profileImage" className="w-16 h-16 rounded-full" />
               </div>
               <div className="flex flex-col w-4/5 relative">
                 <div className="font-Poppins font-semibold text-trial text-profileBlack leading-1.31 capitalize">{primaryMemberId[0]?.name}</div>
@@ -247,7 +248,7 @@ const MembersReview: React.FC = () => {
                 </div>
                 <div className="flex mt-1">
                   <div className="w-1.001 h-1.001 mr-0.34">
-                    <img src={primaryMemberId[0]?.platform.platformLogoUrl} alt="" />
+                    <img src={primaryMemberId[0]?.platform.platformLogoUrl} alt="platformUrl" />
                   </div>
                 </div>
                 <div className="flex justify-end items-center absolute right-0 -bottom-4">
@@ -285,7 +286,7 @@ const MembersReview: React.FC = () => {
                   <div key={members.id}>
                     <div className="flex items-center primary-card box-border border border-borderPrimary w-26.25 h-7.5 shadow-profileCard rounded-0.6 p-5  ">
                       <div className="w-1/5">
-                        <img src={members.profilePictureUrl} alt="" className="w-16 h-16 rounded-full" />
+                        <img src={members.profilePictureUrl ?? profileImage} alt="profileImage" className="w-16 h-16 rounded-full" />
                       </div>
                       <div className="flex flex-col  w-4/5 relative">
                         <div className="font-Poppins font-semibold text-trial text-profileBlack leading-1.31 capitalize">{members.name}</div>
