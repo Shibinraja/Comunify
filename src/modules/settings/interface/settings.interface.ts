@@ -126,6 +126,7 @@ export type PlatformResponse = {
   createdAt: Date;
   updatedAt: Date;
   isConnected: boolean;
+  isIntegrated: boolean
 };
 
 export interface ConnectedPlatforms {
