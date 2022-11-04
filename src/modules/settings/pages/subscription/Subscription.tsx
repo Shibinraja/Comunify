@@ -162,7 +162,7 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
                 <Button
                   type="button"
                   text={subscriptionDetails?.subscriptionPackage?.name ?? 'No active plan'}
-                  className="px-2 h-[26px] bg-trialButton border-none text-white text-error font-Poppins font-medium leading-1.31 cursor-pointer"
+                  className="px-2 h-[26px] bg-trialButton border-none text-white text-error font-Poppins font-medium leading-1.31 cursor-pointer uppercase"
                 />
               </div>
             </div>
@@ -170,37 +170,18 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
               <div className="flex flex-col pl-[98px] dark:text-createdAtGrey">
                 <div className="font-semibold font-Poppins leading-1.56 text-infoBlack dark:text-white text-base">Features</div>
                 <div className="flex gap-4 font-Poppins   ">
-                  <div className="flex items-center gap-x-1">
-                    <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center ">
-                      <img src={TickWhiteIcon} alt="" className="bg-cover" />
-                    </div>
-                    <div className="text-listGray text-error font-normal leading-1.31">Single User</div>
+                  <div className="flex items-center gap-x-1 pt-1">
+
+                    <div className="text-listGray text-error font-normal leading-1.31">Single User | 5 Platforms | Customizable Reports</div>
                   </div>
-                  <div className="flex items-center gap-x-1">
-                    <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
-                      <img src={TickWhiteIcon} alt="" className="bg-cover" />
-                    </div>
-                    <div className="text-listGray text-error font-normal leading-1.31">5 Platforms</div>
-                  </div>
-                  <div className="flex items-center gap-x-1">
-                    <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
-                      <img src={TickWhiteIcon} alt="" className="bg-cover" />
-                    </div>
-                    <div className="text-listGray text-error font-normal leading-1.31">Customizable Reports</div>
-                  </div>
-                  <div className="flex items-center gap-x-1">
-                    <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
-                      <img src={TickWhiteIcon} alt="" className="bg-cover" />
-                    </div>
-                    <div className="text-listGray text-error font-normal leading-1.31">Configurable Dashboard</div>
-                  </div>
+
                 </div>
               </div>
             )}
           </div>
 
           <div className="flex flex-col justify-end">
-            <div className="relative">
+            <div className="relative w-[63.36px] h-[63.36px]">
               <svg className="absolute">
                 <defs>
                   <linearGradient id={'hello'} gradientTransform={gradientTransform}>
@@ -224,7 +205,7 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
               </ProgressProvider>
             </div>
             <div className="pt-2">
-              <div className="font-Poppins font-semibold text-[13px] leading-0.93 text-[#393A3A] pb-1 dark:text-greyDark">
+              <div className="font-Poppins font-semibold text-[13px] leading-0.93 text-[#151515] pb-1 dark:text-greyDark">
                 {calculateDaysToSubscriptionExpiry() > 1 ? 'Days Left' : 'Day Left'}
               </div>
             </div>
