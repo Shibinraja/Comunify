@@ -1,10 +1,21 @@
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import Button from 'common/button';
 import React, { Dispatch, useEffect, useState } from 'react';
+import Skeleton from 'react-loading-skeleton';
+import Modal from 'react-modal';
+import { useDispatch } from 'react-redux';
+import { NavigateFunction, useLocation, useNavigate } from 'react-router';
+import { AnyAction } from 'redux';
+import deleteIcon from '../../../../assets/images/delete.svg';
 import MasterCardIcon from '../../../../assets/images/masterCard.svg';
 import VisaCardIcon from '../../../../assets/images/visa.svg';
-import deleteIcon from '../../../../assets/images/delete.svg';
-import Button from 'common/button';
-import { NavigateFunction, useLocation, useNavigate } from 'react-router';
+import { showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
+import { useAppSelector } from '../../../../hooks/useRedux';
 import { getLocalWorkspaceId } from '../../../../lib/helper';
+import { State } from '../../../../store';
+import { AddedCardDetails, ClientSecret, SubscriptionDetails, UpgradeData } from '../../../settings/interface/settings.interface';
+import CheckoutForm from '../../../settings/pages/subscription/CheckoutForm';
 import {
   createCardService,
   deleteCardService,
@@ -13,28 +24,10 @@ import {
   selectCardService
   // setPlanAutoRenewalService
 } from '../../../settings/services/settings.services';
-import {
-  AddedCardDetails,
-  ClientSecret,
-  SubscriptionDetails,
-  // UpdateSubscriptionAutoRenewal,
-  // UpdateSubscriptionBody,
-  UpgradeData
-} from '../../../settings/interface/settings.interface';
-import { showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
-import Modal from 'react-modal';
-import { Elements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
-import CheckoutForm from '../../../settings/pages/subscription/CheckoutForm';
 import { SubscriptionPackages } from '../../interface/auth.interface';
 import { chooseSubscription } from '../../services/auth.service';
-import { useDispatch } from 'react-redux';
 import authSlice from '../../store/slices/auth.slice';
-import { useAppSelector } from '../../../../hooks/useRedux';
-import { State } from '../../../../store';
-import Skeleton from 'react-loading-skeleton';
 // import ToggleButton from 'common/ToggleButton/ToggleButton';
-import { AnyAction } from 'redux';
 
 interface SelectedCard {
   id: string;
@@ -64,17 +57,8 @@ const SubscriptionExpiredActivate: React.FC = () => {
 
   useEffect(() => {
     getSecretKeyForStripe();
-  }, []);
-
-  useEffect(() => {
     getCurrentSubscriptionPlanDetails();
-  }, []);
-
-  useEffect(() => {
     getCardDetails();
-  }, []);
-
-  useEffect(() => {
     dispatch(authSlice.actions.getSubscriptions());
   }, []);
 
