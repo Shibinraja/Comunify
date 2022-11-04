@@ -238,7 +238,7 @@ const MembersReview: React.FC = () => {
           <div className="flex flex-wrap gap-5">
             <div className="flex items-center app-input-card-border box-border w-26.25 h-7.5 shadow-profileCard rounded-0.6  mt-5 p-5">
               <div className="w-1/5">
-                <img src={primaryMemberId[0]?.profilePictureUrl ?? profileImage } alt="profileImage" className="w-16 h-16 rounded-full" />
+                <img src={primaryMemberId[0]?.profilePictureUrl ?? profileImage} alt="profileImage" className="w-16 h-16 rounded-full" />
               </div>
               <div className="flex flex-col w-4/5 relative">
                 <div className="font-Poppins font-semibold text-trial text-profileBlack leading-1.31 capitalize">{primaryMemberId[0]?.name}</div>
@@ -337,11 +337,11 @@ const MembersReview: React.FC = () => {
         onSubmit={handleOnSubmit}
         contextText={
           modalOpen.confirmMerge
-            ? 'Are you sure want to merge members'
+            ? 'Are you sure want to merge members?'
             : modalOpen.UnMergeModalOpen
               ? 'Are you sure you want to remove the member?'
               : modalOpen.ChangePrimaryMember
-                ? 'Are you sure you want to change the primary member'
+                ? 'Are you sure you want to change the primary member?'
                 : ''
         }
       />
