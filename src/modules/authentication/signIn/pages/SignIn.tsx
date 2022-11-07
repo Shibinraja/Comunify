@@ -26,7 +26,8 @@ const SignIn: React.FC = () => {
 
   const initialValues: FormValues = {
     userName: '',
-    password: ''
+    password: '',
+    rememberMe: false
   };
 
   const [passwordType, setPasswordType] = useState<string>('password');
@@ -137,7 +138,7 @@ const SignIn: React.FC = () => {
                     }`}>
                     <div className="flex items-center">
                       <div className="mr-2 mt-1">
-                        <input type="checkbox" className="checkbox cursor-pointer" />
+                        <input type="checkbox" className="checkbox cursor-pointer" name='rememberMe' checked={values.rememberMe} onChange={handleChange} onBlur={handleBlur}/>
                       </div>
                       <span className="text-sm text-secondaryGray font-normal font-Inter">Remember me</span>
                     </div>

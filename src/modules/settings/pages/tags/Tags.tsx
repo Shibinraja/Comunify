@@ -312,7 +312,10 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                                         className="edit-btn w-6.25 h-2.87 mr-2.5 cursor-pointer text-masterCard font-Poppins font-medium text-trial leading-1.31 rounded box-border shadow-deleteButton"
                                         onClick={() => handleTagModalOpen(data.name, data.id)}
                                       />
-                                      <button className="flex items-center justify-center delete-btn border border-greyDark cursor-pointer w-3.12 h-2.87 rounded box-border shadow-deleteButton" onClick={() => handleDeleteTagName(data.id)}>
+                                      <button
+                                        className="flex items-center justify-center delete-btn border border-greyDark cursor-pointer w-3.12 h-2.87 rounded box-border shadow-deleteButton"
+                                        onClick={() => handleDeleteTagName(data.id)}
+                                      >
                                         <img src={deleteBtn} alt="" />
                                       </button>
                                     </div>
@@ -355,7 +358,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
         }}
       >
         <div className="flex flex-col items-center justify-center ">
-          <div className="mt-5 leading-6 text-black font-Inter font-semibold text-xl w-2/3 text-center">Are you sure want to delete tags</div>
+          <div className="mt-5 leading-6 text-black font-Inter font-semibold text-xl w-2/3 text-center">Are you sure want to delete tags?</div>
           <div className="flex mt-1.8">
             <Button
               type="button"

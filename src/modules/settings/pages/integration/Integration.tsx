@@ -495,7 +495,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
                   type="button"
                   text="Connect"
                   className={!isButtonConnect ? disConnectedBtnClassName : connectedBtnClassName}
-                  onClick={() => handleModals(data?.name.toLocaleLowerCase().trim(), data?.platformLogoUrl, data?.isConnected)}
+                  onClick={() => handleModals(data?.name.toLocaleLowerCase().trim(), data?.platformLogoUrl, data?.isIntegrated)}
                 />
               </div>
             ))}

@@ -1,10 +1,21 @@
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import Button from 'common/button';
 import React, { Dispatch, useEffect, useState } from 'react';
+import Skeleton from 'react-loading-skeleton';
+import Modal from 'react-modal';
+import { useDispatch } from 'react-redux';
+import { NavigateFunction, useLocation, useNavigate } from 'react-router';
+import { AnyAction } from 'redux';
+import deleteIcon from '../../../../assets/images/delete.svg';
 import MasterCardIcon from '../../../../assets/images/masterCard.svg';
 import VisaCardIcon from '../../../../assets/images/visa.svg';
-import deleteIcon from '../../../../assets/images/delete.svg';
-import Button from 'common/button';
-import { NavigateFunction, useLocation, useNavigate } from 'react-router';
+import { showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
+import { useAppSelector } from '../../../../hooks/useRedux';
 import { getLocalWorkspaceId } from '../../../../lib/helper';
+import { State } from '../../../../store';
+import { AddedCardDetails, ClientSecret, SubscriptionDetails, UpgradeData } from '../../../settings/interface/settings.interface';
+import CheckoutForm from '../../../settings/pages/subscription/CheckoutForm';
 import {
   createCardService,
   deleteCardService,
@@ -13,28 +24,10 @@ import {
   selectCardService
   // setPlanAutoRenewalService
 } from '../../../settings/services/settings.services';
-import {
-  AddedCardDetails,
-  ClientSecret,
-  SubscriptionDetails,
-  // UpdateSubscriptionAutoRenewal,
-  // UpdateSubscriptionBody,
-  UpgradeData
-} from '../../../settings/interface/settings.interface';
-import { showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
-import Modal from 'react-modal';
-import { Elements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
-import CheckoutForm from '../../../settings/pages/subscription/CheckoutForm';
 import { SubscriptionPackages } from '../../interface/auth.interface';
 import { chooseSubscription } from '../../services/auth.service';
-import { useDispatch } from 'react-redux';
 import authSlice from '../../store/slices/auth.slice';
-import { useAppSelector } from '../../../../hooks/useRedux';
-import { State } from '../../../../store';
-import Skeleton from 'react-loading-skeleton';
 // import ToggleButton from 'common/ToggleButton/ToggleButton';
-import { AnyAction } from 'redux';
 
 interface SelectedCard {
   id: string;
@@ -58,23 +51,17 @@ const SubscriptionExpiredActivate: React.FC = () => {
   const [selectedCard, setSelectedCard] = useState<SelectedCard | undefined>(undefined);
   const [selectedCardId, setSelectedCardId] = useState<string>('');
   // const [toggle, setToggle] = useState<boolean>(true);
-  const [isConfirmationModal, setIsConfirmationModal] = useState<boolean>(false);
+  const [isConfirmationModal, setIsConfirmationModal] = useState<{ deleteCard: boolean; upgradePlan: boolean }>({
+    deleteCard: false,
+    upgradePlan: false
+  });
   const [callEffect, setCallEffect] = useState<boolean>(false);
   const stripePromise = loadStripe(`${import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY}`);
 
   useEffect(() => {
     getSecretKeyForStripe();
-  }, []);
-
-  useEffect(() => {
     getCurrentSubscriptionPlanDetails();
-  }, []);
-
-  useEffect(() => {
     getCardDetails();
-  }, []);
-
-  useEffect(() => {
     dispatch(authSlice.actions.getSubscriptions());
   }, []);
 
@@ -109,7 +96,7 @@ const SubscriptionExpiredActivate: React.FC = () => {
     if (isDefault) {
       showWarningToast('Cannot delete a default payment method');
     } else {
-      setIsConfirmationModal(true);
+      setIsConfirmationModal((prev) => ({ ...prev, deleteCard: true }));
       setSelectedCardId(id);
     }
   };
@@ -127,12 +114,12 @@ const SubscriptionExpiredActivate: React.FC = () => {
     const response = await deleteCardService(id);
     if (response) {
       setIsLoading((prev) => ({ ...prev, confirmationModal: false }));
-      setIsConfirmationModal(false);
+      setIsConfirmationModal((prev) => ({ ...prev, deleteCard: false }));
       showSuccessToast('Payment card deleted. Updating payment method list...');
       handleEffect();
     } else {
       setIsLoading((prev) => ({ ...prev, confirmationModal: false }));
-      setIsConfirmationModal(false);
+      setIsConfirmationModal((prev) => ({ ...prev, deleteCard: false }));
     }
   };
 
@@ -192,7 +179,7 @@ const SubscriptionExpiredActivate: React.FC = () => {
   };
 
   // eslint-disable-next-line space-before-function-paren
-  const handlePlanUpgrade = async () => {
+  const upgradeFromExistingPlan = async () => {
     if (subscriptionDetails?.subscriptionPackage?.name?.toLocaleLowerCase().trim() === 'free trial' || !subscriptionDetails) {
       setIsLoading((prev) => ({ ...prev, upgrade: true }));
       const subscriptionId: string = subscriptionData?.filter(
@@ -203,16 +190,9 @@ const SubscriptionExpiredActivate: React.FC = () => {
         upgrade: true
       };
       const response: SubscriptionPackages = await chooseSubscription(subscriptionId, body);
-      // if (response?.status === 'paid') {
-      //   navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'billing_history' } });
-      //   setIsLoading((prev) => ({ ...prev, upgrade: false }));
-      //   window.location.reload();
-      //   showSuccessToast('Plan upgraded to Comunify Plus!');
-      // } else {
-      //   setIsLoading((prev) => ({ ...prev, upgrade: false }));
-      // }
       if (response?.status === 'paid') {
         navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'billing_history' } });
+        setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
         setIsLoading((prev) => ({ ...prev, upgrade: false }));
         showSuccessToast('Plan upgraded to Comunify Plus!');
         setTimeout(() => {
@@ -222,6 +202,7 @@ const SubscriptionExpiredActivate: React.FC = () => {
           window.location.reload();
         }, 5000);
       } else {
+        setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
         setIsLoading((prev) => ({ ...prev, upgrade: false }));
       }
     } else {
@@ -366,7 +347,7 @@ const SubscriptionExpiredActivate: React.FC = () => {
                 type="button"
                 text="Upgrade"
                 disabled={isLoading.upgrade || !addedCardDetails?.length ? true : false}
-                onClick={handlePlanUpgrade}
+                onClick={() => setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: true }))}
                 className={`submit border-none text-white font-Poppins text-error font-medium leading-1.31 ${
                   isLoading.upgrade || !addedCardDetails?.length ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
                 }  w-[123px] h-2.81 rounded shadow-contactBtn btn-save-modal`}
@@ -404,9 +385,9 @@ const SubscriptionExpiredActivate: React.FC = () => {
             </div>
             <div>
               <Modal
-                isOpen={isConfirmationModal}
+                isOpen={isConfirmationModal.deleteCard}
                 shouldCloseOnOverlayClick={false}
-                onRequestClose={() => setIsConfirmationModal(false)}
+                onRequestClose={() => setIsConfirmationModal((prev) => ({ ...prev, deleteCard: false }))}
                 className="w-24.31 h-18.43 mx-auto rounded-lg modals-tag bg-white shadow-modal flex items-center justify-center"
                 style={{
                   overlay: {
@@ -429,7 +410,7 @@ const SubscriptionExpiredActivate: React.FC = () => {
                       type="button"
                       text="NO"
                       className="border-none border-cancel h-2.81 w-5.25 box-border rounded cursor-pointer font-Poppins font-medium text-error leading-5 text-thinGray "
-                      onClick={() => setIsConfirmationModal(false)}
+                      onClick={() => setIsConfirmationModal((prev) => ({ ...prev, deleteCard: false }))}
                     />
                     <Button
                       type="button"
@@ -438,6 +419,46 @@ const SubscriptionExpiredActivate: React.FC = () => {
                       disabled={isLoading.confirmationModal}
                       className={`border-none ml-2.5 yes-btn h-2.81 w-5.25 box-border ${
                         isLoading.confirmationModal ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                      } rounded shadow-contactBtn cursor-pointer font-Poppins font-medium text-error leading-5 text-white btn-save-modal`}
+                    />
+                  </div>
+                </div>
+              </Modal>
+              <Modal
+                isOpen={isConfirmationModal.upgradePlan}
+                shouldCloseOnOverlayClick={false}
+                onRequestClose={() => setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }))}
+                className="w-24.31 h-18.43 mx-auto rounded-lg modals-tag bg-white shadow-modal flex items-center justify-center"
+                style={{
+                  overlay: {
+                    display: 'flex',
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: 0,
+                    alignItems: 'center'
+                  }
+                }}
+              >
+                <div className="flex flex-col items-center justify-center ">
+                  <div className="mt-5 leading-6 text-black font-Inter font-semibold text-xl w-2/3 text-center">
+                    Are you sure you want to proceed with the upgrade?
+                  </div>
+                  <div className="flex mt-1.8">
+                    <Button
+                      type="button"
+                      text="NO"
+                      className="border-none border-cancel h-2.81 w-5.25 box-border rounded cursor-pointer font-Poppins font-medium text-error leading-5 text-thinGray "
+                      onClick={() => setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }))}
+                    />
+                    <Button
+                      type="button"
+                      text="YES"
+                      onClick={upgradeFromExistingPlan}
+                      disabled={isLoading.upgrade}
+                      className={`border-none ml-2.5 yes-btn h-2.81 w-5.25 box-border ${
+                        isLoading.upgrade ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
                       } rounded shadow-contactBtn cursor-pointer font-Poppins font-medium text-error leading-5 text-white btn-save-modal`}
                     />
                   </div>

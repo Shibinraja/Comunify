@@ -20,7 +20,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import Skeleton from 'react-loading-skeleton';
 import Modal from 'react-modal';
 import { useDispatch } from 'react-redux';
-import { NavLink, useParams } from 'react-router-dom';
+import { NavLink, useParams, useSearchParams } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip';
 import * as Yup from 'yup';
 import closeIcon from '../../../assets/images/close.svg';
@@ -39,6 +39,7 @@ Modal.setAppElement('#root');
 
 const Activity: React.FC = () => {
   const dispatch = useDispatch();
+  const [searchParams] = useSearchParams();
   const { workspaceId } = useParams();
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [isTagModalOpen, setTagModalOpen] = useState<boolean>(false);
@@ -50,11 +51,11 @@ const Activity: React.FC = () => {
     memberProfileUrl: '',
     organization: '',
     profilePictureUrl: '',
-    platformLogoUrl: ''
+    platformLogoUrl: '',
+    platforms: []
   });
   const [ActivityCard, setActivityCard] = useState<Partial<ActivityCard>>();
   const [page, setPage] = useState<number>(1);
-  const [searchText, setSearchText] = useState<string>('');
   const [searchTagText, setSearchTagText] = useState<string>('');
   const [checkedActivityId, setCheckedActivityId] = useState<Record<string, unknown>>({});
   const [filterExportParams, setFilterExportParams] = useState<activityFilterExportProps>({
@@ -80,6 +81,9 @@ const Activity: React.FC = () => {
   const tagDropDownRef = useRef<HTMLDivElement>(null);
 
   const limit = 10;
+  const activityId = searchParams.get('activityId');
+  const searchActivity = searchParams.get('searchText');
+  const [searchText, setSearchText] = useState<string>(searchActivity || '');
   const debouncedValue = useDebounce(searchText, 300);
   const debouncedTagValue = useDebounce(searchTagText, 300);
 
@@ -98,11 +102,12 @@ const Activity: React.FC = () => {
         activeStreamQuery: {
           page,
           limit,
-          search: searchText,
+          search: searchText || searchActivity as string,
           tags: { searchedTags: '', checkedTags: filterExportParams.checkTags.toString() },
           platforms: filterExportParams.checkPlatform.toString(),
           'activity.lte': filterExportParams.endDate,
-          'activity.gte': filterExportParams.startDate
+          'activity.gte': filterExportParams.startDate,
+          activityId: activityId as string
         },
         workspaceId: workspaceId!
       })
@@ -114,6 +119,7 @@ const Activity: React.FC = () => {
       })
     );
   }, [page]);
+
   useEffect(() => {
     setTagUnAssignLoading(true);
   }, [ActivityCard]);
@@ -266,7 +272,8 @@ const Activity: React.FC = () => {
       organization: data.organization,
       memberProfileUrl: data.memberProfileUrl,
       profilePictureUrl: data?.profilePictureUrl,
-      platformLogoUrl: data?.platformLogoUrl
+      platformLogoUrl: data?.platformLogoUrl,
+      platforms: data?.platforms
     });
   };
 
@@ -288,15 +295,13 @@ const Activity: React.FC = () => {
   const getFilteredActiveStreamList = (pageNumber: number, text: string) => {
     dispatch(
       activitiesSlice.actions.getActiveStreamData({
-        activeStreamQuery: {
-          page: pageNumber,
+        activeStreamQuery: { page: pageNumber,
           limit,
           search: text,
           tags: { searchedTags: '', checkedTags: filterExportParams.checkTags.toString() },
           platforms: filterExportParams.checkPlatform.toString(),
           'activity.lte': filterExportParams.endDate,
-          'activity.gte': filterExportParams.startDate
-        },
+          'activity.gte': filterExportParams.startDate        },
         workspaceId: workspaceId!
       })
     );
@@ -442,6 +447,7 @@ const Activity: React.FC = () => {
             className="app-input-card-border focus:outline-none px-4 mr-0.76 box-border h-3.06 w-19.06 bg-white  rounded-0.6 text-card placeholder:font-normal placeholder:leading-1.12 font-Poppins"
             placeholder="Search By Name or Email"
             onChange={handleSearchTextChange}
+            value={searchText}
           />
         </div>
         <div className="-mr-3">{ActiveStreamFilter}</div>
@@ -497,7 +503,8 @@ const Activity: React.FC = () => {
                                   organization: data?.organization,
                                   memberProfileUrl: `/${workspaceId}/members/${data.primaryMemberId}/profile`,
                                   profilePictureUrl: data?.memberProfile,
-                                  platformLogoUrl: data?.platformLogoUrl
+                                  platformLogoUrl: data?.platformLogoUrl,
+                                  platforms: data?.platforms || []
                                 });
                               }}
                             >
@@ -524,7 +531,8 @@ const Activity: React.FC = () => {
                                       organization: data?.organization,
                                       memberProfileUrl: `/${workspaceId}/members/${data.primaryMemberId}/profile`,
                                       profilePictureUrl: data?.memberProfile,
-                                      platformLogoUrl: data?.platformLogoUrl
+                                      platformLogoUrl: data?.platformLogoUrl,
+                                      platforms: data?.platforms || []
                                     });
                                   }}
                                   className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer capitalize"
@@ -540,7 +548,7 @@ const Activity: React.FC = () => {
                                   <div className="w-12.87 pb-5 rounded-b-0.6 profile-card-body profile-inner shadow-profileCard flex flex-col items-center bg-white">
                                     <div className="-mt-10 flex items-center justify-center">
                                       <img
-                                        src={ProfileModal?.profilePictureUrl ?? profileImage }
+                                        src={ProfileModal?.profilePictureUrl ?? profileImage}
                                         alt=""
                                         className="rounded-full w-4.43 h-4.43 bg-cover bg-center border-4 border-white"
                                       />
@@ -553,11 +561,16 @@ const Activity: React.FC = () => {
                                     </div>
                                     <div className="flex mt-2.5">
                                       <div className="bg-cover bg-center mr-1 ">
-                                        <img
-                                          src={ProfileModal?.platformLogoUrl ? ProfileModal?.platformLogoUrl : ''}
-                                          alt=""
-                                          className="w-0.92 h-0.92"
-                                        />
+                                        {ProfileModal?.platforms &&
+                                          ProfileModal?.platforms.map((platformData) => (
+                                            <div key={`${Math.random() + platformData.id}`}>
+                                              <img
+                                                src={platformData?.platformLogoUrl ?? ''}
+                                                alt=""
+                                                className="rounded-full w-[1.0012rem] h-[1.0012rem]"
+                                              />
+                                            </div>
+                                          ))}
                                       </div>
                                     </div>
                                     <NavLink
@@ -612,7 +625,8 @@ const Activity: React.FC = () => {
                                       memberId: data?.memberId,
                                       activityId: data?.id,
                                       platform: data?.platform,
-                                      tags: data?.tags || []
+                                      tags: data?.tags || [],
+                                      platforms: data.platforms || []
                                     })
                                   }
                                 >
