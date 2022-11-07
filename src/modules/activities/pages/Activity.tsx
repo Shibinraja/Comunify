@@ -50,7 +50,8 @@ const Activity: React.FC = () => {
     memberProfileUrl: '',
     organization: '',
     profilePictureUrl: '',
-    platformLogoUrl: ''
+    platformLogoUrl: '',
+    platforms: []
   });
   const [ActivityCard, setActivityCard] = useState<Partial<ActivityCard>>();
   const [page, setPage] = useState<number>(1);
@@ -266,7 +267,8 @@ const Activity: React.FC = () => {
       organization: data.organization,
       memberProfileUrl: data.memberProfileUrl,
       profilePictureUrl: data?.profilePictureUrl,
-      platformLogoUrl: data?.platformLogoUrl
+      platformLogoUrl: data?.platformLogoUrl,
+      platforms: data?.platforms
     });
   };
 
@@ -497,7 +499,8 @@ const Activity: React.FC = () => {
                                   organization: data?.organization,
                                   memberProfileUrl: `/${workspaceId}/members/${data.primaryMemberId}/profile`,
                                   profilePictureUrl: data?.memberProfile,
-                                  platformLogoUrl: data?.platformLogoUrl
+                                  platformLogoUrl: data?.platformLogoUrl,
+                                  platforms: data?.platforms || []
                                 });
                               }}
                             >
@@ -524,7 +527,8 @@ const Activity: React.FC = () => {
                                       organization: data?.organization,
                                       memberProfileUrl: `/${workspaceId}/members/${data.primaryMemberId}/profile`,
                                       profilePictureUrl: data?.memberProfile,
-                                      platformLogoUrl: data?.platformLogoUrl
+                                      platformLogoUrl: data?.platformLogoUrl,
+                                      platforms: data?.platforms || []
                                     });
                                   }}
                                   className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer capitalize"
@@ -540,7 +544,7 @@ const Activity: React.FC = () => {
                                   <div className="w-12.87 pb-5 rounded-b-0.6 profile-card-body profile-inner shadow-profileCard flex flex-col items-center bg-white">
                                     <div className="-mt-10 flex items-center justify-center">
                                       <img
-                                        src={ProfileModal?.profilePictureUrl ?? profileImage }
+                                        src={ProfileModal?.profilePictureUrl ?? profileImage}
                                         alt=""
                                         className="rounded-full w-4.43 h-4.43 bg-cover bg-center border-4 border-white"
                                       />
@@ -553,11 +557,16 @@ const Activity: React.FC = () => {
                                     </div>
                                     <div className="flex mt-2.5">
                                       <div className="bg-cover bg-center mr-1 ">
-                                        <img
-                                          src={ProfileModal?.platformLogoUrl ? ProfileModal?.platformLogoUrl : ''}
-                                          alt=""
-                                          className="w-0.92 h-0.92"
-                                        />
+                                        {ProfileModal?.platforms &&
+                                          ProfileModal?.platforms.map((platformData) => (
+                                            <div key={`${Math.random() + platformData.id}`}>
+                                              <img
+                                                src={platformData?.platformLogoUrl ?? ''}
+                                                alt=""
+                                                className="rounded-full w-[1.0012rem] h-[1.0012rem]"
+                                              />
+                                            </div>
+                                          ))}
                                       </div>
                                     </div>
                                     <NavLink
@@ -612,7 +621,8 @@ const Activity: React.FC = () => {
                                       memberId: data?.memberId,
                                       activityId: data?.id,
                                       platform: data?.platform,
-                                      tags: data?.tags || []
+                                      tags: data?.tags || [],
+                                      platforms: data.platforms || []
                                     })
                                   }
                                 >

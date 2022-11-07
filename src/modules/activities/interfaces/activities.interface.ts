@@ -9,6 +9,11 @@ export interface ProfileModal {
   memberProfileUrl: string;
   profilePictureUrl: string | null;
   platformLogoUrl: string | null;
+  platforms: {
+    name: string;
+    id: string;
+    platformLogoUrl: string;
+  }[];
 }
 
 export interface ActivityCard {
@@ -21,6 +26,11 @@ export interface ActivityCard {
   sourceUrl: string | null;
   activityTime: Date;
   profilePictureUrl: string | null;
+  platforms: {
+    name: string;
+    id: string;
+    platformLogoUrl: string;
+  }[];
   value: string | null;
   platformLogoUrl: string | null;
   platform: string;
@@ -94,6 +104,11 @@ export interface ActiveStreamData {
   memberName: string;
   email: string;
   memberProfile: string;
+  platforms: {
+    name: string;
+    id: string;
+    platformLogoUrl: string;
+  }[];
   totalCount: number;
   primaryMemberId: string;
 }
