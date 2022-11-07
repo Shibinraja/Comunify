@@ -38,19 +38,21 @@ const Integration: React.FC = () => {
     reddit: undefined
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const dispatch = useDispatch();
-  const { PlatformFilterResponse } = usePlatform();
-  const navigate = useNavigate();
-  const workspaceId = getLocalWorkspaceId();
-  const [searchParams] = useSearchParams();
-  const handleVanillaModal = (val: boolean) => {
-    setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: val }));
-  };
+
   const [vanillaForumsData, setVanillaForumsData] = useState<VanillaForumsConnectData>({
     vanillaAccessToken: '',
     vanillaBaseUrl: '',
     workspaceId: ''
   });
+
+  const dispatch = useDispatch();
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const  PlatformsConnected  = JSON.parse(localStorage.getItem('platformsConnected')!);
+  const { PlatformFilterResponse } = usePlatform();
+  const navigate = useNavigate();
+  const workspaceId = getLocalWorkspaceId();
+  const [searchParams] = useSearchParams();
+  const error = searchParams.get('error');
 
   useEffect(() => {
     setRefreshToken();
@@ -81,6 +83,12 @@ const Integration: React.FC = () => {
       }
     }
   }, []);
+
+  useEffect(() => {
+    if(error && Number(PlatformsConnected) > 0) {
+      navigate(`/${workspaceId}/settings`);
+    }
+  }, [error]);
 
   const handleModals = (name: string, icon: string) => {
     switch (name) {
@@ -230,6 +238,10 @@ const Integration: React.FC = () => {
     if (isModalOpen.reddit) {
       setIsModalOpen((prevState) => ({ ...prevState, reddit: false }));
     }
+  };
+
+  const handleVanillaModal = (val: boolean) => {
+    setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: val }));
   };
 
   const connectedBtnClassName = `dark:bg-secondaryDark bg-connectButton shadow-contactCard font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded 
