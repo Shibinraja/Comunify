@@ -45,7 +45,10 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
   const [addedCardDetails, setAddedCardDetails] = useState<AddedCardDetails[]>();
   const [selectedCard, setSelectedCard] = useState<SelectedCard | undefined>(undefined);
   const [selectedCardId, setSelectedCardId] = useState<string>('');
-  const [isConfirmationModal, setIsConfirmationModal] = useState<boolean>(false);
+  const [isConfirmationModal, setIsConfirmationModal] = useState<{ deleteCard: boolean; upgradePlan: boolean }>({
+    deleteCard: false,
+    upgradePlan: false
+  });
   const [callEffect, setCallEffect] = useState<boolean>(false);
   const stripePromise = loadStripe(`${import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY}`);
 
@@ -92,7 +95,7 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
     if (isDefault) {
       showWarningToast('Cannot delete a default payment method');
     } else {
-      setIsConfirmationModal(true);
+      setIsConfirmationModal((prev) => ({ ...prev, deleteCard: true }));
       setSelectedCardId(id);
     }
   };
@@ -103,12 +106,12 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
     const response = await deleteCardService(id);
     if (response) {
       setIsLoading((prev) => ({ ...prev, confirmationModal: false }));
-      setIsConfirmationModal(false);
+      setIsConfirmationModal((prev) => ({ ...prev, deleteCard: false }));
       showSuccessToast('Payment card deleted. Updating payment method list...');
       handleEffect();
     } else {
       setIsLoading((prev) => ({ ...prev, confirmationModal: false }));
-      setIsConfirmationModal(false);
+      setIsConfirmationModal((prev) => ({ ...prev, deleteCard: false }));
     }
   };
 
@@ -147,30 +150,37 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
   // eslint-disable-next-line space-before-function-paren
   const handlePlanUpgrade = async () => {
     if (subscriptionDetails?.subscriptionPackage?.name?.toLocaleLowerCase().trim() === 'free trial' || subscriptionDetails === undefined) {
-      setIsLoading((prev) => ({ ...prev, upgrade: true }));
-      const subscriptionId: string = subscriptionData?.filter(
-        (data: SubscriptionPackages) => data?.viewName.toLocaleLowerCase().trim() !== 'free trial'
-      )[0]?.id;
-      const body: UpgradeData = {
-        paymentMethod: addedCardDetails?.filter((item: AddedCardDetails) => item.isDefault)[0]?.stripePaymentMethodId,
-        upgrade: true
-      };
-      const response: SubscriptionPackages = await chooseSubscription(subscriptionId, body);
-      if (response?.status === 'paid') {
-        navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'billing_history' } });
-        setIsLoading((prev) => ({ ...prev, upgrade: false }));
-        showSuccessToast('Plan upgraded to Comunify Plus!');
-        setTimeout(() => {
-          showSuccessToast('This page will be reloaded soon. Please do not change the page');
-        }, 1000);
-        setTimeout(() => {
-          window.location.reload();
-        }, 5000);
-      } else {
-        setIsLoading((prev) => ({ ...prev, upgrade: false }));
-      }
+      setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: true }));
     } else {
       showWarningToast('Your subscription is already activated');
+    }
+  };
+
+  // eslint-disable-next-line space-before-function-paren
+  const upgradeFromExistingPlan = async () => {
+    setIsLoading((prev) => ({ ...prev, upgrade: true }));
+    const subscriptionId: string = subscriptionData?.filter(
+      (data: SubscriptionPackages) => data?.viewName.toLocaleLowerCase().trim() !== 'free trial'
+    )[0]?.id;
+    const body: UpgradeData = {
+      paymentMethod: addedCardDetails?.filter((item: AddedCardDetails) => item.isDefault)[0]?.stripePaymentMethodId,
+      upgrade: true
+    };
+    const response: SubscriptionPackages = await chooseSubscription(subscriptionId, body);
+    if (response?.status === 'paid') {
+      navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'billing_history' } });
+      setIsLoading((prev) => ({ ...prev, upgrade: false }));
+      setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
+      showSuccessToast('Plan upgraded to Comunify Plus!');
+      setTimeout(() => {
+        showSuccessToast('This page will be reloaded soon. Please do not change the page');
+      }, 1000);
+      setTimeout(() => {
+        window.location.reload();
+      }, 5000);
+    } else {
+      setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
+      setIsLoading((prev) => ({ ...prev, upgrade: false }));
     }
   };
 
@@ -267,11 +277,9 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
           <Button
             type="button"
             text="Upgrade"
-            disabled={isLoading.upgrade}
+            // disabled={isLoading.upgrade}
             onClick={handlePlanUpgrade}
-            className={`submit border-none text-white font-Poppins text-error font-medium leading-1.31 ${
-              isLoading.upgrade ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
-            }  w-[123px] h-2.81 rounded shadow-contactBtn btn-save-modal`}
+            className={`submit border-none text-white font-Poppins text-error font-medium leading-1.31 cursor-pointer w-[123px] h-2.81 rounded shadow-contactBtn btn-save-modal`}
           />
         </div>
       </div>
@@ -306,9 +314,9 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
         </div>
         <div>
           <Modal
-            isOpen={isConfirmationModal}
+            isOpen={isConfirmationModal.deleteCard}
             shouldCloseOnOverlayClick={false}
-            onRequestClose={() => setIsConfirmationModal(false)}
+            onRequestClose={() => setIsConfirmationModal((prev) => ({ ...prev, deleteCard: false }))}
             className="w-24.31 h-18.43 mx-auto rounded-lg modals-tag bg-white shadow-modal flex items-center justify-center"
             style={{
               overlay: {
@@ -324,14 +332,14 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
           >
             <div className="flex flex-col items-center justify-center ">
               <div className="mt-5 leading-6 text-black font-Inter font-semibold text-xl w-2/3 text-center">
-                Are you sure want to delete the selected card?
+                Are you sure you want to delete the selected card?
               </div>
               <div className="flex mt-1.8">
                 <Button
                   type="button"
                   text="NO"
                   className="border-none border-cancel h-2.81 w-5.25 box-border rounded cursor-pointer font-Poppins font-medium text-error leading-5 text-thinGray "
-                  onClick={() => setIsConfirmationModal(false)}
+                  onClick={() => setIsConfirmationModal((prev) => ({ ...prev, deleteCard: false }))}
                 />
                 <Button
                   type="button"
@@ -340,6 +348,46 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
                   disabled={isLoading.confirmationModal}
                   className={`border-none ml-2.5 yes-btn h-2.81 w-5.25 box-border ${
                     isLoading.confirmationModal ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                  } rounded shadow-contactBtn cursor-pointer font-Poppins font-medium text-error leading-5 text-white btn-save-modal`}
+                />
+              </div>
+            </div>
+          </Modal>
+          <Modal
+            isOpen={isConfirmationModal.upgradePlan}
+            shouldCloseOnOverlayClick={false}
+            onRequestClose={() => setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }))}
+            className="w-24.31 h-18.43 mx-auto rounded-lg modals-tag bg-white shadow-modal flex items-center justify-center"
+            style={{
+              overlay: {
+                display: 'flex',
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0,
+                alignItems: 'center'
+              }
+            }}
+          >
+            <div className="flex flex-col items-center justify-center ">
+              <div className="mt-5 leading-6 text-black font-Inter font-semibold text-xl w-2/3 text-center">
+                Are you sure you want to proceed with the upgrade?
+              </div>
+              <div className="flex mt-1.8">
+                <Button
+                  type="button"
+                  text="NO"
+                  className="border-none border-cancel h-2.81 w-5.25 box-border rounded cursor-pointer font-Poppins font-medium text-error leading-5 text-thinGray "
+                  onClick={() => setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }))}
+                />
+                <Button
+                  type="button"
+                  text="YES"
+                  onClick={upgradeFromExistingPlan}
+                  disabled={isLoading.upgrade}
+                  className={`border-none ml-2.5 yes-btn h-2.81 w-5.25 box-border ${
+                    isLoading.upgrade ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
                   } rounded shadow-contactBtn cursor-pointer font-Poppins font-medium text-error leading-5 text-white btn-save-modal`}
                 />
               </div>

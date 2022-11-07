@@ -1,5 +1,6 @@
 /* eslint-disable space-before-function-paren */
 import { transformRequestOptions } from '@/lib/helper';
+import { GlobalSearchDataResponse, SearchSuggestionArgsType } from 'common/topBar/TopBarTypes';
 import { showErrorToast } from '../../../common/toast/toastFunctions';
 import { HealthScoreWidgetData, WidgetFilters } from '../../../common/widgetLayout/WidgetTypes';
 import { API_ENDPOINT } from '../../../lib/config';
@@ -110,5 +111,20 @@ export const requestForWidgetService = async (workspaceId: string, body: Request
   } catch {
     showErrorToast('Request for widget failed');
     return {} as RequestForWidgetResponse;
+  }
+};
+
+
+export const getGlobalSearchRequest = async(args:Partial<SearchSuggestionArgsType>):Promise<GlobalSearchDataResponse> => {
+  try{
+    const searchParams = ({
+      ...(args.cursor ? { cursor: args.cursor }: {}),
+      limit: 10,
+      ...(args.search ? { search: args.search }: {})
+    });
+    const { data } = await request.get(`${API_ENDPOINT}/v1/${args.workspaceId}/dashboards/global`, { params: searchParams });
+    return data?.data as GlobalSearchDataResponse;
+  } catch {
+    return {} as GlobalSearchDataResponse;
   }
 };

@@ -29,7 +29,7 @@ import * as Yup from 'yup';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import CheckoutForm from './CheckoutForm';
-import { alphabets_only_regex, email_regex, whiteSpace_regex } from '../../../../constants/constants';
+import { alphabets_only_regex_with_single_space, email_regex, whiteSpace_single_regex } from '../../../../constants/constants';
 
 const AddCard = React.lazy(() => import('../../pages/addCard/AddCard'));
 
@@ -171,10 +171,8 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
                 <div className="font-semibold font-Poppins leading-1.56 text-infoBlack dark:text-white text-base">Features</div>
                 <div className="flex gap-4 font-Poppins   ">
                   <div className="flex items-center gap-x-1 pt-1">
-
                     <div className="text-listGray text-error font-normal leading-1.31">Single User | 5 Platforms | Customizable Reports</div>
                   </div>
-
                 </div>
               </div>
             )}
@@ -407,8 +405,8 @@ const billingDetailsScheme = Yup.object().shape({
     .trim('WhiteSpaces are not allowed')
     .min(4, 'Billing Name must be at least 4 characters')
     .max(25, 'Billing Name should not exceed above 25 characters')
-    .matches(alphabets_only_regex, 'Numbers and special characters are not allowed')
-    .matches(whiteSpace_regex, 'White spaces are not allowed')
+    .matches(alphabets_only_regex_with_single_space, 'Numbers and special characters are not allowed')
+    .matches(whiteSpace_single_regex, 'White spaces are not allowed')
     .required('Billing Name is a required field')
     .nullable(true),
   billingEmail: Yup.string()

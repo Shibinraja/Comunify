@@ -8,7 +8,7 @@ import { SubscriptionProps } from 'interface/interface';
 import CheckoutForm from '../../../settings/pages/subscription/CheckoutForm';
 import { BillingDetails } from '../../../settings/interface/settings.interface';
 import * as Yup from 'yup';
-import { alphabets_only_regex, email_regex, whiteSpace_regex } from '../../../../constants/constants';
+import { alphabets_only_regex_with_single_space, email_regex, whiteSpace_single_regex } from '../../../../constants/constants';
 
 export const PaymentCard: React.FC<SubscriptionProps> = ({ subscriptionData }) => {
   const initialValues: SubscriptionValues = { billingName: '', billingEmail: '' };
@@ -112,8 +112,8 @@ const billingDetailsScheme = Yup.object().shape({
     .trim('WhiteSpaces are not allowed')
     .min(4, 'Billing Name must be at least 4 characters')
     .max(25, 'Billing Name should not exceed above 25 characters')
-    .matches(alphabets_only_regex, 'Numbers and special characters are not allowed')
-    .matches(whiteSpace_regex, 'White spaces are not allowed')
+    .matches(alphabets_only_regex_with_single_space, 'Numbers and special characters are not allowed')
+    .matches(whiteSpace_single_regex, 'White spaces are not allowed')
     .required('Billing Name is a required field')
     .nullable(true),
   billingEmail: Yup.string()
