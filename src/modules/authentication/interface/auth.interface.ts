@@ -13,7 +13,7 @@ export type EmailFormValues = {
 export type FormValues = {
   userName: string;
   password: string;
-  rememberMe:boolean
+  rememberMe?:boolean
 };
 
 export type DecodeToken = {

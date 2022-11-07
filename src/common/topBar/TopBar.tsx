@@ -1,32 +1,102 @@
-import Input from 'common/input';
-import React, { useEffect, useRef, useState } from 'react';
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable react/prop-types */
+import useDebounce from '@/hooks/useDebounce';
+import { getGlobalSearchRequest } from 'modules/dashboard/services/dashboard.services';
+import React, { ChangeEvent, Fragment, useEffect, useRef, useState } from 'react';
+import Skeleton from 'react-loading-skeleton';
+import { useNavigate } from 'react-router';
+import { useParams } from 'react-router-dom';
 import ellipseIcon from '../../assets/images/Ellipse 39.svg';
-import profilePic from '../../assets/images/user-image.svg';
-import slackIcon from '../../assets/images/slack.svg';
 import sunIcon from '../../assets/images/sun.svg';
-import unplashMjIcon from '../../assets/images/unsplash.svg';
-import unplashMj from '../../assets/images/unsplash_mj.svg';
 import { useAppDispatch } from '../../hooks/useRedux';
 import authSlice from '../../modules/authentication/store/slices/auth.slice';
 import { AppDispatch } from '../../store';
-import { useNavigate } from 'react-router';
-import { getLocalWorkspaceId } from '@/lib/helper';
+import profilePic from '../../assets/images/user-image.svg';
 import { userProfileDataService } from 'modules/account/services/account.services';
 import { DecodeToken } from 'modules/authentication/interface/auth.interface';
 import cookie from 'react-cookies';
 import { decodeToken } from '@/lib/decodeToken';
+import { ActivityEnum, GlobalSearchDataResponse, GlobalSearchDataResult, SearchSuggestionArgsType } from './TopBarTypes';
 // import { useTheme } from 'contexts/ThemeContext';
 
 const TopBar: React.FC = () => {
+  const { workspaceId } = useParams();
   const navigate = useNavigate();
   const [isDropdownActive, setIsDropdownActive] = useState<boolean>(false);
+  const [searchSuggestion, setSearchSuggestion] = useState<string>('');
+  const [suggestionList, setSuggestionList] = useState<GlobalSearchDataResponse>({
+    result: [],
+    nextCursor: null
+  });
+  const [loading, setLoading] = useState<{ fetchLoading: boolean; scrollLoading: boolean }>({
+    fetchLoading: false,
+    scrollLoading: false
+  });
+
+  const [isSuggestionListDropDown, setIsSuggestionListDropDown] = useState<boolean>(false);
+
+  // eslint-disable-next-line no-unused-vars
+  const [activityNextCursor, setActivityNextCursor] = useState<string | null>('');
+
   const options: string[] = ['Profile Settings', 'Sign Out'];
   const dispatch: AppDispatch = useAppDispatch();
+
   const dropDownRef = useRef<HTMLImageElement | null>(null);
-  const workspaceId = getLocalWorkspaceId();
   const [profileImage, setProfileImage] = useState<string>('');
   const accessToken = localStorage.getItem('accessToken') || cookie.load('x-auth-cookie');
   const decodedToken: DecodeToken = accessToken && decodeToken(accessToken);
+  const suggestionListDropDownRef = useRef<HTMLDivElement | null>(null);
+
+  const debouncedValue = useDebounce(searchSuggestion, 300);
+
+  // Function to call the api and list the membersSuggestionList
+  const getGlobalSearchItem = async(props: Partial<SearchSuggestionArgsType>) => {
+    setLoading((prev) => ({ ...prev, fetchLoading: true }));
+    const data = await getGlobalSearchRequest({
+      workspaceId: workspaceId!,
+      cursor: props.cursor ? props.cursor : props.suggestionListCursor ? (props.prop ? '' : props.suggestionListCursor) : '',
+      search: props.search as string
+    });
+    setLoading((prev) => ({ ...prev, fetchLoading: false }));
+    setSuggestionList((prevState) => ({
+      result: prevState.result.concat(data?.result as unknown as GlobalSearchDataResult[]),
+      nextCursor: data?.nextCursor as string | null
+    }));
+  };
+
+  const handleOutsideClick = (event: MouseEvent) => {
+    if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
+      setIsDropdownActive(false);
+    }
+
+    if (suggestionListDropDownRef && suggestionListDropDownRef.current && !suggestionListDropDownRef.current.contains(event.target as Node)) {
+      setIsSuggestionListDropDown(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProfileData();
+    document.addEventListener('click', handleOutsideClick);
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, []);
+
+  useEffect(() => {
+    setSuggestionList({
+      result: [],
+      nextCursor: null
+    });
+
+    if (debouncedValue) {
+      getGlobalSearchItem({
+        cursor: null,
+        prop: 'search',
+        search: debouncedValue,
+        suggestionListCursor: suggestionList.nextCursor
+      });
+    }
+  }, [debouncedValue]);
 
   // eslint-disable-next-line space-before-function-paren
   const handleDropDownActive = async (data?: string): Promise<void> => {
@@ -57,23 +127,44 @@ const TopBar: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    fetchProfileData();
-  });
-
-  const handleOutsideClick = (event: MouseEvent) => {
-    if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
-      setIsDropdownActive(false);
+  //Function to search of the desired suggestionList.
+  const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const searchText: string = event.target.value;
+    if (!searchText) {
+      setSearchSuggestion('');
+    } else {
+      setSearchSuggestion(searchText);
     }
   };
 
-  useEffect(() => {
-    document.addEventListener('click', handleOutsideClick);
-    return () => {
-      document.removeEventListener('click', handleOutsideClick);
-    };
-  }, []);
+  // function for scroll event
+  const handleScroll = async(event: React.UIEvent<HTMLElement>) => {
+    event.preventDefault();
+    const { clientHeight, scrollHeight, scrollTop } = event.currentTarget;
+    if (scrollHeight - scrollTop <= clientHeight + 2 && !loading.fetchLoading) {
+      setActivityNextCursor(suggestionList.nextCursor);
+      if (suggestionList.nextCursor) {
+        setLoading((prev) => ({ ...prev, scrollLoading: true }));
+        await getGlobalSearchItem({
+          cursor: suggestionList.nextCursor,
+          prop: '',
+          search: debouncedValue,
+          suggestionListCursor: null
+        });
+        setLoading((prev) => ({ ...prev, scrollLoading: false }));
+      }
+    }
+  };
 
+  const navigateToActivity = (activityId: string, activityType: string, searchText:string) => {
+    if(activityType === ActivityEnum.Activity) {
+      navigate(`/${workspaceId}/activity?activityId=${activityId}&searchText=${searchText}`);
+    }
+
+    if (activityType === ActivityEnum.Member) {
+      navigate(`/${workspaceId}/members/${activityId}/profile`);
+    }
+  };
   // const { theme, setTheme } = useTheme();
 
   // function handleToggleTheme() {
@@ -84,13 +175,17 @@ const TopBar: React.FC = () => {
   return (
     <div className=" mt-6 px-12 xl:px-20">
       <div className="flex justify-between items-center ">
-        <div className="relative dark:bg-primaryDark`">
-          <Input
+        <div className="relative dark:bg-primaryDark`" ref={suggestionListDropDownRef}>
+          <input
             name="search"
             id="searchId"
             type="text"
             placeholder="Search..."
             className="bg-transparent border border-borderPrimary focus:outline-none font-normal pl-4.18 box-border text-inputText text-search rounded-0.6 h-16 w-34.3  placeholder:font-normal placeholder:leading-snug placeholder:text-search placeholder:text-searchGray shadow-profileCard"
+            onChange={handleSearchTextChange}
+            onClick={() => {
+              setIsSuggestionListDropDown(true);
+            }}
           />
           <div className="absolute pl-7 top-[1.3rem]">
             <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -156,42 +251,44 @@ const TopBar: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="mt-[3px] scroll-auto box-border rounded-0.3 shadow-reportInput w-34.37 app-result-card-border hidden">
-        <div className="flex flex-col mt-[13px] pl-4 pb-5 opacity-40">
-          <div className="flex">
-            <div>
-              <img src={unplashMjIcon} alt="" />
+      {suggestionList?.result?.length > 0 && isSuggestionListDropDown && (
+        <div
+          className="mt-[3px] box-border rounded-0.3 shadow-reportInput w-34.37 app-result-card-border h-12.375 overflow-auto"
+          onScroll={handleScroll}
+        >
+          {suggestionList.result.map((searchResult: GlobalSearchDataResult) => (
+            <div
+              className="flex flex-col mt-[13px] pl-4 pb-5 overflow-auto cursor-pointer"
+              key={searchResult.id}
+              onClick={() => navigateToActivity(searchResult.id, searchResult.resultType, searchResult.displayValue)}
+            >
+              <div className="flex">
+                <Fragment>
+                  <img className="h-[1.835rem] w-[1.9175rem] rounded-full" src={searchResult.icon} alt="" />
+                </Fragment>
+                <div className="pl-6 font-Poppins font-normal text-searchBlack leading-1.31 text-trial">{searchResult.displayValue}</div>
+              </div>
             </div>
-            <div className="pl-6 font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
-              John posted a “Latest Release” on channel “Updates”
+          ))}
+          {loading.fetchLoading && (
+            <div className="flex flex-col mt-[13px] pl-4 pb-5 overflow-auto">
+              <div className="flex">
+                <Fragment>
+                  <Skeleton width={40} height={40} borderRadius={'50%'} className="rounded-full" />
+                </Fragment>
+                <Skeleton width={300} height={20} className={'ml-5'} />
+              </div>
             </div>
-          </div>
-          <div className="flex  mt-1.625">
-            <div>
-              <img src={unplashMj} alt="" />
-            </div>
-            <div className="pl-6 font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
-              Nishitha commented a post “Latest Release” on channel “Updates”
-            </div>
-          </div>
-          <div className="flex mt-1.625">
-            <div>
-              <img src={slackIcon} alt="" />
-            </div>
-            <div className="pl-6 font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
-              Nishitha started a discussion “Latest Release” of our product”
-            </div>
-          </div>
-          <div className="flex mt-1.625">
-            <div>
-              <img src={unplashMjIcon} alt="" />
-            </div>
-            <div className="pl-6 font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
-              John posted a “Latest Release” on channel “Updates”
-            </div>
+          )}
+        </div>
+      )}
+      {searchSuggestion && suggestionList.result.length === 0 && !loading.fetchLoading && (
+        <div className="mt-[3px] scroll-auto box-border rounded-0.3 shadow-reportInput w-34.37 app-result-card-border">
+          <div className="flex flex-col mt-[13px] pl-4 pb-5">
+            <h3 className="font-Poppins font-normal text-base text-infoBlack mt-6 text-center">No data found</h3>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
