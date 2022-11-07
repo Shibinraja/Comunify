@@ -26,7 +26,7 @@ const request = Axios.create({
 let refresh_token: Promise<AxiosResponse<Record<string, unknown>>> | null = null;
 
 // refresh-token
-const fetch_refresh_token = (): Promise<AxiosResponse<Record<string, unknown>>> => {
+export const fetch_refresh_token = (): Promise<AxiosResponse<Record<string, unknown>>> => {
   const response = axios
     .post(
       `${API_ENDPOINT}${auth_module}/refreshtoken`,
