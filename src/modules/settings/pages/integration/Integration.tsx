@@ -37,6 +37,7 @@ import Input from '../../../../common/input';
 import './Integration.css';
 import { IntegrationModalDrawer } from './IntegrationModalDrawer';
 import { PlatformsEnumType } from './IntegrationDrawerTypes';
+import { ModalDrawer } from 'common/modals/ModalDrawer';
 
 Modal.setAppElement('#root');
 
@@ -50,7 +51,8 @@ interface ConfirmPlatformToDisconnect {
 }
 
 const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
-  const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanillaForums: false, discord: false, reddit: false });
+  const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanilla: false, discord: false, reddit: false });
+  const [showAlert, setShowAlert] = useState<ModalState>({ slack: false, vanilla: false, discord: false, reddit: false });
   const [isWarningModalOpen, setIsWarningModalOpen] = useState<boolean>(false);
   const [confirmPlatformToDisconnect, setConfirmPlatformToDisconnect] = useState<ConfirmPlatformToDisconnect>({
     platform: '',
@@ -65,6 +67,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
     reddit: undefined
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [reconnectLoading, setReconnectLoading] = useState<boolean>(false);
   //   const [platformStatus, setPlatformStatus] = useState<PlatformsStatus>({ platform: undefined, status: undefined });
   const [vanillaForumsData, setVanillaForumsData] = useState<VanillaForumsConnectData>({
     vanillaAccessToken: '',
@@ -117,17 +120,17 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
   };
 
   const handleVanillaModal = (val: boolean) => {
-    setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: val }));
+    setIsModalOpen((prevState) => ({ ...prevState, vanilla: val }));
   };
 
-  const handleModals = (name: string, icon: string, isIntegrated: boolean) => {
+  const handleModals = (name: string, icon: string, isIntegrated: boolean, isConnected:boolean) => {
     switch (name) {
       case PlatformsEnumType.SLACK:
         setIsLoading(true);
         if (!checkForConnectedPlatform(name)) {
           setPlatformIcons((prevState) => ({ ...prevState, slack: icon }));
-          if (isIntegrated === true) {
-            handlePlatformReconnectForSlack(name);
+          if (isIntegrated && isConnected) {
+            setShowAlert((prevState) => ({ ...prevState, slack: true }));
           } else {
             NavigateToConnectPage();
             setIsLoading(false);
@@ -141,10 +144,10 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
         setIsLoading(true);
         if (!checkForConnectedPlatform(name)) {
           setPlatformIcons((prevState) => ({ ...prevState, vanillaForums: icon }));
-          if (isIntegrated === true) {
-            handlePlatformReconnectForVanilla(name);
+          if (isIntegrated && isConnected) {
+            setShowAlert((prevState) => ({ ...prevState, vanilla: true }));
           } else {
-            setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: true }));
+            setIsModalOpen((prevState) => ({ ...prevState, vanilla: true }));
             setIsLoading(false);
           }
         } else {
@@ -156,8 +159,8 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
         setIsLoading(true);
         if (!checkForConnectedPlatform(name)) {
           setPlatformIcons((prevState) => ({ ...prevState, discord: icon }));
-          if (isIntegrated === true) {
-            handlePlatformReconnectForDiscord(name);
+          if (isIntegrated && isConnected) {
+            setShowAlert((prevState) => ({ ...prevState, discord: true }));
           } else {
             NavigateToDiscordConnectPage();
             setIsLoading(false);
@@ -171,8 +174,8 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
         setIsLoading(true);
         if (!checkForConnectedPlatform(name)) {
           setPlatformIcons((prevState) => ({ ...prevState, reddit: icon }));
-          if (isIntegrated === true) {
-            handlePlatformReconnectForReddit(name);
+          if (isIntegrated && isConnected) {
+            setShowAlert((prevState) => ({ ...prevState, reddit: true }));
           } else {
             NavigateToRedditConnectPage();
             setIsLoading(false);
@@ -342,22 +345,27 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
 
   // eslint-disable-next-line space-before-function-paren
   const handlePlatformReconnectForSlack = async (platform: string) => {
-    setIsModalOpen((prevState) => ({ ...prevState, slack: true }));
+    // setIsModalOpen((prevState) => ({ ...prevState, slack: true }));
+    setReconnectLoading(true);
     const body = {
       workspaceId
     };
     try {
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
-        setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
+        setShowAlert((prevState) => ({ ...prevState, slack: false }));
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
         showSuccessToast(`${platform} was successfully connected`);
-        setIsLoading(false);
+        setReconnectLoading(false);
       } else {
         showErrorToast('Failed to connect to the platform');
+        setShowAlert((prevState) => ({ ...prevState, slack: false }));
+        setReconnectLoading(false);
       }
     } catch {
       showErrorToast('Failed to connect to the platform');
+      setShowAlert((prevState) => ({ ...prevState, slack: false }));
+      setReconnectLoading(false);
     }
   };
 
@@ -366,76 +374,112 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
     const body = {
       workspaceId
     };
+    setReconnectLoading(true);
     showSuccessToast('Integration in progress...');
     try {
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
         showSuccessToast(`${platform} Forums was successfully connected`);
-        setIsLoading(false);
+        setReconnectLoading(false);
       } else {
         showErrorToast('Failed to connect to the platform');
+        setReconnectLoading(false);
       }
     } catch {
       showErrorToast('Failed to connect to the platform');
+      setReconnectLoading(false);
     }
   };
 
   // eslint-disable-next-line space-before-function-paren
   const handlePlatformReconnectForDiscord = async (platform: string) => {
-    setIsModalOpen((prevState) => ({ ...prevState, discord: true }));
+    setReconnectLoading(true);
+    // setIsModalOpen((prevState) => ({ ...prevState, discord: true }));
     const body = {
       workspaceId
     };
     try {
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
-        setIsModalOpen((prevState) => ({ ...prevState, discord: false }));
+        setShowAlert((prevState) => ({ ...prevState, discord: false }));
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
         showSuccessToast(`${platform} was successfully connected`);
-        setIsLoading(false);
+        setReconnectLoading(false);
       } else {
         showErrorToast('Failed to connect to the platform');
-        setIsModalOpen((prevState) => ({ ...prevState, discord: false }));
+        setShowAlert((prevState) => ({ ...prevState, discord: false }));
+        setReconnectLoading(false);
       }
     } catch {
       showErrorToast('Failed to connect to the platform');
-      setIsModalOpen((prevState) => ({ ...prevState, discord: false }));
+      setShowAlert((prevState) => ({ ...prevState, discord: false }));
+      setReconnectLoading(false);
     }
   };
 
   // eslint-disable-next-line space-before-function-paren
   const handlePlatformReconnectForReddit = async (platform: string) => {
-    setIsModalOpen((prevState) => ({ ...prevState, reddit: true }));
+    setReconnectLoading(true);
+    // setIsModalOpen((prevState) => ({ ...prevState, reddit: true }));
     const body = {
       workspaceId
     };
     try {
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
-        setIsModalOpen((prevState) => ({ ...prevState, reddit: false }));
+        setShowAlert((prevState) => ({ ...prevState, reddit: false }));
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
         showSuccessToast(`${platform} was successfully connected`);
-        setIsLoading(false);
+        setReconnectLoading(false);
       } else {
         showErrorToast('Failed to connect to the platform');
-        setIsModalOpen((prevState) => ({ ...prevState, reddit: false }));
+        setShowAlert((prevState) => ({ ...prevState, reddit: false }));
+        setReconnectLoading(false);
       }
     } catch {
       showErrorToast('Failed to connect to the platform');
-      setIsModalOpen((prevState) => ({ ...prevState, reddit: false }));
+      setShowAlert((prevState) => ({ ...prevState, reddit: false }));
+      setReconnectLoading(false);
+    }
+  };
+
+  const handleOnSubmit = () => {
+    //     const platformEntries= Object.entries(showAlert);
+    //     const platformName = platformEntries.find(((platform) => {
+    //        if(platform.includes(true)) {
+    //         return platform;
+    //         }
+    // }));
+    if (showAlert.slack) {
+      handlePlatformReconnectForSlack(PlatformsEnumType.SLACK);
+    }
+    if (showAlert.vanilla) {
+      handlePlatformReconnectForVanilla(PlatformsEnumType.VANILLA);
+    }
+    if (showAlert.discord) {
+      handlePlatformReconnectForDiscord(PlatformsEnumType.DISCORD);
+    }
+    if (showAlert.reddit) {
+      handlePlatformReconnectForReddit(PlatformsEnumType.REDDIT);
     }
   };
 
   const handleModalClose = () => {
-    if (isModalOpen.slack) {
+    if (isModalOpen.slack || showAlert.slack) {
       setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
+      setShowAlert((prevState) => ({ ...prevState, slack: false }));
     }
-    if (isModalOpen.discord) {
+    if (isModalOpen.discord || showAlert.discord) {
       setIsModalOpen((prevState) => ({ ...prevState, discord: false }));
+      setShowAlert((prevState) => ({ ...prevState, discord: false }));
     }
-    if (isModalOpen.reddit) {
+    if (isModalOpen.reddit || showAlert.reddit) {
       setIsModalOpen((prevState) => ({ ...prevState, reddit: false }));
+      setShowAlert((prevState) => ({ ...prevState, reddit: false }));
+    }
+    if (showAlert.vanilla) {
+      setShowAlert((prevState) => ({ ...prevState, vanilla: false }));
     }
   };
 
@@ -495,7 +539,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
                   type="button"
                   text="Connect"
                   className={!isButtonConnect ? disConnectedBtnClassName : connectedBtnClassName}
-                  onClick={() => handleModals(data?.name.toLocaleLowerCase().trim(), data?.platformLogoUrl, data?.isIntegrated)}
+                  onClick={() => handleModals(data?.name.toLocaleLowerCase().trim(), data?.platformLogoUrl, data?.isIntegrated, data.isConnected)}
                 />
               </div>
             ))}
@@ -515,9 +559,9 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
           </div>
 
           <Modal
-            isOpen={isModalOpen.vanillaForums}
+            isOpen={isModalOpen.vanilla}
             shouldCloseOnOverlayClick={false}
-            onRequestClose={() => setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: false }))}
+            onRequestClose={() => setIsModalOpen((prevState) => ({ ...prevState, vanilla: false }))}
             className="w-24.31 pb-12 mx-auto rounded-lg border-integration-modal bg-white shadow-modal outline-none"
             style={{
               overlay: {
@@ -656,6 +700,16 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
         isClose={handleModalClose}
         iconSrc={isModalOpen.slack ? slackIcon : isModalOpen.reddit ? redditLogoIcon : isModalOpen.discord ? discordIcon : ''}
         contextText={isModalOpen.slack ? 'Slack' : isModalOpen.reddit ? 'Reddit' : isModalOpen.discord ? 'Discord' : ''}
+      />
+      <ModalDrawer
+        isOpen={Object.values(showAlert).includes(true) ? true : false}
+        isClose={handleModalClose}
+        loader={reconnectLoading}
+        onSubmit={handleOnSubmit}
+        iconSrc={showAlert.slack ? slackIcon : showAlert.reddit ? redditLogoIcon : showAlert.discord ? discordIcon : showAlert.vanilla ? vanillaIcon :''}
+        contextText={`Are you sure you want to reconnect the ${
+          showAlert.slack ? 'slack' : showAlert.discord ? 'discord' : showAlert.reddit ? 'reddit' : ''
+        }  to your workspace?`}
       />
     </TabPanel>
   );
