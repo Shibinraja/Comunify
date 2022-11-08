@@ -89,6 +89,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
   useEffect(() => {
     document.addEventListener('click', handleOutsideClick);
     setSaveRefObject(dropDownRef.current);
+    dispatch(settingsSlice.actions.platformData({ workspaceId }));
     return () => {
       document.removeEventListener('click', handleOutsideClick);
     };

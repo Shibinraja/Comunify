@@ -29,7 +29,7 @@ import './Integration.css';
 Modal.setAppElement('#root');
 
 const Integration: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanillaForums: false, discord: false, reddit: false });
+  const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanilla: false, discord: false, reddit: false });
   // eslint-disable-next-line no-unused-vars
   const [platformIcons, setPlatformIcons] = useState<PlatformIcons>({
     slack: undefined,
@@ -98,7 +98,7 @@ const Integration: React.FC = () => {
         break;
       case PlatformsEnumType.VANILLA:
         setPlatformIcons((prevState) => ({ ...prevState, vanillaForums: icon }));
-        setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: true }));
+        setIsModalOpen((prevState) => ({ ...prevState, vanilla: true }));
         break;
       case PlatformsEnumType.DISCORD:
         NavigateToDiscordConnectPage();
@@ -164,7 +164,7 @@ const Integration: React.FC = () => {
             dispatch(settingsSlice.actions.platformData({ workspaceId }));
             showSuccessToast('Successfully integrated');
             setIsLoading(false);
-            setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: false }));
+            setIsModalOpen((prevState) => ({ ...prevState, vanilla: false }));
             navigate(`/${workspaceId}/settings`);
           }
         } catch (error) {
@@ -241,7 +241,7 @@ const Integration: React.FC = () => {
   };
 
   const handleVanillaModal = (val: boolean) => {
-    setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: val }));
+    setIsModalOpen((prevState) => ({ ...prevState, vanilla: val }));
   };
 
   const connectedBtnClassName = `dark:bg-secondaryDark bg-connectButton shadow-contactCard font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded 
@@ -292,7 +292,7 @@ const Integration: React.FC = () => {
                   </div>
                 </div>
                 <Modal
-                  isOpen={isModalOpen.vanillaForums}
+                  isOpen={isModalOpen.vanilla}
                   shouldCloseOnOverlayClick={false}
                   onRequestClose={() => handleVanillaModal(false)}
                   className="w-24.31 pb-12 mx-auto rounded-lg border-integration-modal bg-white shadow-modal outline-none"
