@@ -134,7 +134,7 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
         setIsLoading(true);
         if (!checkForConnectedPlatform(name)) {
           setPlatformIcons((prevState) => ({ ...prevState, slack: icon }));
-          if (isIntegrated && isConnected) {
+          if (isIntegrated && !isConnected) {
             setShowAlert((prevState) => ({ ...prevState, slack: true }));
           } else {
             NavigateToConnectPage();
@@ -149,7 +149,7 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
         setIsLoading(true);
         if (!checkForConnectedPlatform(name)) {
           setPlatformIcons((prevState) => ({ ...prevState, vanillaForums: icon }));
-          if (isIntegrated && isConnected) {
+          if (isIntegrated && !isConnected) {
             setShowAlert((prevState) => ({ ...prevState, vanilla: true }));
           } else {
             setIsModalOpen((prevState) => ({ ...prevState, vanilla: true }));
@@ -164,7 +164,7 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
         setIsLoading(true);
         if (!checkForConnectedPlatform(name)) {
           setPlatformIcons((prevState) => ({ ...prevState, discord: icon }));
-          if (isIntegrated && isConnected) {
+          if (isIntegrated && !isConnected) {
             setShowAlert((prevState) => ({ ...prevState, discord: true }));
           } else {
             NavigateToDiscordConnectPage();
@@ -179,7 +179,7 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
         setIsLoading(true);
         if (!checkForConnectedPlatform(name)) {
           setPlatformIcons((prevState) => ({ ...prevState, reddit: icon }));
-          if (isIntegrated && isConnected) {
+          if (isIntegrated && !isConnected) {
             setShowAlert((prevState) => ({ ...prevState, reddit: true }));
           } else {
             NavigateToRedditConnectPage();
@@ -226,7 +226,9 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
             dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
           }
         }
+        dispatch(settingsSlice.actions.platformData({ workspaceId }));
       } catch {
+        dispatch(settingsSlice.actions.platformData({ workspaceId }));
         setIntegrationDisconnect(false);
         showErrorToast(`${confirmPlatformToDisconnect.platform} disconnection failed`);
       }
