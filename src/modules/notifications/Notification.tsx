@@ -43,7 +43,9 @@ export const Notifications: React.FC<Props> = ({ children }: NotificationContext
     if (access_token) {
       // Centrifuge Connection
       const centrifuge = new Centrifuge('wss://centrifugo.comunifyllc.com/connection/websocket', {
-        token: access_token,
+        token: `${access_token}`,
+        debug: true,
+        timeout: 5000,
         // refresh token
         // as auth jwt is being used read token from local storage
         getToken() {
