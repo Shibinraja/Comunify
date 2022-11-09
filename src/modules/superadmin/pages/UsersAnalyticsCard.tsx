@@ -28,7 +28,7 @@ const UsersAnalyticsCard: React.FC = () => {
         {fetchLoader ? (
           Array.from({ length: 3 }, (_, i) => i + 1).map((type: number) => (
             <Fragment key={type}>
-              <div className={`flex  items-center justify-center rounded-0.9 w-full h-8.34 cursor-pointer ${type === 1 ?  'bg-member1' : type === 2 ? ' bg-member2': ' bg-member3'}`}>
+              <div className={`flex  items-center justify-center rounded-0.9 w-full h-8.34 ${type === 1 ? 'bg-member1' : type === 2 ? ' bg-member2' : ' bg-member3'}`}>
                 <Skeleton count={count_3} width={width_90} />
               </div>
             </Fragment>
@@ -36,7 +36,7 @@ const UsersAnalyticsCard: React.FC = () => {
         ) : (
           analyticsData &&
           analyticsData.map((analytics) => (
-            <div className={`flex  items-center justify-center rounded-0.9 w-full h-8.34 cursor-pointer ${analytics.title.toLocaleLowerCase().trim() === 'total users' ?  'bg-member1' : analytics.title.toLocaleLowerCase().trim() === 'total active' ? ' bg-member2': ' bg-member3'}`} key={Math.random()}>
+            <div className={`flex  items-center justify-center rounded-0.9 w-full h-8.34 ${analytics.title.toLocaleLowerCase().trim() === 'total users' ? 'bg-member1' : analytics.title.toLocaleLowerCase().trim() === 'total active' ? ' bg-member2' : ' bg-member3'}`} key={Math.random()}>
               <div className='flex-col'>
                 <div className="text-infoBlack font-Poppins font-semibold text-signIn leading-3.18">{analytics.count}</div>
                 <div className="font-Poppins font-semibold text-infoBlack text-member leading-4">{analytics.title}</div>

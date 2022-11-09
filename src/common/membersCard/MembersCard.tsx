@@ -32,34 +32,34 @@ const MembersCard: React.FC = () => {
   return (
     <div className="">
       <div className="flex gap-2.28">
-        <div className="flex  flex-col items-center justify-center bg-member1 rounded-0.9 w-full h-8.34 cursor-pointer">
+        <div className="flex  flex-col items-center justify-center bg-member1 rounded-0.9 w-full h-8.34 cursor-auto">
           {membersCountAnalyticsLoading ? (
             <Skeleton count={count_3} width={width_90} />
           ) : (
             <Fragment>
-              <div className="text-infoBlack font-Poppins font-semibold text-signIn leading-3.18">{handleCount(totalMembers.count)}</div>
+              <div className="text-infoBlack font-Poppins font-semibold text-signIn leading-3.18 cursor-auto">{handleCount(totalMembers.count)}</div>
               <div className="font-Poppins font-semibold text-infoBlack text-member leading-4">{totalMembers.title}</div>
               <div className="text-[8px] xl:text-card font-Poppins font-normal leading-1.12 text-status mt-0.151">{totalMembers.analyticMessage}</div>
             </Fragment>
           )}
         </div>
-        <div className=" flex-col items-center justify-center flex bg-member2 rounded-0.9 w-full h-8.34 cursor-pointer">
+        <div className=" flex-col items-center justify-center flex bg-member2 rounded-0.9 w-full h-8.34 cursor-auto">
           {membersCountAnalyticsLoading ? (
             <Skeleton count={count_3} width={width_90} />
           ) : (
             <Fragment>
-              <div className="text-infoBlack font-Poppins font-semibold text-signIn leading-3.18">{handleCount(newMembers.count)}</div>
+              <div className="text-infoBlack font-Poppins font-semibold text-signIn leading-3.18 cursor-auto">{handleCount(newMembers.count)}</div>
               <div className="font-Poppins font-semibold text-infoBlack text-member leading-4">{newMembers.title}</div>
               <div className="text-[8px] xl:text-card  font-Poppins font-normal leading-1.12 text-status mt-0.151">{newMembers.analyticMessage}</div>
             </Fragment>
           )}
         </div>
-        <div className=" flex-col items-center justify-center flex bg-member3 rounded-0.9 w-full h-8.34 cursor-pointer">
+        <div className=" flex-col items-center justify-center flex bg-member3 rounded-0.9 w-full h-8.34 cursor-auto">
           {membersActivityAnalyticsLoading ? (
             <Skeleton count={count_3} width={width_90} />
           ) : (
             <Fragment>
-              <div className="text-infoBlack font-Poppins font-semibold text-signIn leading-3.18">{handleCount(activeMembers.count)}</div>
+              <div className="text-infoBlack font-Poppins font-semibold text-signIn leading-3.18 cursor-auto">{handleCount(activeMembers.count)}</div>
               <div className="font-Poppins font-semibold text-infoBlack text-member leading-4">{activeMembers.title}</div>
               <div className="text-[8px] xl:text-card  font-Poppins font-normal leading-1.12 text-status mt-0.151">
                 {activeMembers.analyticMessage}
@@ -67,12 +67,12 @@ const MembersCard: React.FC = () => {
             </Fragment>
           )}
         </div>
-        <div className=" flex-col items-center justify-center flex bg-member4 rounded-0.9 w-full h-8.34 cursor-pointer">
+        <div className=" flex-col items-center justify-center flex bg-member4 rounded-0.9 w-full h-8.34 cursor-auto">
           {membersActivityAnalyticsLoading ? (
             <Skeleton count={count_3} width={width_90} />
           ) : (
             <Fragment>
-              <div className="text-infoBlack font-Poppins font-semibold text-signIn leading-3.18">{handleCount(inActiveMembers.count)}</div>
+              <div className="text-infoBlack font-Poppins font-semibold text-signIn leading-3.18 cursor-auto">{handleCount(inActiveMembers.count)}</div>
               <div className="font-Poppins font-semibold text-infoBlack text-member leading-4">{inActiveMembers.title}</div>
               <div className="text-[8px] xl:text-card  font-Poppins font-normal leading-1.12 text-status mt-0.151">
                 {inActiveMembers.analyticMessage}
