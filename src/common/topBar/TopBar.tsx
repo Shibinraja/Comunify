@@ -8,9 +8,9 @@ import { useNavigate } from 'react-router';
 import { useParams } from 'react-router-dom';
 import ellipseIcon from '../../assets/images/Ellipse 39.svg';
 import sunIcon from '../../assets/images/sun.svg';
-import { useAppDispatch } from '../../hooks/useRedux';
+import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import authSlice from '../../modules/authentication/store/slices/auth.slice';
-import { AppDispatch } from '../../store';
+import { AppDispatch, State } from '../../store';
 import profilePic from '../../assets/images/user-image.svg';
 import { userProfileDataService } from 'modules/account/services/account.services';
 import { DecodeToken } from 'modules/authentication/interface/auth.interface';
@@ -24,6 +24,8 @@ const TopBar: React.FC = () => {
   const navigate = useNavigate();
   const [isDropdownActive, setIsDropdownActive] = useState<boolean>(false);
   const [searchSuggestion, setSearchSuggestion] = useState<string>('');
+  const profilePictureUrl = useAppSelector((state: State) => state.accounts.profilePictureUrl);
+
   const [suggestionList, setSuggestionList] = useState<GlobalSearchDataResponse>({
     result: [],
     nextCursor: null
@@ -80,7 +82,16 @@ const TopBar: React.FC = () => {
     return () => {
       document.removeEventListener('click', handleOutsideClick);
     };
+    if (profilePictureUrl) {
+      setProfileImage(profilePictureUrl.profilePic);
+    }
   }, []);
+
+  useEffect(() => {
+    if (profilePictureUrl) {
+      setProfileImage(profilePictureUrl.profilePic);
+    }
+  }, [profilePictureUrl]);
 
   useEffect(() => {
     setSuggestionList({
@@ -156,8 +167,8 @@ const TopBar: React.FC = () => {
     }
   };
 
-  const navigateToActivity = (activityId: string, activityType: string, searchText:string) => {
-    if(activityType === ActivityEnum.Activity) {
+  const navigateToActivity = (activityId: string, activityType: string, searchText: string) => {
+    if (activityType === ActivityEnum.Activity) {
       navigate(`/${workspaceId}/activity?activityId=${activityId}&searchText=${searchText}`);
     }
 
