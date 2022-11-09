@@ -93,7 +93,7 @@ export interface unAssignTagProps extends workspaceId {
 }
 export interface ModalState {
   slack: boolean;
-  vanillaForums: boolean;
+  vanilla: boolean;
   discord: boolean;
   reddit: boolean;
 }

@@ -14,7 +14,10 @@ const initialState: InitialState = {
   userProfileUpdateData: []
 };
 const changePassword = (state: InitialState, action: PayloadAction<ChangePassword>) => state;
-const uploadProfilePic = (state: InitialState, action: PayloadAction<profilePicInput>) => state;
+const uploadProfilePic = (state: InitialState, action: PayloadAction<profilePicInput>) => ({
+  ...state,
+  profilePictureUrl: action.payload
+});
 const userProfileData = (state: InitialState, action: PayloadAction<userProfileDataInput>) => state;
 const userProfileUpdateData = (state: InitialState, action: PayloadAction<userProfileUpdateInput>) => state;
 

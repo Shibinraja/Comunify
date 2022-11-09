@@ -113,7 +113,7 @@ const Account = () => {
     const imageFile = e.target.files?.[0];
     setProfileUploadImage(URL.createObjectURL(imageFile as Blob));
     const base64: any = await convertBase64(imageFile);
-    const uploadData = { profilePic: base64?.toString() || '', fileName: imageFile?.name };
+    const uploadData = { profilePic: base64?.toString() || '', fileName: imageFile?.name || 'file' };
     dispatch(accountSlice.actions.uploadProfilePic(uploadData as profilePicInput));
   };
 
@@ -132,7 +132,10 @@ const Account = () => {
     });
 
   const profileUpdateSchema = Yup.object().shape({
-    fullName: Yup.string().min(2, 'Full Name must be at least 2 alphabets').max(50, 'Full Name should not exceed above 50 characters'),
+    fullName: Yup.string()
+      .required('Full Name is required')
+      .min(2, 'Full Name must be at least 2 alphabets')
+      .max(50, 'Full Name should not exceed above 50 characters'),
     userName: Yup.string()
       .min(5, 'Username should be more than 5 character long')
       .max(25, 'Username should not exceed 25 characters')
@@ -155,7 +158,7 @@ const Account = () => {
       formikRef.current.resetForm({
         values: {
           name: response.name,
-          fullName: response.fullName,
+          fullName: response.fullName || '',
           userName: response.userName,
           email: response.email,
           organization: response.organization?.name,
@@ -355,7 +358,7 @@ const Account = () => {
                             // eslint-disable-next-line max-len
                             className={`h-2.81 relative  rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${
                               touched.currentPassword && errors.currentPassword
-                                ? 'boder-lightRed h-2.81 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
+                                ? 'border-lightRed h-2.81 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
                                 : ''
                             }`}
                             onBlur={handleBlur}
@@ -374,7 +377,7 @@ const Account = () => {
                         </div>
                         <div
                           className={`currentPassword relative w-1/2 pl-[19px] ${
-                            errors.currentPassword === 'Password must have one uppercase, one lowercase, a digit and special characters'
+                            errors.newPassword === 'Password must have one uppercase, one lowercase, a digit and special characters'
                               ? 'cr-currentPassword '
                               : ''
                           }`}
@@ -391,7 +394,7 @@ const Account = () => {
                             // eslint-disable-next-line max-len
                             className={`h-2.81 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${
                               touched.newPassword && errors.newPassword
-                                ? 'boder-lightRed h-2.81 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
+                                ? 'border-lightRed h-2.81 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
                                 : ''
                             }`}
                             onBlur={handleBlur}

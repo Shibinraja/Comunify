@@ -12,9 +12,9 @@ import MasterCardIcon from '../../../../assets/images/masterCard.svg';
 import VisaCardIcon from '../../../../assets/images/visa.svg';
 import { showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
 import { useAppSelector } from '../../../../hooks/useRedux';
-import { getLocalWorkspaceId } from '../../../../lib/helper';
+import { getLocalWorkspaceId, setRefreshToken } from '../../../../lib/helper';
 import { State } from '../../../../store';
-import { AddedCardDetails, ClientSecret, SubscriptionDetails, UpgradeData } from '../../../settings/interface/settings.interface';
+import { AddedCardDetails, BillingDetails, ClientSecret, SubscriptionDetails, UpgradeData } from '../../../settings/interface/settings.interface';
 import CheckoutForm from '../../../settings/pages/subscription/CheckoutForm';
 import {
   createCardService,
@@ -28,6 +28,10 @@ import { SubscriptionPackages } from '../../interface/auth.interface';
 import { chooseSubscription } from '../../services/auth.service';
 import authSlice from '../../store/slices/auth.slice';
 // import ToggleButton from 'common/ToggleButton/ToggleButton';
+import Input from '../../../../common/input';
+import { Form, Formik } from 'formik';
+import * as Yup from 'yup';
+import { alphabets_only_regex_with_single_space, email_regex, whiteSpace_single_regex } from 'constants/constants';
 
 interface SelectedCard {
   id: string;
@@ -45,7 +49,6 @@ const SubscriptionExpiredActivate: React.FC = () => {
   const dispatch: Dispatch<AnyAction> = useDispatch();
   const workspaceId: string = getLocalWorkspaceId();
   const [subscriptionDetails, setSubscriptionDetails] = useState<SubscriptionDetails | undefined>();
-  const [addCardForm, setAddCardForm] = useState<boolean>(false);
   const [clientSecret, setClientSecret] = useState<string | undefined>(undefined);
   const [addedCardDetails, setAddedCardDetails] = useState<AddedCardDetails[]>();
   const [selectedCard, setSelectedCard] = useState<SelectedCard | undefined>(undefined);
@@ -56,6 +59,11 @@ const SubscriptionExpiredActivate: React.FC = () => {
     upgradePlan: false
   });
   const [callEffect, setCallEffect] = useState<boolean>(false);
+  const [isBillingDetailsModal, setIsBillingDetailsModal] = useState<{ billingDetails: boolean; cardDetails: boolean }>({
+    billingDetails: false,
+    cardDetails: false
+  });
+  const [billingDetails, setBillingDetails] = useState<BillingDetails>({ billingName: '', billingEmail: '' });
   const stripePromise = loadStripe(`${import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY}`);
 
   useEffect(() => {
@@ -175,7 +183,7 @@ const SubscriptionExpiredActivate: React.FC = () => {
   };
 
   const handleCheckoutFormModal = () => {
-    setAddCardForm((prev: boolean) => !prev);
+    setIsBillingDetailsModal((prev) => ({ ...prev, cardDetails: false }));
   };
 
   // eslint-disable-next-line space-before-function-paren
@@ -191,15 +199,15 @@ const SubscriptionExpiredActivate: React.FC = () => {
       };
       const response: SubscriptionPackages = await chooseSubscription(subscriptionId, body);
       if (response?.status === 'paid') {
-        navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'billing_history' } });
-        setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
-        setIsLoading((prev) => ({ ...prev, upgrade: false }));
         showSuccessToast('Plan upgraded to Comunify Plus!');
         setTimeout(() => {
-          showSuccessToast('This page will be reloaded soon. Please do not change the page');
-        }, 2000);
+          showSuccessToast('This page will be redirected');
+        }, 1000);
         setTimeout(() => {
-          window.location.reload();
+          navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'billing_history' } });
+          setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
+          setIsLoading((prev) => ({ ...prev, upgrade: false }));
+          setRefreshToken();
         }, 5000);
       } else {
         setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
@@ -210,8 +218,27 @@ const SubscriptionExpiredActivate: React.FC = () => {
     }
   };
 
+  const handleBillingDetailsSubmit = (values: BillingDetails) => {
+    setBillingDetails(values);
+    showSuccessToast('Saved billing name and email');
+    setIsBillingDetailsModal({ billingDetails: false, cardDetails: true });
+  };
+
+  const handleCardDetailForms = () => {
+    if (!addedCardDetails?.length) {
+      setIsBillingDetailsModal((prev) => ({ ...prev, billingDetails: true }));
+    } else {
+      setIsBillingDetailsModal((prev) => ({ ...prev, cardDetails: true }));
+    }
+  };
+
   const handleEffect = () => {
     setCallEffect(true);
+  };
+
+  const billingDetailsInitialValues = {
+    billingName: '',
+    billingEmail: ''
   };
 
   return (
@@ -266,7 +293,7 @@ const SubscriptionExpiredActivate: React.FC = () => {
                 </p>
               </div>
               <div className="flex gap-4 items-center">
-                <button className="font-medium text-error text-tag hover:text-download" onClick={() => setAddCardForm(true)}>
+                <button className="font-medium text-error text-tag hover:text-download" onClick={handleCardDetailForms}>
                   ADD CARD
                 </button>
               </div>
@@ -357,9 +384,8 @@ const SubscriptionExpiredActivate: React.FC = () => {
           <div>
             <div className="flex flex-col">
               <Modal
-                isOpen={addCardForm}
+                isOpen={isBillingDetailsModal.cardDetails}
                 shouldCloseOnOverlayClick={false}
-                onRequestClose={() => setAddCardForm(false)}
                 className="w-24.31 pb-12 mx-auto rounded-lg border-fetching-card bg-white shadow-modal"
                 style={{
                   overlay: {
@@ -377,7 +403,12 @@ const SubscriptionExpiredActivate: React.FC = () => {
                   <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Payment Information</h3>
                   {stripePromise && options.clientSecret && (
                     <Elements stripe={stripePromise} options={options}>
-                      <CheckoutForm handleCheckoutFormModal={handleCheckoutFormModal} redirectCondition="" handleEffect={handleEffect} />
+                      <CheckoutForm
+                        handleCheckoutFormModal={handleCheckoutFormModal}
+                        redirectCondition=""
+                        handleEffect={handleEffect}
+                        billingDetails={billingDetails}
+                      />
                     </Elements>
                   )}
                 </div>
@@ -387,7 +418,6 @@ const SubscriptionExpiredActivate: React.FC = () => {
               <Modal
                 isOpen={isConfirmationModal.deleteCard}
                 shouldCloseOnOverlayClick={false}
-                onRequestClose={() => setIsConfirmationModal((prev) => ({ ...prev, deleteCard: false }))}
                 className="w-24.31 h-18.43 mx-auto rounded-lg modals-tag bg-white shadow-modal flex items-center justify-center"
                 style={{
                   overlay: {
@@ -427,7 +457,6 @@ const SubscriptionExpiredActivate: React.FC = () => {
               <Modal
                 isOpen={isConfirmationModal.upgradePlan}
                 shouldCloseOnOverlayClick={false}
-                onRequestClose={() => setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }))}
                 className="w-24.31 h-18.43 mx-auto rounded-lg modals-tag bg-white shadow-modal flex items-center justify-center"
                 style={{
                   overlay: {
@@ -465,11 +494,113 @@ const SubscriptionExpiredActivate: React.FC = () => {
                 </div>
               </Modal>
             </div>
+
+            <div>
+              <div className="flex flex-col ">
+                <Modal
+                  isOpen={isBillingDetailsModal.billingDetails}
+                  shouldCloseOnOverlayClick={false}
+                  className="w-24.31 pb-12 mx-auto rounded-lg border-fetching-card bg-white shadow-modal"
+                  style={{
+                    overlay: {
+                      display: 'flex',
+                      position: 'fixed',
+                      top: 0,
+                      left: 0,
+                      bottom: 0,
+                      right: 0,
+                      alignItems: 'center'
+                    }
+                  }}
+                >
+                  <div className="flex flex-col">
+                    <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Upgrade</h3>
+                    <Formik
+                      initialValues={billingDetailsInitialValues}
+                      onSubmit={handleBillingDetailsSubmit}
+                      validateOnChange={true}
+                      validationSchema={billingDetailsScheme}
+                    >
+                      {({ errors, handleBlur, handleChange, handleSubmit, touched, values }): JSX.Element => (
+                        <Form
+                          className="flex flex-col relative  px-1.93 mt-9"
+                          onSubmit={handleSubmit}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                            }
+                          }}
+                        >
+                          <label htmlFor="name " className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack ">
+                            Billing Name
+                          </label>
+                          <Input
+                            type="text"
+                            name="billingName"
+                            id="billingNameId"
+                            value={values.billingName}
+                            className="mt-0.375 inputs app-result-card-border box-border bg-white shadow-inputShadow rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-sm placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
+                            placeholder="Enter Name"
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            errors={Boolean(touched.billingName && errors.billingName)}
+                            helperText={touched.billingName && errors.billingName}
+                          />
+                          <label htmlFor="description" className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack mt-1.06">
+                            Billing Email
+                          </label>
+                          <Input
+                            name="billingEmail"
+                            id="billingEmailId"
+                            value={values.billingEmail}
+                            className="mt-0.375 inputs app-result-card-border box-border bg-white shadow-inputShadow rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-sm placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
+                            placeholder="example@email.com"
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            errors={Boolean(touched.billingEmail && errors.billingEmail)}
+                            helperText={touched.billingEmail && errors.billingEmail}
+                          />
+                          <div className="flex items-center justify-end mt-1.8">
+                            <Button
+                              text="Cancel"
+                              type="submit"
+                              className="cancel mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  h-2.81 w-5.25  rounded border-none"
+                              onClick={() => setIsBillingDetailsModal((prev) => ({ ...prev, billingDetails: false }))}
+                            />
+                            <Button
+                              text="Save"
+                              type="submit"
+                              className={`text-white font-Poppins text-error font-medium leading-5 btn-save-modal rounded shadow-contactBtn w-5.25 cursor-pointer border-none h-2.81`}
+                            />
+                          </div>
+                        </Form>
+                      )}
+                    </Formik>
+                  </div>
+                </Modal>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
 };
+
+const billingDetailsScheme = Yup.object().shape({
+  billingName: Yup.string()
+    .trim('WhiteSpaces are not allowed')
+    .min(4, 'Billing Name must be at least 4 characters')
+    .max(25, 'Billing Name should not exceed above 25 characters')
+    .matches(alphabets_only_regex_with_single_space, 'Numbers and special characters are not allowed')
+    .matches(whiteSpace_single_regex, 'White spaces are not allowed')
+    .required('Billing Name is a required field')
+    .nullable(true),
+  billingEmail: Yup.string()
+    .email('Must be a valid email')
+    .matches(email_regex, 'Must be a valid email')
+    .max(100)
+    .required('Billing Email is required')
+});
 
 export default SubscriptionExpiredActivate;

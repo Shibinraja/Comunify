@@ -149,7 +149,7 @@ export const getBillingHistoryData = async (params: BillingHistoryQuery) => {
     const { data } = await request.get(`${API_ENDPOINT}/v1/subscription/billinghistory?page=${params.page}&limit=${params.limit}`);
     return data?.data as BillingHistoryResponse;
   } catch {
-    showErrorToast('Billing history failed');
+    showErrorToast('Failed to load billing history');
     return {} as BillingHistoryResponse;
   }
 };
