@@ -12,6 +12,11 @@ function InlineWrapperWithMargin({ children }: PropsWithChildren<unknown>) {
 
 const MembersProfileGraph: React.FC<MemberGraphProps> = ({ activityGraphData }) => {
   const options = {
+    chart: {
+      toolbar: {
+        show: false
+      }
+    },
     xaxis: {
       categories: activityGraphData?.xAxis
     }
