@@ -39,7 +39,7 @@ export interface workspaceId {
 
 export enum MemberFilterDropDownEnum {
   platform = 'platform',
-  tag = 'status',
+  tag = 'tag',
   activeBetween = 'activeBetween',
   location = 'location',
   organization = 'organization'
