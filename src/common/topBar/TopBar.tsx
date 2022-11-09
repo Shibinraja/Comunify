@@ -17,6 +17,7 @@ import { DecodeToken } from 'modules/authentication/interface/auth.interface';
 import cookie from 'react-cookies';
 import { decodeToken } from '@/lib/decodeToken';
 import { ActivityEnum, GlobalSearchDataResponse, GlobalSearchDataResult, SearchSuggestionArgsType } from './TopBarTypes';
+import history from '@/lib/history';
 // import { useTheme } from 'contexts/ThemeContext';
 
 const TopBar: React.FC = () => {
@@ -78,13 +79,21 @@ const TopBar: React.FC = () => {
 
   useEffect(() => {
     fetchProfileData();
-    document.addEventListener('click', handleOutsideClick);
-    return () => {
-      document.removeEventListener('click', handleOutsideClick);
-    };
     if (profilePictureUrl) {
       setProfileImage(profilePictureUrl.profilePic);
     }
+
+    const listen = history.listen(((location) =>  {
+      if(!(location.location.pathname.includes('/activity'))) {
+        setSearchSuggestion('');
+      }
+    }));
+
+    document.addEventListener('click', handleOutsideClick);
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+      listen();
+    };
   }, []);
 
   useEffect(() => {
@@ -168,8 +177,10 @@ const TopBar: React.FC = () => {
   };
 
   const navigateToActivity = (activityId: string, activityType: string, searchText: string) => {
+    setSearchSuggestion('');
     if (activityType === ActivityEnum.Activity) {
-      navigate(`/${workspaceId}/activity?activityId=${activityId}&searchText=${searchText}`);
+      navigate(`/${workspaceId}/activity?activityId=${activityId}`);
+      setSearchSuggestion(searchText);
     }
 
     if (activityType === ActivityEnum.Member) {
@@ -194,6 +205,7 @@ const TopBar: React.FC = () => {
             placeholder="Search..."
             className="bg-transparent border border-borderPrimary focus:outline-none font-normal pl-4.18 box-border text-inputText text-search rounded-0.6 h-16 w-34.3  placeholder:font-normal placeholder:leading-snug placeholder:text-search placeholder:text-searchGray shadow-profileCard"
             onChange={handleSearchTextChange}
+            value={searchSuggestion}
             onClick={() => {
               setIsSuggestionListDropDown(true);
             }}
@@ -275,9 +287,9 @@ const TopBar: React.FC = () => {
             >
               <div className="flex">
                 <Fragment>
-                  <img className="h-[1.835rem] w-[1.9175rem] rounded-full" src={searchResult.icon} alt="" />
+                  <img className="h-[1.835rem] w-[1.9175rem] rounded-full" src={searchResult.resultType === ActivityEnum.Activity ? searchResult.icon : searchResult.icon ?? profilePic } alt="" />
                 </Fragment>
-                <div className="pl-6 font-Poppins font-normal text-searchBlack leading-1.31 text-trial">{searchResult.displayValue}</div>
+                <div className="pl-6 font-Poppins font-normal text-searchBlack leading-1.31 text-trial">{searchResult.resultType === ActivityEnum.Activity ? searchResult.displayValue : searchResult.memberName}</div>
               </div>
             </div>
           ))}

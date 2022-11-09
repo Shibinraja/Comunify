@@ -82,8 +82,7 @@ const Activity: React.FC = () => {
 
   const limit = 10;
   const activityId = searchParams.get('activityId');
-  const searchActivity = searchParams.get('searchText');
-  const [searchText, setSearchText] = useState<string>(searchActivity || '');
+  const [searchText, setSearchText] = useState<string>('');
   const debouncedValue = useDebounce(searchText, 300);
   const debouncedTagValue = useDebounce(searchTagText, 300);
 
@@ -102,7 +101,7 @@ const Activity: React.FC = () => {
         activeStreamQuery: {
           page,
           limit,
-          search: searchText || searchActivity as string,
+          search: searchText,
           tags: { searchedTags: '', checkedTags: filterExportParams.checkTags.toString() },
           platforms: filterExportParams.checkPlatform.toString(),
           'activity.lte': filterExportParams.endDate,
