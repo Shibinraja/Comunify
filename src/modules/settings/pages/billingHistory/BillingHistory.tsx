@@ -5,11 +5,13 @@ import { getBillingHistoryData, getBillingInvoice } from 'modules/settings/servi
 import Pagination from 'common/pagination/pagination';
 import { BillingHistoryData, BillingHistoryQuery, BillingHistoryResponse } from 'modules/settings/interface/settings.interface';
 import { differenceInDays, format } from 'date-fns';
+
 type Props = {
   hidden: boolean;
+  selectedTab: string;
 };
 
-const BillingHistory: React.FC<Props> = ({ hidden }) => {
+const BillingHistory: React.FC<Props> = ({ hidden, selectedTab }) => {
   const limit = 10;
   const [page, setPage] = useState<number>(1);
   const [billingHistoryList, setBillingHistoryList] = useState<BillingHistoryResponse>({
@@ -23,7 +25,15 @@ const BillingHistory: React.FC<Props> = ({ hidden }) => {
     getBillingHistory({ limit, page });
   }, [page]);
 
-  const getBillingHistory = async(params: BillingHistoryQuery) => {
+  useEffect(() => {
+    if (selectedTab === 'billing_history') {
+      setTimeout(() => {
+        getBillingHistory({ limit, page });
+      }, 3000);
+    }
+  }, [selectedTab]);
+
+  const getBillingHistory = async (params: BillingHistoryQuery) => {
     const response = await getBillingHistoryData({
       limit: params.limit,
       page: params.page
@@ -37,7 +47,7 @@ const BillingHistory: React.FC<Props> = ({ hidden }) => {
     });
   };
 
-  const downloadInvoice = async(invoiceId: string, invoiceDate: string) => {
+  const downloadInvoice = async (invoiceId: string, invoiceDate: string) => {
     const decode = await getBillingInvoice(invoiceId);
     const response = new Blob([decode], { type: 'application/pdf' });
     const url = window.URL.createObjectURL(response);

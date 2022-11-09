@@ -3,7 +3,6 @@ import { useTabs } from '@/hooks/useTabs';
 import { TabSelector } from 'common/tabs/TabSelector';
 import BillingHistory from './billingHistory/BillingHistory';
 import Integration from './integration/Integration';
-// import Subscription from './subscription/Subscription';
 import Tags from './tags/Tags';
 import { useLocation } from 'react-router';
 
@@ -77,9 +76,9 @@ const Settings = () => {
           </TabSelector>
         </nav>
         <div className="items-center block section ">
-          <Integration hidden={selectedTab !== 'integrations'} />
-          <Subscription hidden={selectedTab !== 'subscription'} />
-          <BillingHistory hidden={selectedTab !== 'billing_history'} />
+          <Integration hidden={selectedTab !== 'integrations'} selectedTab={selectedTab!} />
+          <Subscription hidden={selectedTab !== 'subscription'} selectedTab={selectedTab!} />
+          <BillingHistory hidden={selectedTab !== 'billing_history'} selectedTab={selectedTab!} />
           <Tags hidden={selectedTab !== 'tags'} />
         </div>
       </div>

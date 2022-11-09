@@ -35,9 +35,10 @@ const AddCard = React.lazy(() => import('../../pages/addCard/AddCard'));
 
 type Props = {
   hidden: boolean;
+  selectedTab: string;
 };
 
-const Subscription: React.FC<Props> = ({ hidden }) => {
+const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
   const gradientTransform = `rotate(90)`;
   const [subscriptionDetails, setSubscriptionDetails] = useState<SubscriptionDetails | undefined>();
   const [addedCardDetails, setAddedCardDetails] = useState<AddedCardDetails[]>();
@@ -52,8 +53,10 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
   const stripePromise = loadStripe(`${import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY}`);
 
   useEffect(() => {
-    getCurrentSubscriptionPlanDetails();
-  }, []);
+    if (selectedTab === 'subscription') {
+      getCurrentSubscriptionPlanDetails();
+    }
+  }, [selectedTab]);
 
   useEffect(() => {
     getSecretKeyForStripe();
@@ -273,7 +276,6 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
             <Modal
               isOpen={isBillingDetailsModal.billingDetails}
               shouldCloseOnOverlayClick={false}
-              onRequestClose={() => setIsBillingDetailsModal((prev) => ({ ...prev, billingDetails: false }))}
               className="w-24.31 pb-12 mx-auto rounded-lg border-fetching-card bg-white shadow-modal"
               style={{
                 overlay: {
@@ -296,7 +298,15 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
                   validationSchema={billingDetailsScheme}
                 >
                   {({ errors, handleBlur, handleChange, handleSubmit, touched, values }): JSX.Element => (
-                    <Form className="flex flex-col relative  px-1.93 mt-9" onSubmit={handleSubmit}>
+                    <Form
+                      className="flex flex-col relative  px-1.93 mt-9"
+                      onSubmit={handleSubmit}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                        }
+                      }}
+                    >
                       <label htmlFor="name " className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack ">
                         Billing Name
                       </label>
@@ -352,7 +362,6 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
             <Modal
               isOpen={isBillingDetailsModal.cardDetails}
               shouldCloseOnOverlayClick={false}
-              onRequestClose={() => setIsBillingDetailsModal((prev) => ({ ...prev, cardDetails: false }))}
               className="w-24.31 pb-12 mx-auto rounded-lg border-fetching-card bg-white shadow-modal"
               style={{
                 overlay: {

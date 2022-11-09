@@ -50,7 +50,7 @@ interface ConfirmPlatformToDisconnect {
   platformIcon: string;
 }
 
-const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
+const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidden, selectedTab }) => {
   const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanilla: false, discord: false, reddit: false });
   const [showAlert, setShowAlert] = useState<ModalState>({ slack: false, vanilla: false, discord: false, reddit: false });
   const [isWarningModalOpen, setIsWarningModalOpen] = useState<boolean>(false);
@@ -85,7 +85,12 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
   const { PlatformsConnected } = usePlatform();
 
   useEffect(() => {
-    dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+    if (selectedTab === 'integrations') {
+      dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+    }
+  }, [selectedTab]);
+
+  useEffect(() => {
     if (window.location.href.includes('guild_id') && window.location.href.includes('permissions')) {
       if (searchParams.get('code')) {
         const codeParams: null | string = searchParams.get('code');
@@ -123,7 +128,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
     setIsModalOpen((prevState) => ({ ...prevState, vanilla: val }));
   };
 
-  const handleModals = (name: string, icon: string, isIntegrated: boolean, isConnected:boolean) => {
+  const handleModals = (name: string, icon: string, isIntegrated: boolean, isConnected: boolean) => {
     switch (name) {
       case PlatformsEnumType.SLACK:
         setIsLoading(true);
@@ -706,7 +711,9 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
         isClose={handleModalClose}
         loader={reconnectLoading}
         onSubmit={handleOnSubmit}
-        iconSrc={showAlert.slack ? slackIcon : showAlert.reddit ? redditLogoIcon : showAlert.discord ? discordIcon : showAlert.vanilla ? vanillaIcon :''}
+        iconSrc={
+          showAlert.slack ? slackIcon : showAlert.reddit ? redditLogoIcon : showAlert.discord ? discordIcon : showAlert.vanilla ? vanillaIcon : ''
+        }
         contextText={`Are you sure you want to reconnect the ${
           showAlert.slack ? 'slack' : showAlert.discord ? 'discord' : showAlert.reddit ? 'reddit' : ''
         }  to your workspace?`}

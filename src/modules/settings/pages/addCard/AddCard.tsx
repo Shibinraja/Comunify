@@ -168,15 +168,14 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
     };
     const response: SubscriptionPackages = await chooseSubscription(subscriptionId, body);
     if (response?.status === 'paid') {
-      navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'billing_history' } });
-      setIsLoading((prev) => ({ ...prev, upgrade: false }));
-      setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
       showSuccessToast('Plan upgraded to Comunify Plus!');
       setTimeout(() => {
-        showSuccessToast('This page will be reloaded soon. Please do not change the page');
+        showSuccessToast('This page will be redirected');
       }, 1000);
       setTimeout(() => {
-        window.location.reload();
+        navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'billing_history' } });
+        setIsLoading((prev) => ({ ...prev, upgrade: false }));
+        setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
       }, 5000);
     } else {
       setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
@@ -277,7 +276,6 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
           <Button
             type="button"
             text="Upgrade"
-            // disabled={isLoading.upgrade}
             onClick={handlePlanUpgrade}
             className={`submit border-none text-white font-Poppins text-error font-medium leading-1.31 cursor-pointer w-[123px] h-2.81 rounded shadow-contactBtn btn-save-modal`}
           />
@@ -288,7 +286,6 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
           <Modal
             isOpen={addCardForm}
             shouldCloseOnOverlayClick={false}
-            onRequestClose={() => setAddCardForm(false)}
             className="w-24.31 pb-12 mx-auto rounded-lg border-fetching-card bg-white shadow-modal"
             style={{
               overlay: {
@@ -316,7 +313,6 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
           <Modal
             isOpen={isConfirmationModal.deleteCard}
             shouldCloseOnOverlayClick={false}
-            onRequestClose={() => setIsConfirmationModal((prev) => ({ ...prev, deleteCard: false }))}
             className="w-24.31 h-18.43 mx-auto rounded-lg modals-tag bg-white shadow-modal flex items-center justify-center"
             style={{
               overlay: {
@@ -356,7 +352,6 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
           <Modal
             isOpen={isConfirmationModal.upgradePlan}
             shouldCloseOnOverlayClick={false}
-            onRequestClose={() => setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }))}
             className="w-24.31 h-18.43 mx-auto rounded-lg modals-tag bg-white shadow-modal flex items-center justify-center"
             style={{
               overlay: {
