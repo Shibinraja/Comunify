@@ -38,15 +38,12 @@ const Dashboard: React.FC = () => {
   const [endDate, setEndDate] = React.useState<string>(convertEndDate(new Date()));
 
   useEffect(() => {
+    fetchWidgetLayoutData();
+    setSelectedDateRange('this week');
     document.addEventListener('click', handleOutsideClick);
     return () => {
       document.removeEventListener('click', handleOutsideClick);
     };
-  }, []);
-
-  useEffect(() => {
-    fetchWidgetLayoutData();
-    setSelectedDateRange('this week');
   }, []);
 
   useEffect(() => {
@@ -207,7 +204,7 @@ const Dashboard: React.FC = () => {
             </div>
             <div className="absolute right-[1.4rem] top-4 drop-icon">
               <img
-                className="right-6 cursor-pointer"
+                className={`${!widgets?.length ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                 src={dateRange[0] === null && dateRange[1] === null ? calendarIcon : dateRange[0] !== null ? '' : calendarIcon}
                 alt=""
                 onClick={() => handleClickDatePickerIcon()}

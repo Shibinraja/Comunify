@@ -727,7 +727,7 @@ const MembersProfile: React.FC = () => {
               <div className="flex flex-col profile-card items-center justify-center bg-white rounded-b-0.6 w-18.125 shadow-contactCard box-border h-11.06">
                 <div className="-mt-24">
                   <img
-                    src={data?.profilePictureUrl ?? profileImage}
+                    src={data?.profilePictureUrl ? data?.profilePictureUrl : profileImage}
                     alt="profileImage"
                     className="bg-cover bg-center border-5 border-white rounded-full w-100 h-100"
                   />

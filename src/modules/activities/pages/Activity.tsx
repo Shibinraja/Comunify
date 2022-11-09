@@ -548,7 +548,7 @@ const Activity: React.FC = () => {
                                   <div className="w-12.87 pb-5 rounded-b-0.6 profile-card-body profile-inner shadow-profileCard flex flex-col items-center bg-white">
                                     <div className="-mt-10 flex items-center justify-center">
                                       <img
-                                        src={ProfileModal?.profilePictureUrl ?? profileImage}
+                                        src={ProfileModal?.profilePictureUrl ? ProfileModal?.profilePictureUrl: profileImage}
                                         alt=""
                                         className="rounded-full w-4.43 h-4.43 bg-cover bg-center border-4 border-white"
                                       />
