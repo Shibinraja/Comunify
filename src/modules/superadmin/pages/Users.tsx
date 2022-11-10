@@ -224,16 +224,16 @@ const Users: React.FC = () => {
                               </div>
                             </div>
                           )
-                        ) : column === 'lastActive' ? (
+                        ) : column === 'lastLogin' ? (
                           fetchLoader.getLoader ? (
                             <Skeleton width={width_90} />
                           ) : (
                             <div className="flex flex-col w-[150px]">
                               <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
-                                {member?.lastActive ? format(parseISO(member?.lastActive as string), 'dd MMM yyyy') : '--'}
+                                {member?.lastLogin ? format(parseISO(member?.lastLogin as string), 'dd MMM yyyy') : '--'}
                               </div>
                               <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
-                                {(member?.lastActive as ReactNode) && format(parseISO(member?.lastActive as string), 'HH:MM')}
+                                {(member?.lastLogin as ReactNode) && format(parseISO(member?.lastLogin as string), 'HH:MM')}
                               </div>
                             </div>
                           )
@@ -267,7 +267,7 @@ const Users: React.FC = () => {
             </table>
             {!fetchLoader.getLoader && (
               <div className="px-3 py-6 flex items-center gap-0.66 pl-[30%] w-full rounded-b-lg fixed bg-white bottom-0">
-                <Pagination currentPage={1} totalPages={membersList.totalPages} limit={limit} onPageChange={(page) => setPage(Number(page))} />
+                <Pagination currentPage={page} totalPages={membersList.totalPages} limit={limit} onPageChange={(page) => setPage(Number(page))} />
               </div>
             )}
           </div>
