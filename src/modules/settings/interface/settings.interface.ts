@@ -259,3 +259,7 @@ export interface BillingHistoryData {
 }
 
 export type BillingHistoryResponse = PaginationResponse<BillingHistoryData>;
+
+export interface StripePaymentMethodId {
+  paymentId: string
+}

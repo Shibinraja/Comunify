@@ -5,13 +5,16 @@ import { getBillingHistoryData, getBillingInvoice } from 'modules/settings/servi
 import Pagination from 'common/pagination/pagination';
 import { BillingHistoryData, BillingHistoryQuery, BillingHistoryResponse } from 'modules/settings/interface/settings.interface';
 import { differenceInDays, format } from 'date-fns';
+import { showSuccessToast } from 'common/toast/toastFunctions';
 
 type Props = {
   hidden: boolean;
   selectedTab: string;
+  loadingToastCondition: string;
+  clearLoadingToastCondition: () => void;
 };
 
-const BillingHistory: React.FC<Props> = ({ hidden, selectedTab }) => {
+const BillingHistory: React.FC<Props> = ({ hidden, selectedTab, loadingToastCondition, clearLoadingToastCondition }) => {
   const limit = 10;
   const [page, setPage] = useState<number>(1);
   const [billingHistoryList, setBillingHistoryList] = useState<BillingHistoryResponse>({
@@ -27,9 +30,17 @@ const BillingHistory: React.FC<Props> = ({ hidden, selectedTab }) => {
 
   useEffect(() => {
     if (selectedTab === 'billing_history') {
+      getBillingHistory({ limit, page });
+    }
+  }, [selectedTab]);
+
+  useEffect(() => {
+    if (selectedTab === 'billing_history' && loadingToastCondition === 'showLoadingToast') {
       setTimeout(() => {
         getBillingHistory({ limit, page });
-      }, 3000);
+        showSuccessToast('Billing history updated');
+        clearLoadingToastCondition();
+      }, 5000);
     }
   }, [selectedTab]);
 

@@ -10,7 +10,7 @@ import { ClientSecret } from '../../../settings/interface/settings.interface';
 
 const Subscription: React.FC = () => {
   const { subscriptionData } = useLocation().state as SubscriptionProps;
-  const [clientSecret, setClientSecret] = useState<string | undefined>(undefined);
+  const [clientSecret, setClientSecret] = useState<string>('');
   const stripePromise = loadStripe(`${import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY}`);
 
   useEffect(() => {

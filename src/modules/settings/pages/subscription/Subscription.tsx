@@ -28,10 +28,10 @@ import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
-import CheckoutForm from './CheckoutForm';
 import { alphabets_only_regex_with_single_space, email_regex, whiteSpace_single_regex } from '../../../../constants/constants';
 
 const AddCard = React.lazy(() => import('../../pages/addCard/AddCard'));
+const CheckoutForm = React.lazy(() => import('../subscription/CheckoutForm'));
 
 type Props = {
   hidden: boolean;
@@ -41,7 +41,7 @@ type Props = {
 const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
   const gradientTransform = `rotate(90)`;
   const [subscriptionDetails, setSubscriptionDetails] = useState<SubscriptionDetails | undefined>();
-  const [addedCardDetails, setAddedCardDetails] = useState<AddedCardDetails[]>();
+  const [addedCardDetails, setAddedCardDetails] = useState<AddedCardDetails[]>([]);
   const [toggle, setToggle] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isBillingDetailsModal, setIsBillingDetailsModal] = useState<{ billingDetails: boolean; cardDetails: boolean }>({
@@ -49,7 +49,7 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
     cardDetails: false
   });
   const [billingDetails, setBillingDetails] = useState<BillingDetails>({ billingName: '', billingEmail: '' });
-  const [clientSecret, setClientSecret] = useState<string | undefined>(undefined);
+  const [clientSecret, setClientSecret] = useState<string>('');
   const stripePromise = loadStripe(`${import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY}`);
 
   useEffect(() => {
@@ -147,6 +147,9 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
     setIsBillingDetailsModal((prev) => ({ ...prev, cardDetails: false }));
   };
 
+  const passNewlyAddedCardDetailsToChild = (newlyAddedCardData: AddedCardDetails) => {
+    setAddedCardDetails([...addedCardDetails, newlyAddedCardData]);
+  };
   return (
     <TabPanel hidden={hidden}>
       <div className="subscription mt-2.625 ">
@@ -362,6 +365,7 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
             <Modal
               isOpen={isBillingDetailsModal.cardDetails}
               shouldCloseOnOverlayClick={false}
+              onRequestClose={() => setIsBillingDetailsModal((prev) => ({ ...prev, cardDetails: false }))}
               className="w-24.31 pb-12 mx-auto rounded-lg border-fetching-card bg-white shadow-modal"
               style={{
                 overlay: {
@@ -379,7 +383,12 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
                 <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Payment Information</h3>
                 {stripePromise && options.clientSecret && (
                   <Elements stripe={stripePromise} options={options}>
-                    <CheckoutForm handleCheckoutFormModal={handleCheckoutFormModal} redirectCondition="add-card" billingDetails={billingDetails} />
+                    <CheckoutForm
+                      handleCheckoutFormModal={handleCheckoutFormModal}
+                      redirectCondition="add-card"
+                      billingDetails={billingDetails}
+                      passNewlyAddedCardDetailsToChild={passNewlyAddedCardDetailsToChild}
+                    />
                   </Elements>
                 )}
               </div>
