@@ -4,6 +4,7 @@ import useDebounce from '@/hooks/useDebounce';
 import { API_ENDPOINT } from '@/lib/config';
 import fetchExportList from '@/lib/fetchExport';
 import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
+import { UsersLoader } from 'common/Loader/UsersLoader';
 import Pagination from 'common/pagination/pagination';
 import { width_90 } from 'constants/constants';
 import { format, parseISO } from 'date-fns';
@@ -207,6 +208,12 @@ const Users: React.FC = () => {
               </thead>
               {/* {Check with the custom column dynamic order and displays content/rows as per the index position of the arranged column name} */}
               <tbody>
+                {fetchLoader.getLoader &&
+                  Array.from({ length: 10 }, (_, i) => i + 1).map((type: number) => (
+                    <Fragment key={type}>
+                      <UsersLoader />
+                    </Fragment>
+                  ))}
                 {customizedColumn.map((member: Record<string, unknown>) => (
                   <tr className="border-b " key={Math.random()}>
                     {Object.keys(member).map((column: keyof typeof member, index) => (
@@ -253,7 +260,9 @@ const Users: React.FC = () => {
                           )
                         ) : (
                           <div className="flex ">
-                            <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">{member[column] as ReactNode}</div>
+                            <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
+                              {member[column] ? (member[column] as ReactNode) : '--'}
+                            </div>
                           </div>
                         )}
                       </td>
