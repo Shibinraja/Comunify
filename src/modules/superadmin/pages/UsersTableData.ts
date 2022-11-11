@@ -1,7 +1,7 @@
 export const ColumNames: Array<{ name: string; id: string; isDisplayed: boolean; isDraggable: string }> = [
   {
     name: 'Name',
-    id: 'displayUserName',
+    id: 'fullName',
     isDisplayed: true,
     isDraggable: 'name'
   },

@@ -125,7 +125,10 @@ const TopBar: React.FC = () => {
         setSearchSuggestion('');
       }
     });
-    notificationCount(workspaceId as string);
+
+    if(!decodedToken.isAdmin) {
+      notificationCount(workspaceId as string);
+    }
 
     // Event Listener to check/listen to notification subscription event
     window.addEventListener('storage', () => {
@@ -154,7 +157,7 @@ const TopBar: React.FC = () => {
       nextCursor: null
     });
 
-    if (debouncedValue) {
+    if (debouncedValue && !decodedToken.isAdmin) {
       getGlobalSearchItem({
         cursor: null,
         prop: 'search',
@@ -266,20 +269,22 @@ const TopBar: React.FC = () => {
   };
 
   const handleNotificationActive = () => {
-    setIsNotificationActive(true);
-    setNotificationList({
-      result: [],
-      nextCursor: null
-    });
-    getNotificationList(
-      {
-        workspaceId: workspaceId as string,
-        limit: 10,
-        cursor: null,
-        type: 'all'
-      },
-      true
-    );
+    setIsNotificationActive((prev) => !prev);
+    if(!decodedToken.isAdmin) {
+      setNotificationList({
+        result: [],
+        nextCursor: null
+      });
+      getNotificationList(
+        {
+          workspaceId: workspaceId as string,
+          limit: 10,
+          cursor: null,
+          type: 'all'
+        },
+        true
+      );
+    }
   };
 
   // Change notification status to read
@@ -414,7 +419,7 @@ const TopBar: React.FC = () => {
                           <div className="flex py-[10px] border-b border-[#E6E6E6] items-center" key={index}>
                             <img
                               src={
-                                item.notification.notificationPayload?.imageUrl ||
+                                item.notification.notificationPayload?.imageUrl as string ||
                                 'https://comunify-dev-assets.s3.amazonaws.com/common/Comunfy_logo.png'
                               }
                               alt=""
