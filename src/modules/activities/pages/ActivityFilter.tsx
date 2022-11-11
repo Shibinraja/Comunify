@@ -58,6 +58,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
   useEffect(() => {
     document.addEventListener('click', handleOutsideClick);
     setSaveRefObject(dropDownRef.current);
+    dispatch(settingsSlice.actions.platformData({ workspaceId: workspaceId as string }));
     return () => {
       document.removeEventListener('click', handleOutsideClick);
     };

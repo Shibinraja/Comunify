@@ -28,19 +28,20 @@ import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
-import CheckoutForm from './CheckoutForm';
-import { alphabets_only_regex, email_regex, whiteSpace_regex } from '../../../../constants/constants';
+import { alphabets_only_regex_with_single_space, email_regex, whiteSpace_single_regex } from '../../../../constants/constants';
 
 const AddCard = React.lazy(() => import('../../pages/addCard/AddCard'));
+const CheckoutForm = React.lazy(() => import('../subscription/CheckoutForm'));
 
 type Props = {
   hidden: boolean;
+  selectedTab: string;
 };
 
-const Subscription: React.FC<Props> = ({ hidden }) => {
+const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
   const gradientTransform = `rotate(90)`;
   const [subscriptionDetails, setSubscriptionDetails] = useState<SubscriptionDetails | undefined>();
-  const [addedCardDetails, setAddedCardDetails] = useState<AddedCardDetails[]>();
+  const [addedCardDetails, setAddedCardDetails] = useState<AddedCardDetails[]>([]);
   const [toggle, setToggle] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isBillingDetailsModal, setIsBillingDetailsModal] = useState<{ billingDetails: boolean; cardDetails: boolean }>({
@@ -48,12 +49,14 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
     cardDetails: false
   });
   const [billingDetails, setBillingDetails] = useState<BillingDetails>({ billingName: '', billingEmail: '' });
-  const [clientSecret, setClientSecret] = useState<string | undefined>(undefined);
+  const [clientSecret, setClientSecret] = useState<string>('');
   const stripePromise = loadStripe(`${import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY}`);
 
   useEffect(() => {
-    getCurrentSubscriptionPlanDetails();
-  }, []);
+    if (selectedTab === 'subscription') {
+      getCurrentSubscriptionPlanDetails();
+    }
+  }, [selectedTab]);
 
   useEffect(() => {
     getSecretKeyForStripe();
@@ -144,6 +147,9 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
     setIsBillingDetailsModal((prev) => ({ ...prev, cardDetails: false }));
   };
 
+  const passNewlyAddedCardDetailsToChild = (newlyAddedCardData: AddedCardDetails) => {
+    setAddedCardDetails([...addedCardDetails, newlyAddedCardData]);
+  };
   return (
     <TabPanel hidden={hidden}>
       <div className="subscription mt-2.625 ">
@@ -171,10 +177,8 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
                 <div className="font-semibold font-Poppins leading-1.56 text-infoBlack dark:text-white text-base">Features</div>
                 <div className="flex gap-4 font-Poppins   ">
                   <div className="flex items-center gap-x-1 pt-1">
-
                     <div className="text-listGray text-error font-normal leading-1.31">Single User | 5 Platforms | Customizable Reports</div>
                   </div>
-
                 </div>
               </div>
             )}
@@ -275,7 +279,6 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
             <Modal
               isOpen={isBillingDetailsModal.billingDetails}
               shouldCloseOnOverlayClick={false}
-              onRequestClose={() => setIsBillingDetailsModal((prev) => ({ ...prev, billingDetails: false }))}
               className="w-24.31 pb-12 mx-auto rounded-lg border-fetching-card bg-white shadow-modal"
               style={{
                 overlay: {
@@ -298,7 +301,15 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
                   validationSchema={billingDetailsScheme}
                 >
                   {({ errors, handleBlur, handleChange, handleSubmit, touched, values }): JSX.Element => (
-                    <Form className="flex flex-col relative  px-1.93 mt-9" onSubmit={handleSubmit}>
+                    <Form
+                      className="flex flex-col relative  px-1.93 mt-9"
+                      onSubmit={handleSubmit}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                        }
+                      }}
+                    >
                       <label htmlFor="name " className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack ">
                         Billing Name
                       </label>
@@ -354,7 +365,6 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
             <Modal
               isOpen={isBillingDetailsModal.cardDetails}
               shouldCloseOnOverlayClick={false}
-              onRequestClose={() => setIsBillingDetailsModal((prev) => ({ ...prev, cardDetails: false }))}
               className="w-24.31 pb-12 mx-auto rounded-lg border-fetching-card bg-white shadow-modal"
               style={{
                 overlay: {
@@ -372,7 +382,12 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
                 <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Payment Information</h3>
                 {stripePromise && options.clientSecret && (
                   <Elements stripe={stripePromise} options={options}>
-                    <CheckoutForm handleCheckoutFormModal={handleCheckoutFormModal} redirectCondition="add-card" billingDetails={billingDetails} />
+                    <CheckoutForm
+                      handleCheckoutFormModal={handleCheckoutFormModal}
+                      redirectCondition="add-card"
+                      billingDetails={billingDetails}
+                      passNewlyAddedCardDetailsToChild={passNewlyAddedCardDetailsToChild}
+                    />
                   </Elements>
                 )}
               </div>
@@ -407,8 +422,8 @@ const billingDetailsScheme = Yup.object().shape({
     .trim('WhiteSpaces are not allowed')
     .min(4, 'Billing Name must be at least 4 characters')
     .max(25, 'Billing Name should not exceed above 25 characters')
-    .matches(alphabets_only_regex, 'Numbers and special characters are not allowed')
-    .matches(whiteSpace_regex, 'White spaces are not allowed')
+    .matches(alphabets_only_regex_with_single_space, 'Numbers and special characters are not allowed')
+    .matches(whiteSpace_single_regex, 'White spaces are not allowed')
     .required('Billing Name is a required field')
     .nullable(true),
   billingEmail: Yup.string()

@@ -79,3 +79,37 @@ export const transformRequestOptions = (params: Record<string, unknown>) => {
   }
   return options ? options.slice(0, -1) : options;
 };
+
+export const getTimeSince = (compareDate: string) => {
+  const now = new Date();
+
+  const secondsPast = (now.getTime() - new Date(compareDate).getTime()) / 1000;
+  if (secondsPast < 60) {
+    const time = Math.round(secondsPast);
+    return `${time} ${time === 1 ? 'second' : 'seconds'} ago`;
+  }
+  if (secondsPast < 3600) {
+    const time = Math.round(secondsPast / 60);
+    return `${time} ${time > 1 ? 'minutes' : 'minute'} ago`;
+  }
+  if (secondsPast <= 86400) {
+    const time = Math.round(secondsPast / 3600);
+    return `${time} ${time > 1 ? 'hours' : 'hour'} ago`;
+  }
+  if (secondsPast <= 604800) {
+    const time = Math.round(secondsPast / 86400);
+    return `${time} ${time > 1 ? 'days' : 'day'} ago`;
+  }
+  if (secondsPast <= 2628000) {
+    const time = Math.round(secondsPast / 604800);
+    return `${time} ${time > 1 ? 'weeks' : 'week'} ago`;
+  }
+  if (secondsPast <= 31536000) {
+    const time = Math.round(secondsPast / 2628000);
+    return `${time} ${time > 1 ? 'months' : 'month'} ago`;
+  }
+  if (secondsPast > 31536000) {
+    const time = Math.round(secondsPast / 31536000);
+    return `${time} ${time > 1 ? 'years' : 'year'} ago`;
+  }
+};

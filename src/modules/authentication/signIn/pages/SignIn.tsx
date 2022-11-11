@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAppDispatch } from '@/hooks/useRedux';
 import { API_ENDPOINT, auth_module } from '@/lib/config';
 import Button from 'common/button/Button';
@@ -17,10 +17,13 @@ import { email_regex } from '../../../../constants/constants';
 import { AppDispatch } from '../../../../store/index';
 import authSlice from '../../store/slices/auth.slice';
 import './SignIn.css';
+import cookie from 'react-cookies';
 
 const SignIn: React.FC = () => {
   const dispatch: AppDispatch = useAppDispatch();
   const [searchParams] = useSearchParams();
+  const formikRef:any = useRef();
+  const loginDetails = cookie.load('loginDetails');
   const google_signIn_error: string = searchParams.get('err') || '';
   const google_signUp_success: string = searchParams.get('success') || '';
 
@@ -44,10 +47,28 @@ const SignIn: React.FC = () => {
     }
   }, [google_signUp_success]);
 
+  useEffect(() => {
+    if(loginDetails) {
+      formikRef?.current?.resetForm({
+        values: {
+          userName: loginDetails.userName,
+          password: loginDetails.password,
+          rememberMe: loginDetails.rememberMe
+        }
+      });
+
+    }
+  }, [loginDetails]);
+
   const handleSubmit = (values: FormValues): void => {
     const newValues = { ...values };
     newValues['userName'] = values.userName.includes('@') ? values.userName.toLocaleLowerCase() : values.userName;
     dispatch(authSlice.actions.login(newValues));
+    if(newValues['rememberMe']) {
+      cookie.save('loginDetails', newValues, { path: '/' });
+    }else{
+      cookie.remove('loginDetails');
+    }
   };
 
   const togglePassword = () => {
@@ -75,7 +96,7 @@ const SignIn: React.FC = () => {
               </p>
             </div>
 
-            <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={signInSchema}>
+            <Formik innerRef={formikRef} initialValues={initialValues} onSubmit={handleSubmit} validationSchema={signInSchema}>
               {({ errors, handleBlur, handleChange, touched, values }): JSX.Element => (
                 <Form className="flex flex-col  mt-1.8 w-25.9 xl:ml-8" autoComplete="off">
                   <div className="username">

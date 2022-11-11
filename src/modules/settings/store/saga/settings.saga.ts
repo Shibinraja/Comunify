@@ -56,6 +56,7 @@ function* getConnectedPlatformsSaga(action: PayloadAction<workspaceId>) {
     const res: SuccessResponse<Array<ConnectedPlatforms>> = yield call(ConnectedPlatformsDataService, action.payload.workspaceId);
     if (res?.data) {
       yield put(settingsSlice.actions.getConnectedPlatformsData(res?.data));
+      localStorage.setItem('platformsConnected', JSON.stringify(res?.data.length));
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;

@@ -510,7 +510,7 @@ const MembersProfile: React.FC = () => {
                     </div>
                   </div>
                   {PlatformFilterResponse?.map((options: PlatformResponse) => (
-                    <div key={`${Math.random()+ options.id}`} className="w-full hover:bg-signUpDomain rounded-0.3 transition ease-in duration-100">
+                    <div key={`${Math.random() + options.id}`} className="w-full hover:bg-signUpDomain rounded-0.3 transition ease-in duration-100">
                       {options?.isConnected && (
                         <div
                           className="h-1.93 px-3 flex items-center font-Poppins text-trial font-normal leading-4 text-searchBlack "
@@ -666,7 +666,10 @@ const MembersProfile: React.FC = () => {
                   <>
                     {Object.entries(dateMapObj).map((item: any) => (
                       <>
-                        <h3 className="font-medium pl-7 text-m font-Poppins  text-xs mb-2" key={Math.random()}> {item[0] ? item[0] : ''}</h3>
+                        <h3 className="font-medium pl-7 text-m font-Poppins  text-xs mb-2" key={Math.random()}>
+                          {' '}
+                          {item[0] ? item[0] : ''}
+                        </h3>
 
                         {item[1].map((item: any) => (
                           <li key={Math.random()} className=" my-4 active-list relative">
@@ -722,12 +725,12 @@ const MembersProfile: React.FC = () => {
           </div>
         ) : (
           memberProfileCardData?.map((data: MemberProfileCard) => (
-            <div key={`${Math.random()+ data.id}`} className=" flex flex-col">
+            <div key={`${Math.random() + data.id}`} className=" flex flex-col">
               <div className="profile-card items-center btn-save-modal justify-center pro-bag rounded-t-0.6 w-18.125 shadow-contactBtn box-border h-6.438 "></div>
               <div className="flex flex-col profile-card items-center justify-center bg-white rounded-b-0.6 w-18.125 shadow-contactCard box-border h-11.06">
                 <div className="-mt-24">
                   <img
-                    src={data?.profilePictureUrl ?? profileImage}
+                    src={data?.profilePictureUrl ? data?.profilePictureUrl : profileImage}
                     alt="profileImage"
                     className="bg-cover bg-center border-5 border-white rounded-full w-100 h-100"
                   />
@@ -738,7 +741,7 @@ const MembersProfile: React.FC = () => {
                 </div>
                 <div className="flex gap-1 pt-1.12">
                   {data?.platforms.map((platformData) => (
-                    <div key={`${Math.random()+ platformData.id}`}>
+                    <div key={`${Math.random() + platformData.id}`}>
                       <img src={platformData?.platformLogoUrl ?? ''} alt="" className="rounded-full w-[1.0012rem] h-[1.0012rem]" />
                     </div>
                   ))}

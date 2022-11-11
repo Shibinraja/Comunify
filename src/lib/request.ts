@@ -3,17 +3,17 @@
 import axios, { AxiosResponse, default as Axios } from 'axios';
 import { ResponseMessage } from './api';
 import { API_ENDPOINT, auth_module } from './config';
-import { decodeToken } from './decodeToken';
-import { DecodeToken } from '../modules/authentication/interface/auth.interface';
-import cookie from 'react-cookies';
+// import { decodeToken } from './decodeToken';
+// import { DecodeToken } from '../modules/authentication/interface/auth.interface';
+// import cookie from 'react-cookies';
 
 export function getLocalRefreshToken(): string {
   const refreshToken: string | null = localStorage.getItem('accessToken')!;
   return refreshToken;
 }
 
-const accessToken = localStorage.getItem('accessToken') || cookie.load('x-auth-cookie');
-const decodedToken: DecodeToken = accessToken && decodeToken(accessToken);
+// const accessToken = localStorage.getItem('accessToken') || cookie.load('x-auth-cookie');
+// const decodedToken: DecodeToken = accessToken && decodeToken(accessToken);
 
 const request = Axios.create({
   baseURL: API_ENDPOINT,
@@ -26,7 +26,7 @@ const request = Axios.create({
 let refresh_token: Promise<AxiosResponse<Record<string, unknown>>> | null = null;
 
 // refresh-token
-const fetch_refresh_token = (): Promise<AxiosResponse<Record<string, unknown>>> => {
+export const fetch_refresh_token = (): Promise<AxiosResponse<Record<string, unknown>>> => {
   const response = axios
     .post(
       `${API_ENDPOINT}${auth_module}/refreshtoken`,
@@ -58,7 +58,7 @@ request.interceptors.response.use(
   (response) => response,
   async (error) => {
     const config = error.config;
-    if (error.response.status === 403 || decodedToken?.isExpired) {
+    if (error.response.status === 403) {
       window.location.href = '/subscription/expired';
     }
     if (

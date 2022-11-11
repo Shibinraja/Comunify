@@ -36,6 +36,7 @@ import './Members.css';
 import MembersFilter from './MembersFilter';
 import MembersDraggableColumn from './membersTableColumn/membersDraggableColumn';
 import { ColumNames } from './MembersTableData';
+import { UsersLoader } from 'common/Loader/UsersLoader';
 
 Modal.setAppElement('#root');
 
@@ -395,6 +396,12 @@ const Members: React.FC = () => {
               </thead>
               {/* {Check with the custom column dynamic order and displays content/rows as per the index position of the arranged column name} */}
               <tbody>
+                {memberColumnsLoader &&
+                  Array.from({ length: 10 }, (_, i) => i + 1).map((type: number) => (
+                    <Fragment key={type}>
+                      <UsersLoader />
+                    </Fragment>
+                  ))}
                 {customizedColumn.map((member: Record<string, unknown>) => (
                   <tr className="border-b " key={(member?.name as { name: string; id: string })?.id as Key}>
                     {Object.keys(member).map((column: keyof typeof member, index) => (

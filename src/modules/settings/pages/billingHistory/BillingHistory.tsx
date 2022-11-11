@@ -5,11 +5,16 @@ import { getBillingHistoryData, getBillingInvoice } from 'modules/settings/servi
 import Pagination from 'common/pagination/pagination';
 import { BillingHistoryData, BillingHistoryQuery, BillingHistoryResponse } from 'modules/settings/interface/settings.interface';
 import { differenceInDays, format } from 'date-fns';
+import { showSuccessToast } from 'common/toast/toastFunctions';
+
 type Props = {
   hidden: boolean;
+  selectedTab: string;
+  loadingToastCondition: string;
+  clearLoadingToastCondition: () => void;
 };
 
-const BillingHistory: React.FC<Props> = ({ hidden }) => {
+const BillingHistory: React.FC<Props> = ({ hidden, selectedTab, loadingToastCondition, clearLoadingToastCondition }) => {
   const limit = 10;
   const [page, setPage] = useState<number>(1);
   const [billingHistoryList, setBillingHistoryList] = useState<BillingHistoryResponse>({
@@ -23,7 +28,24 @@ const BillingHistory: React.FC<Props> = ({ hidden }) => {
     getBillingHistory({ limit, page });
   }, [page]);
 
-  const getBillingHistory = async(params: BillingHistoryQuery) => {
+  useEffect(() => {
+    if (selectedTab === 'billing_history') {
+      getBillingHistory({ limit, page });
+    }
+  }, [selectedTab]);
+
+  useEffect(() => {
+    if (selectedTab === 'billing_history' && loadingToastCondition === 'showLoadingToast') {
+      showSuccessToast('Billing invoice is being generated...');
+      setTimeout(() => {
+        getBillingHistory({ limit, page });
+        showSuccessToast('Billing history list updated');
+        clearLoadingToastCondition();
+      }, 5000);
+    }
+  }, [selectedTab]);
+
+  const getBillingHistory = async (params: BillingHistoryQuery) => {
     const response = await getBillingHistoryData({
       limit: params.limit,
       page: params.page
@@ -37,7 +59,7 @@ const BillingHistory: React.FC<Props> = ({ hidden }) => {
     });
   };
 
-  const downloadInvoice = async(invoiceId: string, invoiceDate: string) => {
+  const downloadInvoice = async (invoiceId: string, invoiceDate: string) => {
     const decode = await getBillingInvoice(invoiceId);
     const response = new Blob([decode], { type: 'application/pdf' });
     const url = window.URL.createObjectURL(response);

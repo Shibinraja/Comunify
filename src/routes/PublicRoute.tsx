@@ -1,5 +1,5 @@
 import React, { Reducer, useEffect, useReducer } from 'react';
-import { Navigate } from 'react-router';
+import { Navigate, NavigateFunction, useNavigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import cookie from 'react-cookies';
 import { DecodeToken } from 'modules/authentication/interface/auth.interface';
@@ -8,7 +8,8 @@ import { AppDispatch } from '../store';
 import authSlice from 'modules/authentication/store/slices/auth.slice';
 import { getLocalRefreshToken } from '@/lib/request';
 import { Props, PublicRouteState, PublicRouteStateValues } from './routesTypes';
-import { getLocalWorkspaceId } from '@/lib/helper';
+import { getLocalWorkspaceId, setRefreshToken } from '@/lib/helper';
+import { showWarningToast } from 'common/toast/toastFunctions';
 
 const reducer: Reducer<PublicRouteState, PublicRouteStateValues> = (state, action): { route: string } => {
   switch (action.type) {
@@ -37,11 +38,11 @@ const InitialRouteState = {
 const PublicRoute: React.FC<Props> = ({ children }) => {
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const dispatch: AppDispatch = useAppDispatch();
-  const tokenData = getLocalRefreshToken();
-
+  const navigate: NavigateFunction = useNavigate();
+  const tokenData: string = getLocalRefreshToken();
   const access_token = tokenData || cookie.load('x-auth-cookie');
   const decodedToken: DecodeToken = access_token && decodeToken(access_token);
-  const workspaceId = decodedToken?.workspaceId || getLocalWorkspaceId();
+  const workspaceId: string = decodedToken?.workspaceId || getLocalWorkspaceId();
 
   const [state, dispatchReducer] = useReducer<Reducer<PublicRouteState, PublicRouteStateValues>>(reducer, InitialRouteState);
 
@@ -77,6 +78,12 @@ const PublicRoute: React.FC<Props> = ({ children }) => {
       //   return false;
       // }
       if (decodedToken?.isSubscribed && decodedToken?.isWorkSpaceCreated) {
+        setRefreshToken();
+        if (decodedToken?.isExpired) {
+          navigate(`/subscription/expired`);
+          showWarningToast('Your subscription has expired! Please purchase a plan to continue using comunify');
+          return false;
+        }
         dispatchReducer({ type: 'SET_DASHBOARD_ROUTE', payload: `/${workspaceId}/dashboard` });
         dispatch(authSlice.actions.setIsAuthenticated(true));
         return false;

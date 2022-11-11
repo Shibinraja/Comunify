@@ -48,7 +48,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
   const debouncedValue = useDebounce(searchText, 300);
   const TagNameValidation = Yup.string()
     .trim('WhiteSpaces are not allowed')
-    .min(2, 'Tag Name must be atleast 2 characters')
+    .min(2, 'Tag Name must be at least 2 characters')
     .max(15, 'Tag Name should not exceed above 15 characters')
     .required('Tag Name is a required field')
     .nullable(true);

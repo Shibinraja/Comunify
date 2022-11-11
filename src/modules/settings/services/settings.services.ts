@@ -21,7 +21,8 @@ import {
   ClientSecret,
   AddedCardDetails,
   BillingHistoryQuery,
-  BillingHistoryResponse
+  BillingHistoryResponse,
+  StripePaymentMethodId
 } from '../interface/settings.interface';
 
 export const NavigateToConnectPage = () => {
@@ -149,7 +150,7 @@ export const getBillingHistoryData = async (params: BillingHistoryQuery) => {
     const { data } = await request.get(`${API_ENDPOINT}/v1/subscription/billinghistory?page=${params.page}&limit=${params.limit}`);
     return data?.data as BillingHistoryResponse;
   } catch {
-    showErrorToast('Billing history failed');
+    showErrorToast('Failed to load billing history');
     return {} as BillingHistoryResponse;
   }
 };
@@ -166,5 +167,14 @@ export const getBillingInvoice = async (invoiceId: string) => {
   } catch (error) {
     showErrorToast('Failed to download Pdf');
     return {};
+  }
+};
+
+export const getNewlyAddedCardDetailsService = async (body: StripePaymentMethodId) => {
+  try {
+    const { data } = await request.post(`${API_ENDPOINT}/v1/subscription/card/`, body);
+    return data?.data;
+  } catch {
+    return {} as AddedCardDetails;
   }
 };
