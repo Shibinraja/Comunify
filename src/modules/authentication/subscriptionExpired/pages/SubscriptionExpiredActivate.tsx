@@ -15,7 +15,6 @@ import { useAppSelector } from '../../../../hooks/useRedux';
 import { getLocalWorkspaceId, setRefreshToken } from '../../../../lib/helper';
 import { State } from '../../../../store';
 import { AddedCardDetails, BillingDetails, ClientSecret, SubscriptionDetails, UpgradeData } from '../../../settings/interface/settings.interface';
-import CheckoutForm from '../../../settings/pages/subscription/CheckoutForm';
 import {
   createCardService,
   deleteCardService,
@@ -33,6 +32,8 @@ import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { alphabets_only_regex_with_single_space, email_regex, whiteSpace_single_regex } from 'constants/constants';
 
+const CheckoutForm = React.lazy(() => import('../../../settings/pages/subscription/CheckoutForm'));
+
 interface SelectedCard {
   id: string;
   cardNumber: number;
@@ -49,8 +50,8 @@ const SubscriptionExpiredActivate: React.FC = () => {
   const dispatch: Dispatch<AnyAction> = useDispatch();
   const workspaceId: string = getLocalWorkspaceId();
   const [subscriptionDetails, setSubscriptionDetails] = useState<SubscriptionDetails | undefined>();
-  const [clientSecret, setClientSecret] = useState<string | undefined>(undefined);
-  const [addedCardDetails, setAddedCardDetails] = useState<AddedCardDetails[]>();
+  const [clientSecret, setClientSecret] = useState<string>('');
+  const [addedCardDetails, setAddedCardDetails] = useState<AddedCardDetails[]>([]);
   const [selectedCard, setSelectedCard] = useState<SelectedCard | undefined>(undefined);
   const [selectedCardId, setSelectedCardId] = useState<string>('');
   // const [toggle, setToggle] = useState<boolean>(true);
@@ -75,11 +76,11 @@ const SubscriptionExpiredActivate: React.FC = () => {
 
   useEffect(() => {
     if (callEffect === true) {
+      getCardDetails();
       setTimeout(() => {
-        getCardDetails();
         showSuccessToast('Payment method list updated');
-        setCallEffect(false);
-      }, 8000);
+      }, 1000);
+      setCallEffect(false);
     }
   }, [callEffect]);
 
@@ -123,8 +124,8 @@ const SubscriptionExpiredActivate: React.FC = () => {
     if (response) {
       setIsLoading((prev) => ({ ...prev, confirmationModal: false }));
       setIsConfirmationModal((prev) => ({ ...prev, deleteCard: false }));
-      showSuccessToast('Payment card deleted. Updating payment method list...');
-      handleEffect();
+      showSuccessToast('Payment card Removed');
+      getCardDetails();
     } else {
       setIsLoading((prev) => ({ ...prev, confirmationModal: false }));
       setIsConfirmationModal((prev) => ({ ...prev, deleteCard: false }));
@@ -200,15 +201,10 @@ const SubscriptionExpiredActivate: React.FC = () => {
       const response: SubscriptionPackages = await chooseSubscription(subscriptionId, body);
       if (response?.status === 'paid') {
         showSuccessToast('Plan upgraded to Comunify Plus!');
-        setTimeout(() => {
-          showSuccessToast('This page will be redirected');
-        }, 1000);
-        setTimeout(() => {
-          navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'billing_history' } });
-          setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
-          setIsLoading((prev) => ({ ...prev, upgrade: false }));
-          setRefreshToken();
-        }, 5000);
+        navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'billing_history', loadingToastCondition: 'showLoadingToast' } });
+        setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
+        setIsLoading((prev) => ({ ...prev, upgrade: false }));
+        setRefreshToken();
       } else {
         setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
         setIsLoading((prev) => ({ ...prev, upgrade: false }));
@@ -239,6 +235,10 @@ const SubscriptionExpiredActivate: React.FC = () => {
   const billingDetailsInitialValues = {
     billingName: '',
     billingEmail: ''
+  };
+
+  const passNewlyAddedCardDetailsToChild = (newlyAddedCardData: AddedCardDetails) => {
+    setAddedCardDetails([...addedCardDetails, newlyAddedCardData]);
   };
 
   return (
@@ -386,6 +386,7 @@ const SubscriptionExpiredActivate: React.FC = () => {
               <Modal
                 isOpen={isBillingDetailsModal.cardDetails}
                 shouldCloseOnOverlayClick={false}
+                onRequestClose={() => setIsBillingDetailsModal((prev) => ({ ...prev, cardDetails: false }))}
                 className="w-24.31 pb-12 mx-auto rounded-lg border-fetching-card bg-white shadow-modal"
                 style={{
                   overlay: {
@@ -408,6 +409,7 @@ const SubscriptionExpiredActivate: React.FC = () => {
                         redirectCondition=""
                         handleEffect={handleEffect}
                         billingDetails={billingDetails}
+                        passNewlyAddedCardDetailsToChild={passNewlyAddedCardDetailsToChild}
                       />
                     </Elements>
                   )}

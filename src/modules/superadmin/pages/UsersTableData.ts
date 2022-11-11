@@ -1,7 +1,7 @@
 export const ColumNames: Array<{ name: string; id: string; isDisplayed: boolean; isDraggable: string }> = [
   {
     name: 'Name',
-    id: 'displayUserName',
+    id: 'fullName',
     isDisplayed: true,
     isDraggable: 'name'
   },
@@ -30,8 +30,8 @@ export const ColumNames: Array<{ name: string; id: string; isDisplayed: boolean;
     isDraggable: 'platforms'
   },
   {
-    name: 'Last Activity',
-    id: 'lastActive',
+    name: 'Last Login',
+    id: 'lastLogin',
     isDisplayed: true,
     isDraggable: 'card'
   },

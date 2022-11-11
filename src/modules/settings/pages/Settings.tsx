@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+/* eslint-disable no-unused-expressions */
+import React, { useEffect, useState } from 'react';
 import { useTabs } from '@/hooks/useTabs';
 import { TabSelector } from 'common/tabs/TabSelector';
 import BillingHistory from './billingHistory/BillingHistory';
@@ -10,20 +11,28 @@ const Subscription = React.lazy(() => import('./subscription/Subscription'));
 
 const Settings = () => {
   const [selectedTab, setSelectedTab] = useTabs(['integrations', 'subscription', 'billing_history', 'tags']);
+  const [loadingToast, setLoadingToast] = useState<string>('');
   const location: any | Location = useLocation();
   const redirectPath = location?.state?.selectedTab;
+  const loadingToastCondition = location?.state?.loadingToastCondition;
 
   useEffect(() => {
-    if (redirectPath === 'billing_history') {
-      setSelectedTab('billing_history');
+    if (loadingToastCondition === 'showLoadingToast') {
+      setLoadingToast(loadingToastCondition);
     }
+  }, [loadingToastCondition]);
+
+  useEffect(() => {
+    redirectPath === 'billing_history' && setSelectedTab('billing_history');
   }, [redirectPath]);
 
   useEffect(() => {
-    if (redirectPath === 'subscription') {
-      setSelectedTab('subscription');
-    }
+    redirectPath === 'subscription' && setSelectedTab('subscription');
   }, [redirectPath]);
+
+  const clearLoadingToastCondition = () => {
+    setLoadingToast('');
+  };
 
   return (
     <div className="flex flex-col ">
@@ -78,7 +87,12 @@ const Settings = () => {
         <div className="items-center block section ">
           <Integration hidden={selectedTab !== 'integrations'} selectedTab={selectedTab!} />
           <Subscription hidden={selectedTab !== 'subscription'} selectedTab={selectedTab!} />
-          <BillingHistory hidden={selectedTab !== 'billing_history'} selectedTab={selectedTab!} />
+          <BillingHistory
+            hidden={selectedTab !== 'billing_history'}
+            selectedTab={selectedTab!}
+            loadingToastCondition={loadingToast}
+            clearLoadingToastCondition={clearLoadingToastCondition}
+          />
           <Tags hidden={selectedTab !== 'tags'} />
         </div>
       </div>

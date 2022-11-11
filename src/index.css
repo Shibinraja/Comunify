@@ -689,3 +689,35 @@ input {
  left: 10px;
 }
 
+
+/* Notification Box  */
+
+
+.notification-box:after,
+.notification-box:before {
+  border: solid transparent;
+  content: " ";
+  display: block;
+  height: 0;
+  position: absolute;
+  pointer-events: none;
+  width: 0;
+  bottom: 100%;
+}
+
+.notification-box:after {
+  border-color: rgba(255, 255, 255, 0);
+  border-bottom-color: #fff;
+  left: 93%;
+  margin-left: -10px;
+  border-width: 10px;
+}
+
+.notification-box:before {
+  border-color: rgba(255, 255, 255, 0);
+  border-bottom-color: #DBD8FC;
+  left: 93%;
+  margin-left: -11px;
+  border-width: 11px;
+}
+

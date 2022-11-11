@@ -1,6 +1,7 @@
+/* eslint-disable space-before-function-paren */
 import './account.css';
 import profileImage from '../../../assets/images/user-image.svg';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { KeyboardEvent, ChangeEvent, useEffect, useRef, useState } from 'react';
 import dropdownIcon from '../../../assets/images/Vector.svg';
 import Input from 'common/input';
 import Button from 'common/button';
@@ -41,57 +42,69 @@ const Account = () => {
   };
 
   const [isDropDownActive, setDropDownActive] = useState<boolean>(false);
-  const [selectedDomain, setSelectedDomain] = useState<string>('');
   const [profileUploadImage, setProfileUploadImage] = useState<string>('');
   const workspaceId = getLocalWorkspaceId();
-  const options = ['Sales', 'Marketing', 'Customer Service', 'Customer Support', 'Others'];
+  const options = ['Marketing', 'Sales', 'Customer Support', 'Customer Success', 'Others'];
   const [currentPassword, setPasswordType1] = useState<string>('password');
   const [newPassword, setPasswordType2] = useState<string>('password');
   const [profileData, setProfileData] = useState<userProfileDataInput>(userInitialValues);
+  const [cursor, setCursor] = useState<number>(0);
+  const [selectedDomainSector, setSelectedDomainSector] = useState<string>('Select');
 
   const accessToken = localStorage.getItem('accessToken') || cookie.load('x-auth-cookie');
   const decodedToken: DecodeToken = accessToken && decodeToken(accessToken);
   const formikRef: any = useRef();
-  const imageRef: any = useRef();
-  const passwordRef: any = useRef();
+  const passwordFormikRef: any = useRef();
+  const imageRef = useRef<HTMLInputElement>(null);
+  const dropDownRef = useRef<HTMLDivElement>(null);
+  const domainRef = useRef<HTMLLIElement>(null);
 
   const dispatch = useDispatch();
 
-  const handleSubmit = async(values: ChangePassword): Promise<void> => {
-    const newValues = { ...values };
-    dispatch(accountSlice.actions.changePassword(newValues));
-    passwordRef.current.resetForm({
-      values: {
-        currentPassword: '',
-        newPassword: ''
-      }
-    });
+  const handleOutsideClick = (event: MouseEvent) => {
+    if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
+      setDropDownActive(false);
+    }
   };
 
-  const handleUserDataSubmit = async(values: userProfileDataInput): Promise<void> => {
-    const userUpdateData = {
-      fullName: values.fullName,
-      userName: values.userName,
-      organization: values.organization,
-      domainSector: selectedDomain
+  useEffect(() => {
+    fetchProfileData();
+    document.addEventListener('click', handleOutsideClick);
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
     };
-    dispatch(accountSlice.actions.userProfileUpdateData(userUpdateData));
-  };
+  }, []);
 
-  const handleDropDownActive = (): void => {
-    setDropDownActive((prev) => !prev);
-  };
+  useEffect(() => {
+    if (isDropDownActive) {
+      domainRef?.current?.focus();
+    }
+  }, [isDropDownActive]);
 
-  const changePasswordSchema = Yup.object().shape({
-    currentPassword: Yup.string()
-      .required('Current Password is required')
-      .min(8, 'Password must be at least 8 characters')
-      .matches(password_regex, 'Password must have one uppercase, one lowercase, a digit and special characters'),
-    newPassword: Yup.string()
-      .required('New Password is required')
-      .min(8, 'Password must be at least 8 characters')
-      .matches(password_regex, 'Password must have one uppercase, one lowercase, a digit and special characters')
-  });
+  const fetchProfileData = async () => {
+    try {
+      const userId = decodedToken.id.toString();
+      const response = await userProfileDataService(userId);
+      setProfileData(response);
+      formikRef.current.resetForm({
+        values: {
+          name: response.name,
+          fullName: response.fullName || '',
+          userName: response.userName,
+          email: response.email,
+          organization: response.organization?.name,
+          domainSector: response.domainSector,
+          profilePhotoUrl: response.profilePhotoUrl,
+          displayUserName: response.displayUserName
+        }
+      });
+      if (response.domainSector) {
+        setSelectedDomainSector(response.domainSector);
+      }
+    } catch {
+      showErrorToast('Failed to load Profile Data');
+    }
+  };
 
   const togglePassword1 = () => {
     if (currentPassword === 'currentPassword') {
@@ -109,7 +122,7 @@ const Account = () => {
     setPasswordType2('currentPassword');
   };
 
-  const imageUploadHandler = async(e: ChangeEvent<HTMLInputElement>) => {
+  const imageUploadHandler = async (e: ChangeEvent<HTMLInputElement>) => {
     const imageFile = e.target.files?.[0];
     setProfileUploadImage(URL.createObjectURL(imageFile as Blob));
     const base64: any = await convertBase64(imageFile);
@@ -131,53 +144,47 @@ const Account = () => {
       };
     });
 
-  const profileUpdateSchema = Yup.object().shape({
-    fullName: Yup.string()
-      .required('Full Name is required')
-      .min(2, 'Full Name must be at least 2 alphabets')
-      .max(50, 'Full Name should not exceed above 50 characters'),
-    userName: Yup.string()
-      .min(5, 'Username should be more than 5 character long')
-      .max(25, 'Username should not exceed 25 characters')
-      .matches(whiteSpace_regex, 'White spaces are not allowed')
-      .matches(userName_regex, 'Username is not valid')
-      .trim(),
-    organization: Yup.string()
-      .min(2, 'Company Name must be at least 2 characters')
-      .max(15, 'Company Name should not exceed 15 characters')
-      .strict(true)
-      .matches(companyName_regex, 'Company Name is not valid')
-      .trim('White spaces are not allowed')
-  });
+  const handleDomainSectorChange = (option: string): void => {
+    // Formik ref to enable to make the custom dropdown with field touch and set the value for the fields.
+    formikRef?.current?.setFieldTouched('domainSector');
+    formikRef?.current?.setFieldValue('domainSector', option, true);
+    setSelectedDomainSector(option);
+  };
 
-  const fetchProfileData = async() => {
-    try {
-      const userId = decodedToken.id.toString();
-      const response = await userProfileDataService(userId);
-      setProfileData(response);
-      formikRef.current.resetForm({
-        values: {
-          name: response.name,
-          fullName: response.fullName || '',
-          userName: response.userName,
-          email: response.email,
-          organization: response.organization?.name,
-          domainSector: response.domainSector,
-          profilePhotoUrl: response.profilePhotoUrl,
-          displayUserName: response.displayUserName
-        }
-      });
-      if (response.domainSector) {
-        setSelectedDomain(response.domainSector);
-      }
-    } catch {
-      showErrorToast('Failed to load Profile Data');
+  const handleKeyDown = (e: KeyboardEvent<HTMLLIElement>) => {
+    // arrow up/down button should select next/previous list element
+    if (e.keyCode === 38 && cursor > 0) {
+      setCursor((prevState: number) => prevState - 1);
+    }
+    if (e.keyCode === 40 && cursor < options.length - 1) {
+      setCursor((prevState: number) => prevState + 1);
+    }
+    if (e.keyCode === 13) {
+      handleDomainSectorChange(options[cursor]);
+      setDropDownActive(false);
     }
   };
 
-  useEffect(() => {
-    fetchProfileData();
-  }, []);
+  const handleSubmit = async (values: ChangePassword): Promise<void> => {
+    const newValues = { ...values };
+    dispatch(accountSlice.actions.changePassword(newValues));
+    passwordFormikRef.current.resetForm({
+      values: {
+        currentPassword: '',
+        newPassword: ''
+      }
+    });
+  };
+
+  const handleUserDataSubmit = async (values: userProfileDataInput): Promise<void> => {
+    const userUpdateData = {
+      fullName: values.fullName,
+      userName: values.userName,
+      organization: values.organization,
+      domainSector: values.domainSector
+    };
+    dispatch(accountSlice.actions.userProfileUpdateData(userUpdateData));
+  };
 
   return (
     <div className="profile pt-16 pb-10">
@@ -276,28 +283,33 @@ const Account = () => {
                               Domain
                             </label>
                             <div className="flex flex-col relative w-full">
-                              <div className="cursor-pointer" onClick={handleDropDownActive}>
+                              <div className="cursor-pointer" ref={dropDownRef} onClick={() => setDropDownActive(!isDropDownActive)}>
                                 <div className="flex items-center w-full  justify-between p-2 app-result-card-border bg-white  py-2 box-border shadow-inputShadow  rounded-0.3 mt-0.40 font-Poppins text-thinGray font-normal leading-1.31 text-trial">
-                                  <div className="">{selectedDomain ? selectedDomain : 'Select'}</div>
+                                  <div className={selectedDomainSector === 'Select' ? 'text-secondaryGray' : 'text-black'}>
+                                    {selectedDomainSector ? selectedDomainSector : 'Select'}
+                                  </div>
                                   <img src={dropdownIcon} alt="" className={isDropDownActive ? 'rotate-180' : 'rotate-0'} />
                                 </div>
                               </div>
                               {isDropDownActive && (
-                                <div
-                                  className="app-input-card-border w-full bg-white shadow-integrationCardShadow rounded-0.6 absolute top-12 z-40"
-                                  onClick={handleDropDownActive}
-                                >
-                                  {options.map((option: string) => (
-                                    <div
-                                      className="flex flex-col p-2 hover:bg-signUpDomain transition ease-in duration-300 cursor-pointer "
+                                <div className="app-input-card-border w-full bg-white shadow-integrationCardShadow rounded-0.6 absolute top-12 z-40">
+                                  {options.map((option: string, index: number) => (
+                                    <li
+                                      ref={domainRef}
+                                      className={`${
+                                        cursor === index ? 'bg-signUpDomain' : null
+                                      } flex flex-col p-2 hover:bg-signUpDomain transition ease-in duration-300 cursor-pointer`}
+                                      onKeyDown={handleKeyDown}
+                                      tabIndex={0}
                                       key={option}
-                                      defaultValue={selectedDomain ? selectedDomain : 'Select'}
+                                      defaultValue={values.domainSector ? values.domainSector : 'Select'}
                                       onClick={() => {
-                                        setSelectedDomain(option);
+                                        handleDomainSectorChange(option);
+                                        setDropDownActive(false);
                                       }}
                                     >
                                       <div className="text-searchBlack font-Poppins font-normal text-trial leading-1.31">{option}</div>
-                                    </div>
+                                    </li>
                                   ))}
                                 </div>
                               )}
@@ -334,7 +346,7 @@ const Account = () => {
                   onSubmit={handleSubmit}
                   validateOnChange={true}
                   validationSchema={changePasswordSchema}
-                  innerRef={passwordRef}
+                  innerRef={passwordFormikRef}
                 >
                   {({ errors, handleBlur, handleChange, touched, values }): JSX.Element => (
                     <Form className="w-full mt-1.9 " autoComplete="off">
@@ -493,5 +505,35 @@ const Account = () => {
     </div>
   );
 };
+
+const profileUpdateSchema = Yup.object().shape({
+  fullName: Yup.string()
+    .required('Full Name is required')
+    .min(2, 'Full Name must be at least 2 alphabets')
+    .max(50, 'Full Name should not exceed above 50 characters'),
+  userName: Yup.string()
+    .min(5, 'Username should be more than 5 character long')
+    .max(25, 'Username should not exceed 25 characters')
+    .matches(whiteSpace_regex, 'White spaces are not allowed')
+    .matches(userName_regex, 'Username is not valid')
+    .trim(),
+  organization: Yup.string()
+    .min(2, 'Company Name must be at least 2 characters')
+    .max(15, 'Company Name should not exceed 15 characters')
+    .strict(true)
+    .matches(companyName_regex, 'Company Name is not valid')
+    .trim('White spaces are not allowed')
+});
+
+const changePasswordSchema = Yup.object().shape({
+  currentPassword: Yup.string()
+    .required('Current Password is required')
+    .min(8, 'Password must be at least 8 characters')
+    .matches(password_regex, 'Password must have one uppercase, one lowercase, a digit and special characters'),
+  newPassword: Yup.string()
+    .required('New Password is required')
+    .min(8, 'Password must be at least 8 characters')
+    .matches(password_regex, 'Password must have one uppercase, one lowercase, a digit and special characters')
+});
 
 export default Account;

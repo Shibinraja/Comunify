@@ -1,24 +1,30 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable indent */
+import React, { ChangeEvent, Fragment, ReactNode, useEffect, useMemo, useState } from 'react';
+
+import Skeleton from 'react-loading-skeleton';
+import { format, parseISO } from 'date-fns';
+import Modal from 'react-modal';
+
 import useDebounce from '@/hooks/useDebounce';
 import { API_ENDPOINT } from '@/lib/config';
 import fetchExportList from '@/lib/fetchExport';
-import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
 import Pagination from 'common/pagination/pagination';
+import { ColumNames } from './UsersTableData';
 import { width_90 } from 'constants/constants';
-import { format, parseISO } from 'date-fns';
+
+import UsersAnalyticsCard from './UsersAnalyticsCard';
+import UsersFilter from './UsersFilter';
+
+import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
 import { filterDateProps } from 'modules/members/interface/members.interface';
-import React, { ChangeEvent, Fragment, ReactNode, useEffect, useMemo, useState } from 'react';
-import Skeleton from 'react-loading-skeleton';
-import Modal from 'react-modal';
+import { Platform, UserMemberFilterExportProps, UserMembersListData, UsersMemberListResponse, UserWorkspaces } from '../interface/users.interface';
+import { getUsersListService } from '../services/users.services';
+
 import exportImage from '../../../assets/images/export.svg';
 import noMemberIcon from '../../../assets/images/no-member.svg';
 import searchIcon from '../../../assets/images/search.svg';
-import { Platform, UserMemberFilterExportProps, UserMembersListData, UsersMemberListResponse, UserWorkspaces } from '../interface/users.interface';
-import { getUsersListService } from '../services/users.services';
-import UsersAnalyticsCard from './UsersAnalyticsCard';
-import UsersFilter from './UsersFilter';
-import { ColumNames } from './UsersTableData';
+
 Modal.setAppElement('#root');
 
 const Users: React.FC = () => {
@@ -30,9 +36,6 @@ const Users: React.FC = () => {
     getLoader: false,
     exportLoader: false
   });
-
-  const debouncedValue = useDebounce(searchText, 300);
-
   const [filterExportParams, setFilterExportParams] = useState<UserMemberFilterExportProps>({
     platform: [],
     domain: [],
@@ -46,13 +49,14 @@ const Users: React.FC = () => {
     filterStartDate: '',
     filterEndDate: ''
   });
-
   const [membersList, setMembersList] = useState<UsersMemberListResponse>({
     data: [],
     totalPages: 0,
     previousPage: 0,
     nextPage: 0
   });
+
+  const debouncedValue = useDebounce(searchText, 300);
 
   // Function to dispatch the search text and to hit api of member list.
   // eslint-disable-next-line space-before-function-paren
@@ -89,6 +93,10 @@ const Users: React.FC = () => {
     }
   }, [debouncedValue]);
 
+  useEffect(() => {
+    getFilteredMembersList(page, searchText, filteredDate.filterStartDate, filteredDate.filterEndDate);
+  }, [page]);
+
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
     if (!searchText) {
@@ -101,10 +109,6 @@ const Users: React.FC = () => {
     }
     setSearchText(searchText);
   };
-
-  useEffect(() => {
-    getFilteredMembersList(page, searchText, filteredDate.filterStartDate, filteredDate.filterEndDate);
-  }, [page]);
 
   // Fetch members list data in comma separated value
   // eslint-disable-next-line space-before-function-paren
@@ -224,16 +228,16 @@ const Users: React.FC = () => {
                               </div>
                             </div>
                           )
-                        ) : column === 'lastActive' ? (
+                        ) : column === 'lastLogin' ? (
                           fetchLoader.getLoader ? (
                             <Skeleton width={width_90} />
                           ) : (
                             <div className="flex flex-col w-[150px]">
                               <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
-                                {member?.lastActive ? format(parseISO(member?.lastActive as string), 'dd MMM yyyy') : '--'}
+                                {member?.lastLogin ? format(parseISO(member?.lastLogin as string), 'dd MMM yyyy') : '--'}
                               </div>
                               <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
-                                {(member?.lastActive as ReactNode) && format(parseISO(member?.lastActive as string), 'HH:MM')}
+                                {(member?.lastLogin as ReactNode) && format(parseISO(member?.lastLogin as string), 'HH:MM')}
                               </div>
                             </div>
                           )
@@ -267,7 +271,7 @@ const Users: React.FC = () => {
             </table>
             {!fetchLoader.getLoader && (
               <div className="px-3 py-6 flex items-center gap-0.66 pl-[30%] w-full rounded-b-lg fixed bg-white bottom-0">
-                <Pagination currentPage={1} totalPages={membersList.totalPages} limit={limit} onPageChange={(page) => setPage(Number(page))} />
+                <Pagination currentPage={page} totalPages={membersList.totalPages} limit={limit} onPageChange={(page) => setPage(Number(page))} />
               </div>
             )}
           </div>

@@ -41,8 +41,8 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
   const navigate: NavigateFunction = useNavigate();
   const workspaceId: string = getLocalWorkspaceId();
   const [addCardForm, setAddCardForm] = useState<boolean>(false);
-  const [clientSecret, setClientSecret] = useState<string | undefined>(undefined);
-  const [addedCardDetails, setAddedCardDetails] = useState<AddedCardDetails[]>();
+  const [clientSecret, setClientSecret] = useState<string>('');
+  const [addedCardDetails, setAddedCardDetails] = useState<AddedCardDetails[]>([]);
   const [selectedCard, setSelectedCard] = useState<SelectedCard | undefined>(undefined);
   const [selectedCardId, setSelectedCardId] = useState<string>('');
   const [isConfirmationModal, setIsConfirmationModal] = useState<{ deleteCard: boolean; upgradePlan: boolean }>({
@@ -66,11 +66,11 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
 
   useEffect(() => {
     if (callEffect === true) {
+      getCardDetails();
       setTimeout(() => {
-        getCardDetails();
         showSuccessToast('Payment method list updated');
-        setCallEffect(false);
-      }, 8000);
+      }, 1000);
+      setCallEffect(false);
     }
   }, [callEffect]);
 
@@ -107,8 +107,8 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
     if (response) {
       setIsLoading((prev) => ({ ...prev, confirmationModal: false }));
       setIsConfirmationModal((prev) => ({ ...prev, deleteCard: false }));
-      showSuccessToast('Payment card deleted. Updating payment method list...');
-      handleEffect();
+      showSuccessToast('Payment card Removed');
+      getCardDetails();
     } else {
       setIsLoading((prev) => ({ ...prev, confirmationModal: false }));
       setIsConfirmationModal((prev) => ({ ...prev, deleteCard: false }));
@@ -151,8 +151,6 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
   const handlePlanUpgrade = async () => {
     if (subscriptionDetails?.subscriptionPackage?.name?.toLocaleLowerCase().trim() === 'free trial' || subscriptionDetails === undefined) {
       setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: true }));
-    } else {
-      showWarningToast('Your subscription is already activated');
     }
   };
 
@@ -169,14 +167,9 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
     const response: SubscriptionPackages = await chooseSubscription(subscriptionId, body);
     if (response?.status === 'paid') {
       showSuccessToast('Plan upgraded to Comunify Plus!');
-      setTimeout(() => {
-        showSuccessToast('This page will be redirected');
-      }, 1000);
-      setTimeout(() => {
-        navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'billing_history' } });
-        setIsLoading((prev) => ({ ...prev, upgrade: false }));
-        setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
-      }, 5000);
+      navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'billing_history', loadingToastCondition: 'showLoadingToast' } });
+      setIsLoading((prev) => ({ ...prev, upgrade: false }));
+      setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
     } else {
       setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
       setIsLoading((prev) => ({ ...prev, upgrade: false }));
@@ -185,6 +178,10 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
 
   const handleEffect = () => {
     setCallEffect(true);
+  };
+
+  const passNewlyAddedCardDetailsToChild = (newlyAddedCardData: AddedCardDetails) => {
+    setAddedCardDetails([...addedCardDetails, newlyAddedCardData]);
   };
 
   return (
@@ -276,8 +273,13 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
           <Button
             type="button"
             text="Upgrade"
+            disabled={subscriptionDetails?.subscriptionPackage?.name.toLocaleLowerCase().trim() === 'comunify plus'}
             onClick={handlePlanUpgrade}
-            className={`submit border-none text-white font-Poppins text-error font-medium leading-1.31 cursor-pointer w-[123px] h-2.81 rounded shadow-contactBtn btn-save-modal`}
+            className={`submit border-none text-white font-Poppins text-error font-medium leading-1.31 ${
+              subscriptionDetails?.subscriptionPackage?.name.toLocaleLowerCase().trim() === 'comunify plus'
+                ? 'opacity-50 cursor-not-allowed'
+                : 'cursor-pointer'
+            } w-[123px] h-2.81 rounded shadow-contactBtn btn-save-modal`}
           />
         </div>
       </div>
@@ -303,7 +305,12 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
               <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Payment Information</h3>
               {stripePromise && options.clientSecret && (
                 <Elements stripe={stripePromise} options={options}>
-                  <CheckoutForm handleCheckoutFormModal={handleCheckoutFormModal} redirectCondition="" handleEffect={handleEffect} />
+                  <CheckoutForm
+                    handleCheckoutFormModal={handleCheckoutFormModal}
+                    redirectCondition=""
+                    handleEffect={handleEffect}
+                    passNewlyAddedCardDetailsToChild={passNewlyAddedCardDetailsToChild}
+                  />
                 </Elements>
               )}
             </div>
