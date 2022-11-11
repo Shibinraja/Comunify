@@ -1,6 +1,6 @@
 /* eslint-disable space-before-function-paren */
 import { transformRequestOptions } from '@/lib/helper';
-import { GlobalSearchDataResponse, SearchSuggestionArgsType } from 'common/topBar/TopBarTypes';
+import { GlobalSearchDataResponse, NotificationData, NotificationList, NotificationListQuery, SearchSuggestionArgsType, UpdateNotification } from 'common/topBar/TopBarTypes';
 import { showErrorToast } from '../../../common/toast/toastFunctions';
 import { HealthScoreWidgetData, WidgetFilters } from '../../../common/widgetLayout/WidgetTypes';
 import { API_ENDPOINT } from '../../../lib/config';
@@ -114,7 +114,7 @@ export const requestForWidgetService = async (workspaceId: string, body: Request
   }
 };
 
-
+//TopBar Service
 export const getGlobalSearchRequest = async(args:Partial<SearchSuggestionArgsType>):Promise<GlobalSearchDataResponse> => {
   try{
     const searchParams = ({
@@ -126,5 +126,39 @@ export const getGlobalSearchRequest = async(args:Partial<SearchSuggestionArgsTyp
     return data?.data as GlobalSearchDataResponse;
   } catch {
     return {} as GlobalSearchDataResponse;
+  }
+};
+
+export const getNotificationListData = async(params: NotificationListQuery) => {
+  try {
+    const { data } = await request.get(
+      `${API_ENDPOINT}/v1/${params.workspaceId}/notifications?limit=${params.limit}&type=${params.type}${
+        params.cursor ? `&cursor=${params.cursor}` : ''
+      }`
+    );
+    return data?.data as NotificationList;
+  } catch {
+    showErrorToast('Notification list failed');
+    return {} as NotificationList;
+  }
+};
+
+export const updateNotification = async(params: UpdateNotification) => {
+  try {
+    const { data } = await request.patch(`${API_ENDPOINT}/v1/${params.workspaceId}/notifications/read/${params.notificationId}`);
+    return data?.data as NotificationData;
+  } catch {
+    showErrorToast('Notification update failed');
+    return {} as NotificationData;
+  }
+};
+
+export const getNotificationCount = async(workspaceId: string) => {
+  try {
+    const { data } = await request.get(`${API_ENDPOINT}/v1/${workspaceId}/notifications/count`);
+    return data?.data as { count: number };
+  } catch {
+    showErrorToast('Notification count failed');
+    return { count: 0 };
   }
 };

@@ -1,11 +1,14 @@
 import { createContext, ReactElement, useEffect, useState } from 'react';
-import { fetch_refresh_token, getLocalRefreshToken } from '../../lib/request';
+
 import cookie from 'react-cookies';
-import { Props } from '../../routes/routesTypes';
 import { Centrifuge } from 'centrifuge';
+
+import { fetch_refresh_token, getLocalRefreshToken } from '../../lib/request';
 import { decodeToken } from '../../lib/decodeToken';
-import { DecodeToken } from 'modules/authentication/interface/auth.interface';
 import subscribe from '@/lib/subscribe';
+
+import { Props } from '../../routes/routesTypes';
+import { DecodeToken } from 'modules/authentication/interface/auth.interface';
 
 export const CentrifugoContext = createContext({} as Centrifuge);
 
