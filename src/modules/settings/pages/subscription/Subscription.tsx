@@ -365,7 +365,6 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
             <Modal
               isOpen={isBillingDetailsModal.cardDetails}
               shouldCloseOnOverlayClick={false}
-              onRequestClose={() => setIsBillingDetailsModal((prev) => ({ ...prev, cardDetails: false }))}
               className="w-24.31 pb-12 mx-auto rounded-lg border-fetching-card bg-white shadow-modal"
               style={{
                 overlay: {

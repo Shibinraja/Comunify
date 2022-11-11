@@ -380,13 +380,8 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
   };
 
   return (
-    <div className="box-border cursor-pointer rounded-0.6 shadow-contactCard app-input-card-border relative"
-      ref={dropDownRef}
-    >
-      <div
-        className="flex h-3.06  items-center justify-between px-5 "
-        onClick={handleFilterDropdown}
-      >
+    <div className="box-border cursor-pointer rounded-0.6 shadow-contactCard app-input-card-border relative" ref={dropDownRef}>
+      <div className="flex h-3.06  items-center justify-between px-5 " onClick={handleFilterDropdown}>
         <div className="box-border flex rounded-0.6 shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">
           Filters
           <p className="ml-1 bg-signUpDomain px-2 w-content rounded-lg text-memberDay">{`${filterCount}`}</p>
@@ -516,7 +511,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                       placeholderText="DD/MM/YYYY"
                       ref={datePickerRefStart}
                       dateFormat="dd/MM/yyyy"
-                      onMonthChange={() =>  {
+                      onMonthChange={() => {
                         dropDownRef.current = null;
                       }}
                     />
@@ -543,7 +538,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                       placeholderText="DD/MM/YYYY"
                       ref={datePickerRefEnd}
                       dateFormat="dd/MM/yyyy"
-                      onMonthChange={() =>  {
+                      onMonthChange={() => {
                         dropDownRef.current = null;
                       }}
                     />

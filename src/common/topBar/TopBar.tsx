@@ -126,7 +126,7 @@ const TopBar: React.FC = () => {
       }
     });
 
-    if(!decodedToken.isAdmin) {
+    if (!decodedToken.isAdmin) {
       notificationCount(workspaceId as string);
     }
 
@@ -270,7 +270,7 @@ const TopBar: React.FC = () => {
 
   const handleNotificationActive = () => {
     setIsNotificationActive((prev) => !prev);
-    if(!decodedToken.isAdmin) {
+    if (!decodedToken.isAdmin) {
       setNotificationList({
         result: [],
         nextCursor: null
@@ -419,7 +419,7 @@ const TopBar: React.FC = () => {
                           <div className="flex py-[10px] border-b border-[#E6E6E6] items-center" key={index}>
                             <img
                               src={
-                                item.notification.notificationPayload?.imageUrl as string ||
+                                (item.notification.notificationPayload?.imageUrl as string) ||
                                 'https://comunify-dev-assets.s3.amazonaws.com/common/Comunfy_logo.png'
                               }
                               alt=""
