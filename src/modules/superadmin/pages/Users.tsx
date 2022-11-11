@@ -1,25 +1,30 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable indent */
+import React, { ChangeEvent, Fragment, ReactNode, useEffect, useMemo, useState } from 'react';
+
+import Skeleton from 'react-loading-skeleton';
+import { format, parseISO } from 'date-fns';
+import Modal from 'react-modal';
+
 import useDebounce from '@/hooks/useDebounce';
 import { API_ENDPOINT } from '@/lib/config';
 import fetchExportList from '@/lib/fetchExport';
-import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
-import { UsersLoader } from 'common/Loader/UsersLoader';
 import Pagination from 'common/pagination/pagination';
+import { ColumNames } from './UsersTableData';
 import { width_90 } from 'constants/constants';
-import { format, parseISO } from 'date-fns';
+
+import UsersAnalyticsCard from './UsersAnalyticsCard';
+import UsersFilter from './UsersFilter';
+
+import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
 import { filterDateProps } from 'modules/members/interface/members.interface';
-import React, { ChangeEvent, Fragment, ReactNode, useEffect, useMemo, useState } from 'react';
-import Skeleton from 'react-loading-skeleton';
-import Modal from 'react-modal';
+import { Platform, UserMemberFilterExportProps, UserMembersListData, UsersMemberListResponse, UserWorkspaces } from '../interface/users.interface';
+import { getUsersListService } from '../services/users.services';
+
 import exportImage from '../../../assets/images/export.svg';
 import noMemberIcon from '../../../assets/images/no-member.svg';
 import searchIcon from '../../../assets/images/search.svg';
-import { Platform, UserMemberFilterExportProps, UserMembersListData, UsersMemberListResponse, UserWorkspaces } from '../interface/users.interface';
-import { getUsersListService } from '../services/users.services';
-import UsersAnalyticsCard from './UsersAnalyticsCard';
-import UsersFilter from './UsersFilter';
-import { ColumNames } from './UsersTableData';
+
 Modal.setAppElement('#root');
 
 const Users: React.FC = () => {
@@ -31,9 +36,6 @@ const Users: React.FC = () => {
     getLoader: false,
     exportLoader: false
   });
-
-  const debouncedValue = useDebounce(searchText, 300);
-
   const [filterExportParams, setFilterExportParams] = useState<UserMemberFilterExportProps>({
     platform: [],
     domain: [],
@@ -47,13 +49,14 @@ const Users: React.FC = () => {
     filterStartDate: '',
     filterEndDate: ''
   });
-
   const [membersList, setMembersList] = useState<UsersMemberListResponse>({
     data: [],
     totalPages: 0,
     previousPage: 0,
     nextPage: 0
   });
+
+  const debouncedValue = useDebounce(searchText, 300);
 
   // Function to dispatch the search text and to hit api of member list.
   // eslint-disable-next-line space-before-function-paren
@@ -90,6 +93,10 @@ const Users: React.FC = () => {
     }
   }, [debouncedValue]);
 
+  useEffect(() => {
+    getFilteredMembersList(page, searchText, filteredDate.filterStartDate, filteredDate.filterEndDate);
+  }, [page]);
+
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
     if (!searchText) {
@@ -102,10 +109,6 @@ const Users: React.FC = () => {
     }
     setSearchText(searchText);
   };
-
-  useEffect(() => {
-    getFilteredMembersList(page, searchText, filteredDate.filterStartDate, filteredDate.filterEndDate);
-  }, [page]);
 
   // Fetch members list data in comma separated value
   // eslint-disable-next-line space-before-function-paren
@@ -208,12 +211,6 @@ const Users: React.FC = () => {
               </thead>
               {/* {Check with the custom column dynamic order and displays content/rows as per the index position of the arranged column name} */}
               <tbody>
-                {fetchLoader.getLoader &&
-                  Array.from({ length: 10 }, (_, i) => i + 1).map((type: number) => (
-                    <Fragment key={type}>
-                      <UsersLoader />
-                    </Fragment>
-                  ))}
                 {customizedColumn.map((member: Record<string, unknown>) => (
                   <tr className="border-b " key={Math.random()}>
                     {Object.keys(member).map((column: keyof typeof member, index) => (
@@ -260,9 +257,7 @@ const Users: React.FC = () => {
                           )
                         ) : (
                           <div className="flex ">
-                            <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
-                              {member[column] ? (member[column] as ReactNode) : '--'}
-                            </div>
+                            <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">{member[column] as ReactNode}</div>
                           </div>
                         )}
                       </td>
