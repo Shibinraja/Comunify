@@ -36,15 +36,16 @@ const BillingHistory: React.FC<Props> = ({ hidden, selectedTab, loadingToastCond
 
   useEffect(() => {
     if (selectedTab === 'billing_history' && loadingToastCondition === 'showLoadingToast') {
+      showSuccessToast('Billing invoice is being generated...');
       setTimeout(() => {
         getBillingHistory({ limit, page });
-        showSuccessToast('Billing history updated');
+        showSuccessToast('Billing history list updated');
         clearLoadingToastCondition();
       }, 5000);
     }
   }, [selectedTab]);
 
-  const getBillingHistory = async(params: BillingHistoryQuery) => {
+  const getBillingHistory = async (params: BillingHistoryQuery) => {
     const response = await getBillingHistoryData({
       limit: params.limit,
       page: params.page
@@ -58,7 +59,7 @@ const BillingHistory: React.FC<Props> = ({ hidden, selectedTab, loadingToastCond
     });
   };
 
-  const downloadInvoice = async(invoiceId: string, invoiceDate: string) => {
+  const downloadInvoice = async (invoiceId: string, invoiceDate: string) => {
     const decode = await getBillingInvoice(invoiceId);
     const response = new Blob([decode], { type: 'application/pdf' });
     const url = window.URL.createObjectURL(response);
