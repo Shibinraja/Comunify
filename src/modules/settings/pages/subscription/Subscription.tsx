@@ -168,7 +168,7 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
                 <Button
                   type="button"
                   text={subscriptionDetails?.subscriptionPackage?.name ?? 'No active plan'}
-                  className="px-2 h-[26px] bg-trialButton border-none text-white text-error font-Poppins font-medium leading-1.31 cursor-pointer uppercase"
+                  className="px-2 h-[26px] bg-trialButton border-none text-white text-error font-Poppins font-medium leading-1.31 cursor-auto uppercase"
                 />
               </div>
             </div>
