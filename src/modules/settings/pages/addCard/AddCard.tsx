@@ -7,7 +7,7 @@ import { NavigateFunction, useNavigate } from 'react-router';
 import { getLocalWorkspaceId } from '../../../../lib/helper';
 import { createCardService, deleteCardService, getCardDetailsService, selectCardService } from '../../services/settings.services';
 import { AddedCardDetails, ClientSecret, SubscriptionDetails, UpgradeData } from '../../interface/settings.interface';
-import { showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
+import { showErrorToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
 import Modal from 'react-modal';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
@@ -165,12 +165,13 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
       upgrade: true
     };
     const response: SubscriptionPackages = await chooseSubscription(subscriptionId, body);
-    if (response?.status === 'paid') {
+    if (response?.status?.toLocaleLowerCase().trim() === 'paid') {
       showSuccessToast('Plan upgraded to Comunify Plus!');
       navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'billing_history', loadingToastCondition: 'showLoadingToast' } });
       setIsLoading((prev) => ({ ...prev, upgrade: false }));
       setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
     } else {
+      showErrorToast('Subscription failed');
       setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
       setIsLoading((prev) => ({ ...prev, upgrade: false }));
     }

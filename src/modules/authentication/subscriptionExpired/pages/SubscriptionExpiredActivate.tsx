@@ -10,7 +10,7 @@ import { AnyAction } from 'redux';
 import deleteIcon from '../../../../assets/images/delete.svg';
 import MasterCardIcon from '../../../../assets/images/masterCard.svg';
 import VisaCardIcon from '../../../../assets/images/visa.svg';
-import { showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
+import { showErrorToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
 import { useAppSelector } from '../../../../hooks/useRedux';
 import { getLocalWorkspaceId, setRefreshToken } from '../../../../lib/helper';
 import { State } from '../../../../store';
@@ -199,13 +199,14 @@ const SubscriptionExpiredActivate: React.FC = () => {
         upgrade: true
       };
       const response: SubscriptionPackages = await chooseSubscription(subscriptionId, body);
-      if (response?.status === 'paid') {
+      if (response?.status?.toLocaleLowerCase().trim() === 'paid') {
         showSuccessToast('Plan upgraded to Comunify Plus!');
         navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'billing_history', loadingToastCondition: 'showLoadingToast' } });
         setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
         setIsLoading((prev) => ({ ...prev, upgrade: false }));
         setRefreshToken();
       } else {
+        showErrorToast('Subscription failed');
         setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
         setIsLoading((prev) => ({ ...prev, upgrade: false }));
       }

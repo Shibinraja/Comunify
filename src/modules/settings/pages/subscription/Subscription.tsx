@@ -361,7 +361,7 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
         </div>
 
         <div>
-          <div className="flex flex-col ">
+          <div className="flex flex-col">
             <Modal
               isOpen={isBillingDetailsModal.cardDetails}
               shouldCloseOnOverlayClick={false}

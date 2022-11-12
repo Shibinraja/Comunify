@@ -53,14 +53,14 @@ const CheckoutForm: React.FC<Props> = ({
       return;
     }
     const paymentElement: StripePaymentElement | null = elements.getElement('payment');
-    if (paymentElement === null) {
+    if (!paymentElement) {
       showErrorToast('Failed to load payment card form');
+      return;
     }
     const response: SetupIntentResult = await stripe.confirmSetup({
       elements,
       redirect: 'if_required',
       confirmParams: {
-        // receipt_email: billingDetails?.billingEmail ?? 'edsadsada@yopmail.com',
         payment_method_data: {
           billing_details: {
             name: billingDetails?.billingName ?? undefined,
@@ -72,28 +72,28 @@ const CheckoutForm: React.FC<Props> = ({
     if (response?.error?.message) {
       setIsLoading(false);
       showErrorToast(response?.error?.message);
+      return;
+    }
+    if (response?.setupIntent?.payment_method) {
+      const newCardDetails = await getNewlyAddedCardDetailsService({ paymentId: response?.setupIntent?.payment_method as string });
+      passNewlyAddedCardDetailsToChild && passNewlyAddedCardDetailsToChild(newCardDetails);
+    }
+    if (redirectCondition === 'add-card') {
+      handleCheckoutFormModal && handleCheckoutFormModal();
+      navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'subscription' } });
+      setIsLoading(false);
+      setTimeout(() => {
+        showSuccessToast('Payment card added successfully');
+      }, 1000);
     } else {
       if (response?.setupIntent?.payment_method) {
         const newCardDetails = await getNewlyAddedCardDetailsService({ paymentId: response?.setupIntent?.payment_method as string });
         passNewlyAddedCardDetailsToChild && passNewlyAddedCardDetailsToChild(newCardDetails);
       }
-      if (redirectCondition === 'add-card') {
-        handleCheckoutFormModal && handleCheckoutFormModal();
-        navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'subscription' } });
-        setIsLoading(false);
-        setTimeout(() => {
-          showSuccessToast('Payment card added successfully');
-        }, 1000);
-      } else {
-        if (response?.setupIntent?.payment_method) {
-          const newCardDetails = await getNewlyAddedCardDetailsService({ paymentId: response?.setupIntent?.payment_method as string });
-          passNewlyAddedCardDetailsToChild && passNewlyAddedCardDetailsToChild(newCardDetails);
-        }
-        showSuccessToast('Payment card added');
-        handleEffect && handleEffect();
-        handleCheckoutFormModal && handleCheckoutFormModal();
-        setIsLoading(false);
-      }
+      showSuccessToast('Payment card added');
+      handleEffect && handleEffect();
+      handleCheckoutFormModal && handleCheckoutFormModal();
+      setIsLoading(false);
     }
   };
 
@@ -103,16 +103,15 @@ const CheckoutForm: React.FC<Props> = ({
       if (!stripe || !elements) {
         return;
       }
-
       const paymentElement: StripePaymentElement | null = elements.getElement('payment');
-      if (paymentElement === null) {
+      if (!paymentElement) {
         showErrorToast('Failed to load payment card form');
+        return;
       }
       const stripeResponse: SetupIntentResult = await stripe.confirmSetup({
         elements,
         redirect: 'if_required',
         confirmParams: {
-          // receipt_email: billingDetails?.billingEmail ?? undefined,
           payment_method_data: {
             billing_details: {
               name: billingDetails?.billingName ?? undefined,
@@ -121,18 +120,24 @@ const CheckoutForm: React.FC<Props> = ({
           }
         }
       });
+      if (stripeResponse?.error?.message) {
+        setIsLoading(false);
+        showErrorToast(stripeResponse?.error?.message);
+        return;
+      }
       if (stripeResponse?.setupIntent?.status === 'succeeded') {
         const body: UpgradeData = {
           paymentMethod: stripeResponse?.setupIntent?.payment_method as string,
           upgrade: true
         };
         const response: SubscriptionPackages = await chooseSubscription(subscriptionId, body);
-        if (response) {
+        if (response?.status?.toLocaleLowerCase().trim() === 'paid') {
           showSuccessToast('Payment Successful and subscription plan activated');
           disableButtonLoader && disableButtonLoader();
           navigate(`/create-workspace`);
         } else {
           disableButtonLoader && disableButtonLoader();
+          showErrorToast('Subscription failed');
         }
       } else {
         disableButtonLoader && disableButtonLoader();
