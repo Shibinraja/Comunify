@@ -292,9 +292,8 @@ const Account = () => {
                     {options.map((option: string, index: number) => (
                       <li
                         ref={domainRef}
-                        className={`${
-                          cursor === index ? 'bg-signUpDomain' : null
-                        } flex flex-col p-2 hover:bg-signUpDomain transition ease-in duration-300 cursor-pointer`}
+                        className={`${cursor === index ? 'bg-signUpDomain' : null
+                          } flex flex-col p-2 hover:bg-signUpDomain transition ease-in duration-300 cursor-pointer`}
                         onKeyDown={handleKeyDown}
                         tabIndex={0}
                         key={option}
@@ -414,11 +413,10 @@ const Account = () => {
                     <Form className="w-full mt-1.9 " autoComplete="off">
                       <div className="flex justify-between">
                         <div
-                          className={`currentPassword relative w-1/2 ${
-                            errors.currentPassword === 'Password must have one uppercase, one lowercase, a digit and special characters'
-                              ? 'cr-currentPassword '
-                              : ''
-                          }`}
+                          className={`currentPassword relative w-1/2 ${errors.currentPassword === 'Password must have one uppercase, one lowercase, a digit and special characters'
+                            ? 'cr-currentPassword '
+                            : ''
+                            }`}
                         >
                           <label htmlFor="currentPassword" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31 pb-1">
                             Current Password
@@ -430,11 +428,10 @@ const Account = () => {
                             id="currentPassword"
                             name="currentPassword"
                             // eslint-disable-next-line max-len
-                            className={`h-2.81 relative  rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${
-                              touched.currentPassword && errors.currentPassword
-                                ? 'border-lightRed h-2.81 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
-                                : ''
-                            }`}
+                            className={`h-2.81 relative  rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${touched.currentPassword && errors.currentPassword
+                              ? 'border-lightRed h-2.81 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
+                              : ''
+                              }`}
                             onBlur={handleBlur}
                             onChange={handleChange}
                             value={values.currentPassword}
@@ -450,11 +447,10 @@ const Account = () => {
                           </div>
                         </div>
                         <div
-                          className={`currentPassword relative w-1/2 pl-[19px] ${
-                            errors.newPassword === 'Password must have one uppercase, one lowercase, a digit and special characters'
-                              ? 'cr-currentPassword '
-                              : ''
-                          }`}
+                          className={`currentPassword relative w-1/2 pl-[19px] ${errors.newPassword === 'Password must have one uppercase, one lowercase, a digit and special characters'
+                            ? 'cr-currentPassword '
+                            : ''
+                            }`}
                         >
                           <label htmlFor="currentPassword" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31 ">
                             New Password
@@ -466,11 +462,10 @@ const Account = () => {
                             id="newPassword"
                             name="newPassword"
                             // eslint-disable-next-line max-len
-                            className={`h-2.81 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${
-                              touched.newPassword && errors.newPassword
-                                ? 'border-lightRed h-2.81 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
-                                : ''
-                            }`}
+                            className={`h-2.81 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${touched.newPassword && errors.newPassword
+                              ? 'border-lightRed h-2.81 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
+                              : ''
+                              }`}
                             onBlur={handleBlur}
                             onChange={handleChange}
                             value={values.newPassword}
@@ -516,11 +511,11 @@ const Account = () => {
         </div>
         <div className="w-full md:w-[40%] xl:w-[30%]">
           <div className="w-full pl-2.06 flex flex-col ">
-            <div className="app-input-card-border items-center bg-red-500 justify-center btn-save-modal rounded-t-0.6 w-full shadow-contactCard box-border h-6.438"></div>
-            <div className="flex flex-col app-input-card-border items-center justify-center bg-white rounded-b-0.6 w-full shadow-contactCard box-border h-11.06">
+            <div className="border-t border-l border-r border-[#DBD8FC] items-center bg-red-500 justify-center btn-save-modal rounded-t-0.6 w-full shadow-contactCard box-border h-6.438"></div>
+            <div className="flex flex-col border-b border-l border-r border-[#DBD8FC] items-center justify-center bg-white rounded-b-0.6 w-full shadow-contactCard box-border h-11.06">
               <div className="-mt-24 ">
                 <img
-                  className="bg-cover bg-center border-5 border-white rounded-full w-100 h-100"
+                  className="bg-cover bg-center border-5 border-white rounded-full w-100 h-100 bg-[#abcf6b]"
                   // src={`${profileData?.profilePhotoUrl ? profileData?.profilePhotoUrl : profileImage}`}
                   src={`${profileData?.profilePhotoUrl ? (profileUploadImage ? profileUploadImage : profileData?.profilePhotoUrl) : profileImage}`}
                   onClick={() => {
