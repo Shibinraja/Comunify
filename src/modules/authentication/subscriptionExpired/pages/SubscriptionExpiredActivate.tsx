@@ -31,6 +31,7 @@ import Input from '../../../../common/input';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { alphabets_only_regex_with_single_space, email_regex, whiteSpace_single_regex } from 'constants/constants';
+import { stripePublishableKey } from '@/lib/config';
 
 const CheckoutForm = React.lazy(() => import('../../../settings/pages/subscription/CheckoutForm'));
 
@@ -65,7 +66,7 @@ const SubscriptionExpiredActivate: React.FC = () => {
     cardDetails: false
   });
   const [billingDetails, setBillingDetails] = useState<BillingDetails>({ billingName: '', billingEmail: '' });
-  const stripePromise = loadStripe(`${import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY}`);
+  const stripePromise = loadStripe(stripePublishableKey);
 
   useEffect(() => {
     getSecretKeyForStripe();

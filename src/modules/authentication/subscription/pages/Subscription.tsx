@@ -7,11 +7,12 @@ import { loadStripe } from '@stripe/stripe-js';
 import { PaymentCard } from './PaymentCard';
 import { createCardService } from '../../../settings/services/settings.services';
 import { ClientSecret } from '../../../settings/interface/settings.interface';
+import { stripePublishableKey } from '@/lib/config';
 
 const Subscription: React.FC = () => {
   const { subscriptionData } = useLocation().state as SubscriptionProps;
   const [clientSecret, setClientSecret] = useState<string>('');
-  const stripePromise = loadStripe(`${import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY}`);
+  const stripePromise = loadStripe(stripePublishableKey);
 
   useEffect(() => {
     getSecretKeyForStripe();
