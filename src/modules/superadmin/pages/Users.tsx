@@ -60,7 +60,7 @@ const Users: React.FC = () => {
 
   // Function to dispatch the search text and to hit api of member list.
   // eslint-disable-next-line space-before-function-paren
-  const getFilteredMembersList = async (pageNumber: number, text: string, date?: string, endDate?: string) => {
+  const getFilteredMembersList = async (pageNumber: number, text: string, resetPage:boolean, date?: string, endDate?: string) => {
     setFilteredDate({ filterStartDate: date!, filterEndDate: endDate! });
     setFetchLoader((prev) => ({ ...prev, getLoader: true }));
     const data = await getUsersListService({
@@ -78,7 +78,10 @@ const Users: React.FC = () => {
       ...(filterExportParams.expiryAtGte ? { 'expiryAt.gte': filterExportParams.expiryAtGte } : {})
     });
     setFetchLoader((prev) => ({ ...prev, getLoader: false }));
-    setPage(1);
+    if(resetPage) {
+      setPage(1);
+    }
+
     setMembersList({
       data: data?.data as unknown as UserMembersListData[],
       totalPages: data?.totalPages as number,
@@ -89,12 +92,12 @@ const Users: React.FC = () => {
 
   useEffect(() => {
     if (debouncedValue) {
-      getFilteredMembersList(1, debouncedValue);
+      getFilteredMembersList(1, debouncedValue, true);
     }
   }, [debouncedValue]);
 
   useEffect(() => {
-    getFilteredMembersList(page, searchText, filteredDate.filterStartDate, filteredDate.filterEndDate);
+    getFilteredMembersList(page, searchText, false, filteredDate.filterStartDate, filteredDate.filterEndDate);
   }, [page]);
 
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -102,7 +105,8 @@ const Users: React.FC = () => {
     if (!searchText) {
       getFilteredMembersList(
         1,
-        searchText
+        searchText,
+        false
         // customStartDate ? customStartDate && convertStartDate(customStartDate) : customSingleStartDate && convertStartDate(customSingleStartDate),
         // customEndDate && convertEndDate(customEndDate)
       );

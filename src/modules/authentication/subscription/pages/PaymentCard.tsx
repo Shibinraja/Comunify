@@ -88,7 +88,7 @@ export const PaymentCard: React.FC<SubscriptionProps> = ({ subscriptionData }) =
                       <div className="pb-10">
                         <Button
                           text="Submit"
-                          disabled={isLoading ? true : false}
+                          disabled={isLoading}
                           type="submit"
                           className={`font-Poppins rounded-lg text-base font-semibold ${
                             isLoading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'

@@ -29,6 +29,7 @@ import * as Yup from 'yup';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { alphabets_only_regex_with_single_space, email_regex, whiteSpace_single_regex } from '../../../../constants/constants';
+import { stripePublishableKey } from '@/lib/config';
 
 const AddCard = React.lazy(() => import('../../pages/addCard/AddCard'));
 const CheckoutForm = React.lazy(() => import('../subscription/CheckoutForm'));
@@ -50,7 +51,7 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
   });
   const [billingDetails, setBillingDetails] = useState<BillingDetails>({ billingName: '', billingEmail: '' });
   const [clientSecret, setClientSecret] = useState<string>('');
-  const stripePromise = loadStripe(`${import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY}`);
+  const stripePromise = loadStripe(stripePublishableKey);
 
   useEffect(() => {
     if (selectedTab === 'subscription') {

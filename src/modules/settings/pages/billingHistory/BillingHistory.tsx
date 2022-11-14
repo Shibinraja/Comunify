@@ -4,7 +4,7 @@ import { TabPanel } from 'common/tabs/TabPanel';
 import { getBillingHistoryData, getBillingInvoice } from 'modules/settings/services/settings.services';
 import Pagination from 'common/pagination/pagination';
 import { BillingHistoryData, BillingHistoryQuery, BillingHistoryResponse } from 'modules/settings/interface/settings.interface';
-import { differenceInDays, format } from 'date-fns';
+import { format } from 'date-fns';
 import { showSuccessToast } from 'common/toast/toastFunctions';
 
 type Props = {
@@ -45,6 +45,7 @@ const BillingHistory: React.FC<Props> = ({ hidden, selectedTab, loadingToastCond
     }
   }, [selectedTab]);
 
+  // eslint-disable-next-line space-before-function-paren
   const getBillingHistory = async (params: BillingHistoryQuery) => {
     const response = await getBillingHistoryData({
       limit: params.limit,
@@ -59,6 +60,7 @@ const BillingHistory: React.FC<Props> = ({ hidden, selectedTab, loadingToastCond
     });
   };
 
+  // eslint-disable-next-line space-before-function-paren
   const downloadInvoice = async (invoiceId: string, invoiceDate: string) => {
     const decode = await getBillingInvoice(invoiceId);
     const response = new Blob([decode], { type: 'application/pdf' });
@@ -116,7 +118,7 @@ const BillingHistory: React.FC<Props> = ({ hidden, selectedTab, loadingToastCond
                           ${(data?.amount / 100).toFixed(0) || 0}
                         </td>
                         <td className="px-6 py-4 font-Poppins leading-1.31 text-trial text-infoBlack font-medium dark:bg-secondaryDark dark:text-white">
-                          {differenceInDays(new Date(data.expiresAt), new Date(data.date)) + 1} Days
+                          {data.validity} Days
                         </td>
                         <td className="dark:bg-secondaryDark">
                           <Button
