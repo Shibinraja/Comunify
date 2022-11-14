@@ -60,7 +60,7 @@ const Users: React.FC = () => {
 
   // Function to dispatch the search text and to hit api of member list.
   // eslint-disable-next-line space-before-function-paren
-  const getFilteredMembersList = async (pageNumber: number, text: string, resetPage:boolean, date?: string, endDate?: string) => {
+  const getFilteredMembersList = async (pageNumber: number, text: string, resetPage: boolean, date?: string, endDate?: string) => {
     setFilteredDate({ filterStartDate: date!, filterEndDate: endDate! });
     setFetchLoader((prev) => ({ ...prev, getLoader: true }));
     const data = await getUsersListService({
@@ -78,7 +78,7 @@ const Users: React.FC = () => {
       ...(filterExportParams.expiryAtGte ? { 'expiryAt.gte': filterExportParams.expiryAtGte } : {})
     });
     setFetchLoader((prev) => ({ ...prev, getLoader: false }));
-    if(resetPage) {
+    if (resetPage) {
       setPage(1);
     }
 
@@ -304,8 +304,9 @@ const Users: React.FC = () => {
           <div className="ml-0.652 w-[112px]">
             <div
               aria-disabled={fetchLoader.exportLoader}
-              className={`export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex cursor-pointer hover:border-infoBlack transition ease-in-out duration-300 ${fetchLoader.exportLoader || !customizedColumn?.length ? 'cursor-not-allowed' : ''
-                }`}
+              className={`export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex cursor-pointer hover:border-infoBlack transition ease-in-out duration-300 ${
+                fetchLoader.exportLoader || !customizedColumn?.length ? 'cursor-not-allowed' : ''
+              }`}
               onClick={() => (customizedColumn?.length ? !fetchLoader.exportLoader && fetchMembersListExportData() : null)}
             >
               <h3 className="text-memberDay leading-1.12 font-Poppins font-semibold text-card">Export</h3>
