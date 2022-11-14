@@ -1,19 +1,24 @@
-import { Elements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
-import Button from 'common/button';
 import React, { Dispatch, useEffect, useState } from 'react';
-import Skeleton from 'react-loading-skeleton';
-import Modal from 'react-modal';
+import { useSearchParams } from 'react-router-dom';
+import { useAppSelector } from '../../../../hooks/useRedux';
+
 import { useDispatch } from 'react-redux';
 import { NavigateFunction, useLocation, useNavigate } from 'react-router';
 import { AnyAction } from 'redux';
-import deleteIcon from '../../../../assets/images/delete.svg';
-import MasterCardIcon from '../../../../assets/images/masterCard.svg';
-import VisaCardIcon from '../../../../assets/images/visa.svg';
-import { showErrorToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
-import { useAppSelector } from '../../../../hooks/useRedux';
-import { getLocalWorkspaceId, setRefreshToken } from '../../../../lib/helper';
 import { State } from '../../../../store';
+
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import { Form, Formik } from 'formik';
+import * as Yup from 'yup';
+import Skeleton from 'react-loading-skeleton';
+import Modal from 'react-modal';
+
+import Button from 'common/button';
+import Input from '../../../../common/input';
+import authSlice from '../../store/slices/auth.slice';
+import { showErrorToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
+import { getLocalWorkspaceId, setRefreshToken } from '../../../../lib/helper';
 import { AddedCardDetails, BillingDetails, ClientSecret, SubscriptionDetails, UpgradeData } from '../../../settings/interface/settings.interface';
 import {
   createCardService,
@@ -25,14 +30,13 @@ import {
 } from '../../../settings/services/settings.services';
 import { SubscriptionPackages } from '../../interface/auth.interface';
 import { chooseSubscription } from '../../services/auth.service';
-import authSlice from '../../store/slices/auth.slice';
 // import ToggleButton from 'common/ToggleButton/ToggleButton';
-import Input from '../../../../common/input';
-import { Form, Formik } from 'formik';
-import * as Yup from 'yup';
+
 import { alphabets_only_regex_with_single_space, email_regex, whiteSpace_single_regex } from 'constants/constants';
 import { stripePublishableKey } from '@/lib/config';
-import { useSearchParams } from 'react-router-dom';
+import deleteIcon from '../../../../assets/images/delete.svg';
+import MasterCardIcon from '../../../../assets/images/masterCard.svg';
+import VisaCardIcon from '../../../../assets/images/visa.svg';
 
 const CheckoutForm = React.lazy(() => import('../../../settings/pages/subscription/CheckoutForm'));
 

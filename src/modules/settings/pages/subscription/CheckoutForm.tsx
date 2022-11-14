@@ -1,12 +1,13 @@
 /* eslint-disable no-unused-expressions */
-import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
-import { SetupIntentResult, Stripe, StripeElements, StripePaymentElement } from '@stripe/stripe-js';
-import { getNewlyAddedCardDetailsService } from 'modules/settings/services/settings.services';
 import React, { Fragment, useEffect, useState } from 'react';
 import { NavigateFunction, useNavigate } from 'react-router';
+
+import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
+import { SetupIntentResult, Stripe, StripeElements, StripePaymentElement } from '@stripe/stripe-js';
+
 import Button from '../../../../common/button';
 import { showErrorToast, showSuccessToast } from '../../../../common/toast/toastFunctions';
-import { getLocalWorkspaceId } from '../../../../lib/helper';
+import { getNewlyAddedCardDetailsService } from 'modules/settings/services/settings.services';
 import { SubscriptionPackages } from '../../../authentication/interface/auth.interface';
 import { chooseSubscription } from '../../../authentication/services/auth.service';
 import { AddedCardDetails, BillingDetails, UpgradeData } from '../../interface/settings.interface';
@@ -37,13 +38,18 @@ const CheckoutForm: React.FC<Props> = ({
   const elements: StripeElements | null = useElements();
   const stripe: Stripe | null = useStripe();
   const navigate: NavigateFunction = useNavigate();
-  const workspaceId: string = getLocalWorkspaceId();
 
   useEffect(() => {
     if (redirectCondition === 'signup-card' && submitForm === true) {
       handlePaymentViaSignUp();
     }
   }, [submitForm]);
+
+  // eslint-disable-next-line space-before-function-paren
+  const getNewlyAddedCardDetails = async (paymentMethodId: string) => {
+    const newCardDetails: AddedCardDetails = await getNewlyAddedCardDetailsService({ paymentId: paymentMethodId });
+    return newCardDetails;
+  };
 
   // eslint-disable-next-line space-before-function-paren
   const saveCardCredentialsOnStripe = async (event: React.SyntheticEvent<HTMLButtonElement>) => {
@@ -74,26 +80,25 @@ const CheckoutForm: React.FC<Props> = ({
       showErrorToast(response?.error?.message);
       return;
     }
-    if (response?.setupIntent?.payment_method) {
-      const newCardDetails = await getNewlyAddedCardDetailsService({ paymentId: response?.setupIntent?.payment_method as string });
-      passNewlyAddedCardDetailsToChild && passNewlyAddedCardDetailsToChild(newCardDetails);
-    }
     if (redirectCondition === 'add-card') {
-      handleCheckoutFormModal && handleCheckoutFormModal();
-      navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'subscription' } });
+      if (response?.setupIntent?.payment_method) {
+        passNewlyAddedCardDetailsToChild &&
+          passNewlyAddedCardDetailsToChild(await getNewlyAddedCardDetails(response?.setupIntent?.payment_method as string));
+      }
       setIsLoading(false);
+      handleCheckoutFormModal && handleCheckoutFormModal();
       setTimeout(() => {
         showSuccessToast('Payment card added successfully');
       }, 1000);
     } else {
       if (response?.setupIntent?.payment_method) {
-        const newCardDetails = await getNewlyAddedCardDetailsService({ paymentId: response?.setupIntent?.payment_method as string });
-        passNewlyAddedCardDetailsToChild && passNewlyAddedCardDetailsToChild(newCardDetails);
+        passNewlyAddedCardDetailsToChild &&
+          passNewlyAddedCardDetailsToChild(await getNewlyAddedCardDetails(response?.setupIntent?.payment_method as string));
       }
       showSuccessToast('Payment card added');
       handleEffect && handleEffect();
-      handleCheckoutFormModal && handleCheckoutFormModal();
       setIsLoading(false);
+      handleCheckoutFormModal && handleCheckoutFormModal();
     }
   };
 

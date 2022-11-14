@@ -2,8 +2,21 @@ import Button from 'common/button';
 import { TabPanel } from 'common/tabs/TabPanel';
 import ToggleButton from 'common/ToggleButton/ToggleButton';
 import React, { useEffect, useState } from 'react';
+
+import { buildStyles, CircularProgressbarWithChildren } from 'react-circular-progressbar';
+import ProgressProvider from './ProgressProvider';
+import moment from 'moment';
+import Modal from 'react-modal';
+import Input from '../../../../common/input';
+import { Form, Formik } from 'formik';
+import * as Yup from 'yup';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+
+import AddCard from '../addCard/AddCard';
 import CornerIcon from '../../../..//assets/images/corner-img.svg';
 import TickWhiteIcon from '../../../..//assets/images/tick-white.svg';
+
 import { showErrorToast, showSuccessToast } from '../../../../common/toast/toastFunctions';
 import {
   AddedCardDetails,
@@ -19,19 +32,10 @@ import {
   getChoseSubscriptionPlanDetailsService,
   setPlanAutoRenewalService
 } from '../../services/settings.services';
-import { buildStyles, CircularProgressbarWithChildren } from 'react-circular-progressbar';
-import ProgressProvider from './ProgressProvider';
-import moment from 'moment';
-import Modal from 'react-modal';
-import Input from '../../../../common/input';
-import { Form, Formik } from 'formik';
-import * as Yup from 'yup';
-import { Elements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
+
 import { alphabets_only_regex_with_single_space, email_regex, whiteSpace_single_regex } from '../../../../constants/constants';
 import { stripePublishableKey } from '@/lib/config';
 
-const AddCard = React.lazy(() => import('../../pages/addCard/AddCard'));
 const CheckoutForm = React.lazy(() => import('../subscription/CheckoutForm'));
 
 type Props = {
@@ -151,6 +155,7 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
   const passNewlyAddedCardDetailsToChild = (newlyAddedCardData: AddedCardDetails) => {
     setAddedCardDetails([...addedCardDetails, newlyAddedCardData]);
   };
+
   return (
     <TabPanel hidden={hidden}>
       <div className="subscription mt-2.625 ">
@@ -366,6 +371,7 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
             <Modal
               isOpen={isBillingDetailsModal.cardDetails}
               shouldCloseOnOverlayClick={false}
+              onRequestClose={() => setIsBillingDetailsModal((prev) => ({ ...prev, cardDetails: false }))}
               className="w-24.31 pb-12 mx-auto rounded-lg border-fetching-card bg-white shadow-modal"
               style={{
                 overlay: {

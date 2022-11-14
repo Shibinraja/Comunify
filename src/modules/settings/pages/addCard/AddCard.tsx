@@ -1,24 +1,27 @@
 import React, { Dispatch, useEffect, useState } from 'react';
-import MasterCardIcon from '../../../../assets/images/masterCard.svg';
-import VisaCardIcon from '../../../../assets/images/visa.svg';
-import deleteIcon from '../../../../assets/images/delete.svg';
-import Button from 'common/button';
 import { NavigateFunction, useNavigate } from 'react-router';
-import { getLocalWorkspaceId } from '../../../../lib/helper';
-import { createCardService, deleteCardService, getCardDetailsService, selectCardService } from '../../services/settings.services';
-import { AddedCardDetails, ClientSecret, SubscriptionDetails, UpgradeData } from '../../interface/settings.interface';
-import { showErrorToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
+import { useDispatch } from 'react-redux';
+import { useAppSelector } from '../../../../hooks/useRedux';
+import { AnyAction } from 'redux';
+import { State } from '../../../../store';
+
 import Modal from 'react-modal';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
+import Skeleton from 'react-loading-skeleton';
+
+import Button from 'common/button';
+import authSlice from '../../../authentication/store/slices/auth.slice';
+import { createCardService, deleteCardService, getCardDetailsService, selectCardService } from '../../services/settings.services';
+import { AddedCardDetails, ClientSecret, SubscriptionDetails, UpgradeData } from '../../interface/settings.interface';
+import { showErrorToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
 import { SubscriptionPackages } from '../../../authentication/interface/auth.interface';
 import { chooseSubscription } from '../../../authentication/services/auth.service';
-import { useDispatch } from 'react-redux';
-import authSlice from '../../../authentication/store/slices/auth.slice';
-import { useAppSelector } from '../../../../hooks/useRedux';
-import { State } from '../../../../store';
-import Skeleton from 'react-loading-skeleton';
-import { AnyAction } from 'redux';
+
+import { getLocalWorkspaceId } from '../../../../lib/helper';
+import MasterCardIcon from '../../../../assets/images/masterCard.svg';
+import VisaCardIcon from '../../../../assets/images/visa.svg';
+import deleteIcon from '../../../../assets/images/delete.svg';
 import { stripePublishableKey } from '@/lib/config';
 
 const CheckoutForm = React.lazy(() => import('../../pages/subscription/CheckoutForm'));
@@ -145,7 +148,7 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
   };
 
   const handleCheckoutFormModal = () => {
-    setAddCardForm((prev: boolean) => !prev);
+    setAddCardForm(false);
   };
 
   // eslint-disable-next-line space-before-function-paren
@@ -290,6 +293,7 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
           <Modal
             isOpen={addCardForm}
             shouldCloseOnOverlayClick={false}
+            onRequestClose={() => setAddCardForm(false)}
             className="w-24.31 pb-12 mx-auto rounded-lg border-fetching-card bg-white shadow-modal"
             style={{
               overlay: {
