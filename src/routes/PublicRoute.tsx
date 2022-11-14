@@ -84,6 +84,10 @@ const PublicRoute: React.FC<Props> = ({ children }) => {
           showWarningToast('Your subscription has expired! Please purchase a plan to continue using comunify');
           return false;
         }
+        if (!decodedToken?.isPaymentSuccess) {
+          navigate(`/subscription/expired/activate-subscription?paymentStatus=paymentFailed`);
+          return false;
+        }
         dispatchReducer({ type: 'SET_DASHBOARD_ROUTE', payload: `/${workspaceId}/dashboard` });
         dispatch(authSlice.actions.setIsAuthenticated(true));
         return false;

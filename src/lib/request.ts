@@ -61,6 +61,9 @@ request.interceptors.response.use(
     if (error.response.status === 403) {
       window.location.href = '/subscription/expired';
     }
+    if (error.response.status === 402) {
+      window.location.href = `/subscription/expired/activate-subscription?paymentStatus=paymentFailed`;
+    }
     if (
       error.response &&
       error.response.status === 401 &&
