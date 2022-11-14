@@ -423,7 +423,7 @@ const TopBar: React.FC = () => {
                               <img
                                 src={
                                   (item.notification.notificationPayload?.imageUrl as string) ||
-                                'https://comunify-dev-assets.s3.amazonaws.com/common/Comunfy_logo.png'
+                                  'https://comunify-dev-assets.s3.amazonaws.com/common/Comunfy_logo.png'
                                 }
                                 alt=""
                                 className="w-[26px] h-[26px] rounded-full"
@@ -482,7 +482,7 @@ const TopBar: React.FC = () => {
       </div>
       {suggestionList?.result?.length > 0 && isSuggestionListDropDown && (
         <div
-          className="mt-[3px] box-border rounded-0.3 shadow-reportInput w-34.37 app-result-card-border h-12.375 overflow-auto"
+          className="mt-[3px] box-border rounded-0.3 shadow-reportInput w-34.37 app-result-card-border h-12.375 overflow-auto absolute z-10 bg-white"
           onScroll={handleScroll}
         >
           {suggestionList.result.map((searchResult: GlobalSearchDataResult) => (
@@ -518,7 +518,7 @@ const TopBar: React.FC = () => {
         </div>
       )}
       {searchSuggestion && suggestionList.result.length === 0 && !loading.fetchLoading && (
-        <div className="mt-[3px] scroll-auto box-border rounded-0.3 shadow-reportInput w-34.37 app-result-card-border">
+        <div className="mt-[3px] scroll-auto box-border rounded-0.3 shadow-reportInput w-34.37 app-result-card-border absolute z-10 bg-white">
           <div className="flex flex-col mt-[13px] pl-4 pb-5">
             <h3 className="font-Poppins font-normal text-base text-infoBlack mt-6 text-center">No data found</h3>
           </div>
