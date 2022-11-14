@@ -511,7 +511,7 @@ const Account = () => {
         </div>
         <div className="w-full md:w-[40%] xl:w-[30%]">
           <div className="w-full pl-2.06 flex flex-col ">
-            <div className="border-t border-l border-r border-[#DBD8FC] items-center bg-red-500 justify-center btn-save-modal rounded-t-0.6 w-full shadow-contactCard box-border h-6.438"></div>
+            <div className=" items-center bg-red-500 justify-center btn-save-modal rounded-t-0.6 w-full shadow-contactCard box-border h-6.438"></div>
             <div className="flex flex-col border-b border-l border-r border-[#DBD8FC] items-center justify-center bg-white rounded-b-0.6 w-full shadow-contactCard box-border h-11.06">
               <div className="-mt-24 ">
                 <img
