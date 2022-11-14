@@ -126,7 +126,7 @@ export type PlatformResponse = {
   createdAt: Date;
   updatedAt: Date;
   isConnected: boolean;
-  isIntegrated: boolean
+  isIntegrated: boolean;
 };
 
 export interface ConnectedPlatforms {
@@ -185,7 +185,7 @@ export interface SubscriptionDetails {
   stripeSubscriptionId: string;
   autoRenewal: boolean;
   status: string;
-  subscriptionPackage: SubscriptionPackage
+  subscriptionPackage: SubscriptionPackage;
 }
 
 export interface UpdateSubscriptionBody {
@@ -256,10 +256,11 @@ export interface BillingHistoryData {
   date: Date;
   amount: number;
   expiresAt: Date;
+  validity: number;
 }
 
 export type BillingHistoryResponse = PaginationResponse<BillingHistoryData>;
 
 export interface StripePaymentMethodId {
-  paymentId: string
+  paymentId: string;
 }
