@@ -10,20 +10,30 @@ export const workspace_module = '/v1/workspace';
 // Subscription Module URL
 export const subscription_module = '/v1/subscription';
 
-//Members Module URL
+// Members Module URL
 export const members_module = '/v1/members';
 
-//Users Module URL
+// Users Module URL
 export const users_module = '/v1/users';
 
-//Platforms Module URL
+// Platforms Module URL
 export const platforms_module = '/v1/platforms';
 
-//Slack connect
+// Stripe publishable key
+export const stripePublishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+
+// Slack connect
 export const SLACK_CONNECT_ENDPOINT = import.meta.env.VITE_SLACK_CONNECT;
 
-//Discord connect
+// Discord connect
 export const DISCORD_CONNECT_ENDPOINT = import.meta.env.VITE_DISCORD_CONNECT;
 
-//Reddit connect
+// Reddit connect
 export const REDDIT_CONNECT_ENDPOINT = import.meta.env.VITE_REDDIT_CONNECT;
+
+// Application Env's
+export const VITE_APP_ENV = import.meta.env.VITE_APP_ENV;
+export const VITE_OS_HOSTNAME = import.meta.env.VITE_OS_HOSTNAME;
+
+// Centrifugo connect url
+export const VITE_CENTRIFUGO_URL = import.meta.env.VITE_CENTRIFUGO_URL;

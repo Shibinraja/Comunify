@@ -13,6 +13,7 @@ export type EmailFormValues = {
 export type FormValues = {
   userName: string;
   password: string;
+  rememberMe?:boolean
 };
 
 export type DecodeToken = {
@@ -27,6 +28,7 @@ export type DecodeToken = {
   isWorkSpaceCreated: boolean;
   isEmailVerified: boolean;
   workspaceId: string;
+  isPaymentSuccess: boolean;
 };
 
 export type SignUpFormValues = {

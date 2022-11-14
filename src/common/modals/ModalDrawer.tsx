@@ -25,7 +25,7 @@ export const ModalDrawer: React.FC<ModalDrawerTypes> = ({ isOpen, isClose, onSub
   >
     <div className="flex flex-col items-center justify-center ">
       <div className="bg-cover">
-        <img src={iconSrc} alt="" />
+        {iconSrc ? <img src={iconSrc} alt="" className="rounded-full w-2.68 h-2.68" /> : null}
       </div>
       <div className="mt-5 leading-6 text-black font-Inter font-semibold text-xl w-2/3 text-center">{contextText}</div>
       <div className="flex mt-1.8">

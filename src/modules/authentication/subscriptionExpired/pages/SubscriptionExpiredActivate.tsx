@@ -1,10 +1,25 @@
 import React, { Dispatch, useEffect, useState } from 'react';
-import MasterCardIcon from '../../../../assets/images/masterCard.svg';
-import VisaCardIcon from '../../../../assets/images/visa.svg';
-import deleteIcon from '../../../../assets/images/delete.svg';
-import Button from 'common/button';
+import { useSearchParams } from 'react-router-dom';
+import { useAppSelector } from '../../../../hooks/useRedux';
+
+import { useDispatch } from 'react-redux';
 import { NavigateFunction, useLocation, useNavigate } from 'react-router';
-import { getLocalWorkspaceId } from '../../../../lib/helper';
+import { AnyAction } from 'redux';
+import { State } from '../../../../store';
+
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import { Form, Formik } from 'formik';
+import * as Yup from 'yup';
+import Skeleton from 'react-loading-skeleton';
+import Modal from 'react-modal';
+
+import Button from 'common/button';
+import Input from '../../../../common/input';
+import authSlice from '../../store/slices/auth.slice';
+import { showErrorToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
+import { getLocalWorkspaceId, setRefreshToken } from '../../../../lib/helper';
+import { AddedCardDetails, BillingDetails, ClientSecret, SubscriptionDetails, UpgradeData } from '../../../settings/interface/settings.interface';
 import {
   createCardService,
   deleteCardService,
@@ -13,28 +28,17 @@ import {
   selectCardService
   // setPlanAutoRenewalService
 } from '../../../settings/services/settings.services';
-import {
-  AddedCardDetails,
-  ClientSecret,
-  SubscriptionDetails,
-  // UpdateSubscriptionAutoRenewal,
-  // UpdateSubscriptionBody,
-  UpgradeData
-} from '../../../settings/interface/settings.interface';
-import { showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
-import Modal from 'react-modal';
-import { Elements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
-import CheckoutForm from '../../../settings/pages/subscription/CheckoutForm';
 import { SubscriptionPackages } from '../../interface/auth.interface';
 import { chooseSubscription } from '../../services/auth.service';
-import { useDispatch } from 'react-redux';
-import authSlice from '../../store/slices/auth.slice';
-import { useAppSelector } from '../../../../hooks/useRedux';
-import { State } from '../../../../store';
-import Skeleton from 'react-loading-skeleton';
 // import ToggleButton from 'common/ToggleButton/ToggleButton';
-import { AnyAction } from 'redux';
+
+import { alphabets_only_regex_with_single_space, email_regex, whiteSpace_single_regex } from 'constants/constants';
+import { stripePublishableKey } from '@/lib/config';
+import deleteIcon from '../../../../assets/images/delete.svg';
+import MasterCardIcon from '../../../../assets/images/masterCard.svg';
+import VisaCardIcon from '../../../../assets/images/visa.svg';
+
+const CheckoutForm = React.lazy(() => import('../../../settings/pages/subscription/CheckoutForm'));
 
 interface SelectedCard {
   id: string;
@@ -50,43 +54,49 @@ const SubscriptionExpiredActivate: React.FC = () => {
   const location: Location | any = useLocation();
   const navigate: NavigateFunction = useNavigate();
   const dispatch: Dispatch<AnyAction> = useDispatch();
+  const [searchParams] = useSearchParams();
+  const paymentStatus: string | null = searchParams.get('paymentStatus');
   const workspaceId: string = getLocalWorkspaceId();
   const [subscriptionDetails, setSubscriptionDetails] = useState<SubscriptionDetails | undefined>();
-  const [addCardForm, setAddCardForm] = useState<boolean>(false);
-  const [clientSecret, setClientSecret] = useState<string | undefined>(undefined);
-  const [addedCardDetails, setAddedCardDetails] = useState<AddedCardDetails[]>();
+  const [clientSecret, setClientSecret] = useState<string>('');
+  const [addedCardDetails, setAddedCardDetails] = useState<AddedCardDetails[]>([]);
   const [selectedCard, setSelectedCard] = useState<SelectedCard | undefined>(undefined);
   const [selectedCardId, setSelectedCardId] = useState<string>('');
   // const [toggle, setToggle] = useState<boolean>(true);
-  const [isConfirmationModal, setIsConfirmationModal] = useState<boolean>(false);
+  const [isConfirmationModal, setIsConfirmationModal] = useState<{ deleteCard: boolean; upgradePlan: boolean }>({
+    deleteCard: false,
+    upgradePlan: false
+  });
   const [callEffect, setCallEffect] = useState<boolean>(false);
-  const stripePromise = loadStripe(`${import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY}`);
+  const [isBillingDetailsModal, setIsBillingDetailsModal] = useState<{ billingDetails: boolean; cardDetails: boolean }>({
+    billingDetails: false,
+    cardDetails: false
+  });
+  const [billingDetails, setBillingDetails] = useState<BillingDetails>({ billingName: '', billingEmail: '' });
+  const stripePromise = loadStripe(stripePublishableKey);
 
   useEffect(() => {
     getSecretKeyForStripe();
-  }, []);
-
-  useEffect(() => {
     getCurrentSubscriptionPlanDetails();
-  }, []);
-
-  useEffect(() => {
     getCardDetails();
-  }, []);
-
-  useEffect(() => {
     dispatch(authSlice.actions.getSubscriptions());
   }, []);
 
   useEffect(() => {
     if (callEffect === true) {
+      getCardDetails();
       setTimeout(() => {
-        getCardDetails();
         showSuccessToast('Payment method list updated');
-        setCallEffect(false);
-      }, 8000);
+      }, 1000);
+      setCallEffect(false);
     }
   }, [callEffect]);
+
+  useEffect(() => {
+    if (paymentStatus) {
+      showWarningToast('Card payment has failed. Please retry or add another payment card to complete payment');
+    }
+  }, [paymentStatus]);
 
   const subscriptionData = useAppSelector((state: State) => state.auth.subscriptionData);
 
@@ -109,7 +119,7 @@ const SubscriptionExpiredActivate: React.FC = () => {
     if (isDefault) {
       showWarningToast('Cannot delete a default payment method');
     } else {
-      setIsConfirmationModal(true);
+      setIsConfirmationModal((prev) => ({ ...prev, deleteCard: true }));
       setSelectedCardId(id);
     }
   };
@@ -127,12 +137,12 @@ const SubscriptionExpiredActivate: React.FC = () => {
     const response = await deleteCardService(id);
     if (response) {
       setIsLoading((prev) => ({ ...prev, confirmationModal: false }));
-      setIsConfirmationModal(false);
-      showSuccessToast('Payment card deleted. Updating payment method list...');
-      handleEffect();
+      setIsConfirmationModal((prev) => ({ ...prev, deleteCard: false }));
+      showSuccessToast('Payment card Removed');
+      getCardDetails();
     } else {
       setIsLoading((prev) => ({ ...prev, confirmationModal: false }));
-      setIsConfirmationModal(false);
+      setIsConfirmationModal((prev) => ({ ...prev, deleteCard: false }));
     }
   };
 
@@ -188,11 +198,11 @@ const SubscriptionExpiredActivate: React.FC = () => {
   };
 
   const handleCheckoutFormModal = () => {
-    setAddCardForm((prev: boolean) => !prev);
+    setIsBillingDetailsModal((prev) => ({ ...prev, cardDetails: false }));
   };
 
   // eslint-disable-next-line space-before-function-paren
-  const handlePlanUpgrade = async () => {
+  const upgradeFromExistingPlan = async () => {
     if (subscriptionDetails?.subscriptionPackage?.name?.toLocaleLowerCase().trim() === 'free trial' || !subscriptionDetails) {
       setIsLoading((prev) => ({ ...prev, upgrade: true }));
       const subscriptionId: string = subscriptionData?.filter(
@@ -203,25 +213,15 @@ const SubscriptionExpiredActivate: React.FC = () => {
         upgrade: true
       };
       const response: SubscriptionPackages = await chooseSubscription(subscriptionId, body);
-      // if (response?.status === 'paid') {
-      //   navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'billing_history' } });
-      //   setIsLoading((prev) => ({ ...prev, upgrade: false }));
-      //   window.location.reload();
-      //   showSuccessToast('Plan upgraded to Comunify Plus!');
-      // } else {
-      //   setIsLoading((prev) => ({ ...prev, upgrade: false }));
-      // }
-      if (response?.status === 'paid') {
-        navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'billing_history' } });
-        setIsLoading((prev) => ({ ...prev, upgrade: false }));
+      if (response?.status?.toLocaleLowerCase().trim() === 'paid') {
         showSuccessToast('Plan upgraded to Comunify Plus!');
-        setTimeout(() => {
-          showSuccessToast('This page will be reloaded soon. Please do not change the page');
-        }, 2000);
-        setTimeout(() => {
-          window.location.reload();
-        }, 5000);
+        navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'billing_history', loadingToastCondition: 'showLoadingToast' } });
+        setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
+        setIsLoading((prev) => ({ ...prev, upgrade: false }));
+        setRefreshToken();
       } else {
+        showErrorToast('Subscription failed');
+        setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
         setIsLoading((prev) => ({ ...prev, upgrade: false }));
       }
     } else {
@@ -229,14 +229,39 @@ const SubscriptionExpiredActivate: React.FC = () => {
     }
   };
 
+  const handleBillingDetailsSubmit = (values: BillingDetails) => {
+    setBillingDetails(values);
+    showSuccessToast('Saved billing name and email');
+    setIsBillingDetailsModal({ billingDetails: false, cardDetails: true });
+  };
+
+  const handleCardDetailForms = () => {
+    if (!addedCardDetails?.length) {
+      setIsBillingDetailsModal((prev) => ({ ...prev, billingDetails: true }));
+    } else {
+      setIsBillingDetailsModal((prev) => ({ ...prev, cardDetails: true }));
+    }
+  };
+
   const handleEffect = () => {
     setCallEffect(true);
+  };
+
+  const billingDetailsInitialValues = {
+    billingName: '',
+    billingEmail: ''
+  };
+
+  const passNewlyAddedCardDetailsToChild = (newlyAddedCardData: AddedCardDetails) => {
+    setAddedCardDetails([...addedCardDetails, newlyAddedCardData]);
   };
 
   return (
     <div className="w-full flex flex-col justify-center mb-16 mt-14 items-center">
       <div className="w-3/4 mt-16 mb-32">
-        <h3 className="text-neutralBlack font-bold font-Inter text-signIn leading-2.8 place-self-start mb-5">Subscription</h3>
+        <h3 className="text-neutralBlack font-bold font-Inter text-signIn leading-2.8 place-self-start mb-5">
+          {paymentStatus ? 'Payment Failed' : 'Subscription'}
+        </h3>
         <div className="p-8 pb-40 flex flex-col font-Poppins h-full overflow-y-auto border-2 rounded-0.9 mb-13">
           {/* <div className="pt-10 pb-8 border-b border-greyDark">
             <div className="flex justify-between  items-center">
@@ -258,7 +283,7 @@ const SubscriptionExpiredActivate: React.FC = () => {
               <div className="flex flex-col">
                 <h3 className=" text-base text-renewalBlack leading-1.31 font-semibold dark:text-white">Selected Plan</h3>
                 <p className="text-listGray font-medium  text-trial leading-1.31 mt-1 dark:text-greyDark">
-                  Plan Name : <span className="text-download font-semibold  ">{location?.state?.selectedPlan}</span>{' '}
+                  Plan Name : <span className="text-download font-semibold  ">{location?.state?.selectedPlan ?? 'No Active Plan'}</span>{' '}
                 </p>
               </div>
               <div className="flex gap-4 items-center">
@@ -285,7 +310,7 @@ const SubscriptionExpiredActivate: React.FC = () => {
                 </p>
               </div>
               <div className="flex gap-4 items-center">
-                <button className="font-medium text-error text-tag hover:text-download" onClick={() => setAddCardForm(true)}>
+                <button className="font-medium text-error text-tag hover:text-download" onClick={handleCardDetailForms}>
                   ADD CARD
                 </button>
               </div>
@@ -366,7 +391,7 @@ const SubscriptionExpiredActivate: React.FC = () => {
                 type="button"
                 text="Upgrade"
                 disabled={isLoading.upgrade || !addedCardDetails?.length ? true : false}
-                onClick={handlePlanUpgrade}
+                onClick={() => setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: true }))}
                 className={`submit border-none text-white font-Poppins text-error font-medium leading-1.31 ${
                   isLoading.upgrade || !addedCardDetails?.length ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
                 }  w-[123px] h-2.81 rounded shadow-contactBtn btn-save-modal`}
@@ -376,9 +401,9 @@ const SubscriptionExpiredActivate: React.FC = () => {
           <div>
             <div className="flex flex-col">
               <Modal
-                isOpen={addCardForm}
+                isOpen={isBillingDetailsModal.cardDetails}
                 shouldCloseOnOverlayClick={false}
-                onRequestClose={() => setAddCardForm(false)}
+                onRequestClose={() => setIsBillingDetailsModal((prev) => ({ ...prev, cardDetails: false }))}
                 className="w-24.31 pb-12 mx-auto rounded-lg border-fetching-card bg-white shadow-modal"
                 style={{
                   overlay: {
@@ -396,7 +421,13 @@ const SubscriptionExpiredActivate: React.FC = () => {
                   <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Payment Information</h3>
                   {stripePromise && options.clientSecret && (
                     <Elements stripe={stripePromise} options={options}>
-                      <CheckoutForm handleCheckoutFormModal={handleCheckoutFormModal} redirectCondition="" handleEffect={handleEffect} />
+                      <CheckoutForm
+                        handleCheckoutFormModal={handleCheckoutFormModal}
+                        redirectCondition=""
+                        handleEffect={handleEffect}
+                        billingDetails={billingDetails}
+                        passNewlyAddedCardDetailsToChild={passNewlyAddedCardDetailsToChild}
+                      />
                     </Elements>
                   )}
                 </div>
@@ -404,9 +435,8 @@ const SubscriptionExpiredActivate: React.FC = () => {
             </div>
             <div>
               <Modal
-                isOpen={isConfirmationModal}
+                isOpen={isConfirmationModal.deleteCard}
                 shouldCloseOnOverlayClick={false}
-                onRequestClose={() => setIsConfirmationModal(false)}
                 className="w-24.31 h-18.43 mx-auto rounded-lg modals-tag bg-white shadow-modal flex items-center justify-center"
                 style={{
                   overlay: {
@@ -429,7 +459,7 @@ const SubscriptionExpiredActivate: React.FC = () => {
                       type="button"
                       text="NO"
                       className="border-none border-cancel h-2.81 w-5.25 box-border rounded cursor-pointer font-Poppins font-medium text-error leading-5 text-thinGray "
-                      onClick={() => setIsConfirmationModal(false)}
+                      onClick={() => setIsConfirmationModal((prev) => ({ ...prev, deleteCard: false }))}
                     />
                     <Button
                       type="button"
@@ -443,6 +473,131 @@ const SubscriptionExpiredActivate: React.FC = () => {
                   </div>
                 </div>
               </Modal>
+              <Modal
+                isOpen={isConfirmationModal.upgradePlan}
+                shouldCloseOnOverlayClick={false}
+                className="w-24.31 h-18.43 mx-auto rounded-lg modals-tag bg-white shadow-modal flex items-center justify-center"
+                style={{
+                  overlay: {
+                    display: 'flex',
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: 0,
+                    alignItems: 'center'
+                  }
+                }}
+              >
+                <div className="flex flex-col items-center justify-center ">
+                  <div className="mt-5 leading-6 text-black font-Inter font-semibold text-xl w-2/3 text-center">
+                    Are you sure you want to proceed with the upgrade?
+                  </div>
+                  <div className="flex mt-1.8">
+                    <Button
+                      type="button"
+                      text="NO"
+                      className="border-none border-cancel h-2.81 w-5.25 box-border rounded cursor-pointer font-Poppins font-medium text-error leading-5 text-thinGray "
+                      onClick={() => setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }))}
+                    />
+                    <Button
+                      type="button"
+                      text="YES"
+                      onClick={upgradeFromExistingPlan}
+                      disabled={isLoading.upgrade}
+                      className={`border-none ml-2.5 yes-btn h-2.81 w-5.25 box-border ${
+                        isLoading.upgrade ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                      } rounded shadow-contactBtn cursor-pointer font-Poppins font-medium text-error leading-5 text-white btn-save-modal`}
+                    />
+                  </div>
+                </div>
+              </Modal>
+            </div>
+
+            <div>
+              <div className="flex flex-col ">
+                <Modal
+                  isOpen={isBillingDetailsModal.billingDetails}
+                  shouldCloseOnOverlayClick={false}
+                  className="w-24.31 pb-12 mx-auto rounded-lg border-fetching-card bg-white shadow-modal"
+                  style={{
+                    overlay: {
+                      display: 'flex',
+                      position: 'fixed',
+                      top: 0,
+                      left: 0,
+                      bottom: 0,
+                      right: 0,
+                      alignItems: 'center'
+                    }
+                  }}
+                >
+                  <div className="flex flex-col">
+                    <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Upgrade</h3>
+                    <Formik
+                      initialValues={billingDetailsInitialValues}
+                      onSubmit={handleBillingDetailsSubmit}
+                      validateOnChange={true}
+                      validationSchema={billingDetailsScheme}
+                    >
+                      {({ errors, handleBlur, handleChange, handleSubmit, touched, values }): JSX.Element => (
+                        <Form
+                          className="flex flex-col relative  px-1.93 mt-9"
+                          onSubmit={handleSubmit}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                            }
+                          }}
+                        >
+                          <label htmlFor="name " className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack ">
+                            Billing Name
+                          </label>
+                          <Input
+                            type="text"
+                            name="billingName"
+                            id="billingNameId"
+                            value={values.billingName}
+                            className="mt-0.375 inputs app-result-card-border box-border bg-white shadow-inputShadow rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-sm placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
+                            placeholder="Enter Name"
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            errors={Boolean(touched.billingName && errors.billingName)}
+                            helperText={touched.billingName && errors.billingName}
+                          />
+                          <label htmlFor="description" className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack mt-1.06">
+                            Billing Email
+                          </label>
+                          <Input
+                            name="billingEmail"
+                            id="billingEmailId"
+                            value={values.billingEmail}
+                            className="mt-0.375 inputs app-result-card-border box-border bg-white shadow-inputShadow rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-sm placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
+                            placeholder="example@email.com"
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            errors={Boolean(touched.billingEmail && errors.billingEmail)}
+                            helperText={touched.billingEmail && errors.billingEmail}
+                          />
+                          <div className="flex items-center justify-end mt-1.8">
+                            <Button
+                              text="Cancel"
+                              type="submit"
+                              className="cancel mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  h-2.81 w-5.25  rounded border-none"
+                              onClick={() => setIsBillingDetailsModal((prev) => ({ ...prev, billingDetails: false }))}
+                            />
+                            <Button
+                              text="Save"
+                              type="submit"
+                              className={`text-white font-Poppins text-error font-medium leading-5 btn-save-modal rounded shadow-contactBtn w-5.25 cursor-pointer border-none h-2.81`}
+                            />
+                          </div>
+                        </Form>
+                      )}
+                    </Formik>
+                  </div>
+                </Modal>
+              </div>
             </div>
           </div>
         </div>
@@ -450,5 +605,21 @@ const SubscriptionExpiredActivate: React.FC = () => {
     </div>
   );
 };
+
+const billingDetailsScheme = Yup.object().shape({
+  billingName: Yup.string()
+    .trim('WhiteSpaces are not allowed')
+    .min(4, 'Billing Name must be at least 4 characters')
+    .max(25, 'Billing Name should not exceed above 25 characters')
+    .matches(alphabets_only_regex_with_single_space, 'Numbers and special characters are not allowed')
+    .matches(whiteSpace_single_regex, 'White spaces are not allowed')
+    .required('Billing Name is a required field')
+    .nullable(true),
+  billingEmail: Yup.string()
+    .email('Must be a valid email')
+    .matches(email_regex, 'Must be a valid email')
+    .max(100)
+    .required('Billing Email is required')
+});
 
 export default SubscriptionExpiredActivate;

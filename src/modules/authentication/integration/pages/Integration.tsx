@@ -29,7 +29,7 @@ import './Integration.css';
 Modal.setAppElement('#root');
 
 const Integration: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanillaForums: false, discord: false, reddit: false });
+  const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanilla: false, discord: false, reddit: false });
   // eslint-disable-next-line no-unused-vars
   const [platformIcons, setPlatformIcons] = useState<PlatformIcons>({
     slack: undefined,
@@ -38,19 +38,21 @@ const Integration: React.FC = () => {
     reddit: undefined
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const dispatch = useDispatch();
-  const { PlatformFilterResponse } = usePlatform();
-  const navigate = useNavigate();
-  const workspaceId = getLocalWorkspaceId();
-  const [searchParams] = useSearchParams();
-  const handleVanillaModal = (val: boolean) => {
-    setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: val }));
-  };
+
   const [vanillaForumsData, setVanillaForumsData] = useState<VanillaForumsConnectData>({
     vanillaAccessToken: '',
     vanillaBaseUrl: '',
     workspaceId: ''
   });
+
+  const dispatch = useDispatch();
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const  PlatformsConnected  = JSON.parse(localStorage.getItem('platformsConnected')!);
+  const { PlatformFilterResponse } = usePlatform();
+  const navigate = useNavigate();
+  const workspaceId = getLocalWorkspaceId();
+  const [searchParams] = useSearchParams();
+  const error = searchParams.get('error');
 
   useEffect(() => {
     setRefreshToken();
@@ -82,6 +84,12 @@ const Integration: React.FC = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if(error && Number(PlatformsConnected) > 0) {
+      navigate(`/${workspaceId}/settings`);
+    }
+  }, [error]);
+
   const handleModals = (name: string, icon: string) => {
     switch (name) {
       case PlatformsEnumType.SLACK:
@@ -90,7 +98,7 @@ const Integration: React.FC = () => {
         break;
       case PlatformsEnumType.VANILLA:
         setPlatformIcons((prevState) => ({ ...prevState, vanillaForums: icon }));
-        setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: true }));
+        setIsModalOpen((prevState) => ({ ...prevState, vanilla: true }));
         break;
       case PlatformsEnumType.DISCORD:
         NavigateToDiscordConnectPage();
@@ -156,7 +164,7 @@ const Integration: React.FC = () => {
             dispatch(settingsSlice.actions.platformData({ workspaceId }));
             showSuccessToast('Successfully integrated');
             setIsLoading(false);
-            setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: false }));
+            setIsModalOpen((prevState) => ({ ...prevState, vanilla: false }));
             navigate(`/${workspaceId}/settings`);
           }
         } catch (error) {
@@ -232,6 +240,10 @@ const Integration: React.FC = () => {
     }
   };
 
+  const handleVanillaModal = (val: boolean) => {
+    setIsModalOpen((prevState) => ({ ...prevState, vanilla: val }));
+  };
+
   const connectedBtnClassName = `dark:bg-secondaryDark bg-connectButton shadow-contactCard font-Poppins text-white font-medium leading-5 text-error mt-0.81 rounded 
   h-8 w-6.56 cursor-pointer hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient dark:bg-secondaryDark`;
 
@@ -280,7 +292,7 @@ const Integration: React.FC = () => {
                   </div>
                 </div>
                 <Modal
-                  isOpen={isModalOpen.vanillaForums}
+                  isOpen={isModalOpen.vanilla}
                   shouldCloseOnOverlayClick={false}
                   onRequestClose={() => handleVanillaModal(false)}
                   className="w-24.31 pb-12 mx-auto rounded-lg border-integration-modal bg-white shadow-modal outline-none"

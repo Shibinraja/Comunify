@@ -2,8 +2,21 @@ import Button from 'common/button';
 import { TabPanel } from 'common/tabs/TabPanel';
 import ToggleButton from 'common/ToggleButton/ToggleButton';
 import React, { useEffect, useState } from 'react';
+
+import { buildStyles, CircularProgressbarWithChildren } from 'react-circular-progressbar';
+import ProgressProvider from './ProgressProvider';
+import moment from 'moment';
+import Modal from 'react-modal';
+import Input from '../../../../common/input';
+import { Form, Formik } from 'formik';
+import * as Yup from 'yup';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+
+import AddCard from '../addCard/AddCard';
 import CornerIcon from '../../../..//assets/images/corner-img.svg';
 import TickWhiteIcon from '../../../..//assets/images/tick-white.svg';
+
 import { showErrorToast, showSuccessToast } from '../../../../common/toast/toastFunctions';
 import {
   AddedCardDetails,
@@ -19,28 +32,21 @@ import {
   getChoseSubscriptionPlanDetailsService,
   setPlanAutoRenewalService
 } from '../../services/settings.services';
-import { buildStyles, CircularProgressbarWithChildren } from 'react-circular-progressbar';
-import ProgressProvider from './ProgressProvider';
-import moment from 'moment';
-import Modal from 'react-modal';
-import Input from '../../../../common/input';
-import { Form, Formik } from 'formik';
-import * as Yup from 'yup';
-import { Elements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
-import CheckoutForm from './CheckoutForm';
-import { alphabets_only_regex, email_regex, whiteSpace_regex } from '../../../../constants/constants';
 
-const AddCard = React.lazy(() => import('../../pages/addCard/AddCard'));
+import { alphabets_only_regex_with_single_space, email_regex, whiteSpace_single_regex } from '../../../../constants/constants';
+import { stripePublishableKey } from '@/lib/config';
+
+const CheckoutForm = React.lazy(() => import('../subscription/CheckoutForm'));
 
 type Props = {
   hidden: boolean;
+  selectedTab: string;
 };
 
-const Subscription: React.FC<Props> = ({ hidden }) => {
+const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
   const gradientTransform = `rotate(90)`;
   const [subscriptionDetails, setSubscriptionDetails] = useState<SubscriptionDetails | undefined>();
-  const [addedCardDetails, setAddedCardDetails] = useState<AddedCardDetails[]>();
+  const [addedCardDetails, setAddedCardDetails] = useState<AddedCardDetails[]>([]);
   const [toggle, setToggle] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isBillingDetailsModal, setIsBillingDetailsModal] = useState<{ billingDetails: boolean; cardDetails: boolean }>({
@@ -48,12 +54,14 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
     cardDetails: false
   });
   const [billingDetails, setBillingDetails] = useState<BillingDetails>({ billingName: '', billingEmail: '' });
-  const [clientSecret, setClientSecret] = useState<string | undefined>(undefined);
-  const stripePromise = loadStripe(`${import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY}`);
+  const [clientSecret, setClientSecret] = useState<string>('');
+  const stripePromise = loadStripe(stripePublishableKey);
 
   useEffect(() => {
-    getCurrentSubscriptionPlanDetails();
-  }, []);
+    if (selectedTab === 'subscription') {
+      getCurrentSubscriptionPlanDetails();
+    }
+  }, [selectedTab]);
 
   useEffect(() => {
     getSecretKeyForStripe();
@@ -144,6 +152,10 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
     setIsBillingDetailsModal((prev) => ({ ...prev, cardDetails: false }));
   };
 
+  const passNewlyAddedCardDetailsToChild = (newlyAddedCardData: AddedCardDetails) => {
+    setAddedCardDetails([...addedCardDetails, newlyAddedCardData]);
+  };
+
   return (
     <TabPanel hidden={hidden}>
       <div className="subscription mt-2.625 ">
@@ -162,7 +174,7 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
                 <Button
                   type="button"
                   text={subscriptionDetails?.subscriptionPackage?.name ?? 'No active plan'}
-                  className="px-2 h-[26px] bg-trialButton border-none text-white text-error font-Poppins font-medium leading-1.31 cursor-pointer"
+                  className="px-2 h-[26px] bg-trialButton border-none text-white text-error font-Poppins font-medium leading-1.31 cursor-auto uppercase"
                 />
               </div>
             </div>
@@ -170,29 +182,8 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
               <div className="flex flex-col pl-[98px] dark:text-createdAtGrey">
                 <div className="font-semibold font-Poppins leading-1.56 text-infoBlack dark:text-white text-base">Features</div>
                 <div className="flex gap-4 font-Poppins   ">
-                  <div className="flex items-center gap-x-1">
-                    <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center ">
-                      <img src={TickWhiteIcon} alt="" className="bg-cover" />
-                    </div>
-                    <div className="text-listGray text-error font-normal leading-1.31">Single User</div>
-                  </div>
-                  <div className="flex items-center gap-x-1">
-                    <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
-                      <img src={TickWhiteIcon} alt="" className="bg-cover" />
-                    </div>
-                    <div className="text-listGray text-error font-normal leading-1.31">5 Platforms</div>
-                  </div>
-                  <div className="flex items-center gap-x-1">
-                    <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
-                      <img src={TickWhiteIcon} alt="" className="bg-cover" />
-                    </div>
-                    <div className="text-listGray text-error font-normal leading-1.31">Customizable Reports</div>
-                  </div>
-                  <div className="flex items-center gap-x-1">
-                    <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
-                      <img src={TickWhiteIcon} alt="" className="bg-cover" />
-                    </div>
-                    <div className="text-listGray text-error font-normal leading-1.31">Configurable Dashboard</div>
+                  <div className="flex items-center gap-x-1 pt-1">
+                    <div className="text-listGray text-error font-normal leading-1.31">Single User | 5 Platforms | Customizable Reports</div>
                   </div>
                 </div>
               </div>
@@ -200,7 +191,7 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
           </div>
 
           <div className="flex flex-col justify-end">
-            <div className="relative">
+            <div className="relative w-[63.36px] h-[63.36px]">
               <svg className="absolute">
                 <defs>
                   <linearGradient id={'hello'} gradientTransform={gradientTransform}>
@@ -224,7 +215,7 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
               </ProgressProvider>
             </div>
             <div className="pt-2">
-              <div className="font-Poppins font-semibold text-[13px] leading-0.93 text-[#393A3A] pb-1 dark:text-greyDark">
+              <div className="font-Poppins font-semibold text-[13px] leading-0.93 text-[#151515] pb-1 dark:text-greyDark">
                 {calculateDaysToSubscriptionExpiry() > 1 ? 'Days Left' : 'Day Left'}
               </div>
             </div>
@@ -294,7 +285,6 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
             <Modal
               isOpen={isBillingDetailsModal.billingDetails}
               shouldCloseOnOverlayClick={false}
-              onRequestClose={() => setIsBillingDetailsModal((prev) => ({ ...prev, billingDetails: false }))}
               className="w-24.31 pb-12 mx-auto rounded-lg border-fetching-card bg-white shadow-modal"
               style={{
                 overlay: {
@@ -317,7 +307,15 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
                   validationSchema={billingDetailsScheme}
                 >
                   {({ errors, handleBlur, handleChange, handleSubmit, touched, values }): JSX.Element => (
-                    <Form className="flex flex-col relative  px-1.93 mt-9" onSubmit={handleSubmit}>
+                    <Form
+                      className="flex flex-col relative  px-1.93 mt-9"
+                      onSubmit={handleSubmit}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                        }
+                      }}
+                    >
                       <label htmlFor="name " className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack ">
                         Billing Name
                       </label>
@@ -369,7 +367,7 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
         </div>
 
         <div>
-          <div className="flex flex-col ">
+          <div className="flex flex-col">
             <Modal
               isOpen={isBillingDetailsModal.cardDetails}
               shouldCloseOnOverlayClick={false}
@@ -391,7 +389,12 @@ const Subscription: React.FC<Props> = ({ hidden }) => {
                 <h3 className="text-center font-Inter font-semibold text-xl mt-1.8 text-black leading-6">Payment Information</h3>
                 {stripePromise && options.clientSecret && (
                   <Elements stripe={stripePromise} options={options}>
-                    <CheckoutForm handleCheckoutFormModal={handleCheckoutFormModal} redirectCondition="add-card" billingDetails={billingDetails} />
+                    <CheckoutForm
+                      handleCheckoutFormModal={handleCheckoutFormModal}
+                      redirectCondition="add-card"
+                      billingDetails={billingDetails}
+                      passNewlyAddedCardDetailsToChild={passNewlyAddedCardDetailsToChild}
+                    />
                   </Elements>
                 )}
               </div>
@@ -426,8 +429,8 @@ const billingDetailsScheme = Yup.object().shape({
     .trim('WhiteSpaces are not allowed')
     .min(4, 'Billing Name must be at least 4 characters')
     .max(25, 'Billing Name should not exceed above 25 characters')
-    .matches(alphabets_only_regex, 'Numbers and special characters are not allowed')
-    .matches(whiteSpace_regex, 'White spaces are not allowed')
+    .matches(alphabets_only_regex_with_single_space, 'Numbers and special characters are not allowed')
+    .matches(whiteSpace_single_regex, 'White spaces are not allowed')
     .required('Billing Name is a required field')
     .nullable(true),
   billingEmail: Yup.string()

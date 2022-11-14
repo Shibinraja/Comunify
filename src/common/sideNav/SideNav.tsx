@@ -37,6 +37,7 @@ const SideNav: React.FC = () => {
   useEffect(() => {
     dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
     dispatch(settingsSlice.actions.platformData({ workspaceId }));
+    getCurrentSubscriptionPlanDetails();
   }, []);
 
   useEffect(() => {

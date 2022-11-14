@@ -14,7 +14,6 @@ import { PanelWidgetsType, WidgetComponentProps, WidgetIdentification } from './
 import { getSidePanelWidgetsService, requestForWidgetService } from 'modules/dashboard/services/dashboard.services';
 import useDebounce from '../../hooks/useDebounce';
 import { showSuccessToast } from '../toast/toastFunctions';
-// Temporarily imported for development
 import WidgetComponents from 'common/widgets';
 import Skeleton from 'react-loading-skeleton';
 import * as Yup from 'yup';

@@ -1,34 +1,225 @@
-import Input from 'common/input';
-import React, { useEffect, useRef, useState } from 'react';
-import ellipseIcon from '../../assets/images/Ellipse 39.svg';
-import profilePic from '../../assets/images/user-image.svg';
-import slackIcon from '../../assets/images/slack.svg';
-import sunIcon from '../../assets/images/sun.svg';
-import unplashMjIcon from '../../assets/images/unsplash.svg';
-import unplashMj from '../../assets/images/unsplash_mj.svg';
-import { useAppDispatch } from '../../hooks/useRedux';
-import authSlice from '../../modules/authentication/store/slices/auth.slice';
-import { AppDispatch } from '../../store';
+/* eslint-disable space-before-function-paren */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable react/prop-types */
+import React, { ChangeEvent, Fragment, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { getLocalWorkspaceId } from '@/lib/helper';
-import { userProfileDataService } from 'modules/account/services/account.services';
-import { DecodeToken } from 'modules/authentication/interface/auth.interface';
+import { useParams } from 'react-router-dom';
+
+import Skeleton from 'react-loading-skeleton';
 import cookie from 'react-cookies';
+
+import { DecodeToken } from 'modules/authentication/interface/auth.interface';
+import {
+  ActivityEnum,
+  GlobalSearchDataResponse,
+  GlobalSearchDataResult,
+  NotificationData,
+  NotificationList,
+  NotificationListQuery,
+  SearchSuggestionArgsType
+} from './TopBarTypes';
+
+import useDebounce from '@/hooks/useDebounce';
+import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
+import { AppDispatch, State } from '../../store';
+import history from '@/lib/history';
 import { decodeToken } from '@/lib/decodeToken';
+import { getTimeSince } from '@/lib/helper';
+import { userProfileDataService } from 'modules/account/services/account.services';
+
+import {
+  getGlobalSearchRequest,
+  getNotificationCount,
+  getNotificationListData,
+  updateNotification
+} from 'modules/dashboard/services/dashboard.services';
+
+import ellipseIcon from '../../assets/images/Ellipse 39.svg';
+import sunIcon from '../../assets/images/sun.svg';
+import authSlice from '../../modules/authentication/store/slices/auth.slice';
+import profilePic from '../../assets/images/user-image.svg';
+
 // import { useTheme } from 'contexts/ThemeContext';
 
 const TopBar: React.FC = () => {
+  const { workspaceId } = useParams();
   const navigate = useNavigate();
-  const [isDropdownActive, setIsDropdownActive] = useState<boolean>(false);
-  const options: string[] = ['Profile Settings', 'Sign Out'];
   const dispatch: AppDispatch = useAppDispatch();
-  const dropDownRef = useRef<HTMLImageElement | null>(null);
-  const workspaceId = getLocalWorkspaceId();
+  const profilePictureUrl = useAppSelector((state: State) => state.accounts.profilePictureUrl);
+
+  const [isDropdownActive, setIsDropdownActive] = useState<boolean>(false);
+  const [searchSuggestion, setSearchSuggestion] = useState<string>('');
+  const [suggestionList, setSuggestionList] = useState<GlobalSearchDataResponse>({
+    result: [],
+    nextCursor: null
+  });
+  const [loading, setLoading] = useState<{
+    fetchLoading: boolean;
+    scrollLoading: boolean;
+    notificationLoading: boolean;
+    notificationScrollLoading: boolean;
+  }>({
+    fetchLoading: false,
+    scrollLoading: false,
+    notificationLoading: false,
+    notificationScrollLoading: false
+  });
+  const [isSuggestionListDropDown, setIsSuggestionListDropDown] = useState<boolean>(false);
+  // eslint-disable-next-line no-unused-vars
+  const [, setActivityNextCursor] = useState<string | null>('');
   const [profileImage, setProfileImage] = useState<string>('');
+  const [unReadStatus, setUnReadStatus] = useState('false');
+  const [notificationList, setNotificationList] = useState<NotificationList>({
+    result: [],
+    nextCursor: null
+  });
+  const [isNotificationActive, setIsNotificationActive] = useState<boolean>(false);
+
+  const dropDownRef = useRef<HTMLImageElement | null>(null);
+  const suggestionListDropDownRef = useRef<HTMLDivElement | null>(null);
+  const notificationRef = useRef<HTMLImageElement | null>(null);
+
+  const options: string[] = ['Profile Settings', 'Sign Out'];
   const accessToken = localStorage.getItem('accessToken') || cookie.load('x-auth-cookie');
   const decodedToken: DecodeToken = accessToken && decodeToken(accessToken);
+  const debouncedValue = useDebounce(searchSuggestion, 300);
 
-  // eslint-disable-next-line space-before-function-paren
+  // Function to call the api and list the membersSuggestionList
+  const getGlobalSearchItem = async (props: Partial<SearchSuggestionArgsType>) => {
+    setLoading((prev) => ({ ...prev, fetchLoading: true }));
+    const data = await getGlobalSearchRequest({
+      workspaceId: workspaceId!,
+      cursor: props.cursor ? props.cursor : props.suggestionListCursor ? (props.prop ? '' : props.suggestionListCursor) : '',
+      search: props.search as string
+    });
+    setLoading((prev) => ({ ...prev, fetchLoading: false }));
+    setSuggestionList((prevState) => ({
+      result: prevState.result.concat(data?.result as unknown as GlobalSearchDataResult[]),
+      nextCursor: data?.nextCursor as string | null
+    }));
+  };
+
+  const handleOutsideClick = (event: MouseEvent) => {
+    if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
+      setIsDropdownActive(false);
+    }
+
+    if (suggestionListDropDownRef && suggestionListDropDownRef.current && !suggestionListDropDownRef.current.contains(event.target as Node)) {
+      setIsSuggestionListDropDown(false);
+    }
+
+    if (notificationRef && notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+      setIsNotificationActive(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProfileData();
+    if (profilePictureUrl) {
+      setProfileImage(profilePictureUrl.profilePic);
+    }
+
+    // Event functionality which checks the route changes in the app and triggers the possible route callback functionality.
+    const listen = history.listen((location) => {
+      if (!location.location.pathname.includes('/activity')) {
+        setSearchSuggestion('');
+      }
+    });
+
+    if (!decodedToken.isAdmin) {
+      notificationCount(workspaceId as string);
+    }
+
+    // Event Listener to check/listen to notification subscription event
+    window.addEventListener('storage', () => {
+      const newNotification = localStorage.getItem('newNotification');
+      if (newNotification) {
+        setUnReadStatus(newNotification);
+      }
+    });
+
+    document.addEventListener('click', handleOutsideClick);
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+      listen();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (profilePictureUrl) {
+      setProfileImage(profilePictureUrl.profilePic);
+    }
+  }, [profilePictureUrl]);
+
+  useEffect(() => {
+    setSuggestionList({
+      result: [],
+      nextCursor: null
+    });
+
+    if (debouncedValue) {
+      getGlobalSearchItem({
+        cursor: null,
+        prop: 'search',
+        search: debouncedValue,
+        suggestionListCursor: suggestionList.nextCursor
+      });
+    }
+  }, [debouncedValue]);
+
+  const fetchProfileData = async () => {
+    const userId = decodedToken.id.toString();
+    const response = await userProfileDataService(userId);
+    if (response.profilePhotoUrl) {
+      setProfileImage(response.profilePhotoUrl);
+    }
+  };
+
+  /****************************Global Search*********************************/
+
+  //Function to search of the desired suggestionList.
+  const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const searchText: string = event.target.value;
+    if (!searchText) {
+      setSearchSuggestion('');
+    } else {
+      setSearchSuggestion(searchText);
+    }
+  };
+
+  // function for scroll event
+  const handleScroll = async (event: React.UIEvent<HTMLElement>) => {
+    event.preventDefault();
+    const { clientHeight, scrollHeight, scrollTop } = event.currentTarget;
+    if (scrollHeight - scrollTop <= clientHeight + 2 && !loading.fetchLoading) {
+      setActivityNextCursor(suggestionList.nextCursor);
+      if (suggestionList.nextCursor) {
+        setLoading((prev) => ({ ...prev, scrollLoading: true }));
+        await getGlobalSearchItem({
+          cursor: suggestionList.nextCursor,
+          prop: '',
+          search: debouncedValue,
+          suggestionListCursor: null
+        });
+        setLoading((prev) => ({ ...prev, scrollLoading: false }));
+      }
+    }
+  };
+
+  const navigateToActivity = (activityId: string, activityType: string, searchText: string) => {
+    setSearchSuggestion('');
+    if (activityType === ActivityEnum.Activity) {
+      navigate(`/${workspaceId}/activity?activityId=${activityId}`);
+      setSearchSuggestion(searchText);
+    }
+
+    if (activityType === ActivityEnum.Member) {
+      navigate(`/${workspaceId}/members/${activityId}/profile`);
+    }
+  };
+
+  /****************************UserProfileDropdown*********************************/
+
   const handleDropDownActive = async (data?: string): Promise<void> => {
     switch (data) {
       case 'Sign Out':
@@ -49,31 +240,87 @@ const TopBar: React.FC = () => {
     setIsDropdownActive((prev) => !prev);
   };
 
-  const fetchProfileData = async() => {
-    const userId = decodedToken.id.toString();
-    const response = await userProfileDataService(userId);
-    if (response.profilePhotoUrl) {
-      setProfileImage(response.profilePhotoUrl);
+  /****************************Notifications*********************************/
+
+  const getNotificationList = async (params: NotificationListQuery, isInitialLoad: boolean) => {
+    setLoading((prev) => ({ ...prev, notificationLoading: true }));
+    const data = await getNotificationListData(params);
+    if (data.result[0] && data.result[0]?.isRead === false && isInitialLoad) {
+      localStorage.setItem('newNotification', 'true');
+      setUnReadStatus('true');
+    }
+    setLoading((prev) => ({ ...prev, notificationLoading: false }));
+
+    setNotificationList((prevState) => ({
+      result: prevState.result.concat(data?.result as NotificationData[]),
+      nextCursor: data.nextCursor
+    }));
+  };
+
+  // Get unread notification count
+  const notificationCount = async (workspaceId: string) => {
+    const { count } = await getNotificationCount(workspaceId);
+    if (count > 0) {
+      setUnReadStatus('true');
+    } else {
+      localStorage.setItem('newNotification', 'false');
+      setUnReadStatus('false');
     }
   };
 
-  useEffect(() => {
-    fetchProfileData();
-  });
+  const handleNotificationActive = () => {
+    setIsNotificationActive((prev) => !prev);
+    setNotificationList({
+      result: [],
+      nextCursor: null
+    });
+    getNotificationList(
+      {
+        workspaceId: workspaceId as string,
+        limit: 10,
+        cursor: null,
+        type: 'all'
+      },
+      true
+    );
+  };
 
-  const handleOutsideClick = (event: MouseEvent) => {
-    if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
-      setIsDropdownActive(false);
+  // Change notification status to read
+  const handleNotificationUpdate = async (notificationId: string, index: number) => {
+    await updateNotification({ notificationId, workspaceId: workspaceId as string });
+    setNotificationList((prev) => {
+      const values = [...prev.result];
+      values[index].isRead = true;
+      return {
+        result: values,
+        nextCursor: prev.nextCursor
+      };
+    });
+    await notificationCount(workspaceId as string);
+  };
+
+  // function for scroll event for notification
+  const handleScrollNav = async (event: React.UIEvent<HTMLElement>) => {
+    event.preventDefault();
+    const { clientHeight, scrollHeight, scrollTop } = event.currentTarget;
+    if (scrollHeight - scrollTop <= clientHeight + 2 && !loading.fetchLoading) {
+      if (notificationList.nextCursor) {
+        setLoading((prev) => ({ ...prev, notificationScrollLoading: true }));
+        await getNotificationList(
+          {
+            cursor: notificationList.nextCursor,
+            workspaceId: workspaceId as string,
+            type: 'all',
+            limit: 10
+          },
+          false
+        );
+        setLoading((prev) => ({ ...prev, notificationScrollLoading: false }));
+      }
     }
   };
 
-  useEffect(() => {
-    document.addEventListener('click', handleOutsideClick);
-    return () => {
-      document.removeEventListener('click', handleOutsideClick);
-    };
-  }, []);
-
+  /***************************************************************************/
   // const { theme, setTheme } = useTheme();
 
   // function handleToggleTheme() {
@@ -84,22 +331,31 @@ const TopBar: React.FC = () => {
   return (
     <div className=" mt-6 px-12 xl:px-20">
       <div className="flex justify-between items-center ">
-        <div className="relative dark:bg-primaryDark`">
-          <Input
-            name="search"
-            id="searchId"
-            type="text"
-            placeholder="Search..."
-            className="bg-transparent border border-borderPrimary focus:outline-none font-normal pl-4.18 box-border text-inputText text-search rounded-0.6 h-16 w-34.3  placeholder:font-normal placeholder:leading-snug placeholder:text-search placeholder:text-searchGray shadow-profileCard"
-          />
-          <div className="absolute pl-7 top-[1.3rem]">
-            <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M20.8474 20.1109L17.2407 16.5042C18.8207 14.7499 19.7917 12.437 19.7917 9.8958C19.7917 4.43931 15.3524 0 9.89585 0C4.43931 0 0 4.43931 0 9.89585C0 15.3524 4.43931 19.7917 9.89585 19.7917C12.437 19.7917 14.7499 18.8207 16.5042 17.2407L20.1109 20.8474C20.2127 20.9491 20.346 21 20.4792 21C20.6125 21 20.7457 20.9491 20.8475 20.8474C21.0509 20.6439 21.0509 20.3144 20.8474 20.1109ZM9.89585 18.75C5.01406 18.75 1.0417 14.7781 1.0417 9.89585C1.0417 5.01358 5.01406 1.04165 9.89585 1.04165C14.7776 1.04165 18.75 5.01353 18.75 9.89585C18.75 14.7782 14.7776 18.75 9.89585 18.75Z"
-                fill="#7C8DB5"
+        <div className="relative dark:bg-primaryDark`" ref={suggestionListDropDownRef}>
+          {!decodedToken.isAdmin && (
+            <Fragment>
+              <input
+                name="search"
+                id="searchId"
+                type="text"
+                placeholder="Search..."
+                className="bg-transparent border border-borderPrimary focus:outline-none font-normal pl-4.18 box-border text-inputText text-search rounded-0.6 h-16 w-34.3  placeholder:font-normal placeholder:leading-snug placeholder:text-search placeholder:text-searchGray shadow-profileCard"
+                onChange={handleSearchTextChange}
+                value={searchSuggestion}
+                onClick={() => {
+                  setIsSuggestionListDropDown(true);
+                }}
               />
-            </svg>
-          </div>
+              <div className="absolute pl-7 top-[1.3rem]">
+                <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M20.8474 20.1109L17.2407 16.5042C18.8207 14.7499 19.7917 12.437 19.7917 9.8958C19.7917 4.43931 15.3524 0 9.89585 0C4.43931 0 0 4.43931 0 9.89585C0 15.3524 4.43931 19.7917 9.89585 19.7917C12.437 19.7917 14.7499 18.8207 16.5042 17.2407L20.1109 20.8474C20.2127 20.9491 20.346 21 20.4792 21C20.6125 21 20.7457 20.9491 20.8475 20.8474C21.0509 20.6439 21.0509 20.3144 20.8474 20.1109ZM9.89585 18.75C5.01406 18.75 1.0417 14.7781 1.0417 9.89585C1.0417 5.01358 5.01406 1.04165 9.89585 1.04165C14.7776 1.04165 18.75 5.01353 18.75 9.89585C18.75 14.7782 14.7776 18.75 9.89585 18.75Z"
+                    fill="#7C8DB5"
+                  />
+                </svg>
+              </div>
+            </Fragment>
+          )}
         </div>
         <div className="flex items-center">
           <div className="cursor-pointer">
@@ -119,21 +375,89 @@ const TopBar: React.FC = () => {
               </div>
             )} */}
           </div>
-          <div className="pl-1.68 relative cursor-pointer">
-            <div className="notification-icon">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M14 16H18.5858C19.3668 16 20 15.3668 20 14.5858C20 14.2107 19.851 13.851 19.5858 13.5858L18.5858 12.5858C18.2107 12.2107 18 11.702 18 11.1716L18 7.97067C18 3.56859 14.4314 0 10.0293 0C5.61789 0 2.04543 3.58319 2.05867 7.9946L2.06814 11.1476C2.06977 11.6922 1.84928 12.2139 1.45759 12.5922L0.428635 13.586C0.154705 13.8506 2.07459e-06 14.2151 0 14.5959C0 15.3714 0.628628 16 1.40408 16H6C6 18.2091 7.79086 20 10 20C12.2091 20 14 18.2091 14 16ZM17.5251 13.6464L18.3787 14.5H1.64147L2.49967 13.6711C3.18513 13.009 3.57099 12.0961 3.56813 11.1431L3.55867 7.9901C3.54792 4.40887 6.44807 1.5 10.0293 1.5C13.603 1.5 16.5 4.39702 16.5 7.97067L16.5 11.1716C16.5 12.0998 16.8687 12.9901 17.5251 13.6464ZM12.5 16H7.5C7.5 17.3807 8.61929 18.5 10 18.5C11.3807 18.5 12.5 17.3807 12.5 16Z"
-                  fill="none"
-                />
-              </svg>
+          {!decodedToken.isAdmin && (
+            <div className="pl-1.68 relative cursor-pointer" ref={notificationRef}>
+              <div className="notification-icon" onClick={handleNotificationActive}>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M14 16H18.5858C19.3668 16 20 15.3668 20 14.5858C20 14.2107 19.851 13.851 19.5858 13.5858L18.5858 12.5858C18.2107 12.2107 18 11.702 18 11.1716L18 7.97067C18 3.56859 14.4314 0 10.0293 0C5.61789 0 2.04543 3.58319 2.05867 7.9946L2.06814 11.1476C2.06977 11.6922 1.84928 12.2139 1.45759 12.5922L0.428635 13.586C0.154705 13.8506 2.07459e-06 14.2151 0 14.5959C0 15.3714 0.628628 16 1.40408 16H6C6 18.2091 7.79086 20 10 20C12.2091 20 14 18.2091 14 16ZM17.5251 13.6464L18.3787 14.5H1.64147L2.49967 13.6711C3.18513 13.009 3.57099 12.0961 3.56813 11.1431L3.55867 7.9901C3.54792 4.40887 6.44807 1.5 10.0293 1.5C13.603 1.5 16.5 4.39702 16.5 7.97067L16.5 11.1716C16.5 12.0998 16.8687 12.9901 17.5251 13.6464ZM12.5 16H7.5C7.5 17.3807 8.61929 18.5 10 18.5C11.3807 18.5 12.5 17.3807 12.5 16Z"
+                    fill="none"
+                  />
+                </svg>
+              </div>
+              <div className="absolute top-0 right-0 overflow-hidden">{unReadStatus === 'true' ? <img src={ellipseIcon} alt="" /> : null}</div>
+              {isNotificationActive && (
+                <div className="absolute border-box w-[363px] rounded-[10px] border border-[#DBD8FC] bg-white cursor-pointer top-10 -right-[20px]  z-10 px-[14px] py-[18px] notification notification-box">
+                  <div className="flex flex-col font-Poppins">
+                    <div className="text-base font-semibold">Notifications</div>
+                    <div className="flex flex-col notify-list min-h-[80px] max-h-[325px] overflow-auto ">
+                      {loading.notificationLoading && !loading.notificationScrollLoading && (
+                        <div className="flex flex-col gap-5 overflow-y-scroll member-section mt-1.8 max-h-96 height-member-merge ">
+                          {Array.from({ length: 10 }, (_, i) => i + 1).map((type: number) => (
+                            <Fragment key={type}>
+                              <div className="flex py-[10px] border-b border-[#E6E6E6] items-center">
+                                <Skeleton width={40} height={40} borderRadius={'50%'} className="rounded-full" />
+                                <div className="flex flex-col pl-2">
+                                  <span className="text-[#070707] text-sm">
+                                    <Skeleton width={250} height={20} />
+                                  </span>
+                                  <span className="text-[10px] text-[#808080]">
+                                    <Skeleton width={50} height={10} />
+                                  </span>
+                                </div>
+                              </div>
+                            </Fragment>
+                          ))}
+                        </div>
+                      )}
+                      {notificationList.result.length > 0 && (
+                        <div
+                          id="scrollableDiv"
+                          className="flex flex-col gap-5 overflow-y-scroll member-section mt-1.8 max-h-96 height-member-merge "
+                          onScroll={handleScrollNav}
+                        >
+                          {notificationList.result.map((item: NotificationData, index: number) => (
+                            <div className="flex py-[10px] border-b border-[#E6E6E6] items-center" key={index}>
+                              <img
+                                src={
+                                  (item.notification.notificationPayload?.imageUrl as string) ||
+                                  'https://comunify-dev-assets.s3.amazonaws.com/common/Comunfy_logo.png'
+                                }
+                                alt=""
+                                className="w-[26px] h-[26px] rounded-full"
+                              />
+                              <div className="flex flex-col pl-2 w-[300px]" onClick={() => handleNotificationUpdate(item.notificationId, index)}>
+                                <span className="text-[#070707] text-sm">{item?.notification?.message}</span>
+                                <span className="text-[10px] text-[#808080]">{getTimeSince(new Date(item?.createdAt).toISOString())}</span>
+                              </div>
+                              <div className="flex items-center justify-center mb-[15px] w-[25px] ">
+                                {!item.isRead && <img src={ellipseIcon} alt="" className="h-[12px] " />}
+                              </div>
+                            </div>
+                          ))}
+                          {loading.notificationLoading && (
+                            <div className="flex py-[10px] border-b border-[#E6E6E6] items-center">
+                              <Skeleton width={40} height={40} borderRadius={'50%'} className="rounded-full" />
+                              <div className="flex flex-col pl-2">
+                                <span className="text-[#070707] text-sm">
+                                  <Skeleton width={250} height={20} />
+                                </span>
+                                <span className="text-[10px] text-[#808080]">
+                                  <Skeleton width={50} height={10} />
+                                </span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
-            <div className="absolute top-0 right-0 overflow-hidden">
-              <img src={ellipseIcon} alt="" />
-            </div>
-          </div>
+          )}
           <div className="pl-2.56 relative">
             <img
               src={profileImage.length ? profileImage : profilePic}
@@ -156,42 +480,50 @@ const TopBar: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="mt-[3px] scroll-auto box-border rounded-0.3 shadow-reportInput w-34.37 app-result-card-border hidden">
-        <div className="flex flex-col mt-[13px] pl-4 pb-5 opacity-40">
-          <div className="flex">
-            <div>
-              <img src={unplashMjIcon} alt="" />
+      {suggestionList?.result?.length > 0 && isSuggestionListDropDown && (
+        <div
+          className="mt-[3px] box-border rounded-0.3 shadow-reportInput w-34.37 app-result-card-border h-12.375 overflow-auto absolute z-10 bg-white"
+          onScroll={handleScroll}
+        >
+          {suggestionList.result.map((searchResult: GlobalSearchDataResult) => (
+            <div
+              className="flex flex-col mt-[13px] pl-4 pb-5 overflow-auto cursor-pointer"
+              key={searchResult.id}
+              onClick={() => navigateToActivity(searchResult.id, searchResult.resultType, searchResult.displayValue)}
+            >
+              <div className="flex">
+                <Fragment>
+                  <img
+                    className="h-[1.835rem] w-[1.9175rem] rounded-full"
+                    src={searchResult.resultType === ActivityEnum.Activity ? searchResult.icon : searchResult.icon ?? profilePic}
+                    alt=""
+                  />
+                </Fragment>
+                <div className="pl-6 font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
+                  {searchResult.resultType === ActivityEnum.Activity ? searchResult.displayValue : searchResult.memberName}
+                </div>
+              </div>
             </div>
-            <div className="pl-6 font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
-              John posted a “Latest Release” on channel “Updates”
+          ))}
+          {loading.fetchLoading && (
+            <div className="flex flex-col mt-[13px] pl-4 pb-5 overflow-auto">
+              <div className="flex">
+                <Fragment>
+                  <Skeleton width={40} height={40} borderRadius={'50%'} className="rounded-full" />
+                </Fragment>
+                <Skeleton width={300} height={20} className={'ml-5'} />
+              </div>
             </div>
-          </div>
-          <div className="flex  mt-1.625">
-            <div>
-              <img src={unplashMj} alt="" />
-            </div>
-            <div className="pl-6 font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
-              Nishitha commented a post “Latest Release” on channel “Updates”
-            </div>
-          </div>
-          <div className="flex mt-1.625">
-            <div>
-              <img src={slackIcon} alt="" />
-            </div>
-            <div className="pl-6 font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
-              Nishitha started a discussion “Latest Release” of our product”
-            </div>
-          </div>
-          <div className="flex mt-1.625">
-            <div>
-              <img src={unplashMjIcon} alt="" />
-            </div>
-            <div className="pl-6 font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
-              John posted a “Latest Release” on channel “Updates”
-            </div>
+          )}
+        </div>
+      )}
+      {searchSuggestion && suggestionList.result.length === 0 && !loading.fetchLoading && (
+        <div className="mt-[3px] scroll-auto box-border rounded-0.3 shadow-reportInput w-34.37 app-result-card-border absolute z-10 bg-white">
+          <div className="flex flex-col mt-[13px] pl-4 pb-5">
+            <h3 className="font-Poppins font-normal text-base text-infoBlack mt-6 text-center">No data found</h3>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
