@@ -1,19 +1,24 @@
-import { Elements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
-import Button from 'common/button';
 import React, { Dispatch, useEffect, useState } from 'react';
-import Skeleton from 'react-loading-skeleton';
-import Modal from 'react-modal';
+import { useSearchParams } from 'react-router-dom';
+import { useAppSelector } from '../../../../hooks/useRedux';
+
 import { useDispatch } from 'react-redux';
 import { NavigateFunction, useLocation, useNavigate } from 'react-router';
 import { AnyAction } from 'redux';
-import deleteIcon from '../../../../assets/images/delete.svg';
-import MasterCardIcon from '../../../../assets/images/masterCard.svg';
-import VisaCardIcon from '../../../../assets/images/visa.svg';
-import { showErrorToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
-import { useAppSelector } from '../../../../hooks/useRedux';
-import { getLocalWorkspaceId, setRefreshToken } from '../../../../lib/helper';
 import { State } from '../../../../store';
+
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import { Form, Formik } from 'formik';
+import * as Yup from 'yup';
+import Skeleton from 'react-loading-skeleton';
+import Modal from 'react-modal';
+
+import Button from 'common/button';
+import Input from '../../../../common/input';
+import authSlice from '../../store/slices/auth.slice';
+import { showErrorToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
+import { getLocalWorkspaceId, setRefreshToken } from '../../../../lib/helper';
 import { AddedCardDetails, BillingDetails, ClientSecret, SubscriptionDetails, UpgradeData } from '../../../settings/interface/settings.interface';
 import {
   createCardService,
@@ -25,13 +30,13 @@ import {
 } from '../../../settings/services/settings.services';
 import { SubscriptionPackages } from '../../interface/auth.interface';
 import { chooseSubscription } from '../../services/auth.service';
-import authSlice from '../../store/slices/auth.slice';
 // import ToggleButton from 'common/ToggleButton/ToggleButton';
-import Input from '../../../../common/input';
-import { Form, Formik } from 'formik';
-import * as Yup from 'yup';
+
 import { alphabets_only_regex_with_single_space, email_regex, whiteSpace_single_regex } from 'constants/constants';
 import { stripePublishableKey } from '@/lib/config';
+import deleteIcon from '../../../../assets/images/delete.svg';
+import MasterCardIcon from '../../../../assets/images/masterCard.svg';
+import VisaCardIcon from '../../../../assets/images/visa.svg';
 
 const CheckoutForm = React.lazy(() => import('../../../settings/pages/subscription/CheckoutForm'));
 
@@ -49,6 +54,8 @@ const SubscriptionExpiredActivate: React.FC = () => {
   const location: Location | any = useLocation();
   const navigate: NavigateFunction = useNavigate();
   const dispatch: Dispatch<AnyAction> = useDispatch();
+  const [searchParams] = useSearchParams();
+  const paymentStatus: string | null = searchParams.get('paymentStatus');
   const workspaceId: string = getLocalWorkspaceId();
   const [subscriptionDetails, setSubscriptionDetails] = useState<SubscriptionDetails | undefined>();
   const [clientSecret, setClientSecret] = useState<string>('');
@@ -84,6 +91,12 @@ const SubscriptionExpiredActivate: React.FC = () => {
       setCallEffect(false);
     }
   }, [callEffect]);
+
+  useEffect(() => {
+    if (paymentStatus) {
+      showWarningToast('Card payment has failed. Please retry or add another payment card to complete payment');
+    }
+  }, [paymentStatus]);
 
   const subscriptionData = useAppSelector((state: State) => state.auth.subscriptionData);
 
@@ -246,7 +259,9 @@ const SubscriptionExpiredActivate: React.FC = () => {
   return (
     <div className="w-full flex flex-col justify-center mb-16 mt-14 items-center">
       <div className="w-3/4 mt-16 mb-32">
-        <h3 className="text-neutralBlack font-bold font-Inter text-signIn leading-2.8 place-self-start mb-5">Subscription</h3>
+        <h3 className="text-neutralBlack font-bold font-Inter text-signIn leading-2.8 place-self-start mb-5">
+          {paymentStatus ? 'Payment Failed' : 'Subscription'}
+        </h3>
         <div className="p-8 pb-40 flex flex-col font-Poppins h-full overflow-y-auto border-2 rounded-0.9 mb-13">
           {/* <div className="pt-10 pb-8 border-b border-greyDark">
             <div className="flex justify-between  items-center">
@@ -268,7 +283,7 @@ const SubscriptionExpiredActivate: React.FC = () => {
               <div className="flex flex-col">
                 <h3 className=" text-base text-renewalBlack leading-1.31 font-semibold dark:text-white">Selected Plan</h3>
                 <p className="text-listGray font-medium  text-trial leading-1.31 mt-1 dark:text-greyDark">
-                  Plan Name : <span className="text-download font-semibold  ">{location?.state?.selectedPlan}</span>{' '}
+                  Plan Name : <span className="text-download font-semibold  ">{location?.state?.selectedPlan ?? 'No Active Plan'}</span>{' '}
                 </p>
               </div>
               <div className="flex gap-4 items-center">

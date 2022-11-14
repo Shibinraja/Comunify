@@ -6,6 +6,7 @@ import { Centrifuge } from 'centrifuge';
 import { fetch_refresh_token, getLocalRefreshToken } from '../../lib/request';
 import { decodeToken } from '../../lib/decodeToken';
 import subscribe from '@/lib/subscribe';
+import { VITE_CENTRIFUGO_URL } from '@/lib/config';
 
 import { Props } from '../../routes/routesTypes';
 import { DecodeToken } from 'modules/authentication/interface/auth.interface';
@@ -45,7 +46,7 @@ export const Notifications: React.FC<Props> = ({ children }: NotificationContext
   useEffect(() => {
     if (access_token) {
       // Centrifuge Connection
-      const centrifuge = new Centrifuge('wss://centrifugo.comunifyllc.com/connection/websocket', {
+      const centrifuge = new Centrifuge(VITE_CENTRIFUGO_URL, {
         token: `${access_token}`,
         debug: true,
         timeout: 5000,

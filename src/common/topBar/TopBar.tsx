@@ -157,7 +157,7 @@ const TopBar: React.FC = () => {
       nextCursor: null
     });
 
-    if (debouncedValue && !decodedToken.isAdmin) {
+    if (debouncedValue) {
       getGlobalSearchItem({
         cursor: null,
         prop: 'search',
@@ -270,21 +270,19 @@ const TopBar: React.FC = () => {
 
   const handleNotificationActive = () => {
     setIsNotificationActive((prev) => !prev);
-    if (!decodedToken.isAdmin) {
-      setNotificationList({
-        result: [],
-        nextCursor: null
-      });
-      getNotificationList(
-        {
-          workspaceId: workspaceId as string,
-          limit: 10,
-          cursor: null,
-          type: 'all'
-        },
-        true
-      );
-    }
+    setNotificationList({
+      result: [],
+      nextCursor: null
+    });
+    getNotificationList(
+      {
+        workspaceId: workspaceId as string,
+        limit: 10,
+        cursor: null,
+        type: 'all'
+      },
+      true
+    );
   };
 
   // Change notification status to read
@@ -334,26 +332,30 @@ const TopBar: React.FC = () => {
     <div className=" mt-6 px-12 xl:px-20">
       <div className="flex justify-between items-center ">
         <div className="relative dark:bg-primaryDark`" ref={suggestionListDropDownRef}>
-          <input
-            name="search"
-            id="searchId"
-            type="text"
-            placeholder="Search..."
-            className="bg-transparent border border-borderPrimary focus:outline-none font-normal pl-4.18 box-border text-inputText text-search rounded-0.6 h-16 w-34.3  placeholder:font-normal placeholder:leading-snug placeholder:text-search placeholder:text-searchGray shadow-profileCard"
-            onChange={handleSearchTextChange}
-            value={searchSuggestion}
-            onClick={() => {
-              setIsSuggestionListDropDown(true);
-            }}
-          />
-          <div className="absolute pl-7 top-[1.3rem]">
-            <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M20.8474 20.1109L17.2407 16.5042C18.8207 14.7499 19.7917 12.437 19.7917 9.8958C19.7917 4.43931 15.3524 0 9.89585 0C4.43931 0 0 4.43931 0 9.89585C0 15.3524 4.43931 19.7917 9.89585 19.7917C12.437 19.7917 14.7499 18.8207 16.5042 17.2407L20.1109 20.8474C20.2127 20.9491 20.346 21 20.4792 21C20.6125 21 20.7457 20.9491 20.8475 20.8474C21.0509 20.6439 21.0509 20.3144 20.8474 20.1109ZM9.89585 18.75C5.01406 18.75 1.0417 14.7781 1.0417 9.89585C1.0417 5.01358 5.01406 1.04165 9.89585 1.04165C14.7776 1.04165 18.75 5.01353 18.75 9.89585C18.75 14.7782 14.7776 18.75 9.89585 18.75Z"
-                fill="#7C8DB5"
+          {!decodedToken.isAdmin && (
+            <Fragment>
+              <input
+                name="search"
+                id="searchId"
+                type="text"
+                placeholder="Search..."
+                className="bg-transparent border border-borderPrimary focus:outline-none font-normal pl-4.18 box-border text-inputText text-search rounded-0.6 h-16 w-34.3  placeholder:font-normal placeholder:leading-snug placeholder:text-search placeholder:text-searchGray shadow-profileCard"
+                onChange={handleSearchTextChange}
+                value={searchSuggestion}
+                onClick={() => {
+                  setIsSuggestionListDropDown(true);
+                }}
               />
-            </svg>
-          </div>
+              <div className="absolute pl-7 top-[1.3rem]">
+                <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M20.8474 20.1109L17.2407 16.5042C18.8207 14.7499 19.7917 12.437 19.7917 9.8958C19.7917 4.43931 15.3524 0 9.89585 0C4.43931 0 0 4.43931 0 9.89585C0 15.3524 4.43931 19.7917 9.89585 19.7917C12.437 19.7917 14.7499 18.8207 16.5042 17.2407L20.1109 20.8474C20.2127 20.9491 20.346 21 20.4792 21C20.6125 21 20.7457 20.9491 20.8475 20.8474C21.0509 20.6439 21.0509 20.3144 20.8474 20.1109ZM9.89585 18.75C5.01406 18.75 1.0417 14.7781 1.0417 9.89585C1.0417 5.01358 5.01406 1.04165 9.89585 1.04165C14.7776 1.04165 18.75 5.01353 18.75 9.89585C18.75 14.7782 14.7776 18.75 9.89585 18.75Z"
+                    fill="#7C8DB5"
+                  />
+                </svg>
+              </div>
+            </Fragment>
+          )}
         </div>
         <div className="flex items-center">
           <div className="cursor-pointer">
@@ -373,27 +375,69 @@ const TopBar: React.FC = () => {
               </div>
             )} */}
           </div>
-          <div className="pl-1.68 relative cursor-pointer" ref={notificationRef}>
-            <div className="notification-icon" onClick={handleNotificationActive}>
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M14 16H18.5858C19.3668 16 20 15.3668 20 14.5858C20 14.2107 19.851 13.851 19.5858 13.5858L18.5858 12.5858C18.2107 12.2107 18 11.702 18 11.1716L18 7.97067C18 3.56859 14.4314 0 10.0293 0C5.61789 0 2.04543 3.58319 2.05867 7.9946L2.06814 11.1476C2.06977 11.6922 1.84928 12.2139 1.45759 12.5922L0.428635 13.586C0.154705 13.8506 2.07459e-06 14.2151 0 14.5959C0 15.3714 0.628628 16 1.40408 16H6C6 18.2091 7.79086 20 10 20C12.2091 20 14 18.2091 14 16ZM17.5251 13.6464L18.3787 14.5H1.64147L2.49967 13.6711C3.18513 13.009 3.57099 12.0961 3.56813 11.1431L3.55867 7.9901C3.54792 4.40887 6.44807 1.5 10.0293 1.5C13.603 1.5 16.5 4.39702 16.5 7.97067L16.5 11.1716C16.5 12.0998 16.8687 12.9901 17.5251 13.6464ZM12.5 16H7.5C7.5 17.3807 8.61929 18.5 10 18.5C11.3807 18.5 12.5 17.3807 12.5 16Z"
-                  fill="none"
-                />
-              </svg>
-            </div>
-            <div className="absolute top-0 right-0 overflow-hidden">{unReadStatus === 'true' ? <img src={ellipseIcon} alt="" /> : null}</div>
-            {isNotificationActive && (
-              <div className="absolute border-box w-[363px] rounded-[10px] border border-[#DBD8FC] bg-white cursor-pointer top-10 -right-[20px]  z-10 px-[14px] py-[18px] notification notification-box">
-                <div className="flex flex-col font-Poppins">
-                  <div className="text-base font-semibold">Notifications</div>
-                  <div className="flex flex-col notify-list min-h-[80px] max-h-[325px] overflow-auto ">
-                    {loading.notificationLoading && !loading.notificationScrollLoading && (
-                      <div className="flex flex-col gap-5 overflow-y-scroll member-section mt-1.8 max-h-96 height-member-merge ">
-                        {Array.from({ length: 10 }, (_, i) => i + 1).map((type: number) => (
-                          <Fragment key={type}>
+          {!decodedToken.isAdmin && (
+            <div className="pl-1.68 relative cursor-pointer" ref={notificationRef}>
+              <div className="notification-icon" onClick={handleNotificationActive}>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M14 16H18.5858C19.3668 16 20 15.3668 20 14.5858C20 14.2107 19.851 13.851 19.5858 13.5858L18.5858 12.5858C18.2107 12.2107 18 11.702 18 11.1716L18 7.97067C18 3.56859 14.4314 0 10.0293 0C5.61789 0 2.04543 3.58319 2.05867 7.9946L2.06814 11.1476C2.06977 11.6922 1.84928 12.2139 1.45759 12.5922L0.428635 13.586C0.154705 13.8506 2.07459e-06 14.2151 0 14.5959C0 15.3714 0.628628 16 1.40408 16H6C6 18.2091 7.79086 20 10 20C12.2091 20 14 18.2091 14 16ZM17.5251 13.6464L18.3787 14.5H1.64147L2.49967 13.6711C3.18513 13.009 3.57099 12.0961 3.56813 11.1431L3.55867 7.9901C3.54792 4.40887 6.44807 1.5 10.0293 1.5C13.603 1.5 16.5 4.39702 16.5 7.97067L16.5 11.1716C16.5 12.0998 16.8687 12.9901 17.5251 13.6464ZM12.5 16H7.5C7.5 17.3807 8.61929 18.5 10 18.5C11.3807 18.5 12.5 17.3807 12.5 16Z"
+                    fill="none"
+                  />
+                </svg>
+              </div>
+              <div className="absolute top-0 right-0 overflow-hidden">{unReadStatus === 'true' ? <img src={ellipseIcon} alt="" /> : null}</div>
+              {isNotificationActive && (
+                <div className="absolute border-box w-[363px] rounded-[10px] border border-[#DBD8FC] bg-white cursor-pointer top-10 -right-[20px]  z-10 px-[14px] py-[18px] notification notification-box">
+                  <div className="flex flex-col font-Poppins">
+                    <div className="text-base font-semibold">Notifications</div>
+                    <div className="flex flex-col notify-list min-h-[80px] max-h-[325px] overflow-auto ">
+                      {loading.notificationLoading && !loading.notificationScrollLoading && (
+                        <div className="flex flex-col gap-5 overflow-y-scroll member-section mt-1.8 max-h-96 height-member-merge ">
+                          {Array.from({ length: 10 }, (_, i) => i + 1).map((type: number) => (
+                            <Fragment key={type}>
+                              <div className="flex py-[10px] border-b border-[#E6E6E6] items-center">
+                                <Skeleton width={40} height={40} borderRadius={'50%'} className="rounded-full" />
+                                <div className="flex flex-col pl-2">
+                                  <span className="text-[#070707] text-sm">
+                                    <Skeleton width={250} height={20} />
+                                  </span>
+                                  <span className="text-[10px] text-[#808080]">
+                                    <Skeleton width={50} height={10} />
+                                  </span>
+                                </div>
+                              </div>
+                            </Fragment>
+                          ))}
+                        </div>
+                      )}
+                      {notificationList.result.length > 0 && (
+                        <div
+                          id="scrollableDiv"
+                          className="flex flex-col gap-5 overflow-y-scroll member-section mt-1.8 max-h-96 height-member-merge "
+                          onScroll={handleScrollNav}
+                        >
+                          {notificationList.result.map((item: NotificationData, index: number) => (
+                            <div className="flex py-[10px] border-b border-[#E6E6E6] items-center" key={index}>
+                              <img
+                                src={
+                                  (item.notification.notificationPayload?.imageUrl as string) ||
+                                  'https://comunify-dev-assets.s3.amazonaws.com/common/Comunfy_logo.png'
+                                }
+                                alt=""
+                                className="w-[26px] h-[26px] rounded-full"
+                              />
+                              <div className="flex flex-col pl-2 w-[300px]" onClick={() => handleNotificationUpdate(item.notificationId, index)}>
+                                <span className="text-[#070707] text-sm">{item?.notification?.message}</span>
+                                <span className="text-[10px] text-[#808080]">{getTimeSince(new Date(item?.createdAt).toISOString())}</span>
+                              </div>
+                              <div className="flex items-center justify-center mb-[15px] w-[25px] ">
+                                {!item.isRead && <img src={ellipseIcon} alt="" className="h-[12px] " />}
+                              </div>
+                            </div>
+                          ))}
+                          {loading.notificationLoading && (
                             <div className="flex py-[10px] border-b border-[#E6E6E6] items-center">
                               <Skeleton width={40} height={40} borderRadius={'50%'} className="rounded-full" />
                               <div className="flex flex-col pl-2">
@@ -405,55 +449,15 @@ const TopBar: React.FC = () => {
                                 </span>
                               </div>
                             </div>
-                          </Fragment>
-                        ))}
-                      </div>
-                    )}
-                    {notificationList.result.length > 0 && (
-                      <div
-                        id="scrollableDiv"
-                        className="flex flex-col gap-5 overflow-y-scroll member-section mt-1.8 max-h-96 height-member-merge "
-                        onScroll={handleScrollNav}
-                      >
-                        {notificationList.result.map((item: NotificationData, index: number) => (
-                          <div className="flex py-[10px] border-b border-[#E6E6E6] items-center" key={index}>
-                            <img
-                              src={
-                                (item.notification.notificationPayload?.imageUrl as string) ||
-                                'https://comunify-dev-assets.s3.amazonaws.com/common/Comunfy_logo.png'
-                              }
-                              alt=""
-                              className="w-[26px] h-[26px] rounded-full"
-                            />
-                            <div className="flex flex-col pl-2 w-[300px]" onClick={() => handleNotificationUpdate(item.notificationId, index)}>
-                              <span className="text-[#070707] text-sm">{item?.notification?.message}</span>
-                              <span className="text-[10px] text-[#808080]">{getTimeSince(new Date(item?.createdAt).toISOString())}</span>
-                            </div>
-                            <div className="flex items-center justify-center mb-[15px] w-[25px] ">
-                              {!item.isRead && <img src={ellipseIcon} alt="" className="h-[12px] " />}
-                            </div>
-                          </div>
-                        ))}
-                        {loading.notificationLoading && (
-                          <div className="flex py-[10px] border-b border-[#E6E6E6] items-center">
-                            <Skeleton width={40} height={40} borderRadius={'50%'} className="rounded-full" />
-                            <div className="flex flex-col pl-2">
-                              <span className="text-[#070707] text-sm">
-                                <Skeleton width={250} height={20} />
-                              </span>
-                              <span className="text-[10px] text-[#808080]">
-                                <Skeleton width={50} height={10} />
-                              </span>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
           <div className="pl-2.56 relative">
             <img
               src={profileImage.length ? profileImage : profilePic}
@@ -478,7 +482,7 @@ const TopBar: React.FC = () => {
       </div>
       {suggestionList?.result?.length > 0 && isSuggestionListDropDown && (
         <div
-          className="mt-[3px] box-border rounded-0.3 shadow-reportInput w-34.37 app-result-card-border h-12.375 overflow-auto"
+          className="mt-[3px] box-border rounded-0.3 shadow-reportInput w-34.37 app-result-card-border h-12.375 overflow-auto absolute z-10 bg-white"
           onScroll={handleScroll}
         >
           {suggestionList.result.map((searchResult: GlobalSearchDataResult) => (
@@ -514,7 +518,7 @@ const TopBar: React.FC = () => {
         </div>
       )}
       {searchSuggestion && suggestionList.result.length === 0 && !loading.fetchLoading && (
-        <div className="mt-[3px] scroll-auto box-border rounded-0.3 shadow-reportInput w-34.37 app-result-card-border">
+        <div className="mt-[3px] scroll-auto box-border rounded-0.3 shadow-reportInput w-34.37 app-result-card-border absolute z-10 bg-white">
           <div className="flex flex-col mt-[13px] pl-4 pb-5">
             <h3 className="font-Poppins font-normal text-base text-infoBlack mt-6 text-center">No data found</h3>
           </div>

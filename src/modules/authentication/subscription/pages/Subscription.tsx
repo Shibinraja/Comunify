@@ -1,10 +1,12 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import './Subscription.css';
 import { useLocation } from 'react-router';
-import { SubscriptionProps } from 'interface/interface';
+
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { PaymentCard } from './PaymentCard';
+import './Subscription.css';
+
+import { SubscriptionProps } from 'interface/interface';
 import { createCardService } from '../../../settings/services/settings.services';
 import { ClientSecret } from '../../../settings/interface/settings.interface';
 import { stripePublishableKey } from '@/lib/config';

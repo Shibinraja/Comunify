@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
+
+import { Formik, Form } from 'formik';
+import * as Yup from 'yup';
+
 import Button from 'common/button';
 import Input from 'common/input';
-import bgSubscriptionImage from '../../../../assets/images/bg-sign.svg';
 import { SubscriptionValues } from 'modules/authentication/interface/auth.interface';
-import { Formik, Form } from 'formik';
 import { SubscriptionProps } from 'interface/interface';
-import CheckoutForm from '../../../settings/pages/subscription/CheckoutForm';
 import { BillingDetails } from '../../../settings/interface/settings.interface';
-import * as Yup from 'yup';
+
+import bgSubscriptionImage from '../../../../assets/images/bg-sign.svg';
 import { alphabets_only_regex_with_single_space, email_regex, whiteSpace_single_regex } from '../../../../constants/constants';
+
+const CheckoutForm = React.lazy(() => import('../../../settings/pages/subscription/CheckoutForm'));
 
 export const PaymentCard: React.FC<SubscriptionProps> = ({ subscriptionData }) => {
   const initialValues: SubscriptionValues = { billingName: '', billingEmail: '' };

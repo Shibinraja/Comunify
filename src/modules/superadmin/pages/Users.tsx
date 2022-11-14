@@ -60,7 +60,7 @@ const Users: React.FC = () => {
 
   // Function to dispatch the search text and to hit api of member list.
   // eslint-disable-next-line space-before-function-paren
-  const getFilteredMembersList = async (pageNumber: number, text: string, date?: string, endDate?: string) => {
+  const getFilteredMembersList = async (pageNumber: number, text: string, resetPage: boolean, date?: string, endDate?: string) => {
     setFilteredDate({ filterStartDate: date!, filterEndDate: endDate! });
     setFetchLoader((prev) => ({ ...prev, getLoader: true }));
     const data = await getUsersListService({
@@ -78,7 +78,10 @@ const Users: React.FC = () => {
       ...(filterExportParams.expiryAtGte ? { 'expiryAt.gte': filterExportParams.expiryAtGte } : {})
     });
     setFetchLoader((prev) => ({ ...prev, getLoader: false }));
-    setPage(1);
+    if (resetPage) {
+      setPage(1);
+    }
+
     setMembersList({
       data: data?.data as unknown as UserMembersListData[],
       totalPages: data?.totalPages as number,
@@ -89,12 +92,12 @@ const Users: React.FC = () => {
 
   useEffect(() => {
     if (debouncedValue) {
-      getFilteredMembersList(1, debouncedValue);
+      getFilteredMembersList(1, debouncedValue, true);
     }
   }, [debouncedValue]);
 
   useEffect(() => {
-    getFilteredMembersList(page, searchText, filteredDate.filterStartDate, filteredDate.filterEndDate);
+    getFilteredMembersList(page, searchText, false, filteredDate.filterStartDate, filteredDate.filterEndDate);
   }, [page]);
 
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -102,7 +105,8 @@ const Users: React.FC = () => {
     if (!searchText) {
       getFilteredMembersList(
         1,
-        searchText
+        searchText,
+        false
         // customStartDate ? customStartDate && convertStartDate(customStartDate) : customSingleStartDate && convertStartDate(customSingleStartDate),
         // customEndDate && convertEndDate(customEndDate)
       );
@@ -284,7 +288,7 @@ const Users: React.FC = () => {
     <div className="flex flex-col mt-12">
       {/* <h3 className="font-Poppins font-semibold text-infoBlack text-infoData leading-9 dark:text-white">Members</h3> */}
       <div className="flex flex-row  justify-between mt-1.8 i ">
-        <div className="flex relative items-center w-1/2 xl:w-[250px] 2xl:w-19.06">
+        <div className="flex relative items-center w-1/2 w-19.06">
           <input
             type="text"
             className="focus:outline-none px-3 pr-8 box-border w-full h-3.06  rounded-0.6  placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray shadow-shadowInput"
@@ -300,8 +304,9 @@ const Users: React.FC = () => {
           <div className="ml-0.652 w-[112px]">
             <div
               aria-disabled={fetchLoader.exportLoader}
-              className={`export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex cursor-pointer hover:border-infoBlack transition ease-in-out duration-300 ${fetchLoader.exportLoader || !customizedColumn?.length ? 'cursor-not-allowed' : ''
-                }`}
+              className={`export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex cursor-pointer hover:border-infoBlack transition ease-in-out duration-300 ${
+                fetchLoader.exportLoader || !customizedColumn?.length ? 'cursor-not-allowed' : ''
+              }`}
               onClick={() => (customizedColumn?.length ? !fetchLoader.exportLoader && fetchMembersListExportData() : null)}
             >
               <h3 className="text-memberDay leading-1.12 font-Poppins font-semibold text-card">Export</h3>
