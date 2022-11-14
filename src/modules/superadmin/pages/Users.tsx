@@ -196,7 +196,7 @@ const Users: React.FC = () => {
           <div className="inline-block min-w-full w-full align-middle rounded-0.6 border-table  overflow-x-auto overflow-y-auto sticky top-0 fixTableHead max-h-34 min-h-[31.25rem] mb-16">
             <table className="min-w-full relative w-full rounded-t-0.6 ">
               <thead className="h-3.25  top-0 w-full  sticky ">
-                <tr className="min-w-full w-full">
+                <tr className="min-w-full w-full border-b border-b-[#E5E5E5]">
                   {ColumNames.map(
                     (columnName: ColumnNameProps) =>
                       columnName.isDisplayed && (
@@ -283,7 +283,7 @@ const Users: React.FC = () => {
   return (
     <div className="flex flex-col mt-12">
       {/* <h3 className="font-Poppins font-semibold text-infoBlack text-infoData leading-9 dark:text-white">Members</h3> */}
-      <div className="flex flex-col xl:flex-row  justify-between mt-1.8 i ">
+      <div className="flex flex-row  justify-between mt-1.8 i ">
         <div className="flex relative items-center w-1/2 xl:w-[250px] 2xl:w-19.06">
           <input
             type="text"
@@ -295,14 +295,13 @@ const Users: React.FC = () => {
             <img src={searchIcon} alt="" />
           </div>
         </div>
-        <div className="flex justify-between xl:justify-start mt-4 xl:mt-0">
+        <div className="flex justify-between  mt-4 xl:mt-0">
           <div className="ml-1.30 w-[155px]">{UserFilter}</div>
           <div className="ml-0.652 w-[112px]">
             <div
               aria-disabled={fetchLoader.exportLoader}
-              className={`export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex cursor-pointer hover:border-infoBlack transition ease-in-out duration-300 ${
-                fetchLoader.exportLoader || !customizedColumn?.length ? 'cursor-not-allowed' : ''
-              }`}
+              className={`export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex cursor-pointer hover:border-infoBlack transition ease-in-out duration-300 ${fetchLoader.exportLoader || !customizedColumn?.length ? 'cursor-not-allowed' : ''
+                }`}
               onClick={() => (customizedColumn?.length ? !fetchLoader.exportLoader && fetchMembersListExportData() : null)}
             >
               <h3 className="text-memberDay leading-1.12 font-Poppins font-semibold text-card">Export</h3>
