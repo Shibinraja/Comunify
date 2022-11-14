@@ -3,7 +3,6 @@
 import { GeneratorResponse } from '@/lib/api';
 import { API_ENDPOINT, auth_module, subscription_module, workspace_module } from '@/lib/config';
 import { request } from '@/lib/request';
-import { showErrorToast } from 'common/toast/toastFunctions';
 import { UpgradeData } from '../../settings/interface/settings.interface';
 
 import {
@@ -90,12 +89,11 @@ export function* signOutService(): GeneratorResponse<{}> {
 }
 
 // Subscription services
-export const chooseSubscription = async (subscriptionId: string, body?: UpgradeData) => {
+export const chooseSubscription = async (subscriptionId: string, body?: UpgradeData): Promise<SubscriptionPackages> => {
   try {
     const { data } = await request.post(`${API_ENDPOINT}/v1/subscription/chooseplan/${subscriptionId}`, body);
     return data?.data as SubscriptionPackages;
   } catch {
-    showErrorToast('Subscription failed');
     return {} as SubscriptionPackages;
   }
 };

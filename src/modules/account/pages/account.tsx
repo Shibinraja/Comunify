@@ -213,7 +213,7 @@ const Account = () => {
                               type="text"
                               name="fullName"
                               id="fullName"
-                              className="shadow-inputShadow mt-0.40 px-3 app-result-card-border focus:outline-none box-border bg-white w-full py-2 rounded-0.3 placeholder:text-thinGray placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.31 placeholder:text-trial"
+                              className="shadow-inputShadow mt-0.40 px-3 h-2.81 app-result-card-border focus:outline-none box-border bg-white w-full py-2 rounded-0.3 placeholder:text-thinGray placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.31 placeholder:text-trial"
                               placeholder="Enter Name"
                               onBlur={handleBlur}
                               onChange={handleChange}
@@ -230,7 +230,7 @@ const Account = () => {
                               type="text"
                               name="userName"
                               id="userName"
-                              className="shadow-inputShadow mt-0.40 px-3 app-result-card-border focus:outline-none box-border bg-white w-full py-2 rounded-0.3 placeholder:text-thinGray placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.31 placeholder:text-trial"
+                              className="shadow-inputShadow mt-0.40 px-3 h-2.81 app-result-card-border focus:outline-none box-border bg-white w-full py-2 rounded-0.3 placeholder:text-thinGray placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.31 placeholder:text-trial"
                               placeholder="Username"
                               onBlur={handleBlur}
                               onChange={handleChange}
@@ -249,7 +249,7 @@ const Account = () => {
                               type="text"
                               name="email"
                               id="emailId"
-                              className="shadow-inputShadow mt-0.40 px-3 app-result-card-border focus:outline-none box-border bg-white cursor-not-allowed	 w-full py-2 rounded-0.3 placeholder:text-thinGray placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.31 placeholder:text-trial"
+                              className="shadow-inputShadow bg-[#EBF8FF] h-2.81 mt-0.40 px-3 app-result-card-border focus:outline-none box-border bg-white cursor-not-allowed	 w-full py-2 rounded-0.3 placeholder:text-thinGray placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.31 placeholder:text-trial"
                               placeholder="example@mail.com"
                               // onBlur={handleBlur}
                               // onChange={handleChange}
@@ -267,7 +267,7 @@ const Account = () => {
                               type="text"
                               name="organization"
                               id="organizationId"
-                              className="shadow-inputShadow mt-0.40 px-3 app-result-card-border focus:outline-none box-border bg-white w-full py-2 rounded-0.3 placeholder:text-thinGray placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.31 placeholder:text-trial"
+                              className="shadow-inputShadow mt-0.40 h-2.81 px-3 app-result-card-border focus:outline-none box-border bg-white w-full py-2 rounded-0.3 placeholder:text-thinGray placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.31 placeholder:text-trial"
                               placeholder="Organization Name"
                               onBlur={handleBlur}
                               onChange={handleChange}
@@ -314,22 +314,23 @@ const Account = () => {
                                 </div>
                               )}
                             </div>
-                            <div className="pb-7">
-                              <div className="flex absolute right-1 top-72 items-center">
-                                <NavLink to={`${workspaceId}/dashboard`} className="p-0 m-0 mr-2">
-                                  <Button
-                                    type="button"
-                                    text="CANCEL"
-                                    className="cancel box-border py-2 px-5  w-full border-cancel rounded  cursor-pointer font-Poppins font-medium leading-5 text-error text-thinGray"
-                                  />
-                                </NavLink>
-                                <Button
-                                  type="submit"
-                                  text="SAVE"
-                                  className="py-2 px-5 w-full border-none box-border rounded shadow-contactBtn btn-save-modal cursor-pointer font-Poppins font-medium leading-5 text-error text-white"
-                                />
-                              </div>
-                            </div>
+                          </div>
+                        </div>
+
+                        <div className="py-7">
+                          <div className="flex items-center justify-end w-full">
+                            <NavLink to={`${workspaceId}/dashboard`} className="p-0 m-0 mr-2">
+                              <Button
+                                type="button"
+                                text="Cancel"
+                                className="cancel box-border py-2 px-5 h-[45px] w-[84px] border-cancel rounded  cursor-pointer font-Poppins font-medium leading-5 text-error text-thinGray"
+                              />
+                            </NavLink>
+                            <Button
+                              type="submit"
+                              text="Save"
+                              className="py-2 px-5 h-[45px] w-[84px] border-none box-border rounded shadow-contactBtn btn-save-modal cursor-pointer font-Poppins font-medium leading-5 text-error text-white"
+                            />
                           </div>
                         </div>
                       </div>
@@ -338,7 +339,7 @@ const Account = () => {
                 </Formik>
               </div>
 
-              <div className="flex flex-col mt-20 w-full">
+              <div className="flex flex-col  w-full">
                 <div className="report-border"></div>
                 <h3 className="font-Poppins font-semibold text-infoBlack text-base leading-6 pt-7">Password</h3>
                 <Formik
@@ -358,7 +359,7 @@ const Account = () => {
                               : ''
                           }`}
                         >
-                          <label htmlFor="currentPassword" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
+                          <label htmlFor="currentPassword" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31 pb-1">
                             Current Password
                           </label>
                           <Input
@@ -394,7 +395,7 @@ const Account = () => {
                               : ''
                           }`}
                         >
-                          <label htmlFor="currentPassword" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
+                          <label htmlFor="currentPassword" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31 ">
                             New Password
                           </label>
                           <Input
@@ -434,14 +435,14 @@ const Account = () => {
                           <NavLink to={`${workspaceId}/dashboard`} className="p-0 m-0 mr-2">
                             <Button
                               type="button"
-                              text="CANCEL"
-                              className=" cancel box-border px-3  py-2 w-ful border-cancel rounded border-none cursor-pointer font-Poppins font-medium leading-5 text-error text-thinGray"
+                              text="Cancel"
+                              className=" cancel box-border px-3 h-[45px]  w-[84px] py-2 border-cancel rounded border-none cursor-pointer font-Poppins font-medium leading-5 text-error text-thinGray"
                             />
                           </NavLink>
                           <Button
                             type="submit"
-                            text="UPDATE PASSWORD"
-                            className="border-none rounded py-2 px-3 w-full btn-save-modal shadow-contactBtn cursor-pointer font-Poppins font-medium leading-5 text-error text-white"
+                            text="Update Password"
+                            className="border-none rounded h-[45px] py-2 px-3 w-[164px] btn-save-modal shadow-contactBtn cursor-pointer font-Poppins font-medium leading-5 text-error text-white"
                           />
                         </div>
                       </div>
@@ -473,8 +474,8 @@ const Account = () => {
               <div className="mt-1.125" onClick={() => imageRef.current?.click()}>
                 <Button
                   type="button"
-                  text="CHOOSE PHOTO"
-                  className="border-none shadow-contactBtn btn-save-modal px-8 py-2 rounded font-Poppins font-medium text-error leading-5 text-white cursor-pointer"
+                  text="Choose Photo"
+                  className="border-none shadow-contactBtn btn-save-modal w-[132px] h-[32px] rounded font-Poppins font-medium text-error  text-white cursor-pointer"
                 />
                 <input
                   type="file"
@@ -489,13 +490,13 @@ const Account = () => {
             </div>
             <div className="flex flex-col justify-center items-center app-input-card-border mt-2.063 shadow-contactCard rounded-0.6 bg-white box-border w-full p-8">
               <h3 className="font-Poppins font-semibold text-contact text-infoBlack leading-2.06">Have a question?</h3>
-              <div className="mt-2 text-slimGray font-Poppins font-normal text-trial leading-1.31">We can help you</div>
+              <div className=" text-sm font-Poppins font-normal text-tableDuration leading-1.31">We can help you</div>
               <div className="mt-5">
                 <Button
                   onClick={() => window.open('https://comunifyllc.com/#getin')}
                   type="button"
-                  text="CONTACT US"
-                  className="shadow-contactBtn w-full px-8 py-2 bg-black rounded border-none text-white font-Poppins font-medium text-error leading-5 cursor-pointer"
+                  text="Contact Us"
+                  className="shadow-contactBtn py-2 bg-black rounded border-none text-white font-Poppins font-medium text-error leading-5 cursor-pointer w-[128px] h-[45px]"
                 />
               </div>
             </div>

@@ -7,7 +7,7 @@ import { NavigateFunction, useNavigate } from 'react-router';
 import { getLocalWorkspaceId } from '../../../../lib/helper';
 import { createCardService, deleteCardService, getCardDetailsService, selectCardService } from '../../services/settings.services';
 import { AddedCardDetails, ClientSecret, SubscriptionDetails, UpgradeData } from '../../interface/settings.interface';
-import { showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
+import { showErrorToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
 import Modal from 'react-modal';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
@@ -19,6 +19,7 @@ import { useAppSelector } from '../../../../hooks/useRedux';
 import { State } from '../../../../store';
 import Skeleton from 'react-loading-skeleton';
 import { AnyAction } from 'redux';
+import { stripePublishableKey } from '@/lib/config';
 
 const CheckoutForm = React.lazy(() => import('../../pages/subscription/CheckoutForm'));
 
@@ -50,7 +51,7 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
     upgradePlan: false
   });
   const [callEffect, setCallEffect] = useState<boolean>(false);
-  const stripePromise = loadStripe(`${import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY}`);
+  const stripePromise = loadStripe(stripePublishableKey);
 
   useEffect(() => {
     getSecretKeyForStripe();
@@ -165,12 +166,13 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
       upgrade: true
     };
     const response: SubscriptionPackages = await chooseSubscription(subscriptionId, body);
-    if (response?.status === 'paid') {
+    if (response?.status?.toLocaleLowerCase().trim() === 'paid') {
       showSuccessToast('Plan upgraded to Comunify Plus!');
       navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'billing_history', loadingToastCondition: 'showLoadingToast' } });
       setIsLoading((prev) => ({ ...prev, upgrade: false }));
       setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
     } else {
+      showErrorToast('Subscription failed');
       setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
       setIsLoading((prev) => ({ ...prev, upgrade: false }));
     }

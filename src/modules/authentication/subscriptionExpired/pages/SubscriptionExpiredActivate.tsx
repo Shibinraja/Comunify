@@ -10,7 +10,7 @@ import { AnyAction } from 'redux';
 import deleteIcon from '../../../../assets/images/delete.svg';
 import MasterCardIcon from '../../../../assets/images/masterCard.svg';
 import VisaCardIcon from '../../../../assets/images/visa.svg';
-import { showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
+import { showErrorToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
 import { useAppSelector } from '../../../../hooks/useRedux';
 import { getLocalWorkspaceId, setRefreshToken } from '../../../../lib/helper';
 import { State } from '../../../../store';
@@ -31,6 +31,7 @@ import Input from '../../../../common/input';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { alphabets_only_regex_with_single_space, email_regex, whiteSpace_single_regex } from 'constants/constants';
+import { stripePublishableKey } from '@/lib/config';
 
 const CheckoutForm = React.lazy(() => import('../../../settings/pages/subscription/CheckoutForm'));
 
@@ -65,7 +66,7 @@ const SubscriptionExpiredActivate: React.FC = () => {
     cardDetails: false
   });
   const [billingDetails, setBillingDetails] = useState<BillingDetails>({ billingName: '', billingEmail: '' });
-  const stripePromise = loadStripe(`${import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY}`);
+  const stripePromise = loadStripe(stripePublishableKey);
 
   useEffect(() => {
     getSecretKeyForStripe();
@@ -199,13 +200,14 @@ const SubscriptionExpiredActivate: React.FC = () => {
         upgrade: true
       };
       const response: SubscriptionPackages = await chooseSubscription(subscriptionId, body);
-      if (response?.status === 'paid') {
+      if (response?.status?.toLocaleLowerCase().trim() === 'paid') {
         showSuccessToast('Plan upgraded to Comunify Plus!');
         navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'billing_history', loadingToastCondition: 'showLoadingToast' } });
         setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
         setIsLoading((prev) => ({ ...prev, upgrade: false }));
         setRefreshToken();
       } else {
+        showErrorToast('Subscription failed');
         setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
         setIsLoading((prev) => ({ ...prev, upgrade: false }));
       }

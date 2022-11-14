@@ -45,6 +45,7 @@ const BillingHistory: React.FC<Props> = ({ hidden, selectedTab, loadingToastCond
     }
   }, [selectedTab]);
 
+  // eslint-disable-next-line space-before-function-paren
   const getBillingHistory = async (params: BillingHistoryQuery) => {
     const response = await getBillingHistoryData({
       limit: params.limit,
@@ -59,6 +60,7 @@ const BillingHistory: React.FC<Props> = ({ hidden, selectedTab, loadingToastCond
     });
   };
 
+  // eslint-disable-next-line space-before-function-paren
   const downloadInvoice = async (invoiceId: string, invoiceDate: string) => {
     const decode = await getBillingInvoice(invoiceId);
     const response = new Blob([decode], { type: 'application/pdf' });

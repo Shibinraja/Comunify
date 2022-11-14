@@ -82,7 +82,7 @@ const MembersDraggableColumn: React.FC<DraggableComponentsProps> = ({ MembersCol
           item,
           index,
           <div key={index} className="flex flex-col mt-6">
-            <div className="flex justify-between items-center px-2 cursor-pointer rounded-0.3 h-2.81 bg-white box-border border-table shadow-inputShadow">
+            <div className="flex justify-between items-center px-2 rounded-0.3 h-2.81 bg-white box-border border-table shadow-inputShadow">
               <div className="flex items-center gap-1">
                 <div>
                   <input

@@ -29,6 +29,7 @@ import * as Yup from 'yup';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { alphabets_only_regex_with_single_space, email_regex, whiteSpace_single_regex } from '../../../../constants/constants';
+import { stripePublishableKey } from '@/lib/config';
 
 const AddCard = React.lazy(() => import('../../pages/addCard/AddCard'));
 const CheckoutForm = React.lazy(() => import('../subscription/CheckoutForm'));
@@ -50,7 +51,7 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
   });
   const [billingDetails, setBillingDetails] = useState<BillingDetails>({ billingName: '', billingEmail: '' });
   const [clientSecret, setClientSecret] = useState<string>('');
-  const stripePromise = loadStripe(`${import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY}`);
+  const stripePromise = loadStripe(stripePublishableKey);
 
   useEffect(() => {
     if (selectedTab === 'subscription') {
@@ -168,7 +169,7 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
                 <Button
                   type="button"
                   text={subscriptionDetails?.subscriptionPackage?.name ?? 'No active plan'}
-                  className="px-2 h-[26px] bg-trialButton border-none text-white text-error font-Poppins font-medium leading-1.31 cursor-pointer uppercase"
+                  className="px-2 h-[26px] bg-trialButton border-none text-white text-error font-Poppins font-medium leading-1.31 cursor-auto uppercase"
                 />
               </div>
             </div>
@@ -361,7 +362,7 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
         </div>
 
         <div>
-          <div className="flex flex-col ">
+          <div className="flex flex-col">
             <Modal
               isOpen={isBillingDetailsModal.cardDetails}
               shouldCloseOnOverlayClick={false}
