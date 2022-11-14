@@ -19,6 +19,7 @@ import { useAppSelector } from '../../../../hooks/useRedux';
 import { State } from '../../../../store';
 import Skeleton from 'react-loading-skeleton';
 import { AnyAction } from 'redux';
+import { stripePublishableKey } from '@/lib/config';
 
 const CheckoutForm = React.lazy(() => import('../../pages/subscription/CheckoutForm'));
 
@@ -50,7 +51,7 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
     upgradePlan: false
   });
   const [callEffect, setCallEffect] = useState<boolean>(false);
-  const stripePromise = loadStripe(`${import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY}`);
+  const stripePromise = loadStripe(stripePublishableKey);
 
   useEffect(() => {
     getSecretKeyForStripe();

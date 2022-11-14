@@ -18,9 +18,9 @@ import { ModalDrawer } from 'common/modals/ModalDrawer';
 Modal.setAppElement('#root');
 
 type widgetResponseData = {
-  saveWidgetResponse: Array<{id:string, layout:{}, widget:{}}>;
-  saveTransformWidgetResponse: Array<{id:string, layout:{}, widget:{}}>;
-}
+  saveWidgetResponse: Array<{ id: string; layout: {}; widget: {} }>;
+  saveTransformWidgetResponse: Array<{ id: string; layout: {}; widget: {} }>;
+};
 
 const Dashboard: FC = () => {
   const [isSelectDropDownActive, setSelectDropDownActive] = useState<boolean>(false);
@@ -28,10 +28,8 @@ const Dashboard: FC = () => {
   const [dateRange, setDateRange] = useState([null, null]);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
-
   const [isManageMode, setIsManageMode] = useState<boolean>(false);
   const [widgets, setWidgets] = useState<any[] | []>([]);
-  // eslint-disable-next-line @typescript-eslint/ban-types
   const [widgetResponse, setWidgetResponse] = useState<widgetResponseData>({
     saveWidgetResponse: [],
     saveTransformWidgetResponse: []
@@ -46,7 +44,6 @@ const Dashboard: FC = () => {
 
   const datePickerRef = useRef<ReactDatePicker>(null);
   const [startDateRange, endDateRange] = dateRange;
-  // eslint-disable-next-line @typescript-eslint/ban-types
 
   const selectOptions = [
     { id: Math.random(), dateRange: 'This Week' },
@@ -70,7 +67,7 @@ const Dashboard: FC = () => {
   }, [selected]);
 
   useEffect(() => {
-    if(widgets.length) {
+    if (widgets?.length) {
       setWidgetResponse((prevState) => ({ ...prevState, saveTransformWidgetResponse: widgets }));
     }
   }, [widgets]);
@@ -84,7 +81,7 @@ const Dashboard: FC = () => {
   }, [startDateRange, endDateRange]);
 
   const handleDropDownActive = (): void => {
-    if (widgets.length) {
+    if (widgets?.length) {
       setSelectDropDownActive((prev) => !prev);
       setDateRange([null, null]);
     }
@@ -169,15 +166,14 @@ const Dashboard: FC = () => {
     }
   };
 
-
   const handleNavigateBack = () => {
-    if(widgetResponse.saveWidgetResponse?.length) {
+    if (widgetResponse.saveWidgetResponse?.length) {
       setModalOpen(true);
     }
-    if(transformedWidgetData.length) {
+    if (transformedWidgetData.length) {
       setModalOpen(true);
     }
-    if(!transformedWidgetData.length) {
+    if (!transformedWidgetData.length) {
       setIsManageMode(false);
     }
   };
@@ -195,8 +191,6 @@ const Dashboard: FC = () => {
       setIsManageMode(false);
     }
   };
-
-  // console.log('err', transformedWidgetData, widgets, saveWidgetResponse);
 
   return (
     <>
@@ -242,7 +236,7 @@ const Dashboard: FC = () => {
                 startDate={startDateRange}
                 endDate={endDateRange}
                 maxDate={new Date()}
-                onChange={(update:any) => {
+                onChange={(update: any) => {
                   setDateRange(update);
                 }}
                 className={`export w-[15.5rem] h-3.06  bg-transparent dark:bg-primaryDark text-dropGray dark:text-inputText shadow-shadowInput rounded-0.6 pl-4 
