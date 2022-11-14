@@ -536,7 +536,7 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
             {PlatformFilterResponse?.map((data: PlatformResponse) => (
               <div
                 key={`${data?.id + data?.name}`}
-                className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5"
+                className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5 mb-5"
               >
                 <div className="flex flex-wrap items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
                   <img src={data?.platformLogoUrl} alt="" className="h-2.31" />
@@ -643,13 +643,12 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
                       disabled={isLoading ? true : !vanillaForumsData.vanillaAccessToken || !vanillaForumsData.vanillaBaseUrl ? true : false}
                       onClick={(e) => sendVanillaData(e)}
                       className={`text-white font-Poppins text-error font-medium leading-5 btn-save-modal
-                       cursor-pointer rounded shadow-contactBtn w-5.25  ${
-                         isLoading
-                           ? 'opacity-50 cursor-not-allowed '
-                           : !vanillaForumsData.vanillaAccessToken || !vanillaForumsData.vanillaBaseUrl
-                           ? 'opacity-50 cursor-not-allowed '
-                           : ''
-                       } border-none h-2.81`}
+                       cursor-pointer rounded shadow-contactBtn w-5.25  ${isLoading
+                          ? 'opacity-50 cursor-not-allowed '
+                          : !vanillaForumsData.vanillaAccessToken || !vanillaForumsData.vanillaBaseUrl
+                            ? 'opacity-50 cursor-not-allowed '
+                            : ''
+                        } border-none h-2.81`}
                     />
                   </div>
                 </form>
@@ -692,9 +691,8 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
                   disabled={integrationDisconnect}
                   text="YES"
                   // eslint-disable-next-line max-len
-                  className={`border-none ml-2.5 yes-btn h-2.81 w-5.25 box-border rounded shadow-contactBtn cursor-pointer font-Poppins font-medium text-error leading-5 text-white btn-save-modal ${
-                    integrationDisconnect ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
+                  className={`border-none ml-2.5 yes-btn h-2.81 w-5.25 box-border rounded shadow-contactBtn cursor-pointer font-Poppins font-medium text-error leading-5 text-white btn-save-modal ${integrationDisconnect ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
                   onClick={() => handleConfirmation(true)}
                 />
               </div>
@@ -716,9 +714,8 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
         iconSrc={
           showAlert.slack ? slackIcon : showAlert.reddit ? redditLogoIcon : showAlert.discord ? discordIcon : showAlert.vanilla ? vanillaIcon : ''
         }
-        contextText={`Are you sure you want to reconnect the ${
-          showAlert.slack ? 'slack' : showAlert.discord ? 'discord' : showAlert.reddit ? 'reddit' : ''
-        }  to your workspace?`}
+        contextText={`Are you sure you want to reconnect the ${showAlert.slack ? 'slack' : showAlert.discord ? 'discord' : showAlert.reddit ? 'reddit' : ''
+          }  to your workspace?`}
       />
     </TabPanel>
   );
