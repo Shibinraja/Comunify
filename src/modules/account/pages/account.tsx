@@ -1,13 +1,14 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable space-before-function-paren */
 import './account.css';
 import profileImage from '../../../assets/images/user-image.svg';
-import { KeyboardEvent, ChangeEvent, useEffect, useRef, useState } from 'react';
+import { KeyboardEvent, ChangeEvent, useEffect, useRef, useState, Fragment } from 'react';
 import dropdownIcon from '../../../assets/images/Vector.svg';
 import Input from 'common/input';
 import Button from 'common/button';
 import closeEyeIcon from '../../../assets/images/closeEyeIcon.svg';
 import eyeIcon from '../../../assets/images/eye.svg';
-import { Form, Formik } from 'formik';
+import { Form, Formik, FormikErrors, FormikTouched } from 'formik';
 import * as Yup from 'yup';
 import { companyName_regex, password_regex, userName_regex, whiteSpace_regex } from 'constants/constants';
 import accountSlice from '../store/slice/account.slice';
@@ -21,44 +22,46 @@ import cookie from 'react-cookies';
 import { getLocalWorkspaceId } from '@/lib/helper';
 import { NavLink } from 'react-router-dom';
 
-const Account = () => {
-  const initialValues: ChangePassword = {
-    currentPassword: '',
-    newPassword: ''
-  };
+const initialValues: ChangePassword = {
+  currentPassword: '',
+  newPassword: ''
+};
 
-  const userInitialValues: userProfileDataInput = {
-    id: '',
-    name: '',
-    userName: '',
-    fullName: '',
-    domainSector: '',
-    email: '',
-    profilePhotoUrl: '',
-    displayUserName: '',
-    createdAt: '',
-    updatedAt: '',
-    organization: ''
-  };
+const userInitialValues: userProfileDataInput = {
+  id: '',
+  name: '',
+  userName: '',
+  fullName: '',
+  domainSector: '',
+  email: '',
+  profilePhotoUrl: '',
+  displayUserName: '',
+  createdAt: '',
+  updatedAt: '',
+  organization: ''
+};
+
+const options = ['Marketing', 'Sales', 'Customer Support', 'Customer Success', 'Others'];
+
+const Account = () => {
+  const workspaceId = getLocalWorkspaceId();
 
   const [isDropDownActive, setDropDownActive] = useState<boolean>(false);
   const [profileUploadImage, setProfileUploadImage] = useState<string>('');
-  const workspaceId = getLocalWorkspaceId();
-  const options = ['Marketing', 'Sales', 'Customer Support', 'Customer Success', 'Others'];
   const [currentPassword, setPasswordType1] = useState<string>('password');
   const [newPassword, setPasswordType2] = useState<string>('password');
   const [profileData, setProfileData] = useState<userProfileDataInput>(userInitialValues);
   const [cursor, setCursor] = useState<number>(0);
   const [selectedDomainSector, setSelectedDomainSector] = useState<string>('Select');
 
-  const accessToken = localStorage.getItem('accessToken') || cookie.load('x-auth-cookie');
-  const decodedToken: DecodeToken = accessToken && decodeToken(accessToken);
   const formikRef: any = useRef();
   const passwordFormikRef: any = useRef();
   const imageRef = useRef<HTMLInputElement>(null);
   const dropDownRef = useRef<HTMLDivElement>(null);
   const domainRef = useRef<HTMLLIElement>(null);
 
+  const accessToken = localStorage.getItem('accessToken') || cookie.load('x-auth-cookie');
+  const decodedToken: DecodeToken = accessToken && decodeToken(accessToken);
   const dispatch = useDispatch();
 
   const handleOutsideClick = (event: MouseEvent) => {
@@ -186,6 +189,176 @@ const Account = () => {
     dispatch(accountSlice.actions.userProfileUpdateData(userUpdateData));
   };
 
+  // eslint-disable-next-line max-len, no-unused-vars
+  const renderAccountForm = (
+    handleBlur: ((e: React.FocusEvent<unknown, Element> | undefined) => void) | undefined,
+    handleChange: ((e: ChangeEvent<unknown>) => void) | undefined,
+    values: userProfileDataInput,
+    touched: FormikTouched<userProfileDataInput>,
+    errors: FormikErrors<userProfileDataInput>
+  ) => {
+    if (!decodedToken.isAdmin) {
+      return (
+        <Fragment>
+          <div className="flex w-full">
+            <div className="flex flex-col w-1/2">
+              <label htmlFor="fullName" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
+                Full Name
+              </label>
+              <Input
+                type="text"
+                name="fullName"
+                id="fullName"
+                className="shadow-inputShadow mt-0.40 px-3 h-2.81 app-result-card-border focus:outline-none box-border bg-white w-full py-2 rounded-0.3 placeholder:text-thinGray placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.31 placeholder:text-trial"
+                placeholder="Enter Name"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values?.fullName || ''}
+                errors={Boolean(touched.fullName && errors.fullName)}
+                helperText={touched.fullName && errors.fullName}
+              />
+            </div>
+            <div className="flex flex-col pl-5 w-1/2">
+              <label htmlFor="userName" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
+                Username
+              </label>
+              <Input
+                type="text"
+                name="userName"
+                id="userName"
+                className="shadow-inputShadow mt-0.40 px-3 h-2.81 app-result-card-border focus:outline-none box-border bg-white w-full py-2 rounded-0.3 placeholder:text-thinGray placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.31 placeholder:text-trial"
+                placeholder="Username"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.userName}
+                errors={Boolean(touched.userName && errors.userName)}
+                helperText={touched.userName && errors.userName}
+              />
+            </div>
+          </div>
+          <div className="flex w-full">
+            <div className="flex flex-col mt-1.08 w-1/2">
+              <label htmlFor="email" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
+                Email
+              </label>
+              <Input
+                type="text"
+                name="email"
+                id="emailId"
+                className="shadow-inputShadow bg-[#EBF8FF] h-2.81 mt-0.40 px-3 app-result-card-border focus:outline-none box-border bg-white cursor-not-allowed	 w-full py-2 rounded-0.3 placeholder:text-thinGray placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.31 placeholder:text-trial"
+                placeholder="example@mail.com"
+                // onBlur={handleBlur}
+                // onChange={handleChange}
+                value={values.email}
+                disabled
+                errors={Boolean(touched.email && errors.email)}
+                helperText={touched.email && errors.email}
+              />
+            </div>
+            <div className="flex flex-col pl-5 mt-1.08 w-1/2">
+              <label htmlFor="organization" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
+                Organization
+              </label>
+              <Input
+                type="text"
+                name="organization"
+                id="organizationId"
+                className="shadow-inputShadow mt-0.40 h-2.81 px-3 app-result-card-border focus:outline-none box-border bg-white w-full py-2 rounded-0.3 placeholder:text-thinGray placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.31 placeholder:text-trial"
+                placeholder="Organization Name"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values?.organization}
+                errors={Boolean(touched.organization && errors.organization)}
+                helperText={touched.organization && errors.organization}
+              />
+            </div>
+          </div>
+          <div className="flex w-full">
+            <div className="flex flex-col mt-1.08 w-1/2">
+              <label htmlFor="domain" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
+                Domain
+              </label>
+              <div className="flex flex-col relative w-full">
+                <div className="cursor-pointer" ref={dropDownRef} onClick={() => setDropDownActive(!isDropDownActive)}>
+                  <div className="flex items-center w-full  justify-between p-2 app-result-card-border bg-white  py-2 box-border shadow-inputShadow  rounded-0.3 mt-0.40 font-Poppins text-thinGray font-normal leading-1.31 text-trial">
+                    <div className={selectedDomainSector === 'Select' ? 'text-secondaryGray' : 'text-black'}>
+                      {selectedDomainSector ? selectedDomainSector : 'Select'}
+                    </div>
+                    <img src={dropdownIcon} alt="" className={isDropDownActive ? 'rotate-180' : 'rotate-0'} />
+                  </div>
+                </div>
+                {isDropDownActive && (
+                  <div className="app-input-card-border w-full bg-white shadow-integrationCardShadow rounded-0.6 absolute top-12 z-40">
+                    {options.map((option: string, index: number) => (
+                      <li
+                        ref={domainRef}
+                        className={`${
+                          cursor === index ? 'bg-signUpDomain' : null
+                        } flex flex-col p-2 hover:bg-signUpDomain transition ease-in duration-300 cursor-pointer`}
+                        onKeyDown={handleKeyDown}
+                        tabIndex={0}
+                        key={option}
+                        defaultValue={values.domainSector ? values.domainSector : 'Select'}
+                        onClick={() => {
+                          handleDomainSectorChange(option);
+                          setDropDownActive(false);
+                        }}
+                      >
+                        <div className="text-searchBlack font-Poppins font-normal text-trial leading-1.31">{option}</div>
+                      </li>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </Fragment>
+      );
+    }
+
+    if (decodedToken.isAdmin) {
+      return (
+        <div className="flex w-full">
+          <div className="flex flex-col w-1/2">
+            <label htmlFor="fullName" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
+              Full Name
+            </label>
+            <Input
+              type="text"
+              name="fullName"
+              id="fullName"
+              className="shadow-inputShadow mt-0.40 px-3 h-2.81 app-result-card-border focus:outline-none box-border bg-white w-full py-2 rounded-0.3 placeholder:text-thinGray placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.31 placeholder:text-trial"
+              placeholder="Enter Name"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              value={values?.fullName || ''}
+              errors={Boolean(touched.fullName && errors.fullName)}
+              helperText={touched.fullName && errors.fullName}
+            />
+          </div>
+          <div className="flex flex-col pl-5 w-1/2">
+            <label htmlFor="email" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
+              Email
+            </label>
+            <Input
+              type="text"
+              name="email"
+              id="emailId"
+              className="shadow-inputShadow bg-[#EBF8FF] h-2.81 mt-0.40 px-3 app-result-card-border focus:outline-none box-border bg-white cursor-not-allowed	 w-full py-2 rounded-0.3 placeholder:text-thinGray placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.31 placeholder:text-trial"
+              placeholder="example@mail.com"
+              // onBlur={handleBlur}
+              // onChange={handleChange}
+              value={values.email}
+              disabled
+              errors={Boolean(touched.email && errors.email)}
+              helperText={touched.email && errors.email}
+            />
+          </div>
+        </div>
+      );
+    }
+  };
+
   return (
     <div className="profile pt-16 pb-10">
       <div className="flex">
@@ -204,119 +377,7 @@ const Account = () => {
                   {({ errors, handleBlur, handleChange, touched, values }): JSX.Element => (
                     <Form className="w-full mt-1.9 relative " autoComplete="off">
                       <div className="">
-                        <div className="flex w-full">
-                          <div className="flex flex-col w-1/2">
-                            <label htmlFor="fullName" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
-                              Full Name
-                            </label>
-                            <Input
-                              type="text"
-                              name="fullName"
-                              id="fullName"
-                              className="shadow-inputShadow mt-0.40 px-3 h-2.81 app-result-card-border focus:outline-none box-border bg-white w-full py-2 rounded-0.3 placeholder:text-thinGray placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.31 placeholder:text-trial"
-                              placeholder="Enter Name"
-                              onBlur={handleBlur}
-                              onChange={handleChange}
-                              value={values?.fullName || ''}
-                              errors={Boolean(touched.fullName && errors.fullName)}
-                              helperText={touched.fullName && errors.fullName}
-                            />
-                          </div>
-                          <div className="flex flex-col pl-5 w-1/2">
-                            <label htmlFor="userName" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
-                              Username
-                            </label>
-                            <Input
-                              type="text"
-                              name="userName"
-                              id="userName"
-                              className="shadow-inputShadow mt-0.40 px-3 h-2.81 app-result-card-border focus:outline-none box-border bg-white w-full py-2 rounded-0.3 placeholder:text-thinGray placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.31 placeholder:text-trial"
-                              placeholder="Username"
-                              onBlur={handleBlur}
-                              onChange={handleChange}
-                              value={values.userName}
-                              errors={Boolean(touched.userName && errors.userName)}
-                              helperText={touched.userName && errors.userName}
-                            />
-                          </div>
-                        </div>
-                        <div className="flex w-full">
-                          <div className="flex flex-col mt-1.08 w-1/2">
-                            <label htmlFor="email" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
-                              Email
-                            </label>
-                            <Input
-                              type="text"
-                              name="email"
-                              id="emailId"
-                              className="shadow-inputShadow bg-[#EBF8FF] h-2.81 mt-0.40 px-3 app-result-card-border focus:outline-none box-border bg-white cursor-not-allowed	 w-full py-2 rounded-0.3 placeholder:text-thinGray placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.31 placeholder:text-trial"
-                              placeholder="example@mail.com"
-                              // onBlur={handleBlur}
-                              // onChange={handleChange}
-                              value={values.email}
-                              disabled
-                              errors={Boolean(touched.email && errors.email)}
-                              helperText={touched.email && errors.email}
-                            />
-                          </div>
-                          <div className="flex flex-col pl-5 mt-1.08 w-1/2">
-                            <label htmlFor="organization" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
-                              Organization
-                            </label>
-                            <Input
-                              type="text"
-                              name="organization"
-                              id="organizationId"
-                              className="shadow-inputShadow mt-0.40 h-2.81 px-3 app-result-card-border focus:outline-none box-border bg-white w-full py-2 rounded-0.3 placeholder:text-thinGray placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.31 placeholder:text-trial"
-                              placeholder="Organization Name"
-                              onBlur={handleBlur}
-                              onChange={handleChange}
-                              value={values?.organization}
-                              errors={Boolean(touched.organization && errors.organization)}
-                              helperText={touched.organization && errors.organization}
-                            />
-                          </div>
-                        </div>
-                        <div className="flex w-full">
-                          <div className="flex flex-col mt-1.08 w-1/2">
-                            <label htmlFor="domain" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
-                              Domain
-                            </label>
-                            <div className="flex flex-col relative w-full">
-                              <div className="cursor-pointer" ref={dropDownRef} onClick={() => setDropDownActive(!isDropDownActive)}>
-                                <div className="flex items-center w-full  justify-between p-2 app-result-card-border bg-white  py-2 box-border shadow-inputShadow  rounded-0.3 mt-0.40 font-Poppins text-thinGray font-normal leading-1.31 text-trial">
-                                  <div className={selectedDomainSector === 'Select' ? 'text-secondaryGray' : 'text-black'}>
-                                    {selectedDomainSector ? selectedDomainSector : 'Select'}
-                                  </div>
-                                  <img src={dropdownIcon} alt="" className={isDropDownActive ? 'rotate-180' : 'rotate-0'} />
-                                </div>
-                              </div>
-                              {isDropDownActive && (
-                                <div className="app-input-card-border w-full bg-white shadow-integrationCardShadow rounded-0.6 absolute top-12 z-40">
-                                  {options.map((option: string, index: number) => (
-                                    <li
-                                      ref={domainRef}
-                                      className={`${
-                                        cursor === index ? 'bg-signUpDomain' : null
-                                      } flex flex-col p-2 hover:bg-signUpDomain transition ease-in duration-300 cursor-pointer`}
-                                      onKeyDown={handleKeyDown}
-                                      tabIndex={0}
-                                      key={option}
-                                      defaultValue={values.domainSector ? values.domainSector : 'Select'}
-                                      onClick={() => {
-                                        handleDomainSectorChange(option);
-                                        setDropDownActive(false);
-                                      }}
-                                    >
-                                      <div className="text-searchBlack font-Poppins font-normal text-trial leading-1.31">{option}</div>
-                                    </li>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-
+                        {renderAccountForm(handleBlur, handleChange, values, touched, errors)}
                         <div className="py-7">
                           <div className="flex items-center justify-end w-full">
                             <NavLink to={`${workspaceId}/dashboard`} className="p-0 m-0 mr-2">
@@ -488,18 +549,20 @@ const Account = () => {
                 />
               </div>
             </div>
-            <div className="flex flex-col justify-center items-center app-input-card-border mt-2.063 shadow-contactCard rounded-0.6 bg-white box-border w-full p-8">
-              <h3 className="font-Poppins font-semibold text-contact text-infoBlack leading-2.06">Have a question?</h3>
-              <div className=" text-sm font-Poppins font-normal text-tableDuration leading-1.31">We can help you</div>
-              <div className="mt-5">
-                <Button
-                  onClick={() => window.open('https://comunifyllc.com/#getin')}
-                  type="button"
-                  text="Contact Us"
-                  className="shadow-contactBtn py-2 bg-black rounded border-none text-white font-Poppins font-medium text-error leading-5 cursor-pointer w-[128px] h-[45px]"
-                />
+            {!decodedToken.isAdmin && (
+              <div className="flex flex-col justify-center items-center app-input-card-border mt-2.063 shadow-contactCard rounded-0.6 bg-white box-border w-full p-8">
+                <h3 className="font-Poppins font-semibold text-contact text-infoBlack leading-2.06">Have a question?</h3>
+                <div className=" text-sm font-Poppins font-normal text-tableDuration leading-1.31">We can help you</div>
+                <div className="mt-5">
+                  <Button
+                    onClick={() => window.open('https://comunifyllc.com/#getin')}
+                    type="button"
+                    text="Contact Us"
+                    className="shadow-contactBtn py-2 bg-black rounded border-none text-white font-Poppins font-medium text-error leading-5 cursor-pointer w-[128px] h-[45px]"
+                  />
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
@@ -519,7 +582,7 @@ const profileUpdateSchema = Yup.object().shape({
     .matches(userName_regex, 'Username is not valid')
     .trim(),
   organization: Yup.string()
-    .min(2, 'Company Name must be at least 2 characters')
+    .min(2, 'Compstring Name must be at least 2 characters')
     .max(15, 'Company Name should not exceed 15 characters')
     .strict(true)
     .matches(companyName_regex, 'Company Name is not valid')
