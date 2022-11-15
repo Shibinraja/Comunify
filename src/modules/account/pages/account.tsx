@@ -521,8 +521,7 @@ const Account = () => {
               <div className="-mt-24 ">
                 <img
                   className="bg-cover bg-center border-5 border-white rounded-full w-100 h-100 bg-[#abcf6b]"
-                  // src={`${profileData?.profilePhotoUrl ? profileData?.profilePhotoUrl : profileImage}`}
-                  src={`${profileData?.profilePhotoUrl ? (profileUploadImage ? profileUploadImage : profileData?.profilePhotoUrl) : profileImage}`}
+                  src={`${profileUploadImage ? profileUploadImage : profileData?.profilePhotoUrl ? profileData?.profilePhotoUrl : profileImage}`}
                   onClick={() => {
                     imageRef.current?.click();
                   }}
