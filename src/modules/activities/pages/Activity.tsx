@@ -561,14 +561,14 @@ const Activity: React.FC = () => {
                                       {ProfileModal?.email} {ProfileModal?.organization}
                                     </div>
                                     <div className="flex mt-2.5">
-                                      <div className="bg-cover bg-center mr-1 ">
+                                      <div className="bg-cover bg-center flex ">
                                         {ProfileModal?.platforms &&
                                           ProfileModal?.platforms.map((platformData) => (
-                                            <div key={`${Math.random() + platformData.id}`}>
+                                            <div className="flex" key={`${Math.random() + platformData.id}`}>
                                               <img
                                                 src={platformData?.platformLogoUrl ?? ''}
                                                 alt=""
-                                                className="rounded-full w-[1.0012rem] h-[1.0012rem]"
+                                                className="rounded-full w-[1.0012rem] h-[1.0012rem] mr-1"
                                               />
                                             </div>
                                           ))}
