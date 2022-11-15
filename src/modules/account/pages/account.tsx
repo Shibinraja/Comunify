@@ -246,9 +246,9 @@ const Account = () => {
                 name="email"
                 id="emailId"
                 className="shadow-inputShadow bg-[#EBF8FF] h-2.81 mt-0.40 px-3 app-result-card-border focus:outline-none box-border bg-white cursor-not-allowed	 w-full py-2 rounded-0.3 placeholder:text-thinGray placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.31 placeholder:text-trial"
-                placeholder="example@mail.com"
-                // onBlur={handleBlur}
-                // onChange={handleChange}
+                // placeholder="example@mail.com"
+                onBlur={handleBlur}
+                onChange={handleChange}
                 value={values.email}
                 disabled
                 errors={Boolean(touched.email && errors.email)}
@@ -345,9 +345,8 @@ const Account = () => {
               name="email"
               id="emailId"
               className="shadow-inputShadow bg-[#EBF8FF] h-2.81 mt-0.40 px-3 app-result-card-border focus:outline-none box-border bg-white cursor-not-allowed	 w-full py-2 rounded-0.3 placeholder:text-thinGray placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.31 placeholder:text-trial"
-              placeholder="example@mail.com"
-              // onBlur={handleBlur}
-              // onChange={handleChange}
+              onBlur={handleBlur}
+              onChange={handleChange}
               value={values.email}
               disabled
               errors={Boolean(touched.email && errors.email)}
@@ -581,9 +580,10 @@ const profileUpdateSchema = Yup.object().shape({
     .matches(userName_regex, 'Username is not valid')
     .trim(),
   organization: Yup.string()
-    .min(2, 'Compstring Name must be at least 2 characters')
+    .min(2, 'Company Name must be at least 2 characters')
     .max(15, 'Company Name should not exceed 15 characters')
     .strict(true)
+    .required('Organization name must be alphanumeric')
     .matches(companyName_regex, 'Company Name is not valid')
     .trim('White spaces are not allowed')
 });
