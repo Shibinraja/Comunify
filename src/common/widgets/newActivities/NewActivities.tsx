@@ -49,7 +49,7 @@ const NewActivities: FC<WidgetComponentProps> = (props: WidgetComponentProps) =>
   return (
     <div className={`${!isManageMode ? 'h-full' : 'cursor-grabbing'}  `}>
       <div className='mt-6'>
-        <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Activities</h3>
+        <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">New Activities</h3>
       </div>
       <div
         className={`w-full  box-border bg-white dark:bg-secondaryDark dark:text-white  rounded-0.6 mt-1.868 border
