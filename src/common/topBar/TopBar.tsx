@@ -152,12 +152,11 @@ const TopBar: React.FC = () => {
   }, [profilePictureUrl]);
 
   useEffect(() => {
-    setSuggestionList({
-      result: [],
-      nextCursor: null
-    });
-
     if (debouncedValue) {
+      setSuggestionList({
+        result: [],
+        nextCursor: null
+      });
       getGlobalSearchItem({
         cursor: null,
         prop: 'search',

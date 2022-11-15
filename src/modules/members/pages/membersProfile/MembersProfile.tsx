@@ -99,14 +99,12 @@ const MembersProfile: React.FC = () => {
     .nullable(true);
 
   useEffect(() => {
-    dispatch(membersSlice.actions.getMembersActivityGraphData({ workspaceId: workspaceId as string, memberId: memberId as string }));
-    dispatch(membersSlice.actions.getMemberProfileCardData({ workspaceId: workspaceId as string, memberId: memberId as string }));
+
     document.addEventListener('click', handleOutsideClick);
     document.addEventListener('click', handleDropDownClick);
     document.addEventListener('click', handleIntegrationDropDownClick);
     document.addEventListener('click', handleDateFilterDropDownClick);
     localStorage.removeItem('merge-membersId');
-    dispatch(membersSlice.actions.setMemberProfileCardData([]));
     return () => {
       document.removeEventListener('click', handleOutsideClick);
       document.removeEventListener('click', handleDropDownClick);
@@ -114,6 +112,14 @@ const MembersProfile: React.FC = () => {
       document.removeEventListener('click', handleDateFilterDropDownClick);
     };
   }, []);
+
+  useEffect(() => {
+    if(memberId) {
+      dispatch(membersSlice.actions.getMembersActivityGraphData({ workspaceId: workspaceId as string, memberId: memberId as string }));
+      dispatch(membersSlice.actions.getMemberProfileCardData({ workspaceId: workspaceId as string, memberId: memberId as string }));
+      dispatch(membersSlice.actions.setMemberProfileCardData([]));
+    }
+  }, [memberId]);
 
   useEffect(() => {
     loadActivityData(true);
