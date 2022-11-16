@@ -1,26 +1,31 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable space-before-function-paren */
-import './account.css';
-import profileImage from '../../../assets/images/user-image.svg';
 import { KeyboardEvent, ChangeEvent, useEffect, useRef, useState, Fragment } from 'react';
-import dropdownIcon from '../../../assets/images/Vector.svg';
-import Input from 'common/input';
-import Button from 'common/button';
-import closeEyeIcon from '../../../assets/images/closeEyeIcon.svg';
-import eyeIcon from '../../../assets/images/eye.svg';
-import { Form, Formik, FormikErrors, FormikTouched } from 'formik';
-import * as Yup from 'yup';
-import { companyName_regex, password_regex, userName_regex, whiteSpace_regex } from 'constants/constants';
-import accountSlice from '../store/slice/account.slice';
-import { ChangePassword, profilePicInput, userProfileDataInput } from '../interfaces/account.interface';
+import { Link, NavLink } from 'react-router-dom';
+import cookie from 'react-cookies';
 import { useDispatch } from 'react-redux';
-import { decodeToken } from '@/lib/decodeToken';
+
+import * as Yup from 'yup';
+import { Form, Formik, FormikErrors, FormikTouched } from 'formik';
+
 import { DecodeToken } from 'modules/authentication/interface/auth.interface';
+import { ChangePassword, profilePicInput, userProfileDataInput } from '../interfaces/account.interface';
+
+import { getLocalWorkspaceId } from '@/lib/helper';
+import accountSlice from '../store/slice/account.slice';
+import { decodeToken } from '@/lib/decodeToken';
 import { showErrorToast } from 'common/toast/toastFunctions';
 import { userProfileDataService } from '../services/account.services';
-import cookie from 'react-cookies';
-import { getLocalWorkspaceId } from '@/lib/helper';
-import { NavLink } from 'react-router-dom';
+import { companyName_regex, password_regex, userName_regex, whiteSpace_regex } from 'constants/constants';
+
+import Input from 'common/input';
+import Button from 'common/button';
+import profileImage from '../../../assets/images/user-image.svg';
+import dropdownIcon from '../../../assets/images/Vector.svg';
+import closeEyeIcon from '../../../assets/images/closeEyeIcon.svg';
+import eyeIcon from '../../../assets/images/eye.svg';
+
+import './account.css';
 
 const initialValues: ChangePassword = {
   currentPassword: '',
@@ -487,9 +492,9 @@ const Account = () => {
                       </div>
                       <div className="flex items-center justify-between pt-11">
                         <div className="flex  items-center">
-                          <a href="/forgot-password" className="underline font-Inter font-normal leading-1.56 text-skipGray text-reset">
+                          <Link to="/forgot-password" className="underline font-Inter font-normal leading-1.56 text-skipGray text-reset">
                             Forgot your password?
-                          </a>
+                          </Link>
                         </div>
                         <div className="flex   items-center">
                           <NavLink to={`${workspaceId}/dashboard`} className="p-0 m-0 mr-2">
