@@ -153,10 +153,6 @@ const TopBar: React.FC = () => {
 
   useEffect(() => {
     if (debouncedValue) {
-      setSuggestionList({
-        result: [],
-        nextCursor: null
-      });
       getGlobalSearchItem({
         cursor: null,
         prop: 'search',
@@ -179,6 +175,11 @@ const TopBar: React.FC = () => {
   //Function to search of the desired suggestionList.
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
+    setSuggestionList({
+      result: [],
+      nextCursor: null
+    });
+
     if (!searchText) {
       setSearchSuggestion('');
     } else {

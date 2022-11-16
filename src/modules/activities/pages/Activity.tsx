@@ -117,7 +117,7 @@ const Activity: React.FC = () => {
         workspaceId: workspaceId!
       })
     );
-  }, [page]);
+  }, [page, activityId]);
 
   useEffect(() => {
     setTagUnAssignLoading(true);
