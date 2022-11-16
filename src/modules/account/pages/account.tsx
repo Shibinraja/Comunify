@@ -14,6 +14,7 @@ import { ChangePassword, profilePicInput, userProfileDataInput } from '../interf
 import { getLocalWorkspaceId } from '@/lib/helper';
 import accountSlice from '../store/slice/account.slice';
 import { decodeToken } from '@/lib/decodeToken';
+import { useAppSelector } from '@/hooks/useRedux';
 import { showErrorToast } from 'common/toast/toastFunctions';
 import { userProfileDataService } from '../services/account.services';
 import { companyName_regex, password_regex, userName_regex, whiteSpace_regex } from 'constants/constants';
@@ -65,6 +66,7 @@ const Account = () => {
   const dropDownRef = useRef<HTMLDivElement>(null);
   const domainRef = useRef<HTMLLIElement>(null);
 
+  const { resetProfilePic } = useAppSelector((state) => state.accounts);
   const accessToken = localStorage.getItem('accessToken') || cookie.load('x-auth-cookie');
   const decodedToken: DecodeToken = accessToken && decodeToken(accessToken);
   const dispatch = useDispatch();
@@ -88,6 +90,12 @@ const Account = () => {
       domainRef?.current?.focus();
     }
   }, [isDropDownActive]);
+
+  useEffect(() => {
+    if(resetProfilePic) {
+      setProfileUploadImage(profileData?.profilePhotoUrl);
+    }
+  }, [resetProfilePic]);
 
   const fetchProfileData = async () => {
     try {
@@ -492,9 +500,9 @@ const Account = () => {
                       </div>
                       <div className="flex items-center justify-between pt-11">
                         <div className="flex  items-center">
-                          <Link to="/forgot-password" className="underline font-Inter font-normal leading-1.56 text-skipGray text-reset">
+                          <a href="/forgot-password" className="underline font-Inter font-normal leading-1.56 text-skipGray text-reset">
                             Forgot your password?
-                          </Link>
+                          </a>
                         </div>
                         <div className="flex   items-center">
                           <NavLink to={`${workspaceId}/dashboard`} className="p-0 m-0 mr-2">
@@ -544,10 +552,10 @@ const Account = () => {
                 <input
                   type="file"
                   className="hidden absolute top-0 left-0 w-full flex-grow"
-                  placeholder="uplaod image"
+                  placeholder="upload image"
+                  accept="image/png, image/gif, image/jpeg"
                   id="inputFile"
                   ref={imageRef}
-                  accept="image/*"
                   onChange={(e) => imageUploadHandler(e)}
                 />
               </div>
