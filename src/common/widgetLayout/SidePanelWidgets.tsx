@@ -15,7 +15,6 @@ import { getSidePanelWidgetsService, requestForWidgetService } from 'modules/das
 import useDebounce from '../../hooks/useDebounce';
 import { showSuccessToast } from '../toast/toastFunctions';
 import WidgetComponents from 'common/widgets';
-import Skeleton from 'react-loading-skeleton';
 import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
 import { whiteSpace_single_regex } from '../../constants/constants';
@@ -30,6 +29,8 @@ const SidePanelWidgets: FC<WidgetIdentification> = ({ widgetKey, widgetRemoved, 
   const [searchWidget, setSearchWidget] = useState<string>();
   const debouncedSearchTextValue: string | undefined = useDebounce(searchWidget, 300);
   const [isButtonLoading, setIsButtonLoading] = useState<boolean>(false);
+  const [widgetLoading, setWidgetLoading] = useState<boolean>(false);
+
   const reportDetails = window.location.href;
 
   const workspaceId: string = getLocalWorkspaceId();
@@ -68,6 +69,7 @@ const SidePanelWidgets: FC<WidgetIdentification> = ({ widgetKey, widgetRemoved, 
   // eslint-disable-next-line space-before-function-paren
   const getWidgetsData = async (searchText?: string) => {
     const scope = window.location.href.includes('/report-widgets') ? [1, 2] : window.location.href.includes('/dashboard') ? [1, 3] : [];
+    setWidgetLoading(true);
     const widgetsData: SidePanelWidgetsList[] = await getSidePanelWidgetsService(scope.toString(), workspaceId, searchText);
     setSidePanelWidgetsData(widgetsData);
     const sidePanelWidgetList = widgetsData?.reduce((acc: PanelWidgetsType[], curr: SidePanelWidgetsData) => {
@@ -89,6 +91,7 @@ const SidePanelWidgets: FC<WidgetIdentification> = ({ widgetKey, widgetRemoved, 
       acc.push(widgets);
       return acc;
     }, []);
+    setWidgetLoading(false);
     const filteredWidgetsList = sidePanelWidgetList.filter((widget) => !widgetKey.includes(widget?.widget?.widgetLocation));
     setSidePanelWidgets(filteredWidgetsList);
   };
@@ -102,7 +105,7 @@ const SidePanelWidgets: FC<WidgetIdentification> = ({ widgetKey, widgetRemoved, 
     const Widget = WidgetComponents[widgetLocation];
     // Use dynamic import while pushing to prod
     // const Widget = lazy(() => import(`../../common/widgets/${widgetLocation}/${widgetLocation}`));
-    return <Suspense fallback={<Skeleton width={400} height={300} count={1} enableAnimation />}>{<Widget {...props} />}</Suspense>;
+    return <Suspense>{<Widget {...props} />}</Suspense>;
   };
 
   const widgetProps = {
@@ -173,7 +176,7 @@ const SidePanelWidgets: FC<WidgetIdentification> = ({ widgetKey, widgetRemoved, 
 
         <div className="overflow-scroll widget-height overflow-x-hidden">
           {!sidePanelWidgets?.length && (
-            <div className="flex justify-center items-center font-Poppins font-semibold text-lg mt-3 text-infoBlack">No Widgets to be displayed</div>
+            <div className="flex justify-center items-center font-Poppins font-semibold text-lg mt-3 text-infoBlack">{widgetLoading ? 'Fetching widgets...' : 'No Widgets to be displayed'}</div>
           )}
           {sidePanelWidgets?.map((component: PanelWidgetsType) => {
             widgetProps.widget = component;
