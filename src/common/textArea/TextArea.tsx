@@ -1,7 +1,7 @@
 import React from 'react';
 import { Props } from '../../interface/interface';
 
-const TextArea = ({ id, disabled = false, placeholder, name, value, className, errors, onBlur, onChange, helperText }: Props) => (
+const TextArea = ({ id, disabled = false, placeholder, name, value, className, errors, onBlur, onChange, helperText, ...rest }: Props) => (
   <React.Fragment>
     <div className="flex flex-col relative">
       <textarea
@@ -14,6 +14,7 @@ const TextArea = ({ id, disabled = false, placeholder, name, value, className, e
         value={value}
         onBlur={onBlur}
         onChange={onChange}
+        {...rest}
       />
       {errors && <p className="text-lightRed absolute top-24 font-normal text-xs font-Inter mt-2 pl-1">{helperText}</p>}
     </div>

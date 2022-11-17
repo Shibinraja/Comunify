@@ -244,11 +244,13 @@ const SidePanelWidgets: FC<WidgetIdentification> = ({ widgetKey, widgetRemoved, 
                     onBlur={handleBlur}
                     errors={Boolean(touched.name && errors.name)}
                     helperText={touched.name && errors.name}
+                    maxLength={25}
                   />
                   <label htmlFor="description" className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack mt-1.06">
                     Description
                   </label>
                   <TextArea
+                    type='text'
                     name="description"
                     id="descriptionId"
                     value={values.description}
@@ -258,6 +260,7 @@ const SidePanelWidgets: FC<WidgetIdentification> = ({ widgetKey, widgetRemoved, 
                     onBlur={handleBlur}
                     errors={Boolean(touched.description && errors.description)}
                     helperText={touched.description && errors.description}
+                    maxLength={100}
                   />
                   <div className="flex items-center justify-end mt-1.8">
                     <Button
