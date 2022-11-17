@@ -73,7 +73,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
                           <div className="ml-0.865">
                             <div>
                               <p className="font-medium text-xs font-Poppins">
-                                {item?.displayValue ? item?.displayValue : <Skeleton count={1} width={200} height={15} />}
+                                {item?.displayValue ? `${item?.memberName} ${item?.displayValue}` : <Skeleton count={1} width={200} height={15} />}
                               </p>
                             </div>
                             <div className="font-Poppins text-[10px] not-italic font-normal text-[#544e4e] dark:text-greyDark">
@@ -102,7 +102,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
                           <div className="ml-0.865">
                             <div>
                               <p className="font-medium text-xs font-Poppins">
-                                {item?.displayValue ? item?.displayValue : <Skeleton count={1} width={200} height={15} />}
+                                {item?.displayValue ? `${item?.memberName} ${item?.displayValue}` : <Skeleton count={1} width={200} height={15} />}
                               </p>
                             </div>
                             <div className="font-Poppins text-[10px] not-italic font-normal text-[#544e4e] dark:text-greyDark">
@@ -132,7 +132,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
                             <div className="ml-0.865">
                               <div>
                                 <p className="font-medium text-xs font-Poppins">
-                                  {item?.displayValue ? item?.displayValue : <Skeleton count={1} width={200} height={15} />}
+                                  {item?.displayValue ? `${item?.memberName} ${item?.displayValue}` : <Skeleton count={1} width={200} height={15} />}
                                 </p>
                               </div>
                               <div className="font-Poppins text-[10px] not-italic font-normal text-[#544e4e] dark:text-greyDark">
