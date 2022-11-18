@@ -21,10 +21,8 @@ export default function WidgetContainer(props: WidgetContainerProps) {
   const [widgetRemoved, setWidgetRemoved] = React.useState<string>();
 
   useEffect(() => {
-    if (widgets?.length) {
-      const widgetLocations = widgets?.map((widget) => widget.widget.widgetLocation);
-      setWidgetKey(widgetLocations);
-    }
+    const widgetLocations = widgets?.map((widget) => widget.widget.widgetLocation);
+    setWidgetKey(widgetLocations);
   }, [widgets]);
 
   const renderWidget = (widgetLocation: string, props: React.PropsWithoutRef<WidgetComponentProps>) => {
