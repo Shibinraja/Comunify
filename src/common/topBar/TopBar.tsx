@@ -155,7 +155,7 @@ const TopBar: React.FC = () => {
   }, [profilePictureUrl]);
 
   useEffect(() => {
-    if(resetProfilePic) {
+    if (resetProfilePic) {
       setProfileImage(profileUploadImage);
     }
   }, [resetProfilePic]);
@@ -509,7 +509,9 @@ const TopBar: React.FC = () => {
                   />
                 </Fragment>
                 <div className="pl-6 font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
-                  {searchResult.resultType === ActivityEnum.Activity ? `${searchResult.memberName} ${searchResult.displayValue}` : searchResult.memberName}
+                  {searchResult.resultType === ActivityEnum.Activity
+                    ? `${searchResult.memberName} ${searchResult.displayValue}`
+                    : searchResult.memberName}
                 </div>
               </div>
             </div>
