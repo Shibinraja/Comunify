@@ -12,7 +12,8 @@ const Input = ({
   errors,
   onBlur,
   onChange,
-  helperText
+  helperText,
+  ...rest
 }: // ...rest
 Props) => (
   <div className="flex flex-col relative">
@@ -27,6 +28,7 @@ Props) => (
       value={value}
       onBlur={onBlur}
       onChange={onChange}
+      {...rest}
     />
     {errors && <p className="text-lightRed absolute -bottom-4 font-normal text-xs font-Inter mt-0.287 pl-1">{helperText}</p>}
   </div>

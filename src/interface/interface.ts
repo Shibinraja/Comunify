@@ -22,6 +22,7 @@ export interface Props {
   handleSubmit?: any;
   username?: string;
   className?: string;
+  maxLength?:number
   onBlur?: (e: React.FocusEvent<any, Element> | undefined) => void;
   onChange?: (e: React.ChangeEvent<any>) => void;
 }

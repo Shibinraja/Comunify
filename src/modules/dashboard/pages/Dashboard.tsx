@@ -27,8 +27,8 @@ const Dashboard: FC = () => {
   const [selected, setSelected] = useState<string>('');
   const [dateRange, setDateRange] = useState([null, null]);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-
   const [isManageMode, setIsManageMode] = useState<boolean>(false);
+  const [widgetLoading, setWidgetLoading] = useState<boolean>(false);
   const [widgets, setWidgets] = useState<any[] | []>([]);
   const [widgetResponse, setWidgetResponse] = useState<widgetResponseData>({
     saveWidgetResponse: [],
@@ -137,15 +137,18 @@ const Dashboard: FC = () => {
   // eslint-disable-next-line space-before-function-paren
   const fetchWidgetLayoutData = async () => {
     try {
+      setWidgetLoading(true);
       const response = await getWidgetsLayoutService(workspaceId);
       const widgetDataArray = response?.map((data: any) => ({
         id: data?.id,
         layout: { ...data.configs, i: data?.id },
         widget: { ...data?.widget, widgetId: data?.widgetId }
       }));
+      setWidgetLoading(false);
       setWidgets(widgetDataArray);
       setWidgetResponse((prevState) => ({ ...prevState, saveWidgetResponse: widgetDataArray }));
     } catch {
+      setWidgetLoading(false);
       showErrorToast('Failed to load widgets layout');
     }
   };
@@ -303,6 +306,7 @@ const Dashboard: FC = () => {
           setWidgets={setWidgets}
           setTransformedWidgetData={setTransformedWidgetData}
           filters={{ startDate, endDate }}
+          widgetLoading = {widgetLoading}
         />
       </div>
       <ModalDrawer

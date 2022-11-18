@@ -155,6 +155,7 @@ const widgetsReports: React.FC = () => {
         setTransformedWidgetData={setTransformedWidgetData}
         filters={{ startDate, endDate, platformId: reportValuesData?.platformIds }}
         setIsDragMode={setIsDragMode}
+        widgetLoading={loading}
       />
 
       <div className="flex justify-end pt-10 items-center mb-10">

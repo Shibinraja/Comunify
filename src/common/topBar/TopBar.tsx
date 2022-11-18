@@ -68,6 +68,7 @@ const TopBar: React.FC = () => {
   // eslint-disable-next-line no-unused-vars
   const [, setActivityNextCursor] = useState<string | null>('');
   const [profileImage, setProfileImage] = useState<string>('');
+  const [profileUploadImage, setProfileUploadImage] = useState<string>('');
   const [unReadStatus, setUnReadStatus] = useState('false');
   const [notificationList, setNotificationList] = useState<NotificationList>({
     result: [],
@@ -80,6 +81,7 @@ const TopBar: React.FC = () => {
   const notificationRef = useRef<HTMLImageElement | null>(null);
 
   const options: string[] = ['Profile Settings', 'Sign Out'];
+  const { resetProfilePic } = useAppSelector((state) => state.accounts);
   const accessToken = localStorage.getItem('accessToken') || cookie.load('x-auth-cookie');
   const decodedToken: DecodeToken = accessToken && decodeToken(accessToken);
   const debouncedValue = useDebounce(searchSuggestion, 300);
@@ -117,6 +119,7 @@ const TopBar: React.FC = () => {
     fetchProfileData();
     if (profilePictureUrl) {
       setProfileImage(profilePictureUrl.profilePic);
+      setProfileUploadImage(profilePictureUrl.profilePic);
     }
 
     // Event functionality which checks the route changes in the app and triggers the possible route callback functionality.
@@ -152,11 +155,13 @@ const TopBar: React.FC = () => {
   }, [profilePictureUrl]);
 
   useEffect(() => {
+    if (resetProfilePic) {
+      setProfileImage(profileUploadImage);
+    }
+  }, [resetProfilePic]);
+
+  useEffect(() => {
     if (debouncedValue) {
-      setSuggestionList({
-        result: [],
-        nextCursor: null
-      });
       getGlobalSearchItem({
         cursor: null,
         prop: 'search',
@@ -179,6 +184,11 @@ const TopBar: React.FC = () => {
   //Function to search of the desired suggestionList.
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
+    setSuggestionList({
+      result: [],
+      nextCursor: null
+    });
+
     if (!searchText) {
       setSearchSuggestion('');
     } else {
@@ -499,7 +509,9 @@ const TopBar: React.FC = () => {
                   />
                 </Fragment>
                 <div className="pl-6 font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
-                  {searchResult.resultType === ActivityEnum.Activity ? searchResult.displayValue : searchResult.memberName}
+                  {searchResult.resultType === ActivityEnum.Activity
+                    ? `${searchResult.memberName} ${searchResult.displayValue}`
+                    : searchResult.memberName}
                 </div>
               </div>
             </div>

@@ -1,26 +1,32 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable space-before-function-paren */
-import './account.css';
-import profileImage from '../../../assets/images/user-image.svg';
 import { KeyboardEvent, ChangeEvent, useEffect, useRef, useState, Fragment } from 'react';
-import dropdownIcon from '../../../assets/images/Vector.svg';
-import Input from 'common/input';
-import Button from 'common/button';
-import closeEyeIcon from '../../../assets/images/closeEyeIcon.svg';
-import eyeIcon from '../../../assets/images/eye.svg';
-import { Form, Formik, FormikErrors, FormikTouched } from 'formik';
-import * as Yup from 'yup';
-import { companyName_regex, password_regex, userName_regex, whiteSpace_regex } from 'constants/constants';
-import accountSlice from '../store/slice/account.slice';
-import { ChangePassword, profilePicInput, userProfileDataInput } from '../interfaces/account.interface';
+import { Link, NavLink } from 'react-router-dom';
+import cookie from 'react-cookies';
 import { useDispatch } from 'react-redux';
-import { decodeToken } from '@/lib/decodeToken';
+
+import * as Yup from 'yup';
+import { Form, Formik, FormikErrors, FormikTouched } from 'formik';
+
 import { DecodeToken } from 'modules/authentication/interface/auth.interface';
+import { ChangePassword, profilePicInput, userProfileDataInput } from '../interfaces/account.interface';
+
+import { getLocalWorkspaceId } from '@/lib/helper';
+import accountSlice from '../store/slice/account.slice';
+import { decodeToken } from '@/lib/decodeToken';
+import { useAppSelector } from '@/hooks/useRedux';
 import { showErrorToast } from 'common/toast/toastFunctions';
 import { userProfileDataService } from '../services/account.services';
-import cookie from 'react-cookies';
-import { getLocalWorkspaceId } from '@/lib/helper';
-import { NavLink } from 'react-router-dom';
+import { companyName_regex, password_regex, userName_regex, whiteSpace_regex } from 'constants/constants';
+
+import Input from 'common/input';
+import Button from 'common/button';
+import profileImage from '../../../assets/images/user-image.svg';
+import dropdownIcon from '../../../assets/images/Vector.svg';
+import closeEyeIcon from '../../../assets/images/closeEyeIcon.svg';
+import eyeIcon from '../../../assets/images/eye.svg';
+
+import './account.css';
 
 const initialValues: ChangePassword = {
   currentPassword: '',
@@ -60,6 +66,7 @@ const Account = () => {
   const dropDownRef = useRef<HTMLDivElement>(null);
   const domainRef = useRef<HTMLLIElement>(null);
 
+  const { resetProfilePic } = useAppSelector((state) => state.accounts);
   const accessToken = localStorage.getItem('accessToken') || cookie.load('x-auth-cookie');
   const decodedToken: DecodeToken = accessToken && decodeToken(accessToken);
   const dispatch = useDispatch();
@@ -83,6 +90,12 @@ const Account = () => {
       domainRef?.current?.focus();
     }
   }, [isDropDownActive]);
+
+  useEffect(() => {
+    if(resetProfilePic) {
+      setProfileUploadImage(profileData?.profilePhotoUrl);
+    }
+  }, [resetProfilePic]);
 
   const fetchProfileData = async () => {
     try {
@@ -539,10 +552,10 @@ const Account = () => {
                 <input
                   type="file"
                   className="hidden absolute top-0 left-0 w-full flex-grow"
-                  placeholder="uplaod image"
+                  placeholder="upload image"
+                  accept="image/png, image/gif, image/jpeg"
                   id="inputFile"
                   ref={imageRef}
-                  accept="image/*"
                   onChange={(e) => imageUploadHandler(e)}
                 />
               </div>

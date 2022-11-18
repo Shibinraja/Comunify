@@ -53,9 +53,9 @@ const authRoutes: RoutesArray[] = [
       {
         path: '/forgot-password',
         element: (
-          <PublicRoute>
+          <GuestRoute>
             <ForgotPassword />
-          </PublicRoute>
+          </GuestRoute>
         )
       },
       {

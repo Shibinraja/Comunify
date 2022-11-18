@@ -75,11 +75,7 @@ const QuickInfo: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
             >
               {!isManageMode && !isSidePanelOpen ? (
                 !isLoading ? (
-                  newActivitiesData?.count ? (
-                    newActivitiesData?.count
-                  ) : (
-                    '-'
-                  )
+                  newActivitiesData?.count
                 ) : (
                   <Skeleton width={20} height={30} count={1} />
                 )
@@ -130,11 +126,7 @@ const QuickInfo: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
             >
               {!isManageMode && !isSidePanelOpen ? (
                 !isLoading ? (
-                  newMembersData?.count ? (
-                    newMembersData?.count
-                  ) : (
-                    '-'
-                  )
+                  newMembersData?.count
                 ) : (
                   <Skeleton width={20} height={30} count={1} />
                 )
@@ -183,11 +175,7 @@ const QuickInfo: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
             <div className="leading-2 text-infoBlack font-Poppins text-signIn font-semibold dark:text-white">
               {!isManageMode && !isSidePanelOpen ? (
                 !isLoading ? (
-                  activeMembersData?.count ? (
-                    activeMembersData?.count
-                  ) : (
-                    '-'
-                  )
+                  activeMembersData?.count
                 ) : (
                   <Skeleton width={20} height={30} count={1} />
                 )
@@ -232,11 +220,7 @@ const QuickInfo: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
             <div className="leading-2 text-infoBlack font-Poppins text-signIn font-semibold dark:text-white">
               {!isManageMode && !isSidePanelOpen ? (
                 !isLoading ? (
-                  inActiveMembersData?.count ? (
-                    inActiveMembersData?.count
-                  ) : (
-                    '-'
-                  )
+                  inActiveMembersData?.count
                 ) : (
                   <Skeleton width={20} height={30} count={1} />
                 )
