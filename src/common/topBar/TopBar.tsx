@@ -491,7 +491,7 @@ const TopBar: React.FC = () => {
       </div>
       {suggestionList?.result?.length > 0 && isSuggestionListDropDown && (
         <div
-          className="mt-[3px] box-border rounded-0.3 shadow-reportInput w-34.37 app-result-card-border h-12.375 overflow-auto absolute z-10 bg-white"
+          className={`mt-[3px] box-border rounded-0.3 shadow-reportInput w-34.37 app-result-card-border overflow-auto absolute z-10 bg-white ${suggestionList.result.length > 4 ? 'h-12.375': `h-[${suggestionList.result.length * 30}]px`}`}
           onScroll={handleScroll}
         >
           {suggestionList.result.map((searchResult: GlobalSearchDataResult) => (
