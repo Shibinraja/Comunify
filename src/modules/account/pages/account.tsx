@@ -92,7 +92,7 @@ const Account = () => {
   }, [isDropDownActive]);
 
   useEffect(() => {
-    if(resetProfilePic) {
+    if (resetProfilePic) {
       setProfileUploadImage(profileData?.profilePhotoUrl);
     }
   }, [resetProfilePic]);
@@ -140,10 +140,18 @@ const Account = () => {
 
   const imageUploadHandler = async (e: ChangeEvent<HTMLInputElement>) => {
     const imageFile = e.target.files?.[0];
-    setProfileUploadImage(URL.createObjectURL(imageFile as Blob));
-    const base64: any = await convertBase64(imageFile);
-    const uploadData = { profilePic: base64?.toString() || '', fileName: imageFile?.name || 'file' };
-    dispatch(accountSlice.actions.uploadProfilePic(uploadData as profilePicInput));
+    if (
+      imageFile?.name?.split('.')?.pop()?.search('jpg') === 0 ||
+      imageFile?.name?.split('.')?.pop()?.search('jpeg') === 0 ||
+      imageFile?.name?.split('.')?.pop()?.search('png') === 0
+    ) {
+      setProfileUploadImage(URL.createObjectURL(imageFile as Blob));
+      const base64: any = await convertBase64(imageFile);
+      const uploadData = { profilePic: base64?.toString() || '', fileName: imageFile?.name || 'file' };
+      dispatch(accountSlice.actions.uploadProfilePic(uploadData as profilePicInput));
+    } else {
+      showErrorToast('Only image files are supported');
+    }
   };
 
   const convertBase64 = (file: any) =>
@@ -336,6 +344,7 @@ const Account = () => {
             <label htmlFor="fullName" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
               Full Name
             </label>
+            Input
             <Input
               type="text"
               name="fullName"
