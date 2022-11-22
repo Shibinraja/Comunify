@@ -401,7 +401,7 @@ const Account = () => {
                         {renderAccountForm(handleBlur, handleChange, values, touched, errors)}
                         <div className="py-7">
                           <div className="flex items-center justify-end w-full">
-                            <NavLink to={`${workspaceId}/dashboard`} className="p-0 m-0 mr-2">
+                            <NavLink to={!decodedToken.isAdmin ? `/${workspaceId}/dashboard` : '/admin/users'} className="p-0 m-0 mr-2">
                               <Button
                                 type="button"
                                 text="Cancel"
@@ -514,7 +514,7 @@ const Account = () => {
                           </a>
                         </div>
                         <div className="flex   items-center">
-                          <NavLink to={`${workspaceId}/dashboard`} className="p-0 m-0 mr-2">
+                          <NavLink to={!decodedToken.isAdmin ? `/${workspaceId}/dashboard` : '/admin/users'} className="p-0 m-0 mr-2">
                             <Button
                               type="button"
                               text="Cancel"
