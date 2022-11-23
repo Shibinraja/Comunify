@@ -100,7 +100,8 @@ const SideNav: React.FC = () => {
             <div className="pl-0.66 font-Outfit font-bold text-dashboardLogo text-lightBlack dark:text-white leading-1.43">COMUNIFY</div>
           </NavLink>
         </div>
-        <div className="flex flex-col mt-5.8 menu-box overflow-y-auto">
+        <div
+          className={subscriptionDetails?.subscriptionPackage?.name?.toLocaleLowerCase().trim() === 'free trial' ? 'flex flex-col mt-5.8 menu-box overflow-y-auto' : 'flex flex-col mt-5.8 menu-box-items overflow-y-auto'}>
           <div className={window.location.href.includes('/dashboard') ? 'flex flex-center active-menu' : 'flex flex-center inactive-menu'}>
             <NavLink to={`${workspaceId}/dashboard`}>
               <div>
@@ -111,8 +112,7 @@ const SideNav: React.FC = () => {
             <NavLink
               to={`${workspaceId}/dashboard`}
               className={({ isActive }) =>
-                `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${
-                  isActive ? 'text-black dark:text-white' : 'text-tableDuration'
+                `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${isActive ? 'text-black dark:text-white' : 'text-tableDuration'
                 }`
               }
             >
@@ -128,8 +128,7 @@ const SideNav: React.FC = () => {
             <NavLink
               to={`${workspaceId}/members`}
               className={({ isActive }) =>
-                `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${
-                  isActive ? 'text-black dark:text-white' : 'text-tableDuration'
+                `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${isActive ? 'text-black dark:text-white' : 'text-tableDuration'
                 }`
               }
             >
@@ -145,8 +144,7 @@ const SideNav: React.FC = () => {
             <NavLink
               to={`${workspaceId}/activity`}
               className={({ isActive }) =>
-                `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${
-                  isActive ? 'text-black dark:text-white' : 'text-tableDuration'
+                `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${isActive ? 'text-black dark:text-white' : 'text-tableDuration'
                 }`
               }
             >
@@ -162,8 +160,7 @@ const SideNav: React.FC = () => {
             <NavLink
               to={`${workspaceId}/reports`}
               className={({ isActive }) =>
-                `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${
-                  isActive ? 'text-black dark:text-white' : 'text-tableDuration'
+                `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${isActive ? 'text-black dark:text-white' : 'text-tableDuration'
                 }`
               }
             >
@@ -179,8 +176,7 @@ const SideNav: React.FC = () => {
             <NavLink
               to={`${workspaceId}/settings`}
               className={({ isActive }) =>
-                `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${
-                  isActive ? 'text-black dark:text-white' : 'text-tableDuration'
+                `pl-1.24 font-Poppins font-medium text-base xl:text-lg  leading-1.68 cursor-pointer ${isActive ? 'text-black dark:text-white' : 'text-tableDuration'
                 }`
               }
             >
