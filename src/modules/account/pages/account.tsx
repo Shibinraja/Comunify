@@ -148,9 +148,10 @@ const Account = () => {
       setProfileUploadImage(URL.createObjectURL(imageFile as Blob));
       const base64: any = await convertBase64(imageFile);
       const uploadData = { profilePic: base64?.toString() || '', fileName: imageFile?.name || 'file' };
+      dispatch(accountSlice.actions.profilePicReset(false));
       dispatch(accountSlice.actions.uploadProfilePic(uploadData as profilePicInput));
     } else {
-      showErrorToast('Only image files are supported');
+      showErrorToast('Only jpg/png files are supported');
     }
   };
 
