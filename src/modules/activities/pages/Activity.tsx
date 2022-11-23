@@ -39,8 +39,8 @@ Modal.setAppElement('#root');
 
 const Activity: React.FC = () => {
   const dispatch = useDispatch();
-  const [searchParams] = useSearchParams();
   const { workspaceId } = useParams();
+  const [searchParams] = useSearchParams();
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [isTagModalOpen, setTagModalOpen] = useState<boolean>(false);
   const [ProfileModal, setProfileModal] = useState<Partial<ProfileModal>>({
@@ -117,7 +117,7 @@ const Activity: React.FC = () => {
         workspaceId: workspaceId!
       })
     );
-  }, [page]);
+  }, [page, activityId]);
 
   useEffect(() => {
     setTagUnAssignLoading(true);
@@ -294,13 +294,15 @@ const Activity: React.FC = () => {
   const getFilteredActiveStreamList = (pageNumber: number, text: string) => {
     dispatch(
       activitiesSlice.actions.getActiveStreamData({
-        activeStreamQuery: { page: pageNumber,
+        activeStreamQuery: {
+          page: pageNumber,
           limit,
           search: text,
           tags: { searchedTags: '', checkedTags: filterExportParams.checkTags.toString() },
           platforms: filterExportParams.checkPlatform.toString(),
           'activity.lte': filterExportParams.endDate,
-          'activity.gte': filterExportParams.startDate        },
+          'activity.gte': filterExportParams.startDate
+        },
         workspaceId: workspaceId!
       })
     );
@@ -395,7 +397,7 @@ const Activity: React.FC = () => {
     }
   };
 
-  const handleUnAssignTagsName = (id: string): void => {
+  const handleUnAssignTagsName = (id: string, activityId?:string): void => {
     if (tagUnAssignLoading) {
       dispatch(
         settingsSlice.actions.unAssignTags({
@@ -403,7 +405,7 @@ const Activity: React.FC = () => {
           unAssignTagBody: {
             tagId: id,
             type: 'Activity' as AssignTypeEnum.Activity,
-            activityId: ActivityCard?.activityId
+            activityId: ActivityCard?.activityId || activityId
           },
           filter: {
             search: debouncedValue,
@@ -476,6 +478,7 @@ const Activity: React.FC = () => {
                       Date & Time
                     </th>
                     <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Summary</th>
+                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Tags</th>
                     <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Source</th>
                     <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
                       Activity Type
@@ -547,7 +550,7 @@ const Activity: React.FC = () => {
                                   <div className="w-12.87 pb-5 rounded-b-0.6 profile-card-body profile-inner shadow-profileCard flex flex-col items-center bg-white">
                                     <div className="-mt-10 flex items-center justify-center">
                                       <img
-                                        src={ProfileModal?.profilePictureUrl ? ProfileModal?.profilePictureUrl: profileImage}
+                                        src={ProfileModal?.profilePictureUrl ? ProfileModal?.profilePictureUrl : profileImage}
                                         alt=""
                                         className="rounded-full w-4.43 h-4.43 bg-cover bg-center border-4 border-white"
                                       />
@@ -559,14 +562,14 @@ const Activity: React.FC = () => {
                                       {ProfileModal?.email} {ProfileModal?.organization}
                                     </div>
                                     <div className="flex mt-2.5">
-                                      <div className="bg-cover bg-center mr-1 ">
+                                      <div className="bg-cover bg-center flex ">
                                         {ProfileModal?.platforms &&
                                           ProfileModal?.platforms.map((platformData) => (
-                                            <div key={`${Math.random() + platformData.id}`}>
+                                            <div className="flex" key={`${Math.random() + platformData.id}`}>
                                               <img
                                                 src={platformData?.platformLogoUrl ?? ''}
                                                 alt=""
-                                                className="rounded-full w-[1.0012rem] h-[1.0012rem]"
+                                                className="rounded-full w-[1.0012rem] h-[1.0012rem] mr-1"
                                               />
                                             </div>
                                           ))}
@@ -633,6 +636,77 @@ const Activity: React.FC = () => {
                                 </div>
                                 <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
                                   {generateDateAndTime(`${data?.activityTime}`, 'MM-DD')}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </td>
+
+                        <td className="px-6 py-3 border-b ">
+                          {loader ? (
+                            <Skeleton width={width_90} />
+                          ) : (
+                            <div className="flex w-[150px]">
+                              <div className="py-3 flex gap-2 items-center flex-wrap font-Poppins font-medium text-trial text-infoBlack leading-1.31">
+                                {data?.tags ? (
+                                  (data?.tags as Array<{ id: string; name: string }>)
+                                    ?.slice(0, 2)
+                                    .map((tags: { name: string; id: string }, index: number) => (
+                                      <>
+                                        <div
+                                          data-tip
+                                          data-for={tags.name}
+                                          className="bg-tagSection rounded h-8 flex justify-between px-3 items-center cursor-pointer"
+                                          key={index}
+                                        >
+                                          <div className="font-Poppins font-normal text-card text-profileBlack leading-5 pr-4 tags-ellipse">
+                                            {tags?.name}
+                                          </div>
+                                          <div>
+                                            <img
+                                              src={closeIcon}
+                                              alt=""
+                                              onClick={() => {
+                                                handleUnAssignTagsName(tags.id, data.id);
+                                              }
+                                              }
+                                            />
+                                          </div>
+                                        </div>
+                                        <ReactTooltip id={tags.name} textColor="" backgroundColor="" effect="solid">
+                                          <span className="font-Poppins text-card font-normal leading-5 pr-4">{tags.name}</span>
+                                        </ReactTooltip>
+                                      </>
+                                    ))
+                                ) : (
+                                  <div className="font-Poppins font-normal text-card text-infoBlack leading-5 pr-4 tags-ellipse">{'--'}</div>
+                                )}
+                                <div
+                                  className="font-Poppins font-medium text-trial text-tag leading-1.12 capitalize underline cursor-pointer"
+                                  onClick={() =>
+                                    handleModal({
+                                      isOpen: true,
+                                      memberName: data?.memberName,
+                                      email: data?.email,
+                                      description: data?.description,
+                                      displayValue: data?.displayValue,
+                                      activityTime: data?.activityTime,
+                                      organization: data?.organization,
+                                      sourceUrl: data?.sourceUrl,
+                                      profilePictureUrl: data?.memberProfile as string,
+                                      value: data?.value,
+                                      platformLogoUrl: data?.platformLogoUrl,
+                                      memberId: data?.memberId,
+                                      activityId: data?.id,
+                                      platform: data?.platform,
+                                      tags: data?.tags || [],
+                                      platforms: data.platforms || []
+                                    })
+                                  }
+                                >
+                                  {(data?.tags as Array<Record<string, unknown>>)?.length > 2
+                                    ? `${(data?.tags as Array<Record<string, unknown>>)?.length - 2} more`
+                                    : ''}{' '}
                                 </div>
                               </div>
                             </div>

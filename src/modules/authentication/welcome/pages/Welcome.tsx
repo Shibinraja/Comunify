@@ -1,20 +1,32 @@
 import React, { useEffect } from 'react';
+import cookie from 'react-cookies';
 import SubscriptionCard from 'common/subscriptionCard/SubscriptionCard';
 import bgWelcomeImage from '../../../../assets/images/bg-sign.svg';
 import './Welcome.css';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../../../store';
-import { SubscriptionPackages } from '../../interface/auth.interface';
+import { DecodeToken, SubscriptionPackages } from '../../interface/auth.interface';
 import authSlice from '../../store/slices/auth.slice';
 import { useAppSelector } from '@/hooks/useRedux';
 import { setRefreshToken } from '../../../../lib/helper';
+import { decodeToken } from '@/lib/decodeToken';
+import { NavigateFunction, useNavigate } from 'react-router';
 
 const Welcome: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
+  const navigate: NavigateFunction = useNavigate();
+  const accessToken = localStorage.getItem('accessToken') || cookie.load('x-auth-cookie');
+  const decodedToken: DecodeToken = accessToken && decodeToken(accessToken);
 
   useEffect(() => {
     setRefreshToken();
     dispatch(authSlice.actions.getSubscriptions());
+  }, []);
+
+  useEffect(() => {
+    if (decodedToken?.isPaymentSuccess) {
+      navigate('/create-workspace');
+    }
   }, []);
 
   const subscriptionData = useAppSelector((state) => state.auth.subscriptionData);

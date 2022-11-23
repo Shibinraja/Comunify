@@ -40,6 +40,10 @@ const SideNav: React.FC = () => {
     getCurrentSubscriptionPlanDetails();
   }, []);
 
+  useEffect(() => {
+    getCurrentSubscriptionPlanDetails();
+  }, []);
+
   const connectedPlatforms: ConnectedPlatforms[] = useAppSelector((state: State) => state.settings.PlatformsConnected);
   const platformsData: PlatformResponse[] = useAppSelector((state: State) => state.settings.PlatformFilterResponse);
 

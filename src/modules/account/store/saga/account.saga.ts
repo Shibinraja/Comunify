@@ -36,6 +36,7 @@ function* uploadProfilePic(action: PayloadAction<profilePicInput>) {
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
+    yield put(accountSlice.actions.profilePicReset(true));
     showErrorToast(error?.response?.statusText as string);
   } finally {
     yield put(loaderSlice.actions.stopAuthLoadingAction());

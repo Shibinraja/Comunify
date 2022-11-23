@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import yellowDotted from '../../../assets/images/yellow_dotted.svg';
 import { TabPanel } from 'common/tabs/TabPanel';
 import { ActivitiesWidgetData } from '../../../modules/dashboard/interface/dashboard.interface';
@@ -73,7 +73,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
                           <div className="ml-0.865">
                             <div>
                               <p className="font-medium text-xs font-Poppins">
-                                {item?.displayValue ? item?.displayValue : <Skeleton count={1} width={200} height={15} />}
+                                {item?.displayValue ? `${item?.memberName} ${item?.displayValue}` : <Skeleton count={1} width={200} height={15} />}
                               </p>
                             </div>
                             <div className="font-Poppins text-[10px] not-italic font-normal text-[#544e4e] dark:text-greyDark">
@@ -102,7 +102,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
                           <div className="ml-0.865">
                             <div>
                               <p className="font-medium text-xs font-Poppins">
-                                {item?.displayValue ? item?.displayValue : <Skeleton count={1} width={200} height={15} />}
+                                {item?.displayValue ? `${item?.memberName} ${item?.displayValue}` : <Skeleton count={1} width={200} height={15} />}
                               </p>
                             </div>
                             <div className="font-Poppins text-[10px] not-italic font-normal text-[#544e4e] dark:text-greyDark">
@@ -132,7 +132,7 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
                             <div className="ml-0.865">
                               <div>
                                 <p className="font-medium text-xs font-Poppins">
-                                  {item?.displayValue ? item?.displayValue : <Skeleton count={1} width={200} height={15} />}
+                                  {item?.displayValue ? `${item?.memberName} ${item?.displayValue}` : <Skeleton count={1} width={200} height={15} />}
                                 </p>
                               </div>
                               <div className="font-Poppins text-[10px] not-italic font-normal text-[#544e4e] dark:text-greyDark">
@@ -149,19 +149,30 @@ const NewActivitiesList: React.FC<Props> = ({ hidden, activitiesWidgetData, isLo
             </ul>
           ) : (
             <>
-              <div className="w-full flex justify-start items-center ">
-                <div className="">
-                  <Skeleton width={30} height={30} circle />
-                </div>
-                <div className="ml-2 mt-1">
-                  <div>
-                    <Skeleton width={150} height={15} />
+              <h3 className="font-medium pl-7 text-m font-Poppins  text-xs mt-2">
+              </h3>
+              {Array.from({ length: 3 }, (_, i) => i + 1).map((type: number) => (
+                <Fragment key={type}>
+                  <div className="w-full flex justify-start items-center my-1.68">
+                    <div className="ml-2.024 bottom-line ">
+                      <Skeleton width={10} height={10} count={1} />
+                    </div>
+                    <div className="ml-0.71 ">
+                      <Skeleton width={30} height={30} circle />
+                    </div>
+                    <div className="ml-0.865">
+                      <div>
+                        <p className="font-medium text-xs font-Poppins">
+                          <Skeleton width={150} height={15} />
+                        </p>
+                      </div>
+                      <div className="font-Poppins text-[10px] not-italic font-normal text-[#544e4e] dark:text-greyDark">
+                        <Skeleton width={100} height={5} />
+                      </div>
+                    </div>
                   </div>
-                  <div className="font-Poppins text-membersCreatedAt not-italic font-normal text-createdAtGrey dark:text-greyDark">
-                    <Skeleton width={100} height={5} />
-                  </div>
-                </div>
-              </div>
+                </Fragment>
+              ))}
             </>
           )}
         </div>

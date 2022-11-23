@@ -1,26 +1,32 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable space-before-function-paren */
-import './account.css';
-import profileImage from '../../../assets/images/user-image.svg';
 import { KeyboardEvent, ChangeEvent, useEffect, useRef, useState, Fragment } from 'react';
-import dropdownIcon from '../../../assets/images/Vector.svg';
-import Input from 'common/input';
-import Button from 'common/button';
-import closeEyeIcon from '../../../assets/images/closeEyeIcon.svg';
-import eyeIcon from '../../../assets/images/eye.svg';
-import { Form, Formik, FormikErrors, FormikTouched } from 'formik';
-import * as Yup from 'yup';
-import { companyName_regex, password_regex, userName_regex, whiteSpace_regex } from 'constants/constants';
-import accountSlice from '../store/slice/account.slice';
-import { ChangePassword, profilePicInput, userProfileDataInput } from '../interfaces/account.interface';
+import { Link, NavLink } from 'react-router-dom';
+import cookie from 'react-cookies';
 import { useDispatch } from 'react-redux';
-import { decodeToken } from '@/lib/decodeToken';
+
+import * as Yup from 'yup';
+import { Form, Formik, FormikErrors, FormikTouched } from 'formik';
+
 import { DecodeToken } from 'modules/authentication/interface/auth.interface';
+import { ChangePassword, profilePicInput, userProfileDataInput } from '../interfaces/account.interface';
+
+import { getLocalWorkspaceId } from '@/lib/helper';
+import accountSlice from '../store/slice/account.slice';
+import { decodeToken } from '@/lib/decodeToken';
+import { useAppSelector } from '@/hooks/useRedux';
 import { showErrorToast } from 'common/toast/toastFunctions';
 import { userProfileDataService } from '../services/account.services';
-import cookie from 'react-cookies';
-import { getLocalWorkspaceId } from '@/lib/helper';
-import { NavLink } from 'react-router-dom';
+import { companyName_regex, password_regex, userName_regex, whiteSpace_regex } from 'constants/constants';
+
+import Input from 'common/input';
+import Button from 'common/button';
+import profileImage from '../../../assets/images/user-image.svg';
+import dropdownIcon from '../../../assets/images/Vector.svg';
+import closeEyeIcon from '../../../assets/images/closeEyeIcon.svg';
+import eyeIcon from '../../../assets/images/eye.svg';
+
+import './account.css';
 
 const initialValues: ChangePassword = {
   currentPassword: '',
@@ -60,6 +66,7 @@ const Account = () => {
   const dropDownRef = useRef<HTMLDivElement>(null);
   const domainRef = useRef<HTMLLIElement>(null);
 
+  const { resetProfilePic } = useAppSelector((state) => state.accounts);
   const accessToken = localStorage.getItem('accessToken') || cookie.load('x-auth-cookie');
   const decodedToken: DecodeToken = accessToken && decodeToken(accessToken);
   const dispatch = useDispatch();
@@ -83,6 +90,12 @@ const Account = () => {
       domainRef?.current?.focus();
     }
   }, [isDropDownActive]);
+
+  useEffect(() => {
+    if (resetProfilePic) {
+      setProfileUploadImage(profileData?.profilePhotoUrl);
+    }
+  }, [resetProfilePic]);
 
   const fetchProfileData = async () => {
     try {
@@ -127,10 +140,18 @@ const Account = () => {
 
   const imageUploadHandler = async (e: ChangeEvent<HTMLInputElement>) => {
     const imageFile = e.target.files?.[0];
-    setProfileUploadImage(URL.createObjectURL(imageFile as Blob));
-    const base64: any = await convertBase64(imageFile);
-    const uploadData = { profilePic: base64?.toString() || '', fileName: imageFile?.name || 'file' };
-    dispatch(accountSlice.actions.uploadProfilePic(uploadData as profilePicInput));
+    if (
+      imageFile?.name?.split('.')?.pop()?.search('jpg') === 0 ||
+      imageFile?.name?.split('.')?.pop()?.search('jpeg') === 0 ||
+      imageFile?.name?.split('.')?.pop()?.search('png') === 0
+    ) {
+      setProfileUploadImage(URL.createObjectURL(imageFile as Blob));
+      const base64: any = await convertBase64(imageFile);
+      const uploadData = { profilePic: base64?.toString() || '', fileName: imageFile?.name || 'file' };
+      dispatch(accountSlice.actions.uploadProfilePic(uploadData as profilePicInput));
+    } else {
+      showErrorToast('Only image files are supported');
+    }
   };
 
   const convertBase64 = (file: any) =>
@@ -246,9 +267,9 @@ const Account = () => {
                 name="email"
                 id="emailId"
                 className="shadow-inputShadow bg-[#EBF8FF] h-2.81 mt-0.40 px-3 app-result-card-border focus:outline-none box-border bg-white cursor-not-allowed	 w-full py-2 rounded-0.3 placeholder:text-thinGray placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.31 placeholder:text-trial"
-                placeholder="example@mail.com"
-                // onBlur={handleBlur}
-                // onChange={handleChange}
+                // placeholder="example@mail.com"
+                onBlur={handleBlur}
+                onChange={handleChange}
                 value={values.email}
                 disabled
                 errors={Boolean(touched.email && errors.email)}
@@ -323,6 +344,7 @@ const Account = () => {
             <label htmlFor="fullName" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
               Full Name
             </label>
+            Input
             <Input
               type="text"
               name="fullName"
@@ -345,9 +367,8 @@ const Account = () => {
               name="email"
               id="emailId"
               className="shadow-inputShadow bg-[#EBF8FF] h-2.81 mt-0.40 px-3 app-result-card-border focus:outline-none box-border bg-white cursor-not-allowed	 w-full py-2 rounded-0.3 placeholder:text-thinGray placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.31 placeholder:text-trial"
-              placeholder="example@mail.com"
-              // onBlur={handleBlur}
-              // onChange={handleChange}
+              onBlur={handleBlur}
+              onChange={handleChange}
               value={values.email}
               disabled
               errors={Boolean(touched.email && errors.email)}
@@ -380,7 +401,7 @@ const Account = () => {
                         {renderAccountForm(handleBlur, handleChange, values, touched, errors)}
                         <div className="py-7">
                           <div className="flex items-center justify-end w-full">
-                            <NavLink to={`${workspaceId}/dashboard`} className="p-0 m-0 mr-2">
+                            <NavLink to={!decodedToken.isAdmin ? `/${workspaceId}/dashboard` : '/admin/users'} className="p-0 m-0 mr-2">
                               <Button
                                 type="button"
                                 text="Cancel"
@@ -493,7 +514,7 @@ const Account = () => {
                           </a>
                         </div>
                         <div className="flex   items-center">
-                          <NavLink to={`${workspaceId}/dashboard`} className="p-0 m-0 mr-2">
+                          <NavLink to={!decodedToken.isAdmin ? `/${workspaceId}/dashboard` : '/admin/users'} className="p-0 m-0 mr-2">
                             <Button
                               type="button"
                               text="Cancel"
@@ -521,8 +542,7 @@ const Account = () => {
               <div className="-mt-24 ">
                 <img
                   className="bg-cover bg-center border-5 border-white rounded-full w-100 h-100 bg-[#abcf6b]"
-                  // src={`${profileData?.profilePhotoUrl ? profileData?.profilePhotoUrl : profileImage}`}
-                  src={`${profileData?.profilePhotoUrl ? (profileUploadImage ? profileUploadImage : profileData?.profilePhotoUrl) : profileImage}`}
+                  src={`${profileUploadImage ? profileUploadImage : profileData?.profilePhotoUrl ? profileData?.profilePhotoUrl : profileImage}`}
                   onClick={() => {
                     imageRef.current?.click();
                   }}
@@ -541,10 +561,10 @@ const Account = () => {
                 <input
                   type="file"
                   className="hidden absolute top-0 left-0 w-full flex-grow"
-                  placeholder="uplaod image"
+                  placeholder="upload image"
+                  accept="image/png, image/gif, image/jpeg"
                   id="inputFile"
                   ref={imageRef}
-                  accept="image/*"
                   onChange={(e) => imageUploadHandler(e)}
                 />
               </div>
@@ -582,9 +602,10 @@ const profileUpdateSchema = Yup.object().shape({
     .matches(userName_regex, 'Username is not valid')
     .trim(),
   organization: Yup.string()
-    .min(2, 'Compstring Name must be at least 2 characters')
+    .min(2, 'Company Name must be at least 2 characters')
     .max(15, 'Company Name should not exceed 15 characters')
     .strict(true)
+    .required('Organization name must be alphanumeric')
     .matches(companyName_regex, 'Company Name is not valid')
     .trim('White spaces are not allowed')
 });
