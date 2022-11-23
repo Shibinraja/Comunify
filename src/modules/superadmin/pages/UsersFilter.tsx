@@ -278,7 +278,7 @@ const UsersFilter: FC<UserMemberTypesProps> = ({ page, limit, searchText, filter
         ...(filteredDate.filterEndDate ? { 'createdAT.lte': filteredDate.filterEndDate } : {}),
         ...(checkPlatform.length ? { platformId: checkPlatform } : {}),
         ...(checkDomain.length ? { domain: checkDomain } : {}),
-        ...(checkSubscription.length ? { subscription: checkSubscription } : {}),
+        ...(checkSubscription.length ? { subscriptionPlanId: checkSubscription } : {}),
         ...(endDate ? { 'joinedAt.lte': endDate && convertEndDate(endDate) } : {}),
         ...(startDate ? { 'joinedAt.gte': startDate && convertStartDate(startDate) } : {}),
         ...(expiryEnd ? { 'expiryAt.lte': expiryEnd && convertEndDate(expiryEnd) } : {}),
