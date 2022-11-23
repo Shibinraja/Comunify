@@ -472,7 +472,7 @@ const Members: React.FC = () => {
                                   <div className="font-Poppins font-normal text-card text-infoBlack leading-5 pr-4 tags-ellipse">{'--'}</div>
                                 )}
                                 <div
-                                  className="font-Poppins font-medium text-trial text-infoBlack leading-1.31"
+                                  className="font-Poppins font-medium text-trial text-tag leading-1.12 capitalize underline cursor-pointer"
                                   onClick={() => navigateToProfile((member?.name as { name: string; id: string })?.id as string)}
                                 >
                                   {(member?.tags as Array<Record<string, unknown>>)?.length > 2

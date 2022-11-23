@@ -1,43 +1,53 @@
 /* eslint-disable indent */
 /* eslint-disable no-unused-vars */
-import Button from 'common/button';
 import React, { useEffect, useState } from 'react';
-import slackIcon from '../../../../assets/images/slack.svg';
-import discordIcon from '../../../../assets/images/discord.svg';
-import redditLogoIcon from '../../../../assets/images/reddit_logo.png';
-import githubLogoIcon from '../../../../assets/images/github_logo.png';
-import { TabPanel } from 'common/tabs/TabPanel';
-import { NavigateToConnectPage, NavigateToDiscordConnectPage, NavigateToRedditConnectPage } from 'modules/settings/services/settings.services';
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
-import Modal from 'react-modal';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
-import vanillaIcon from '../../../../assets/images/vanilla-forum.svg';
-import { showErrorToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
-import usePlatform from '../../../../hooks/usePlatform';
+
+import * as Yup from 'yup';
+import Modal from 'react-modal';
+import { Form, Formik } from 'formik';
+import Skeleton from 'react-loading-skeleton';
+
+import Button from 'common/button';
+import Input from '../../../../common/input';
+import { TabPanel } from 'common/tabs/TabPanel';
+import { ModalDrawer } from 'common/modals/ModalDrawer';
+import { NavigateToConnectPage, NavigateToDiscordConnectPage, NavigateToRedditConnectPage } from 'modules/settings/services/settings.services';
+
+import { PlatformsEnumType } from './IntegrationDrawerTypes';
+
 import { DiscordConnectResponse, PlatformConnectResponse, RedditConnectResponseData } from '../../../../interface/interface';
-import { IntegrationResponse, NetworkResponse } from '../../../../lib/api';
-import { API_ENDPOINT } from '../../../../lib/config';
-import { getLocalWorkspaceId } from '../../../../lib/helper';
-import { request } from '../../../../lib/request';
-import { AppDispatch } from '../../../../store';
 import {
+  ConnectBody,
   ConnectedPlatforms,
   ModalState,
   PlatformIcons,
   PlatformResponse,
   PlatformsStatus,
-  ConnectBody,
   VanillaForumsConnectData
 } from '../../interface/settings.interface';
-import settingsSlice from '../../store/slice/settings.slice';
-import Input from '../../../../common/input';
-import './Integration.css';
+
+import { API_ENDPOINT } from '@/lib/config';
+import { AppDispatch } from '../../../../store';
+import { request } from '../../../../lib/request';
+import usePlatform from '../../../../hooks/usePlatform';
+import { getLocalWorkspaceId } from '../../../../lib/helper';
 import { IntegrationModalDrawer } from './IntegrationModalDrawer';
-import { PlatformsEnumType } from './IntegrationDrawerTypes';
-import { ModalDrawer } from 'common/modals/ModalDrawer';
+import { IntegrationResponse, NetworkResponse } from '../../../../lib/api';
+import { showErrorToast, showInfoToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
+
+import discordIcon from '../../../../assets/images/discord.svg';
+import githubLogoIcon from '../../../../assets/images/github_logo.png';
+import redditLogoIcon from '../../../../assets/images/reddit_logo.png';
+import slackIcon from '../../../../assets/images/slack.svg';
+import vanillaIcon from '../../../../assets/images/vanilla-forum.svg';
+
+import settingsSlice from '../../store/slice/settings.slice';
+
+import './Integration.css';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 Modal.setAppElement('#root');
 
@@ -49,6 +59,11 @@ interface ConfirmPlatformToDisconnect {
   workspacePlatformSettingsId: string;
   platformIcon: string;
 }
+
+const vanillaInitialValues: Omit<VanillaForumsConnectData, 'workspaceId'> = {
+  vanillaBaseUrl: '',
+  vanillaAccessToken: ''
+};
 
 const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidden, selectedTab }) => {
   const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanilla: false, discord: false, reddit: false });
@@ -67,20 +82,16 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
     reddit: undefined
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isButtonConnect] = useState<boolean>(true);
   const [reconnectLoading, setReconnectLoading] = useState<boolean>(false);
   //   const [platformStatus, setPlatformStatus] = useState<PlatformsStatus>({ platform: undefined, status: undefined });
-  const [vanillaForumsData, setVanillaForumsData] = useState<VanillaForumsConnectData>({
-    vanillaAccessToken: '',
-    vanillaBaseUrl: '',
-    workspaceId: ''
-  });
   const [integrationDisconnect, setIntegrationDisconnect] = useState<boolean>(false);
-  const { PlatformFilterResponse } = usePlatform();
-  const dispatch: AppDispatch = useDispatch();
+
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const workspaceId = getLocalWorkspaceId();
-  const [isButtonConnect] = useState<boolean>(true);
+  const dispatch: AppDispatch = useDispatch();
+  const { PlatformFilterResponse } = usePlatform();
 
   const { PlatformsConnected } = usePlatform();
 
@@ -261,13 +272,12 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
   };
 
   // eslint-disable-next-line space-before-function-paren
-  const sendVanillaData = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  const sendVanillaData = async (values: Omit<VanillaForumsConnectData, 'workspaceId'>) => {
     setIsLoading(true);
     try {
-      event.preventDefault();
       const body: VanillaForumsConnectData = {
-        vanillaBaseUrl: vanillaForumsData.vanillaBaseUrl,
-        vanillaAccessToken: vanillaForumsData.vanillaAccessToken,
+        vanillaBaseUrl: values.vanillaBaseUrl,
+        vanillaAccessToken: values.vanillaAccessToken,
         workspaceId
       };
       const connectResponse: IntegrationResponse<PlatformConnectResponse> = await request.post(`${API_ENDPOINT}/v1/vanilla/connect`, body);
@@ -276,7 +286,7 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
         setIsLoading(false);
       }
       if (connectResponse?.data?.data?.id) {
-        showSuccessToast('Integration in progress...');
+        showInfoToast('Integration in progress...');
         try {
           const completeSetupResponse: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/vanilla/complete-setup`, {
             workspaceId,
@@ -358,6 +368,7 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
       workspaceId
     };
     try {
+      showInfoToast(`${platform} reconnect is in progress...`);
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
         setShowAlert((prevState) => ({ ...prevState, slack: false }));
@@ -382,7 +393,7 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
       workspaceId
     };
     setReconnectLoading(true);
-    showSuccessToast('Integration in progress...');
+    showInfoToast(`${platform} reconnect is in progress...`);
     try {
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
@@ -407,6 +418,7 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
       workspaceId
     };
     try {
+      showInfoToast(`${platform} reconnect is in progress...`);
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
         setShowAlert((prevState) => ({ ...prevState, discord: false }));
@@ -433,6 +445,7 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
       workspaceId
     };
     try {
+      showInfoToast(`${platform} reconnect is in progress...`);
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
         setShowAlert((prevState) => ({ ...prevState, reddit: false }));
@@ -588,70 +601,80 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
                 integrate <span className="font-normal px-2">Vanilla Forums</span>
               </h3>
               <div className="flex flex-col px-[1.875rem] pt-9">
-                <form>
-                  <div className="form-group">
-                    <label htmlFor="siteUrl" className="font-Poppins font-normal text-infoBlack text-sm leading-5">
-                      Site URL*
-                    </label>
-                    <h1 className="font-Inter font-normal text-error leading-7 text-vanillaDescription">
-                      Enter the full URL to your Vanilla site in this format: https://{`yourdomain`}.com
-                    </h1>
-                    <Input
-                      type="text"
-                      placeholder="Enter URL"
-                      label="Site URL"
-                      id="siteUrlId"
-                      name="SiteUrl"
-                      value={vanillaForumsData?.vanillaBaseUrl}
-                      onChange={(e) => setVanillaForumsData((prevState) => ({ ...prevState, vanillaBaseUrl: e.target.value }))}
-                      className="h-2.81 pr-3.12 rounded-md border-app-result-card-border mt-[0.4375rem] bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-thinGray placeholder:text-sm placeholder:leading-6 placeholder:font-Poppins font-Poppins box-border"
-                    />
-                  </div>
-                  <div className="form-group pt-1.12">
-                    <label htmlFor="accessToken" className="font-Poppins font-normal text-infoBlack text-sm leading-5">
-                      Access Token*
-                    </label>
-                    <h1 className="font-Inter font-normal text-error leading-7 text-vanillaDescription">
-                      You can learn how to create an access Token
-                      <span className="text-tag cursor-pointer hover:underline pl-1">
-                        <a href="https://success.vanillaforums.com/kb/articles/41" target={'_blank'} rel="noreferrer">
-                          here.
-                        </a>{' '}
-                      </span>
-                    </h1>
-                    <Input
-                      type="text"
-                      placeholder="Enter access token"
-                      label="Access Token"
-                      id="accessTokenId"
-                      name="accessToken"
-                      value={vanillaForumsData?.vanillaAccessToken}
-                      onChange={(e) => setVanillaForumsData((prevState) => ({ ...prevState, vanillaAccessToken: e.target.value }))}
-                      className="h-2.81 pr-3.12 rounded-md border-app-result-card-border mt-[0.4375rem] bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-thinGray placeholder:text-sm placeholder:leading-6 placeholder:font-Poppins font-Poppins box-border"
-                    />
-                  </div>
-                  <div className="flex justify-end pt-[1.875rem]">
-                    <Button
-                      text="Cancel"
-                      type="submit"
-                      className="cancel mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  h-2.81 w-5.25  rounded border-none"
-                      onClick={() => handleVanillaModal(false)}
-                    />
-                    <Button
-                      text="Save"
-                      type="submit"
-                      disabled={isLoading ? true : !vanillaForumsData.vanillaAccessToken || !vanillaForumsData.vanillaBaseUrl ? true : false}
-                      onClick={(e) => sendVanillaData(e)}
-                      className={`text-white font-Poppins text-error font-medium leading-5 btn-save-modal
-                       cursor-pointer rounded shadow-contactBtn w-5.25  ${isLoading
-                          ? 'opacity-50 cursor-not-allowed '
-                          : !vanillaForumsData.vanillaAccessToken || !vanillaForumsData.vanillaBaseUrl
-                            ? 'opacity-50 cursor-not-allowed '
-                            : ''
-                        } border-none h-2.81`}
-                    />
-                  </div>
-                </form>
+                <Formik initialValues={vanillaInitialValues} onSubmit={sendVanillaData} validationSchema={vanillaDataSchema}>
+                  {({ errors, handleBlur, handleChange, touched, values }): JSX.Element => (
+                    <Form>
+                      <div className="form-group">
+                        <label htmlFor="siteUrl" className="font-Poppins font-normal text-infoBlack text-sm leading-5">
+                          Site URL*
+                        </label>
+                        <h1 className="font-Inter font-normal text-error leading-7 text-vanillaDescription">
+                          Enter the full URL to your Vanilla site in this format: https://{`yourdomain`}.com
+                        </h1>
+                        <Input
+                          type="text"
+                          placeholder="Enter URL"
+                          label="Site URL"
+                          id="siteUrlId"
+                          name="vanillaBaseUrl"
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          value={values?.vanillaBaseUrl}
+                          errors={Boolean(touched.vanillaBaseUrl && errors.vanillaBaseUrl)}
+                          helperText={touched.vanillaBaseUrl && errors.vanillaBaseUrl}
+                          className="h-2.81 pr-3.12 rounded-md border-app-result-card-border mt-[0.4375rem] bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-thinGray placeholder:text-sm placeholder:leading-6 placeholder:font-Poppins font-Poppins box-border"
+                        />
+                      </div>
+                      <div className="form-group pt-1.12">
+                        <label htmlFor="accessToken" className="font-Poppins font-normal text-infoBlack text-sm leading-5">
+                          Access Token*
+                        </label>
+                        <h1 className="font-Inter font-normal text-error leading-7 text-vanillaDescription">
+                          You can learn how to create an access Token
+                          <span className="text-tag cursor-pointer hover:underline pl-1">
+                            <a href="https://success.vanillaforums.com/kb/articles/41" target={'_blank'} rel="noreferrer">
+                              here.
+                            </a>{' '}
+                          </span>
+                        </h1>
+                        <Input
+                          type="text"
+                          placeholder="Enter access token"
+                          label="Access Token"
+                          id="accessTokenId"
+                          name="vanillaAccessToken"
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          value={values?.vanillaAccessToken}
+                          errors={Boolean(touched.vanillaAccessToken && errors.vanillaAccessToken)}
+                          helperText={touched.vanillaAccessToken && errors.vanillaAccessToken}
+                          className="h-2.81 pr-3.12 rounded-md border-app-result-card-border mt-[0.4375rem] bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-thinGray placeholder:text-sm placeholder:leading-6 placeholder:font-Poppins font-Poppins box-border"
+                        />
+                      </div>
+                      <div className="flex justify-end pt-[1.875rem]">
+                        <Button
+                          text="Cancel"
+                          type="submit"
+                          className="cancel mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  h-2.81 w-5.25  rounded border-none"
+                          onClick={() => handleVanillaModal(false)}
+                        />
+                        <Button
+                          text="Save"
+                          type="submit"
+                          disabled={isLoading ? true : !values.vanillaAccessToken || !values.vanillaBaseUrl ? true : false}
+                          className={`text-white font-Poppins text-error font-medium leading-5 btn-save-modal
+                       cursor-pointer rounded shadow-contactBtn w-5.25  ${
+                         isLoading
+                           ? 'opacity-50 cursor-not-allowed '
+                           : !values.vanillaAccessToken || !values.vanillaBaseUrl
+                           ? 'opacity-50 cursor-not-allowed '
+                           : ''
+                       } border-none h-2.81`}
+                        />
+                      </div>
+                    </Form>
+                  )}
+                </Formik>
               </div>
             </div>
           </Modal>
@@ -691,8 +714,9 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
                   disabled={integrationDisconnect}
                   text="YES"
                   // eslint-disable-next-line max-len
-                  className={`border-none ml-2.5 yes-btn h-2.81 w-5.25 box-border rounded shadow-contactBtn cursor-pointer font-Poppins font-medium text-error leading-5 text-white btn-save-modal ${integrationDisconnect ? 'opacity-50 cursor-not-allowed' : ''
-                    }`}
+                  className={`border-none ml-2.5 yes-btn h-2.81 w-5.25 box-border rounded shadow-contactBtn cursor-pointer font-Poppins font-medium text-error leading-5 text-white btn-save-modal ${
+                    integrationDisconnect ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
                   onClick={() => handleConfirmation(true)}
                 />
               </div>
@@ -714,11 +738,17 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
         iconSrc={
           showAlert.slack ? slackIcon : showAlert.reddit ? redditLogoIcon : showAlert.discord ? discordIcon : showAlert.vanilla ? vanillaIcon : ''
         }
-        contextText={`Are you sure you want to reconnect the ${showAlert.slack ? 'slack' : showAlert.discord ? 'discord' : showAlert.reddit ? 'reddit' : ''
-          }  to your workspace?`}
+        contextText={`Are you sure you want to reconnect the ${
+          showAlert.slack ? 'slack' : showAlert.discord ? 'discord' : showAlert.reddit ? 'reddit' : ''
+        }  to your workspace?`}
       />
     </TabPanel>
   );
 };
 
 export default Integration;
+
+const vanillaDataSchema = Yup.object().shape({
+  vanillaBaseUrl: Yup.string().required('Site URL is required').trim(),
+  vanillaAccessToken: Yup.string().required('Access Token is required').trim()
+});
