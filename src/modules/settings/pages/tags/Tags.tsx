@@ -358,7 +358,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
         }}
       >
         <div className="flex flex-col items-center justify-center ">
-          <div className="mt-5 leading-6 text-black font-Inter font-semibold text-xl w-2/3 text-center">Are you sure want to delete tags?</div>
+          <div className="mt-5 leading-6 text-black font-Inter font-semibold text-xl w-2/3 text-center">Are you sure want to delete this tag?</div>
           <div className="flex mt-1.8">
             <Button
               type="button"
