@@ -95,10 +95,20 @@ const TopBar: React.FC = () => {
       search: props.search as string
     });
     setLoading((prev) => ({ ...prev, fetchLoading: false }));
-    setSuggestionList((prevState) => ({
-      result: prevState.result.concat(data?.result as unknown as GlobalSearchDataResult[]),
-      nextCursor: data?.nextCursor as string | null
-    }));
+    setSuggestionList((prevState) => {
+      // Check is there is any viable duplicate items in the list and sets the distinct one.
+      const CheckedDuplicateSearchList = new Set();
+
+      const searchList = prevState.result.concat(data?.result as unknown as GlobalSearchDataResult).filter((searchItem: GlobalSearchDataResult) => {
+        const duplicate = CheckedDuplicateSearchList.has(searchItem.id);
+        CheckedDuplicateSearchList.add(searchItem.id);
+        return !duplicate;
+      });
+      return {
+        result: searchList,
+        nextCursor: data?.nextCursor as string | null
+      };
+    });
   };
 
   const handleOutsideClick = (event: MouseEvent) => {
@@ -161,13 +171,22 @@ const TopBar: React.FC = () => {
   }, [resetProfilePic]);
 
   useEffect(() => {
+    setSuggestionList({
+      result: [],
+      nextCursor: null
+    });
     if (debouncedValue) {
-      getGlobalSearchItem({
-        cursor: null,
-        prop: 'search',
-        search: debouncedValue,
-        suggestionListCursor: suggestionList.nextCursor
-      });
+      const fetchGlobalSearchList = async () => {
+        await getGlobalSearchItem(
+          {
+            cursor: null,
+            prop: 'search',
+            search: debouncedValue,
+            suggestionListCursor: suggestionList.nextCursor
+          }
+        );
+      };
+      fetchGlobalSearchList();
     }
   }, [debouncedValue]);
 
@@ -184,11 +203,6 @@ const TopBar: React.FC = () => {
   //Function to search of the desired suggestionList.
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
-    setSuggestionList({
-      result: [],
-      nextCursor: null
-    });
-
     if (!searchText) {
       setSearchSuggestion('');
     } else {
@@ -491,7 +505,9 @@ const TopBar: React.FC = () => {
       </div>
       {suggestionList?.result?.length > 0 && isSuggestionListDropDown && (
         <div
-          className={`mt-[3px] box-border rounded-0.3 shadow-reportInput w-34.37 app-result-card-border overflow-auto absolute z-10 bg-white ${suggestionList.result.length > 4 ? 'h-12.375': `h-[${suggestionList.result.length * 30}]px`}`}
+          className={`mt-[3px] box-border rounded-0.3 shadow-reportInput w-34.37 app-result-card-border overflow-auto absolute z-10 bg-white ${
+            suggestionList.result.length > 4 ? 'h-12.375' : `h-[${suggestionList.result.length * 30}]px`
+          }`}
           onScroll={handleScroll}
         >
           {suggestionList.result.map((searchResult: GlobalSearchDataResult) => (
