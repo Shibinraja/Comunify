@@ -206,7 +206,13 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
             </p>
           </div>
           <div className="flex gap-4 items-center">
-            <button className="font-medium text-error text-tag hover:text-download" onClick={() => setAddCardForm(true)}>
+            <button
+              className="font-medium text-error text-tag hover:text-download"
+              onClick={() => {
+                getSecretKeyForStripe();
+                setAddCardForm(true);
+              }}
+            >
               ADD CARD
             </button>
           </div>

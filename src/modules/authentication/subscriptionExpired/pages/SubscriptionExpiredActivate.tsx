@@ -239,6 +239,7 @@ const SubscriptionExpiredActivate: React.FC = () => {
     if (!addedCardDetails?.length) {
       setIsBillingDetailsModal((prev) => ({ ...prev, billingDetails: true }));
     } else {
+      getSecretKeyForStripe();
       setIsBillingDetailsModal((prev) => ({ ...prev, cardDetails: true }));
     }
   };
