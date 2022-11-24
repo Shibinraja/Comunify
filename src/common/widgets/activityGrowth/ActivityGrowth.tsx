@@ -68,7 +68,7 @@ const ActivityGrowth: FC<WidgetComponentProps> = (props: WidgetComponentProps) =
         {!isManageMode && !isSidePanelOpen ? (
           <div className="relative h-[15rem] mt-7 bg-white rounded-xl">
             {isLoading ? (
-              <Skeleton count={count_5} width={500} className={'m-4'} wrapper={InlineWrapperWithMargin} />
+              <Skeleton count={count_5} width={'90%'} className={'m-4'} wrapper={InlineWrapperWithMargin} />
             ) : (
               <Chart
                 options={options}

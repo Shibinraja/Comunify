@@ -234,13 +234,13 @@ const QuickInfo: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
                   inActiveMembersData?.title ? (
                     inActiveMembersData?.title
                   ) : (
-                    'inActive Members'
+                    'Inactive Members'
                   )
                 ) : (
                   <Skeleton width={80} height={15} count={1} />
                 )
               ) : (
-                'inActive Members'
+                'Inactive Members'
               )}
             </div>
             <div className="mt-0.1512 font-Poppins font-normal text-status leading-1.12 text-xs dark:text-greyDark">
