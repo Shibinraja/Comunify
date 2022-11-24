@@ -177,6 +177,7 @@ const Users: React.FC = () => {
         filteredDate={filteredDate}
         setMembersList={setMembersList}
         setPage={setPage}
+        setFetchLoader={setFetchLoader}
       />
     ),
     [debouncedValue, filteredDate]
