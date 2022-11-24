@@ -15,7 +15,7 @@ import { getLocalWorkspaceId } from '@/lib/helper';
 import accountSlice from '../store/slice/account.slice';
 import { decodeToken } from '@/lib/decodeToken';
 import { useAppSelector } from '@/hooks/useRedux';
-import { showErrorToast } from 'common/toast/toastFunctions';
+import { showErrorToast, showInfoToast } from 'common/toast/toastFunctions';
 import { userProfileDataService } from '../services/account.services';
 import { companyName_regex, password_regex, userName_regex, whiteSpace_regex } from 'constants/constants';
 
@@ -140,6 +140,9 @@ const Account = () => {
 
   const imageUploadHandler = async (e: ChangeEvent<HTMLInputElement>) => {
     const imageFile = e.target.files?.[0];
+    if((imageFile?.size as number) >= 5e6) {
+      return  showInfoToast('File size is greater than 5MB. Please upload file below 5MB');
+    }
     if (
       imageFile?.name?.split('.')?.pop()?.search('jpg') === 0 ||
       imageFile?.name?.split('.')?.pop()?.search('jpeg') === 0 ||
