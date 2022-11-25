@@ -224,7 +224,7 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
         <div className="border-t border-[#E6E6E6] mt-8"></div>
 
         {!!addedCardDetails?.length && (
-          <div className="renewal mt-[44px] mb-10">
+          <div className="renewal mt-[30px] mb-5">
             <div className="flex justify-between  items-center">
               <div className="flex flex-col">
                 <h3 className="font-Poppins text-base text-renewalBlack leading-1.31 font-semibold dark:text-white">Auto Renewal</h3>
