@@ -766,3 +766,7 @@ input {
   margin-left: -11px;
   border-width: 11px;
 }
+
+.react-grid-layout {
+  right: 0.6rem;
+}

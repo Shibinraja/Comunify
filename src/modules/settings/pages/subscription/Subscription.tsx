@@ -169,6 +169,7 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
         <div className="flex border bg-paymentSubscription dark:bg-thirdDark w-full h-8.37 shadow-paymentSubscriptionCard box-border rounded-0.9 justify-between items-center px-[27px] mt-1.8">
           <div className="flex">
             <div className="flex flex-col">
+
               <div className="font-semibold font-Poppins leading-1.56 text-infoBlack dark:text-white text-base">Current Plan</div>
               <div className="mt-0.313 ">
                 <Button
