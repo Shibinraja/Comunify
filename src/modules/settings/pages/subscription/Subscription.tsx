@@ -223,7 +223,7 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
         </div>
         <div className="border-t border-[#E6E6E6] mt-8"></div>
 
-        {Boolean(addedCardDetails?.length) && (
+        {!!addedCardDetails?.length && (
           <div className="renewal mt-[44px] mb-10">
             <div className="flex justify-between  items-center">
               <div className="flex flex-col">
@@ -241,7 +241,7 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
           </div>
         )}
 
-        {Boolean(addedCardDetails?.length) && <div className="border-t border-[#E6E6E6] mt-8"></div>}
+        {!!addedCardDetails?.length && <div className="border-t border-[#E6E6E6] mt-8"></div>}
 
         {addedCardDetails?.length ? (
           <div>
