@@ -630,7 +630,30 @@ const Report: React.FC = () => {
                       </div>
                     </div>
                     {activateFilter.isPlatformActive && (
-                      <div className="flex flex-col gap-y-5 justify-center px-3 mb-3 ">
+                      <div className="flex flex-col justify-center px-3 mb-3 ">
+                        {/* <div
+                        className={`flex items-center gap-2 hover:bg-signUpDomain  transition ease-in duration-100 p-3  ${reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                          }`}
+                      >
+                        <div>
+                          <input
+                            type="checkbox"
+                            className={`checkbox ${reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                            id="all"
+                            name="all"
+                            onChange={(event) => handlePlatformAllCheckBox(event)}
+                            checked={checkedAllPlatform}
+                            disabled={reportUpdateValuesData ? true : false}
+                          />
+                        </div>
+                        <label
+                          className={`font-Poppins font-normal text-searchBlack leading-1.31 text-trial  ${reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                            }`}
+                          htmlFor="all"
+                        >
+                          All
+                        </label>
+                      </div> */}
                         {PlatformFilterResponse &&
                           PlatformFilterResponse.map(
                             (platform: PlatformResponse, index: number) =>
