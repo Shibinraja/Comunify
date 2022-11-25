@@ -3,7 +3,7 @@ import usePlatform from '@/hooks/usePlatform';
 import { convertEndDate, convertStartDate } from '@/lib/helper';
 import Button from 'common/button';
 import Input from 'common/input';
-import { email_regex, reportName_regex } from 'constants/constants';
+import { alphanumeric_regex, email_regex } from 'constants/constants';
 import { startOfDay, startOfMonth, startOfWeek, subDays, subMonths, subYears } from 'date-fns';
 import { Form, Formik } from 'formik';
 import {
@@ -358,11 +358,11 @@ const CreateReport = () => {
               .required('Report name is required')
               .min(4, 'Report name should be more than 4 character long')
               .max(25, 'Report name should not exceed 25 characters')
-              .matches(reportName_regex, 'Report name is not valid')
+              .matches(alphanumeric_regex, 'Report name is not valid')
               .trim(),
             description: Yup.string()
               .max(250, 'Description should not exceed 250 characters')
-              .matches(reportName_regex, 'Description is not valid')
+              .matches(alphanumeric_regex, 'Description is not valid')
               .trim(),
             schedule: Yup.lazy((value: string) => {
               if (Object.keys(checkedRadioId).includes('Yes') && value === 'NoSchedule') {

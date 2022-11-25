@@ -17,7 +17,7 @@ import { decodeToken } from '@/lib/decodeToken';
 import { useAppSelector } from '@/hooks/useRedux';
 import { showErrorToast, showInfoToast } from 'common/toast/toastFunctions';
 import { userProfileDataService } from '../services/account.services';
-import { companyName_regex, password_regex, userName_regex, whiteSpace_regex } from 'constants/constants';
+import { alphanumeric_regex, companyName_regex, password_regex, userName_regex, whiteSpace_regex } from 'constants/constants';
 
 import Input from 'common/input';
 import Button from 'common/button';
@@ -140,8 +140,8 @@ const Account = () => {
 
   const imageUploadHandler = async (e: ChangeEvent<HTMLInputElement>) => {
     const imageFile = e.target.files?.[0];
-    if((imageFile?.size as number) >= 5e6) {
-      return  showInfoToast('File size is greater than 5MB. Please upload file below 5MB');
+    if ((imageFile?.size as number) >= 5e6) {
+      return showInfoToast('File size is greater than 5MB. Please upload file below 5MB');
     }
     if (
       imageFile?.name?.split('.')?.pop()?.search('jpg') === 0 ||
@@ -208,7 +208,7 @@ const Account = () => {
     const userUpdateData = {
       fullName: values.fullName,
       userName: values.userName,
-      organization: values.organization,
+      ...(values.organization ? { organization: values.organization } : {}),
       domainSector: values.domainSector
     };
     dispatch(accountSlice.actions.userProfileUpdateData(userUpdateData));
@@ -289,7 +289,7 @@ const Account = () => {
                 name="organization"
                 id="organizationId"
                 className="shadow-inputShadow mt-0.40 h-2.81 px-3 app-result-card-border focus:outline-none box-border bg-white w-full py-2 rounded-0.3 placeholder:text-thinGray placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.31 placeholder:text-trial"
-                placeholder="Organization Name"
+                placeholder="Company Name"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values?.organization}
@@ -598,7 +598,8 @@ const profileUpdateSchema = Yup.object().shape({
   fullName: Yup.string()
     .required('Full Name is required')
     .min(2, 'Full Name must be at least 2 alphabets')
-    .max(50, 'Full Name should not exceed above 50 characters'),
+    .max(50, 'Full Name should not exceed above 50 characters')
+    .matches(alphanumeric_regex, 'Full Name is not valid'),
   userName: Yup.string()
     .min(5, 'Username should be more than 5 character long')
     .max(25, 'Username should not exceed 25 characters')
@@ -608,10 +609,11 @@ const profileUpdateSchema = Yup.object().shape({
   organization: Yup.string()
     .min(2, 'Company Name must be at least 2 characters')
     .max(15, 'Company Name should not exceed 15 characters')
+    .nullable(true)
     .strict(true)
-    .required('Organization name must be alphanumeric')
     .matches(companyName_regex, 'Company Name is not valid')
-    .trim('White spaces are not allowed')
+    .trim('White spaces are not allowed'),
+  domainSector: Yup.string().required('Domain is required')
 });
 
 const changePasswordSchema = Yup.object().shape({

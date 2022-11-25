@@ -35,7 +35,7 @@ export type SignUpFormValues = {
   userName: string;
   email: string;
   password: string;
-  companyName: string;
+  companyName?: string;
   domainSector: string;
 };
 
@@ -55,7 +55,7 @@ export interface SignUpInput {
   email: string;
   password: string;
   userName: string;
-  companyName: string;
+  companyName?: string;
   domainSector: string;
 }
 export interface VerifyEmailInput {
