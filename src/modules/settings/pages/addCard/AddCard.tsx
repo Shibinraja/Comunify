@@ -283,7 +283,7 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
         <div className="flex">
           <Button
             type="button"
-            text="Upgrade"
+            text="Upgrade Plan"
             disabled={subscriptionDetails?.subscriptionPackage?.name.toLocaleLowerCase().trim() === 'comunify plus'}
             onClick={handlePlanUpgrade}
             className={`submit border-none text-white font-Poppins text-error font-medium leading-1.31 ${

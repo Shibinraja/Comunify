@@ -169,7 +169,7 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
         <div className="flex border bg-paymentSubscription dark:bg-thirdDark w-full h-8.37 shadow-paymentSubscriptionCard box-border rounded-0.9 justify-between items-center px-[27px] mt-1.8">
           <div className="flex">
             <div className="flex flex-col">
-              <div className="font-semibold font-Poppins leading-1.56 text-infoBlack dark:text-white text-base">Current Plan</div>
+              <div className="font-semibold font-Poppins leading-1.56 text-infoBlack dark:text-white text-base">Selected Plan</div>
               <div className="mt-0.313 ">
                 <Button
                   type="button"
@@ -222,6 +222,26 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
           </div>
         </div>
         <div className="border-t border-[#E6E6E6] mt-8"></div>
+
+        {Boolean(addedCardDetails?.length) && (
+          <div className="renewal mt-[44px] mb-10">
+            <div className="flex justify-between  items-center">
+              <div className="flex flex-col">
+                <h3 className="font-Poppins text-base text-renewalBlack leading-1.31 font-semibold dark:text-white">Auto Renewal</h3>
+                <p className="text-renewalGray font-normal  text-trial leading-1.31 mt-1 dark:text-greyDark">
+                  Your auto renewal is {toggle ? 'active' : 'inactive'}{' '}
+                </p>
+              </div>
+              <div className="flex gap-4 items-center">
+                <div className="text-renewalLightGray text-trial font-medium leading-1.31 font-Poppins dark:text-white">NO</div>
+                <ToggleButton value={toggle} onChange={() => setPlanAutoRenewal()} isLoading={isLoading} />
+                <div className="text-trial font-medium leading-1.31 font-Poppins dark:text-white">YES</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {Boolean(addedCardDetails?.length) && <div className="border-t border-[#E6E6E6] mt-8"></div>}
 
         {addedCardDetails?.length ? (
           <div>
@@ -401,24 +421,6 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
             </Modal>
           </div>
         </div>
-
-        {subscriptionDetails?.subscriptionPackage?.name.toLocaleLowerCase().trim() === 'comunify plus' && (
-          <div className="renewal mt-[44px] mb-10">
-            <div className="flex justify-between  items-center">
-              <div className="flex flex-col">
-                <h3 className="font-Poppins text-base text-renewalBlack leading-1.31 font-semibold dark:text-white">Auto Renewal</h3>
-                <p className="text-renewalGray font-normal  text-trial leading-1.31 mt-1 dark:text-greyDark">
-                  Your auto renewal is {toggle ? 'active' : 'inactive'}{' '}
-                </p>
-              </div>
-              <div className="flex gap-4 items-center">
-                <div className="text-renewalLightGray text-trial font-medium leading-1.31 font-Poppins dark:text-white">NO</div>
-                <ToggleButton value={toggle} onChange={() => setPlanAutoRenewal()} isLoading={isLoading} />
-                <div className="text-trial font-medium leading-1.31 font-Poppins dark:text-white">YES</div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </TabPanel>
   );

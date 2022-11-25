@@ -390,7 +390,7 @@ const SubscriptionExpiredActivate: React.FC = () => {
               />
               <Button
                 type="button"
-                text="Upgrade"
+                text="Upgrade Plan"
                 disabled={isLoading.upgrade || !addedCardDetails?.length ? true : false}
                 onClick={() => setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: true }))}
                 className={`submit border-none text-white font-Poppins text-error font-medium leading-1.31 ${
