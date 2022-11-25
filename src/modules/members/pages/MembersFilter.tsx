@@ -405,7 +405,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
               </div>
             </div>
             {activateFilter.isPlatformActive && (
-              <div className="flex flex-col gap-y-5 p-3 max-h-[11.25rem] overflow-scroll">
+              <div className="flex flex-col gap-y-5 px-3 py-3 max-h-[11.25rem] overflow-y-scroll">
                 {PlatformFilterResponse &&
                   PlatformFilterResponse.map(
                     (platform: PlatformResponse, index: number) =>
@@ -570,7 +570,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                     type="text"
                     name="locationName"
                     id="locationName"
-                    className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-profileCard rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
+                    className="inputs mx-auto focus:outline-none pl-3 pr-7 box-border bg-white shadow-profileCard rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
                     placeholder="Search Location"
                     onChange={handleLocationSearchTextChange}
                   />
@@ -696,9 +696,8 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                 onClick={submitFilterChange}
                 type="button"
                 text="Apply"
-                className={`border-none btn-save-modal rounded-0.31 h-2.063 w-1/2 ml-1 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${
-                  memberColumnsLoader ? 'cursor-not-allowed' : ''
-                }`}
+                className={`border-none btn-save-modal rounded-0.31 h-2.063 w-1/2 ml-1 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${memberColumnsLoader ? 'cursor-not-allowed' : ''
+                  }`}
               />
             </div>
           </div>

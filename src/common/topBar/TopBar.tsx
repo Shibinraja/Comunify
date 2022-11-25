@@ -420,7 +420,7 @@ const TopBar: React.FC = () => {
                         <div className="flex flex-col gap-5 overflow-y-scroll member-section mt-1.8 max-h-96 height-member-merge ">
                           {Array.from({ length: 10 }, (_, i) => i + 1).map((type: number) => (
                             <Fragment key={type}>
-                              <div className="flex py-[10px] border-b border-[#E6E6E6] items-center">
+                              <div className="flex py-[10px] border-b border-[#E6E6E6]">
                                 <Skeleton width={40} height={40} borderRadius={'50%'} className="rounded-full" />
                                 <div className="flex flex-col pl-2">
                                   <span className="text-[#070707] text-sm">
@@ -505,9 +505,8 @@ const TopBar: React.FC = () => {
       </div>
       {suggestionList?.result?.length > 0 && isSuggestionListDropDown && (
         <div
-          className={`mt-[3px] box-border rounded-0.3 shadow-reportInput w-34.37 app-result-card-border overflow-auto absolute z-10 bg-white ${
-            suggestionList.result.length > 4 ? 'h-12.375' : `h-[${suggestionList.result.length * 30}]px`
-          }`}
+          className={`mt-[3px] box-border rounded-0.3 shadow-reportInput w-34.37 app-result-card-border overflow-auto absolute z-10 bg-white ${suggestionList.result.length > 4 ? 'h-12.375' : `h-[${suggestionList.result.length * 30}]px`
+            }`}
           onScroll={handleScroll}
         >
           {suggestionList.result.map((searchResult: GlobalSearchDataResult) => (
