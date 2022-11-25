@@ -82,23 +82,29 @@ const CheckoutForm: React.FC<Props> = ({
     }
     if (redirectCondition === 'add-card') {
       if (response?.setupIntent?.payment_method) {
-        passNewlyAddedCardDetailsToChild &&
-          passNewlyAddedCardDetailsToChild(await getNewlyAddedCardDetails(response?.setupIntent?.payment_method as string));
+        const newCardData = await getNewlyAddedCardDetails(response?.setupIntent?.payment_method as string);
+        if (newCardData.cardLastFourDigits) {
+          passNewlyAddedCardDetailsToChild && passNewlyAddedCardDetailsToChild(newCardData);
+          setIsLoading(false);
+          handleCheckoutFormModal && handleCheckoutFormModal();
+          setTimeout(() => {
+            showSuccessToast('Payment card added successfully');
+          }, 1000);
+        }
+        setIsLoading(false);
       }
-      setIsLoading(false);
-      handleCheckoutFormModal && handleCheckoutFormModal();
-      setTimeout(() => {
-        showSuccessToast('Payment card added successfully');
-      }, 1000);
     } else {
       if (response?.setupIntent?.payment_method) {
-        passNewlyAddedCardDetailsToChild &&
-          passNewlyAddedCardDetailsToChild(await getNewlyAddedCardDetails(response?.setupIntent?.payment_method as string));
+        const newCardData = await getNewlyAddedCardDetails(response?.setupIntent?.payment_method as string);
+        if (newCardData.cardLastFourDigits) {
+          passNewlyAddedCardDetailsToChild && passNewlyAddedCardDetailsToChild(newCardData);
+          showSuccessToast('Payment card added');
+          handleEffect && handleEffect();
+          setIsLoading(false);
+          handleCheckoutFormModal && handleCheckoutFormModal();
+        }
+        setIsLoading(false);
       }
-      showSuccessToast('Payment card added');
-      handleEffect && handleEffect();
-      setIsLoading(false);
-      handleCheckoutFormModal && handleCheckoutFormModal();
     }
   };
 

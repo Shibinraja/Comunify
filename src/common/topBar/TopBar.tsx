@@ -139,7 +139,7 @@ const TopBar: React.FC = () => {
       }
     });
 
-    if (!decodedToken.isAdmin) {
+    if (!decodedToken?.isAdmin) {
       notificationCount(workspaceId as string);
     }
 
@@ -249,11 +249,11 @@ const TopBar: React.FC = () => {
         dispatch(authSlice.actions.signOut());
         break;
       case 'Profile Settings':
-        if (!decodedToken.isAdmin) {
+        if (!decodedToken?.isAdmin) {
           navigate(`${workspaceId}/account`);
         }
 
-        if (decodedToken.isAdmin) {
+        if (decodedToken?.isAdmin) {
           navigate(`admin/settings`);
         }
         break;
@@ -355,7 +355,7 @@ const TopBar: React.FC = () => {
     <div className=" mt-6 px-12 xl:px-20">
       <div className="flex justify-between items-center ">
         <div className="relative dark:bg-primaryDark`" ref={suggestionListDropDownRef}>
-          {!decodedToken.isAdmin && (
+          {!decodedToken?.isAdmin && (
             <Fragment>
               <input
                 name="search"
@@ -398,7 +398,7 @@ const TopBar: React.FC = () => {
               </div>
             )} */}
           </div>
-          {!decodedToken.isAdmin && (
+          {!decodedToken?.isAdmin && (
             <div className="pl-1.68 relative cursor-pointer" ref={notificationRef}>
               <div className="notification-icon" onClick={handleNotificationActive}>
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
