@@ -49,10 +49,12 @@ const ReportDetail = () => {
   useEffect(() => {
     setIsManageMode(false);
     if (reportHistoryId) {
+      setWidgetLoading(true);
       getReportHistoryDetailsListService({
         workspaceId: workspaceId!,
         reportHistoryId: reportHistoryId!
       }).then((reportHistory) => {
+        setWidgetLoading(true);
         if(reportHistory?.report) {
           setSaveHistoryDetail(reportHistory);
 

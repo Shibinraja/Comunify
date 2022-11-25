@@ -15,7 +15,7 @@ import { PanelWidgetsType, TransformWidgetDataType, WidgetComponentProps, Widget
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 export default function WidgetContainer(props: WidgetContainerProps) {
-  const { isManageMode, widgets, setWidgets, setTransformedWidgetData, filters, setIsDragMode, widgetLoading } = props;
+  const { isManageMode, widgets, setWidgets, setTransformedWidgetData, filters, setIsDragMode, widgetLoading  } = props;
 
   const [widgetKey, setWidgetKey] = useState<string[]>(['']);
   const [widgetRemoved, setWidgetRemoved] = React.useState<string>();
