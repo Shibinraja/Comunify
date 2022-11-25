@@ -279,6 +279,7 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
       )}
 
       <div className="pt-10 pb-4 flex justify-end">
+
         <div className="flex">
           <Button
             type="button"
