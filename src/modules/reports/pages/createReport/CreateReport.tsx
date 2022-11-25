@@ -384,7 +384,7 @@ const CreateReport = () => {
               return Yup.string().notRequired();
             }),
             emails: Yup.array()
-              .transform(function(value, originalValue) {
+              .transform(function (value, originalValue) {
                 if (this.isType(value) && value !== null) {
                   return value;
                 }
@@ -508,33 +508,29 @@ const CreateReport = () => {
                       </label>
                       <div className="flex gap-[0.63rem] mt-0.375 ">
                         <div
-                          className={`w-4.06 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${
-                            customDateLink[CustomReportDateType.Day] ? 'border-gradient-rounded-member' : 'app-input-card-border'
-                          } `}
+                          className={`w-4.06 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${customDateLink[CustomReportDateType.Day] ? 'border-gradient-rounded-member' : 'app-input-card-border'
+                            } `}
                           onClick={() => selectCustomDate('1day')}
                         >
                           1 Day
                         </div>
                         <div
-                          className={`w-[71px] 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${
-                            customDateLink[CustomReportDateType.Week] ? 'border-gradient-rounded-member' : 'app-input-card-border'
-                          } `}
+                          className={`w-[71px] 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${customDateLink[CustomReportDateType.Week] ? 'border-gradient-rounded-member' : 'app-input-card-border'
+                            } `}
                           onClick={() => selectCustomDate('7day')}
                         >
                           1 Week
                         </div>
                         <div
-                          className={`w-[75px] 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${
-                            customDateLink[CustomReportDateType.Month] ? 'border-gradient-rounded-member' : 'app-input-card-border'
-                          } `}
+                          className={`w-[75px] 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${customDateLink[CustomReportDateType.Month] ? 'border-gradient-rounded-member' : 'app-input-card-border'
+                            } `}
                           onClick={() => selectCustomDate('1month')}
                         >
                           1 Month
                         </div>
                         <div
-                          className={`w-[75px] 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${
-                            customDateLink[CustomReportDateType.Year] ? 'border-gradient-rounded-member' : 'app-input-card-border'
-                          }`}
+                          className={`w-[75px] 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${customDateLink[CustomReportDateType.Year] ? 'border-gradient-rounded-member' : 'app-input-card-border'
+                            }`}
                           onClick={() => selectCustomDate('1year')}
                         >
                           1 Year
@@ -605,11 +601,11 @@ const CreateReport = () => {
                     Choose Platform
                   </label>
                   <div
-                    className={`w-full h-3.06 app-result-card-border flex items-center px-3 mt-0.375 shadow-reportInput rounded-0.3 font-Poppins font-normal text-trial text-thinGray leading-1.31 relative ${
-                      reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-                    }`}
+                    className={`w-full h-3.06 app-result-card-border focus:outline-none flex items-center px-3 mt-0.375 shadow-reportInput rounded-0.3 font-Poppins font-normal text-trial text-thinGray leading-1.31 relative  ${reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                      }`}
                     onClick={() => setIsPlatformActive((prevActive) => !prevActive)}
                   >
+                    <input className="w-[1px] border-none focus:outline-none" type="text" />
                     Select
                     <div className="absolute right-4">
                       <img src={dropdownIcon} alt="" className={isPlatformActive ? 'rotate-0' : 'rotate-180'} />
@@ -618,9 +614,8 @@ const CreateReport = () => {
                   {isPlatformActive && (
                     <div className="flex-flex-col  app-result-card-border box-border w-full rounded-0.3 shadow-reportInput cursor-pointer absolute top-[4.8rem] bg-white z-40">
                       <div
-                        className={`flex items-center gap-2 hover:bg-signUpDomain  transition ease-in duration-100 p-3  ${
-                          reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-                        }`}
+                        className={`flex items-center gap-2 hover:bg-signUpDomain  transition ease-in duration-100 p-3  ${reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                          }`}
                       >
                         <div>
                           <input
@@ -634,9 +629,8 @@ const CreateReport = () => {
                           />
                         </div>
                         <label
-                          className={`font-Poppins font-normal text-searchBlack leading-1.31 text-trial  ${
-                            reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-                          }`}
+                          className={`font-Poppins font-normal text-searchBlack leading-1.31 text-trial  ${reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                            }`}
                           htmlFor="all"
                         >
                           All
@@ -646,9 +640,8 @@ const CreateReport = () => {
                         PlatformsConnected.map((platform: ConnectedPlatforms) => (
                           <Fragment key={platform.id}>
                             <div
-                              className={`flex items-center gap-2 hover:bg-signUpDomain  transition ease-in duration-100 p-3  ${
-                                reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-                              }`}
+                              className={`flex items-center gap-2 hover:bg-signUpDomain  transition ease-in duration-100 p-3  ${reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                                }`}
                             >
                               <div>
                                 <input
@@ -662,9 +655,8 @@ const CreateReport = () => {
                                 />
                               </div>
                               <label
-                                className={`font-Poppins font-normal text-searchBlack leading-1.31 text-trial  ${
-                                  reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-                                }`}
+                                className={`font-Poppins font-normal text-searchBlack leading-1.31 text-trial  ${reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                                  }`}
                                 htmlFor={platform.id as string}
                               >
                                 {platform?.name}
@@ -687,8 +679,9 @@ const CreateReport = () => {
                       </label>
                       <div
                         onClick={() => setIsReportActive(!isReportActive)}
-                        className="relative w-full h-3.06 app-result-card-border flex items-center px-3 mt-0.375 shadow-reportInput rounded-0.3 font-Poppins font-normal text-trial text-thinGray leading-1.31 cursor-pointer "
+                        className="relative w-full h-3.06 app-result-card-border focus:outline-none flex items-center px-3 mt-0.375 shadow-reportInput rounded-0.3 font-Poppins font-normal text-trial text-thinGray leading-1.31 cursor-pointer "
                       >
+                        <input className="w-[1px] border-none focus:outline-none" type="text" />
                         {selectedReport === 'NoSchedule' ? 'Select' : !selectedReport ? 'Select' : selectedReport}
                         <div className="absolute right-4">
                           <img src={dropdownIcon} alt="" className={isReportActive ? 'rotate-0' : 'rotate-180'} />

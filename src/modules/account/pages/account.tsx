@@ -306,7 +306,9 @@ const Account = () => {
               <div className="flex flex-col relative w-full">
                 <div className="cursor-pointer" ref={dropDownRef} onClick={() => setDropDownActive(!isDropDownActive)}>
                   <div className="flex items-center w-full  justify-between p-2 app-result-card-border bg-white  py-2 box-border shadow-inputShadow  rounded-0.3 mt-0.40 font-Poppins text-thinGray font-normal leading-1.31 text-trial">
+
                     <div className={selectedDomainSector === 'Select' ? 'text-secondaryGray' : 'text-black'}>
+                      <input className="w-[1px] border-none focus:outline-none" type="text" />
                       {selectedDomainSector ? selectedDomainSector : 'Select'}
                     </div>
                     <img src={dropdownIcon} alt="" className={isDropDownActive ? 'rotate-180' : 'rotate-0'} />
@@ -317,9 +319,8 @@ const Account = () => {
                     {options.map((option: string, index: number) => (
                       <li
                         ref={domainRef}
-                        className={`${
-                          cursor === index ? 'bg-signUpDomain' : null
-                        } flex flex-col p-2 hover:bg-signUpDomain transition ease-in duration-300 cursor-pointer`}
+                        className={`${cursor === index ? 'bg-signUpDomain' : null
+                          } flex flex-col p-2 hover:bg-signUpDomain transition ease-in duration-300 cursor-pointer`}
                         onKeyDown={handleKeyDown}
                         tabIndex={0}
                         key={option}
@@ -439,11 +440,10 @@ const Account = () => {
                     <Form className="w-full mt-1.9 " autoComplete="off">
                       <div className="flex justify-between">
                         <div
-                          className={`currentPassword relative w-1/2 ${
-                            errors.currentPassword === 'Password must have one uppercase, one lowercase, a digit and special characters'
+                          className={`currentPassword relative w-1/2 ${errors.currentPassword === 'Password must have one uppercase, one lowercase, a digit and special characters'
                               ? 'cr-currentPassword '
                               : ''
-                          }`}
+                            }`}
                         >
                           <label htmlFor="currentPassword" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31 pb-1">
                             Current Password
@@ -455,11 +455,10 @@ const Account = () => {
                             id="currentPassword"
                             name="currentPassword"
                             // eslint-disable-next-line max-len
-                            className={`h-2.81 relative  rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${
-                              touched.currentPassword && errors.currentPassword
+                            className={`h-2.81 relative  rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${touched.currentPassword && errors.currentPassword
                                 ? 'border-lightRed h-2.81 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
                                 : ''
-                            }`}
+                              }`}
                             onBlur={handleBlur}
                             onChange={handleChange}
                             value={values.currentPassword}
@@ -475,11 +474,10 @@ const Account = () => {
                           </div>
                         </div>
                         <div
-                          className={`currentPassword relative w-1/2 pl-[19px] ${
-                            errors.newPassword === 'Password must have one uppercase, one lowercase, a digit and special characters'
+                          className={`currentPassword relative w-1/2 pl-[19px] ${errors.newPassword === 'Password must have one uppercase, one lowercase, a digit and special characters'
                               ? 'cr-currentPassword '
                               : ''
-                          }`}
+                            }`}
                         >
                           <label htmlFor="currentPassword" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31 ">
                             New Password
@@ -491,11 +489,10 @@ const Account = () => {
                             id="newPassword"
                             name="newPassword"
                             // eslint-disable-next-line max-len
-                            className={`h-2.81 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${
-                              touched.newPassword && errors.newPassword
+                            className={`h-2.81 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${touched.newPassword && errors.newPassword
                                 ? 'border-lightRed h-2.81 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
                                 : ''
-                            }`}
+                              }`}
                             onBlur={handleBlur}
                             onChange={handleChange}
                             value={values.newPassword}
