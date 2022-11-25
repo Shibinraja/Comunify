@@ -6,6 +6,8 @@ import Pagination from 'common/pagination/pagination';
 import { BillingHistoryData, BillingHistoryQuery, BillingHistoryResponse } from 'modules/settings/interface/settings.interface';
 import { format } from 'date-fns';
 import { showSuccessToast } from 'common/toast/toastFunctions';
+import { useNavigate } from 'react-router';
+import { getLocalWorkspaceId } from '@/lib/helper';
 
 type Props = {
   hidden: boolean;
@@ -15,6 +17,8 @@ type Props = {
 };
 
 const BillingHistory: React.FC<Props> = ({ hidden, selectedTab, loadingToastCondition, clearLoadingToastCondition }) => {
+  const navigate = useNavigate();
+  const workspaceId = getLocalWorkspaceId();
   const limit = 10;
   const [page, setPage] = useState<number>(1);
   const [billingHistoryList, setBillingHistoryList] = useState<BillingHistoryResponse>({
@@ -42,6 +46,10 @@ const BillingHistory: React.FC<Props> = ({ hidden, selectedTab, loadingToastCond
         showSuccessToast('Billing history list updated');
         clearLoadingToastCondition();
       }, 5000);
+      // Clear the state in the location object to avoid incorrect redirection and toast messages
+      navigate(`/${workspaceId}/settings`, {
+        state: { selectedTab: '', loadingToastCondition: '' }
+      });
     }
   }, [selectedTab]);
 
