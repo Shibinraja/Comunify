@@ -376,8 +376,8 @@ const Members: React.FC = () => {
     }
 
     return (
-      <div className="memberTable mt-1.8">
-        <div className="py-2  mt-1.868">
+      <div className="memberTable mt-[30px]">
+        <div className="py-2">
           <div className="inline-block min-w-full w-full align-middle rounded-0.6 border-table  overflow-x-auto overflow-y-auto sticky top-0 fixTableHead max-h-34 min-h-[31.25rem] mb-16">
             <table className="min-w-full relative w-full rounded-t-0.6 ">
               <thead className="h-3.25  top-0 w-full  sticky ">
@@ -405,14 +405,14 @@ const Members: React.FC = () => {
                 {customizedColumn.map((member: Record<string, unknown>) => (
                   <tr className="border-b " key={(member?.name as { name: string; id: string })?.id as Key}>
                     {Object.keys(member).map((column: keyof typeof member, index) => (
-                      <td className="px-3 py-4 " key={index}>
+                      <td className="px-3 h-[60px] " key={index}>
                         {column === 'name' ? (
                           memberColumnsLoader ? (
                             <Skeleton width={width_90} />
                           ) : (
                             <div className="flex w-[150px]">
                               <div
-                                className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer"
+                                className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer capitalize"
                                 onClick={() => navigateToProfile((member?.name as { name: string; id: string })?.id as string)}
                               >
                                 {(member?.name as { name: string; id: string })?.name as string}
@@ -506,8 +506,8 @@ const Members: React.FC = () => {
                     ))}
                   </tr>
                 ))}
-                <tr className="px-3 py-4">
-                  <td className="px-3 py-4"></td>
+                <tr className="px-3 h-[60px]">
+                  <td className="px-3 h-[60px]"></td>
                 </tr>
               </tbody>
             </table>
@@ -569,13 +569,13 @@ const Members: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col mt-12">
+    <div className="flex flex-col mt-[73px]">
       <h3 className="font-Poppins font-semibold text-infoBlack text-infoData leading-9 dark:text-white">Members</h3>
-      <div className="member-card pt-10">
+      <div className="member-card pt-[30px]">
         <MembersCard />
       </div>
-      <div className="flex flex-col xl:flex-row  justify-between mt-1.8 i ">
-        <div className="flex relative items-center w-1/2 xl:w-[250px] 2xl:w-19.06">
+      <div className="flex flex-col xl:flex-row  justify-between mt-[40px] i ">
+        <div className="flex relative items-center w-1/2 xl:w-[300px] 2xl:w-19.06">
           <input
             type="text"
             className="focus:outline-none px-3 pr-8 box-border w-full h-3.06  rounded-0.6  placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray shadow-shadowInput"

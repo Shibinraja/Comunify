@@ -627,7 +627,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                     type="text"
                     name="organization"
                     id="organizationId"
-                    className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-profileCard rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
+                    className="inputs mx-auto focus:outline-none pl-3 pr-7 box-border bg-white shadow-profileCard rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
                     placeholder="Search Organization"
                     onChange={handleOrganizationSearchTextChange}
                   />
