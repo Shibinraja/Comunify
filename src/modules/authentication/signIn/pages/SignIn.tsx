@@ -22,7 +22,7 @@ import cookie from 'react-cookies';
 const SignIn: React.FC = () => {
   const dispatch: AppDispatch = useAppDispatch();
   const [searchParams] = useSearchParams();
-  const formikRef:any = useRef();
+  const formikRef: any = useRef();
   const loginDetails = cookie.load('loginDetails');
   const google_signIn_error: string = searchParams.get('err') || '';
   const google_signUp_success: string = searchParams.get('success') || '';
@@ -48,7 +48,7 @@ const SignIn: React.FC = () => {
   }, [google_signUp_success]);
 
   useEffect(() => {
-    if(loginDetails) {
+    if (loginDetails) {
       formikRef?.current?.resetForm({
         values: {
           userName: loginDetails.userName,
@@ -64,9 +64,9 @@ const SignIn: React.FC = () => {
     const newValues = { ...values };
     newValues['userName'] = values.userName.includes('@') ? values.userName.toLocaleLowerCase() : values.userName;
     dispatch(authSlice.actions.login(newValues));
-    if(newValues['rememberMe']) {
+    if (newValues['rememberMe']) {
       cookie.save('loginDetails', newValues, { path: '/' });
-    }else{
+    } else {
       cookie.remove('loginDetails');
     }
   };
@@ -107,59 +107,56 @@ const SignIn: React.FC = () => {
                       id="userName"
                       name="userName"
                       // eslint-disable-next-line max-len
-                      className={`h-4.5 pr-10 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${
-                        touched.userName && errors.userName
-                          ? 'border-lightRed h-4.5 pr-10 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
-                          : ''
-                      }`}
+                      className={`h-4.5 pr-10 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${touched.userName && errors.userName
+                        ? 'border-lightRed h-4.5 pr-10 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
+                        : ''
+                        }`}
                       onBlur={handleBlur}
                       onChange={handleChange}
                       value={values.userName}
                       errors={Boolean(touched.userName && errors.userName)}
                       helperText={touched.userName && errors.userName}
                     />
+
                   </div>
                   <div
-                    className={`password relative  ${
-                      touched.userName && errors.userName
-                        ? 'mt-8'
-                        : 'mt-1.13'
-                    }`}>
+                    className={`password relative  ${touched.userName && errors.userName
+                      ? 'mt-8'
+                      : 'mt-1.13'
+                      }`}>
                     <Input
                       type={passwordType}
-                      placeholder="Password"
                       label="Password"
                       id="password"
                       name="password"
                       // eslint-disable-next-line max-len
-                      className={`h-4.5 rounded-lg bg-white p-2.5 pr-10 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${
-                        touched.password && errors.password
-                          ? 'boder-lightRed h-4.5 rounded-lg bg-white p-2.5 pr-10 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
-                          : ''
-                      }`}
+                      className={`h-4.5 rounded-lg bg-white p-2.5 pr-10 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${touched.password && errors.password
+                        ? 'boder-lightRed h-4.5 rounded-lg bg-white p-2.5 pr-10 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
+                        : ''
+                        }`}
                       onBlur={handleBlur}
                       onChange={handleChange}
                       value={values.password}
                       errors={Boolean(touched.password && errors.password)}
                       helperText={touched.password && errors.password}
                     />
-                    <div onClick={togglePassword} className="absolute top-7 right-3">
+                    <span className='text-base absolute top-7 left-4 text-[#00000080]'>**********</span>
+                    <div onClick={togglePassword} className="absolute top-8 right-4">
                       {passwordType === 'password' ? (
-                        <img className="cursor-pointer " src={eyeIcon} alt="" />
+                        <img className="cursor-pointer w-[18.9px]" src={eyeIcon} alt="" />
                       ) : (
-                        <img className="cursor-pointer " src={closeEyeIcon} alt="" />
+                        <img className="cursor-pointer w-[18.9px]" src={closeEyeIcon} alt="" />
                       )}
                     </div>
                   </div>
                   <div
-                    className={`flex justify-between items-center  ${
-                      touched.password && errors.password
-                        ? 'mt-4 '
-                        : ''
-                    }`}>
+                    className={`flex justify-between items-center  ${touched.password && errors.password
+                      ? 'mt-4 '
+                      : ''
+                      }`}>
                     <div className="flex items-center">
                       <div className="mr-2 mt-1">
-                        <input type="checkbox" className="checkbox cursor-pointer" name='rememberMe' checked={values.rememberMe} onChange={handleChange} onBlur={handleBlur}/>
+                        <input type="checkbox" className="checkbox cursor-pointer" name='rememberMe' checked={values.rememberMe} onChange={handleChange} onBlur={handleBlur} />
                       </div>
                       <span className="text-sm text-secondaryGray font-normal font-Inter">Remember me</span>
                     </div>

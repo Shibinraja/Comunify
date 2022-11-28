@@ -130,10 +130,11 @@ const SignUp: React.FC = () => {
                       label="Username"
                       id="username"
                       name="userName"
-                      className={`h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border ${touched.userName && errors.userName
+                      className={`h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border ${
+                        touched.userName && errors.userName
                           ? 'boder-lightRed h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border'
                           : ''
-                        }`}
+                      }`}
                       onBlur={handleBlur}
                       onChange={handleChange}
                       value={values.userName}
@@ -141,20 +142,18 @@ const SignUp: React.FC = () => {
                       helperText={touched.userName && errors.userName}
                     />
                   </div>
-                  <div className={`email  ${touched.userName && errors.userName
-                      ? 'mt-8 '
-                      : 'mt-1.258'
-                    }`}>
+                  <div className={`email  ${touched.userName && errors.userName ? 'mt-8 ' : 'mt-1.258'}`}>
                     <Input
                       type="email"
                       placeholder="Email"
                       label="Email"
                       id="email"
                       name="email"
-                      className={`h-4.5 rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border ${touched.email && errors.email
+                      className={`h-4.5 rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border ${
+                        touched.email && errors.email
                           ? 'boder-lightRed  h-4.5 rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border'
                           : ''
-                        }`}
+                      }`}
                       onBlur={handleBlur}
                       onChange={handleChange}
                       value={values.email}
@@ -162,36 +161,36 @@ const SignUp: React.FC = () => {
                       helperText={touched.email && errors.email}
                     />
                   </div>
-                  <div className={`w-full password  relative  ${touched.email && errors.email
-                      ? 'mt-8 '
-                      : 'mt-1.258'
-                    }`}>
+                  <div className={`w-full password  relative  ${touched.email && errors.email ? 'mt-8 ' : 'mt-1.258'}`}>
                     <Input
                       type={passwordType}
-                      placeholder="Create Password"
                       label="Password"
                       id="password"
                       name="password"
-                      className={`h-4.5 rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border ${touched.password && errors.password
+                      placeholder="Create Password"
+                      className={`h-4.5 rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border ${
+                        touched.password && errors.password
                           ? 'boder-lightRed  h-4.5 rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border'
                           : ''
-                        }`}
+                      }`}
                       onBlur={handleBlur}
                       onChange={handleChange}
                       value={values.password}
                       errors={Boolean(touched.password && errors.password)}
                     />
+
                     <div onClick={togglePassword} className="absolute top-7 right-3">
                       {passwordType === 'password' ? (
-                        <img className="cursor-pointer " src={eyeIcon} alt="" />
+                        <img className="cursor-pointer w-[18.9px]" src={eyeIcon} alt="" />
                       ) : (
-                        <img className="cursor-pointer " src={closeEyeIcon} alt="" />
+                        <img className="cursor-pointer w-[18.9px]" src={closeEyeIcon} alt="" />
                       )}
                     </div>
                     <div className="transition-all ease-in-out duration-300 delay-75 ">
                       <p
-                        className={`text-lightRed font-normal text-error font-Inter pl-1 ${!errors.password?.includes('Password must have one uppercase, one lowercase') ? 'absolute' : ''
-                          }`}
+                        className={`text-lightRed font-normal text-error font-Inter pl-1 ${
+                          !errors.password?.includes('Password must have one uppercase, one lowercase') ? 'absolute' : ''
+                        }`}
                       >
                         {touched.password && errors.password}
                       </p>
@@ -204,10 +203,11 @@ const SignUp: React.FC = () => {
                       label="Company Name"
                       id="cname"
                       name="companyName"
-                      className={`h-4.5 rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border ${touched.companyName && errors.companyName
+                      className={`h-4.5 rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border ${
+                        touched.companyName && errors.companyName
                           ? 'boder-lightRed mt-4 h-4.5 rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border'
                           : ''
-                        }`}
+                      }`}
                       onBlur={handleBlur}
                       onChange={handleChange}
                       value={values.companyName}
@@ -215,17 +215,14 @@ const SignUp: React.FC = () => {
                       helperText={touched.companyName && errors.companyName}
                     />
                   </div>
-                  <div
-                    className={`domain relative  ${touched.companyName && errors.companyName
-                        ? 'mt-8 '
-                        : 'mt-1.258'
-                      }`}>
+                  <div className={`domain relative  ${touched.companyName && errors.companyName ? 'mt-8 ' : 'mt-1.258'}`}>
                     <div className="cursor-pointer ">
                       <div
-                        className={`flex items-center w-full  justify-between border border-signUpDomain  box-border rounded-lg h-4.5  bg-white p-2.5 focus:outline-none font-normal text-secondaryGray text-base leading-6 font-Inter shadow-trialButtonShadow relative ${touched.domainSector && errors.domainSector
+                        className={`flex items-center w-full  justify-between border border-signUpDomain  box-border rounded-lg h-4.5  bg-white p-2.5 focus:outline-none font-normal text-secondaryGray text-base leading-6 font-Inter shadow-trialButtonShadow relative ${
+                          touched.domainSector && errors.domainSector
                             ? 'boder-lightRed flex items-center w-full  justify-between border   box-border rounded-lg h-4.5  bg-white p-2.5 focus:outline-none font-normal text-secondaryGray text-base leading-6 font-Inter shadow-trialButtonShadow relative'
                             : ''
-                          }`}
+                        }`}
                         ref={dropDownRef}
                         onClick={() => setDropDownActive(!isDropDownActive)}
                       >
@@ -249,8 +246,9 @@ const SignUp: React.FC = () => {
                                   handleDomainSectorChange(options);
                                   setDropDownActive(false);
                                 }}
-                                className={`${cursor === index ? 'bg-signUpDomain' : null
-                                  } h-3.06 font-Poppins font-normal text-searchBlack text-trial leading-1.31 flex items-center p-3 hover:bg-signUpDomain transition ease-in duration-100 focus:outline-none`}
+                                className={`${
+                                  cursor === index ? 'bg-signUpDomain' : null
+                                } h-3.06 font-Poppins font-normal text-searchBlack text-trial leading-1.31 flex items-center p-3 hover:bg-signUpDomain transition ease-in duration-100 focus:outline-none`}
                               >
                                 {options}
                               </li>
@@ -266,11 +264,9 @@ const SignUp: React.FC = () => {
                   <Button
                     text="Sign Up"
                     type="submit"
-
-                    className={`font-Poppins rounded-lg text-base font-semibold text-white h-3.6 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient  ${touched.domainSector && errors.domainSector
-                        ? 'mt-8 '
-                        : 'mt-1.8 '
-                      }`}
+                    className={`font-Poppins rounded-lg text-base font-semibold text-white h-3.6 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient  ${
+                      touched.domainSector && errors.domainSector ? 'mt-8 ' : 'mt-1.8 '
+                    }`}
                   />
                   <div className="relative flex items-center pt-2.4 -z-40">
                     <div className="borders flex-grow border-t"></div>

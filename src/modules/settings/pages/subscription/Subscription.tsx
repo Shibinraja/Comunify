@@ -23,6 +23,7 @@ import {
   BillingDetails,
   ClientSecret,
   SubscriptionDetails,
+  SubscriptionPackageFeatures,
   UpdateSubscriptionAutoRenewal,
   UpdateSubscriptionBody
 } from '../../interface/settings.interface';
@@ -35,15 +36,17 @@ import {
 
 import { alphabets_only_regex_with_single_space, email_regex, whiteSpace_single_regex } from '../../../../constants/constants';
 import { stripePublishableKey } from '@/lib/config';
+import { SubscriptionPackages } from 'modules/authentication/interface/auth.interface';
 
 const CheckoutForm = React.lazy(() => import('../subscription/CheckoutForm'));
 
 type Props = {
   hidden: boolean;
   selectedTab: string;
+  subscriptionPlanDetails: SubscriptionPackages[];
 };
 
-const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
+const Subscription: React.FC<Props> = ({ hidden, selectedTab, subscriptionPlanDetails }) => {
   const gradientTransform = `rotate(90)`;
   const [subscriptionDetails, setSubscriptionDetails] = useState<SubscriptionDetails | undefined>();
   const [addedCardDetails, setAddedCardDetails] = useState<AddedCardDetails[]>([]);
@@ -56,6 +59,9 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
   const [billingDetails, setBillingDetails] = useState<BillingDetails>({ billingName: '', billingEmail: '' });
   const [clientSecret, setClientSecret] = useState<string>('');
   const stripePromise = loadStripe(stripePublishableKey);
+  const comunifyPlusPlanDetails = subscriptionPlanDetails?.filter(
+    (data: SubscriptionPackages) => data?.name?.toLocaleLowerCase().trim() === 'comunify plus'
+  )[0];
 
   useEffect(() => {
     if (selectedTab === 'subscription') {
@@ -183,7 +189,22 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
                 <div className="font-semibold font-Poppins leading-1.56 text-infoBlack dark:text-white text-base">Features</div>
                 <div className="flex gap-4 font-Poppins   ">
                   <div className="flex items-center gap-x-1 pt-1">
-                    <div className="text-listGray text-error font-normal leading-1.31">Single User | 5 Platforms | Customizable Reports</div>
+                    <div className="text-listGray text-error font-normal leading-1.31 flex">
+                      <span>
+                        {subscriptionPlanDetails
+                          ?.filter(
+                            (data: SubscriptionPackages) =>
+                              data?.name.toLocaleLowerCase().trim() === subscriptionDetails?.subscriptionPackage?.name.toLocaleLowerCase().trim()
+                          )
+                          .map((data: SubscriptionPackages) =>
+                            data?.features?.map(
+                              (data: SubscriptionPackageFeatures) =>
+                                `| ${data?.value === '1' ? 'Single' : data?.value} ${data?.comunifyFeature?.name} `
+                            )
+                          )}{' '}
+                        |
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -222,7 +243,7 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
           </div>
         </div>
         {/* <div className="border-t border-[#E6E6E6] mt-8"></div> */}
-        <div className='border border-[#E6E6E6] p-4 rounded-lg mt-4'>
+        <div className="border border-[#E6E6E6] p-4 rounded-lg mt-4">
           {!!addedCardDetails?.length && (
             <div className="renewal mt-[10px] mb-5">
               <div className="flex justify-between  items-center">
@@ -245,7 +266,7 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
 
           {addedCardDetails?.length ? (
             <div>
-              <AddCard subscriptionDetails={subscriptionDetails ?? undefined} />
+              <AddCard subscriptionDetails={subscriptionDetails ?? undefined} toggle={toggle} />
             </div>
           ) : (
             <div className="upgrade mt-1.8 ">
@@ -261,45 +282,36 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab }) => {
                   </div>
 
                   <h5 className="flex items-center justify-center">
-                    <span className="price font-Poppins font-semibold leading-2.8 text-renewalPrice ">$49</span>
+                    <span className="price font-Poppins font-semibold leading-2.8 text-renewalPrice ">{comunifyPlusPlanDetails?.amount}</span>
                     <span className="text-renewalPlan font-medium font-Poppins leading-1.43">/month</span>
                   </h5>
-                  <div className="font-semibold font-Poppins leading-1.56 text-infoBlack text-base dark:text-white">Comunify Plus</div>
+                  <div className="font-semibold font-Poppins leading-1.56 text-infoBlack text-base dark:text-white">
+                    {comunifyPlusPlanDetails?.name}
+                  </div>
                   <p className="text-center text-card font-Poppins font-normal w-[200px] text-renewalGray mt-5 dark:text-greyDark">
-                    Comunify Plus Plan
+                    {comunifyPlusPlanDetails?.name} Plan
                   </p>
                 </div>
                 <div className="flex flex-col ml-5 bg-paymentSubscription h-[229px] dark:bg-thirdDark w-13.31 h-14.31 box-border pb-10 shadow-paymentSubscriptionCard pt-[49px] pl-5 border-gradient-rounded">
                   <div className="font-semibold font-Poppins leading-1.56 text-infoBlack text-base dark:text-white">Features</div>
-                  <div className="flex items-center gap-x-1 mt-[8px] pb-1">
-                    <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
-                      <img src={TickWhiteIcon} alt="" />
-                    </div>
-                    <div className="font-Poppins text-error text-listGray dark:text-greyDark leading-1.31 font-normal">Single User</div>
-                  </div>
-                  <div className="flex items-center gap-x-2 pb-1">
-                    <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
-                      <img src={TickWhiteIcon} alt="" />
-                    </div>
-                    <div className="font-Poppins text-error text-listGray dark:text-greyDark leading-1.31 font-normal">5 Platforms</div>
-                  </div>
-                  <div className="flex items-center gap-x-2 pb-1">
-                    <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
-                      <img src={TickWhiteIcon} alt="" />
-                    </div>
-                    <div className="font-Poppins text-error text-listGray dark:text-greyDark leading-1.31 font-normal">Customizable Reports</div>
-                  </div>
-                  <div className="flex items-center gap-x-2 pb-1">
-                    <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
-                      <img src={TickWhiteIcon} alt="" />
-                    </div>
-                    <div className="font-Poppins text-error text-listGray dark:text-greyDark leading-1.31 font-normal">Configurable Dashboard</div>
-                  </div>
+                  {subscriptionPlanDetails
+                    ?.filter((data: SubscriptionPackages) => data?.name.toLocaleLowerCase().trim() === 'comunify plus')
+                    .map((data: SubscriptionPackages) =>
+                      data?.features?.map((data: SubscriptionPackageFeatures, index: number) => (
+                        <div key={index} className="flex items-center gap-x-1 mt-[8px] pb-1">
+                          <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
+                            <img src={TickWhiteIcon} alt="" />
+                          </div>
+                          <div className="font-Poppins text-error text-listGray dark:text-greyDark leading-1.31 font-normal">
+                            {`${data?.value === '1' ? 'Single' : data?.value} ${data?.comunifyFeature?.name}`}
+                          </div>
+                        </div>
+                      ))
+                    )}
                 </div>
               </div>
             </div>
           )}
-
         </div>
 
         <div>
