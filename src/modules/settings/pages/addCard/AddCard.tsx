@@ -190,7 +190,7 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
   };
 
   return (
-    <div className="flex flex-col pl-[25px] pr-[29px]  font-Poppins w-full h-full overflow-y-auto ">
+    <div className="flex flex-col  font-Poppins w-full h-full overflow-y-auto ">
       <div className="pt-[27px] pb-6">
         <div className="flex justify-between  items-center">
           <div className="flex flex-col">
@@ -259,9 +259,8 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
                     type="submit"
                     onClick={() => handleDeleteCard(data?.id, data?.isDefault)}
                     disabled={addedCardDetails?.length === 1 ? true : false}
-                    className={`flex items-center ${
-                      addedCardDetails?.length === 1 ? 'cursor-not-allowed' : 'cursor-pointer'
-                    } justify-center border border-[#EAEDF3] hover:border hover:border-red-400 h-[46px] w-[46px] rounded-[3px]`}
+                    className={`flex items-center ${addedCardDetails?.length === 1 ? 'cursor-not-allowed' : 'cursor-pointer'
+                      } justify-center border border-[#EAEDF3] hover:border hover:border-red-400 h-[46px] w-[46px] rounded-[3px]`}
                     text={''}
                   >
                     <img src={deleteIcon} alt="" />
@@ -279,18 +278,18 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
         </div>
       )}
 
-      <div className="pt-4 flex justify-end">
+      <div className="pt-10 pb-4 flex justify-end">
+
         <div className="flex">
           <Button
             type="button"
-            text="Upgrade"
+            text="Upgrade Plan"
             disabled={subscriptionDetails?.subscriptionPackage?.name.toLocaleLowerCase().trim() === 'comunify plus'}
             onClick={handlePlanUpgrade}
-            className={`submit border-none text-white font-Poppins text-error font-medium leading-1.31 ${
-              subscriptionDetails?.subscriptionPackage?.name.toLocaleLowerCase().trim() === 'comunify plus'
-                ? 'opacity-50 cursor-not-allowed'
-                : 'cursor-pointer'
-            } w-[123px] h-2.81 rounded shadow-contactBtn btn-save-modal`}
+            className={`submit border-none text-white font-Poppins text-error font-medium leading-1.31 ${subscriptionDetails?.subscriptionPackage?.name.toLocaleLowerCase().trim() === 'comunify plus'
+              ? 'opacity-50 cursor-not-allowed'
+              : 'cursor-pointer'
+              } w-[123px] h-2.81 rounded shadow-contactBtn btn-save-modal`}
           />
         </div>
       </div>
@@ -361,9 +360,8 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
                   text="YES"
                   onClick={() => deleteSelectedCard(selectedCardId)}
                   disabled={isLoading.confirmationModal}
-                  className={`border-none ml-2.5 yes-btn h-2.81 w-5.25 box-border ${
-                    isLoading.confirmationModal ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
-                  } rounded shadow-contactBtn cursor-pointer font-Poppins font-medium text-error leading-5 text-white btn-save-modal`}
+                  className={`border-none ml-2.5 yes-btn h-2.81 w-5.25 box-border ${isLoading.confirmationModal ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                    } rounded shadow-contactBtn cursor-pointer font-Poppins font-medium text-error leading-5 text-white btn-save-modal`}
                 />
               </div>
             </div>
@@ -400,9 +398,8 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
                   text="YES"
                   onClick={upgradeFromExistingPlan}
                   disabled={isLoading.upgrade}
-                  className={`border-none ml-2.5 yes-btn h-2.81 w-5.25 box-border ${
-                    isLoading.upgrade ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
-                  } rounded shadow-contactBtn cursor-pointer font-Poppins font-medium text-error leading-5 text-white btn-save-modal`}
+                  className={`border-none ml-2.5 yes-btn h-2.81 w-5.25 box-border ${isLoading.upgrade ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                    } rounded shadow-contactBtn cursor-pointer font-Poppins font-medium text-error leading-5 text-white btn-save-modal`}
                 />
               </div>
             </div>

@@ -139,7 +139,7 @@ const TopBar: React.FC = () => {
       }
     });
 
-    if (!decodedToken.isAdmin) {
+    if (!decodedToken?.isAdmin) {
       notificationCount(workspaceId as string);
     }
 
@@ -177,14 +177,12 @@ const TopBar: React.FC = () => {
     });
     if (debouncedValue) {
       const fetchGlobalSearchList = async () => {
-        await getGlobalSearchItem(
-          {
-            cursor: null,
-            prop: 'search',
-            search: debouncedValue,
-            suggestionListCursor: suggestionList.nextCursor
-          }
-        );
+        await getGlobalSearchItem({
+          cursor: null,
+          prop: 'search',
+          search: debouncedValue,
+          suggestionListCursor: suggestionList.nextCursor
+        });
       };
       fetchGlobalSearchList();
     }
@@ -249,11 +247,11 @@ const TopBar: React.FC = () => {
         dispatch(authSlice.actions.signOut());
         break;
       case 'Profile Settings':
-        if (!decodedToken.isAdmin) {
+        if (!decodedToken?.isAdmin) {
           navigate(`${workspaceId}/account`);
         }
 
-        if (decodedToken.isAdmin) {
+        if (decodedToken?.isAdmin) {
           navigate(`admin/settings`);
         }
         break;
@@ -355,7 +353,7 @@ const TopBar: React.FC = () => {
     <div className=" mt-6 px-12 xl:px-20">
       <div className="flex justify-between items-center ">
         <div className="relative dark:bg-primaryDark`" ref={suggestionListDropDownRef}>
-          {!decodedToken.isAdmin && (
+          {!decodedToken?.isAdmin && (
             <Fragment>
               <input
                 name="search"
@@ -398,7 +396,7 @@ const TopBar: React.FC = () => {
               </div>
             )} */}
           </div>
-          {!decodedToken.isAdmin && (
+          {!decodedToken?.isAdmin && (
             <div className="pl-1.68 relative cursor-pointer" ref={notificationRef}>
               <div className="notification-icon" onClick={handleNotificationActive}>
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -420,7 +418,7 @@ const TopBar: React.FC = () => {
                         <div className="flex flex-col gap-5 overflow-y-scroll member-section mt-1.8 max-h-96 height-member-merge ">
                           {Array.from({ length: 10 }, (_, i) => i + 1).map((type: number) => (
                             <Fragment key={type}>
-                              <div className="flex py-[10px] border-b border-[#E6E6E6] items-center">
+                              <div className="flex py-[10px] border-b border-[#E6E6E6]">
                                 <Skeleton width={40} height={40} borderRadius={'50%'} className="rounded-full" />
                                 <div className="flex flex-col pl-2">
                                   <span className="text-[#070707] text-sm">

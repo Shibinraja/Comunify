@@ -88,7 +88,7 @@ const Report: React.FC = () => {
 
   const ReportFilterList = Object.values(checkedPlatform).concat(Object.values(checkedStatus));
 
-  const getReportsList = async(props: { search: string; page: number; limit: number }, reset: boolean) => {
+  const getReportsList = async (props: { search: string; page: number; limit: number }, reset: boolean) => {
     setLoading(true);
     let reportData;
     if (!reset) {
@@ -127,7 +127,7 @@ const Report: React.FC = () => {
     });
   };
 
-  const generateInstantReport = async(id: string) => {
+  const generateInstantReport = async (id: string) => {
     setLoading(true);
     const data = await generateInstantReportsService({
       workspaceId: workspaceId!,
@@ -302,7 +302,7 @@ const Report: React.FC = () => {
     }
   };
 
-  const submitFilterChange = async(): Promise<void> => {
+  const submitFilterChange = async (): Promise<void> => {
     handleFilterDropdown();
     const checkPlatform: Array<string> = [];
     const checkStatusId: Array<string> = [];
@@ -442,7 +442,7 @@ const Report: React.FC = () => {
   };
 
   const renderReportList = () => {
-    if(!loading && Number(reportsList?.data?.length) === 0) {
+    if (!loading && Number(reportsList?.data?.length) === 0) {
       return (
         <div className="flex flex-col items-center justify-center w-full fixTableHead-nomember">
           <div>
@@ -460,19 +460,19 @@ const Report: React.FC = () => {
               <thead className="h-3.25  top-0 w-61.68 no-scroll-bar sticky z-40">
                 <tr className="min-w-full">
                   <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray ">
-            Report Name
+                    Report Name
                   </th>
                   <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray">
-            Date
+                    Date
                   </th>
                   <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray">
-            Platforms
+                    Platforms
                   </th>
                   <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray">
-            Report Status
+                    Report Status
                   </th>
                   <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black dark:text-white  bg-white dark:bg-thirdDark border-b dark:border-[#dbd8fc1a]  bg-tableHeaderGray w-6.25">
-            Actions
+                    Actions
                   </th>
                 </tr>
               </thead>
@@ -610,7 +610,7 @@ const Report: React.FC = () => {
                 className="flex justify-between items-center px-1.08 app-input-card-border rounded-0.6 box-border w-9.59 h-3.06 cursor-pointer bg-white dark:bg-secondaryDark  shadow-shadowInput"
                 onClick={handleFilterDropdown}
               >
-                <div className="font-Poppins font-bold text-card text-dropGray leading-1.12  dark:text-inputText">Filters</div>
+                <div className="font-Poppins font-semibold text-xs text-dropGray leading-1.12  dark:text-inputText">Filters</div>
                 <div className="drop-icon">
                   <img src={filterDownIcon} alt="" className={isFilterDropdownActive ? 'rotate-180' : 'rotate-0'} />
                 </div>
@@ -630,7 +630,30 @@ const Report: React.FC = () => {
                       </div>
                     </div>
                     {activateFilter.isPlatformActive && (
-                      <div className="flex flex-col gap-y-5 justify-center px-3 mb-3 ">
+                      <div className="flex flex-col justify-center px-3 mb-3 ">
+                        {/* <div
+                        className={`flex items-center gap-2 hover:bg-signUpDomain  transition ease-in duration-100 p-3  ${reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                          }`}
+                      >
+                        <div>
+                          <input
+                            type="checkbox"
+                            className={`checkbox ${reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                            id="all"
+                            name="all"
+                            onChange={(event) => handlePlatformAllCheckBox(event)}
+                            checked={checkedAllPlatform}
+                            disabled={reportUpdateValuesData ? true : false}
+                          />
+                        </div>
+                        <label
+                          className={`font-Poppins font-normal text-searchBlack leading-1.31 text-trial  ${reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                            }`}
+                          htmlFor="all"
+                        >
+                          All
+                        </label>
+                      </div> */}
                         {PlatformFilterResponse &&
                           PlatformFilterResponse.map(
                             (platform: PlatformResponse, index: number) =>
@@ -776,9 +799,8 @@ const Report: React.FC = () => {
                         onClick={submitFilterChange}
                         type="button"
                         text="Apply"
-                        className={`border-none btn-save-modal rounded-0.31 h-2.063 w-1/2 ml-1 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${
-                          loading ? 'cursor-not-allowed' : ''
-                        }`}
+                        className={`border-none btn-save-modal rounded-0.31 h-2.063 w-1/2 ml-1 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${loading ? 'cursor-not-allowed' : ''
+                          }`}
                       />
                     </div>
                   </div>
