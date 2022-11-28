@@ -1,4 +1,4 @@
-import React, { Dispatch, useEffect, useState } from 'react';
+import React, { Dispatch, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAppSelector } from '../../../../hooks/useRedux';
 
@@ -8,7 +8,7 @@ import { AnyAction } from 'redux';
 import { State } from '../../../../store';
 
 import { Elements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
+import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import Skeleton from 'react-loading-skeleton';
@@ -26,17 +26,16 @@ import {
   getCardDetailsService,
   getChoseSubscriptionPlanDetailsService,
   selectCardService
-  // setPlanAutoRenewalService
 } from '../../../settings/services/settings.services';
 import { SubscriptionPackages } from '../../interface/auth.interface';
 import { chooseSubscription } from '../../services/auth.service';
-// import ToggleButton from 'common/ToggleButton/ToggleButton';
 
 import { alphabets_only_regex_with_single_space, email_regex, whiteSpace_single_regex } from 'constants/constants';
 import { stripePublishableKey } from '@/lib/config';
 import deleteIcon from '../../../../assets/images/delete.svg';
 import MasterCardIcon from '../../../../assets/images/masterCard.svg';
 import VisaCardIcon from '../../../../assets/images/visa.svg';
+import ToggleButton from 'common/ToggleButton/ToggleButton';
 
 const CheckoutForm = React.lazy(() => import('../../../settings/pages/subscription/CheckoutForm'));
 
@@ -57,12 +56,11 @@ const SubscriptionExpiredActivate: React.FC = () => {
   const [searchParams] = useSearchParams();
   const paymentStatus: string | null = searchParams.get('paymentStatus');
   const workspaceId: string = getLocalWorkspaceId();
-  const [subscriptionDetails, setSubscriptionDetails] = useState<SubscriptionDetails | undefined>();
   const [clientSecret, setClientSecret] = useState<string>('');
   const [addedCardDetails, setAddedCardDetails] = useState<AddedCardDetails[]>([]);
   const [selectedCard, setSelectedCard] = useState<SelectedCard | undefined>(undefined);
   const [selectedCardId, setSelectedCardId] = useState<string>('');
-  // const [toggle, setToggle] = useState<boolean>(true);
+  const [toggle, setToggle] = useState<boolean>(true);
   const [isConfirmationModal, setIsConfirmationModal] = useState<{ deleteCard: boolean; upgradePlan: boolean }>({
     deleteCard: false,
     upgradePlan: false
@@ -73,7 +71,14 @@ const SubscriptionExpiredActivate: React.FC = () => {
     cardDetails: false
   });
   const [billingDetails, setBillingDetails] = useState<BillingDetails>({ billingName: '', billingEmail: '' });
-  const stripePromise = loadStripe(stripePublishableKey);
+  const stripePromise: Promise<Stripe | null> = loadStripe(stripePublishableKey);
+  const subscriptionPlanDetails: SubscriptionPackages[] = useAppSelector((state: State) => state.auth.subscriptionData);
+
+  const comunifyPlusPlanDetails = subscriptionPlanDetails?.filter(
+    (data: SubscriptionPackages) => data?.name?.toLocaleLowerCase().trim() === 'comunify plus'
+  )[0];
+
+  const previousToggleValue: React.MutableRefObject<boolean> = useRef(toggle);
 
   useEffect(() => {
     getSecretKeyForStripe();
@@ -98,7 +103,17 @@ const SubscriptionExpiredActivate: React.FC = () => {
     }
   }, [paymentStatus]);
 
-  const subscriptionData = useAppSelector((state: State) => state.auth.subscriptionData);
+  useEffect(() => {
+    if (previousToggleValue.current !== toggle) {
+      if (toggle) {
+        showSuccessToast('Plan auto renewal activated');
+        previousToggleValue.current = toggle;
+      } else {
+        showSuccessToast('Plan auto renewal de-activated');
+        previousToggleValue.current = toggle;
+      }
+    }
+  }, [toggle]);
 
   // eslint-disable-next-line space-before-function-paren
   const getCardDetails = async () => {
@@ -127,8 +142,9 @@ const SubscriptionExpiredActivate: React.FC = () => {
   // eslint-disable-next-line space-before-function-paren
   const getCurrentSubscriptionPlanDetails = async () => {
     const response: SubscriptionDetails = await getChoseSubscriptionPlanDetailsService();
-    setSubscriptionDetails(response);
-    // setToggle(response?.autoRenewal);
+    if (response?.stripeSubscriptionId) {
+      setToggle(response?.autoRenewal);
+    }
   };
 
   // eslint-disable-next-line space-before-function-paren
@@ -157,29 +173,6 @@ const SubscriptionExpiredActivate: React.FC = () => {
     await getCardDetails();
   };
 
-  // // eslint-disable-next-line space-before-function-paren
-  // const setPlanAutoRenewal = async () => {
-  //   setIsLoading((prev) => ({ ...prev, autoRenewal: true }));
-  //   const updateSubscriptionBody: UpdateSubscriptionBody = {
-  //     autoRenewal: toggle ? false : true,
-  //     subscriptionId: subscriptionDetails?.stripeSubscriptionId ?? '',
-  //     userSubscriptionId: subscriptionDetails?.id ?? ''
-  //   };
-  //   const response: UpdateSubscriptionAutoRenewal = await setPlanAutoRenewalService(updateSubscriptionBody);
-  //   if (Object.keys(response).length) {
-  //     setToggle(response?.autoRenewSubscription);
-  //     if (response?.autoRenewSubscription === false) {
-  //       showSuccessToast('Plan auto renewal de-activated');
-  //     } else if (response?.autoRenewSubscription === true) {
-  //       showSuccessToast('Plan auto renewal activated');
-  //     }
-  //     setIsLoading((prev) => ({ ...prev, autoRenewal: false }));
-  //   } else {
-  //     showErrorToast('Failed to alter your current plan auto renewal setting');
-  //     setToggle((prev) => !prev);
-  //   }
-  // };
-
   const options = {
     clientSecret: clientSecret && clientSecret,
     // Fully customizable with appearance API.
@@ -203,29 +196,26 @@ const SubscriptionExpiredActivate: React.FC = () => {
 
   // eslint-disable-next-line space-before-function-paren
   const upgradeFromExistingPlan = async () => {
-    if (subscriptionDetails?.subscriptionPackage?.name?.toLocaleLowerCase().trim() === 'free trial' || !subscriptionDetails) {
-      setIsLoading((prev) => ({ ...prev, upgrade: true }));
-      const subscriptionId: string = subscriptionData?.filter(
-        (data: SubscriptionPackages) => data?.viewName.toLocaleLowerCase().trim() !== 'free trial'
-      )[0]?.id;
-      const body: UpgradeData = {
-        paymentMethod: addedCardDetails?.filter((item: AddedCardDetails) => item.isDefault)[0]?.stripePaymentMethodId,
-        upgrade: true
-      };
-      const response: SubscriptionPackages = await chooseSubscription(subscriptionId, body);
-      if (response?.status?.toLocaleLowerCase().trim() === 'paid') {
-        showSuccessToast('Plan upgraded to Comunify Plus!');
-        navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'billing_history', loadingToastCondition: 'showLoadingToast' } });
-        setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
-        setIsLoading((prev) => ({ ...prev, upgrade: false }));
-        setRefreshToken();
-      } else {
-        showErrorToast('Subscription failed');
-        setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
-        setIsLoading((prev) => ({ ...prev, upgrade: false }));
-      }
+    setIsLoading((prev) => ({ ...prev, upgrade: true }));
+    const subscriptionId: string = subscriptionPlanDetails?.filter(
+      (data: SubscriptionPackages) => data?.viewName.toLocaleLowerCase().trim() !== 'free trial'
+    )[0]?.id;
+    const body: UpgradeData = {
+      paymentMethod: addedCardDetails?.filter((item: AddedCardDetails) => item.isDefault)[0]?.stripePaymentMethodId,
+      upgrade: true,
+      autoRenewal: toggle
+    };
+    const response: SubscriptionPackages = await chooseSubscription(subscriptionId, body);
+    if (response?.status?.toLocaleLowerCase().trim() === 'paid') {
+      showSuccessToast('Plan upgraded to Comunify Plus!');
+      navigate(`/${workspaceId}/settings`, { state: { selectedTab: 'billing_history', loadingToastCondition: 'showLoadingToast' } });
+      setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
+      setIsLoading((prev) => ({ ...prev, upgrade: false }));
+      setRefreshToken();
     } else {
-      showWarningToast('Comunify Plus is already activated');
+      showErrorToast('Subscription failed');
+      setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: false }));
+      setIsLoading((prev) => ({ ...prev, upgrade: false }));
     }
   };
 
@@ -239,6 +229,7 @@ const SubscriptionExpiredActivate: React.FC = () => {
     if (!addedCardDetails?.length) {
       setIsBillingDetailsModal((prev) => ({ ...prev, billingDetails: true }));
     } else {
+      getSecretKeyForStripe();
       setIsBillingDetailsModal((prev) => ({ ...prev, cardDetails: true }));
     }
   };
@@ -263,21 +254,6 @@ const SubscriptionExpiredActivate: React.FC = () => {
           {paymentStatus ? 'Payment Failed' : 'Subscription'}
         </h3>
         <div className="p-8 pb-40 flex flex-col font-Poppins h-full overflow-y-auto border-2 rounded-0.9 mb-13">
-          {/* <div className="pt-10 pb-8 border-b border-greyDark">
-            <div className="flex justify-between  items-center">
-              <div className="flex flex-col">
-                <h3 className=" text-base text-renewalBlack leading-1.31 font-semibold dark:text-white">Auto Renewal</h3>
-                <p className="text-listGray font-normal  text-trial leading-1.31 mt-1 dark:text-greyDark">
-                  Your auto renewal is {toggle ? 'active' : 'inactive'}
-                </p>
-              </div>
-              <div className="flex gap-3 items-center">
-                <div className="text-[#8692A6] text-trial font-medium leading-1.31  dark:text-white">No</div>
-                <ToggleButton value={toggle} onChange={() => setPlanAutoRenewal()} isLoading={isLoading.autoRenewal} />
-                <div className="text-trial font-medium leading-1.31  dark:text-white">Yes</div>
-              </div>
-            </div>
-          </div> */}
           <div className="pt-[27px] pb-8 border-b border-greyDark">
             <div className="flex justify-between  items-center">
               <div className="flex flex-col">
@@ -288,9 +264,25 @@ const SubscriptionExpiredActivate: React.FC = () => {
               </div>
               <div className="flex gap-4 items-center">
                 <h5 className="flex items-center">
-                  <span className="price font-semibold text-renewalPrice leading-3.1">{'49$'}</span>
+                  <span className="price font-semibold text-renewalPrice leading-3.1">{comunifyPlusPlanDetails?.amount}$</span>
                   <span className="font-medium text-subscriptionMonth text-base leading-6 mt-[5px]"> /{'month'}</span>{' '}
                 </h5>
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-10 pb-8 border-b border-greyDark">
+            <div className="flex justify-between  items-center">
+              <div className="flex flex-col">
+                <h3 className=" text-base text-renewalBlack leading-1.31 font-semibold dark:text-white">Auto Renewal</h3>
+                <p className="text-listGray font-normal  text-trial leading-1.31 mt-1 dark:text-greyDark">
+                  Your auto renewal is {toggle ? 'active' : 'inactive'}
+                </p>
+              </div>
+              <div className="flex gap-3 items-center">
+                <div className="text-[#8692A6] text-trial font-medium leading-1.31  dark:text-white">No</div>
+                <ToggleButton value={toggle} onChange={() => setToggle((prev) => !prev)} isLoading={isLoading.autoRenewal} />
+                <div className="text-trial font-medium leading-1.31  dark:text-white">Yes</div>
               </div>
             </div>
           </div>
@@ -389,7 +381,7 @@ const SubscriptionExpiredActivate: React.FC = () => {
               />
               <Button
                 type="button"
-                text="Upgrade"
+                text="Upgrade Plan"
                 disabled={isLoading.upgrade || !addedCardDetails?.length ? true : false}
                 onClick={() => setIsConfirmationModal((prev) => ({ ...prev, upgradePlan: true }))}
                 className={`submit border-none text-white font-Poppins text-error font-medium leading-1.31 ${

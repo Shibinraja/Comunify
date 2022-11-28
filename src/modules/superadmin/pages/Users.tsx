@@ -71,7 +71,7 @@ const Users: React.FC = () => {
       ...(endDate ? { 'createdAT.lte': endDate } : {}),
       ...(filterExportParams.platform.length ? { platformId: filterExportParams.platform } : {}),
       ...(filterExportParams.domain.length ? { domain: filterExportParams.domain } : {}),
-      ...(filterExportParams.subscription.length ? { subscription: filterExportParams.subscription } : {}),
+      ...(filterExportParams.subscription.length ? { subscriptionPlanId: filterExportParams.subscription } : {}),
       ...(filterExportParams.joinedAtLte ? { 'joinedAt.lte': filterExportParams.joinedAtLte } : {}),
       ...(filterExportParams.joinedAtGte ? { 'joinedAt.gte': filterExportParams.joinedAtGte } : {}),
       ...(filterExportParams.expiryAtLte ? { 'expiryAt.lte': filterExportParams.expiryAtLte } : {}),
@@ -126,7 +126,7 @@ const Users: React.FC = () => {
         ...(filteredDate.filterEndDate ? { 'createdAT.lte': filteredDate.filterEndDate } : {}),
         ...(filterExportParams.platform.length ? { platformId: filterExportParams.platform } : {}),
         ...(filterExportParams.domain.length ? { domain: filterExportParams.domain } : {}),
-        ...(filterExportParams.subscription.length ? { subscription: filterExportParams.subscription } : {}),
+        ...(filterExportParams.subscription.length ? { subscriptionPlanId: filterExportParams.subscription } : {}),
         ...(filterExportParams.joinedAtLte ? { 'joinedAt.lte': filterExportParams.joinedAtLte } : {}),
         ...(filterExportParams.joinedAtGte ? { 'joinedAt.gte': filterExportParams.joinedAtGte } : {}),
         ...(filterExportParams.expiryAtLte ? { 'expiryAt.lte': filterExportParams.expiryAtLte } : {}),
@@ -177,6 +177,7 @@ const Users: React.FC = () => {
         filteredDate={filteredDate}
         setMembersList={setMembersList}
         setPage={setPage}
+        setFetchLoader={setFetchLoader}
       />
     ),
     [debouncedValue, filteredDate]
@@ -189,7 +190,7 @@ const Users: React.FC = () => {
           <div>
             <img src={noMemberIcon} alt="No Member" />
           </div>
-          <div className="pt-5 font-Poppins font-medium text-tableDuration text-lg leading-10">No Members</div>
+          <div className="pt-5 font-Poppins font-medium text-tableDuration text-lg leading-10">No Users found</div>
         </div>
       );
     }

@@ -68,6 +68,9 @@ const SignUp: React.FC = () => {
   const handleSubmit = (values: SignUpFormValues): void => {
     const newValues = { ...values };
     newValues['email'] = values.email.toLocaleLowerCase();
+    if (!values.companyName) {
+      delete newValues.companyName;
+    }
     dispatch(authSlice.actions.signup(newValues));
   };
 
@@ -139,11 +142,7 @@ const SignUp: React.FC = () => {
                       helperText={touched.userName && errors.userName}
                     />
                   </div>
-                  <div className={`email  ${
-                    touched.userName && errors.userName
-                      ? 'mt-8 '
-                      : 'mt-1.258'
-                  }`}>
+                  <div className={`email  ${touched.userName && errors.userName ? 'mt-8 ' : 'mt-1.258'}`}>
                     <Input
                       type="email"
                       placeholder="Email"
@@ -162,17 +161,13 @@ const SignUp: React.FC = () => {
                       helperText={touched.email && errors.email}
                     />
                   </div>
-                  <div className={`w-full password  relative  ${
-                    touched.email && errors.email
-                      ? 'mt-8 '
-                      : 'mt-1.258'
-                  }`}>
+                  <div className={`w-full password  relative  ${touched.email && errors.email ? 'mt-8 ' : 'mt-1.258'}`}>
                     <Input
                       type={passwordType}
-                      placeholder="Create Password"
                       label="Password"
                       id="password"
                       name="password"
+                      placeholder="Create Password"
                       className={`h-4.5 rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border ${
                         touched.password && errors.password
                           ? 'boder-lightRed  h-4.5 rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 font-Inter box-border'
@@ -183,11 +178,12 @@ const SignUp: React.FC = () => {
                       value={values.password}
                       errors={Boolean(touched.password && errors.password)}
                     />
+
                     <div onClick={togglePassword} className="absolute top-7 right-3">
                       {passwordType === 'password' ? (
-                        <img className="cursor-pointer " src={eyeIcon} alt="" />
+                        <img className="cursor-pointer w-[18.9px]" src={eyeIcon} alt="" />
                       ) : (
-                        <img className="cursor-pointer " src={closeEyeIcon} alt="" />
+                        <img className="cursor-pointer w-[18.9px]" src={closeEyeIcon} alt="" />
                       )}
                     </div>
                     <div className="transition-all ease-in-out duration-300 delay-75 ">
@@ -219,12 +215,7 @@ const SignUp: React.FC = () => {
                       helperText={touched.companyName && errors.companyName}
                     />
                   </div>
-                  <div
-                    className={`domain relative  ${
-                      touched.companyName && errors.companyName
-                        ? 'mt-8 '
-                        : 'mt-1.258'
-                    }`}>
+                  <div className={`domain relative  ${touched.companyName && errors.companyName ? 'mt-8 ' : 'mt-1.258'}`}>
                     <div className="cursor-pointer ">
                       <div
                         className={`flex items-center w-full  justify-between border border-signUpDomain  box-border rounded-lg h-4.5  bg-white p-2.5 focus:outline-none font-normal text-secondaryGray text-base leading-6 font-Inter shadow-trialButtonShadow relative ${
@@ -236,6 +227,7 @@ const SignUp: React.FC = () => {
                         onClick={() => setDropDownActive(!isDropDownActive)}
                       >
                         <div className={selectedDomainSector === 'Domain' ? 'text-secondaryGray' : 'text-black'}>
+                          <input className="w-[1px] border-none focus:outline-none" type="text" />
                           {selectedDomainSector ? selectedDomainSector : 'Domain'}
                         </div>
                         <img src={dropdownIcon} alt="" className={isDropDownActive ? 'rotate-180' : 'rotate-0'} />
@@ -272,11 +264,8 @@ const SignUp: React.FC = () => {
                   <Button
                     text="Sign Up"
                     type="submit"
-
                     className={`font-Poppins rounded-lg text-base font-semibold text-white h-3.6 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient  ${
-                      touched.domainSector && errors.domainSector
-                        ? 'mt-8 '
-                        : 'mt-1.8 '
+                      touched.domainSector && errors.domainSector ? 'mt-8 ' : 'mt-1.8 '
                     }`}
                   />
                   <div className="relative flex items-center pt-2.4 -z-40">

@@ -33,9 +33,10 @@ interface SelectedCard {
 
 interface Props {
   subscriptionDetails?: SubscriptionDetails;
+  toggle: boolean;
 }
 
-const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
+const AddCard: React.FC<Props> = ({ subscriptionDetails, toggle }) => {
   const [isLoading, setIsLoading] = useState<{ autoRenewal: boolean; upgrade: boolean; confirmationModal: boolean }>({
     autoRenewal: false,
     upgrade: false,
@@ -166,7 +167,8 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
     )[0]?.id;
     const body: UpgradeData = {
       paymentMethod: addedCardDetails?.filter((item: AddedCardDetails) => item.isDefault)[0]?.stripePaymentMethodId,
-      upgrade: true
+      upgrade: true,
+      autoRenewal: toggle
     };
     const response: SubscriptionPackages = await chooseSubscription(subscriptionId, body);
     if (response?.status?.toLocaleLowerCase().trim() === 'paid') {
@@ -190,7 +192,7 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
   };
 
   return (
-    <div className="flex flex-col pl-[25px] pr-[29px]  font-Poppins w-full h-full overflow-y-auto ">
+    <div className="flex flex-col  font-Poppins w-full h-full overflow-y-auto ">
       <div className="pt-[27px] pb-6">
         <div className="flex justify-between  items-center">
           <div className="flex flex-col">
@@ -206,7 +208,13 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
             </p>
           </div>
           <div className="flex gap-4 items-center">
-            <button className="font-medium text-error text-tag hover:text-download" onClick={() => setAddCardForm(true)}>
+            <button
+              className="font-medium text-error text-tag hover:text-download"
+              onClick={() => {
+                getSecretKeyForStripe();
+                setAddCardForm(true);
+              }}
+            >
               ADD CARD
             </button>
           </div>
@@ -273,11 +281,11 @@ const AddCard: React.FC<Props> = ({ subscriptionDetails }) => {
         </div>
       )}
 
-      <div className="pt-4 flex justify-end">
+      <div className="pt-10 pb-4 flex justify-end">
         <div className="flex">
           <Button
             type="button"
-            text="Upgrade"
+            text="Upgrade Plan"
             disabled={subscriptionDetails?.subscriptionPackage?.name.toLocaleLowerCase().trim() === 'comunify plus'}
             onClick={handlePlanUpgrade}
             className={`submit border-none text-white font-Poppins text-error font-medium leading-1.31 ${

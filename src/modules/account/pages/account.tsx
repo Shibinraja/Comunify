@@ -1,26 +1,32 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable space-before-function-paren */
-import './account.css';
-import profileImage from '../../../assets/images/user-image.svg';
 import { KeyboardEvent, ChangeEvent, useEffect, useRef, useState, Fragment } from 'react';
-import dropdownIcon from '../../../assets/images/Vector.svg';
+import { Link, NavLink } from 'react-router-dom';
+import cookie from 'react-cookies';
+import { useDispatch } from 'react-redux';
+
+import * as Yup from 'yup';
+import { Form, Formik, FormikErrors, FormikTouched } from 'formik';
+
+import { DecodeToken } from 'modules/authentication/interface/auth.interface';
+import { ChangePassword, profilePicInput, userProfileDataInput } from '../interfaces/account.interface';
+
+import { getLocalWorkspaceId } from '@/lib/helper';
+import accountSlice from '../store/slice/account.slice';
+import { decodeToken } from '@/lib/decodeToken';
+import { useAppSelector } from '@/hooks/useRedux';
+import { showErrorToast, showInfoToast } from 'common/toast/toastFunctions';
+import { userProfileDataService } from '../services/account.services';
+import { alphanumeric_regex, companyName_regex, password_regex, userName_regex, whiteSpace_regex } from 'constants/constants';
+
 import Input from 'common/input';
 import Button from 'common/button';
+import profileImage from '../../../assets/images/user-image.svg';
+import dropdownIcon from '../../../assets/images/Vector.svg';
 import closeEyeIcon from '../../../assets/images/closeEyeIcon.svg';
 import eyeIcon from '../../../assets/images/eye.svg';
-import { Form, Formik, FormikErrors, FormikTouched } from 'formik';
-import * as Yup from 'yup';
-import { companyName_regex, password_regex, userName_regex, whiteSpace_regex } from 'constants/constants';
-import accountSlice from '../store/slice/account.slice';
-import { ChangePassword, profilePicInput, userProfileDataInput } from '../interfaces/account.interface';
-import { useDispatch } from 'react-redux';
-import { decodeToken } from '@/lib/decodeToken';
-import { DecodeToken } from 'modules/authentication/interface/auth.interface';
-import { showErrorToast } from 'common/toast/toastFunctions';
-import { userProfileDataService } from '../services/account.services';
-import cookie from 'react-cookies';
-import { getLocalWorkspaceId } from '@/lib/helper';
-import { NavLink } from 'react-router-dom';
+
+import './account.css';
 
 const initialValues: ChangePassword = {
   currentPassword: '',
@@ -60,6 +66,7 @@ const Account = () => {
   const dropDownRef = useRef<HTMLDivElement>(null);
   const domainRef = useRef<HTMLLIElement>(null);
 
+  const { resetProfilePic } = useAppSelector((state) => state.accounts);
   const accessToken = localStorage.getItem('accessToken') || cookie.load('x-auth-cookie');
   const decodedToken: DecodeToken = accessToken && decodeToken(accessToken);
   const dispatch = useDispatch();
@@ -83,6 +90,12 @@ const Account = () => {
       domainRef?.current?.focus();
     }
   }, [isDropDownActive]);
+
+  useEffect(() => {
+    if (resetProfilePic) {
+      setProfileUploadImage(profileData?.profilePhotoUrl);
+    }
+  }, [resetProfilePic]);
 
   const fetchProfileData = async () => {
     try {
@@ -127,10 +140,22 @@ const Account = () => {
 
   const imageUploadHandler = async (e: ChangeEvent<HTMLInputElement>) => {
     const imageFile = e.target.files?.[0];
-    setProfileUploadImage(URL.createObjectURL(imageFile as Blob));
-    const base64: any = await convertBase64(imageFile);
-    const uploadData = { profilePic: base64?.toString() || '', fileName: imageFile?.name || 'file' };
-    dispatch(accountSlice.actions.uploadProfilePic(uploadData as profilePicInput));
+    if ((imageFile?.size as number) >= 5e6) {
+      return showInfoToast('File size is greater than 5MB. Please upload file below 5MB');
+    }
+    if (
+      imageFile?.name?.split('.')?.pop()?.search('jpg') === 0 ||
+      imageFile?.name?.split('.')?.pop()?.search('jpeg') === 0 ||
+      imageFile?.name?.split('.')?.pop()?.search('png') === 0
+    ) {
+      setProfileUploadImage(URL.createObjectURL(imageFile as Blob));
+      const base64: any = await convertBase64(imageFile);
+      const uploadData = { profilePic: base64?.toString() || '', fileName: imageFile?.name || 'file' };
+      dispatch(accountSlice.actions.profilePicReset(false));
+      dispatch(accountSlice.actions.uploadProfilePic(uploadData as profilePicInput));
+    } else {
+      showErrorToast('Only jpg/png files are supported');
+    }
   };
 
   const convertBase64 = (file: any) =>
@@ -183,7 +208,7 @@ const Account = () => {
     const userUpdateData = {
       fullName: values.fullName,
       userName: values.userName,
-      organization: values.organization,
+      ...(values.organization ? { organization: values.organization } : {}),
       domainSector: values.domainSector
     };
     dispatch(accountSlice.actions.userProfileUpdateData(userUpdateData));
@@ -218,7 +243,7 @@ const Account = () => {
                 helperText={touched.fullName && errors.fullName}
               />
             </div>
-            <div className="flex flex-col pl-5 w-1/2">
+            <div className="flex flex-col ml-5 w-1/2">
               <label htmlFor="userName" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
                 Username
               </label>
@@ -246,7 +271,7 @@ const Account = () => {
                 name="email"
                 id="emailId"
                 className="shadow-inputShadow bg-[#EBF8FF] h-2.81 mt-0.40 px-3 app-result-card-border focus:outline-none box-border bg-white cursor-not-allowed	 w-full py-2 rounded-0.3 placeholder:text-thinGray placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.31 placeholder:text-trial"
-                // placeholder="example@mail.com"
+                placeholder="example@mail.com"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.email}
@@ -255,7 +280,7 @@ const Account = () => {
                 helperText={touched.email && errors.email}
               />
             </div>
-            <div className="flex flex-col pl-5 mt-1.08 w-1/2">
+            <div className="flex flex-col ml-5 mt-1.08 w-1/2">
               <label htmlFor="organization" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
                 Organization
               </label>
@@ -264,7 +289,7 @@ const Account = () => {
                 name="organization"
                 id="organizationId"
                 className="shadow-inputShadow mt-0.40 h-2.81 px-3 app-result-card-border focus:outline-none box-border bg-white w-full py-2 rounded-0.3 placeholder:text-thinGray placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.31 placeholder:text-trial"
-                placeholder="Organization Name"
+                placeholder="Company Name"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values?.organization}
@@ -274,14 +299,15 @@ const Account = () => {
             </div>
           </div>
           <div className="flex w-full">
-            <div className="flex flex-col mt-1.08 w-1/2">
+            <div className="flex flex-col mt-1.08 md:w-1/2 xl:w-[297.5px]">
               <label htmlFor="domain" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
                 Domain
               </label>
               <div className="flex flex-col relative w-full">
                 <div className="cursor-pointer" ref={dropDownRef} onClick={() => setDropDownActive(!isDropDownActive)}>
-                  <div className="flex items-center w-full  justify-between p-2 app-result-card-border bg-white  py-2 box-border shadow-inputShadow  rounded-0.3 mt-0.40 font-Poppins text-thinGray font-normal leading-1.31 text-trial">
+                  <div className="h-2.81 flex items-center w-full  justify-between pl-3 pr-[17.12px] py-2 app-result-card-border bg-white  py-2 box-border shadow-inputShadow  rounded-0.3 mt-0.40 font-Poppins text-thinGray font-normal leading-1.31 text-trial">
                     <div className={selectedDomainSector === 'Select' ? 'text-secondaryGray' : 'text-black'}>
+                      <input className="w-[1px] border-none focus:outline-none" type="text" />
                       {selectedDomainSector ? selectedDomainSector : 'Select'}
                     </div>
                     <img src={dropdownIcon} alt="" className={isDropDownActive ? 'rotate-180' : 'rotate-0'} />
@@ -323,6 +349,7 @@ const Account = () => {
             <label htmlFor="fullName" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
               Full Name
             </label>
+            Input
             <Input
               type="text"
               name="fullName"
@@ -361,7 +388,7 @@ const Account = () => {
   return (
     <div className="profile pt-16 pb-10">
       <div className="flex">
-        <div className="w-full md:w-[60%] xl:w-[70%]">
+        <div className="w-full md:w-[60%] xl:w-[667px] h-[713px]">
           <div className="pb-10 box-border bg-white rounded-0.6 app-input-card-border shadow-contactCard">
             <div className="flex flex-col mt-1.16 px-1.56">
               <div className="flex flex-col">
@@ -379,7 +406,7 @@ const Account = () => {
                         {renderAccountForm(handleBlur, handleChange, values, touched, errors)}
                         <div className="py-7">
                           <div className="flex items-center justify-end w-full">
-                            <NavLink to={`${workspaceId}/dashboard`} className="p-0 m-0 mr-2">
+                            <NavLink to={!decodedToken.isAdmin ? `/${workspaceId}/dashboard` : '/admin/users'} className="p-0 m-0 mr-2">
                               <Button
                                 type="button"
                                 text="Cancel"
@@ -492,7 +519,7 @@ const Account = () => {
                           </a>
                         </div>
                         <div className="flex   items-center">
-                          <NavLink to={`${workspaceId}/dashboard`} className="p-0 m-0 mr-2">
+                          <NavLink to={!decodedToken.isAdmin ? `/${workspaceId}/dashboard` : '/admin/users'} className="p-0 m-0 mr-2">
                             <Button
                               type="button"
                               text="Cancel"
@@ -513,10 +540,10 @@ const Account = () => {
             </div>
           </div>
         </div>
-        <div className="w-full md:w-[40%] xl:w-[30%]">
-          <div className="w-full pl-2.06 flex flex-col ">
-            <div className=" items-center bg-red-500 justify-center btn-save-modal rounded-t-0.6 w-full shadow-contactCard box-border h-6.438"></div>
-            <div className="flex flex-col border-b border-l border-r border-[#DBD8FC] items-center justify-center bg-white rounded-b-0.6 w-full shadow-contactCard box-border h-11.06">
+        <div className="w-full md:w-[40%] xl:w-[290px]  ml-2.06">
+          <div className="w-full flex flex-col ">
+            <div className=" items-center bg-red-500 justify-center btn-save-modal rounded-t-0.6 w-full shadow-contactCard box-border h-6.438 w-[290px]"></div>
+            <div className="flex flex-col border-b border-l border-r border-[#DBD8FC] items-center justify-center bg-white rounded-b-0.6 w-full shadow-contactCard box-border h-11.06 w-[290px]">
               <div className="-mt-24 ">
                 <img
                   className="bg-cover bg-center border-5 border-white rounded-full w-100 h-100 bg-[#abcf6b]"
@@ -539,16 +566,16 @@ const Account = () => {
                 <input
                   type="file"
                   className="hidden absolute top-0 left-0 w-full flex-grow"
-                  placeholder="uplaod image"
+                  placeholder="upload image"
+                  accept="image/png, image/gif, image/jpeg"
                   id="inputFile"
                   ref={imageRef}
-                  accept="image/*"
                   onChange={(e) => imageUploadHandler(e)}
                 />
               </div>
             </div>
             {!decodedToken.isAdmin && (
-              <div className="flex flex-col justify-center items-center app-input-card-border mt-2.063 shadow-contactCard rounded-0.6 bg-white box-border w-full p-8">
+              <div className="flex flex-col justify-center items-center app-input-card-border mt-2.063 shadow-contactCard rounded-0.6 bg-white box-border w-full p-8 w-[290px]">
                 <h3 className="font-Poppins font-semibold text-contact text-infoBlack leading-2.06">Have a question?</h3>
                 <div className=" text-sm font-Poppins font-normal text-tableDuration leading-1.31">We can help you</div>
                 <div className="mt-5">
@@ -572,7 +599,8 @@ const profileUpdateSchema = Yup.object().shape({
   fullName: Yup.string()
     .required('Full Name is required')
     .min(2, 'Full Name must be at least 2 alphabets')
-    .max(50, 'Full Name should not exceed above 50 characters'),
+    .max(50, 'Full Name should not exceed above 50 characters')
+    .matches(alphanumeric_regex, 'Full Name is not valid'),
   userName: Yup.string()
     .min(5, 'Username should be more than 5 character long')
     .max(25, 'Username should not exceed 25 characters')
@@ -582,10 +610,11 @@ const profileUpdateSchema = Yup.object().shape({
   organization: Yup.string()
     .min(2, 'Company Name must be at least 2 characters')
     .max(15, 'Company Name should not exceed 15 characters')
+    .nullable(true)
     .strict(true)
-    .required('Organization name must be alphanumeric')
     .matches(companyName_regex, 'Company Name is not valid')
-    .trim('White spaces are not allowed')
+    .trim('White spaces are not allowed'),
+  domainSector: Yup.string().required('Domain is required')
 });
 
 const changePasswordSchema = Yup.object().shape({

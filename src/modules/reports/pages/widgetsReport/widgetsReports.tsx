@@ -30,7 +30,7 @@ const widgetsReports: React.FC = () => {
   const endDate = searchParams.get('endDate') || '';
 
   // Function to call the api and list the membersSuggestionList
-  const getReportWidgetsList = async(props: { page: number; limit: number }) => {
+  const getReportWidgetsList = async (props: { page: number; limit: number }) => {
     setLoading(true);
     const data = await getReportWidgetsListService({
       workspaceId: workspaceId!,
@@ -139,7 +139,7 @@ const widgetsReports: React.FC = () => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex items-center justify-between pl-2.5 relative py-10">
+      <div className="flex items-center justify-between relative py-10">
         <h3 className="text-center font-Inter font-semibold text-[23.47px] text-[#08080D] leading-6">Customize your Report</h3>
       </div>
       {!widgets?.length && !isDragMode && (
@@ -155,6 +155,7 @@ const widgetsReports: React.FC = () => {
         setTransformedWidgetData={setTransformedWidgetData}
         filters={{ startDate, endDate, platformId: reportValuesData?.platformIds }}
         setIsDragMode={setIsDragMode}
+        widgetLoading={loading}
       />
 
       <div className="flex justify-end pt-10 items-center mb-10">
@@ -181,9 +182,8 @@ const widgetsReports: React.FC = () => {
           text=""
           type="submit"
           onClick={() => transformedWidgetData.length && setModalOpen(true)}
-          className={`justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow ${
-            !transformedWidgetData.length ? 'opacity-50 cursor-not-allowed' : ''
-          }`}
+          className={`justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow ${!transformedWidgetData.length ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
         >
           <div className="font-Poppins font-medium text-white leading-5 text-[13px] ">Generate Report</div>
         </Button>

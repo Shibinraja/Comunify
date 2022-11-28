@@ -71,6 +71,7 @@ export interface WidgetContainerProps {
   setTransformedWidgetData?: Dispatch<SetStateAction<Array<TransformWidgetDataType>>>;
   filters?: WidgetFilters;
   setIsDragMode?: Dispatch<SetStateAction<boolean>>;
+  widgetLoading: boolean;
 }
 
 export interface TransformWidgetDataType {

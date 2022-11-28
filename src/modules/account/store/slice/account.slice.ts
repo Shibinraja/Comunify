@@ -11,7 +11,8 @@ const initialState: InitialState = {
     fileName: ''
   },
   userProfileData: [],
-  userProfileUpdateData: []
+  userProfileUpdateData: [],
+  resetProfilePic: false
 };
 const changePassword = (state: InitialState, action: PayloadAction<ChangePassword>) => state;
 const uploadProfilePic = (state: InitialState, action: PayloadAction<profilePicInput>) => ({
@@ -21,6 +22,11 @@ const uploadProfilePic = (state: InitialState, action: PayloadAction<profilePicI
 const userProfileData = (state: InitialState, action: PayloadAction<userProfileDataInput>) => state;
 const userProfileUpdateData = (state: InitialState, action: PayloadAction<userProfileUpdateInput>) => state;
 
+const profilePicReset = (state: InitialState, action: PayloadAction<boolean>) => ({
+  ...state,
+  resetProfilePic: action.payload
+});
+
 const accountSlice = createSlice({
   name: 'accounts',
   initialState,
@@ -28,7 +34,8 @@ const accountSlice = createSlice({
     changePassword,
     uploadProfilePic,
     userProfileData,
-    userProfileUpdateData
+    userProfileUpdateData,
+    profilePicReset
   }
 });
 

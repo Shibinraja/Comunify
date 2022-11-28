@@ -5,4 +5,5 @@ export interface InitialState {
   profilePictureUrl: profilePicInput;
   userProfileData: userProfileDataInput[];
   userProfileUpdateData: userProfileUpdateInput[];
+  resetProfilePic: boolean
 }

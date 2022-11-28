@@ -15,16 +15,14 @@ import { PanelWidgetsType, TransformWidgetDataType, WidgetComponentProps, Widget
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 export default function WidgetContainer(props: WidgetContainerProps) {
-  const { isManageMode, widgets, setWidgets, setTransformedWidgetData, filters, setIsDragMode } = props;
+  const { isManageMode, widgets, setWidgets, setTransformedWidgetData, filters, setIsDragMode, widgetLoading  } = props;
 
   const [widgetKey, setWidgetKey] = useState<string[]>(['']);
   const [widgetRemoved, setWidgetRemoved] = React.useState<string>();
 
   useEffect(() => {
-    if (widgets?.length) {
-      const widgetLocations = widgets?.map((widget) => widget.widget.widgetLocation);
-      setWidgetKey(widgetLocations);
-    }
+    const widgetLocations = widgets?.map((widget) => widget.widget.widgetLocation);
+    setWidgetKey(widgetLocations);
   }, [widgets]);
 
   const renderWidget = (widgetLocation: string, props: React.PropsWithoutRef<WidgetComponentProps>) => {
@@ -112,6 +110,7 @@ export default function WidgetContainer(props: WidgetContainerProps) {
     filters,
     widget: {}
   };
+
   return (
     <>
       {isManageMode && (
@@ -156,7 +155,7 @@ export default function WidgetContainer(props: WidgetContainerProps) {
       {!widgets?.length && !isManageMode && (
         <div className="flex flex-col items-center justify-center fixWidgetNoDataHeight {">
           <img src={noWidgetIcon} alt="" className="w-[3.8125rem] h-[3.8125rem]" />
-          <div className="font-Poppins font-medium text-tableDuration text-noReports leading-10 pt-5">No widgets added</div>
+          <div className="font-Poppins font-medium text-tableDuration text-noReports leading-10 pt-5">{widgetLoading ?  'Fetching widgets...' : 'No widgets added'}</div>
         </div>
       )}
     </>

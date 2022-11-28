@@ -243,6 +243,7 @@ export interface AddedCardDetails {
 export interface UpgradeData {
   upgrade?: boolean;
   paymentMethod?: string;
+  autoRenewal: boolean;
 }
 export interface BillingHistoryQuery {
   page: number;
@@ -263,4 +264,9 @@ export type BillingHistoryResponse = PaginationResponse<BillingHistoryData>;
 
 export interface StripePaymentMethodId {
   paymentId: string;
+}
+
+export interface SubscriptionPackageFeatures {
+  comunifyFeature: { name: string };
+  value: string;
 }

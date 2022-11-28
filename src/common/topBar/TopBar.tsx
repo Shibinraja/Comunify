@@ -68,6 +68,7 @@ const TopBar: React.FC = () => {
   // eslint-disable-next-line no-unused-vars
   const [, setActivityNextCursor] = useState<string | null>('');
   const [profileImage, setProfileImage] = useState<string>('');
+  const [profileUploadImage, setProfileUploadImage] = useState<string>('');
   const [unReadStatus, setUnReadStatus] = useState('false');
   const [notificationList, setNotificationList] = useState<NotificationList>({
     result: [],
@@ -80,6 +81,7 @@ const TopBar: React.FC = () => {
   const notificationRef = useRef<HTMLImageElement | null>(null);
 
   const options: string[] = ['Profile Settings', 'Sign Out'];
+  const { resetProfilePic } = useAppSelector((state) => state.accounts);
   const accessToken = localStorage.getItem('accessToken') || cookie.load('x-auth-cookie');
   const decodedToken: DecodeToken = accessToken && decodeToken(accessToken);
   const debouncedValue = useDebounce(searchSuggestion, 300);
@@ -93,10 +95,20 @@ const TopBar: React.FC = () => {
       search: props.search as string
     });
     setLoading((prev) => ({ ...prev, fetchLoading: false }));
-    setSuggestionList((prevState) => ({
-      result: prevState.result.concat(data?.result as unknown as GlobalSearchDataResult[]),
-      nextCursor: data?.nextCursor as string | null
-    }));
+    setSuggestionList((prevState) => {
+      // Check is there is any viable duplicate items in the list and sets the distinct one.
+      const CheckedDuplicateSearchList = new Set();
+
+      const searchList = prevState.result.concat(data?.result as unknown as GlobalSearchDataResult).filter((searchItem: GlobalSearchDataResult) => {
+        const duplicate = CheckedDuplicateSearchList.has(searchItem.id);
+        CheckedDuplicateSearchList.add(searchItem.id);
+        return !duplicate;
+      });
+      return {
+        result: searchList,
+        nextCursor: data?.nextCursor as string | null
+      };
+    });
   };
 
   const handleOutsideClick = (event: MouseEvent) => {
@@ -117,6 +129,7 @@ const TopBar: React.FC = () => {
     fetchProfileData();
     if (profilePictureUrl) {
       setProfileImage(profilePictureUrl.profilePic);
+      setProfileUploadImage(profilePictureUrl.profilePic);
     }
 
     // Event functionality which checks the route changes in the app and triggers the possible route callback functionality.
@@ -126,7 +139,7 @@ const TopBar: React.FC = () => {
       }
     });
 
-    if (!decodedToken.isAdmin) {
+    if (!decodedToken?.isAdmin) {
       notificationCount(workspaceId as string);
     }
 
@@ -152,17 +165,26 @@ const TopBar: React.FC = () => {
   }, [profilePictureUrl]);
 
   useEffect(() => {
+    if (resetProfilePic) {
+      setProfileImage(profileUploadImage);
+    }
+  }, [resetProfilePic]);
+
+  useEffect(() => {
+    setSuggestionList({
+      result: [],
+      nextCursor: null
+    });
     if (debouncedValue) {
-      setSuggestionList({
-        result: [],
-        nextCursor: null
-      });
-      getGlobalSearchItem({
-        cursor: null,
-        prop: 'search',
-        search: debouncedValue,
-        suggestionListCursor: suggestionList.nextCursor
-      });
+      const fetchGlobalSearchList = async () => {
+        await getGlobalSearchItem({
+          cursor: null,
+          prop: 'search',
+          search: debouncedValue,
+          suggestionListCursor: suggestionList.nextCursor
+        });
+      };
+      fetchGlobalSearchList();
     }
   }, [debouncedValue]);
 
@@ -225,11 +247,11 @@ const TopBar: React.FC = () => {
         dispatch(authSlice.actions.signOut());
         break;
       case 'Profile Settings':
-        if (!decodedToken.isAdmin) {
+        if (!decodedToken?.isAdmin) {
           navigate(`${workspaceId}/account`);
         }
 
-        if (decodedToken.isAdmin) {
+        if (decodedToken?.isAdmin) {
           navigate(`admin/settings`);
         }
         break;
@@ -331,7 +353,7 @@ const TopBar: React.FC = () => {
     <div className=" mt-6 px-12 xl:px-20">
       <div className="flex justify-between items-center ">
         <div className="relative dark:bg-primaryDark`" ref={suggestionListDropDownRef}>
-          {!decodedToken.isAdmin && (
+          {!decodedToken?.isAdmin && (
             <Fragment>
               <input
                 name="search"
@@ -374,7 +396,7 @@ const TopBar: React.FC = () => {
               </div>
             )} */}
           </div>
-          {!decodedToken.isAdmin && (
+          {!decodedToken?.isAdmin && (
             <div className="pl-1.68 relative cursor-pointer" ref={notificationRef}>
               <div className="notification-icon" onClick={handleNotificationActive}>
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -396,7 +418,7 @@ const TopBar: React.FC = () => {
                         <div className="flex flex-col gap-5 overflow-y-scroll member-section mt-1.8 max-h-96 height-member-merge ">
                           {Array.from({ length: 10 }, (_, i) => i + 1).map((type: number) => (
                             <Fragment key={type}>
-                              <div className="flex py-[10px] border-b border-[#E6E6E6] items-center">
+                              <div className="flex py-[10px] border-b border-[#E6E6E6]">
                                 <Skeleton width={40} height={40} borderRadius={'50%'} className="rounded-full" />
                                 <div className="flex flex-col pl-2">
                                   <span className="text-[#070707] text-sm">
@@ -481,7 +503,9 @@ const TopBar: React.FC = () => {
       </div>
       {suggestionList?.result?.length > 0 && isSuggestionListDropDown && (
         <div
-          className="mt-[3px] box-border rounded-0.3 shadow-reportInput w-34.37 app-result-card-border h-12.375 overflow-auto absolute z-10 bg-white"
+          className={`mt-[3px] box-border rounded-0.3 shadow-reportInput w-34.37 app-result-card-border overflow-auto absolute z-10 bg-white ${
+            suggestionList.result.length > 4 ? 'h-12.375' : `h-[${suggestionList.result.length * 30}]px`
+          }`}
           onScroll={handleScroll}
         >
           {suggestionList.result.map((searchResult: GlobalSearchDataResult) => (
@@ -499,7 +523,9 @@ const TopBar: React.FC = () => {
                   />
                 </Fragment>
                 <div className="pl-6 font-Poppins font-normal text-searchBlack leading-1.31 text-trial">
-                  {searchResult.resultType === ActivityEnum.Activity ? searchResult.displayValue : searchResult.memberName}
+                  {searchResult.resultType === ActivityEnum.Activity
+                    ? `${searchResult.memberName} ${searchResult.displayValue}`
+                    : searchResult.memberName}
                 </div>
               </div>
             </div>

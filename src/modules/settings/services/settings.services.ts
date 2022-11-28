@@ -170,11 +170,13 @@ export const getBillingInvoice = async (invoiceId: string) => {
   }
 };
 
-export const getNewlyAddedCardDetailsService = async (body: StripePaymentMethodId) => {
+export const getNewlyAddedCardDetailsService = async (body: StripePaymentMethodId): Promise<AddedCardDetails> => {
   try {
     const { data } = await request.post(`${API_ENDPOINT}/v1/subscription/card/`, body);
-    return data?.data;
-  } catch {
+    return data?.data as AddedCardDetails;
+  } catch (e) {
+    const error = e as AxiosError<any>;
+    showErrorToast(error?.response?.data?.message);
     return {} as AddedCardDetails;
   }
 };

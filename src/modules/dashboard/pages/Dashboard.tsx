@@ -27,8 +27,8 @@ const Dashboard: FC = () => {
   const [selected, setSelected] = useState<string>('');
   const [dateRange, setDateRange] = useState([null, null]);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-
   const [isManageMode, setIsManageMode] = useState<boolean>(false);
+  const [widgetLoading, setWidgetLoading] = useState<boolean>(false);
   const [widgets, setWidgets] = useState<any[] | []>([]);
   const [widgetResponse, setWidgetResponse] = useState<widgetResponseData>({
     saveWidgetResponse: [],
@@ -137,15 +137,18 @@ const Dashboard: FC = () => {
   // eslint-disable-next-line space-before-function-paren
   const fetchWidgetLayoutData = async () => {
     try {
+      setWidgetLoading(true);
       const response = await getWidgetsLayoutService(workspaceId);
       const widgetDataArray = response?.map((data: any) => ({
         id: data?.id,
         layout: { ...data.configs, i: data?.id },
         widget: { ...data?.widget, widgetId: data?.widgetId }
       }));
+      setWidgetLoading(false);
       setWidgets(widgetDataArray);
       setWidgetResponse((prevState) => ({ ...prevState, saveWidgetResponse: widgetDataArray }));
     } catch {
+      setWidgetLoading(false);
       showErrorToast('Failed to load widgets layout');
     }
   };
@@ -197,9 +200,8 @@ const Dashboard: FC = () => {
       <div className="flex justify-between mt-10 pb-2">
         <div className="flex relative items-center">
           <div
-            className={`flex items-center justify-between px-5 w-11.72 h-3.06 border border-borderPrimary rounded-0.6 shadow-shadowInput ${
-              widgets?.length ? 'cursor-pointer' : 'cursor-not-allowed'
-            }  `}
+            className={`flex items-center justify-between px-5 w-11.72 h-3.06 border border-borderPrimary rounded-0.6 shadow-shadowInput ${widgets?.length ? 'cursor-pointer' : 'cursor-not-allowed'
+              }  `}
             ref={dropDownRef}
             onClick={handleDropDownActive}
           >
@@ -263,7 +265,7 @@ const Dashboard: FC = () => {
           <Button
             text=""
             onClick={handleWidgetDrawer}
-            className={`flex justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow cursor-pointer`}
+            className={`flex justify-between w-[192px] btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow cursor-pointer`}
           >
             <div className="font-Poppins font-medium text-white leading-5 text-search ">Manage Widget</div>
             <div className="brick-icon bg-cover">
@@ -283,9 +285,8 @@ const Dashboard: FC = () => {
             <Button
               text=""
               disabled={isButtonLoading ? true : false}
-              className={`flex justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow ${
-                isButtonLoading ? 'opacity-50 cursor-not-allowed ' : 'cursor-pointer'
-              }`}
+              className={`flex justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow ${isButtonLoading ? 'opacity-50 cursor-not-allowed ' : 'cursor-pointer'
+                }`}
               onClick={saveWidgetLayout}
             >
               <div className="font-Poppins font-medium text-white leading-5 text-search ml-3">Save Layout</div>
@@ -303,6 +304,7 @@ const Dashboard: FC = () => {
           setWidgets={setWidgets}
           setTransformedWidgetData={setTransformedWidgetData}
           filters={{ startDate, endDate }}
+          widgetLoading={widgetLoading}
         />
       </div>
       <ModalDrawer

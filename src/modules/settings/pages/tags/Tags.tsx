@@ -217,7 +217,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                     isOpen={isTagModalOpen}
                     shouldCloseOnOverlayClick={true}
                     onRequestClose={() => setTagModalOpen(false)}
-                    className="w-24.31 h-18.75 mx-auto rounded-lg modals-tag bg-white shadow-modal"
+                    className="w-24.31 h-[290px] mx-auto rounded-lg modals-tag bg-white shadow-modal"
                     style={{
                       overlay: {
                         display: 'flex',
@@ -239,7 +239,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                         <Input
                           type="text"
                           className="mt-0.375 inputs box-border bg-white shadow-inputShadow rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-sm placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
-                          placeholder="Enter Tag Name"
+                          placeholder="Enter the tag name"
                           id="tags"
                           name="tags"
                           label="Tags"
@@ -358,7 +358,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
         }}
       >
         <div className="flex flex-col items-center justify-center ">
-          <div className="mt-5 leading-6 text-black font-Inter font-semibold text-xl w-2/3 text-center">Are you sure want to delete tags?</div>
+          <div className="mt-5 leading-6 text-black font-Inter font-semibold text-xl w-2/3 text-center">Are you sure want to delete this tag?</div>
           <div className="flex mt-1.8">
             <Button
               type="button"

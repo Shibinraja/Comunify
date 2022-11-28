@@ -376,8 +376,8 @@ const Members: React.FC = () => {
     }
 
     return (
-      <div className="memberTable mt-1.8">
-        <div className="py-2  mt-1.868">
+      <div className="memberTable mt-[30px]">
+        <div className="py-2">
           <div className="inline-block min-w-full w-full align-middle rounded-0.6 border-table  overflow-x-auto overflow-y-auto sticky top-0 fixTableHead max-h-34 min-h-[31.25rem] mb-16">
             <table className="min-w-full relative w-full rounded-t-0.6 ">
               <thead className="h-3.25  top-0 w-full  sticky ">
@@ -405,14 +405,14 @@ const Members: React.FC = () => {
                 {customizedColumn.map((member: Record<string, unknown>) => (
                   <tr className="border-b " key={(member?.name as { name: string; id: string })?.id as Key}>
                     {Object.keys(member).map((column: keyof typeof member, index) => (
-                      <td className="px-3 py-4 " key={index}>
+                      <td className="px-3 h-[60px] " key={index}>
                         {column === 'name' ? (
                           memberColumnsLoader ? (
                             <Skeleton width={width_90} />
                           ) : (
                             <div className="flex w-[150px]">
                               <div
-                                className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer"
+                                className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer capitalize"
                                 onClick={() => navigateToProfile((member?.name as { name: string; id: string })?.id as string)}
                               >
                                 {(member?.name as { name: string; id: string })?.name as string}
@@ -437,7 +437,7 @@ const Members: React.FC = () => {
                           memberColumnsLoader ? (
                             <Skeleton width={width_90} />
                           ) : (
-                            <div className="flex w-[200px]">
+                            <div className="flex w-[150px]">
                               <div className="py-3 flex gap-2 items-center flex-wrap font-Poppins font-medium text-trial text-infoBlack leading-1.31">
                                 {member?.tags ? (
                                   (member?.tags as Array<{ id: string; name: string }>)
@@ -472,7 +472,7 @@ const Members: React.FC = () => {
                                   <div className="font-Poppins font-normal text-card text-infoBlack leading-5 pr-4 tags-ellipse">{'--'}</div>
                                 )}
                                 <div
-                                  className="font-Poppins font-medium text-trial text-infoBlack leading-1.31"
+                                  className="font-Poppins font-medium text-trial text-tag leading-1.12 capitalize underline cursor-pointer"
                                   onClick={() => navigateToProfile((member?.name as { name: string; id: string })?.id as string)}
                                 >
                                   {(member?.tags as Array<Record<string, unknown>>)?.length > 2
@@ -506,8 +506,8 @@ const Members: React.FC = () => {
                     ))}
                   </tr>
                 ))}
-                <tr className="px-3 py-4">
-                  <td className="px-3 py-4"></td>
+                <tr className="px-3 h-[60px]">
+                  <td className="px-3 h-[60px]"></td>
                 </tr>
               </tbody>
             </table>
@@ -569,13 +569,13 @@ const Members: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col mt-12">
+    <div className="flex flex-col mt-[73px]">
       <h3 className="font-Poppins font-semibold text-infoBlack text-infoData leading-9 dark:text-white">Members</h3>
-      <div className="member-card pt-10">
+      <div className="member-card pt-[30px]">
         <MembersCard />
       </div>
-      <div className="flex flex-col xl:flex-row  justify-between mt-1.8 i ">
-        <div className="flex relative items-center w-1/2 xl:w-[250px] 2xl:w-19.06">
+      <div className="flex flex-col xl:flex-row  justify-between mt-[40px] i ">
+        <div className="flex relative items-center w-1/2 xl:w-[300px] 2xl:w-19.06">
           <input
             type="text"
             className="focus:outline-none px-3 pr-8 box-border w-full h-3.06  rounded-0.6  placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray shadow-shadowInput"
@@ -588,25 +588,22 @@ const Members: React.FC = () => {
         </div>
         <div className="flex justify-between xl:justify-start mt-4 xl:mt-0">
           <div
-            className={`day w-[49px] h-3.06 flex items-center justify-center ml-0 xl:ml-0.652 box-border rounded-0.6 ${
-              customDateLink['1day'] ? 'border-gradient-rounded-member' : 'app-input-card-border'
-            } shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
+            className={`day w-[49px] h-3.06 flex items-center justify-center ml-0 xl:ml-0.652 box-border rounded-0.6 ${customDateLink['1day'] ? 'border-gradient-rounded-member' : 'app-input-card-border'
+              } shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
             onClick={() => selectCustomDate('1day')}
           >
             1D
           </div>
           <div
-            className={`day w-[49px] h-3.06 flex items-center justify-center ml-0.652 box-border rounded-0.6 ${
-              customDateLink['7day'] ? 'border-gradient-rounded-member' : 'app-input-card-border'
-            } shadow-shadowInput font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
+            className={`day w-[49px] h-3.06 flex items-center justify-center ml-0.652 box-border rounded-0.6 ${customDateLink['7day'] ? 'border-gradient-rounded-member' : 'app-input-card-border'
+              } shadow-shadowInput font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
             onClick={() => selectCustomDate('7day')}
           >
             7D
           </div>
           <div
-            className={`day w-[49px] h-3.06 flex items-center justify-center ml-0.652 box-border rounded-0.6 ${
-              customDateLink['1month'] ? 'border-gradient-rounded-member' : 'app-input-card-border'
-            } shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
+            className={`day w-[49px] h-3.06 flex items-center justify-center ml-0.652 box-border rounded-0.6 ${customDateLink['1month'] ? 'border-gradient-rounded-member' : 'app-input-card-border'
+              } shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
             onClick={() => selectCustomDate('1month')}
           >
             1M
@@ -685,9 +682,8 @@ const Members: React.FC = () => {
           <div className="ml-0.652 w-[112px]">
             <div
               aria-disabled={fetchLoader}
-              className={`export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex cursor-pointer hover:border-infoBlack transition ease-in-out duration-300 ${
-                fetchLoader || !customizedColumn?.length ? 'cursor-not-allowed' : ''
-              }`}
+              className={`export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex cursor-pointer hover:border-infoBlack transition ease-in-out duration-300 ${fetchLoader || !customizedColumn?.length ? 'cursor-not-allowed' : ''
+                }`}
               onClick={() => (customizedColumn?.length ? !fetchLoader && fetchMembersListExportData() : null)}
             >
               <h3 className="text-memberDay leading-1.12 font-Poppins font-semibold text-card">Export</h3>

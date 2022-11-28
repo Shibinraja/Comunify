@@ -4,6 +4,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 body {
   animation: fadeInAnimation ease 3s;
   animation-iteration-count: 1;
@@ -14,10 +15,12 @@ body {
   0% {
     opacity: 0;
   }
+
   100% {
     opacity: 1;
   }
 }
+
 input {
   border: 1px solid #eff0f7;
   box-shadow: 8px 8px 24px rgba(2, 2, 70, 0.05);
@@ -118,9 +121,11 @@ input {
 .section::-webkit-scrollbar {
   width: 4.18px;
 }
+
 .feature-box {
   background: linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
 }
+
 /* .section::-webkit-scrollbar-track {
   background-color: darkgrey;
 } */
@@ -210,9 +215,11 @@ input {
 .checkbox:checked {
   background: linear-gradient(277.31deg, #69b5e5 1.11%, #abcf6b 100%);
 }
+
 .bg-background-pattern {
   background-image: url('../src/assets/images/background-pattern.svg');
 }
+
 .checkbox::before {
   content: '';
   height: 11px;
@@ -242,6 +249,7 @@ input {
   height: 35px;
   background: rgba(0, 0, 0, 0.12);
 }
+
 .active-list:nth-child(2):after {
   height: 0;
 }
@@ -258,6 +266,7 @@ input {
 .fixTableHead {
   height: calc(100vh - 36rem);
 }
+
 .fixTableHead table tr th {
   width: 200px !important;
 }
@@ -291,7 +300,7 @@ input {
 }
 
 .widgetDrawerGradient {
-  background: linear-gradient( rgba(249, 200, 55, .9), rgba(238, 152, 52, .9));
+  background: linear-gradient(rgba(249, 200, 55, .9), rgba(238, 152, 52, .9));
 }
 
 .height-member-activity {
@@ -316,6 +325,7 @@ input {
 .member-section-model {
   background: transparent;
 }
+
 .border-review {
   border-bottom: 1px solid #e5e5e5;
 }
@@ -396,6 +406,7 @@ input {
 .react-datepicker__navigation-icon--previous {
   right: 0px !important;
 }
+
 .react-datepicker__navigation-icon {
   top: 14px !important;
 }
@@ -457,22 +468,29 @@ input {
   transform: translate(-50%, -50%) scale(0);
 }
 
-.radio input[type='radio']:checked ~ span:after {
+.radio input[type='radio']:checked~span:after {
   transform: translate(-50%, -50%) scale(1);
 }
 
 .CircularProgressbar {
   filter: drop-shadow(1px 19px 17px rgba(240, 158, 52, 1)) !important;
 }
+
 .CircularProgressbar-trail {
   stroke: #f3f3f3;
   stroke-width: 11;
 }
+
 .CircularProgressbar-path {
   stroke-width: 11;
 }
+
 .menu-box {
   height: calc(100vh - 25rem);
+}
+
+.menu-box-items {
+  height: calc(100vh - 16rem);
 }
 
 .platform-layout-close {
@@ -481,6 +499,7 @@ input {
   transition: height 1s;
   background-color: #fff;
 }
+
 .platform-layout-open {
   height: 243px;
   overflow-y: auto;
@@ -488,9 +507,11 @@ input {
   transition: height 1s;
   transition-timing-function: linear;
 }
+
 .side-nav-layout {
   box-shadow: 0 -7px 0px rgb(0, 0, 0, 0.09), 0 1px 1px rgb(0, 0, 0, 0.2);
 }
+
 .members-list-height {
   height: calc(100vh - 16rem);
   overflow: scroll;
@@ -502,6 +523,7 @@ input {
   overflow: scroll;
   max-height: 410px;
 }
+
 .notification-icon svg path {
   fill: #000;
 }
@@ -519,6 +541,7 @@ input {
 .dark .react-datepicker__month {
   border: none !important;
 }
+
 .dark .react-datepicker__current-month,
 .dark .react-datepicker-time__header,
 .dark .react-datepicker-year-header,
@@ -527,11 +550,13 @@ input {
 .dark .react-datepicker__time-name {
   color: #fff;
 }
+
 .dark .react-datepicker__month .react-datepicker__day-name,
 .dark .react-datepicker__day,
 .dark .react-datepicker__time-name {
   color: #7c8db5 !important;
 }
+
 .dark .react-datepicker__day--selected,
 .dark .react-datepicker__day--keyboard-selected,
 .dark .react-datepicker__day--in-selecting-range,
@@ -548,16 +573,20 @@ input {
 .dark .react-datepicker__day-name {
   color: #fff !important;
 }
+
 .dark .CircularProgressbar-trail {
   stroke: #fff !important;
 }
+
 .dark .notification-icon svg path {
   fill: #fff;
 }
+
 .dark .icon-holder,
 .dark .drop-icon img {
   filter: invert(61%) sepia(8%) saturate(680%) hue-rotate(199deg) brightness(90%) contrast(80%);
 }
+
 .dark .heathCard img {
   filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(326deg) brightness(102%) contrast(101%);
 }
@@ -565,9 +594,11 @@ input {
 .dark .inactive-menu img {
   filter: invert(54%) sepia(14%) saturate(10%) hue-rotate(356deg) brightness(88%) contrast(82%);
 }
+
 .dark .active-menu img {
   filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(326deg) brightness(102%) contrast(101%);
 }
+
 .tags-ellipse {
   overflow: hidden;
   white-space: nowrap;
@@ -575,9 +606,11 @@ input {
   min-width: 20px;
   max-width: 200px;
 }
+
 .fixReportHistoryTableHead {
   height: calc(100vh - 21rem);
 }
+
 .border-download {
   border: 1px solid #eaedf3;
 }
@@ -608,10 +641,12 @@ input {
   -ms-border-radius: 10px;
   -o-border-radius: 10px;
 }
+
 .ReactModalPortal .ReactModal__Overlay {
   /* background-color: rgb(0, 0, 0, 0.7) !important; */
   z-index: 50;
 }
+
 .boder-lightRed {
   border-color: #ff5f5f !important;
 }
@@ -627,41 +662,50 @@ input {
 .fixWidgetNoDataHeight {
   height: calc(100vh - 30rem);
 }
-.preview-box{
+
+.preview-box {
   height: calc(100vh - 22rem);
 }
+
 /* Drag and Drop */
 .react-grid-item.react-grid-placeholder {
   background: transparent !important;
   opacity: 1 !important;
   border: 1px dashed #C2C2C2 !important;
   border-radius: 15px !important;
- }
-.report-email p{
+}
+
+.report-email p {
   top: 3.5rem;
 }
-.cr-currentPassword p{
+
+.cr-currentPassword p {
   bottom: -2rem;
 }
-.fixWidgetNoDataHeight-report{
+
+.fixWidgetNoDataHeight-report {
   height: calc(100vh - 19rem);
 }
-.verify-box{
+
+.verify-box {
   display: none;
 }
-.paymentSubscription:hover .verify-box{
+
+.paymentSubscription:hover .verify-box {
   display: block;
 }
-.tick-box{
+
+.tick-box {
   background: linear-gradient(277.31deg, #69B5E5 1.11%, #ABCF6B 100%);
 
 }
 
 /* Radio Button  */
-.radio-btn label > input[type="radio"] {
+.radio-btn label>input[type="radio"] {
   display: none;
 }
-.radio-btn label > input[type="radio"] + *::before {
+
+.radio-btn label>input[type="radio"]+*::before {
   content: "";
   display: inline-block;
   vertical-align: bottom;
@@ -673,20 +717,22 @@ input {
   border-width: 0.1rem;
   border-color: gray;
   position: relative;
-   top: 12px;
-}
-.radio-btn label > input[type="radio"]:checked + * {
-  color: #ABCF6B ;
-}
-.radio-btn label > input[type="radio"]:checked + *::before {
-  background: radial-gradient(#69B5E5 0%, #ABCF6B  40%, transparent 50%, transparent);
-  border-color: #ABCF6B ;
+  top: 12px;
 }
 
-.radio-btn img{
- position: relative;
- bottom: 13px;
- left: 10px;
+.radio-btn label>input[type="radio"]:checked+* {
+  color: #ABCF6B;
+}
+
+.radio-btn label>input[type="radio"]:checked+*::before {
+  background: radial-gradient(#69B5E5 0%, #ABCF6B 40%, transparent 50%, transparent);
+  border-color: #ABCF6B;
+}
+
+.radio-btn img {
+  position: relative;
+  bottom: 13px;
+  left: 10px;
 }
 
 
@@ -721,3 +767,6 @@ input {
   border-width: 11px;
 }
 
+.react-grid-layout {
+  right: 0.6rem;
+}
