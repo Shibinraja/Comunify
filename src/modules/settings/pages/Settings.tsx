@@ -33,7 +33,6 @@ const Settings = () => {
   const clearLoadingToastCondition = () => {
     setLoadingToast('');
   };
-
   return (
     <div className="flex flex-col ">
       <div className="font-Poppins  leading-35 text-infoData not-italic font-semibold mt-[73px] dark:text-white">Settings</div>
