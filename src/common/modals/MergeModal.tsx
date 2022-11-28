@@ -31,7 +31,8 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
   const debouncedValue = useDebounce(searchSuggestion, 300);
 
   // Function to call the api and list the membersSuggestionList
-  const getMemberList = async(props: Partial<memberSuggestionType>, action?: string) => {
+  // eslint-disable-next-line space-before-function-paren
+  const getMemberList = async (props: Partial<memberSuggestionType>, action?: string) => {
     setLoading(true);
     const data = await getMemberSuggestionList({
       workspaceId: workspaceId!,
@@ -105,7 +106,8 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
   }, [debouncedValue]);
 
   // function for scroll event
-  const handleScroll = async(event: React.UIEvent<HTMLElement>) => {
+  // eslint-disable-next-line space-before-function-paren
+  const handleScroll = async (event: React.UIEvent<HTMLElement>) => {
     event.preventDefault();
     const { clientHeight, scrollHeight, scrollTop } = event.currentTarget;
     if (scrollHeight - scrollTop <= clientHeight + 2 && !loading) {
@@ -172,7 +174,15 @@ const MergeModal: React.FC<MergeModalProps> = ({ modalOpen, setModalOpen }) => {
     const parts = text.split(new RegExp(`(${highlight.replace(/[^a-z .@]/gi, '')})`, 'gi'));
     return (
       <Fragment>
-        {parts.map((part) => (part.toLowerCase() === highlight.toLowerCase() ? <mark className="bg-textHighlightColor">{part}</mark> : part))}
+        {parts.map((part: string, index: number) =>
+          part.toLowerCase() === highlight.toLowerCase() ? (
+            <mark key={index} className="bg-textHighlightColor">
+              {part}
+            </mark>
+          ) : (
+            part
+          )
+        )}
       </Fragment>
     );
   };

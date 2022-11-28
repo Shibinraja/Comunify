@@ -78,7 +78,7 @@ export function* getSubscriptionPackagesService(): GeneratorResponse<Subscriptio
 }
 
 export function* sendSubscriptionPlan(id: string): GeneratorResponse<SubscriptionPackages> {
-  const { data } = yield request.post(`${subscription_module}/chooseplan/${id}`);
+  const { data } = yield request.post(`${subscription_module}/chooseplan/${id}`, { autoRenewal: true });
   return data;
 }
 

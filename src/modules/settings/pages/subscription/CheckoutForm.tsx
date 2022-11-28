@@ -137,9 +137,11 @@ const CheckoutForm: React.FC<Props> = ({
         return;
       }
       if (stripeResponse?.setupIntent?.status === 'succeeded') {
+        await getNewlyAddedCardDetails(stripeResponse?.setupIntent?.payment_method as string);
         const body: UpgradeData = {
           paymentMethod: stripeResponse?.setupIntent?.payment_method as string,
-          upgrade: true
+          upgrade: true,
+          autoRenewal: true
         };
         const response: SubscriptionPackages = await chooseSubscription(subscriptionId, body);
         if (response?.status?.toLocaleLowerCase().trim() === 'paid') {

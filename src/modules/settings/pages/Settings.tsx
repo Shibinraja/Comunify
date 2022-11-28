@@ -1,18 +1,28 @@
 /* eslint-disable no-unused-expressions */
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, useEffect, useState } from 'react';
 import { useTabs } from '@/hooks/useTabs';
 import { TabSelector } from 'common/tabs/TabSelector';
 import BillingHistory from './billingHistory/BillingHistory';
 import Integration from './integration/Integration';
 import Tags from './tags/Tags';
 import { useLocation } from 'react-router';
+import { useDispatch } from 'react-redux';
+import { AnyAction } from 'redux';
+import authSlice from 'modules/authentication/store/slices/auth.slice';
+import { useAppSelector } from '@/hooks/useRedux';
+import { State } from '@/store/index';
+import { SubscriptionPackages } from 'modules/authentication/interface/auth.interface';
 
 const Subscription = React.lazy(() => import('./subscription/Subscription'));
 
-const Settings = () => {
+const Settings: React.FC = () => {
   const [selectedTab, setSelectedTab] = useTabs(['integrations', 'subscription', 'billing_history', 'tags']);
   const [loadingToast, setLoadingToast] = useState<string>('');
+
+  const subscriptionPlanDetails: SubscriptionPackages[] = useAppSelector((state: State) => state.auth.subscriptionData);
+
   const location: any | Location = useLocation();
+  const dispatch: Dispatch<AnyAction> = useDispatch();
   const redirectPath = location?.state?.selectedTab;
   const loadingToastCondition = location?.state?.loadingToastCondition;
 
@@ -29,6 +39,12 @@ const Settings = () => {
   useEffect(() => {
     redirectPath === 'subscription' && setSelectedTab('subscription');
   }, [redirectPath]);
+
+  useEffect(() => {
+    if (selectedTab === 'subscription') {
+      dispatch(authSlice.actions.getSubscriptions());
+    }
+  }, [selectedTab]);
 
   const clearLoadingToastCondition = () => {
     setLoadingToast('');
@@ -85,7 +101,7 @@ const Settings = () => {
         </nav>
         <div className="items-center block section ">
           <Integration hidden={selectedTab !== 'integrations'} selectedTab={selectedTab!} />
-          <Subscription hidden={selectedTab !== 'subscription'} selectedTab={selectedTab!} />
+          <Subscription hidden={selectedTab !== 'subscription'} selectedTab={selectedTab!} subscriptionPlanDetails={subscriptionPlanDetails} />
           <BillingHistory
             hidden={selectedTab !== 'billing_history'}
             selectedTab={selectedTab!}
