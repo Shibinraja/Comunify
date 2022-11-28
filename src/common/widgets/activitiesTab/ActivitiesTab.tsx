@@ -48,7 +48,7 @@ const ActivitiesTab: FC<WidgetComponentProps> = (props: WidgetComponentProps) =>
   };
 
   return (
-    <div className={`mt-6 ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
+    <div className={`mb-6 ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
       <div>
         <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Activities</h3>
       </div>

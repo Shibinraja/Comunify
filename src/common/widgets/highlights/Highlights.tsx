@@ -47,7 +47,7 @@ const Highlights: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
 
   return (
     <div className={`${!isManageMode ? 'h-full' : 'cursor-grabbing my-6 '}  `}>
-      <div className='mt-6'>
+      <div className='mb-6'>
         <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Highlights</h3>
       </div>
       <div
@@ -62,7 +62,7 @@ const Highlights: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
               style={`ml-1.625 mt-0.438 ${isManageMode ? 'text-sm' : 'text-xs'} pb-2  border-transparent`}
               styleActive={'gradient-bottom-border'}
             >
-            Highlights
+              Highlights
             </TabSelector>
           </nav>
           <div className={`items-center relative block section overflow-y-auto ${!widgetPreviewLocation ? 'h-14.375' : ''}`}>

@@ -50,14 +50,13 @@ const TopContributor: FC<WidgetComponentProps> = (props: WidgetComponentProps) =
 
   return (
     <div className={`${!isManageMode ? 'h-full' : 'cursor-grabbing my-6 '}  `}>
-      <div className='mt-6'>
+      <div className='mb-6'>
         <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Top Contributors</h3>
       </div>
       <div
         className={`w-full box-border
-        ${
-          isManageMode ? 'widget-border relative h-full' : 'border-borderPrimary'
-        } bg-white dark:bg-secondaryDark dark:text-white rounded-0.6 mt-1.868 border  
+        ${isManageMode ? 'widget-border relative h-full' : 'border-borderPrimary'
+          } bg-white dark:bg-secondaryDark dark:text-white rounded-0.6 mt-1.868 border  
          dark:border-borderDark shadow-profileCard  h-[85%]`}
       >
         <div className="w-full mt-6 flex flex-col ">
