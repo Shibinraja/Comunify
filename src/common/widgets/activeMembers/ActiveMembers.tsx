@@ -48,7 +48,6 @@ const ActiveMembers: FC<WidgetComponentProps> = (props: WidgetComponentProps) =>
   const handleRemove = () => {
     removeWidgetFromDashboard(widget);
   };
-
   return (
     <div className={`${!isManageMode ? 'h-full' : 'cursor-grabbing my-6 '}  `}>
       <div className="mb-6">
