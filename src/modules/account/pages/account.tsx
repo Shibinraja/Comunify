@@ -243,7 +243,7 @@ const Account = () => {
                 helperText={touched.fullName && errors.fullName}
               />
             </div>
-            <div className="flex flex-col pl-5 w-1/2">
+            <div className="flex flex-col ml-5 w-1/2">
               <label htmlFor="userName" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
                 Username
               </label>
@@ -271,7 +271,7 @@ const Account = () => {
                 name="email"
                 id="emailId"
                 className="shadow-inputShadow bg-[#EBF8FF] h-2.81 mt-0.40 px-3 app-result-card-border focus:outline-none box-border bg-white cursor-not-allowed	 w-full py-2 rounded-0.3 placeholder:text-thinGray placeholder:font-Poppins placeholder:font-normal placeholder:leading-1.31 placeholder:text-trial"
-                // placeholder="example@mail.com"
+                placeholder="example@mail.com"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.email}
@@ -280,7 +280,7 @@ const Account = () => {
                 helperText={touched.email && errors.email}
               />
             </div>
-            <div className="flex flex-col pl-5 mt-1.08 w-1/2">
+            <div className="flex flex-col ml-5 mt-1.08 w-1/2">
               <label htmlFor="organization" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
                 Organization
               </label>
@@ -299,13 +299,13 @@ const Account = () => {
             </div>
           </div>
           <div className="flex w-full">
-            <div className="flex flex-col mt-1.08 w-1/2">
+            <div className="flex flex-col mt-1.08 md:w-1/2 xl:w-[297.5px]">
               <label htmlFor="domain" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
                 Domain
               </label>
               <div className="flex flex-col relative w-full">
                 <div className="cursor-pointer" ref={dropDownRef} onClick={() => setDropDownActive(!isDropDownActive)}>
-                  <div className="flex items-center w-full  justify-between p-2 app-result-card-border bg-white  py-2 box-border shadow-inputShadow  rounded-0.3 mt-0.40 font-Poppins text-thinGray font-normal leading-1.31 text-trial">
+                  <div className="h-2.81 flex items-center w-full  justify-between pl-3 pr-[17.12px] py-2 app-result-card-border bg-white  py-2 box-border shadow-inputShadow  rounded-0.3 mt-0.40 font-Poppins text-thinGray font-normal leading-1.31 text-trial">
 
                     <div className={selectedDomainSector === 'Select' ? 'text-secondaryGray' : 'text-black'}>
                       <input className="w-[1px] border-none focus:outline-none" type="text" />
@@ -388,7 +388,7 @@ const Account = () => {
   return (
     <div className="profile pt-16 pb-10">
       <div className="flex">
-        <div className="w-full md:w-[60%] xl:w-[70%]">
+        <div className="w-full md:w-[60%] xl:w-[667px] h-[713px]">
           <div className="pb-10 box-border bg-white rounded-0.6 app-input-card-border shadow-contactCard">
             <div className="flex flex-col mt-1.16 px-1.56">
               <div className="flex flex-col">
@@ -441,8 +441,8 @@ const Account = () => {
                       <div className="flex justify-between">
                         <div
                           className={`currentPassword relative w-1/2 ${errors.currentPassword === 'Password must have one uppercase, one lowercase, a digit and special characters'
-                              ? 'cr-currentPassword '
-                              : ''
+                            ? 'cr-currentPassword '
+                            : ''
                             }`}
                         >
                           <label htmlFor="currentPassword" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31 pb-1">
@@ -456,8 +456,8 @@ const Account = () => {
                             name="currentPassword"
                             // eslint-disable-next-line max-len
                             className={`h-2.81 relative  rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${touched.currentPassword && errors.currentPassword
-                                ? 'border-lightRed h-2.81 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
-                                : ''
+                              ? 'border-lightRed h-2.81 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
+                              : ''
                               }`}
                             onBlur={handleBlur}
                             onChange={handleChange}
@@ -475,8 +475,8 @@ const Account = () => {
                         </div>
                         <div
                           className={`currentPassword relative w-1/2 pl-[19px] ${errors.newPassword === 'Password must have one uppercase, one lowercase, a digit and special characters'
-                              ? 'cr-currentPassword '
-                              : ''
+                            ? 'cr-currentPassword '
+                            : ''
                             }`}
                         >
                           <label htmlFor="currentPassword" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31 ">
@@ -490,8 +490,8 @@ const Account = () => {
                             name="newPassword"
                             // eslint-disable-next-line max-len
                             className={`h-2.81 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${touched.newPassword && errors.newPassword
-                                ? 'border-lightRed h-2.81 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
-                                : ''
+                              ? 'border-lightRed h-2.81 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
+                              : ''
                               }`}
                             onBlur={handleBlur}
                             onChange={handleChange}
@@ -536,10 +536,10 @@ const Account = () => {
             </div>
           </div>
         </div>
-        <div className="w-full md:w-[40%] xl:w-[30%]">
-          <div className="w-full pl-2.06 flex flex-col ">
-            <div className=" items-center bg-red-500 justify-center btn-save-modal rounded-t-0.6 w-full shadow-contactCard box-border h-6.438"></div>
-            <div className="flex flex-col border-b border-l border-r border-[#DBD8FC] items-center justify-center bg-white rounded-b-0.6 w-full shadow-contactCard box-border h-11.06">
+        <div className="w-full md:w-[40%] xl:w-[290px]  ml-2.06">
+          <div className="w-full flex flex-col ">
+            <div className=" items-center bg-red-500 justify-center btn-save-modal rounded-t-0.6 w-full shadow-contactCard box-border h-6.438 w-[290px]"></div>
+            <div className="flex flex-col border-b border-l border-r border-[#DBD8FC] items-center justify-center bg-white rounded-b-0.6 w-full shadow-contactCard box-border h-11.06 w-[290px]">
               <div className="-mt-24 ">
                 <img
                   className="bg-cover bg-center border-5 border-white rounded-full w-100 h-100 bg-[#abcf6b]"
@@ -571,7 +571,7 @@ const Account = () => {
               </div>
             </div>
             {!decodedToken.isAdmin && (
-              <div className="flex flex-col justify-center items-center app-input-card-border mt-2.063 shadow-contactCard rounded-0.6 bg-white box-border w-full p-8">
+              <div className="flex flex-col justify-center items-center app-input-card-border mt-2.063 shadow-contactCard rounded-0.6 bg-white box-border w-full p-8 w-[290px]">
                 <h3 className="font-Poppins font-semibold text-contact text-infoBlack leading-2.06">Have a question?</h3>
                 <div className=" text-sm font-Poppins font-normal text-tableDuration leading-1.31">We can help you</div>
                 <div className="mt-5">
