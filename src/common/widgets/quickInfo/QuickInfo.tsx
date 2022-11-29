@@ -60,7 +60,7 @@ const QuickInfo: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   };
 
   return (
-    <div className={`mt-6 ${isShrunk ? 'cursor-grabbing ' : !isManageMode ? '' : 'cursor-grabbing'}  `}>
+    <div className={`mb-6 ${isShrunk ? 'cursor-grabbing ' : !isManageMode ? '' : 'cursor-grabbing'}  `}>
       <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Quick Info</h3>
       <div
         className={`grid ${isShrunk ? 'grid-cols-2 h-[137px]' : !isManageMode ? 'grid-cols-4 w-full h-[134px]' : 'grid-cols-4 widget-border relative w-full'

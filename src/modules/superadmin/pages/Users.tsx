@@ -196,8 +196,8 @@ const Users: React.FC = () => {
     }
 
     return (
-      <div className="memberTable mt-1.8">
-        <div className="py-2  mt-1.868">
+      <div className="memberTable mt-[41px]">
+        <div className="pb-2 ">
           <div className="inline-block min-w-full w-full align-middle rounded-0.6 border-table  overflow-x-auto overflow-y-auto sticky top-0 fixTableHead max-h-34 min-h-[31.25rem] mb-16">
             <table className="min-w-full relative w-full rounded-t-0.6 ">
               <thead className="h-3.25  top-0 w-full  sticky ">
@@ -219,7 +219,7 @@ const Users: React.FC = () => {
                 {customizedColumn.map((member: Record<string, unknown>) => (
                   <tr className="border-b " key={Math.random()}>
                     {Object.keys(member).map((column: keyof typeof member, index) => (
-                      <td className="px-3 py-4 " key={index}>
+                      <td className="px-3  h-[60px] " key={index}>
                         {column === 'createdAt' ? (
                           fetchLoader.getLoader ? (
                             <Skeleton width={width_90} />
@@ -228,9 +228,9 @@ const Users: React.FC = () => {
                               <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
                                 {member?.createdAt ? format(parseISO(member?.createdAt as string), 'dd MMM yyyy') : '--'}
                               </div>
-                              <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
+                              {/* <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
                                 {(member?.createdAt as ReactNode) && format(parseISO(member?.createdAt as string), 'HH:MM')}
-                              </div>
+                              </div> */}
                             </div>
                           )
                         ) : column === 'lastLogin' ? (
@@ -241,16 +241,16 @@ const Users: React.FC = () => {
                               <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
                                 {member?.lastLogin ? format(parseISO(member?.lastLogin as string), 'dd MMM yyyy') : '--'}
                               </div>
-                              <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
+                              {/* <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
                                 {(member?.lastLogin as ReactNode) && format(parseISO(member?.lastLogin as string), 'HH:MM')}
-                              </div>
+                              </div> */}
                             </div>
                           )
                         ) : column === 'platforms' ? (
                           fetchLoader.getLoader ? (
                             <Skeleton width={width_90} />
                           ) : (
-                            <div className="flex gap-x-2 w-[150px]">
+                            <div className="flex gap-x-2 w-[200px]">
                               {(member?.platforms as Array<{ id: string; name: string; platformLogoUrl: string }>)?.map(
                                 (platforms: { name: string; id: string; platformLogoUrl: string }, index: number) => (
                                   <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31  rounded-full" key={index}>
@@ -261,7 +261,7 @@ const Users: React.FC = () => {
                             </div>
                           )
                         ) : (
-                          <div className="flex ">
+                          <div className="flex w-[150px]">
                             <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">{member[column] as ReactNode}</div>
                           </div>
                         )}
@@ -286,10 +286,10 @@ const Users: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col mt-12">
+    <div className="flex flex-col mt-[72px]">
       {/* <h3 className="font-Poppins font-semibold text-infoBlack text-infoData leading-9 dark:text-white">Members</h3> */}
-      <div className="flex flex-row  justify-between mt-1.8 i ">
-        <div className="flex relative items-center w-1/2 w-19.06">
+      <div className="flex flex-row  justify-between i ">
+        <div className="flex relative items-center md:w-1/2 lg:w-19.06">
           <input
             type="text"
             className="focus:outline-none px-3 pr-8 box-border w-full h-3.06  rounded-0.6  placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray shadow-shadowInput"
@@ -305,9 +305,8 @@ const Users: React.FC = () => {
           <div className="ml-0.652 w-[112px]">
             <div
               aria-disabled={fetchLoader.exportLoader}
-              className={`export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex cursor-pointer hover:border-infoBlack transition ease-in-out duration-300 ${
-                fetchLoader.exportLoader || !customizedColumn?.length ? 'cursor-not-allowed' : ''
-              }`}
+              className={`export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex cursor-pointer hover:border-infoBlack transition ease-in-out duration-300 ${fetchLoader.exportLoader || !customizedColumn?.length ? 'cursor-not-allowed' : ''
+                }`}
               onClick={() => (customizedColumn?.length ? !fetchLoader.exportLoader && fetchMembersListExportData() : null)}
             >
               <h3 className="text-memberDay leading-1.12 font-Poppins font-semibold text-card">Export</h3>
@@ -316,10 +315,10 @@ const Users: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="member-card pt-10">
+      <div className="member-card pt-[24px]">
         <UsersAnalyticsCard />
       </div>
-      <div className="flex flex-col mt-12">{renderUserTable()}</div>
+      <div className="">{renderUserTable()}</div>
     </div>
   );
 };

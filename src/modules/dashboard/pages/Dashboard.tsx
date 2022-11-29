@@ -197,7 +197,7 @@ const Dashboard: FC = () => {
 
   return (
     <>
-      <div className="flex justify-between mt-10 pb-2">
+      <div className="flex justify-between mt-[41px]">
         <div className="flex relative items-center">
           <div
             className={`flex items-center justify-between px-5 w-11.72 h-3.06 border border-borderPrimary rounded-0.6 shadow-shadowInput ${widgets?.length ? 'cursor-pointer' : 'cursor-not-allowed'
@@ -297,7 +297,7 @@ const Dashboard: FC = () => {
           </div>
         )}
       </div>
-      <div className="mb-4">
+      <div className="mb-4 mt-[42px]">
         <WidgetContainer
           isManageMode={isManageMode}
           widgets={widgets}

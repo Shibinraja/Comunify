@@ -770,3 +770,8 @@ input {
 .react-grid-layout {
   right: 0.6rem;
 }
+
+.react-grid-item {
+  /* width: 100% !important; */
+  /* transform: none !important; */
+}
