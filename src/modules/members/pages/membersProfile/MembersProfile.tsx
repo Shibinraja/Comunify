@@ -118,6 +118,7 @@ const MembersProfile: React.FC = () => {
       dispatch(membersSlice.actions.getMembersActivityGraphData({ workspaceId: workspaceId as string, memberId: memberId as string }));
       dispatch(membersSlice.actions.getMemberProfileCardData({ workspaceId: workspaceId as string, memberId: memberId as string }));
       dispatch(membersSlice.actions.setMemberProfileCardData([]));
+      loadActivityData(true);
     }
   }, [memberId]);
 
