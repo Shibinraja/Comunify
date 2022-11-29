@@ -353,6 +353,7 @@ const TopBar: React.FC = () => {
     <div className=" mt-6 px-12 xl:px-20">
       <div className="flex justify-between items-center ">
         <div className="relative dark:bg-primaryDark`" ref={suggestionListDropDownRef}>
+          {decodedToken?.isAdmin && <div className="font-semibold text-[23.47px]">Comunify Users List</div>}
           {!decodedToken?.isAdmin && (
             <Fragment>
               <input

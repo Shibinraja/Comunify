@@ -225,8 +225,8 @@ const Account = () => {
     if (!decodedToken.isAdmin) {
       return (
         <Fragment>
-          <div className="flex w-full">
-            <div className="flex flex-col w-1/2">
+          <div className="flex w-full gap-[19px]">
+            <div className="flex flex-col xl:w-[300px] w-1/2">
               <label htmlFor="fullName" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
                 Full Name
               </label>
@@ -243,7 +243,7 @@ const Account = () => {
                 helperText={touched.fullName && errors.fullName}
               />
             </div>
-            <div className="flex flex-col ml-5 w-1/2">
+            <div className="flex flex-col xl:w-[300px] w-1/2">
               <label htmlFor="userName" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
                 Username
               </label>
@@ -261,8 +261,8 @@ const Account = () => {
               />
             </div>
           </div>
-          <div className="flex w-full">
-            <div className="flex flex-col mt-1.08 w-1/2">
+          <div className="flex w-full gap-[19px]">
+            <div className="flex flex-col mt-1.08 xl:w-[300px] w-1/2">
               <label htmlFor="email" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
                 Email
               </label>
@@ -280,7 +280,7 @@ const Account = () => {
                 helperText={touched.email && errors.email}
               />
             </div>
-            <div className="flex flex-col ml-5 mt-1.08 w-1/2">
+            <div className="flex flex-col mt-1.08 xl:w-[300px] w-1/2">
               <label htmlFor="organization" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
                 Organization
               </label>
@@ -298,8 +298,8 @@ const Account = () => {
               />
             </div>
           </div>
-          <div className="flex w-full">
-            <div className="flex flex-col mt-1.08 md:w-1/2 xl:w-[297.5px]">
+          <div className="flex w-full gap-19px]">
+            <div className="flex flex-col mt-1.08 xl:w-[300px] xl:w-[300px] w-1/2">
               <label htmlFor="domain" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
                 Domain
               </label>
@@ -344,12 +344,11 @@ const Account = () => {
 
     if (decodedToken.isAdmin) {
       return (
-        <div className="flex w-full">
-          <div className="flex flex-col w-1/2">
+        <div className="flex w-full gap-[19px]">
+          <div className="flex flex-col xl:w-[300px] w-1/2">
             <label htmlFor="fullName" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
               Full Name
             </label>
-            Input
             <Input
               type="text"
               name="fullName"
@@ -363,7 +362,7 @@ const Account = () => {
               helperText={touched.fullName && errors.fullName}
             />
           </div>
-          <div className="flex flex-col pl-5 w-1/2">
+          <div className="flex flex-col  xl:w-[300px] w-1/2">
             <label htmlFor="email" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
               Email
             </label>
@@ -389,7 +388,10 @@ const Account = () => {
     <div className="profile pt-16 pb-10">
       <div className="flex">
         <div className="w-full md:w-[60%] xl:w-[667px] h-[713px]">
-          <div className="pb-10 box-border bg-white rounded-0.6 app-input-card-border shadow-contactCard">
+          <div
+            className={`pb-10 box-border bg-white rounded-0.6 app-input-card-border shadow-contactCard
+          ${decodedToken.isAdmin ? 'h-[586px]' : ''} `}
+          >
             <div className="flex flex-col mt-1.16 px-1.56">
               <div className="flex flex-col">
                 <h3 className="font-Poppins font-semibold text-accountBlack text-base leading-2.12">Account</h3>
@@ -438,9 +440,9 @@ const Account = () => {
                 >
                   {({ errors, handleBlur, handleChange, touched, values }): JSX.Element => (
                     <Form className="w-full mt-1.9 " autoComplete="off">
-                      <div className="flex justify-between">
+                      <div className="flex justify-between gap-[19px]">
                         <div
-                          className={`currentPassword relative w-1/2 ${
+                          className={`currentPassword relative xl:w-[300px] w-1/2 ${
                             errors.currentPassword === 'Password must have one uppercase, one lowercase, a digit and special characters'
                               ? 'cr-currentPassword '
                               : ''
@@ -476,7 +478,7 @@ const Account = () => {
                           </div>
                         </div>
                         <div
-                          className={`currentPassword relative w-1/2 pl-[19px] ${
+                          className={`currentPassword relative xl:w-[300px] w-1/2 ${
                             errors.newPassword === 'Password must have one uppercase, one lowercase, a digit and special characters'
                               ? 'cr-currentPassword '
                               : ''

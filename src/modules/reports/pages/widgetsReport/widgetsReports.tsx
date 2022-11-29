@@ -30,7 +30,7 @@ const widgetsReports: React.FC = () => {
   const endDate = searchParams.get('endDate') || '';
 
   // Function to call the api and list the membersSuggestionList
-  const getReportWidgetsList = async (props: { page: number; limit: number }) => {
+  const getReportWidgetsList = async(props: { page: number; limit: number }) => {
     setLoading(true);
     const data = await getReportWidgetsListService({
       workspaceId: workspaceId!,
@@ -183,7 +183,7 @@ const widgetsReports: React.FC = () => {
           type="submit"
           onClick={() => transformedWidgetData.length && setModalOpen(true)}
           className={`justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow ${!transformedWidgetData.length ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
+          }`}
         >
           <div className="font-Poppins font-medium text-white leading-5 text-[13px] ">Generate Report</div>
         </Button>

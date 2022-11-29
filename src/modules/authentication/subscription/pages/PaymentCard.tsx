@@ -33,14 +33,14 @@ export const PaymentCard: React.FC<SubscriptionProps> = ({ subscriptionData }) =
   return (
     <div className="flex flex-col h-auto layout-height">
       <div className=" flex h-full overflow-auto ">
-        <div className="w-3/5 2xl:w-1/2 auth-layout-section flex items-center justify-center 3xl:justify-end pr-0   3xl:pr-16 py-10">
+        <div className="w-3/5 2xl:w-1/2 auth-layout-section flex items-center justify-center 3xl:justify-end pr-0   3xl:pr-16 py-10 h-screen">
           <div className="flex items-center justify-center">
             <img src={bgSubscriptionImage} alt="" className="w-9/12 xl:w-[621px] 3xl:w-full object-cover" />
           </div>
         </div>
 
-        <div className="flex justify-center xl:items-center 3xl:justify-start  pl-0 3xl:pl-16 pb-16">
-          <div className="flex flex-col pt-24 pb-6 ">
+        <div className="flex justify-center xl:items-center 3xl:justify-start  pl-[119.5px] 3xl:pl-16 pb-16">
+          <div className="flex flex-col pt-[40.57px] pb-6 ">
             <div className="w-25.9">
               <h1 className="font-Inter font-bold text-signIn text-neutralBlack leading-2.8">Subscription</h1>{' '}
               <p className="mt-0.81 text-desc font-normal leading-1.8 font-Inter text-lightGray max-w-sm">
@@ -94,9 +94,8 @@ export const PaymentCard: React.FC<SubscriptionProps> = ({ subscriptionData }) =
                           text="Submit"
                           disabled={isLoading}
                           type="submit"
-                          className={`font-Poppins rounded-lg text-base font-semibold ${
-                            isLoading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
-                          }  text-white mt-1.8 h-3.6 w-full hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient`}
+                          className={`font-Poppins rounded-lg text-base font-semibold ${isLoading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                            }  text-white mt-1.8 h-3.6 w-full hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient`}
                         />
                       </div>
                     </Form>
