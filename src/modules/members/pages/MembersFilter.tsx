@@ -696,7 +696,8 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                 onClick={submitFilterChange}
                 type="button"
                 text="Apply"
-                className={`border-none btn-save-modal rounded-0.31 h-2.063 w-1/2 ml-1 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${memberColumnsLoader ? 'cursor-not-allowed' : ''
+                className={`border-none btn-save-modal rounded-0.31 h-2.063 w-1/2 ml-1 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${
+                  memberColumnsLoader ? 'cursor-not-allowed' : ''
                 }`}
               />
             </div>

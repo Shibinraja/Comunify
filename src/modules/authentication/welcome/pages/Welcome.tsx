@@ -26,6 +26,12 @@ const Welcome: React.FC = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (decodedToken?.isPaymentSuccess) {
+      navigate('/create-workspace');
+    }
+  }, []);
+
   const subscriptionData = useAppSelector((state) => state.auth.subscriptionData);
 
   const comunifySubscriptionPlan: SubscriptionPackages[] =
