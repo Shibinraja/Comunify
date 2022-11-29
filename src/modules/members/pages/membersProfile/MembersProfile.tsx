@@ -99,7 +99,6 @@ const MembersProfile: React.FC = () => {
     .nullable(true);
 
   useEffect(() => {
-
     document.addEventListener('click', handleOutsideClick);
     document.addEventListener('click', handleDropDownClick);
     document.addEventListener('click', handleIntegrationDropDownClick);
@@ -118,6 +117,7 @@ const MembersProfile: React.FC = () => {
       dispatch(membersSlice.actions.getMembersActivityGraphData({ workspaceId: workspaceId as string, memberId: memberId as string }));
       dispatch(membersSlice.actions.getMemberProfileCardData({ workspaceId: workspaceId as string, memberId: memberId as string }));
       dispatch(membersSlice.actions.setMemberProfileCardData([]));
+      loadActivityData(true);
     }
   }, [memberId]);
 
@@ -802,8 +802,9 @@ const MembersProfile: React.FC = () => {
                     />
                     {!errorMessage && (
                       <div
-                        className={`bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 ${tagDropDownOption ? '' : 'hidden'
-                          }`}
+                        className={`bg-white absolute top-20 w-[20.625rem] max-h-full app-input-card-border rounded-lg overflow-scroll z-40 ${
+                          tagDropDownOption ? '' : 'hidden'
+                        }`}
                       >
                         {TagFilterResponseData?.map((data: TagResponseData) => (
                           <div
@@ -829,8 +830,9 @@ const MembersProfile: React.FC = () => {
                         type="submit"
                         disabled={tagsAssignLoader || tagAssignLoading}
                         text="SAVE"
-                        className={`save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-5.25 h-2.81  border-none btn-save-modal ${tagsAssignLoader ? ' opacity-50 cursor-not-allowed' : ''
-                          }`}
+                        className={`save text-white font-Poppins text-error font-medium leading-5 cursor-pointer rounded shadow-contactBtn w-5.25 h-2.81  border-none btn-save-modal ${
+                          tagsAssignLoader ? ' opacity-50 cursor-not-allowed' : ''
+                        }`}
                       />
                     </div>
                   </form>

@@ -20,6 +20,8 @@ const BillingHistory: React.FC<Props> = ({ hidden, selectedTab, loadingToastCond
   const navigate = useNavigate();
   const workspaceId = getLocalWorkspaceId();
   const limit = 10;
+
+  const [fetchLoader, setFetchLoader] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [billingHistoryList, setBillingHistoryList] = useState<BillingHistoryResponse>({
     data: [],
@@ -70,7 +72,9 @@ const BillingHistory: React.FC<Props> = ({ hidden, selectedTab, loadingToastCond
 
   // eslint-disable-next-line space-before-function-paren
   const downloadInvoice = async (invoiceId: string, invoiceDate: string) => {
+    setFetchLoader(true);
     const decode = await getBillingInvoice(invoiceId);
+    setFetchLoader(false);
     const response = new Blob([decode], { type: 'application/pdf' });
     const url = window.URL.createObjectURL(response);
     const anchor = document.createElement('a');
@@ -131,6 +135,8 @@ const BillingHistory: React.FC<Props> = ({ hidden, selectedTab, loadingToastCond
                         <td className="dark:bg-secondaryDark">
                           <Button
                             type="button"
+                            aria-disabled={fetchLoader}
+                            disabled={fetchLoader}
                             text="Invoice"
                             className="w-[4.4375rem] h-[1.625rem] border-none text-white font-Poppins btn-save-modal font-medium leading-1.31 text-error rounded cursor-pointer"
                             onClick={() => downloadInvoice(data.invoiceId, new Date(data.date).toISOString())}

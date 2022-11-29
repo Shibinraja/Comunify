@@ -95,10 +95,12 @@ const widgetsReports: React.FC = () => {
     newValues['widgetsData'] = transformedWidgetData;
 
     if (!reportId) {
+      setLoading(true);
       dispatchReportsListService({
         workspaceId: workspaceId!,
         body: newValues
       }).then((data) => {
+        setLoading(false);
         if (data) {
           showSuccessToast('Report Created');
           if (data.reportUrl) {

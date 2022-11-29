@@ -94,8 +94,9 @@ export const PaymentCard: React.FC<SubscriptionProps> = ({ subscriptionData }) =
                           text="Submit"
                           disabled={isLoading}
                           type="submit"
-                          className={`font-Poppins rounded-lg text-base font-semibold ${isLoading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
-                            }  text-white mt-1.8 h-3.6 w-full hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient`}
+                          className={`font-Poppins rounded-lg text-base font-semibold ${
+                            isLoading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                          }  text-white mt-1.8 h-3.6 w-full hover:shadow-buttonShadowHover transition ease-in duration-300 btn-gradient`}
                         />
                       </div>
                     </Form>
