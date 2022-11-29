@@ -65,7 +65,7 @@ const Welcome: React.FC = () => {
             </div>
             <div className="mt-5">
               <button
-                className="free-trial-btn font-Inter text-desc w-25.9 h-3.6 font-normal leading-1.8 text-lightBlue box-border rounded-lg bg-white py-2.5 px-4 shadow-trialButtonShadow "
+                className="free-trial-btn font-Inter text-desc w-[415px] h-3.6 font-normal leading-1.8 text-lightBlue box-border rounded-lg bg-white py-2.5 px-4 shadow-trialButtonShadow "
                 onClick={selectFreeTrialPlan}
               >
                 Continue with 14 Days Free Trial

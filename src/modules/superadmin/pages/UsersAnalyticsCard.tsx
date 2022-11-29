@@ -24,7 +24,7 @@ const UsersAnalyticsCard: React.FC = () => {
 
   return (
     <div className="">
-      <div className="flex gap-2.28">
+      <div className="flex gap-[19.67px]">
         {fetchLoader ? (
           Array.from({ length: 3 }, (_, i) => i + 1).map((type: number) => (
             <Fragment key={type}>
