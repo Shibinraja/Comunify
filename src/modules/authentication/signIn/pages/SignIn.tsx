@@ -110,7 +110,7 @@ const SignIn: React.FC = () => {
                       className={`h-4.5 pr-10 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${touched.userName && errors.userName
                         ? 'border-lightRed h-4.5 pr-10 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
                         : ''
-                        }`}
+                      }`}
                       onBlur={handleBlur}
                       onChange={handleChange}
                       value={values.userName}
@@ -123,7 +123,7 @@ const SignIn: React.FC = () => {
                     className={`password relative  ${touched.userName && errors.userName
                       ? 'mt-8'
                       : 'mt-1.13'
-                      }`}>
+                    }`}>
                     <Input
                       type={passwordType}
                       label="Password"
@@ -133,7 +133,7 @@ const SignIn: React.FC = () => {
                       className={`h-4.5 rounded-lg bg-white p-2.5 pr-10 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${touched.password && errors.password
                         ? 'boder-lightRed h-4.5 rounded-lg bg-white p-2.5 pr-10 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
                         : ''
-                        }`}
+                      }`}
                       onBlur={handleBlur}
                       onChange={handleChange}
                       value={values.password}
@@ -153,7 +153,7 @@ const SignIn: React.FC = () => {
                     className={`flex justify-between items-center  ${touched.password && errors.password
                       ? 'mt-4 '
                       : ''
-                      }`}>
+                    }`}>
                     <div className="flex items-center">
                       <div className="mr-2 mt-1">
                         <input type="checkbox" className="checkbox cursor-pointer" name='rememberMe' checked={values.rememberMe} onChange={handleChange} onBlur={handleBlur} />
