@@ -48,7 +48,7 @@ const SubscriptionCard: React.FC<SubscriptionProps> = ({ subscriptionData }) => 
             disabled={isLoading}
             type="submit"
             className={`font-Poppins rounded-lg text-base ${isLoading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
-              } font-semibold text-white hover:shadow-buttonShadowHover transition ease-in duration-300 w-full mt-[29px]  h-3.6 btn-gradient`}
+            } font-semibold text-white hover:shadow-buttonShadowHover transition ease-in duration-300 w-full mt-[29px]  h-3.6 btn-gradient`}
           />
         </div>
       </div>
