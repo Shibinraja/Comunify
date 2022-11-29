@@ -123,19 +123,19 @@ const Account = () => {
   };
 
   const togglePassword1 = () => {
-    if (currentPassword === 'currentPassword') {
+    if (currentPassword === 'password') {
       setPasswordType1('text');
       return;
     }
-    setPasswordType1('currentPassword');
+    setPasswordType1('password');
   };
 
   const togglePassword2 = () => {
-    if (newPassword === 'currentPassword') {
+    if (newPassword === 'password') {
       setPasswordType2('text');
       return;
     }
-    setPasswordType2('currentPassword');
+    setPasswordType2('password');
   };
 
   const imageUploadHandler = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -220,7 +220,8 @@ const Account = () => {
     handleChange: ((e: ChangeEvent<unknown>) => void) | undefined,
     values: userProfileDataInput,
     touched: FormikTouched<userProfileDataInput>,
-    errors: FormikErrors<userProfileDataInput>
+    errors: FormikErrors<userProfileDataInput>,
+    setFieldTouched: { (field: string, isTouched?: boolean, shouldValidate?: boolean): void }
   ) => {
     if (!decodedToken.isAdmin) {
       return (
@@ -282,7 +283,7 @@ const Account = () => {
             </div>
             <div className="flex flex-col mt-1.08 xl:w-[300px] w-1/2">
               <label htmlFor="organization" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
-                Organization
+              Company Name
               </label>
               <Input
                 type="text"
@@ -304,7 +305,7 @@ const Account = () => {
                 Domain
               </label>
               <div className="flex flex-col relative w-full">
-                <div className="cursor-pointer" ref={dropDownRef} onClick={() => setDropDownActive(!isDropDownActive)}>
+                <div className="cursor-pointer" ref={dropDownRef} onClick={() => setDropDownActive(!isDropDownActive)} onBlur={() => setFieldTouched('domainSector')}>
                   <div className="h-2.81 flex items-center w-full  justify-between pl-3 pr-[17.12px] py-2 app-result-card-border bg-white  py-2 box-border shadow-inputShadow  rounded-0.3 mt-0.40 font-Poppins text-thinGray font-normal leading-1.31 text-trial">
                     <div className={selectedDomainSector === 'Select' ? 'text-secondaryGray' : 'text-black'}>
                       <input className="w-[1px] border-none focus:outline-none" type="text" />
@@ -337,6 +338,9 @@ const Account = () => {
               </div>
             </div>
           </div>
+          {Boolean(touched.domainSector && errors.domainSector) && (
+            <p className="text-lightRed font-normal text-error absolute font-Inter mt-0.287 pl-1">{errors?.domainSector}</p>
+          )}
         </Fragment>
       );
     }
@@ -400,10 +404,10 @@ const Account = () => {
                   initialValues={userInitialValues}
                   innerRef={formikRef}
                 >
-                  {({ errors, handleBlur, handleChange, touched, values }): JSX.Element => (
+                  {({ errors, handleBlur, handleChange, touched, values, setFieldTouched }): JSX.Element => (
                     <Form className="w-full mt-1.9 relative " autoComplete="off">
                       <div className="">
-                        {renderAccountForm(handleBlur, handleChange, values, touched, errors)}
+                        {renderAccountForm(handleBlur, handleChange, values, touched, errors, setFieldTouched)}
                         <div className="py-7">
                           <div className="flex items-center justify-end w-full">
                             <NavLink to={!decodedToken.isAdmin ? `/${workspaceId}/dashboard` : '/admin/users'} className="p-0 m-0 mr-2">
@@ -466,10 +470,10 @@ const Account = () => {
                             helperText={touched.currentPassword && errors.currentPassword}
                           />
                           <div onClick={togglePassword1} className="absolute top-[2.6rem] right-4">
-                            {currentPassword === 'currentPassword' ? (
-                              <img className="cursor-pointer w-[13.39px] h-[9.47px]" src={eyeIcon} alt="" />
-                            ) : (
+                            {currentPassword === 'password' ? (
                               <img className="cursor-pointer w-[13.39px] h-[9.47px]" src={closeEyeIcon} alt="" />
+                            ) : (
+                              <img className="cursor-pointer w-[13.39px] h-[9.47px]"  src={eyeIcon} alt="" />
                             )}
                           </div>
                         </div>
@@ -500,10 +504,10 @@ const Account = () => {
                             helperText={touched.newPassword && errors.newPassword}
                           />
                           <div onClick={togglePassword2} className="absolute top-[2.6rem] right-4">
-                            {newPassword === 'currentPassword' ? (
-                              <img className="cursor-pointer w-[13.39px] h-[9.47px]" src={eyeIcon} alt="" />
+                            {newPassword === 'password' ? (
+                              <img className="cursor-pointer w-[13.39px] h-[9.47px]" src={closeEyeIcon}  alt="" />
                             ) : (
-                              <img className="cursor-pointer w-[13.39px] h-[9.47px]" src={closeEyeIcon} alt="" />
+                              <img className="cursor-pointer w-[13.39px] h-[9.47px]" src={eyeIcon} alt="" />
                             )}
                           </div>
                         </div>
@@ -610,7 +614,7 @@ const profileUpdateSchema = Yup.object().shape({
     .strict(true)
     .matches(companyName_regex, 'Company Name is not valid')
     .trim('White spaces are not allowed'),
-  domainSector: Yup.string().required('Domain is required')
+  domainSector: Yup.string().required('Domain is required').nullable()
 });
 
 const changePasswordSchema = Yup.object().shape({
