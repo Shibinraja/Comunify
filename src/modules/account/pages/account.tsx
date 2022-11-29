@@ -123,19 +123,19 @@ const Account = () => {
   };
 
   const togglePassword1 = () => {
-    if (currentPassword === 'password') {
+    if (currentPassword === 'currentPassword') {
       setPasswordType1('text');
       return;
     }
-    setPasswordType1('password');
+    setPasswordType1('currentPassword');
   };
 
   const togglePassword2 = () => {
-    if (newPassword === 'password') {
+    if (newPassword === 'currentPassword') {
       setPasswordType2('text');
       return;
     }
-    setPasswordType2('password');
+    setPasswordType2('currentPassword');
   };
 
   const imageUploadHandler = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -220,8 +220,7 @@ const Account = () => {
     handleChange: ((e: ChangeEvent<unknown>) => void) | undefined,
     values: userProfileDataInput,
     touched: FormikTouched<userProfileDataInput>,
-    errors: FormikErrors<userProfileDataInput>,
-    setFieldTouched: { (field: string, isTouched?: boolean, shouldValidate?: boolean): void }
+    errors: FormikErrors<userProfileDataInput>
   ) => {
     if (!decodedToken.isAdmin) {
       return (
@@ -283,7 +282,7 @@ const Account = () => {
             </div>
             <div className="flex flex-col mt-1.08 xl:w-[300px] w-1/2">
               <label htmlFor="organization" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
-              Company Name
+                Organization
               </label>
               <Input
                 type="text"
@@ -305,7 +304,7 @@ const Account = () => {
                 Domain
               </label>
               <div className="flex flex-col relative w-full">
-                <div className="cursor-pointer" ref={dropDownRef} onClick={() => setDropDownActive(!isDropDownActive)} onBlur={() => setFieldTouched('domainSector')}>
+                <div className="cursor-pointer" ref={dropDownRef} onClick={() => setDropDownActive(!isDropDownActive)}>
                   <div className="h-2.81 flex items-center w-full  justify-between pl-3 pr-[17.12px] py-2 app-result-card-border bg-white  py-2 box-border shadow-inputShadow  rounded-0.3 mt-0.40 font-Poppins text-thinGray font-normal leading-1.31 text-trial">
                     <div className={selectedDomainSector === 'Select' ? 'text-secondaryGray' : 'text-black'}>
                       <input className="w-[1px] border-none focus:outline-none" type="text" />
@@ -319,7 +318,8 @@ const Account = () => {
                     {options.map((option: string, index: number) => (
                       <li
                         ref={domainRef}
-                        className={`${cursor === index ? 'bg-signUpDomain' : null
+                        className={`${
+                          cursor === index ? 'bg-signUpDomain' : null
                         } flex flex-col p-2 hover:bg-signUpDomain transition ease-in duration-300 cursor-pointer`}
                         onKeyDown={handleKeyDown}
                         tabIndex={0}
@@ -338,9 +338,6 @@ const Account = () => {
               </div>
             </div>
           </div>
-          {Boolean(touched.domainSector && errors.domainSector) && (
-            <p className="text-lightRed font-normal text-error absolute font-Inter mt-0.287 pl-1">{errors?.domainSector}</p>
-          )}
         </Fragment>
       );
     }
@@ -391,7 +388,8 @@ const Account = () => {
     <div className="profile pt-16 pb-10">
       <div className="flex">
         <div className="w-full md:w-[60%] xl:w-[667px] h-[713px]">
-          <div className={`pb-10 box-border bg-white rounded-0.6 app-input-card-border shadow-contactCard
+          <div
+            className={`pb-10 box-border bg-white rounded-0.6 app-input-card-border shadow-contactCard
           ${decodedToken.isAdmin ? 'h-[586px]' : ''} `}
           >
             <div className="flex flex-col mt-1.16 px-1.56">
@@ -404,10 +402,10 @@ const Account = () => {
                   initialValues={userInitialValues}
                   innerRef={formikRef}
                 >
-                  {({ errors, handleBlur, handleChange, touched, values, setFieldTouched }): JSX.Element => (
+                  {({ errors, handleBlur, handleChange, touched, values }): JSX.Element => (
                     <Form className="w-full mt-1.9 relative " autoComplete="off">
                       <div className="">
-                        {renderAccountForm(handleBlur, handleChange, values, touched, errors, setFieldTouched)}
+                        {renderAccountForm(handleBlur, handleChange, values, touched, errors)}
                         <div className="py-7">
                           <div className="flex items-center justify-end w-full">
                             <NavLink to={!decodedToken.isAdmin ? `/${workspaceId}/dashboard` : '/admin/users'} className="p-0 m-0 mr-2">
@@ -444,9 +442,10 @@ const Account = () => {
                     <Form className="w-full mt-1.9 " autoComplete="off">
                       <div className="flex justify-between gap-[19px]">
                         <div
-                          className={`currentPassword relative xl:w-[300px] w-1/2 ${errors.currentPassword === 'Password must have one uppercase, one lowercase, a digit and special characters'
-                            ? 'cr-currentPassword '
-                            : ''
+                          className={`currentPassword relative xl:w-[300px] w-1/2 ${
+                            errors.currentPassword === 'Password must have one uppercase, one lowercase, a digit and special characters'
+                              ? 'cr-currentPassword '
+                              : ''
                           }`}
                         >
                           <label htmlFor="currentPassword" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31 pb-1">
@@ -459,9 +458,10 @@ const Account = () => {
                             id="currentPassword"
                             name="currentPassword"
                             // eslint-disable-next-line max-len
-                            className={`h-2.81 relative  rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${touched.currentPassword && errors.currentPassword
-                              ? 'border-lightRed h-2.81 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
-                              : ''
+                            className={`h-2.81 relative  rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${
+                              touched.currentPassword && errors.currentPassword
+                                ? 'border-lightRed h-2.81 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
+                                : ''
                             }`}
                             onBlur={handleBlur}
                             onChange={handleChange}
@@ -470,17 +470,18 @@ const Account = () => {
                             helperText={touched.currentPassword && errors.currentPassword}
                           />
                           <div onClick={togglePassword1} className="absolute top-[2.6rem] right-4">
-                            {currentPassword === 'password' ? (
-                              <img className="cursor-pointer w-[13.39px] h-[9.47px]" src={closeEyeIcon} alt="" />
+                            {currentPassword === 'currentPassword' ? (
+                              <img className="cursor-pointer w-[13.39px] h-[9.47px]" src={eyeIcon} alt="" />
                             ) : (
-                              <img className="cursor-pointer w-[13.39px] h-[9.47px]"  src={eyeIcon} alt="" />
+                              <img className="cursor-pointer w-[13.39px] h-[9.47px]" src={closeEyeIcon} alt="" />
                             )}
                           </div>
                         </div>
                         <div
-                          className={`currentPassword relative xl:w-[300px] w-1/2 ${errors.newPassword === 'Password must have one uppercase, one lowercase, a digit and special characters'
-                            ? 'cr-currentPassword '
-                            : ''
+                          className={`currentPassword relative xl:w-[300px] w-1/2 ${
+                            errors.newPassword === 'Password must have one uppercase, one lowercase, a digit and special characters'
+                              ? 'cr-currentPassword '
+                              : ''
                           }`}
                         >
                           <label htmlFor="currentPassword" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31 ">
@@ -493,9 +494,10 @@ const Account = () => {
                             id="newPassword"
                             name="newPassword"
                             // eslint-disable-next-line max-len
-                            className={`h-2.81 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${touched.newPassword && errors.newPassword
-                              ? 'border-lightRed h-2.81 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
-                              : ''
+                            className={`h-2.81 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${
+                              touched.newPassword && errors.newPassword
+                                ? 'border-lightRed h-2.81 relative rounded-lg pr-3.12 bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
+                                : ''
                             }`}
                             onBlur={handleBlur}
                             onChange={handleChange}
@@ -504,10 +506,10 @@ const Account = () => {
                             helperText={touched.newPassword && errors.newPassword}
                           />
                           <div onClick={togglePassword2} className="absolute top-[2.6rem] right-4">
-                            {newPassword === 'password' ? (
-                              <img className="cursor-pointer w-[13.39px] h-[9.47px]" src={closeEyeIcon}  alt="" />
-                            ) : (
+                            {newPassword === 'currentPassword' ? (
                               <img className="cursor-pointer w-[13.39px] h-[9.47px]" src={eyeIcon} alt="" />
+                            ) : (
+                              <img className="cursor-pointer w-[13.39px] h-[9.47px]" src={closeEyeIcon} alt="" />
                             )}
                           </div>
                         </div>
@@ -614,7 +616,7 @@ const profileUpdateSchema = Yup.object().shape({
     .strict(true)
     .matches(companyName_regex, 'Company Name is not valid')
     .trim('White spaces are not allowed'),
-  domainSector: Yup.string().required('Domain is required').nullable()
+  domainSector: Yup.string().required('Domain is required')
 });
 
 const changePasswordSchema = Yup.object().shape({

@@ -1,4 +1,4 @@
-import React, { Dispatch, useEffect, useRef, useState } from 'react';
+import React, { Dispatch, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAppSelector } from '../../../../hooks/useRedux';
 
@@ -103,7 +103,8 @@ const SubscriptionExpiredActivate: React.FC = () => {
     }
   }, [paymentStatus]);
 
-  useEffect(() => {
+  // Handling toasts for activate/de-activate auto-renewal
+  useMemo(() => {
     if (previousToggleValue.current !== toggle) {
       if (toggle) {
         showSuccessToast('Plan auto renewal activated');
@@ -143,6 +144,7 @@ const SubscriptionExpiredActivate: React.FC = () => {
   const getCurrentSubscriptionPlanDetails = async () => {
     const response: SubscriptionDetails = await getChoseSubscriptionPlanDetailsService();
     if (response?.stripeSubscriptionId) {
+      previousToggleValue.current = response?.autoRenewal;
       setToggle(response?.autoRenewal);
     }
   };
@@ -264,28 +266,30 @@ const SubscriptionExpiredActivate: React.FC = () => {
               </div>
               <div className="flex gap-4 items-center">
                 <h5 className="flex items-center">
-                  <span className="price font-semibold text-renewalPrice leading-3.1">{comunifyPlusPlanDetails?.amount}$</span>
+                  <span className="price font-semibold text-renewalPrice leading-3.1">${comunifyPlusPlanDetails?.amount}</span>
                   <span className="font-medium text-subscriptionMonth text-base leading-6 mt-[5px]"> /{'month'}</span>{' '}
                 </h5>
               </div>
             </div>
           </div>
 
-          <div className="pt-10 pb-8 border-b border-greyDark">
-            <div className="flex justify-between  items-center">
-              <div className="flex flex-col">
-                <h3 className=" text-base text-renewalBlack leading-1.31 font-semibold dark:text-white">Auto Renewal</h3>
-                <p className="text-listGray font-normal  text-trial leading-1.31 mt-1 dark:text-greyDark">
-                  Your auto renewal is {toggle ? 'active' : 'inactive'}
-                </p>
-              </div>
-              <div className="flex gap-3 items-center">
-                <div className="text-[#8692A6] text-trial font-medium leading-1.31  dark:text-white">No</div>
-                <ToggleButton value={toggle} onChange={() => setToggle((prev) => !prev)} isLoading={isLoading.autoRenewal} />
-                <div className="text-trial font-medium leading-1.31  dark:text-white">Yes</div>
+          {!!addedCardDetails?.length && (
+            <div className="pt-10 pb-8 border-b border-greyDark">
+              <div className="flex justify-between  items-center">
+                <div className="flex flex-col">
+                  <h3 className=" text-base text-renewalBlack leading-1.31 font-semibold dark:text-white">Auto Renewal</h3>
+                  <p className="text-listGray font-normal  text-trial leading-1.31 mt-1 dark:text-greyDark">
+                    Your auto renewal is {toggle ? 'active' : 'inactive'}
+                  </p>
+                </div>
+                <div className="flex gap-3 items-center">
+                  <div className="text-[#8692A6] text-trial font-medium leading-1.31  dark:text-white">No</div>
+                  <ToggleButton value={toggle} onChange={() => setToggle((prev) => !prev)} isLoading={isLoading.autoRenewal} />
+                  <div className="text-trial font-medium leading-1.31  dark:text-white">Yes</div>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           <div className="pt-[27px] pb-6">
             <div className="flex justify-between  items-center">

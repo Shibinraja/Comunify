@@ -121,7 +121,7 @@ const SignUp: React.FC = () => {
               validateOnChange={true}
               validationSchema={signUpSchema}
             >
-              {({ errors, handleBlur, handleChange, handleSubmit, touched, values, setFieldTouched }): JSX.Element => (
+              {({ errors, handleBlur, handleChange, handleSubmit, touched, values }): JSX.Element => (
                 <Form className="flex flex-col pb-10 mt-1.8 w-25.9" autoComplete="off" onSubmit={handleSubmit}>
                   <div className="username">
                     <Input
@@ -225,7 +225,6 @@ const SignUp: React.FC = () => {
                         }`}
                         ref={dropDownRef}
                         onClick={() => setDropDownActive(!isDropDownActive)}
-                        onBlur={() => setFieldTouched('domainSector')}
                       >
                         <div className={selectedDomainSector === 'Domain' ? 'text-secondaryGray' : 'text-black'}>
                           <input className="w-[1px] border-none focus:outline-none" type="text" />
