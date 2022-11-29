@@ -60,27 +60,18 @@ const QuickInfo: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   };
 
   return (
-    <div className={`mt-6 ${isShrunk ? 'cursor-grabbing ' : !isManageMode ? '' : 'cursor-grabbing'}  `}>
+    <div className={`mb-6 ${isShrunk ? 'cursor-grabbing ' : !isManageMode ? '' : 'cursor-grabbing'}  `}>
       <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Quick Info</h3>
       <div
-        className={`grid ${isShrunk ? 'grid-cols-2 h-[137px]' : !isManageMode ? 'grid-cols-4 w-full h-[134px]' : 'grid-cols-4 widget-border relative w-full'
-          }  info-data py-6 box-border bg-white dark:bg-secondaryDark
+        className={`grid ${
+          isShrunk ? 'grid-cols-2 h-[137px]' : !isManageMode ? 'grid-cols-4 w-full h-[134px]' : 'grid-cols-4 widget-border relative w-full'
+        }  info-data py-6 box-border bg-white dark:bg-secondaryDark
         rounded-0.6 mt-1.868 border border-borderPrimary dark:border-borderDark shadow-profileCard`}
       >
         <div className="flex flex-col justify-center items-center">
           <Fragment>
-            <div
-              className={`leading-1 text-infoBlack font-Poppins ${isShrunk ? 'text-[1.5858rem]' : 'text-signIn'}  font-semibold dark:text-white`}
-            >
-              {!isManageMode && !isSidePanelOpen ? (
-                !isLoading ? (
-                  newActivitiesData?.count
-                ) : (
-                  <Skeleton width={20} height={30} count={1} />
-                )
-              ) : (
-                56
-              )}
+            <div className={`leading-1 text-infoBlack font-Poppins ${isShrunk ? 'text-[1.5858rem]' : 'text-signIn'}  font-semibold dark:text-white`}>
+              {!isManageMode && !isSidePanelOpen ? !isLoading ? newActivitiesData?.count : <Skeleton width={20} height={30} count={1} /> : 56}
             </div>
             <div className={`mt-0.1512 ${isShrunk ? 'text-[0.5052rem]' : 'text-member'}  font-semibold font-Poppins leading-4 text-success`}>
               {!isManageMode && !isSidePanelOpen ? (
@@ -98,8 +89,9 @@ const QuickInfo: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
               )}
             </div>
             <div
-              className={`mt-0.1512 font-Poppins font-normal text-status leading-1.12 ${isShrunk ? 'text-[0.5597rem]' : 'text-xs'
-                }  dark:text-greyDark`}
+              className={`mt-0.1512 font-Poppins font-normal text-status leading-1.12 ${
+                isShrunk ? 'text-[0.5597rem]' : 'text-xs'
+              }  dark:text-greyDark`}
             >
               {!isManageMode && !isSidePanelOpen ? (
                 !isLoading ? (
@@ -119,18 +111,8 @@ const QuickInfo: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
         </div>
         <div className="flex flex-col justify-center items-center">
           <Fragment>
-            <div
-              className={`leading-2 text-infoBlack font-Poppins ${isShrunk ? 'text-[1.5858rem]' : 'text-signIn'} font-semibold dark:text-white`}
-            >
-              {!isManageMode && !isSidePanelOpen ? (
-                !isLoading ? (
-                  newMembersData?.count
-                ) : (
-                  <Skeleton width={20} height={30} count={1} />
-                )
-              ) : (
-                7563
-              )}
+            <div className={`leading-2 text-infoBlack font-Poppins ${isShrunk ? 'text-[1.5858rem]' : 'text-signIn'} font-semibold dark:text-white`}>
+              {!isManageMode && !isSidePanelOpen ? !isLoading ? newMembersData?.count : <Skeleton width={20} height={30} count={1} /> : 7563}
             </div>
             <div className={`mt-0.1512 ${isShrunk ? 'text-[0.5052rem]' : 'text-member'} font-semibold font-Poppins leading-4 text-primary`}>
               {!isManageMode && !isSidePanelOpen ? (
@@ -148,8 +130,9 @@ const QuickInfo: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
               )}
             </div>
             <div
-              className={`mt-0.1512 font-Poppins font-normal text-status leading-1.12  ${isShrunk ? 'text-[0.5597rem]' : 'text-xs'
-                } dark:text-greyDark`}
+              className={`mt-0.1512 font-Poppins font-normal text-status leading-1.12  ${
+                isShrunk ? 'text-[0.5597rem]' : 'text-xs'
+              } dark:text-greyDark`}
             >
               {!isManageMode && !isSidePanelOpen ? (
                 !isLoading ? (
@@ -170,15 +153,7 @@ const QuickInfo: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
         <div className={`flex flex-col justify-center items-center ${isShrunk ? 'hidden' : 'block'}`}>
           <Fragment>
             <div className="leading-2 text-infoBlack font-Poppins text-signIn font-semibold dark:text-white">
-              {!isManageMode && !isSidePanelOpen ? (
-                !isLoading ? (
-                  activeMembersData?.count
-                ) : (
-                  <Skeleton width={20} height={30} count={1} />
-                )
-              ) : (
-                6564
-              )}
+              {!isManageMode && !isSidePanelOpen ? !isLoading ? activeMembersData?.count : <Skeleton width={20} height={30} count={1} /> : 6564}
             </div>
             <div className="mt-0.1512 text-member font-semibold font-Poppins leading-4 text-warn">
               {!isManageMode && !isSidePanelOpen ? (
@@ -215,15 +190,7 @@ const QuickInfo: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
         <div className={`flex flex-col justify-center items-center ${isShrunk ? 'hidden' : 'block'}`}>
           <Fragment>
             <div className="leading-2 text-infoBlack font-Poppins text-signIn font-semibold dark:text-white">
-              {!isManageMode && !isSidePanelOpen ? (
-                !isLoading ? (
-                  inActiveMembersData?.count
-                ) : (
-                  <Skeleton width={20} height={30} count={1} />
-                )
-              ) : (
-                34534
-              )}
+              {!isManageMode && !isSidePanelOpen ? !isLoading ? inActiveMembersData?.count : <Skeleton width={20} height={30} count={1} /> : 34534}
             </div>
             <div className="mt-0.1512 text-member font-semibold font-Poppins leading-4 text-info">
               {!isManageMode && !isSidePanelOpen ? (

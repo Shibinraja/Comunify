@@ -15,7 +15,9 @@ import {
   ScheduleReportsEnum
 } from 'modules/reports/interfaces/reports.interface';
 import { ConnectedPlatforms } from 'modules/settings/interface/settings.interface';
-import { ChangeEvent, Fragment, ReactNode, useEffect, useRef, useState } from 'react';
+import {
+  ChangeEvent, Fragment, ReactNode, useEffect, useRef, useState, KeyboardEvent
+} from 'react';
 import DatePicker, { ReactDatePicker } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate, useParams } from 'react-router';
@@ -38,10 +40,10 @@ const initialValues: Partial<createReportInitialValues> = {
 const CreateReport = () => {
   const navigate = useNavigate();
   const { workspaceId } = useParams();
+
+  const [cursor, setCursor] = useState<number>(0);
   const [isReportActive, setIsReportActive] = useState(false);
   const [isPlatformActive, setIsPlatformActive] = useState(false);
-  const datePickerRefFrom = useRef<ReactDatePicker>(null);
-  const datePickerRefTo = useRef<ReactDatePicker>(null);
   const [checkedRadioId, setCheckedRadioId] = useState<Record<string, unknown>>({ Yes: true });
   const [selectedReport, setSelectedReport] = useState('');
   const [checkedPlatform, setCheckedPlatform] = useState<Record<string, unknown>>({});
@@ -61,11 +63,15 @@ const CreateReport = () => {
 
   const reportUpdateValuesData = JSON.parse(localStorage.getItem('reportUpdateValues')!);
   const reportValuesData = JSON.parse(localStorage.getItem('reportValues')!);
-  const { PlatformsConnected } = usePlatform();
   const dropDownRef = useRef<HTMLDivElement>(null);
   const reportOptionRef = useRef<HTMLDivElement>(null);
-  const scheduledReportOptions = [...ReportOptions].splice(0, 3);
   const formikRef: any = useRef();
+  const reportRef = useRef<HTMLLIElement>(null);
+  const datePickerRefFrom = useRef<ReactDatePicker>(null);
+  const datePickerRefTo = useRef<ReactDatePicker>(null);
+
+  const { PlatformsConnected } = usePlatform();
+  const scheduledReportOptions = [...ReportOptions].splice(0, 3);
 
   useEffect(() => {
     document.addEventListener('click', handleOutsideClick);
@@ -174,6 +180,12 @@ const CreateReport = () => {
     }
   }, [customDate.singleDate]);
 
+  useEffect(() => {
+    if (isReportActive) {
+      reportRef?.current?.focus();
+    }
+  }, [isReportActive]);
+
   const handleSelectedReport = (selectedReport: string): void => {
     // Formik ref to enable to make the custom dropdown with field touch and set the value for the fields.
     formikRef?.current?.setFieldTouched('schedule');
@@ -200,10 +212,6 @@ const CreateReport = () => {
       const datePickerElement = datePickerRefTo.current;
       datePickerElement?.setFocus();
     }
-  };
-
-  const navigateToReports = () => {
-    navigate(`/${workspaceId}/reports`);
   };
 
   // Function to change the Primary Member List
@@ -341,6 +349,24 @@ const CreateReport = () => {
     }
   };
 
+  const handleKeyDown = (e: KeyboardEvent<HTMLLIElement>) => {
+    // arrow up/down button should select next/previous list element
+    if (e.keyCode === 38 && cursor > 0) {
+      setCursor((prevState: number) => prevState - 1);
+    }
+    if (e.keyCode === 40 && cursor < scheduledReportOptions.length - 1) {
+      setCursor((prevState: number) => prevState + 1);
+    }
+    if (e.keyCode === 13) {
+      handleSelectedReport(scheduledReportOptions[cursor].name);
+      setIsReportActive(false);
+    }
+  };
+
+  const navigateToReports = () => {
+    navigate(`/${workspaceId}/reports`);
+  };
+
   return (
     <div className="report mt-4.56 ">
       <div className="flex flex-col">
@@ -384,7 +410,7 @@ const CreateReport = () => {
               return Yup.string().notRequired();
             }),
             emails: Yup.array()
-              .transform(function (value, originalValue) {
+              .transform(function(value, originalValue) {
                 if (this.isType(value) && value !== null) {
                   return value;
                 }
@@ -431,7 +457,7 @@ const CreateReport = () => {
             // })
           })}
         >
-          {({ handleBlur, handleChange, handleSubmit, values, errors, touched, setFieldValue }): JSX.Element => (
+          {({ handleBlur, handleChange, handleSubmit, values, errors, touched, setFieldValue, setFieldTouched }): JSX.Element => (
             <Form onSubmit={handleSubmit}>
               <div className="grid grid-cols-2 relative mt-1.8 w-full  xl:w-[686px] 3xl:w-1/2">
                 <div className="flex flex-col w-full">
@@ -508,29 +534,33 @@ const CreateReport = () => {
                       </label>
                       <div className="flex gap-[0.63rem] mt-0.375 ">
                         <div
-                          className={`w-4.06 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${customDateLink[CustomReportDateType.Day] ? 'border-gradient-rounded-member' : 'app-input-card-border'
-                            } `}
+                          className={`w-4.06 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${
+                            customDateLink[CustomReportDateType.Day] ? 'border-gradient-rounded-member' : 'app-input-card-border'
+                          } `}
                           onClick={() => selectCustomDate('1day')}
                         >
                           1 Day
                         </div>
                         <div
-                          className={`w-[71px] 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${customDateLink[CustomReportDateType.Week] ? 'border-gradient-rounded-member' : 'app-input-card-border'
-                            } `}
+                          className={`w-[71px] 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${
+                            customDateLink[CustomReportDateType.Week] ? 'border-gradient-rounded-member' : 'app-input-card-border'
+                          } `}
                           onClick={() => selectCustomDate('7day')}
                         >
                           1 Week
                         </div>
                         <div
-                          className={`w-[75px] 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${customDateLink[CustomReportDateType.Month] ? 'border-gradient-rounded-member' : 'app-input-card-border'
-                            } `}
+                          className={`w-[75px] 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${
+                            customDateLink[CustomReportDateType.Month] ? 'border-gradient-rounded-member' : 'app-input-card-border'
+                          } `}
                           onClick={() => selectCustomDate('1month')}
                         >
                           1 Month
                         </div>
                         <div
-                          className={`w-[75px] 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${customDateLink[CustomReportDateType.Year] ? 'border-gradient-rounded-member' : 'app-input-card-border'
-                            }`}
+                          className={`w-[75px] 3xl:w-1/4 h-3.06 app-result-card-border shadow-reportInput rounded-0.3 flex items-center justify-center font-Poppins font-semibold text-card text-dropGray leading-1.12 cursor-pointer ${
+                            customDateLink[CustomReportDateType.Year] ? 'border-gradient-rounded-member' : 'app-input-card-border'
+                          }`}
                           onClick={() => selectCustomDate('1year')}
                         >
                           1 Year
@@ -601,8 +631,9 @@ const CreateReport = () => {
                     Choose Platform
                   </label>
                   <div
-                    className={`w-full h-3.06 app-result-card-border focus:outline-none flex items-center px-3 mt-0.375 shadow-reportInput rounded-0.3 font-Poppins font-normal text-trial text-thinGray leading-1.31 relative  ${reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-                      }`}
+                    className={`w-full h-3.06 app-result-card-border focus:outline-none flex items-center px-3 mt-0.375 shadow-reportInput rounded-0.3 font-Poppins font-normal text-trial text-thinGray leading-1.31 relative  ${
+                      reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                    }`}
                     onClick={() => setIsPlatformActive((prevActive) => !prevActive)}
                   >
                     <input className="w-[1px] border-none focus:outline-none" type="text" />
@@ -614,8 +645,9 @@ const CreateReport = () => {
                   {isPlatformActive && (
                     <div className="flex-flex-col  app-result-card-border box-border w-full rounded-0.3 shadow-reportInput cursor-pointer absolute top-[4.8rem] bg-white z-40">
                       <div
-                        className={`flex items-center gap-2 hover:bg-signUpDomain  transition ease-in duration-100 p-3  ${reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-                          }`}
+                        className={`flex items-center gap-2 hover:bg-signUpDomain  transition ease-in duration-100 p-3 h-[43px]  ${
+                          reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                        }`}
                       >
                         <div>
                           <input
@@ -629,19 +661,21 @@ const CreateReport = () => {
                           />
                         </div>
                         <label
-                          className={`font-Poppins font-normal text-searchBlack leading-1.31 text-trial  ${reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-                            }`}
+                          className={`font-Poppins font-normal text-searchBlack leading-1.31 text-trial  ${
+                            reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                          }`}
                           htmlFor="all"
                         >
                           All
                         </label>
                       </div>
                       {PlatformsConnected &&
-                        PlatformsConnected.map((platform: ConnectedPlatforms) => (
+                        PlatformsConnected?.map((platform: ConnectedPlatforms) => (
                           <Fragment key={platform.id}>
                             <div
-                              className={`flex items-center gap-2 hover:bg-signUpDomain  transition ease-in duration-100 p-3  ${reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-                                }`}
+                              className={`flex items-center gap-2 hover:bg-signUpDomain  transition ease-in duration-100 p-3 h-[43px] ${
+                                reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                              }`}
                             >
                               <div>
                                 <input
@@ -655,8 +689,9 @@ const CreateReport = () => {
                                 />
                               </div>
                               <label
-                                className={`font-Poppins font-normal text-searchBlack leading-1.31 text-trial  ${reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-                                  }`}
+                                className={`font-Poppins font-normal text-searchBlack leading-1.31 text-trial  ${
+                                  reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                                }`}
                                 htmlFor={platform.id as string}
                               >
                                 {platform?.name}
@@ -673,7 +708,7 @@ const CreateReport = () => {
 
                 {(checkedRadioId[ScheduleReportsEnum.Yes] as ReactNode) && (
                   <Fragment>
-                    <div className="mt-5 flex flex-col ml-5 w-20.5 2xl:w-full relative" ref={reportOptionRef}>
+                    <div className="mt-5 flex flex-col ml-5 w-20.5 2xl:w-full relative" ref={reportOptionRef} onBlur={() => setFieldTouched('schedule')}>
                       <label htmlFor="name" className="text-trial font-Poppins text-infoBlack font-normal leading-1.31">
                         Schedule Report
                       </label>
@@ -691,21 +726,26 @@ const CreateReport = () => {
                         <p className="text-lightRed font-normal text-error relative font-Inter mt-0.287  pl-1">{errors?.schedule}</p>
                       )}
                       {isReportActive && (
-                        <div className="flex flex-col app-result-card-border box-border w-full rounded-0.3 shadow-reportInput cursor-pointer absolute top-[4.8rem] bg-white">
-                          {scheduledReportOptions.map((options) => (
-                            <ul
-                              className="cursor-pointer hover:bg-signUpDomain  transition ease-in duration-100 "
-                              onClick={() => {
-                                handleSelectedReport(options.name);
-                              }}
-                              defaultValue={selectedReport}
-                              key={options.id}
-                            >
-                              <li value={selectedReport} className="text-searchBlack font-Poppins font-normal leading-1.31 text-trial p-3">
+                        <div className="absolute w-full bg-white app-result-card-border box-border rounded-0.3 shadow-reportInput z-10">
+                          <ul id="report" className="flex flex-col justify-center">
+                            {scheduledReportOptions?.map((options, index: number) => (
+                              <li
+                                ref={reportRef}
+                                onKeyDown={handleKeyDown}
+                                tabIndex={0}
+                                className={`${
+                                  cursor === index ? 'bg-signUpDomain' : null
+                                } h-3.06 font-Poppins font-normal text-searchBlack text-trial leading-1.31 flex items-center p-3 hover:bg-signUpDomain transition ease-in duration-100 focus:outline-none`}
+                                onClick={() => {
+                                  handleSelectedReport(options.name);
+                                }}
+                                defaultValue={selectedReport}
+                                key={options.id}
+                              >
                                 {options.name}
                               </li>
-                            </ul>
-                          ))}
+                            ))}
+                          </ul>
                         </div>
                       )}
                     </div>

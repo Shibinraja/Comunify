@@ -35,7 +35,7 @@ const SidePanelWidgets: FC<WidgetIdentification> = ({ widgetKey, widgetRemoved, 
 
   const workspaceId: string = getLocalWorkspaceId();
   useEffect(() => {
-    if (widgetKey.length) {
+    if (widgetKey?.length) {
       filterWidgets(widgetKey);
     }
   }, [widgetKey]);
@@ -101,11 +101,13 @@ const SidePanelWidgets: FC<WidgetIdentification> = ({ widgetKey, widgetRemoved, 
   };
 
   const renderWidget = (widgetLocation: string, isAssigned: boolean, props: PropsWithoutRef<WidgetComponentProps>) => {
-    // use this while developing because vite doesn't hot reload dynamically imported components
-    const Widget = WidgetComponents[widgetLocation];
-    // Use dynamic import while pushing to prod
-    // const Widget = lazy(() => import(`../../common/widgets/${widgetLocation}/${widgetLocation}`));
-    return <Suspense>{<Widget {...props} />}</Suspense>;
+    if (widgetLocation !== undefined) {
+      // use this while developing because vite doesn't hot reload dynamically imported components
+      const Widget = WidgetComponents[widgetLocation];
+      // Use dynamic import while pushing to prod
+      // const Widget = lazy(() => import(`../../common/widgets/${widgetLocation}/${widgetLocation}`));
+      return <Suspense fallback={<div></div>}>{<Widget {...props} />}</Suspense>;
+    }
   };
 
   const widgetProps = {
@@ -176,7 +178,9 @@ const SidePanelWidgets: FC<WidgetIdentification> = ({ widgetKey, widgetRemoved, 
 
         <div className="overflow-scroll widget-height overflow-x-hidden">
           {!sidePanelWidgets?.length && (
-            <div className="flex justify-center items-center font-Poppins font-semibold text-lg mt-3 text-infoBlack">{widgetLoading ? 'Fetching widgets...' : 'No Widgets to be displayed'}</div>
+            <div className="flex justify-center items-center font-Poppins font-semibold text-lg mt-3 text-infoBlack">
+              {widgetLoading ? 'Fetching widgets...' : 'No Widgets to be displayed'}
+            </div>
           )}
           {sidePanelWidgets?.map((component: PanelWidgetsType) => {
             widgetProps.widget = component;
@@ -250,7 +254,7 @@ const SidePanelWidgets: FC<WidgetIdentification> = ({ widgetKey, widgetRemoved, 
                     Description
                   </label>
                   <TextArea
-                    type='text'
+                    type="text"
                     name="description"
                     id="descriptionId"
                     value={values.description}

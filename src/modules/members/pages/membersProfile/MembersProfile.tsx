@@ -99,7 +99,6 @@ const MembersProfile: React.FC = () => {
     .nullable(true);
 
   useEffect(() => {
-
     document.addEventListener('click', handleOutsideClick);
     document.addEventListener('click', handleDropDownClick);
     document.addEventListener('click', handleIntegrationDropDownClick);
@@ -114,10 +113,11 @@ const MembersProfile: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if(memberId) {
+    if (memberId) {
       dispatch(membersSlice.actions.getMembersActivityGraphData({ workspaceId: workspaceId as string, memberId: memberId as string }));
       dispatch(membersSlice.actions.getMemberProfileCardData({ workspaceId: workspaceId as string, memberId: memberId as string }));
       dispatch(membersSlice.actions.setMemberProfileCardData([]));
+      loadActivityData(true);
     }
   }, [memberId]);
 
@@ -415,8 +415,8 @@ const MembersProfile: React.FC = () => {
 
   return (
     <div className="flex pt-3.93 w-full mb-8">
-      <div className="flex flex-col w-full">
-        <div className="p-5 flex flex-col box-border  rounded-0.6 shadow-contactCard app-input-card-border">
+      <div className="flex flex-col w-full xl:w-[667px]">
+        <div className="p-5 flex flex-col box-border  rounded-0.6 shadow-contactCard app-input-card-border h-[349px]">
           <div className="flex justify-between items-center relative">
             <div className="font-Poppins font-semibold text-base leading-9 text-accountBlack">Member Activity by Source</div>
             <div className="select relative">
@@ -585,7 +585,7 @@ const MembersProfile: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="mt-1.56 pt-8 px-1.62 box-border w-full rounded-0.6 shadow-contactCard app-input-card-border pb-5">
+        <div className="mt-1.56 pt-8 px-1.62 box-border w-full rounded-0.6 shadow-contactCard app-input-card-border pb-5 h-[325px]">
           {memberProfileCardData?.map((data: MemberProfileCard) => (
             <div key={data.id} className="flex justify-between ">
               <div className="font-Poppins text-card leading-4 font-medium">
@@ -741,7 +741,7 @@ const MembersProfile: React.FC = () => {
                     className="bg-cover bg-center border-5 border-white rounded-full w-100 h-100"
                   />
                 </div>
-                <div className="mt-0.688 text-profileBlack font-semibold font-Poppins leading-1.31 text-trial">{data?.name}</div>
+                <div className="mt-0.688 text-profileBlack font-semibold font-Poppins leading-1.31 text-trial capitalize">{data?.name}</div>
                 <div className="text-center pt-0.125 font-Poppins text-profileBlack text-member">
                   {data?.email} || {data?.organization}
                 </div>

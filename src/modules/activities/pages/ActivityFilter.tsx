@@ -312,7 +312,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                     type="text"
                     name="search"
                     id="searchId"
-                    className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-shadowInput rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
+                    className="inputs mx-auto focus:outline-none pl-3 pr-7 box-border bg-white shadow-shadowInput rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
                     placeholder="Search Tags"
                     onChange={handleTagSearchTextChange}
                   />
@@ -372,7 +372,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                       placeholderText="DD/MM/YYYY"
                       ref={datePickerRefStart}
                       dateFormat="dd/MM/yyyy"
-                      onMonthChange={() =>  {
+                      onMonthChange={() => {
                         dropDownRef.current = null;
                       }}
                     />
@@ -399,7 +399,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                       placeholderText="DD/MM/YYYY"
                       ref={datePickerRefEnd}
                       dateFormat="dd/MM/yyyy"
-                      onMonthChange={() =>  {
+                      onMonthChange={() => {
                         dropDownRef.current = null;
                       }}
                     />
@@ -443,8 +443,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                 onClick={submitFilterChange}
                 type="button"
                 text="Apply"
-                className={`border-none btn-save-modal rounded-0.31 h-2.063 w-1/2 mt-1 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${
-                  loader ? ' opacity-50 cursor-not-allowed' : ''
+                className={`border-none btn-save-modal rounded-0.31 h-2.063 w-1/2 mt-1 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${loader ? ' opacity-50 cursor-not-allowed' : ''
                 }`}
               />
             </div>

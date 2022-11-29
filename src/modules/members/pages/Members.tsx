@@ -588,22 +588,25 @@ const Members: React.FC = () => {
         </div>
         <div className="flex justify-between xl:justify-start mt-4 xl:mt-0">
           <div
-            className={`day w-[49px] h-3.06 flex items-center justify-center ml-0 xl:ml-0.652 box-border rounded-0.6 ${customDateLink['1day'] ? 'border-gradient-rounded-member' : 'app-input-card-border'
-              } shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
+            className={`day w-[49px] h-3.06 flex items-center justify-center ml-0 xl:ml-0.652 box-border rounded-0.6 ${
+              customDateLink['1day'] ? 'border-gradient-rounded-member' : 'app-input-card-border'
+            } shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
             onClick={() => selectCustomDate('1day')}
           >
             1D
           </div>
           <div
-            className={`day w-[49px] h-3.06 flex items-center justify-center ml-0.652 box-border rounded-0.6 ${customDateLink['7day'] ? 'border-gradient-rounded-member' : 'app-input-card-border'
-              } shadow-shadowInput font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
+            className={`day w-[49px] h-3.06 flex items-center justify-center ml-0.652 box-border rounded-0.6 ${
+              customDateLink['7day'] ? 'border-gradient-rounded-member' : 'app-input-card-border'
+            } shadow-shadowInput font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
             onClick={() => selectCustomDate('7day')}
           >
             7D
           </div>
           <div
-            className={`day w-[49px] h-3.06 flex items-center justify-center ml-0.652 box-border rounded-0.6 ${customDateLink['1month'] ? 'border-gradient-rounded-member' : 'app-input-card-border'
-              } shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
+            className={`day w-[49px] h-3.06 flex items-center justify-center ml-0.652 box-border rounded-0.6 ${
+              customDateLink['1month'] ? 'border-gradient-rounded-member' : 'app-input-card-border'
+            } shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12 cursor-pointer`}
             onClick={() => selectCustomDate('1month')}
           >
             1M
@@ -682,8 +685,9 @@ const Members: React.FC = () => {
           <div className="ml-0.652 w-[112px]">
             <div
               aria-disabled={fetchLoader}
-              className={`export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex cursor-pointer hover:border-infoBlack transition ease-in-out duration-300 ${fetchLoader || !customizedColumn?.length ? 'cursor-not-allowed' : ''
-                }`}
+              className={`export w-6.98 rounded-0.6 shadow-contactCard box-border bg-white items-center app-input-card-border h-3.06 justify-evenly flex cursor-pointer hover:border-infoBlack transition ease-in-out duration-300 ${
+                fetchLoader || !customizedColumn?.length ? 'cursor-not-allowed' : ''
+              }`}
               onClick={() => (customizedColumn?.length ? !fetchLoader && fetchMembersListExportData() : null)}
             >
               <h3 className="text-memberDay leading-1.12 font-Poppins font-semibold text-card">Export</h3>

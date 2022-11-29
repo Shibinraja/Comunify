@@ -508,10 +508,7 @@ const Report: React.FC = () => {
                         <div className="flex gap-x-1">
                           {data?.workspaceReportSettings?.map((report) =>
                             report.reportPlatforms.map((platform) => (
-                              <div
-                                className="py-3 font-Poppins font-medium text-trial  leading-1.31 w-1.375"
-                                key={platform.workspacePlatformId}
-                              >
+                              <div className="py-3 font-Poppins font-medium text-trial  leading-1.31 w-1.375" key={platform.workspacePlatformId}>
                                 <img src={platform.workspacePlatform.platformSettings.platforms.platformLogoUrl} alt="" />
                               </div>
                             ))
@@ -551,19 +548,18 @@ const Report: React.FC = () => {
                         </div>
                         {isDropdownActive === data.id && (
                           <div className="absolute top-6 app-result-card-border bg-white dark:bg-secondaryDark -m-[3px] rounded-[6px] box-border w-9.62  right-[0.5rem] shadow-shadowInput z-40">
-                            {RenderedOption(
-                              data.workspaceReportSettings[0].scheduleRepeat,
-                              data.workspaceReportSettings[0].isScheduleActive
-                            )?.map((options, i) => (
-                              <div className="flex flex-col" onClick={() => handleDropDownActive('')} key={i}>
-                                <div
-                                  className="h-3.06 p-2 flex items-center border border-transparent text-searchBlack dark:text-white font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain hover:app-result-card-border dark:hover:bg-thirdDark transition ease-in duration-300 "
-                                  onClick={() => handleAction(options, data.id, data, data.workspaceReportSettings[0].isScheduleActive)}
-                                >
-                                  {options}
+                            {RenderedOption(data.workspaceReportSettings[0].scheduleRepeat, data.workspaceReportSettings[0].isScheduleActive)?.map(
+                              (options, i) => (
+                                <div className="flex flex-col" onClick={() => handleDropDownActive('')} key={i}>
+                                  <div
+                                    className="h-3.06 p-2 flex items-center border border-transparent text-searchBlack dark:text-white font-Poppins font-normal text-trial leading-1.31 hover:font-medium hover:bg-signUpDomain hover:app-result-card-border dark:hover:bg-thirdDark transition ease-in duration-300 "
+                                    onClick={() => handleAction(options, data.id, data, data.workspaceReportSettings[0].isScheduleActive)}
+                                  >
+                                    {options}
+                                  </div>
                                 </div>
-                              </div>
-                            ))}
+                              )
+                            )}
                           </div>
                         )}
                       </div>
@@ -578,12 +574,7 @@ const Report: React.FC = () => {
           </div>
         </div>
         <div className="px-6 py-6 flex items-center justify-center gap-0.66 w-full rounded-b-lg bg-white dark:bg-thirdDark bottom-0">
-          <Pagination
-            currentPage={page}
-            totalPages={Number(reportsList?.totalPages)}
-            limit={limit}
-            onPageChange={(page) => setPage(Number(page))}
-          />
+          <Pagination currentPage={page} totalPages={Number(reportsList?.totalPages)} limit={limit} onPageChange={(page) => setPage(Number(page))} />
         </div>
       </div>
     );
