@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
-import SubscriptionCard from 'common/subscriptionCard/SubscriptionCard';
 import { AppDispatch } from '../../../../store';
-import { SubscriptionPackages } from '../../interface/auth.interface';
 import { useDispatch } from 'react-redux';
-import authSlice from '../../store/slices/auth.slice';
+
 import { useAppSelector } from '@/hooks/useRedux';
+import SubscriptionCard from 'common/subscriptionCard/SubscriptionCard';
+import authSlice from '../../store/slices/auth.slice';
+import { SubscriptionPackages } from '../../interface/auth.interface';
 
 const SubscriptionExpired: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -19,10 +20,10 @@ const SubscriptionExpired: React.FC = () => {
   }, []);
 
   return (
-    <div className="w-full flex flex-col items-center justify-center mt-20 overflow-scroll h-full">
+    <div className="w-full flex flex-col items-center justify-center mt-[121px] overflow-scroll h-full mb-52">
       <h3 className="text-neutralBlack font-bold font-Inter text-signIn leading-2.8">Subscription Expired!</h3>
       <p className="mt-2.5 text-lightGray font-Inter font-normal leading-1.43 text-desc">Choose a plan to continue.</p>
-      <div className="subscriptionCard w-[20%] lg:w-[25%] xl:w-[24%] 2xl:w-[20%] 3xl:w-[16%]">
+      <div className="subscriptionCard w-[20%] lg:w-[414px]  2xl:w-[20%] 3xl:w-[16%]">
         {comunifySubscriptionPlan?.map((data: SubscriptionPackages) => (
           <SubscriptionCard key={data.id} subscriptionData={data} />
         ))}

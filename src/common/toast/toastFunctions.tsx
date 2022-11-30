@@ -12,6 +12,15 @@ export const showSuccessToast = (message: string) => {
   });
 };
 
+// TODO: Need to add proper icon
+export const showInfoToast = (message: string) => {
+  toast(<ToastContent title="Info" description={message} />, {
+    type: 'info',
+    theme: 'colored'
+    // icon: () => <img src={successToastIcon} />
+  });
+};
+
 export const showErrorToast = (message: string) => {
   toast(<ToastContent title="Failed!" description={message} />, {
     type: 'error',

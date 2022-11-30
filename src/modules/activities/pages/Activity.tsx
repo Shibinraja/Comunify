@@ -20,7 +20,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import Skeleton from 'react-loading-skeleton';
 import Modal from 'react-modal';
 import { useDispatch } from 'react-redux';
-import { NavLink, useParams } from 'react-router-dom';
+import { NavLink, useParams, useSearchParams } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip';
 import * as Yup from 'yup';
 import closeIcon from '../../../assets/images/close.svg';
@@ -40,6 +40,7 @@ Modal.setAppElement('#root');
 const Activity: React.FC = () => {
   const dispatch = useDispatch();
   const { workspaceId } = useParams();
+  const [searchParams] = useSearchParams();
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [isTagModalOpen, setTagModalOpen] = useState<boolean>(false);
   const [ProfileModal, setProfileModal] = useState<Partial<ProfileModal>>({
@@ -50,11 +51,11 @@ const Activity: React.FC = () => {
     memberProfileUrl: '',
     organization: '',
     profilePictureUrl: '',
-    platformLogoUrl: ''
+    platformLogoUrl: '',
+    platforms: []
   });
   const [ActivityCard, setActivityCard] = useState<Partial<ActivityCard>>();
   const [page, setPage] = useState<number>(1);
-  const [searchText, setSearchText] = useState<string>('');
   const [searchTagText, setSearchTagText] = useState<string>('');
   const [checkedActivityId, setCheckedActivityId] = useState<Record<string, unknown>>({});
   const [filterExportParams, setFilterExportParams] = useState<activityFilterExportProps>({
@@ -80,6 +81,8 @@ const Activity: React.FC = () => {
   const tagDropDownRef = useRef<HTMLDivElement>(null);
 
   const limit = 10;
+  const activityId = searchParams.get('activityId');
+  const [searchText, setSearchText] = useState<string>('');
   const debouncedValue = useDebounce(searchText, 300);
   const debouncedTagValue = useDebounce(searchTagText, 300);
 
@@ -102,7 +105,8 @@ const Activity: React.FC = () => {
           tags: { searchedTags: '', checkedTags: filterExportParams.checkTags.toString() },
           platforms: filterExportParams.checkPlatform.toString(),
           'activity.lte': filterExportParams.endDate,
-          'activity.gte': filterExportParams.startDate
+          'activity.gte': filterExportParams.startDate,
+          activityId: activityId as string
         },
         workspaceId: workspaceId!
       })
@@ -113,7 +117,8 @@ const Activity: React.FC = () => {
         workspaceId: workspaceId!
       })
     );
-  }, [page]);
+  }, [page, activityId]);
+
   useEffect(() => {
     setTagUnAssignLoading(true);
   }, [ActivityCard]);
@@ -266,7 +271,8 @@ const Activity: React.FC = () => {
       organization: data.organization,
       memberProfileUrl: data.memberProfileUrl,
       profilePictureUrl: data?.profilePictureUrl,
-      platformLogoUrl: data?.platformLogoUrl
+      platformLogoUrl: data?.platformLogoUrl,
+      platforms: data?.platforms
     });
   };
 
@@ -391,7 +397,7 @@ const Activity: React.FC = () => {
     }
   };
 
-  const handleUnAssignTagsName = (id: string): void => {
+  const handleUnAssignTagsName = (id: string, activityId?: string): void => {
     if (tagUnAssignLoading) {
       dispatch(
         settingsSlice.actions.unAssignTags({
@@ -399,7 +405,7 @@ const Activity: React.FC = () => {
           unAssignTagBody: {
             tagId: id,
             type: 'Activity' as AssignTypeEnum.Activity,
-            activityId: ActivityCard?.activityId
+            activityId: ActivityCard?.activityId || activityId
           },
           filter: {
             search: debouncedValue,
@@ -442,6 +448,7 @@ const Activity: React.FC = () => {
             className="app-input-card-border focus:outline-none px-4 mr-0.76 box-border h-3.06 w-19.06 bg-white  rounded-0.6 text-card placeholder:font-normal placeholder:leading-1.12 font-Poppins"
             placeholder="Search By Name or Email"
             onChange={handleSearchTextChange}
+            value={searchText}
           />
         </div>
         <div className="-mr-3">{ActiveStreamFilter}</div>
@@ -471,6 +478,7 @@ const Activity: React.FC = () => {
                       Date & Time
                     </th>
                     <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Summary</th>
+                    <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Tags</th>
                     <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">Source</th>
                     <th className="px-6 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray">
                       Activity Type
@@ -485,7 +493,23 @@ const Activity: React.FC = () => {
                           {loader ? (
                             <Skeleton width={width_90} />
                           ) : (
-                            <div className="flex ">
+                            <div
+                              className="flex  "
+                              onMouseLeave={(e) => {
+                                e.stopPropagation();
+                                handleProfileModal({
+                                  isOpen: false,
+                                  id: data?.id,
+                                  email: data?.email,
+                                  memberName: data?.memberName,
+                                  organization: data?.organization,
+                                  memberProfileUrl: `/${workspaceId}/members/${data.primaryMemberId}/profile`,
+                                  profilePictureUrl: data?.memberProfile,
+                                  platformLogoUrl: data?.platformLogoUrl,
+                                  platforms: data?.platforms || []
+                                });
+                              }}
+                            >
                               <div className="py-3 mr-2">
                                 <input
                                   type="checkbox"
@@ -499,7 +523,7 @@ const Activity: React.FC = () => {
                               <div className="relative">
                                 <div
                                   ref={dropDownRef}
-                                  onMouseOver={(e) => {
+                                  onMouseMove={(e) => {
                                     e.stopPropagation();
                                     handleProfileModal({
                                       isOpen: true,
@@ -509,7 +533,8 @@ const Activity: React.FC = () => {
                                       organization: data?.organization,
                                       memberProfileUrl: `/${workspaceId}/members/${data.primaryMemberId}/profile`,
                                       profilePictureUrl: data?.memberProfile,
-                                      platformLogoUrl: data?.platformLogoUrl
+                                      platformLogoUrl: data?.platformLogoUrl,
+                                      platforms: data?.platforms || []
                                     });
                                   }}
                                   className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer capitalize"
@@ -525,7 +550,7 @@ const Activity: React.FC = () => {
                                   <div className="w-12.87 pb-5 rounded-b-0.6 profile-card-body profile-inner shadow-profileCard flex flex-col items-center bg-white">
                                     <div className="-mt-10 flex items-center justify-center">
                                       <img
-                                        src={ProfileModal?.profilePictureUrl ?? profileImage }
+                                        src={ProfileModal?.profilePictureUrl ? ProfileModal?.profilePictureUrl : profileImage}
                                         alt=""
                                         className="rounded-full w-4.43 h-4.43 bg-cover bg-center border-4 border-white"
                                       />
@@ -537,12 +562,17 @@ const Activity: React.FC = () => {
                                       {ProfileModal?.email} {ProfileModal?.organization}
                                     </div>
                                     <div className="flex mt-2.5">
-                                      <div className="bg-cover bg-center mr-1 ">
-                                        <img
-                                          src={ProfileModal?.platformLogoUrl ? ProfileModal?.platformLogoUrl : ''}
-                                          alt=""
-                                          className="w-0.92 h-0.92"
-                                        />
+                                      <div className="bg-cover bg-center flex ">
+                                        {ProfileModal?.platforms &&
+                                          ProfileModal?.platforms.map((platformData) => (
+                                            <div className="flex" key={`${Math.random() + platformData.id}`}>
+                                              <img
+                                                src={platformData?.platformLogoUrl ?? ''}
+                                                alt=""
+                                                className="rounded-full w-[1.0012rem] h-[1.0012rem] mr-1"
+                                              />
+                                            </div>
+                                          ))}
                                       </div>
                                     </div>
                                     <NavLink
@@ -597,7 +627,8 @@ const Activity: React.FC = () => {
                                       memberId: data?.memberId,
                                       activityId: data?.id,
                                       platform: data?.platform,
-                                      tags: data?.tags || []
+                                      tags: data?.tags || [],
+                                      platforms: data.platforms || []
                                     })
                                   }
                                 >
@@ -605,6 +636,76 @@ const Activity: React.FC = () => {
                                 </div>
                                 <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
                                   {generateDateAndTime(`${data?.activityTime}`, 'MM-DD')}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </td>
+
+                        <td className="px-6 py-3 border-b ">
+                          {loader ? (
+                            <Skeleton width={width_90} />
+                          ) : (
+                            <div className="flex w-[150px]">
+                              <div className="py-3 flex gap-2 items-center flex-wrap font-Poppins font-medium text-trial text-infoBlack leading-1.31">
+                                {data?.tags ? (
+                                  (data?.tags as Array<{ id: string; name: string }>)
+                                    ?.slice(0, 2)
+                                    .map((tags: { name: string; id: string }, index: number) => (
+                                      <>
+                                        <div
+                                          data-tip
+                                          data-for={tags.name}
+                                          className="bg-tagSection rounded h-8 flex justify-between px-3 items-center cursor-pointer"
+                                          key={index}
+                                        >
+                                          <div className="font-Poppins font-normal text-card text-profileBlack leading-5 pr-4 tags-ellipse">
+                                            {tags?.name}
+                                          </div>
+                                          <div>
+                                            <img
+                                              src={closeIcon}
+                                              alt=""
+                                              onClick={() => {
+                                                handleUnAssignTagsName(tags.id, data.id);
+                                              }}
+                                            />
+                                          </div>
+                                        </div>
+                                        <ReactTooltip id={tags.name} textColor="" backgroundColor="" effect="solid">
+                                          <span className="font-Poppins text-card font-normal leading-5 pr-4">{tags.name}</span>
+                                        </ReactTooltip>
+                                      </>
+                                    ))
+                                ) : (
+                                  <div className="font-Poppins font-normal text-card text-infoBlack leading-5 pr-4 tags-ellipse">{'--'}</div>
+                                )}
+                                <div
+                                  className="font-Poppins font-medium text-trial text-tag leading-1.12 capitalize underline cursor-pointer"
+                                  onClick={() =>
+                                    handleModal({
+                                      isOpen: true,
+                                      memberName: data?.memberName,
+                                      email: data?.email,
+                                      description: data?.description,
+                                      displayValue: data?.displayValue,
+                                      activityTime: data?.activityTime,
+                                      organization: data?.organization,
+                                      sourceUrl: data?.sourceUrl,
+                                      profilePictureUrl: data?.memberProfile as string,
+                                      value: data?.value,
+                                      platformLogoUrl: data?.platformLogoUrl,
+                                      memberId: data?.memberId,
+                                      activityId: data?.id,
+                                      platform: data?.platform,
+                                      tags: data?.tags || [],
+                                      platforms: data.platforms || []
+                                    })
+                                  }
+                                >
+                                  {(data?.tags as Array<Record<string, unknown>>)?.length > 2
+                                    ? `${(data?.tags as Array<Record<string, unknown>>)?.length - 2} more`
+                                    : ''}{' '}
                                 </div>
                               </div>
                             </div>

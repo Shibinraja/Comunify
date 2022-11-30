@@ -1,7 +1,9 @@
+/* eslint-disable space-before-function-paren */
 /* eslint-disable @typescript-eslint/ban-types */
 import { GeneratorResponse } from '@/lib/api';
-import { auth_module, subscription_module, workspace_module } from '@/lib/config';
+import { API_ENDPOINT, auth_module, subscription_module, workspace_module } from '@/lib/config';
 import { request } from '@/lib/request';
+import { UpgradeData } from '../../settings/interface/settings.interface';
 
 import {
   CreateWorkspaceNameInput,
@@ -76,7 +78,7 @@ export function* getSubscriptionPackagesService(): GeneratorResponse<Subscriptio
 }
 
 export function* sendSubscriptionPlan(id: string): GeneratorResponse<SubscriptionPackages> {
-  const { data } = yield request.post(`${subscription_module}/chooseplan/${id}`);
+  const { data } = yield request.post(`${subscription_module}/chooseplan/${id}`, { autoRenewal: true });
   return data;
 }
 
@@ -85,3 +87,13 @@ export function* signOutService(): GeneratorResponse<{}> {
   const { data } = yield request.post(`${auth_module}/logout`);
   return data;
 }
+
+// Subscription services
+export const chooseSubscription = async (subscriptionId: string, body?: UpgradeData): Promise<SubscriptionPackages> => {
+  try {
+    const { data } = await request.post(`${API_ENDPOINT}/v1/subscription/chooseplan/${subscriptionId}`, body);
+    return data?.data as SubscriptionPackages;
+  } catch {
+    return {} as SubscriptionPackages;
+  }
+};

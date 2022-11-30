@@ -11,12 +11,23 @@ const initialState: InitialState = {
     fileName: ''
   },
   userProfileData: [],
-  userProfileUpdateData: []
+  userProfileUpdateData: [],
+  userProfilePictureUrl: ''
 };
 const changePassword = (state: InitialState, action: PayloadAction<ChangePassword>) => state;
-const uploadProfilePic = (state: InitialState, action: PayloadAction<profilePicInput>) => state;
+const uploadProfilePic = (state: InitialState, action: PayloadAction<profilePicInput>) => ({
+  ...state,
+  profilePictureUrl: action.payload
+});
 const userProfileData = (state: InitialState, action: PayloadAction<userProfileDataInput>) => state;
 const userProfileUpdateData = (state: InitialState, action: PayloadAction<userProfileUpdateInput>) => state;
+
+//Reducer call
+
+const uploadProfilePicResponse = (state: InitialState, action: PayloadAction<string>) => ({
+  ...state,
+  userProfilePictureUrl: action.payload
+});
 
 const accountSlice = createSlice({
   name: 'accounts',
@@ -25,7 +36,8 @@ const accountSlice = createSlice({
     changePassword,
     uploadProfilePic,
     userProfileData,
-    userProfileUpdateData
+    userProfileUpdateData,
+    uploadProfilePicResponse
   }
 });
 

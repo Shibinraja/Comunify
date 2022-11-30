@@ -11,9 +11,11 @@ export const userName_regex = /^[a-zA-Z0-9._]+$/;
 
 export const companyName_regex = /^[a-zA-Z0-9_ )(-;:.#$@&]+$/;
 
-export const reportName_regex = /^[a-zA-Z0-9 ]+$/;
+export const alphanumeric_regex = /^[a-zA-Z0-9 ]+$/;
 
 export const alphabet_regex = /^[a-z!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/g;
+
+export const alphabets_only_regex_with_single_space = /^[a-zA-Z ]*$/;
 
 // eslint-disable-next-line no-useless-escape
 

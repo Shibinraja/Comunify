@@ -138,17 +138,16 @@ const DiscordIntegrationDetails: React.FC = () => {
                 </div>
               )}
             </div>
-
           </div>
         </div>
 
-        <div className="pt-8 font-Poppins font-semibold text-action text-infoBlack left-8">Actions</div>
+        {/* <div className="pt-8 font-Poppins font-semibold text-action text-infoBlack left-8">Actions</div>
         <div className="pt-[0.4375rem] font-Poppins font-semibold text-search left-5 max-w-[904px]">
           Remove{' '}
           <span className="font-normal">
             the discord integration from this comunify workspace. See the docs on how to uninstall the discord integration from a particular channel.
           </span>
-        </div>
+        </div> */}
         <div className="flex justify-end pt-4">
           <Button
             text="Complete Setup"

@@ -10,6 +10,8 @@ export function* getActiveStreamDataService(params: Required<GetActiveStreamList
       params.activeStreamQuery.platforms ? `&platforms=${params.activeStreamQuery.platforms}` : ''
     }${params.activeStreamQuery['activity.gte'] ? `&activity.gte=${params.activeStreamQuery['activity.gte']}` : ''}${
       params.activeStreamQuery['activity.lte'] ? `&activity.lte=${params.activeStreamQuery['activity.lte']}` : ''
+    }${
+      params.activeStreamQuery.activityId ? `&activityId=${params.activeStreamQuery.activityId}` : ''
     }`
   );
   return data;

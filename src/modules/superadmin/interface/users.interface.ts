@@ -42,6 +42,7 @@ export type UserMemberTypesProps = {
   memberFilterExport: (arg0: UserMemberFilterExportProps) => void;
   setMembersList: Dispatch<SetStateAction<UsersMemberListResponse>>;
   setPage: Dispatch<SetStateAction<number>>;
+  setFetchLoader: Dispatch<SetStateAction<{ getLoader: boolean; exportLoader: boolean }>>;
 };
 
 //Response Data
@@ -137,6 +138,6 @@ export type UserPlatformResponse = {
 };
 
 export type UsersAnalyticsData = {
-  title: string,
-  count: number
-}
+  title: string;
+  count: number;
+};

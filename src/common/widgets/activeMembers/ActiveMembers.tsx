@@ -48,11 +48,10 @@ const ActiveMembers: FC<WidgetComponentProps> = (props: WidgetComponentProps) =>
   const handleRemove = () => {
     removeWidgetFromDashboard(widget);
   };
-
   return (
     <div className={`${!isManageMode ? 'h-full' : 'cursor-grabbing my-6 '}  `}>
-      <div className="mt-6">
-        <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Members</h3>
+      <div className="mb-6">
+        <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Active Members</h3>
       </div>
       <div
         className={`w-full box-border

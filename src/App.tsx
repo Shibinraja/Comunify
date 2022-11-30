@@ -19,9 +19,11 @@ function App() {
         <React.Suspense>
           <DndProvider backend={HTML5Backend}>
             {/* <BrowserRouter> */}
+
             <HistoryRouter history={history}>
               <Router />
             </HistoryRouter>
+
             {/* </BrowserRouter> */}
           </DndProvider>
         </React.Suspense>

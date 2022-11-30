@@ -21,7 +21,6 @@ const MembersTab: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-
     if (isManageMode === false && !isSidePanelOpen) {
       getMembersWidgetData();
     }
@@ -51,7 +50,7 @@ const MembersTab: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   };
 
   return (
-    <div className={`mt-6 ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
+    <div className={`mb-6 ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
       <div>
         <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Members</h3>
       </div>

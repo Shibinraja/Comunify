@@ -1,24 +1,30 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable indent */
+import React, { ChangeEvent, Fragment, ReactNode, useEffect, useMemo, useState } from 'react';
+
+import Skeleton from 'react-loading-skeleton';
+import { format, parseISO } from 'date-fns';
+import Modal from 'react-modal';
+
 import useDebounce from '@/hooks/useDebounce';
 import { API_ENDPOINT } from '@/lib/config';
 import fetchExportList from '@/lib/fetchExport';
-import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
 import Pagination from 'common/pagination/pagination';
+import { ColumNames } from './UsersTableData';
 import { width_90 } from 'constants/constants';
-import { format, parseISO } from 'date-fns';
+
+import UsersAnalyticsCard from './UsersAnalyticsCard';
+import UsersFilter from './UsersFilter';
+
+import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
 import { filterDateProps } from 'modules/members/interface/members.interface';
-import React, { ChangeEvent, Fragment, ReactNode, useEffect, useMemo, useState } from 'react';
-import Skeleton from 'react-loading-skeleton';
-import Modal from 'react-modal';
+import { Platform, UserMemberFilterExportProps, UserMembersListData, UsersMemberListResponse, UserWorkspaces } from '../interface/users.interface';
+import { getUsersListService } from '../services/users.services';
+
 import exportImage from '../../../assets/images/export.svg';
 import noMemberIcon from '../../../assets/images/no-member.svg';
 import searchIcon from '../../../assets/images/search.svg';
-import { Platform, UserMemberFilterExportProps, UserMembersListData, UsersMemberListResponse, UserWorkspaces } from '../interface/users.interface';
-import { getUsersListService } from '../services/users.services';
-import UsersAnalyticsCard from './UsersAnalyticsCard';
-import UsersFilter from './UsersFilter';
-import { ColumNames } from './UsersTableData';
+
 Modal.setAppElement('#root');
 
 const Users: React.FC = () => {
@@ -30,9 +36,6 @@ const Users: React.FC = () => {
     getLoader: false,
     exportLoader: false
   });
-
-  const debouncedValue = useDebounce(searchText, 300);
-
   const [filterExportParams, setFilterExportParams] = useState<UserMemberFilterExportProps>({
     platform: [],
     domain: [],
@@ -46,7 +49,6 @@ const Users: React.FC = () => {
     filterStartDate: '',
     filterEndDate: ''
   });
-
   const [membersList, setMembersList] = useState<UsersMemberListResponse>({
     data: [],
     totalPages: 0,
@@ -54,9 +56,11 @@ const Users: React.FC = () => {
     nextPage: 0
   });
 
+  const debouncedValue = useDebounce(searchText, 300);
+
   // Function to dispatch the search text and to hit api of member list.
   // eslint-disable-next-line space-before-function-paren
-  const getFilteredMembersList = async (pageNumber: number, text: string, date?: string, endDate?: string) => {
+  const getFilteredMembersList = async (pageNumber: number, text: string, resetPage: boolean, date?: string, endDate?: string) => {
     setFilteredDate({ filterStartDate: date!, filterEndDate: endDate! });
     setFetchLoader((prev) => ({ ...prev, getLoader: true }));
     const data = await getUsersListService({
@@ -67,14 +71,17 @@ const Users: React.FC = () => {
       ...(endDate ? { 'createdAT.lte': endDate } : {}),
       ...(filterExportParams.platform.length ? { platformId: filterExportParams.platform } : {}),
       ...(filterExportParams.domain.length ? { domain: filterExportParams.domain } : {}),
-      ...(filterExportParams.subscription.length ? { subscription: filterExportParams.subscription } : {}),
+      ...(filterExportParams.subscription.length ? { subscriptionPlanId: filterExportParams.subscription } : {}),
       ...(filterExportParams.joinedAtLte ? { 'joinedAt.lte': filterExportParams.joinedAtLte } : {}),
       ...(filterExportParams.joinedAtGte ? { 'joinedAt.gte': filterExportParams.joinedAtGte } : {}),
       ...(filterExportParams.expiryAtLte ? { 'expiryAt.lte': filterExportParams.expiryAtLte } : {}),
       ...(filterExportParams.expiryAtGte ? { 'expiryAt.gte': filterExportParams.expiryAtGte } : {})
     });
     setFetchLoader((prev) => ({ ...prev, getLoader: false }));
-    setPage(1);
+    if (resetPage) {
+      setPage(1);
+    }
+
     setMembersList({
       data: data?.data as unknown as UserMembersListData[],
       totalPages: data?.totalPages as number,
@@ -85,26 +92,27 @@ const Users: React.FC = () => {
 
   useEffect(() => {
     if (debouncedValue) {
-      getFilteredMembersList(1, debouncedValue);
+      getFilteredMembersList(1, debouncedValue, true);
     }
   }, [debouncedValue]);
+
+  useEffect(() => {
+    getFilteredMembersList(page, searchText, false, filteredDate.filterStartDate, filteredDate.filterEndDate);
+  }, [page]);
 
   const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchText: string = event.target.value;
     if (!searchText) {
       getFilteredMembersList(
         1,
-        searchText
+        searchText,
+        false
         // customStartDate ? customStartDate && convertStartDate(customStartDate) : customSingleStartDate && convertStartDate(customSingleStartDate),
         // customEndDate && convertEndDate(customEndDate)
       );
     }
     setSearchText(searchText);
   };
-
-  useEffect(() => {
-    getFilteredMembersList(page, searchText, filteredDate.filterStartDate, filteredDate.filterEndDate);
-  }, [page]);
 
   // Fetch members list data in comma separated value
   // eslint-disable-next-line space-before-function-paren
@@ -118,7 +126,7 @@ const Users: React.FC = () => {
         ...(filteredDate.filterEndDate ? { 'createdAT.lte': filteredDate.filterEndDate } : {}),
         ...(filterExportParams.platform.length ? { platformId: filterExportParams.platform } : {}),
         ...(filterExportParams.domain.length ? { domain: filterExportParams.domain } : {}),
-        ...(filterExportParams.subscription.length ? { subscription: filterExportParams.subscription } : {}),
+        ...(filterExportParams.subscription.length ? { subscriptionPlanId: filterExportParams.subscription } : {}),
         ...(filterExportParams.joinedAtLte ? { 'joinedAt.lte': filterExportParams.joinedAtLte } : {}),
         ...(filterExportParams.joinedAtGte ? { 'joinedAt.gte': filterExportParams.joinedAtGte } : {}),
         ...(filterExportParams.expiryAtLte ? { 'expiryAt.lte': filterExportParams.expiryAtLte } : {}),
@@ -169,6 +177,7 @@ const Users: React.FC = () => {
         filteredDate={filteredDate}
         setMembersList={setMembersList}
         setPage={setPage}
+        setFetchLoader={setFetchLoader}
       />
     ),
     [debouncedValue, filteredDate]
@@ -181,18 +190,18 @@ const Users: React.FC = () => {
           <div>
             <img src={noMemberIcon} alt="No Member" />
           </div>
-          <div className="pt-5 font-Poppins font-medium text-tableDuration text-lg leading-10">No Members</div>
+          <div className="pt-5 font-Poppins font-medium text-tableDuration text-lg leading-10">No Users found</div>
         </div>
       );
     }
 
     return (
-      <div className="memberTable mt-1.8">
-        <div className="py-2  mt-1.868">
+      <div className="memberTable mt-[41px]">
+        <div className="pb-2 ">
           <div className="inline-block min-w-full w-full align-middle rounded-0.6 border-table  overflow-x-auto overflow-y-auto sticky top-0 fixTableHead max-h-34 min-h-[31.25rem] mb-16">
             <table className="min-w-full relative w-full rounded-t-0.6 ">
               <thead className="h-3.25  top-0 w-full  sticky ">
-                <tr className="min-w-full w-full">
+                <tr className="min-w-full w-full border-b border-b-[#E5E5E5]">
                   {ColumNames.map(
                     (columnName: ColumnNameProps) =>
                       columnName.isDisplayed && (
@@ -210,7 +219,7 @@ const Users: React.FC = () => {
                 {customizedColumn.map((member: Record<string, unknown>) => (
                   <tr className="border-b " key={Math.random()}>
                     {Object.keys(member).map((column: keyof typeof member, index) => (
-                      <td className="px-3 py-4 " key={index}>
+                      <td className="px-3  h-[60px] " key={index}>
                         {column === 'createdAt' ? (
                           fetchLoader.getLoader ? (
                             <Skeleton width={width_90} />
@@ -219,29 +228,29 @@ const Users: React.FC = () => {
                               <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
                                 {member?.createdAt ? format(parseISO(member?.createdAt as string), 'dd MMM yyyy') : '--'}
                               </div>
-                              <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
+                              {/* <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
                                 {(member?.createdAt as ReactNode) && format(parseISO(member?.createdAt as string), 'HH:MM')}
-                              </div>
+                              </div> */}
                             </div>
                           )
-                        ) : column === 'lastActive' ? (
+                        ) : column === 'lastLogin' ? (
                           fetchLoader.getLoader ? (
                             <Skeleton width={width_90} />
                           ) : (
                             <div className="flex flex-col w-[150px]">
                               <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">
-                                {member?.lastActive ? format(parseISO(member?.lastActive as string), 'dd MMM yyyy') : '--'}
+                                {member?.lastLogin ? format(parseISO(member?.lastLogin as string), 'dd MMM yyyy') : '--'}
                               </div>
-                              <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
-                                {(member?.lastActive as ReactNode) && format(parseISO(member?.lastActive as string), 'HH:MM')}
-                              </div>
+                              {/* <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
+                                {(member?.lastLogin as ReactNode) && format(parseISO(member?.lastLogin as string), 'HH:MM')}
+                              </div> */}
                             </div>
                           )
                         ) : column === 'platforms' ? (
                           fetchLoader.getLoader ? (
                             <Skeleton width={width_90} />
                           ) : (
-                            <div className="flex gap-x-2 w-[150px]">
+                            <div className="flex gap-x-2 w-[200px]">
                               {(member?.platforms as Array<{ id: string; name: string; platformLogoUrl: string }>)?.map(
                                 (platforms: { name: string; id: string; platformLogoUrl: string }, index: number) => (
                                   <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31  rounded-full" key={index}>
@@ -252,7 +261,7 @@ const Users: React.FC = () => {
                             </div>
                           )
                         ) : (
-                          <div className="flex ">
+                          <div className="flex w-[150px]">
                             <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">{member[column] as ReactNode}</div>
                           </div>
                         )}
@@ -267,7 +276,7 @@ const Users: React.FC = () => {
             </table>
             {!fetchLoader.getLoader && (
               <div className="px-3 py-6 flex items-center gap-0.66 pl-[30%] w-full rounded-b-lg fixed bg-white bottom-0">
-                <Pagination currentPage={1} totalPages={membersList.totalPages} limit={limit} onPageChange={(page) => setPage(Number(page))} />
+                <Pagination currentPage={page} totalPages={membersList.totalPages} limit={limit} onPageChange={(page) => setPage(Number(page))} />
               </div>
             )}
           </div>
@@ -277,10 +286,10 @@ const Users: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col mt-12">
+    <div className="flex flex-col mt-[72px]">
       {/* <h3 className="font-Poppins font-semibold text-infoBlack text-infoData leading-9 dark:text-white">Members</h3> */}
-      <div className="flex flex-col xl:flex-row  justify-between mt-1.8 i ">
-        <div className="flex relative items-center w-1/2 xl:w-[250px] 2xl:w-19.06">
+      <div className="flex flex-row  justify-between i ">
+        <div className="flex relative items-center md:w-1/2 lg:w-19.06">
           <input
             type="text"
             className="focus:outline-none px-3 pr-8 box-border w-full h-3.06  rounded-0.6  placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray shadow-shadowInput"
@@ -291,7 +300,7 @@ const Users: React.FC = () => {
             <img src={searchIcon} alt="" />
           </div>
         </div>
-        <div className="flex justify-between xl:justify-start mt-4 xl:mt-0">
+        <div className="flex justify-between  mt-4 xl:mt-0">
           <div className="ml-1.30 w-[155px]">{UserFilter}</div>
           <div className="ml-0.652 w-[112px]">
             <div
@@ -307,10 +316,10 @@ const Users: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="member-card pt-10">
+      <div className="member-card pt-[24px]">
         <UsersAnalyticsCard />
       </div>
-      <div className="flex flex-col mt-12">{renderUserTable()}</div>
+      <div className="">{renderUserTable()}</div>
     </div>
   );
 };

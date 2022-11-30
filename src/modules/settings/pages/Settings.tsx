@@ -1,26 +1,66 @@
-import React from 'react';
+/* eslint-disable no-unused-expressions */
+import React, { Dispatch, useEffect, useState } from 'react';
 import { useTabs } from '@/hooks/useTabs';
 import { TabSelector } from 'common/tabs/TabSelector';
 import BillingHistory from './billingHistory/BillingHistory';
 import Integration from './integration/Integration';
-import Subscription from './subscription/Subscription';
 import Tags from './tags/Tags';
+import { useLocation } from 'react-router';
+import { useDispatch } from 'react-redux';
+import { AnyAction } from 'redux';
+import authSlice from 'modules/authentication/store/slices/auth.slice';
+import { useAppSelector } from '@/hooks/useRedux';
+import { State } from '@/store/index';
+import { SubscriptionPackages } from 'modules/authentication/interface/auth.interface';
 
-const Settings = () => {
+const Subscription = React.lazy(() => import('./subscription/Subscription'));
+
+const Settings: React.FC = () => {
   const [selectedTab, setSelectedTab] = useTabs(['integrations', 'subscription', 'billing_history', 'tags']);
+  const [loadingToast, setLoadingToast] = useState<string>('');
 
+  const subscriptionPlanDetails: SubscriptionPackages[] = useAppSelector((state: State) => state.auth.subscriptionData);
+
+  const location: any | Location = useLocation();
+  const dispatch: Dispatch<AnyAction> = useDispatch();
+  const redirectPath = location?.state?.selectedTab;
+  const loadingToastCondition = location?.state?.loadingToastCondition;
+
+  useEffect(() => {
+    if (loadingToastCondition === 'showLoadingToast') {
+      setLoadingToast(loadingToastCondition);
+    }
+  }, [loadingToastCondition]);
+
+  useEffect(() => {
+    redirectPath === 'billing_history' && setSelectedTab('billing_history');
+  }, [redirectPath]);
+
+  useEffect(() => {
+    redirectPath === 'subscription' && setSelectedTab('subscription');
+  }, [redirectPath]);
+
+  useEffect(() => {
+    if (selectedTab === 'subscription') {
+      dispatch(authSlice.actions.getSubscriptions());
+    }
+  }, [selectedTab]);
+
+  const clearLoadingToastCondition = () => {
+    setLoadingToast('');
+  };
   return (
     <div className="flex flex-col ">
-      <div className="font-Poppins  leading-35 text-infoData not-italic font-semibold mt-12 dark:text-white">Settings</div>
-      <div className="w-full mt-10 ">
+      <div className="font-Poppins  leading-35 text-infoData not-italic font-semibold mt-[73px] dark:text-white">Settings</div>
+      <div className="w-full mt-[30px] ">
         <nav className="flex items-end">
           <TabSelector
             isActive={selectedTab === 'integrations'}
             onClick={() => setSelectedTab('integrations')}
             style={
-              'text-center justify-center text-xs not-italic font-normal text-profileBlack font-medium w-[12.5rem] font-Poppins h-[40px] border-solid border border-settingsTabBorder rounded-tl-sm'
+              'text-center justify-center text-xs not-italic  text-profileBlack font-medium w-[200px] font-Poppins h-[40px] border-solid border border-settingsTabBorder rounded-tl-sm'
             }
-            styleActive={'h-[50px] border-b-2 border-b-solid border-b-settingsTabActive rounded-t-sm'}
+            styleActive={' border-b-2 border-b-solid border-b-settingsTabActive rounded-t-sm'}
             styleInActive={'text-profileBlack'}
           >
             INTEGRATIONS
@@ -29,9 +69,9 @@ const Settings = () => {
             isActive={selectedTab === 'subscription'}
             onClick={() => setSelectedTab('subscription')}
             style={
-              'text-center justify-center text-xs not-italic font-normal text-profileBlack font-medium w-[12.5rem] font-Poppins h-[40px] border border-solid border-settingsTabBorder dark:border-[#E6E6E6]'
+              'text-center justify-center text-xs not-italic  text-profileBlack font-medium w-[200px] font-Poppins h-[40px] border border-solid border-settingsTabBorder dark:border-[#E6E6E6]'
             }
-            styleActive={'h-[50px] border-b-2 border-b-solid border-b-settingsTabActive rounded-t-sm'}
+            styleActive={' border-b-2 border-b-solid border-b-settingsTabActive rounded-t-sm'}
             styleInActive={'text-profileBlack'}
           >
             SUBSCRIPTION
@@ -40,9 +80,9 @@ const Settings = () => {
             isActive={selectedTab === 'billing_history'}
             onClick={() => setSelectedTab('billing_history')}
             style={
-              'text-center justify-center text-xs not-italic font-normal text-profileBlack font-medium w-[12.5rem] font-Poppins h-[40px] border border-solid border-settingsTabBorder dark:border-[#E6E6E6]'
+              'text-center justify-center text-xs not-italic  text-profileBlack font-medium w-[200px] font-Poppins h-[40px] border border-solid border-settingsTabBorder dark:border-[#E6E6E6]'
             }
-            styleActive={'h-[50px] border-b-2 border-b-solid border-b-settingsTabActive rounded-t-sm'}
+            styleActive={' border-b-2 border-b-solid border-b-settingsTabActive rounded-t-sm'}
             styleInActive={'text-profileBlack'}
           >
             BILLING HISTORY
@@ -51,18 +91,23 @@ const Settings = () => {
             isActive={selectedTab === 'tags'}
             onClick={() => setSelectedTab('tags')}
             style={
-              'text-center justify-center text-xs not-italic font-normal text-profileBlack font-medium w-[12.5rem] font-Poppins h-[40px] border border-solid border-settingsTabBorder rounded-tr-sm dark:border-[#E6E6E6]'
+              'text-center justify-center text-xs not-italic  text-profileBlack font-medium w-[200px] font-Poppins h-[40px] border border-solid border-settingsTabBorder rounded-tr-sm dark:border-[#E6E6E6]'
             }
-            styleActive={'h-[50px] border-b-2 border-b-solid border-b-settingsTabActive rounded-t-sm'}
+            styleActive={' border-b-2 border-b-solid border-b-settingsTabActive rounded-t-sm'}
             styleInActive={'text-profileBlack'}
           >
             TAGS
           </TabSelector>
         </nav>
         <div className="items-center block section ">
-          <Integration hidden={selectedTab !== 'integrations'} />
-          <Subscription hidden={selectedTab !== 'subscription'} />
-          <BillingHistory hidden={selectedTab !== 'billing_history'} />
+          <Integration hidden={selectedTab !== 'integrations'} selectedTab={selectedTab!} />
+          <Subscription hidden={selectedTab !== 'subscription'} selectedTab={selectedTab!} subscriptionPlanDetails={subscriptionPlanDetails} />
+          <BillingHistory
+            hidden={selectedTab !== 'billing_history'}
+            selectedTab={selectedTab!}
+            loadingToastCondition={loadingToast}
+            clearLoadingToastCondition={clearLoadingToastCondition}
+          />
           <Tags hidden={selectedTab !== 'tags'} />
         </div>
       </div>

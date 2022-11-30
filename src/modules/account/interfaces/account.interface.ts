@@ -19,12 +19,12 @@ export interface userProfileDataInput {
   displayUserName: string | null;
   createdAt: Date | string;
   updatedAt: Date | string;
-  organization: string;
+  organization?: string;
 }
 
 export interface userProfileUpdateInput {
   userName: string;
   fullName: string | null;
   domainSector: string | null;
-  organization: string;
+  organization?: string;
 }

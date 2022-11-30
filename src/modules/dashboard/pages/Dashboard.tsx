@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+/* eslint-disable @typescript-eslint/ban-types */
+import React, { FC, useEffect, useRef, useState } from 'react';
 import brickIcon from '../../../assets/images/brick.svg';
 import calendarIcon from '../../../assets/images/calandar.svg';
 import dropDownIcon from '../../../assets/images/profile-dropdown.svg';
@@ -12,13 +13,35 @@ import { getWidgetsLayoutService, saveWidgetsLayoutService } from '../services/d
 import moment from 'moment';
 import Button from '../../../common/button';
 import WidgetContainer from '../../../common/widgets/widgetContainer/WidgetContainer';
+import { ModalDrawer } from 'common/modals/ModalDrawer';
 
 Modal.setAppElement('#root');
 
-const Dashboard: React.FC = () => {
+type widgetResponseData = {
+  saveWidgetResponse: Array<{ id: string; layout: {}; widget: {} }>;
+  saveTransformWidgetResponse: Array<{ id: string; layout: {}; widget: {} }>;
+};
+
+const Dashboard: FC = () => {
   const [isSelectDropDownActive, setSelectDropDownActive] = useState<boolean>(false);
   const [selected, setSelected] = useState<string>('');
   const [dateRange, setDateRange] = useState([null, null]);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [isManageMode, setIsManageMode] = useState<boolean>(false);
+  const [widgetLoading, setWidgetLoading] = useState<boolean>(false);
+  const [widgets, setWidgets] = useState<any[] | []>([]);
+  const [widgetResponse, setWidgetResponse] = useState<widgetResponseData>({
+    saveWidgetResponse: [],
+    saveTransformWidgetResponse: []
+  });
+  const [transformedWidgetData, setTransformedWidgetData] = useState<any[]>(new Array(null));
+  const dropDownRef = useRef<HTMLDivElement>(null);
+  const [startingDate, setStartingDate] = useState<string>();
+  const [endingDate, setEndingDate] = useState<string>();
+  const [isButtonLoading, setIsButtonLoading] = useState<boolean>(false);
+  const [startDate, setStartDate] = useState<string>(moment().startOf('week').toISOString());
+  const [endDate, setEndDate] = useState<string>(convertEndDate(new Date()));
+
   const datePickerRef = useRef<ReactDatePicker>(null);
   const [startDateRange, endDateRange] = dateRange;
 
@@ -27,17 +50,10 @@ const Dashboard: React.FC = () => {
     { id: Math.random(), dateRange: 'Last Week' },
     { id: Math.random(), dateRange: 'This Month' }
   ];
-  const [isManageMode, setIsManageMode] = useState<boolean>(false);
-  const [widgets, setWidgets] = useState<any[] | []>([]);
-  const [transformedWidgetData, setTransformedWidgetData] = React.useState<any[]>(new Array(null));
-  const dropDownRef = useRef<HTMLDivElement>(null);
-  const [startingDate, setStartingDate] = React.useState<string>();
-  const [endingDate, setEndingDate] = React.useState<string>();
-  const [isButtonLoading, setIsButtonLoading] = React.useState<boolean>(false);
-  const [startDate, setStartDate] = React.useState<string>(moment().startOf('week').toISOString());
-  const [endDate, setEndDate] = React.useState<string>(convertEndDate(new Date()));
 
   useEffect(() => {
+    fetchWidgetLayoutData();
+    setSelectedDateRange('this week');
     document.addEventListener('click', handleOutsideClick);
     return () => {
       document.removeEventListener('click', handleOutsideClick);
@@ -45,15 +61,16 @@ const Dashboard: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    fetchWidgetLayoutData();
-    setSelectedDateRange('this week');
-  }, []);
-
-  useEffect(() => {
     if (selected) {
       setDateFilter(startingDate, endingDate);
     }
   }, [selected]);
+
+  useEffect(() => {
+    if (widgets?.length) {
+      setWidgetResponse((prevState) => ({ ...prevState, saveTransformWidgetResponse: widgets }));
+    }
+  }, [widgets]);
 
   useEffect(() => {
     if (startDateRange && endDateRange) {
@@ -64,7 +81,7 @@ const Dashboard: React.FC = () => {
   }, [startDateRange, endDateRange]);
 
   const handleDropDownActive = (): void => {
-    if (widgets.length) {
+    if (widgets?.length) {
       setSelectDropDownActive((prev) => !prev);
       setDateRange([null, null]);
     }
@@ -120,14 +137,18 @@ const Dashboard: React.FC = () => {
   // eslint-disable-next-line space-before-function-paren
   const fetchWidgetLayoutData = async () => {
     try {
+      setWidgetLoading(true);
       const response = await getWidgetsLayoutService(workspaceId);
       const widgetDataArray = response?.map((data: any) => ({
         id: data?.id,
         layout: { ...data.configs, i: data?.id },
         widget: { ...data?.widget, widgetId: data?.widgetId }
       }));
+      setWidgetLoading(false);
       setWidgets(widgetDataArray);
+      setWidgetResponse((prevState) => ({ ...prevState, saveWidgetResponse: widgetDataArray }));
     } catch {
+      setWidgetLoading(false);
       showErrorToast('Failed to load widgets layout');
     }
   };
@@ -148,9 +169,35 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  const handleNavigateBack = () => {
+    if (widgetResponse.saveWidgetResponse?.length) {
+      setModalOpen(true);
+    }
+    if (transformedWidgetData.length) {
+      setModalOpen(true);
+    }
+    if (!transformedWidgetData.length) {
+      setIsManageMode(false);
+    }
+  };
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+    setWidgets(widgetResponse.saveTransformWidgetResponse);
+  };
+
+  //On Submit functionality when back button is clicked
+  const handleOnSubmit = () => {
+    if (modalOpen) {
+      setWidgets(widgetResponse.saveWidgetResponse);
+      setModalOpen(false);
+      setIsManageMode(false);
+    }
+  };
+
   return (
     <>
-      <div className="flex justify-between mt-10 pb-2">
+      <div className="flex justify-between mt-[41px]">
         <div className="flex relative items-center">
           <div
             className={`flex items-center justify-between px-5 w-11.72 h-3.06 border border-borderPrimary rounded-0.6 shadow-shadowInput ${
@@ -207,7 +254,7 @@ const Dashboard: React.FC = () => {
             </div>
             <div className="absolute right-[1.4rem] top-4 drop-icon">
               <img
-                className="right-6 cursor-pointer"
+                className={`${!widgets?.length ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                 src={dateRange[0] === null && dateRange[1] === null ? calendarIcon : dateRange[0] !== null ? '' : calendarIcon}
                 alt=""
                 onClick={() => handleClickDatePickerIcon()}
@@ -219,7 +266,7 @@ const Dashboard: React.FC = () => {
           <Button
             text=""
             onClick={handleWidgetDrawer}
-            className={`flex justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow cursor-pointer`}
+            className={`flex justify-between w-[192px] btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow cursor-pointer`}
           >
             <div className="font-Poppins font-medium text-white leading-5 text-search ">Manage Widget</div>
             <div className="brick-icon bg-cover">
@@ -227,30 +274,49 @@ const Dashboard: React.FC = () => {
             </div>
           </Button>
         ) : (
-          <Button
-            text=""
-            disabled={isButtonLoading ? true : false}
-            className={`flex justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow ${
-              isButtonLoading ? 'opacity-50 cursor-not-allowed ' : 'cursor-pointer'
-            }`}
-            onClick={saveWidgetLayout}
-          >
-            <div className="font-Poppins font-medium text-white leading-5 text-search ml-3">Save Layout</div>
-            <div className="brick-icon bg-cover">
-              <img src={brickIcon} alt="" />
-            </div>
-          </Button>
+          <div className="flex justify-end items-center">
+            <Button
+              type="button"
+              text=""
+              className="mr-2.5 w-6.875 h-3.12 border-[#9B9B9B] border-2 items-center px-5 rounded-0.3 shadow-connectButtonShadow "
+              onClick={handleNavigateBack}
+            >
+              <div className="font-Poppins font-medium text-[#808080] leading-5 text-[13px] ">Back</div>
+            </Button>
+            <Button
+              text=""
+              disabled={isButtonLoading ? true : false}
+              className={`flex justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow ${
+                isButtonLoading ? 'opacity-50 cursor-not-allowed ' : 'cursor-pointer'
+              }`}
+              onClick={saveWidgetLayout}
+            >
+              <div className="font-Poppins font-medium text-white leading-5 text-search ml-3">Save Layout</div>
+              <div className="brick-icon bg-cover">
+                <img src={brickIcon} alt="" />
+              </div>
+            </Button>
+          </div>
         )}
       </div>
-      <div className="mb-4">
+      <div className="mb-4 mt-[42px]">
         <WidgetContainer
           isManageMode={isManageMode}
           widgets={widgets}
           setWidgets={setWidgets}
           setTransformedWidgetData={setTransformedWidgetData}
           filters={{ startDate, endDate }}
+          widgetLoading={widgetLoading}
         />
       </div>
+      <ModalDrawer
+        isOpen={modalOpen}
+        isClose={handleModalClose}
+        loader={false}
+        onSubmit={handleOnSubmit}
+        iconSrc={''}
+        contextText={'Are you sure you want to go back? The changes you made may not be saved'}
+      />
     </>
   );
 };

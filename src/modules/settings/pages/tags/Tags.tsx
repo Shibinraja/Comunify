@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import useDebounce from '@/hooks/useDebounce';
 import { useAppSelector } from '@/hooks/useRedux';
+import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 import Button from 'common/button';
 import Input from 'common/input';
 import Pagination from 'common/pagination/pagination';
@@ -40,6 +41,8 @@ const Tags: React.FC<Props> = ({ hidden }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | unknown>('');
 
+  const tagLoader = useSkeletonLoading(settingsSlice.actions.deleteTags.type);
+
   const {
     TagFilterResponse: { data: TagFilterResponseData, totalPages },
     clearValue
@@ -48,7 +51,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
   const debouncedValue = useDebounce(searchText, 300);
   const TagNameValidation = Yup.string()
     .trim('WhiteSpaces are not allowed')
-    .min(2, 'Tag Name must be atleast 2 characters')
+    .min(2, 'Tag Name must be at least 2 characters')
     .max(15, 'Tag Name should not exceed above 15 characters')
     .required('Tag Name is a required field')
     .nullable(true);
@@ -217,7 +220,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                     isOpen={isTagModalOpen}
                     shouldCloseOnOverlayClick={true}
                     onRequestClose={() => setTagModalOpen(false)}
-                    className="w-24.31 h-18.75 mx-auto rounded-lg modals-tag bg-white shadow-modal"
+                    className="w-24.31 h-[290px] mx-auto rounded-lg modals-tag bg-white shadow-modal"
                     style={{
                       overlay: {
                         display: 'flex',
@@ -239,7 +242,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                         <Input
                           type="text"
                           className="mt-0.375 inputs box-border bg-white shadow-inputShadow rounded-0.3 h-2.81 w-20.5 placeholder:font-Poppins placeholder:text-sm placeholder:text-thinGray placeholder:leading-1.31 focus:outline-none px-3"
-                          placeholder="Enter Tag Name"
+                          placeholder="Enter the tag name"
                           id="tags"
                           name="tags"
                           label="Tags"
@@ -312,8 +315,11 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                                         className="edit-btn w-6.25 h-2.87 mr-2.5 cursor-pointer text-masterCard font-Poppins font-medium text-trial leading-1.31 rounded box-border shadow-deleteButton"
                                         onClick={() => handleTagModalOpen(data.name, data.id)}
                                       />
-                                      <button className="flex items-center justify-center delete-btn border border-greyDark cursor-pointer w-3.12 h-2.87 rounded box-border shadow-deleteButton">
-                                        <img src={deleteBtn} alt="" onClick={() => handleDeleteTagName(data.id)} />
+                                      <button
+                                        className="flex items-center justify-center delete-btn border border-greyDark cursor-pointer w-3.12 h-2.87 rounded box-border shadow-deleteButton"
+                                        onClick={() => handleDeleteTagName(data.id)}
+                                      >
+                                        <img src={deleteBtn} alt="" />
                                       </button>
                                     </div>
                                   </td>
@@ -355,7 +361,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
         }}
       >
         <div className="flex flex-col items-center justify-center ">
-          <div className="mt-5 leading-6 text-black font-Inter font-semibold text-xl w-2/3 text-center">Are you sure want to delete tags</div>
+          <div className="mt-5 leading-6 text-black font-Inter font-semibold text-xl w-2/3 text-center">Are you sure want to delete this tag?</div>
           <div className="flex mt-1.8">
             <Button
               type="button"
@@ -366,8 +372,12 @@ const Tags: React.FC<Props> = ({ hidden }) => {
             <Button
               type="button"
               text="YES"
+              disabled={tagLoader}
+              aria-disabled={tagLoader}
               onClick={handleDeleteConfirmationModal}
-              className="border-none ml-2.5 yes-btn h-2.81 w-5.25 box-border rounded shadow-contactBtn cursor-pointer font-Poppins font-medium text-error leading-5 text-white btn-save-modal"
+              className={`border-none ml-2.5 yes-btn h-2.81 w-5.25 box-border rounded shadow-contactBtn cursor-pointer font-Poppins font-medium text-error leading-5 text-white btn-save-modal ${
+                tagLoader ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
             />
           </div>
         </div>

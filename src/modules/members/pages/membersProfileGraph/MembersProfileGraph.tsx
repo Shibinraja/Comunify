@@ -12,6 +12,11 @@ function InlineWrapperWithMargin({ children }: PropsWithChildren<unknown>) {
 
 const MembersProfileGraph: React.FC<MemberGraphProps> = ({ activityGraphData }) => {
   const options = {
+    chart: {
+      toolbar: {
+        show: false
+      }
+    },
     xaxis: {
       categories: activityGraphData?.xAxis
     }
@@ -23,7 +28,11 @@ const MembersProfileGraph: React.FC<MemberGraphProps> = ({ activityGraphData }) 
       {graphDataLoader ? (
         <Skeleton count={count_5} width={500} className={'m-4'} wrapper={InlineWrapperWithMargin} />
       ) : (
-        <Chart options={options} type="line" series={activityGraphData?.series} width="100%" height="100%" />
+        activityGraphData.series.length ? (
+          <Chart options={options} type="line" series={activityGraphData?.series} width="100%" height="100%" />
+        ) : (
+          <div className="font-Poppins font-semibold text-base leading-9 text-listGray flex justify-center h-full w-full">No data found</div>
+        )
       )}
     </div>
   );

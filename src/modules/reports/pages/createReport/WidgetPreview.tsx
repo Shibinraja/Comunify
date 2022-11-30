@@ -80,7 +80,7 @@ const WidgetPreview: React.FC<WidgetPreviewType> = ({ isOpen, setIsOpen, filters
         </header>
 
         <div className="px-[30px] py-[10px] preview-box overflow-auto">
-          <WidgetContainer isManageMode={isManageMode} widgets={transformData} filters={filters} />
+          <WidgetContainer isManageMode={isManageMode} widgets={transformData} filters={filters} widgetLoading={false} />
         </div>
 
         <footer className="px-[30px] py-[35px]">

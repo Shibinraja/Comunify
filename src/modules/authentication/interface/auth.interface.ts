@@ -13,6 +13,7 @@ export type EmailFormValues = {
 export type FormValues = {
   userName: string;
   password: string;
+  rememberMe?:boolean
 };
 
 export type DecodeToken = {
@@ -27,22 +28,20 @@ export type DecodeToken = {
   isWorkSpaceCreated: boolean;
   isEmailVerified: boolean;
   workspaceId: string;
+  isPaymentSuccess: boolean;
 };
 
 export type SignUpFormValues = {
   userName: string;
   email: string;
   password: string;
-  companyName: string;
+  companyName?: string;
   domainSector: string;
 };
 
 export type SubscriptionValues = {
-  username: string;
-  password: string;
-  card_holder: string;
-  cardnumber: string;
-  cvv: string;
+  billingName: string;
+  billingEmail: string;
 };
 
 // Input Body
@@ -56,7 +55,7 @@ export interface SignUpInput {
   email: string;
   password: string;
   userName: string;
-  companyName: string;
+  companyName?: string;
   domainSector: string;
 }
 export interface VerifyEmailInput {
@@ -124,6 +123,9 @@ export interface SubscriptionPackages {
   periodType: SubscriptionPeriod;
   createdAt: Date;
   updatedAt: Date;
+  subscriptionId: string;
+  clientSecret: string;
+  status?: string;
 }
 export interface SubscriptionToken {
   email: string;

@@ -3,7 +3,7 @@ import usePlatform from '@/hooks/usePlatform';
 import { convertEndDate, convertStartDate } from '@/lib/helper';
 import Button from 'common/button';
 import Input from 'common/input';
-import { email_regex, reportName_regex } from 'constants/constants';
+import { alphanumeric_regex, email_regex } from 'constants/constants';
 import { startOfDay, startOfMonth, startOfWeek, subDays, subMonths, subYears } from 'date-fns';
 import { Form, Formik } from 'formik';
 import {
@@ -15,7 +15,9 @@ import {
   ScheduleReportsEnum
 } from 'modules/reports/interfaces/reports.interface';
 import { ConnectedPlatforms } from 'modules/settings/interface/settings.interface';
-import { ChangeEvent, Fragment, ReactNode, useEffect, useRef, useState } from 'react';
+import {
+  ChangeEvent, Fragment, ReactNode, useEffect, useRef, useState, KeyboardEvent
+} from 'react';
 import DatePicker, { ReactDatePicker } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate, useParams } from 'react-router';
@@ -38,10 +40,10 @@ const initialValues: Partial<createReportInitialValues> = {
 const CreateReport = () => {
   const navigate = useNavigate();
   const { workspaceId } = useParams();
+
+  const [cursor, setCursor] = useState<number>(0);
   const [isReportActive, setIsReportActive] = useState(false);
   const [isPlatformActive, setIsPlatformActive] = useState(false);
-  const datePickerRefFrom = useRef<ReactDatePicker>(null);
-  const datePickerRefTo = useRef<ReactDatePicker>(null);
   const [checkedRadioId, setCheckedRadioId] = useState<Record<string, unknown>>({ Yes: true });
   const [selectedReport, setSelectedReport] = useState('');
   const [checkedPlatform, setCheckedPlatform] = useState<Record<string, unknown>>({});
@@ -61,11 +63,15 @@ const CreateReport = () => {
 
   const reportUpdateValuesData = JSON.parse(localStorage.getItem('reportUpdateValues')!);
   const reportValuesData = JSON.parse(localStorage.getItem('reportValues')!);
-  const { PlatformsConnected } = usePlatform();
   const dropDownRef = useRef<HTMLDivElement>(null);
   const reportOptionRef = useRef<HTMLDivElement>(null);
-  const scheduledReportOptions = [...ReportOptions].splice(0, 3);
   const formikRef: any = useRef();
+  const reportRef = useRef<HTMLLIElement>(null);
+  const datePickerRefFrom = useRef<ReactDatePicker>(null);
+  const datePickerRefTo = useRef<ReactDatePicker>(null);
+
+  const { PlatformsConnected } = usePlatform();
+  const scheduledReportOptions = [...ReportOptions].splice(0, 3);
 
   useEffect(() => {
     document.addEventListener('click', handleOutsideClick);
@@ -174,6 +180,12 @@ const CreateReport = () => {
     }
   }, [customDate.singleDate]);
 
+  useEffect(() => {
+    if (isReportActive) {
+      reportRef?.current?.focus();
+    }
+  }, [isReportActive]);
+
   const handleSelectedReport = (selectedReport: string): void => {
     // Formik ref to enable to make the custom dropdown with field touch and set the value for the fields.
     formikRef?.current?.setFieldTouched('schedule');
@@ -202,10 +214,6 @@ const CreateReport = () => {
     }
   };
 
-  const navigateToReports = () => {
-    navigate(`/${workspaceId}/reports`);
-  };
-
   // Function to change the Primary Member List
   const handleRadioBtn = (event: ChangeEvent<HTMLInputElement>) => {
     const checked_id: string = event.target.name;
@@ -231,17 +239,15 @@ const CreateReport = () => {
   const selectCustomBetweenDate = (event: ChangeEvent<Date>, date: Date, dateTime: string) => {
     event.stopPropagation();
     setCustomDateLink({});
+    formikRef?.current?.setFieldTouched('startDate', true);
+    formikRef?.current?.setFieldTouched('endDate', true);
 
-    if (dateTime === 'start') {
+    if (date && dateTime === 'start') {
       setCustomDate((prevDate) => ({ ...prevDate, startDate: !date ? undefined : date, singleDate: undefined }));
-      formikRef?.current?.setFieldValue('startDate', !date ? undefined : date, true);
-      formikRef?.current?.setFieldTouched('startDate');
     }
 
-    if (dateTime === 'end') {
+    if (date && dateTime === 'end') {
       setCustomDate((prevDate) => ({ ...prevDate, endDate: !date ? undefined : date, singleDate: undefined }));
-      formikRef?.current?.setFieldValue('endDate', !date ? undefined : date, true);
-      formikRef?.current?.setFieldTouched('endDate');
     }
     handleSelectedReport('NoSchedule');
   };
@@ -343,6 +349,42 @@ const CreateReport = () => {
     }
   };
 
+  const handleKeyDown = (e: KeyboardEvent<HTMLLIElement>) => {
+    // arrow up/down button should select next/previous list element
+    if (e.keyCode === 38 && cursor > 0) {
+      setCursor((prevState: number) => prevState - 1);
+    }
+    if (e.keyCode === 40 && cursor < scheduledReportOptions.length - 1) {
+      setCursor((prevState: number) => prevState + 1);
+    }
+    if (e.keyCode === 13) {
+      handleSelectedReport(scheduledReportOptions[cursor].name);
+      setIsReportActive(false);
+    }
+  };
+
+  const handleTabChange = (e: KeyboardEvent<HTMLDivElement>, dropdownEvent: string) => {
+    if (e.keyCode === 9) {
+      if (dropdownEvent === 'platform') {
+        setIsPlatformActive(false);
+      }
+      if (dropdownEvent === 'schedule') {
+        setIsReportActive(false);
+      }
+    } else {
+      if (dropdownEvent === 'platform') {
+        setIsPlatformActive(true);
+      }
+      if (dropdownEvent === 'schedule') {
+        setIsReportActive(true);
+      }
+    }
+  };
+
+  const navigateToReports = () => {
+    navigate(`/${workspaceId}/reports`);
+  };
+
   return (
     <div className="report mt-4.56 ">
       <div className="flex flex-col">
@@ -353,18 +395,18 @@ const CreateReport = () => {
           innerRef={formikRef}
           initialValues={initialValues}
           onSubmit={handleSubmit}
-          validateOnChange={true}
           enableReinitialize
+          validateOnChange={true}
           validationSchema={Yup.object().shape({
             name: Yup.string()
               .required('Report name is required')
               .min(4, 'Report name should be more than 4 character long')
               .max(25, 'Report name should not exceed 25 characters')
-              .matches(reportName_regex, 'Report name is not valid')
+              .matches(alphanumeric_regex, 'Report name is not valid')
               .trim(),
             description: Yup.string()
               .max(250, 'Description should not exceed 250 characters')
-              .matches(reportName_regex, 'Description is not valid')
+              .matches(alphanumeric_regex, 'Description is not valid')
               .trim(),
             schedule: Yup.lazy((value: string) => {
               if (Object.keys(checkedRadioId).includes('Yes') && value === 'NoSchedule') {
@@ -399,7 +441,7 @@ const CreateReport = () => {
                   .max(255)
               ),
             platform: Yup.array().min(1, 'Platform is required'),
-            startDate: Yup.lazy((value: string) => {
+            startDate: Yup.lazy((value) => {
               if (Object.keys(checkedRadioId).includes('Yes') && !value) {
                 return Yup.string().notRequired();
               }
@@ -409,7 +451,7 @@ const CreateReport = () => {
 
               return Yup.string().notRequired();
             }),
-            endDate: Yup.lazy((value: string) => {
+            endDate: Yup.lazy((value) => {
               if (Object.keys(checkedRadioId).includes('Yes') && !value) {
                 return Yup.string().notRequired();
               }
@@ -433,7 +475,7 @@ const CreateReport = () => {
             // })
           })}
         >
-          {({ handleBlur, handleChange, handleSubmit, values, errors, touched }): JSX.Element => (
+          {({ handleBlur, handleChange, handleSubmit, values, errors, touched, setFieldValue, setFieldTouched }): JSX.Element => (
             <Form onSubmit={handleSubmit}>
               <div className="grid grid-cols-2 relative mt-1.8 w-full  xl:w-[686px] 3xl:w-1/2">
                 <div className="flex flex-col w-full">
@@ -556,7 +598,10 @@ const CreateReport = () => {
                         <div className="relative flex items-center w-[158.76px] 3xl:w-1/2 ">
                           <DatePicker
                             selected={customDate.startDate}
-                            onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'start')}
+                            onChange={(date: Date, event: ChangeEvent<Date>) => {
+                              selectCustomBetweenDate(event, date, 'start');
+                              setFieldValue('startDate', date);
+                            }}
                             className="w-9.92 2xl:w-full h-3.06 app-result-card-border shadow-reportInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                             placeholderText="From"
                             ref={datePickerRefFrom}
@@ -575,7 +620,10 @@ const CreateReport = () => {
                         <div className="relative flex items-center w-[158.76px] 3xl:w-1/2">
                           <DatePicker
                             selected={customDate.endDate}
-                            onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'end')}
+                            onChange={(date: Date, event: ChangeEvent<Date>) => {
+                              selectCustomBetweenDate(event, date, 'end');
+                              setFieldValue('endDate', date);
+                            }}
                             className="w-9.92 2xl:w-full h-3.06 app-result-card-border shadow-reportInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                             placeholderText="To"
                             ref={datePickerRefTo}
@@ -601,11 +649,14 @@ const CreateReport = () => {
                     Choose Platform
                   </label>
                   <div
-                    className={`w-full h-3.06 app-result-card-border flex items-center px-3 mt-0.375 shadow-reportInput rounded-0.3 font-Poppins font-normal text-trial text-thinGray leading-1.31 relative ${
+                    className={`w-full h-3.06 app-result-card-border focus:outline-none flex items-center px-3 mt-0.375 shadow-reportInput rounded-0.3 font-Poppins font-normal text-trial text-thinGray leading-1.31 relative  ${
                       reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
                     }`}
                     onClick={() => setIsPlatformActive((prevActive) => !prevActive)}
+                    onBlur={() => setFieldTouched('platform')}
+                    onKeyDown={(e) => handleTabChange(e, 'platform')}
                   >
+                    <input className="w-[1px] border-none focus:outline-none" type="text" />
                     Select
                     <div className="absolute right-4">
                       <img src={dropdownIcon} alt="" className={isPlatformActive ? 'rotate-0' : 'rotate-180'} />
@@ -614,7 +665,7 @@ const CreateReport = () => {
                   {isPlatformActive && (
                     <div className="flex-flex-col  app-result-card-border box-border w-full rounded-0.3 shadow-reportInput cursor-pointer absolute top-[4.8rem] bg-white z-40">
                       <div
-                        className={`flex items-center gap-2 hover:bg-signUpDomain  transition ease-in duration-100 p-3  ${
+                        className={`flex items-center gap-2 hover:bg-signUpDomain  transition ease-in duration-100 p-3 h-[43px]  ${
                           reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
                         }`}
                       >
@@ -639,10 +690,10 @@ const CreateReport = () => {
                         </label>
                       </div>
                       {PlatformsConnected &&
-                        PlatformsConnected.map((platform: ConnectedPlatforms) => (
+                        PlatformsConnected?.map((platform: ConnectedPlatforms) => (
                           <Fragment key={platform.id}>
                             <div
-                              className={`flex items-center gap-2 hover:bg-signUpDomain  transition ease-in duration-100 p-3  ${
+                              className={`flex items-center gap-2 hover:bg-signUpDomain  transition ease-in duration-100 p-3 h-[43px] ${
                                 reportUpdateValuesData ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
                               }`}
                             >
@@ -677,14 +728,20 @@ const CreateReport = () => {
 
                 {(checkedRadioId[ScheduleReportsEnum.Yes] as ReactNode) && (
                   <Fragment>
-                    <div className="mt-5 flex flex-col ml-5 w-20.5 2xl:w-full relative" ref={reportOptionRef}>
+                    <div
+                      className="mt-5 flex flex-col ml-5 w-20.5 2xl:w-full relative"
+                      ref={reportOptionRef}
+                      onBlur={() => setFieldTouched('schedule')}
+                      onKeyDown={(e) => handleTabChange(e, 'schedule')}
+                    >
                       <label htmlFor="name" className="text-trial font-Poppins text-infoBlack font-normal leading-1.31">
                         Schedule Report
                       </label>
                       <div
                         onClick={() => setIsReportActive(!isReportActive)}
-                        className="relative w-full h-3.06 app-result-card-border flex items-center px-3 mt-0.375 shadow-reportInput rounded-0.3 font-Poppins font-normal text-trial text-thinGray leading-1.31 cursor-pointer "
+                        className="relative w-full h-3.06 app-result-card-border focus:outline-none flex items-center px-3 mt-0.375 shadow-reportInput rounded-0.3 font-Poppins font-normal text-trial text-thinGray leading-1.31 cursor-pointer "
                       >
+                        <input className="w-[1px] border-none focus:outline-none" type="text" />
                         {selectedReport === 'NoSchedule' ? 'Select' : !selectedReport ? 'Select' : selectedReport}
                         <div className="absolute right-4">
                           <img src={dropdownIcon} alt="" className={isReportActive ? 'rotate-0' : 'rotate-180'} />
@@ -694,21 +751,26 @@ const CreateReport = () => {
                         <p className="text-lightRed font-normal text-error relative font-Inter mt-0.287  pl-1">{errors?.schedule}</p>
                       )}
                       {isReportActive && (
-                        <div className="flex flex-col app-result-card-border box-border w-full rounded-0.3 shadow-reportInput cursor-pointer absolute top-[4.8rem] bg-white">
-                          {scheduledReportOptions.map((options) => (
-                            <ul
-                              className="cursor-pointer hover:bg-signUpDomain  transition ease-in duration-100 "
-                              onClick={() => {
-                                handleSelectedReport(options.name);
-                              }}
-                              defaultValue={selectedReport}
-                              key={options.id}
-                            >
-                              <li value={selectedReport} className="text-searchBlack font-Poppins font-normal leading-1.31 text-trial p-3">
+                        <div className="absolute w-full bg-white app-result-card-border box-border rounded-0.3 shadow-reportInput z-10">
+                          <ul id="report" className="flex flex-col justify-center">
+                            {scheduledReportOptions?.map((options, index: number) => (
+                              <li
+                                ref={reportRef}
+                                onKeyDown={handleKeyDown}
+                                tabIndex={0}
+                                className={`${
+                                  cursor === index ? 'bg-signUpDomain' : null
+                                } h-3.06 font-Poppins font-normal text-searchBlack text-trial leading-1.31 flex items-center p-3 hover:bg-signUpDomain transition ease-in duration-100 focus:outline-none`}
+                                onClick={() => {
+                                  handleSelectedReport(options.name);
+                                }}
+                                defaultValue={selectedReport}
+                                key={options.id}
+                              >
                                 {options.name}
                               </li>
-                            </ul>
-                          ))}
+                            ))}
+                          </ul>
                         </div>
                       )}
                     </div>

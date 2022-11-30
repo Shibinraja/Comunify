@@ -15,16 +15,25 @@ import searchIcon from '../../../assets/images/search.svg';
 import downArrow from '../../../assets/images/sub-down-arrow.svg';
 import dropdownIcon from '../../../assets/images/Vector.svg';
 import usePlatform from '../../../hooks/usePlatform';
-import { MemberTypesProps } from '../interface/members.interface';
+import { MemberFilterDropDownEnum, MemberTypesProps } from '../interface/members.interface';
 import membersSlice from '../store/slice/members.slice';
 import './Members.css';
 
 const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, searchText, filteredDate, setPage }) => {
+  const [activateFilter, setActivateFilter] = useState<{
+    isPlatformActive: boolean;
+    isTagActive: boolean;
+    isActiveBetween: boolean;
+    isLocationActive: boolean;
+    isOrganizationActive: boolean;
+  }>({
+    isPlatformActive: false,
+    isTagActive: false,
+    isActiveBetween: false,
+    isLocationActive: false,
+    isOrganizationActive: false
+  });
   const [isFilterDropdownActive, setIsFilterDropdownActive] = useState<boolean>(false);
-  const [isPlatformActive, setPlatformActive] = useState<boolean>(true);
-  const [isTagActive, setTagActive] = useState<boolean>(false);
-  const [isLocationActive, setLocationActive] = useState<boolean>(false);
-  const [isOrganizationActive, setOrganizationActive] = useState<boolean>(false);
   const [checkedPlatform, setCheckedPlatform] = useState<Record<string, unknown>>({});
   const [checkedTags, setCheckedTags] = useState<Record<string, unknown>>({});
   const [checkedLocation, setCheckedLocation] = useState<Record<string, unknown>>({});
@@ -34,15 +43,15 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
   const [tagSearchText, setTagSearchText] = useState<string>('');
   const [locationSearchText, setLocationSearchText] = useState<string>('');
   const [filterCount, setFilterCount] = useState<number>(0);
+  const [saveRefObject, setSaveRefObject] = useState<HTMLDivElement | null>(null);
 
   const [organizationSearchText, setOrganizationSearchText] = useState<string>('');
-  const [isActiveBetween, setActiveBetween] = useState<boolean>(false);
   const datePickerRefStart = useRef<ReactDatePicker>(null);
   const datePickerRefEnd = useRef<ReactDatePicker>(null);
 
   const workspaceId = getLocalWorkspaceId();
   const dispatch = useAppDispatch();
-  const dropDownRef = useRef<HTMLDivElement>(null);
+  const dropDownRef = useRef<HTMLDivElement | null>(null);
   const { membersLocationFilterResponse, membersOrganizationFilterResponse } = useAppSelector((state) => state.members);
   const { data: TagFilterResponse } = useAppSelector((state) => state.settings.TagFilterResponse);
   const memberColumnsLoader = useSkeletonLoading(membersSlice.actions.membersList.type);
@@ -79,6 +88,8 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
 
   useEffect(() => {
     document.addEventListener('click', handleOutsideClick);
+    setSaveRefObject(dropDownRef.current);
+    dispatch(settingsSlice.actions.platformData({ workspaceId }));
     return () => {
       document.removeEventListener('click', handleOutsideClick);
     };
@@ -92,26 +103,59 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
 
   const handleFilterDropdown = (): void => {
     setIsFilterDropdownActive((prev) => !prev);
+    setActivateFilter((prevList) => ({ ...prevList, isPlatformActive: true }));
   };
 
-  const handlePlatformActive = (val: boolean) => {
-    setPlatformActive(val);
-  };
+  const handleFilterDropDownStatus = (type: string) => {
+    if (type === MemberFilterDropDownEnum.platform) {
+      setActivateFilter({
+        isActiveBetween: false,
+        isTagActive: false,
+        isLocationActive: false,
+        isOrganizationActive: false,
+        isPlatformActive: activateFilter.isPlatformActive ? false : true
+      });
+    }
 
-  const handleLocationActive = (val: boolean) => {
-    setLocationActive(val);
-  };
+    if (type === MemberFilterDropDownEnum.tag) {
+      setActivateFilter({
+        isActiveBetween: false,
+        isTagActive: activateFilter.isTagActive ? false : true,
+        isLocationActive: false,
+        isOrganizationActive: false,
+        isPlatformActive: false
+      });
+    }
 
-  const handleTagActive = (val: boolean) => {
-    setTagActive(val);
-  };
+    if (type === MemberFilterDropDownEnum.activeBetween) {
+      setActivateFilter({
+        isActiveBetween: activateFilter.isActiveBetween ? false : true,
+        isTagActive: false,
+        isLocationActive: false,
+        isOrganizationActive: false,
+        isPlatformActive: false
+      });
+    }
 
-  const handleOrganizationActive = (val: boolean) => {
-    setOrganizationActive(val);
-  };
+    if (type === MemberFilterDropDownEnum.location) {
+      setActivateFilter({
+        isActiveBetween: false,
+        isTagActive: false,
+        isLocationActive: activateFilter.isLocationActive ? false : true,
+        isOrganizationActive: false,
+        isPlatformActive: false
+      });
+    }
 
-  const handleActiveBetween = (val: boolean) => {
-    setActiveBetween(val);
+    if (type === MemberFilterDropDownEnum.organization) {
+      setActivateFilter({
+        isActiveBetween: false,
+        isTagActive: false,
+        isLocationActive: false,
+        isOrganizationActive: activateFilter.isOrganizationActive ? false : true,
+        isPlatformActive: false
+      });
+    }
   };
 
   const handlePlatformsCheckBox = (event: ChangeEvent<HTMLInputElement>) => {
@@ -198,6 +242,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
 
   const selectActiveBetweenDate = (event: ChangeEvent<Date>, date: Date, dateTime: string) => {
     event.stopPropagation();
+    dropDownRef.current = saveRefObject;
     if (dateTime === 'start') {
       setStartDate(date);
       setIsFilterDropdownActive(true);
@@ -256,7 +301,6 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
 
     return false;
   }, [startDate, endDate, MemberFilterList]);
-
 
   const submitFilterChange = (): void => {
     const checkPlatform: Array<string> = [];
@@ -336,13 +380,8 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
   };
 
   return (
-    <div className="box-border cursor-pointer rounded-0.6 shadow-contactCard app-input-card-border relative " ref={dropDownRef}>
-      <div
-        className="flex h-3.06  items-center justify-between px-5 "
-        onClick={() => {
-          handleFilterDropdown();
-        }}
-      >
+    <div className="box-border cursor-pointer rounded-0.6 shadow-contactCard app-input-card-border relative" ref={dropDownRef}>
+      <div className="flex h-3.06  items-center justify-between px-5 " onClick={handleFilterDropdown}>
         <div className="box-border flex rounded-0.6 shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">
           Filters
           <p className="ml-1 bg-signUpDomain px-2 w-content rounded-lg text-memberDay">{`${filterCount}`}</p>
@@ -357,20 +396,16 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
             <div
               className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06  px-3 mx-auto  cursor-pointer"
               onClick={() => {
-                handlePlatformActive(isPlatformActive ? false : true);
-                handleTagActive(false);
-                handleLocationActive(false);
-                handleOrganizationActive(false);
-                handleActiveBetween(false);
+                handleFilterDropDownStatus('platform');
               }}
             >
               <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">Platform</div>
               <div>
-                <img src={downArrow} alt="" className={isPlatformActive ? 'rotate-0' : 'rotate-180'} />
+                <img src={downArrow} alt="" className={activateFilter.isPlatformActive ? 'rotate-0' : 'rotate-180'} />
               </div>
             </div>
-            {isPlatformActive && (
-              <div className="flex flex-col gap-y-5 p-3 max-h-[11.25rem] overflow-scroll">
+            {activateFilter.isPlatformActive && (
+              <div className="flex flex-col gap-y-5 px-3 py-3 max-h-[11.25rem] overflow-y-scroll">
                 {PlatformFilterResponse &&
                   PlatformFilterResponse.map(
                     (platform: PlatformResponse, index: number) =>
@@ -402,19 +437,15 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
             <div
               className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06 px-3 mx-auto  cursor-pointer"
               onClick={() => {
-                handleTagActive(isTagActive ? false : true);
-                handlePlatformActive(false);
-                handleLocationActive(false);
-                handleOrganizationActive(false);
-                handleActiveBetween(false);
+                handleFilterDropDownStatus('tag');
               }}
             >
               <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">Tags</div>
               <div>
-                <img src={downArrow} alt="" className={isTagActive ? 'rotate-0' : 'rotate-180'} />
+                <img src={downArrow} alt="" className={activateFilter.isTagActive ? 'rotate-0' : 'rotate-180'} />
               </div>
             </div>
-            {isTagActive && (
+            {activateFilter.isTagActive && (
               <div>
                 <div className="flex relative items-center pt-2 pb-3">
                   <input
@@ -459,19 +490,15 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
             <div
               className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06 px-3 mx-auto  cursor-pointer"
               onClick={() => {
-                handleActiveBetween(isActiveBetween ? false : true);
-                handlePlatformActive(false);
-                handleLocationActive(false);
-                handleOrganizationActive(false);
-                handleTagActive(false);
+                handleFilterDropDownStatus('activeBetween');
               }}
             >
               <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">Active between</div>
               <div>
-                <img src={downArrow} alt="" className={isActiveBetween ? 'rotate-0' : 'rotate-180'} />
+                <img src={downArrow} alt="" className={activateFilter.isActiveBetween ? 'rotate-0' : 'rotate-180'} />
               </div>
             </div>
-            {isActiveBetween && (
+            {activateFilter.isActiveBetween && (
               <>
                 <div className="flex flex-col px-3 pt-4">
                   <label htmlFor="Start Date p-1 font-Inter font-normal leading-4 text-trial text-searchBlack">Start Date</label>
@@ -484,6 +511,9 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                       placeholderText="DD/MM/YYYY"
                       ref={datePickerRefStart}
                       dateFormat="dd/MM/yyyy"
+                      onMonthChange={() => {
+                        dropDownRef.current = null;
+                      }}
                     />
                     <img
                       className="absolute icon-holder right-6 cursor-pointer"
@@ -508,6 +538,9 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                       placeholderText="DD/MM/YYYY"
                       ref={datePickerRefEnd}
                       dateFormat="dd/MM/yyyy"
+                      onMonthChange={() => {
+                        dropDownRef.current = null;
+                      }}
                     />
                     <img
                       className="absolute icon-holder right-6 cursor-pointer"
@@ -522,26 +555,22 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
             <div
               className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06 px-3 mx-auto  cursor-pointer"
               onClick={() => {
-                handleLocationActive(isLocationActive ? false : true);
-                handleTagActive(false);
-                handlePlatformActive(false);
-                handleOrganizationActive(false);
-                handleActiveBetween(false);
+                handleFilterDropDownStatus('location');
               }}
             >
               <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">Location</div>
               <div>
-                <img src={downArrow} alt="" className={isLocationActive ? 'rotate-0' : 'rotate-180'} />
+                <img src={downArrow} alt="" className={activateFilter.isLocationActive ? 'rotate-0' : 'rotate-180'} />
               </div>
             </div>
-            {isLocationActive && (
+            {activateFilter.isLocationActive && (
               <div>
                 <div className="flex relative items-center pt-2 pb-3">
                   <input
                     type="text"
                     name="locationName"
                     id="locationName"
-                    className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-profileCard rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
+                    className="inputs mx-auto focus:outline-none pl-3 pr-7 box-border bg-white shadow-profileCard rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
                     placeholder="Search Location"
                     onChange={handleLocationSearchTextChange}
                   />
@@ -583,26 +612,22 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
             <div
               className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06  px-3 mx-auto  cursor-pointer"
               onClick={() => {
-                handleOrganizationActive(isOrganizationActive ? false : true);
-                handleTagActive(false);
-                handlePlatformActive(false);
-                handleLocationActive(false);
-                handleActiveBetween(false);
+                handleFilterDropDownStatus('organization');
               }}
             >
               <div className="text-searchBlack font-Poppins text-trial leading-1.31 font-semibold">Organization</div>
               <div>
-                <img src={downArrow} alt="" className={isOrganizationActive ? 'rotate-0' : 'rotate-180'} />
+                <img src={downArrow} alt="" className={activateFilter.isOrganizationActive ? 'rotate-0' : 'rotate-180'} />
               </div>
             </div>
-            {isOrganizationActive && (
+            {activateFilter.isOrganizationActive && (
               <div className="">
                 <div className="flex relative items-center pt-2 pb-3 ">
                   <input
                     type="text"
                     name="organization"
                     id="organizationId"
-                    className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-profileCard rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
+                    className="inputs mx-auto focus:outline-none pl-3 pr-7 box-border bg-white shadow-profileCard rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
                     placeholder="Search Organization"
                     onChange={handleOrganizationSearchTextChange}
                   />

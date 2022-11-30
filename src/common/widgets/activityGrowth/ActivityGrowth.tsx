@@ -59,7 +59,7 @@ const ActivityGrowth: FC<WidgetComponentProps> = (props: WidgetComponentProps) =
   };
 
   return (
-    <div className={`mt-6 ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
+    <div className={`mb-6 ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
       <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Activity Growth</h3>
       <div
         className={`my-6 pb-10 bg-white dark:bg-secondaryDark dark:text-white rounded-0.6 border  
@@ -68,7 +68,7 @@ const ActivityGrowth: FC<WidgetComponentProps> = (props: WidgetComponentProps) =
         {!isManageMode && !isSidePanelOpen ? (
           <div className="relative h-[15rem] mt-7 bg-white rounded-xl">
             {isLoading ? (
-              <Skeleton count={count_5} width={500} className={'m-4'} wrapper={InlineWrapperWithMargin} />
+              <Skeleton count={count_5} width={'90%'} className={'m-4'} wrapper={InlineWrapperWithMargin} />
             ) : (
               <Chart
                 options={options}
@@ -80,9 +80,8 @@ const ActivityGrowth: FC<WidgetComponentProps> = (props: WidgetComponentProps) =
             )}
             {Boolean(activityGrowthWidgetData?.series?.length) === false && (
               <div
-                className={`absolute font-Poppins text-infoBlack ${
-                  isManageMode ? 'text-lg top-24 ' : 'text-xs top-28'
-                } font-normal flex justify-center items-center w-full`}
+                className={`absolute font-Poppins text-infoBlack ${isManageMode ? 'text-lg top-24 ' : 'text-xs top-28'
+                  } font-normal flex justify-center items-center w-full`}
               >
                 <h4>No data available</h4>
               </div>
@@ -99,10 +98,10 @@ const ActivityGrowth: FC<WidgetComponentProps> = (props: WidgetComponentProps) =
                     ? activityGrowthWidgetData?.series
                     : []
                   : [
-                      { name: 'Slack', data: [0, 1, 0, 3, 1, 1, 0] },
-                      { name: 'Vanilla', data: [0, 2, 3, 1, 0, 0, 0] },
-                      { name: 'Khoros', data: [0, 2, 0, 3, 1, 0, 0] }
-                    ]
+                    { name: 'Slack', data: [0, 1, 0, 3, 1, 1, 0] },
+                    { name: 'Vanilla', data: [0, 2, 3, 1, 0, 0, 0] },
+                    { name: 'Khoros', data: [0, 2, 0, 3, 1, 0, 0] }
+                  ]
               }
               width="100%"
               height="100%"

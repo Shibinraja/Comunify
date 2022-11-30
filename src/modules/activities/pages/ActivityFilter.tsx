@@ -33,8 +33,9 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [filterCount, setFilterCount] = useState<number>(0);
+  const [saveRefObject, setSaveRefObject] = useState<HTMLDivElement | null>(null);
 
-  const dropDownRef = useRef<HTMLDivElement>(null);
+  const dropDownRef = useRef<HTMLDivElement | null>(null);
   const datePickerRefStart = useRef<ReactDatePicker>(null);
   const datePickerRefEnd = useRef<ReactDatePicker>(null);
 
@@ -56,6 +57,8 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
 
   useEffect(() => {
     document.addEventListener('click', handleOutsideClick);
+    setSaveRefObject(dropDownRef.current);
+    dispatch(settingsSlice.actions.platformData({ workspaceId: workspaceId as string }));
     return () => {
       document.removeEventListener('click', handleOutsideClick);
     };
@@ -109,6 +112,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
 
   const selectActiveBetweenDate = (event: ChangeEvent<Date>, date: Date, dateTime: string) => {
     event.stopPropagation();
+    dropDownRef.current = saveRefObject;
     if (dateTime === 'start') {
       setStartDate(date);
     }
@@ -308,7 +312,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                     type="text"
                     name="search"
                     id="searchId"
-                    className="inputs mx-auto focus:outline-none px-3 box-border bg-white shadow-shadowInput rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
+                    className="inputs mx-auto focus:outline-none pl-3 pr-7 box-border bg-white shadow-shadowInput rounded-0.6 h-2.81 w-15.06 placeholder:text-searchGray placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.12"
                     placeholder="Search Tags"
                     onChange={handleTagSearchTextChange}
                   />
@@ -368,6 +372,9 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                       placeholderText="DD/MM/YYYY"
                       ref={datePickerRefStart}
                       dateFormat="dd/MM/yyyy"
+                      onMonthChange={() => {
+                        dropDownRef.current = null;
+                      }}
                     />
                     <img
                       className="absolute icon-holder right-6 cursor-pointer"
@@ -392,6 +399,9 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                       placeholderText="DD/MM/YYYY"
                       ref={datePickerRefEnd}
                       dateFormat="dd/MM/yyyy"
+                      onMonthChange={() => {
+                        dropDownRef.current = null;
+                      }}
                     />
                     <img
                       className="absolute icon-holder right-6 cursor-pointer"
@@ -433,8 +443,7 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
                 onClick={submitFilterChange}
                 type="button"
                 text="Apply"
-                className={`border-none btn-save-modal rounded-0.31 h-2.063 w-1/2 mt-1 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${
-                  loader ? ' opacity-50 cursor-not-allowed' : ''
+                className={`border-none btn-save-modal rounded-0.31 h-2.063 w-1/2 mt-1 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${loader ? ' opacity-50 cursor-not-allowed' : ''
                 }`}
               />
             </div>

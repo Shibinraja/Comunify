@@ -36,6 +36,7 @@ import './Members.css';
 import MembersFilter from './MembersFilter';
 import MembersDraggableColumn from './membersTableColumn/membersDraggableColumn';
 import { ColumNames } from './MembersTableData';
+import { UsersLoader } from 'common/Loader/UsersLoader';
 
 Modal.setAppElement('#root');
 
@@ -71,6 +72,7 @@ const Members: React.FC = () => {
     startDate: ''
   });
   const [fetchLoader, setFetchLoader] = useState<boolean>(false);
+  const [saveRefObject, setSaveRefObject] = useState<HTMLDivElement | null>(null);
   const memberColumnsLoader = useSkeletonLoading(membersSlice.actions.membersList.type);
 
   const datePickerRefStart = useRef<ReactDatePicker>(null);
@@ -78,7 +80,7 @@ const Members: React.FC = () => {
 
   const debouncedValue = useDebounce(searchText, 300);
 
-  const dropDownRef = useRef<HTMLDivElement>(null);
+  const dropDownRef = useRef<HTMLDivElement | null>(null);
 
   const handleFilterDropdown = (): void => {
     setIsFilterDropdownActive((prev) => !prev);
@@ -92,6 +94,7 @@ const Members: React.FC = () => {
 
   useEffect(() => {
     document.addEventListener('click', handleOutsideClick);
+    setSaveRefObject(dropDownRef.current);
     return () => {
       document.removeEventListener('click', handleOutsideClick);
     };
@@ -248,6 +251,7 @@ const Members: React.FC = () => {
 
   const selectCustomBetweenDate = (event: ChangeEvent<Date>, date: Date, dateTime: string) => {
     event.stopPropagation();
+    dropDownRef.current = saveRefObject;
     if (dateTime === 'start') {
       setCustomStartDate(date);
       setIsFilterDropdownActive(true);
@@ -347,13 +351,20 @@ const Members: React.FC = () => {
 
   const MemberFilter = useMemo(
     () => (
-      <MembersFilter page={page} limit={limit} memberFilterExport={setFilterExportParams} searchText={debouncedValue} filteredDate={filteredDate} setPage={setPage} />
+      <MembersFilter
+        page={page}
+        limit={limit}
+        memberFilterExport={setFilterExportParams}
+        searchText={debouncedValue}
+        filteredDate={filteredDate}
+        setPage={setPage}
+      />
     ),
     [debouncedValue, filteredDate]
   );
 
   const renderMembersTable = () => {
-    if (!memberColumnsLoader &&  !(customizedColumn?.[0]?.name as { name: string; id: string })?.name) {
+    if (!memberColumnsLoader && !(customizedColumn?.[0]?.name as { name: string; id: string })?.name) {
       return (
         <div className="flex flex-col items-center justify-center w-full fixTableHead-nomember">
           <div>
@@ -365,8 +376,8 @@ const Members: React.FC = () => {
     }
 
     return (
-      <div className="memberTable mt-1.8">
-        <div className="py-2  mt-1.868">
+      <div className="memberTable mt-[30px]">
+        <div className="py-2">
           <div className="inline-block min-w-full w-full align-middle rounded-0.6 border-table  overflow-x-auto overflow-y-auto sticky top-0 fixTableHead max-h-34 min-h-[31.25rem] mb-16">
             <table className="min-w-full relative w-full rounded-t-0.6 ">
               <thead className="h-3.25  top-0 w-full  sticky ">
@@ -385,17 +396,23 @@ const Members: React.FC = () => {
               </thead>
               {/* {Check with the custom column dynamic order and displays content/rows as per the index position of the arranged column name} */}
               <tbody>
+                {memberColumnsLoader &&
+                  Array.from({ length: 10 }, (_, i) => i + 1).map((type: number) => (
+                    <Fragment key={type}>
+                      <UsersLoader />
+                    </Fragment>
+                  ))}
                 {customizedColumn.map((member: Record<string, unknown>) => (
                   <tr className="border-b " key={(member?.name as { name: string; id: string })?.id as Key}>
                     {Object.keys(member).map((column: keyof typeof member, index) => (
-                      <td className="px-3 py-4 " key={index}>
+                      <td className="px-3 h-[60px] " key={index}>
                         {column === 'name' ? (
                           memberColumnsLoader ? (
                             <Skeleton width={width_90} />
                           ) : (
                             <div className="flex w-[150px]">
                               <div
-                                className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer"
+                                className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer capitalize"
                                 onClick={() => navigateToProfile((member?.name as { name: string; id: string })?.id as string)}
                               >
                                 {(member?.name as { name: string; id: string })?.name as string}
@@ -420,7 +437,7 @@ const Members: React.FC = () => {
                           memberColumnsLoader ? (
                             <Skeleton width={width_90} />
                           ) : (
-                            <div className="flex w-[200px]">
+                            <div className="flex w-[150px]">
                               <div className="py-3 flex gap-2 items-center flex-wrap font-Poppins font-medium text-trial text-infoBlack leading-1.31">
                                 {member?.tags ? (
                                   (member?.tags as Array<{ id: string; name: string }>)
@@ -455,7 +472,7 @@ const Members: React.FC = () => {
                                   <div className="font-Poppins font-normal text-card text-infoBlack leading-5 pr-4 tags-ellipse">{'--'}</div>
                                 )}
                                 <div
-                                  className="font-Poppins font-medium text-trial text-infoBlack leading-1.31"
+                                  className="font-Poppins font-medium text-trial text-tag leading-1.12 capitalize underline cursor-pointer"
                                   onClick={() => navigateToProfile((member?.name as { name: string; id: string })?.id as string)}
                                 >
                                   {(member?.tags as Array<Record<string, unknown>>)?.length > 2
@@ -489,8 +506,8 @@ const Members: React.FC = () => {
                     ))}
                   </tr>
                 ))}
-                <tr className="px-3 py-4">
-                  <td className="px-3 py-4"></td>
+                <tr className="px-3 h-[60px]">
+                  <td className="px-3 h-[60px]"></td>
                 </tr>
               </tbody>
             </table>
@@ -552,13 +569,13 @@ const Members: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col mt-12">
+    <div className="flex flex-col mt-[73px]">
       <h3 className="font-Poppins font-semibold text-infoBlack text-infoData leading-9 dark:text-white">Members</h3>
-      <div className="member-card pt-10">
+      <div className="member-card pt-[30px]">
         <MembersCard />
       </div>
-      <div className="flex flex-col xl:flex-row  justify-between mt-1.8 i ">
-        <div className="flex relative items-center w-1/2 xl:w-[250px] 2xl:w-19.06">
+      <div className="flex flex-col xl:flex-row  justify-between mt-[40px] i ">
+        <div className="flex relative items-center w-1/2 xl:w-[300px] 2xl:w-19.06">
           <input
             type="text"
             className="focus:outline-none px-3 pr-8 box-border w-full h-3.06  rounded-0.6  placeholder:font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray shadow-shadowInput"
@@ -613,11 +630,16 @@ const Members: React.FC = () => {
                         <DatePicker
                           selected={customStartDate}
                           maxDate={customEndDate ? customEndDate : new Date()}
-                          onChange={(date: Date, event: ChangeEvent<Date>) => selectCustomBetweenDate(event, date, 'start')}
+                          onChange={(date: Date, event: ChangeEvent<Date>) => {
+                            selectCustomBetweenDate(event, date, 'start');
+                          }}
                           className="export w-full h-3.06  shadow-shadowInput rounded-0.3 px-3 font-Poppins font-semibold text-card text-dropGray leading-1.12 focus:outline-none placeholder:font-Poppins placeholder:font-semibold placeholder:text-card placeholder:text-dropGray placeholder:leading-1.12"
                           placeholderText="DD/MM/YYYY"
                           ref={datePickerRefStart}
                           dateFormat="dd/MM/yyyy"
+                          onMonthChange={() => {
+                            dropDownRef.current = null;
+                          }}
                         />
                         <img
                           className="absolute icon-holder right-6 cursor-pointer"
@@ -642,6 +664,9 @@ const Members: React.FC = () => {
                           placeholderText="DD/MM/YYYY"
                           ref={datePickerRefEnd}
                           dateFormat="dd/MM/yyyy"
+                          onMonthChange={() => {
+                            dropDownRef.current = null;
+                          }}
                         />
                         <img
                           className="absolute icon-holder right-6 cursor-pointer"

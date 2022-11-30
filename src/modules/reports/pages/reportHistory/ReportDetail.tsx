@@ -18,6 +18,8 @@ const ReportDetail = () => {
   const { workspaceId, reportHistoryId } = useParams();
   const [isManageMode, setIsManageMode] = useState<boolean>(true);
   const [widgets, setWidgets] = useState<any[] | []>([]);
+  const [widgetLoading, setWidgetLoading] = useState<boolean>(false);
+
   const [saveHistoryDetail, setSaveHistoryDetail] = useState<reportHistoryDetailsResponseProp>();
   const [platformIds, setPlatformIds] = useState<Array<string>>([]);
   const [searchParams] = useSearchParams();
@@ -26,7 +28,7 @@ const ReportDetail = () => {
 
   // Function to call the api and list the membersSuggestionList
   const getReportWidgetsList = async(props: { page: number; limit: number; reportId: string }) => {
-    // setLoading(true);
+    setWidgetLoading(true);
     const data = await getReportWidgetsListService({
       workspaceId: workspaceId!,
       reportId: props.reportId,
@@ -35,7 +37,7 @@ const ReportDetail = () => {
         limit: props.limit
       }
     });
-    // setLoading(false);
+    setWidgetLoading(false);
     const widgetDataArray = data?.result.map((widget) => ({
       id: widget?.id,
       layout: { ...widget.config, i: widget?.id },
@@ -47,10 +49,12 @@ const ReportDetail = () => {
   useEffect(() => {
     setIsManageMode(false);
     if (reportHistoryId) {
+      setWidgetLoading(true);
       getReportHistoryDetailsListService({
         workspaceId: workspaceId!,
         reportHistoryId: reportHistoryId!
       }).then((reportHistory) => {
+        setWidgetLoading(true);
         if(reportHistory?.report) {
           setSaveHistoryDetail(reportHistory);
 
@@ -100,7 +104,7 @@ const ReportDetail = () => {
       </header>
 
       <div className="px-[30px] pb-[35px]">
-        <WidgetContainer isManageMode={isManageMode} widgets={widgets} filters={{ startDate, endDate, platformId: platformIds }} />
+        <WidgetContainer isManageMode={isManageMode} widgets={widgets} filters={{ startDate, endDate, platformId: platformIds }}  widgetLoading={widgetLoading} />
       </div>
 
       <footer className="px-[30px] py-[35px]">

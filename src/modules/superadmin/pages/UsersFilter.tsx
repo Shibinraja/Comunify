@@ -18,7 +18,7 @@ import { getPlatformsData, getUsersListService } from '../services/users.service
 
 const domainOptions = ['Marketing', 'Sales', 'Customer Support', 'Customer Success', 'Others'];
 
-const UsersFilter: FC<UserMemberTypesProps> = ({ page, limit, searchText, filteredDate, memberFilterExport, setMembersList, setPage }) => {
+const UsersFilter: FC<UserMemberTypesProps> = ({ page, limit, searchText, filteredDate, memberFilterExport, setMembersList, setPage, setFetchLoader: fetchUsersLoader }) => {
   const [isFilterDropdownActive, setIsFilterDropdownActive] = useState<boolean>(false);
   const [isPlatformActive, setPlatformActive] = useState<boolean>(true);
   const [isSubscriptionActive, setSubscriptionActive] = useState<boolean>(false);
@@ -55,8 +55,10 @@ const UsersFilter: FC<UserMemberTypesProps> = ({ page, limit, searchText, filter
   // eslint-disable-next-line space-before-function-paren
   const getFilteredMembersList = async (args:GetUsersListQueryParams) => {
     setFetchLoader(true);
+    fetchUsersLoader((prev) => ({ ...prev, getLoader: true }));
     const data = await getUsersListService(args);
     setFetchLoader(false);
+    fetchUsersLoader((prev) => ({ ...prev, getLoader: false }));
     setPage(1);
     setMembersList({
       data: data?.data as unknown as UserMembersListData[],
@@ -278,7 +280,7 @@ const UsersFilter: FC<UserMemberTypesProps> = ({ page, limit, searchText, filter
         ...(filteredDate.filterEndDate ? { 'createdAT.lte': filteredDate.filterEndDate } : {}),
         ...(checkPlatform.length ? { platformId: checkPlatform } : {}),
         ...(checkDomain.length ? { domain: checkDomain } : {}),
-        ...(checkSubscription.length ? { subscription: checkSubscription } : {}),
+        ...(checkSubscription.length ? { subscriptionPlanId: checkSubscription } : {}),
         ...(endDate ? { 'joinedAt.lte': endDate && convertEndDate(endDate) } : {}),
         ...(startDate ? { 'joinedAt.gte': startDate && convertStartDate(startDate) } : {}),
         ...(expiryEnd ? { 'expiryAt.lte': expiryEnd && convertEndDate(expiryEnd) } : {}),

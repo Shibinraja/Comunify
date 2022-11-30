@@ -14,9 +14,7 @@ import { PanelWidgetsType, WidgetComponentProps, WidgetIdentification } from './
 import { getSidePanelWidgetsService, requestForWidgetService } from 'modules/dashboard/services/dashboard.services';
 import useDebounce from '../../hooks/useDebounce';
 import { showSuccessToast } from '../toast/toastFunctions';
-// Temporarily imported for development
 import WidgetComponents from 'common/widgets';
-import Skeleton from 'react-loading-skeleton';
 import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
 import { whiteSpace_single_regex } from '../../constants/constants';
@@ -31,11 +29,13 @@ const SidePanelWidgets: FC<WidgetIdentification> = ({ widgetKey, widgetRemoved, 
   const [searchWidget, setSearchWidget] = useState<string>();
   const debouncedSearchTextValue: string | undefined = useDebounce(searchWidget, 300);
   const [isButtonLoading, setIsButtonLoading] = useState<boolean>(false);
+  const [widgetLoading, setWidgetLoading] = useState<boolean>(false);
+
   const reportDetails = window.location.href;
 
   const workspaceId: string = getLocalWorkspaceId();
   useEffect(() => {
-    if (widgetKey.length) {
+    if (widgetKey?.length) {
       filterWidgets(widgetKey);
     }
   }, [widgetKey]);
@@ -69,6 +69,7 @@ const SidePanelWidgets: FC<WidgetIdentification> = ({ widgetKey, widgetRemoved, 
   // eslint-disable-next-line space-before-function-paren
   const getWidgetsData = async (searchText?: string) => {
     const scope = window.location.href.includes('/report-widgets') ? [1, 2] : window.location.href.includes('/dashboard') ? [1, 3] : [];
+    setWidgetLoading(true);
     const widgetsData: SidePanelWidgetsList[] = await getSidePanelWidgetsService(scope.toString(), workspaceId, searchText);
     setSidePanelWidgetsData(widgetsData);
     const sidePanelWidgetList = widgetsData?.reduce((acc: PanelWidgetsType[], curr: SidePanelWidgetsData) => {
@@ -90,6 +91,7 @@ const SidePanelWidgets: FC<WidgetIdentification> = ({ widgetKey, widgetRemoved, 
       acc.push(widgets);
       return acc;
     }, []);
+    setWidgetLoading(false);
     const filteredWidgetsList = sidePanelWidgetList.filter((widget) => !widgetKey.includes(widget?.widget?.widgetLocation));
     setSidePanelWidgets(filteredWidgetsList);
   };
@@ -99,11 +101,13 @@ const SidePanelWidgets: FC<WidgetIdentification> = ({ widgetKey, widgetRemoved, 
   };
 
   const renderWidget = (widgetLocation: string, isAssigned: boolean, props: PropsWithoutRef<WidgetComponentProps>) => {
-    // use this while developing because vite doesn't hot reload dynamically imported components
-    const Widget = WidgetComponents[widgetLocation];
-    // Use dynamic import while pushing to prod
-    // const Widget = lazy(() => import(`../../common/widgets/${widgetLocation}/${widgetLocation}`));
-    return <Suspense fallback={<Skeleton width={400} height={300} count={1} enableAnimation />}>{<Widget {...props} />}</Suspense>;
+    if (widgetLocation !== undefined) {
+      // use this while developing because vite doesn't hot reload dynamically imported components
+      const Widget = WidgetComponents[widgetLocation];
+      // Use dynamic import while pushing to prod
+      // const Widget = lazy(() => import(`../../common/widgets/${widgetLocation}/${widgetLocation}`));
+      return <Suspense fallback={<div></div>}>{<Widget {...props} />}</Suspense>;
+    }
   };
 
   const widgetProps = {
@@ -152,7 +156,7 @@ const SidePanelWidgets: FC<WidgetIdentification> = ({ widgetKey, widgetRemoved, 
   };
 
   return (
-    <div className="w-[28%] lg:w-[350px]  3xl:w-[22%] 4xl:w-[21%]  widgetDrawerGradient left-0 top-0 pb-2 max-h-[156.25rem] min-h-screen px-7 absolute z-40 ">
+    <div className="w-[28%] md:w-[28%] lg:w-[359px] xl:w-[23%] 3xl:w-[22%] 4xl:w-[21%]  widgetDrawerGradient left-0 top-0 pb-2 max-h-[156.25rem] min-h-screen px-7 absolute z-40 ">
       <div className="flex flex-col">
         <div className="flex flex-col pb-2">
           <div className="text-center font-Poppins font-semibold text-[23.47px] pt-24">Add Widget</div>
@@ -174,7 +178,9 @@ const SidePanelWidgets: FC<WidgetIdentification> = ({ widgetKey, widgetRemoved, 
 
         <div className="overflow-scroll widget-height overflow-x-hidden">
           {!sidePanelWidgets?.length && (
-            <div className="flex justify-center items-center font-Poppins font-semibold text-lg mt-3 text-infoBlack">No Widgets to be displayed</div>
+            <div className="flex justify-center items-center font-Poppins font-semibold text-lg mt-3 text-infoBlack">
+              {widgetLoading ? 'Fetching widgets...' : 'No Widgets to be displayed'}
+            </div>
           )}
           {sidePanelWidgets?.map((component: PanelWidgetsType) => {
             widgetProps.widget = component;
@@ -242,11 +248,13 @@ const SidePanelWidgets: FC<WidgetIdentification> = ({ widgetKey, widgetRemoved, 
                     onBlur={handleBlur}
                     errors={Boolean(touched.name && errors.name)}
                     helperText={touched.name && errors.name}
+                    // maxLength={25}
                   />
                   <label htmlFor="description" className="leading-1.31 font-Poppins font-normal text-trial text-infoBlack mt-1.06">
                     Description
                   </label>
                   <TextArea
+                    type="text"
                     name="description"
                     id="descriptionId"
                     value={values.description}
@@ -256,6 +264,7 @@ const SidePanelWidgets: FC<WidgetIdentification> = ({ widgetKey, widgetRemoved, 
                     onBlur={handleBlur}
                     errors={Boolean(touched.description && errors.description)}
                     helperText={touched.description && errors.description}
+                    // maxLength={100}
                   />
                   <div className="flex items-center justify-end mt-1.8">
                     <Button

@@ -30,7 +30,6 @@ const HealthCard: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   }, [isManageMode]);
 
   useEffect(() => {
-
     if (!isManageMode && !isSidePanelOpen) {
       if (filters?.startDate && filters?.endDate) {
         fetchHealthScoreWidgetData();
@@ -62,16 +61,15 @@ const HealthCard: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   };
 
   return (
-    <div className={`mt-6 heathCard ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
+    <div className={`mb-6 heathCard ${!isManageMode ? '' : 'cursor-grabbing'}  `}>
       <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Health</h3>
       <div
-        className={`flex  ${
-          isShrunk
+        className={`flex  ${isShrunk
             ? 'justify-around w-full gap-5 py-8 px-5 border-borderPrimary '
             : !isManageMode
-            ? 'justify-between w-full py-5 px-20'
-            : 'justify-between w-full py-5 px-20 widget-border relative '
-        }  items-center border-table border  dark:border-borderDark shadow-healtCardShadow dark:shadow-none bg-white dark:bg-secondaryDark  box-border rounded-0.9 mt-5 `}
+              ? 'justify-between w-full py-5 px-20'
+              : 'justify-between w-full py-5 px-20 widget-border relative '
+          }  items-center border-table border  dark:border-borderDark shadow-healtCardShadow dark:shadow-none bg-white dark:bg-secondaryDark  box-border rounded-0.9 mt-5 `}
       >
         <div className="flex items-center">
           <div className={`${!isShrunk ? 'w-[3.1169rem]' : ' w-[3.8831rem]'}`}>
@@ -94,16 +92,14 @@ const HealthCard: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
           </div>
           <div className="flex flex-col pl-3">
             <div
-              className={`font-Poppins font-medium ${
-                !isShrunk ? 'text-activityHealth' : 'text-[0.6878rem]'
-              } leading-0.93  text-activityGray pb-1 dark:text-greyDark`}
+              className={`font-Poppins font-medium ${!isShrunk ? 'text-activityHealth' : 'text-[0.6878rem]'
+                } leading-0.93  text-activityGray pb-1 dark:text-greyDark`}
             >
               Activities
             </div>
             <div
-              className={`font-Poppins font-semibold ${
-                !isShrunk ? 'text-activityPercentage ' : 'text-lg'
-              } text-activityGray leading-4 dark:text-white`}
+              className={`font-Poppins font-semibold ${!isShrunk ? 'text-activityPercentage ' : 'text-lg'
+                } text-activityGray leading-4 dark:text-white`}
             >
               {!isManageMode && !isSidePanelOpen ? activitiesScoreData?.percentage : 45}%
             </div>
@@ -139,16 +135,14 @@ const HealthCard: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
           </div>
           <div className="flex flex-col pl-3">
             <div
-              className={`font-Poppins font-medium ${
-                !isShrunk ? 'text-activityHealth' : 'text-[0.6878rem]'
-              } leading-0.93 text-activityGray pb-1 dark:text-greyDark`}
+              className={`font-Poppins font-medium ${!isShrunk ? 'text-activityHealth' : 'text-[0.6878rem]'
+                } leading-0.93 text-activityGray pb-1 dark:text-greyDark`}
             >
               Members
             </div>
             <div
-              className={`font-Poppins font-semibold ${
-                !isShrunk ? 'text-activityPercentage ' : 'text-lg'
-              } text-activityGray leading-4 dark:text-white`}
+              className={`font-Poppins font-semibold ${!isShrunk ? 'text-activityPercentage ' : 'text-lg'
+                } text-activityGray leading-4 dark:text-white`}
             >
               {!isManageMode && !isSidePanelOpen ? membersScoreData?.percentage : 78}%
             </div>
@@ -184,16 +178,14 @@ const HealthCard: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
           </div>
           <div className="flex flex-col pl-3">
             <div
-              className={`font-Poppins font-medium ${
-                !isShrunk ? 'text-activityHealth' : 'text-[0.6878rem]'
-              } leading-0.93 text-activityGray pb-1 dark:text-greyDark`}
+              className={`font-Poppins font-medium ${!isShrunk ? 'text-activityHealth' : 'text-[0.6878rem]'
+                } leading-0.93 text-activityGray pb-1 dark:text-greyDark`}
             >
               Overall
             </div>
             <div
-              className={`font-Poppins font-semibold ${
-                !isShrunk ? 'text-activityPercentage ' : 'text-lg'
-              } text-activityGray leading-4 dark:text-white`}
+              className={`font-Poppins font-semibold ${!isShrunk ? 'text-activityPercentage ' : 'text-lg'
+                } text-activityGray leading-4 dark:text-white`}
             >
               {!isManageMode && !isSidePanelOpen ? overallScoreData?.percentage : 67}%
             </div>

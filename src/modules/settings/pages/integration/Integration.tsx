@@ -1,42 +1,53 @@
 /* eslint-disable indent */
 /* eslint-disable no-unused-vars */
-import Button from 'common/button';
 import React, { useEffect, useState } from 'react';
-import slackIcon from '../../../../assets/images/slack.svg';
-import discordIcon from '../../../../assets/images/discord.svg';
-import redditLogoIcon from '../../../../assets/images/reddit_logo.png';
-import githubLogoIcon from '../../../../assets/images/github_logo.png';
-import { TabPanel } from 'common/tabs/TabPanel';
-import { NavigateToConnectPage, NavigateToDiscordConnectPage, NavigateToRedditConnectPage } from 'modules/settings/services/settings.services';
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
-import Modal from 'react-modal';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
-import vanillaIcon from '../../../../assets/images/vanilla-forum.svg';
-import { showErrorToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
-import usePlatform from '../../../../hooks/usePlatform';
+
+import * as Yup from 'yup';
+import Modal from 'react-modal';
+import { Form, Formik } from 'formik';
+import Skeleton from 'react-loading-skeleton';
+
+import Button from 'common/button';
+import Input from '../../../../common/input';
+import { TabPanel } from 'common/tabs/TabPanel';
+import { ModalDrawer } from 'common/modals/ModalDrawer';
+import { NavigateToConnectPage, NavigateToDiscordConnectPage, NavigateToRedditConnectPage } from 'modules/settings/services/settings.services';
+
+import { PlatformsEnumType } from './IntegrationDrawerTypes';
+
 import { DiscordConnectResponse, PlatformConnectResponse, RedditConnectResponseData } from '../../../../interface/interface';
-import { IntegrationResponse, NetworkResponse } from '../../../../lib/api';
-import { API_ENDPOINT } from '../../../../lib/config';
-import { getLocalWorkspaceId } from '../../../../lib/helper';
-import { request } from '../../../../lib/request';
-import { AppDispatch } from '../../../../store';
 import {
+  ConnectBody,
   ConnectedPlatforms,
   ModalState,
   PlatformIcons,
   PlatformResponse,
   PlatformsStatus,
-  ConnectBody,
   VanillaForumsConnectData
 } from '../../interface/settings.interface';
-import settingsSlice from '../../store/slice/settings.slice';
-import Input from '../../../../common/input';
-import './Integration.css';
+
+import { API_ENDPOINT } from '@/lib/config';
+import { AppDispatch } from '../../../../store';
+import { request } from '../../../../lib/request';
+import usePlatform from '../../../../hooks/usePlatform';
+import { getLocalWorkspaceId } from '../../../../lib/helper';
 import { IntegrationModalDrawer } from './IntegrationModalDrawer';
-import { PlatformsEnumType } from './IntegrationDrawerTypes';
+import { IntegrationResponse, NetworkResponse } from '../../../../lib/api';
+import { showErrorToast, showInfoToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
+
+import discordIcon from '../../../../assets/images/discord.svg';
+import githubLogoIcon from '../../../../assets/images/github_logo.png';
+import redditLogoIcon from '../../../../assets/images/reddit_logo.png';
+import slackIcon from '../../../../assets/images/slack.svg';
+import vanillaIcon from '../../../../assets/images/vanilla-forum.svg';
+
+import settingsSlice from '../../store/slice/settings.slice';
+
+import './Integration.css';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 Modal.setAppElement('#root');
 
@@ -49,8 +60,14 @@ interface ConfirmPlatformToDisconnect {
   platformIcon: string;
 }
 
-const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
-  const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanillaForums: false, discord: false, reddit: false });
+const vanillaInitialValues: Omit<VanillaForumsConnectData, 'workspaceId'> = {
+  vanillaBaseUrl: '',
+  vanillaAccessToken: ''
+};
+
+const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidden, selectedTab }) => {
+  const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanilla: false, discord: false, reddit: false });
+  const [showAlert, setShowAlert] = useState<ModalState>({ slack: false, vanilla: false, discord: false, reddit: false });
   const [isWarningModalOpen, setIsWarningModalOpen] = useState<boolean>(false);
   const [confirmPlatformToDisconnect, setConfirmPlatformToDisconnect] = useState<ConfirmPlatformToDisconnect>({
     platform: '',
@@ -65,24 +82,26 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
     reddit: undefined
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isButtonConnect] = useState<boolean>(true);
+  const [reconnectLoading, setReconnectLoading] = useState<boolean>(false);
   //   const [platformStatus, setPlatformStatus] = useState<PlatformsStatus>({ platform: undefined, status: undefined });
-  const [vanillaForumsData, setVanillaForumsData] = useState<VanillaForumsConnectData>({
-    vanillaAccessToken: '',
-    vanillaBaseUrl: '',
-    workspaceId: ''
-  });
   const [integrationDisconnect, setIntegrationDisconnect] = useState<boolean>(false);
-  const { PlatformFilterResponse } = usePlatform();
-  const dispatch: AppDispatch = useDispatch();
+
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const workspaceId = getLocalWorkspaceId();
-  const [isButtonConnect] = useState<boolean>(true);
+  const dispatch: AppDispatch = useDispatch();
+  const { PlatformFilterResponse } = usePlatform();
 
   const { PlatformsConnected } = usePlatform();
 
   useEffect(() => {
-    dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+    if (selectedTab === 'integrations') {
+      dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+    }
+  }, [selectedTab]);
+
+  useEffect(() => {
     if (window.location.href.includes('guild_id') && window.location.href.includes('permissions')) {
       if (searchParams.get('code')) {
         const codeParams: null | string = searchParams.get('code');
@@ -117,17 +136,17 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
   };
 
   const handleVanillaModal = (val: boolean) => {
-    setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: val }));
+    setIsModalOpen((prevState) => ({ ...prevState, vanilla: val }));
   };
 
-  const handleModals = (name: string, icon: string, isIntegrated: boolean) => {
+  const handleModals = (name: string, icon: string, isIntegrated: boolean, isConnected: boolean) => {
     switch (name) {
       case PlatformsEnumType.SLACK:
         setIsLoading(true);
         if (!checkForConnectedPlatform(name)) {
           setPlatformIcons((prevState) => ({ ...prevState, slack: icon }));
-          if (isIntegrated === true) {
-            handlePlatformReconnectForSlack(name);
+          if (isIntegrated && !isConnected) {
+            setShowAlert((prevState) => ({ ...prevState, slack: true }));
           } else {
             NavigateToConnectPage();
             setIsLoading(false);
@@ -141,10 +160,10 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
         setIsLoading(true);
         if (!checkForConnectedPlatform(name)) {
           setPlatformIcons((prevState) => ({ ...prevState, vanillaForums: icon }));
-          if (isIntegrated === true) {
-            handlePlatformReconnectForVanilla(name);
+          if (isIntegrated && !isConnected) {
+            setShowAlert((prevState) => ({ ...prevState, vanilla: true }));
           } else {
-            setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: true }));
+            setIsModalOpen((prevState) => ({ ...prevState, vanilla: true }));
             setIsLoading(false);
           }
         } else {
@@ -156,8 +175,8 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
         setIsLoading(true);
         if (!checkForConnectedPlatform(name)) {
           setPlatformIcons((prevState) => ({ ...prevState, discord: icon }));
-          if (isIntegrated === true) {
-            handlePlatformReconnectForDiscord(name);
+          if (isIntegrated && !isConnected) {
+            setShowAlert((prevState) => ({ ...prevState, discord: true }));
           } else {
             NavigateToDiscordConnectPage();
             setIsLoading(false);
@@ -171,8 +190,8 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
         setIsLoading(true);
         if (!checkForConnectedPlatform(name)) {
           setPlatformIcons((prevState) => ({ ...prevState, reddit: icon }));
-          if (isIntegrated === true) {
-            handlePlatformReconnectForReddit(name);
+          if (isIntegrated && !isConnected) {
+            setShowAlert((prevState) => ({ ...prevState, reddit: true }));
           } else {
             NavigateToRedditConnectPage();
             setIsLoading(false);
@@ -218,7 +237,9 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
             dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
           }
         }
+        dispatch(settingsSlice.actions.platformData({ workspaceId }));
       } catch {
+        dispatch(settingsSlice.actions.platformData({ workspaceId }));
         setIntegrationDisconnect(false);
         showErrorToast(`${confirmPlatformToDisconnect.platform} disconnection failed`);
       }
@@ -251,13 +272,12 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
   };
 
   // eslint-disable-next-line space-before-function-paren
-  const sendVanillaData = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  const sendVanillaData = async (values: Omit<VanillaForumsConnectData, 'workspaceId'>) => {
     setIsLoading(true);
     try {
-      event.preventDefault();
       const body: VanillaForumsConnectData = {
-        vanillaBaseUrl: vanillaForumsData.vanillaBaseUrl,
-        vanillaAccessToken: vanillaForumsData.vanillaAccessToken,
+        vanillaBaseUrl: values.vanillaBaseUrl,
+        vanillaAccessToken: values.vanillaAccessToken,
         workspaceId
       };
       const connectResponse: IntegrationResponse<PlatformConnectResponse> = await request.post(`${API_ENDPOINT}/v1/vanilla/connect`, body);
@@ -266,7 +286,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
         setIsLoading(false);
       }
       if (connectResponse?.data?.data?.id) {
-        showSuccessToast('Integration in progress...');
+        showInfoToast('Integration in progress...');
         try {
           const completeSetupResponse: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/vanilla/complete-setup`, {
             workspaceId,
@@ -342,22 +362,28 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
 
   // eslint-disable-next-line space-before-function-paren
   const handlePlatformReconnectForSlack = async (platform: string) => {
-    setIsModalOpen((prevState) => ({ ...prevState, slack: true }));
+    // setIsModalOpen((prevState) => ({ ...prevState, slack: true }));
+    setReconnectLoading(true);
     const body = {
       workspaceId
     };
     try {
+      showInfoToast(`${platform} reconnect is in progress...`);
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
-        setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
+        setShowAlert((prevState) => ({ ...prevState, slack: false }));
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
         showSuccessToast(`${platform} was successfully connected`);
-        setIsLoading(false);
+        setReconnectLoading(false);
       } else {
         showErrorToast('Failed to connect to the platform');
+        setShowAlert((prevState) => ({ ...prevState, slack: false }));
+        setReconnectLoading(false);
       }
     } catch {
       showErrorToast('Failed to connect to the platform');
+      setShowAlert((prevState) => ({ ...prevState, slack: false }));
+      setReconnectLoading(false);
     }
   };
 
@@ -366,76 +392,114 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
     const body = {
       workspaceId
     };
-    showSuccessToast('Integration in progress...');
+    setReconnectLoading(true);
+    showInfoToast(`${platform} reconnect is in progress...`);
     try {
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
         showSuccessToast(`${platform} Forums was successfully connected`);
-        setIsLoading(false);
+        setReconnectLoading(false);
       } else {
         showErrorToast('Failed to connect to the platform');
+        setReconnectLoading(false);
       }
     } catch {
       showErrorToast('Failed to connect to the platform');
+      setReconnectLoading(false);
     }
   };
 
   // eslint-disable-next-line space-before-function-paren
   const handlePlatformReconnectForDiscord = async (platform: string) => {
-    setIsModalOpen((prevState) => ({ ...prevState, discord: true }));
+    setReconnectLoading(true);
+    // setIsModalOpen((prevState) => ({ ...prevState, discord: true }));
     const body = {
       workspaceId
     };
     try {
+      showInfoToast(`${platform} reconnect is in progress...`);
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
-        setIsModalOpen((prevState) => ({ ...prevState, discord: false }));
+        setShowAlert((prevState) => ({ ...prevState, discord: false }));
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
         showSuccessToast(`${platform} was successfully connected`);
-        setIsLoading(false);
+        setReconnectLoading(false);
       } else {
         showErrorToast('Failed to connect to the platform');
-        setIsModalOpen((prevState) => ({ ...prevState, discord: false }));
+        setShowAlert((prevState) => ({ ...prevState, discord: false }));
+        setReconnectLoading(false);
       }
     } catch {
       showErrorToast('Failed to connect to the platform');
-      setIsModalOpen((prevState) => ({ ...prevState, discord: false }));
+      setShowAlert((prevState) => ({ ...prevState, discord: false }));
+      setReconnectLoading(false);
     }
   };
 
   // eslint-disable-next-line space-before-function-paren
   const handlePlatformReconnectForReddit = async (platform: string) => {
-    setIsModalOpen((prevState) => ({ ...prevState, reddit: true }));
+    setReconnectLoading(true);
+    // setIsModalOpen((prevState) => ({ ...prevState, reddit: true }));
     const body = {
       workspaceId
     };
     try {
+      showInfoToast(`${platform} reconnect is in progress...`);
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
-        setIsModalOpen((prevState) => ({ ...prevState, reddit: false }));
+        setShowAlert((prevState) => ({ ...prevState, reddit: false }));
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
         showSuccessToast(`${platform} was successfully connected`);
-        setIsLoading(false);
+        setReconnectLoading(false);
       } else {
         showErrorToast('Failed to connect to the platform');
-        setIsModalOpen((prevState) => ({ ...prevState, reddit: false }));
+        setShowAlert((prevState) => ({ ...prevState, reddit: false }));
+        setReconnectLoading(false);
       }
     } catch {
       showErrorToast('Failed to connect to the platform');
-      setIsModalOpen((prevState) => ({ ...prevState, reddit: false }));
+      setShowAlert((prevState) => ({ ...prevState, reddit: false }));
+      setReconnectLoading(false);
+    }
+  };
+
+  const handleOnSubmit = () => {
+    //     const platformEntries= Object.entries(showAlert);
+    //     const platformName = platformEntries.find(((platform) => {
+    //        if(platform.includes(true)) {
+    //         return platform;
+    //         }
+    // }));
+    if (showAlert.slack) {
+      handlePlatformReconnectForSlack(PlatformsEnumType.SLACK);
+    }
+    if (showAlert.vanilla) {
+      handlePlatformReconnectForVanilla(PlatformsEnumType.VANILLA);
+    }
+    if (showAlert.discord) {
+      handlePlatformReconnectForDiscord(PlatformsEnumType.DISCORD);
+    }
+    if (showAlert.reddit) {
+      handlePlatformReconnectForReddit(PlatformsEnumType.REDDIT);
     }
   };
 
   const handleModalClose = () => {
-    if (isModalOpen.slack) {
+    if (isModalOpen.slack || showAlert.slack) {
       setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
+      setShowAlert((prevState) => ({ ...prevState, slack: false }));
     }
-    if (isModalOpen.discord) {
+    if (isModalOpen.discord || showAlert.discord) {
       setIsModalOpen((prevState) => ({ ...prevState, discord: false }));
+      setShowAlert((prevState) => ({ ...prevState, discord: false }));
     }
-    if (isModalOpen.reddit) {
+    if (isModalOpen.reddit || showAlert.reddit) {
       setIsModalOpen((prevState) => ({ ...prevState, reddit: false }));
+      setShowAlert((prevState) => ({ ...prevState, reddit: false }));
+    }
+    if (showAlert.vanilla) {
+      setShowAlert((prevState) => ({ ...prevState, vanilla: false }));
     }
   };
 
@@ -485,7 +549,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
             {PlatformFilterResponse?.map((data: PlatformResponse) => (
               <div
                 key={`${data?.id + data?.name}`}
-                className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5"
+                className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5 mb-5"
               >
                 <div className="flex flex-wrap items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
                   <img src={data?.platformLogoUrl} alt="" className="h-2.31" />
@@ -495,7 +559,7 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
                   type="button"
                   text="Connect"
                   className={!isButtonConnect ? disConnectedBtnClassName : connectedBtnClassName}
-                  onClick={() => handleModals(data?.name.toLocaleLowerCase().trim(), data?.platformLogoUrl, data?.isConnected)}
+                  onClick={() => handleModals(data?.name.toLocaleLowerCase().trim(), data?.platformLogoUrl, data?.isIntegrated, data.isConnected)}
                 />
               </div>
             ))}
@@ -515,9 +579,9 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
           </div>
 
           <Modal
-            isOpen={isModalOpen.vanillaForums}
+            isOpen={isModalOpen.vanilla}
             shouldCloseOnOverlayClick={false}
-            onRequestClose={() => setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: false }))}
+            onRequestClose={() => setIsModalOpen((prevState) => ({ ...prevState, vanilla: false }))}
             className="w-24.31 pb-12 mx-auto rounded-lg border-integration-modal bg-white shadow-modal outline-none"
             style={{
               overlay: {
@@ -537,71 +601,80 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
                 integrate <span className="font-normal px-2">Vanilla Forums</span>
               </h3>
               <div className="flex flex-col px-[1.875rem] pt-9">
-                <form>
-                  <div className="form-group">
-                    <label htmlFor="siteUrl" className="font-Poppins font-normal text-infoBlack text-sm leading-5">
-                      Site URL*
-                    </label>
-                    <h1 className="font-Inter font-normal text-error leading-7 text-vanillaDescription">
-                      Enter the full URL to your Vanilla site in this format: https://{`yourdomain`}.com
-                    </h1>
-                    <Input
-                      type="text"
-                      placeholder="Enter URL"
-                      label="Site URL"
-                      id="siteUrlId"
-                      name="SiteUrl"
-                      value={vanillaForumsData?.vanillaBaseUrl}
-                      onChange={(e) => setVanillaForumsData((prevState) => ({ ...prevState, vanillaBaseUrl: e.target.value }))}
-                      className="h-2.81 pr-3.12 rounded-md border-app-result-card-border mt-[0.4375rem] bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-thinGray placeholder:text-sm placeholder:leading-6 placeholder:font-Poppins font-Poppins box-border"
-                    />
-                  </div>
-                  <div className="form-group pt-1.12">
-                    <label htmlFor="accessToken" className="font-Poppins font-normal text-infoBlack text-sm leading-5">
-                      Access Token*
-                    </label>
-                    <h1 className="font-Inter font-normal text-error leading-7 text-vanillaDescription">
-                      You can learn how to create an access Token
-                      <span className="text-tag cursor-pointer hover:underline pl-1">
-                        <a href="https://success.vanillaforums.com/kb/articles/41" target={'_blank'} rel="noreferrer">
-                          here.
-                        </a>{' '}
-                      </span>
-                    </h1>
-                    <Input
-                      type="text"
-                      placeholder="Enter access token"
-                      label="Access Token"
-                      id="accessTokenId"
-                      name="accessToken"
-                      value={vanillaForumsData?.vanillaAccessToken}
-                      onChange={(e) => setVanillaForumsData((prevState) => ({ ...prevState, vanillaAccessToken: e.target.value }))}
-                      className="h-2.81 pr-3.12 rounded-md border-app-result-card-border mt-[0.4375rem] bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-thinGray placeholder:text-sm placeholder:leading-6 placeholder:font-Poppins font-Poppins box-border"
-                    />
-                  </div>
-                  <div className="flex justify-end pt-[1.875rem]">
-                    <Button
-                      text="Cancel"
-                      type="submit"
-                      className="cancel mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  h-2.81 w-5.25  rounded border-none"
-                      onClick={() => handleVanillaModal(false)}
-                    />
-                    <Button
-                      text="Save"
-                      type="submit"
-                      disabled={isLoading ? true : !vanillaForumsData.vanillaAccessToken || !vanillaForumsData.vanillaBaseUrl ? true : false}
-                      onClick={(e) => sendVanillaData(e)}
-                      className={`text-white font-Poppins text-error font-medium leading-5 btn-save-modal
+                <Formik initialValues={vanillaInitialValues} onSubmit={sendVanillaData} validationSchema={vanillaDataSchema}>
+                  {({ errors, handleBlur, handleChange, touched, values }): JSX.Element => (
+                    <Form>
+                      <div className="form-group">
+                        <label htmlFor="siteUrl" className="font-Poppins font-normal text-infoBlack text-sm leading-5">
+                          Site URL*
+                        </label>
+                        <h1 className="font-Inter font-normal text-error leading-7 text-vanillaDescription">
+                          Enter the full URL to your Vanilla site in this format: https://{`yourdomain`}.com
+                        </h1>
+                        <Input
+                          type="text"
+                          placeholder="Enter URL"
+                          label="Site URL"
+                          id="siteUrlId"
+                          name="vanillaBaseUrl"
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          value={values?.vanillaBaseUrl}
+                          errors={Boolean(touched.vanillaBaseUrl && errors.vanillaBaseUrl)}
+                          helperText={touched.vanillaBaseUrl && errors.vanillaBaseUrl}
+                          className="h-2.81 pr-3.12 rounded-md border-app-result-card-border mt-[0.4375rem] bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-thinGray placeholder:text-sm placeholder:leading-6 placeholder:font-Poppins font-Poppins box-border"
+                        />
+                      </div>
+                      <div className="form-group pt-1.12">
+                        <label htmlFor="accessToken" className="font-Poppins font-normal text-infoBlack text-sm leading-5">
+                          Access Token*
+                        </label>
+                        <h1 className="font-Inter font-normal text-error leading-7 text-vanillaDescription">
+                          You can learn how to create an access Token
+                          <span className="text-tag cursor-pointer hover:underline pl-1">
+                            <a href="https://success.vanillaforums.com/kb/articles/41" target={'_blank'} rel="noreferrer">
+                              here.
+                            </a>{' '}
+                          </span>
+                        </h1>
+                        <Input
+                          type="text"
+                          placeholder="Enter access token"
+                          label="Access Token"
+                          id="accessTokenId"
+                          name="vanillaAccessToken"
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          value={values?.vanillaAccessToken}
+                          errors={Boolean(touched.vanillaAccessToken && errors.vanillaAccessToken)}
+                          helperText={touched.vanillaAccessToken && errors.vanillaAccessToken}
+                          className="h-2.81 pr-3.12 rounded-md border-app-result-card-border mt-[0.4375rem] bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-thinGray placeholder:text-sm placeholder:leading-6 placeholder:font-Poppins font-Poppins box-border"
+                        />
+                      </div>
+                      <div className="flex justify-end pt-[1.875rem]">
+                        <Button
+                          text="Cancel"
+                          type="submit"
+                          className="cancel mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  h-2.81 w-5.25  rounded border-none"
+                          onClick={() => handleVanillaModal(false)}
+                        />
+                        <Button
+                          text="Save"
+                          type="submit"
+                          disabled={isLoading ? true : !values.vanillaAccessToken || !values.vanillaBaseUrl ? true : false}
+                          className={`text-white font-Poppins text-error font-medium leading-5 btn-save-modal
                        cursor-pointer rounded shadow-contactBtn w-5.25  ${
                          isLoading
                            ? 'opacity-50 cursor-not-allowed '
-                           : !vanillaForumsData.vanillaAccessToken || !vanillaForumsData.vanillaBaseUrl
+                           : !values.vanillaAccessToken || !values.vanillaBaseUrl
                            ? 'opacity-50 cursor-not-allowed '
                            : ''
                        } border-none h-2.81`}
-                    />
-                  </div>
-                </form>
+                        />
+                      </div>
+                    </Form>
+                  )}
+                </Formik>
               </div>
             </div>
           </Modal>
@@ -657,8 +730,25 @@ const Integration: React.FC<{ hidden: boolean }> = ({ hidden }) => {
         iconSrc={isModalOpen.slack ? slackIcon : isModalOpen.reddit ? redditLogoIcon : isModalOpen.discord ? discordIcon : ''}
         contextText={isModalOpen.slack ? 'Slack' : isModalOpen.reddit ? 'Reddit' : isModalOpen.discord ? 'Discord' : ''}
       />
+      <ModalDrawer
+        isOpen={Object.values(showAlert).includes(true) ? true : false}
+        isClose={handleModalClose}
+        loader={reconnectLoading}
+        onSubmit={handleOnSubmit}
+        iconSrc={
+          showAlert.slack ? slackIcon : showAlert.reddit ? redditLogoIcon : showAlert.discord ? discordIcon : showAlert.vanilla ? vanillaIcon : ''
+        }
+        contextText={`Are you sure you want to reconnect the ${
+          showAlert.slack ? 'slack' : showAlert.discord ? 'discord' : showAlert.reddit ? 'reddit' : ''
+        }  to your workspace?`}
+      />
     </TabPanel>
   );
 };
 
 export default Integration;
+
+const vanillaDataSchema = Yup.object().shape({
+  vanillaBaseUrl: Yup.string().required('Site URL is required').trim(),
+  vanillaAccessToken: Yup.string().required('Access Token is required').trim()
+});
