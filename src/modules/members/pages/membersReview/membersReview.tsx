@@ -222,7 +222,7 @@ const MembersReview: React.FC = () => {
               type="button"
               text="Merge"
               className={`1border-none text-white font-Poppins text-search font-medium leading-1.31 cursor-pointer w-5.25 h-2.81 rounded ${!MergeMembersList.length ? 'opacity-50 cursor-not-allowed' : ''
-                }`}
+              }`}
               onClick={() => MergeMembersList.length && handleModal('Merge')}
             />
           </div>
