@@ -222,7 +222,7 @@ const MembersReview: React.FC = () => {
               type="button"
               text="Merge"
               className={`1border-none text-white font-Poppins text-search font-medium leading-1.31 cursor-pointer w-5.25 h-2.81 rounded ${!MergeMembersList.length ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
+                }`}
               onClick={() => MergeMembersList.length && handleModal('Merge')}
             />
           </div>
@@ -264,7 +264,7 @@ const MembersReview: React.FC = () => {
                       checked={(checkedRadioId[primaryMemberId[0]?.id] as boolean) || false}
                       onChange={handleRadioBtn}
                     />{' '}
-                    <div className="w-3 h-3 border peer-checked:border-[#ABCF6B] rounded-full mr-1 flex justify-center items-center">
+                    <div className="w-3 h-3 border border-[#ABCF6B] rounded-full mr-1 flex justify-center items-center">
                       <span className="w-2 h-2  rounded-full check-circle peer-checked:check-circle"></span>
                     </div>
                     Primary
@@ -286,7 +286,7 @@ const MembersReview: React.FC = () => {
               : MergeMembersList &&
               MergeMembersList.map((members: MergeMembersDataResult) => (
                 <div key={members.id}>
-                  <div className="flex items-center primary-card box-border border border-borderPrimary w-26.25 h-7.5 shadow-profileCard rounded-0.6 p-5  ">
+                  <div className="flex items-center primary-card box-border border border-borderPrimary w-26.25 h-7.5 shadow-profileCard rounded-0.6 py-[28px] px-[21px]  ">
                     <div className="w-1/5">
                       <img src={members.profilePictureUrl ? members.profilePictureUrl : profileImage} alt="profileImage" className="w-16 h-16 rounded-full" />
                     </div>
