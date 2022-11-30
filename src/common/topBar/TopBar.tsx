@@ -35,7 +35,7 @@ import {
 } from 'modules/dashboard/services/dashboard.services';
 
 import ellipseIcon from '../../assets/images/Ellipse 39.svg';
-import sunIcon from '../../assets/images/sun.svg';
+// import sunIcon from '../../assets/images/sun.svg';
 import authSlice from '../../modules/authentication/store/slices/auth.slice';
 import profilePic from '../../assets/images/user-image.svg';
 
@@ -68,7 +68,6 @@ const TopBar: React.FC = () => {
   // eslint-disable-next-line no-unused-vars
   const [, setActivityNextCursor] = useState<string | null>('');
   const [profileImage, setProfileImage] = useState<string>('');
-  const [profileUploadImage, setProfileUploadImage] = useState<string>('');
   const [unReadStatus, setUnReadStatus] = useState('false');
   const [notificationList, setNotificationList] = useState<NotificationList>({
     result: [],
@@ -81,7 +80,7 @@ const TopBar: React.FC = () => {
   const notificationRef = useRef<HTMLImageElement | null>(null);
 
   const options: string[] = ['Profile Settings', 'Sign Out'];
-  const { resetProfilePic } = useAppSelector((state) => state.accounts);
+  const { userProfilePictureUrl } = useAppSelector((state) => state.accounts);
   const accessToken = localStorage.getItem('accessToken') || cookie.load('x-auth-cookie');
   const decodedToken: DecodeToken = accessToken && decodeToken(accessToken);
   const debouncedValue = useDebounce(searchSuggestion, 300);
@@ -129,7 +128,6 @@ const TopBar: React.FC = () => {
     fetchProfileData();
     if (profilePictureUrl) {
       setProfileImage(profilePictureUrl.profilePic);
-      setProfileUploadImage(profilePictureUrl.profilePic);
     }
 
     // Event functionality which checks the route changes in the app and triggers the possible route callback functionality.
@@ -159,16 +157,10 @@ const TopBar: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (profilePictureUrl) {
-      setProfileImage(profilePictureUrl.profilePic);
+    if(userProfilePictureUrl) {
+      setProfileImage(userProfilePictureUrl);
     }
-  }, [profilePictureUrl]);
-
-  useEffect(() => {
-    if (resetProfilePic) {
-      setProfileImage(profileUploadImage);
-    }
-  }, [resetProfilePic]);
+  }, [userProfilePictureUrl]);
 
   useEffect(() => {
     setSuggestionList({
@@ -380,9 +372,9 @@ const TopBar: React.FC = () => {
           )}
         </div>
         <div className="flex items-center">
-          <div className="cursor-pointer">
+          {/* <div className="cursor-pointer">
             <img src={sunIcon} alt="" />
-            {/* {theme ? (
+            {theme ? (acc
               <img src={sunIcon} alt="" onClick={handleToggleTheme} />
             ) : (
               <div onClick={handleToggleTheme}>
@@ -395,8 +387,8 @@ const TopBar: React.FC = () => {
                   />
                 </svg>
               </div>
-            )} */}
-          </div>
+            )}
+          </div> */}
           {!decodedToken?.isAdmin && (
             <div className="pl-1.68 relative cursor-pointer" ref={notificationRef}>
               <div className="notification-icon" onClick={handleNotificationActive}>

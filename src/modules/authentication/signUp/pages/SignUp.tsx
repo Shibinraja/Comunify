@@ -96,6 +96,14 @@ const SignUp: React.FC = () => {
     }
   };
 
+  const handleTabChange = (e: KeyboardEvent<HTMLDivElement>) => {
+    if(e.keyCode === 9) {
+      setDropDownActive(false);
+    }else{
+      setDropDownActive(true);
+    }
+  };
+
   const navigateToGoogleSignIn = () => {
     window.open(`${API_ENDPOINT}${auth_module}/google/`, '_self');
   };
@@ -121,7 +129,7 @@ const SignUp: React.FC = () => {
               validateOnChange={true}
               validationSchema={signUpSchema}
             >
-              {({ errors, handleBlur, handleChange, handleSubmit, touched, values }): JSX.Element => (
+              {({ errors, handleBlur, handleChange, handleSubmit, touched, values, setFieldTouched }): JSX.Element => (
                 <Form className="flex flex-col pb-10 mt-1.8 w-25.9" autoComplete="off" onSubmit={handleSubmit}>
                   <div className="username">
                     <Input
@@ -225,6 +233,8 @@ const SignUp: React.FC = () => {
                         }`}
                         ref={dropDownRef}
                         onClick={() => setDropDownActive(!isDropDownActive)}
+                        onBlur={() => setFieldTouched('domainSector')}
+                        onKeyDown={handleTabChange}
                       >
                         <div className={selectedDomainSector === 'Domain' ? 'text-secondaryGray' : 'text-black'}>
                           <input className="w-[1px] border-none focus:outline-none" type="text" />
@@ -262,6 +272,7 @@ const SignUp: React.FC = () => {
                     )}
                   </div>
                   <Button
+                    onFocus={() => setDropDownActive(false)}
                     text="Sign Up"
                     type="submit"
                     className={`font-Poppins rounded-lg text-base font-semibold text-white h-3.6 transition ease-in duration-300 hover:shadow-buttonShadowHover btn-gradient  ${

@@ -260,147 +260,146 @@ const Integration: React.FC = () => {
    duration-300 dark:bg-secondaryDark dark:border dark:border-[#9B9B9B]`;
 
   return (
-    <div className="create-password">
-      <div className="auth-layout-integration">
-        <div className="flex w-full height-calc container mx-auto">
-          <div className="w-1/2 rounded-r-lg flex items-center justify-center object-cover p-28  bg-left overflow-hidden">
-            <img src={bgIntegrationImage} alt="" className="object-cover" />
+
+    <div className="flex flex-col h-auto layout-height">
+      <div className=" flex h-full overflow-auto ">
+        <div className="w-3/5 2xl:w-1/2 auth-layout-section flex items-center justify-center 3xl:justify-end pr-0 3xl:pr-16 h-[885px]">
+          <div className="flex items-center justify-center">
+            <img src={bgIntegrationImage} alt="" className="w-9/12 xl:w-[640px] 3xl:w-full object-cover" />
           </div>
-          <div className="flex justify-center w-1/2 3xl:items-center">
-            <div className="flex flex-col pt-10 overflow-scroll">
-              <div>
-                <h3 className="font-Inter text-signIn font-bold text-neutralBlack leading-2.8">Integrations</h3>
-                <div className="flex flex-col gap-0.93 relative w-fit mt-1.8">
-                  <div className="flex gap-0.93">
-                    {PlatformFilterResponse?.map((data: PlatformResponse) => (
-                      <div
-                        key={`${data?.id + data?.name}`}
-                        className="integration shadow-integrationCardShadow app-input-card-border border-integrationBorder w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center"
-                      >
-                        <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                          <img src={data?.platformLogoUrl} alt="" className="h-2.31 rounded-full w-[2.3125rem]" />
-                        </div>
-                        <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">{data?.name}</div>
-                        <Button
-                          type="button"
-                          text={data.isConnected ? 'Disconnect' : 'Connect'}
-                          className={data.isConnected ? disConnectedBtnClassName : connectedBtnClassName}
-                          onClick={() => handleModals(data?.name.toLocaleLowerCase().trim(), data?.platformLogoUrl)}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex justify-end">
-                    <div className="flex items-center pb-5" onClick={() => navigate(`/${workspaceId}/dashboard`)}>
-                      <div className="p-2 leading-1.56 text-skipGray font-Inter font-normal text-reset cursor-pointer">Skip</div>
-                      <div>
-                        <img src={nextIcon} alt="" />
-                      </div>
+        </div>
+        <div className="flex justify-center w-1/2 3xl:items-center 3xl:justify-start  pl-0 3xl:pl-16">
+          <div className="flex flex-col  no-scrollbar-firefox pt-[109.57px]">
+            <h3 className="font-Inter text-neutralBlack font-bold not-italic text-signIn leading-2.8">Integrations </h3>{' '}
+
+            <div className="flex flex-col gap-0.93 relative w-fit mt-1.8">
+              <div className="grid grid-cols-3 gap-0.93">
+                {PlatformFilterResponse?.map((data: PlatformResponse) => (
+                  <div
+                    key={`${data?.id + data?.name}`}
+                    className="integration shadow-integrationCardShadow app-input-card-border border-integrationBorder w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center"
+                  >
+                    <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
+                      <img src={data?.platformLogoUrl} alt="" className="h-2.31 rounded-full w-[2.3125rem]" />
                     </div>
+                    <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">{data?.name}</div>
+                    <Button
+                      type="button"
+                      text={data.isConnected ? 'Disconnect' : 'Connect'}
+                      className={data.isConnected ? disConnectedBtnClassName : connectedBtnClassName}
+                      onClick={() => handleModals(data?.name.toLocaleLowerCase().trim(), data?.platformLogoUrl)}
+                    />
+                  </div>
+                ))}
+              </div>
+              <div className="flex justify-end">
+                <div className="flex items-center pb-5" onClick={() => navigate(`/${workspaceId}/dashboard`)}>
+                  <div className="p-2 leading-1.56 text-skipGray font-Inter font-normal text-reset cursor-pointer">Skip</div>
+                  <div>
+                    <img src={nextIcon} alt="" />
                   </div>
                 </div>
-                <Modal
-                  isOpen={isModalOpen.vanilla}
-                  shouldCloseOnOverlayClick={false}
-                  onRequestClose={() => handleVanillaModal(false)}
-                  className="w-24.31 pb-12 mx-auto rounded-lg border-integration-modal bg-white shadow-modal outline-none"
-                  style={{
-                    overlay: {
-                      display: 'flex',
-                      position: 'fixed',
-                      top: 0,
-                      left: 0,
-                      bottom: 0,
-                      right: 0,
-                      alignItems: 'center'
-                    }
-                  }}
-                >
-                  <div className="vanilla">
-                    <h3 className="flex items-center justify-center pt-9 font-Inter text-xl font-semibold leading-6">
-                      <img src={vanillaIcon} alt="" className="px-2.5" />
-                      integrate <span className="font-normal px-2">Vanilla Forums</span>
-                    </h3>
-                    <div className="flex flex-col px-[1.875rem] pt-9">
-                      <Formik initialValues={vanillaInitialValues} onSubmit={sendVanillaData} validationSchema={vanillaDataSchema}>
-                        {({ errors, handleBlur, handleChange, touched, values }): JSX.Element => (
-                          <Form>
-                            <div className="form-group">
-                              <label htmlFor="siteUrl" className="font-Poppins font-normal text-infoBlack text-sm leading-5">
-                                Site URL*
-                              </label>
-                              <h1 className="font-Inter font-normal text-error leading-7 text-vanillaDescription">
-                                Enter the full URL to your Vanilla site in this format: https://{`yourdomain`}.com
-                              </h1>
-                              <Input
-                                type="text"
-                                placeholder="Enter URL"
-                                label="Site URL"
-                                id="siteUrlId"
-                                name="vanillaBaseUrl"
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                value={values?.vanillaBaseUrl}
-                                errors={Boolean(touched.vanillaBaseUrl && errors.vanillaBaseUrl)}
-                                helperText={touched.vanillaBaseUrl && errors.vanillaBaseUrl}
-                                className="h-2.81 pr-3.12 rounded-md border-app-result-card-border mt-[0.4375rem] bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-thinGray placeholder:text-sm placeholder:leading-6 placeholder:font-Poppins font-Poppins box-border"
-                              />
-                            </div>
-                            <div className="form-group pt-1.12">
-                              <label htmlFor="accessToken" className="font-Poppins font-normal text-infoBlack text-sm leading-5">
-                                Access Token*
-                              </label>
-                              <h1 className="font-Inter font-normal text-error leading-7 text-vanillaDescription">
-                                You can learn how to create an access Token
-                                <span className="text-tag cursor-pointer hover:underline pl-1">
-                                  <a href="https://success.vanillaforums.com/kb/articles/41" target={'_blank'} rel="noreferrer">
-                                    here.
-                                  </a>{' '}
-                                </span>
-                              </h1>
-                              <Input
-                                type="text"
-                                placeholder="Enter access token"
-                                label="Access Token"
-                                id="accessTokenId"
-                                name="vanillaAccessToken"
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                value={values?.vanillaAccessToken}
-                                errors={Boolean(touched.vanillaAccessToken && errors.vanillaAccessToken)}
-                                helperText={touched.vanillaAccessToken && errors.vanillaAccessToken}
-                                className="h-2.81 pr-3.12 rounded-md border-app-result-card-border mt-[0.4375rem] bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-thinGray placeholder:text-sm placeholder:leading-6 placeholder:font-Poppins font-Poppins box-border"
-                              />
-                            </div>
-                            <div className="flex justify-end pt-[1.875rem]">
-                              <Button
-                                text="Cancel"
-                                type="submit"
-                                className="cancel mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  h-2.81 w-5.25  rounded border-none"
-                                onClick={() => handleVanillaModal(false)}
-                              />
-                              <Button
-                                text="Save"
-                                type="submit"
-                                disabled={isLoading ? true : !values.vanillaAccessToken || !values.vanillaBaseUrl ? true : false}
-                                className={`text-white font-Poppins text-error font-medium leading-5 btn-save-modal
-                       cursor-pointer rounded shadow-contactBtn w-5.25  ${
-                         isLoading
-                           ? 'opacity-50 cursor-not-allowed '
-                           : !values.vanillaAccessToken || !values.vanillaBaseUrl
-                           ? 'opacity-50 cursor-not-allowed '
-                           : ''
-                       } border-none h-2.81`}
-                              />
-                            </div>
-                          </Form>
-                        )}
-                      </Formik>
-                    </div>
-                  </div>
-                </Modal>
               </div>
             </div>
+            <Modal
+              isOpen={isModalOpen.vanilla}
+              shouldCloseOnOverlayClick={false}
+              onRequestClose={() => handleVanillaModal(false)}
+              className="w-24.31 pb-12 mx-auto rounded-lg border-integration-modal bg-white shadow-modal outline-none"
+              style={{
+                overlay: {
+                  display: 'flex',
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  bottom: 0,
+                  right: 0,
+                  alignItems: 'center'
+                }
+              }}
+            >
+              <div className="vanilla">
+                <h3 className="flex items-center justify-center pt-9 font-Inter text-xl font-semibold leading-6">
+                  <img src={vanillaIcon} alt="" className="px-2.5" />
+                  integrate <span className="font-normal px-2">Vanilla Forums</span>
+                </h3>
+                <div className="flex flex-col px-[1.875rem] pt-9">
+                  <Formik initialValues={vanillaInitialValues} onSubmit={sendVanillaData} validationSchema={vanillaDataSchema}>
+                    {({ errors, handleBlur, handleChange, touched, values }): JSX.Element => (
+                      <Form>
+                        <div className="form-group">
+                          <label htmlFor="siteUrl" className="font-Poppins font-normal text-infoBlack text-sm leading-5">
+                            Site URL*
+                          </label>
+                          <h1 className="font-Inter font-normal text-error leading-7 text-vanillaDescription">
+                            Enter the full URL to your Vanilla site in this format: https://{`yourdomain`}.com
+                          </h1>
+                          <Input
+                            type="text"
+                            placeholder="Enter URL"
+                            label="Site URL"
+                            id="siteUrlId"
+                            name="vanillaBaseUrl"
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            value={values?.vanillaBaseUrl}
+                            errors={Boolean(touched.vanillaBaseUrl && errors.vanillaBaseUrl)}
+                            helperText={touched.vanillaBaseUrl && errors.vanillaBaseUrl}
+                            className="h-2.81 pr-3.12 rounded-md border-app-result-card-border mt-[0.4375rem] bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-thinGray placeholder:text-sm placeholder:leading-6 placeholder:font-Poppins font-Poppins box-border"
+                          />
+                        </div>
+                        <div className="form-group pt-1.12">
+                          <label htmlFor="accessToken" className="font-Poppins font-normal text-infoBlack text-sm leading-5">
+                            Access Token*
+                          </label>
+                          <h1 className="font-Inter font-normal text-error leading-7 text-vanillaDescription">
+                            You can learn how to create an access Token
+                            <span className="text-tag cursor-pointer hover:underline pl-1">
+                              <a href="https://success.vanillaforums.com/kb/articles/41" target={'_blank'} rel="noreferrer">
+                                here.
+                              </a>{' '}
+                            </span>
+                          </h1>
+                          <Input
+                            type="text"
+                            placeholder="Enter access token"
+                            label="Access Token"
+                            id="accessTokenId"
+                            name="vanillaAccessToken"
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            value={values?.vanillaAccessToken}
+                            errors={Boolean(touched.vanillaAccessToken && errors.vanillaAccessToken)}
+                            helperText={touched.vanillaAccessToken && errors.vanillaAccessToken}
+                            className="h-2.81 pr-3.12 rounded-md border-app-result-card-border mt-[0.4375rem] bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-thinGray placeholder:text-sm placeholder:leading-6 placeholder:font-Poppins font-Poppins box-border"
+                          />
+                        </div>
+                        <div className="flex justify-end pt-[1.875rem]">
+                          <Button
+                            text="Cancel"
+                            type="submit"
+                            className="cancel mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  h-2.81 w-5.25  rounded border-none"
+                            onClick={() => handleVanillaModal(false)}
+                          />
+                          <Button
+                            text="Save"
+                            type="submit"
+                            disabled={isLoading ? true : !values.vanillaAccessToken || !values.vanillaBaseUrl ? true : false}
+                            className={`text-white font-Poppins text-error font-medium leading-5 btn-save-modal
+                 cursor-pointer rounded shadow-contactBtn w-5.25  ${isLoading
+                                ? 'opacity-50 cursor-not-allowed '
+                                : !values.vanillaAccessToken || !values.vanillaBaseUrl
+                                  ? 'opacity-50 cursor-not-allowed '
+                                  : ''
+                              } border-none h-2.81`}
+                          />
+                        </div>
+                      </Form>
+                    )}
+                  </Formik>
+                </div>
+              </div>
+            </Modal>
           </div>
         </div>
       </div>

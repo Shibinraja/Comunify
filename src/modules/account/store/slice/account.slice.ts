@@ -12,7 +12,7 @@ const initialState: InitialState = {
   },
   userProfileData: [],
   userProfileUpdateData: [],
-  resetProfilePic: false
+  userProfilePictureUrl: ''
 };
 const changePassword = (state: InitialState, action: PayloadAction<ChangePassword>) => state;
 const uploadProfilePic = (state: InitialState, action: PayloadAction<profilePicInput>) => ({
@@ -22,9 +22,11 @@ const uploadProfilePic = (state: InitialState, action: PayloadAction<profilePicI
 const userProfileData = (state: InitialState, action: PayloadAction<userProfileDataInput>) => state;
 const userProfileUpdateData = (state: InitialState, action: PayloadAction<userProfileUpdateInput>) => state;
 
-const profilePicReset = (state: InitialState, action: PayloadAction<boolean>) => ({
+//Reducer call
+
+const uploadProfilePicResponse = (state: InitialState, action: PayloadAction<string>) => ({
   ...state,
-  resetProfilePic: action.payload
+  userProfilePictureUrl: action.payload
 });
 
 const accountSlice = createSlice({
@@ -35,7 +37,7 @@ const accountSlice = createSlice({
     uploadProfilePic,
     userProfileData,
     userProfileUpdateData,
-    profilePicReset
+    uploadProfilePicResponse
   }
 });
 

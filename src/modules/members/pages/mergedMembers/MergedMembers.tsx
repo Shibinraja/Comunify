@@ -19,6 +19,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import closeIcon from '../../../../assets/images/close-member.svg';
 import { MergeMemberModal } from './MergeMemberModal';
 import profileImage from '../../../../assets/images/user-image.svg';
+import '../membersReview/membersReview.css';
 
 const MergedMembers: React.FC = () => {
   const { workspaceId, memberId } = useParams();
@@ -50,7 +51,7 @@ const MergedMembers: React.FC = () => {
   const [primaryMemberId, setPrimaryMemberId] = useState<Array<MergeMembersDataResult>>([]);
 
   // Function to call the api and list the mergedMembersList
-  const getMergedMemberSuggestionList = async(props: Partial<memberSuggestionType>) => {
+  const getMergedMemberSuggestionList = async (props: Partial<memberSuggestionType>) => {
     setLoading((prev) => ({ ...prev, mergedListLoader: true }));
     const data = await getMergedMemberList({
       workspaceId: workspaceId!,
@@ -192,7 +193,7 @@ const MergedMembers: React.FC = () => {
   };
 
   // function for scroll event
-  const handleScroll = async(event: React.UIEvent<HTMLElement>) => {
+  const handleScroll = async (event: React.UIEvent<HTMLElement>) => {
     event.preventDefault();
     const { clientHeight, scrollHeight, scrollTop } = event.currentTarget;
     if (scrollHeight - scrollTop <= clientHeight + 2 && !loading.mergedListLoader) {
@@ -316,7 +317,10 @@ const MergedMembers: React.FC = () => {
                         checked={(checkedRadioId[primaryMemberId[0]?.id] as boolean) || false}
                         onChange={handleRadioBtn}
                       />{' '}
-                      <span className="w-3 h-3 mr-1.5 border font-normal font-Poppins text-card leading-1.31 border-[#ddd] rounded-full inline-flex peer-checked:bg-[#ABCF6B]"></span>
+
+                      <div className="w-3 h-3 border border-[#ABCF6B] rounded-full mr-1 flex justify-center items-center">
+                        <span className="w-2 h-2  rounded-full check-circle peer-checked:check-circle"></span>
+                      </div>
                       Primary
                     </label>
                   )}
@@ -336,7 +340,7 @@ const MergedMembers: React.FC = () => {
               ))
               : suggestionList?.result?.map((members: MergeMembersDataResult) => (
                 <div key={members.id}>
-                  <div className="flex items-center primary-card box-border app-input-card-border w-26.25 h-7.5 shadow-profileCard rounded-0.6 pl-1.313 mt-5 relative">
+                  <div className="flex items-center primary-card box-border app-input-card-border w-26.25 h-7.5 shadow-profileCard rounded-0.6 py-[28px] px-[21px] bg-[white] mt-5 relative">
                     <div className="w-16 h-16">
                       <img src={members.profilePictureUrl ? members.profilePictureUrl : profileImage} alt="" className="w-16 h-16 rounded-full" />
                     </div>
@@ -362,15 +366,20 @@ const MergedMembers: React.FC = () => {
                             checked={(checkedRadioId[members.id] as boolean) || false}
                             onChange={handleRadioBtn}
                           />{' '}
-                          <span className="w-3 h-3 mr-1.5 border font-normal font-Poppins text-card leading-1.31 border-[#ddd] rounded-full inline-flex peer-checked:bg-[#ABCF6B]"></span>
+                          <span className="w-3 h-3 mr-1.5 border font-normal font-Poppins text-xs leading-1.31 border-[#ddd] rounded-full inline-flex peer-checked:check-circle "></span>
                           Primary
                         </label>
 
                         {/* } */}
                       </div>
                     </div>
-                    <div className="absolute right-7 top-5 cursor-pointer">
-                      <img src={closeIcon} alt="" onClick={() => handleUnMergeModal(members.id)} />
+
+                    <div className="absolute right-3 top-3 cursor-pointer">
+                      <img className='w-10px h-10px '
+                        src={closeIcon}
+                        alt=""
+                        onClick={() => handleUnMergeModal(members.id)}
+                      />
                     </div>
                   </div>
                 </div>

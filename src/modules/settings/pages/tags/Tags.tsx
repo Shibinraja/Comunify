@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import useDebounce from '@/hooks/useDebounce';
 import { useAppSelector } from '@/hooks/useRedux';
+import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 import Button from 'common/button';
 import Input from 'common/input';
 import Pagination from 'common/pagination/pagination';
@@ -39,6 +40,8 @@ const Tags: React.FC<Props> = ({ hidden }) => {
   const [isTagModalOpen, setTagModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | unknown>('');
+
+  const tagLoader = useSkeletonLoading(settingsSlice.actions.deleteTags.type);
 
   const {
     TagFilterResponse: { data: TagFilterResponseData, totalPages },
@@ -369,8 +372,12 @@ const Tags: React.FC<Props> = ({ hidden }) => {
             <Button
               type="button"
               text="YES"
+              disabled={tagLoader}
+              aria-disabled={tagLoader}
               onClick={handleDeleteConfirmationModal}
-              className="border-none ml-2.5 yes-btn h-2.81 w-5.25 box-border rounded shadow-contactBtn cursor-pointer font-Poppins font-medium text-error leading-5 text-white btn-save-modal"
+              className={`border-none ml-2.5 yes-btn h-2.81 w-5.25 box-border rounded shadow-contactBtn cursor-pointer font-Poppins font-medium text-error leading-5 text-white btn-save-modal ${
+                tagLoader ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
             />
           </div>
         </div>
