@@ -200,7 +200,8 @@ const Dashboard: FC = () => {
       <div className="flex justify-between mt-[41px]">
         <div className="flex relative items-center">
           <div
-            className={`flex items-center justify-between px-5 w-11.72 h-3.06 border border-borderPrimary rounded-0.6 shadow-shadowInput ${widgets?.length ? 'cursor-pointer' : 'cursor-not-allowed'
+            className={`flex items-center justify-between px-5 w-11.72 h-3.06 border border-borderPrimary rounded-0.6 shadow-shadowInput ${
+              widgets?.length ? 'cursor-pointer' : 'cursor-not-allowed'
             }  `}
             ref={dropDownRef}
             onClick={handleDropDownActive}
@@ -285,7 +286,8 @@ const Dashboard: FC = () => {
             <Button
               text=""
               disabled={isButtonLoading ? true : false}
-              className={`flex justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow ${isButtonLoading ? 'opacity-50 cursor-not-allowed ' : 'cursor-pointer'
+              className={`flex justify-between w-11.68 btn-save-modal h-3.12 items-center px-5 rounded-0.3 shadow-connectButtonShadow ${
+                isButtonLoading ? 'opacity-50 cursor-not-allowed ' : 'cursor-pointer'
               }`}
               onClick={saveWidgetLayout}
             >
