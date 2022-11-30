@@ -50,7 +50,7 @@ const MergedMembers: React.FC = () => {
   const [primaryMemberId, setPrimaryMemberId] = useState<Array<MergeMembersDataResult>>([]);
 
   // Function to call the api and list the mergedMembersList
-  const getMergedMemberSuggestionList = async (props: Partial<memberSuggestionType>) => {
+  const getMergedMemberSuggestionList = async(props: Partial<memberSuggestionType>) => {
     setLoading((prev) => ({ ...prev, mergedListLoader: true }));
     const data = await getMergedMemberList({
       workspaceId: workspaceId!,
@@ -192,7 +192,7 @@ const MergedMembers: React.FC = () => {
   };
 
   // function for scroll event
-  const handleScroll = async (event: React.UIEvent<HTMLElement>) => {
+  const handleScroll = async(event: React.UIEvent<HTMLElement>) => {
     event.preventDefault();
     const { clientHeight, scrollHeight, scrollTop } = event.currentTarget;
     if (scrollHeight - scrollTop <= clientHeight + 2 && !loading.mergedListLoader) {

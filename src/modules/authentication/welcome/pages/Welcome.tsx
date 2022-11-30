@@ -21,9 +21,6 @@ const Welcome: React.FC = () => {
   useEffect(() => {
     setRefreshToken();
     dispatch(authSlice.actions.getSubscriptions());
-  }, []);
-
-  useEffect(() => {
     if (decodedToken?.isPaymentSuccess) {
       navigate('/create-workspace');
     }

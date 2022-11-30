@@ -1,5 +1,5 @@
 import React, { Reducer, useEffect, useReducer } from 'react';
-import { Navigate, NavigateFunction, useNavigate } from 'react-router';
+import { Navigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import cookie from 'react-cookies';
 import { DecodeToken } from 'modules/authentication/interface/auth.interface';
@@ -25,6 +25,10 @@ const reducer: Reducer<PublicRouteState, PublicRouteStateValues> = (state, actio
       return { ...state, route: action.payload };
     case 'SET_SUPER_ADMIN_USER_ROUTE':
       return { ...state, route: action.payload };
+    case 'SET_SUBSCRIPTION_EXPIRED':
+      return { ...state, route: action.payload };
+    case 'SET_PAYMENT_SUCCESS':
+      return { ...state, route: action.payload };
     default:
       return state;
   }
@@ -38,7 +42,6 @@ const InitialRouteState = {
 const PublicRoute: React.FC<Props> = ({ children }) => {
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const dispatch: AppDispatch = useAppDispatch();
-  const navigate: NavigateFunction = useNavigate();
   const tokenData: string = getLocalRefreshToken();
   const access_token = tokenData || cookie.load('x-auth-cookie');
   const decodedToken: DecodeToken = access_token && decodeToken(access_token);
@@ -80,12 +83,12 @@ const PublicRoute: React.FC<Props> = ({ children }) => {
       if (decodedToken?.isSubscribed && decodedToken?.isWorkSpaceCreated) {
         setRefreshToken();
         if (decodedToken?.isExpired) {
-          navigate(`/subscription/expired`);
+          dispatchReducer({ type: 'SET_SUBSCRIPTION_EXPIRED', payload: `/subscription/expired` });
           showWarningToast('Your subscription has expired! Please purchase a plan to continue using comunify');
           return false;
         }
         if (!decodedToken?.isPaymentSuccess) {
-          navigate(`/subscription/expired/activate-subscription?paymentStatus=paymentFailed`);
+          dispatchReducer({ type: 'SET_PAYMENT_SUCCESS', payload: `/subscription/expired/activate-subscription?paymentStatus=paymentFailed` });
           return false;
         }
         dispatchReducer({ type: 'SET_DASHBOARD_ROUTE', payload: `/${workspaceId}/dashboard` });

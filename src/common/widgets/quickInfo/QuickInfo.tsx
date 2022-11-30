@@ -64,7 +64,7 @@ const QuickInfo: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
       <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Quick Info</h3>
       <div
         className={`grid ${isShrunk ? 'grid-cols-2 h-[137px]' : !isManageMode ? 'grid-cols-4 w-full h-[134px]' : 'grid-cols-4 widget-border relative w-full'
-          }  info-data py-6 box-border bg-white dark:bg-secondaryDark
+        }  info-data py-6 box-border bg-white dark:bg-secondaryDark
         rounded-0.6 mt-1.868 border border-borderPrimary dark:border-borderDark shadow-profileCard`}
       >
         <div className="flex flex-col justify-center items-center">
@@ -99,7 +99,7 @@ const QuickInfo: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
             </div>
             <div
               className={`mt-0.1512 font-Poppins font-normal text-status leading-1.12 ${isShrunk ? 'text-[0.5597rem]' : 'text-xs'
-                }  dark:text-greyDark`}
+              }  dark:text-greyDark`}
             >
               {!isManageMode && !isSidePanelOpen ? (
                 !isLoading ? (
@@ -149,7 +149,7 @@ const QuickInfo: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
             </div>
             <div
               className={`mt-0.1512 font-Poppins font-normal text-status leading-1.12  ${isShrunk ? 'text-[0.5597rem]' : 'text-xs'
-                } dark:text-greyDark`}
+              } dark:text-greyDark`}
             >
               {!isManageMode && !isSidePanelOpen ? (
                 !isLoading ? (
