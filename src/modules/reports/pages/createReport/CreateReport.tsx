@@ -363,11 +363,21 @@ const CreateReport = () => {
     }
   };
 
-  const handleTabChange = (e: KeyboardEvent<HTMLDivElement>) => {
-    if(e.keyCode === 9) {
-      setIsReportActive(false);
-    }else{
-      setIsReportActive(true);
+  const handleTabChange = (e: KeyboardEvent<HTMLDivElement>, dropdownEvent: string) => {
+    if (e.keyCode === 9) {
+      if (dropdownEvent === 'platform') {
+        setIsPlatformActive(false);
+      }
+      if (dropdownEvent === 'schedule') {
+        setIsReportActive(false);
+      }
+    } else {
+      if (dropdownEvent === 'platform') {
+        setIsPlatformActive(true);
+      }
+      if (dropdownEvent === 'schedule') {
+        setIsReportActive(true);
+      }
     }
   };
 
@@ -644,6 +654,7 @@ const CreateReport = () => {
                     }`}
                     onClick={() => setIsPlatformActive((prevActive) => !prevActive)}
                     onBlur={() => setFieldTouched('platform')}
+                    onKeyDown={(e) => handleTabChange(e, 'platform')}
                   >
                     <input className="w-[1px] border-none focus:outline-none" type="text" />
                     Select
@@ -721,7 +732,7 @@ const CreateReport = () => {
                       className="mt-5 flex flex-col ml-5 w-20.5 2xl:w-full relative"
                       ref={reportOptionRef}
                       onBlur={() => setFieldTouched('schedule')}
-                      onKeyDown={handleTabChange}
+                      onKeyDown={(e) => handleTabChange(e, 'schedule')}
                     >
                       <label htmlFor="name" className="text-trial font-Poppins text-infoBlack font-normal leading-1.31">
                         Schedule Report

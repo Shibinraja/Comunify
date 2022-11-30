@@ -66,7 +66,7 @@ const Account = () => {
   const dropDownRef = useRef<HTMLDivElement>(null);
   const domainRef = useRef<HTMLLIElement>(null);
 
-  const { resetProfilePic } = useAppSelector((state) => state.accounts);
+  const { userProfilePictureUrl } = useAppSelector((state) => state.accounts);
   const accessToken = localStorage.getItem('accessToken') || cookie.load('x-auth-cookie');
   const decodedToken: DecodeToken = accessToken && decodeToken(accessToken);
   const dispatch = useDispatch();
@@ -92,10 +92,11 @@ const Account = () => {
   }, [isDropDownActive]);
 
   useEffect(() => {
-    if (resetProfilePic) {
-      setProfileUploadImage(profileData?.profilePhotoUrl);
+    if(userProfilePictureUrl) {
+      setProfileUploadImage(userProfilePictureUrl);
     }
-  }, [resetProfilePic]);
+  }, [userProfilePictureUrl]);
+
 
   const fetchProfileData = async () => {
     try {
@@ -148,10 +149,9 @@ const Account = () => {
       imageFile?.name?.split('.')?.pop()?.search('jpeg') === 0 ||
       imageFile?.name?.split('.')?.pop()?.search('png') === 0
     ) {
-      setProfileUploadImage(URL.createObjectURL(imageFile as Blob));
+      // setProfileUploadImage(URL.createObjectURL(imageFile as Blob));
       const base64: any = await convertBase64(imageFile);
       const uploadData = { profilePic: base64?.toString() || '', fileName: imageFile?.name || 'file' };
-      dispatch(accountSlice.actions.profilePicReset(false));
       dispatch(accountSlice.actions.uploadProfilePic(uploadData as profilePicInput));
     } else {
       showErrorToast('Only jpg/png files are supported');

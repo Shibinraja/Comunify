@@ -68,7 +68,6 @@ const TopBar: React.FC = () => {
   // eslint-disable-next-line no-unused-vars
   const [, setActivityNextCursor] = useState<string | null>('');
   const [profileImage, setProfileImage] = useState<string>('');
-  const [profileUploadImage, setProfileUploadImage] = useState<string>('');
   const [unReadStatus, setUnReadStatus] = useState('false');
   const [notificationList, setNotificationList] = useState<NotificationList>({
     result: [],
@@ -81,7 +80,7 @@ const TopBar: React.FC = () => {
   const notificationRef = useRef<HTMLImageElement | null>(null);
 
   const options: string[] = ['Profile Settings', 'Sign Out'];
-  const { resetProfilePic } = useAppSelector((state) => state.accounts);
+  const { userProfilePictureUrl } = useAppSelector((state) => state.accounts);
   const accessToken = localStorage.getItem('accessToken') || cookie.load('x-auth-cookie');
   const decodedToken: DecodeToken = accessToken && decodeToken(accessToken);
   const debouncedValue = useDebounce(searchSuggestion, 300);
@@ -129,7 +128,6 @@ const TopBar: React.FC = () => {
     fetchProfileData();
     if (profilePictureUrl) {
       setProfileImage(profilePictureUrl.profilePic);
-      setProfileUploadImage(profilePictureUrl.profilePic);
     }
 
     // Event functionality which checks the route changes in the app and triggers the possible route callback functionality.
@@ -159,16 +157,10 @@ const TopBar: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (profilePictureUrl) {
-      setProfileImage(profilePictureUrl.profilePic);
+    if(userProfilePictureUrl) {
+      setProfileImage(userProfilePictureUrl);
     }
-  }, [profilePictureUrl]);
-
-  useEffect(() => {
-    if (resetProfilePic) {
-      setProfileImage(profileUploadImage);
-    }
-  }, [resetProfilePic]);
+  }, [userProfilePictureUrl]);
 
   useEffect(() => {
     setSuggestionList({
