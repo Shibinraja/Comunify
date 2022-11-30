@@ -4,7 +4,7 @@
 /* eslint-disable no-unused-vars */
 import { SuccessResponse, AxiosError } from '@/lib/api';
 import { PayloadAction } from '@reduxjs/toolkit';
-import { showSuccessToast, showErrorToast } from 'common/toast/toastFunctions';
+import { showSuccessToast, showErrorToast, showInfoToast } from 'common/toast/toastFunctions';
 import { ChangePassword, profilePicInput, userProfileDataInput, userProfileUpdateInput } from 'modules/account/interfaces/account.interface';
 import { changePasswordService, updateProfileDataService, uploadProfilePicService } from 'modules/account/services/account.services';
 import loaderSlice from 'modules/authentication/store/slices/loader.slice';
@@ -30,13 +30,14 @@ function* changePassword(action: PayloadAction<ChangePassword>) {
 function* uploadProfilePic(action: PayloadAction<profilePicInput>) {
   try {
     yield put(loaderSlice.actions.startAuthLoadingAction());
-    const res: SuccessResponse<{}> = yield call(uploadProfilePicService, action.payload);
+    showInfoToast('Profile picture uploading in-progress');
+    const res: SuccessResponse<{ profilePhotoUrl: string }> = yield call(uploadProfilePicService, action.payload);
     if (res?.message) {
       showSuccessToast('Profile picture uploaded successfully');
+      yield put(accountSlice.actions.uploadProfilePicResponse(res?.data?.profilePhotoUrl));
     }
   } catch (e) {
     const error = e as AxiosError<unknown>;
-    yield put(accountSlice.actions.profilePicReset(true));
     showErrorToast(error?.response?.statusText as string);
   } finally {
     yield put(loaderSlice.actions.stopAuthLoadingAction());
