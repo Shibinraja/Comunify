@@ -72,7 +72,9 @@ const MembersCard: React.FC = () => {
             <Skeleton count={count_3} width={width_90} />
           ) : (
             <Fragment>
-              <div className="text-infoBlack font-Poppins font-semibold text-signIn leading-3.18 cursor-auto">{handleCount(inActiveMembers.count)}</div>
+              <div className="text-infoBlack font-Poppins font-semibold text-signIn leading-3.18 cursor-auto">
+                {handleCount(inActiveMembers.count)}
+              </div>
               <div className="font-Poppins font-semibold text-infoBlack text-member leading-4">{inActiveMembers.title}</div>
               <div className="text-[8px] xl:text-card  font-Poppins font-normal leading-1.12 text-status mt-0.151">
                 {inActiveMembers.analyticMessage}

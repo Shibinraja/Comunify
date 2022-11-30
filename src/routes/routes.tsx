@@ -49,11 +49,10 @@ const routes: RoutesArray[] | any = [
       //to redirect invalid routes back to the index route
       {
         path: '*',
-        element: <NotFound/>
+        element: <NotFound />
       }
     ]
   }
-
 ];
 
 const Router = () => useRoutes(routes);

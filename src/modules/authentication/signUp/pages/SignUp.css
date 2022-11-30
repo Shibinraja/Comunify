@@ -8,12 +8,10 @@
   }
 }
 
-
-.auth-layout-section {
-  background-image: url('../../../../assets/images/sign-up-bg.svg');
+.auth-layout {
+  background-image: url('../src/assets/images/login-bg.svg');
   background-repeat: no-repeat;
-
   background-size: 90%;
-  background-position: top left;
+  background-position:top right;
   background-color: #f6fdff;
 }

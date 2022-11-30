@@ -79,8 +79,9 @@ const MemberGrowth: FC<WidgetComponentProps> = (props: WidgetComponentProps) => 
             )}
             {Boolean(memberGrowthWidgetData?.series?.length) === false && !isLoading && (
               <div
-                className={`absolute top-24 font-Poppins text-infoBlack  ${isManageMode ? 'text-lg top-24 ' : 'text-xs top-28'
-                  } font-normal flex justify-center items-center w-full`}
+                className={`absolute top-24 font-Poppins text-infoBlack  ${
+                  isManageMode ? 'text-lg top-24 ' : 'text-xs top-28'
+                } font-normal flex justify-center items-center w-full`}
               >
                 <h4>No data available</h4>
               </div>
@@ -97,10 +98,10 @@ const MemberGrowth: FC<WidgetComponentProps> = (props: WidgetComponentProps) => 
                     ? memberGrowthWidgetData?.series
                     : []
                   : [
-                    { name: 'Slack', data: [0, 0, 0, 3, 0, 0, 0] },
-                    { name: 'Vanilla', data: [0, 0, 0, 1, 0, 0, 0] },
-                    { name: 'Khoros', data: [0, 0, 0, 3, 1, 0, 0] }
-                  ]
+                      { name: 'Slack', data: [0, 0, 0, 3, 0, 0, 0] },
+                      { name: 'Vanilla', data: [0, 0, 0, 1, 0, 0, 0] },
+                      { name: 'Khoros', data: [0, 0, 0, 3, 1, 0, 0] }
+                    ]
               }
               width="100%"
               height="100%"

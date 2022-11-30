@@ -397,7 +397,7 @@ const Activity: React.FC = () => {
     }
   };
 
-  const handleUnAssignTagsName = (id: string, activityId?:string): void => {
+  const handleUnAssignTagsName = (id: string, activityId?: string): void => {
     if (tagUnAssignLoading) {
       dispatch(
         settingsSlice.actions.unAssignTags({
@@ -668,8 +668,7 @@ const Activity: React.FC = () => {
                                               alt=""
                                               onClick={() => {
                                                 handleUnAssignTagsName(tags.id, data.id);
-                                              }
-                                              }
+                                              }}
                                             />
                                           </div>
                                         </div>

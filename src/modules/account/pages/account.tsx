@@ -92,11 +92,10 @@ const Account = () => {
   }, [isDropDownActive]);
 
   useEffect(() => {
-    if(userProfilePictureUrl) {
+    if (userProfilePictureUrl) {
       setProfileUploadImage(userProfilePictureUrl);
     }
   }, [userProfilePictureUrl]);
-
 
   const fetchProfileData = async () => {
     try {
@@ -194,9 +193,9 @@ const Account = () => {
   };
 
   const handleTabChange = (e: KeyboardEvent<HTMLDivElement>) => {
-    if(e.keyCode === 9) {
+    if (e.keyCode === 9) {
       setDropDownActive(false);
-    }else{
+    } else {
       setDropDownActive(true);
     }
   };
@@ -291,7 +290,7 @@ const Account = () => {
             </div>
             <div className="flex flex-col mt-1.08 xl:w-[300px] w-1/2">
               <label htmlFor="organization" className="font-Poppins text-trial text-infoBlack font-normal leading-1.31">
-              Company Name
+                Company Name
               </label>
               <Input
                 type="text"
@@ -313,7 +312,13 @@ const Account = () => {
                 Domain
               </label>
               <div className="flex flex-col relative w-full">
-                <div className="cursor-pointer" ref={dropDownRef} onClick={() => setDropDownActive(!isDropDownActive)} onBlur={() => setFieldTouched('domainSector', true)} onKeyDown={handleTabChange}>
+                <div
+                  className="cursor-pointer"
+                  ref={dropDownRef}
+                  onClick={() => setDropDownActive(!isDropDownActive)}
+                  onBlur={() => setFieldTouched('domainSector', true)}
+                  onKeyDown={handleTabChange}
+                >
                   <div className="h-2.81 flex items-center w-full  justify-between pl-3 pr-[17.12px] py-2 app-result-card-border bg-white  py-2 box-border shadow-inputShadow  rounded-0.3 mt-0.40 font-Poppins text-thinGray font-normal leading-1.31 text-trial">
                     <div className={selectedDomainSector === 'Select' ? 'text-secondaryGray' : 'text-black'}>
                       <input className="w-[1px] border-none focus:outline-none" type="text" />
@@ -419,8 +424,7 @@ const Account = () => {
                       <div className="">
                         {renderAccountForm(handleBlur, handleChange, values, touched, errors, setFieldTouched)}
                         <div className="py-7">
-                          <div className="flex items-center justify-end w-full"
-                            onFocus={() => setDropDownActive(false)}>
+                          <div className="flex items-center justify-end w-full" onFocus={() => setDropDownActive(false)}>
                             <NavLink to={!decodedToken.isAdmin ? `/${workspaceId}/dashboard` : '/admin/users'} className="p-0 m-0 mr-2">
                               <Button
                                 type="button"
@@ -486,7 +490,7 @@ const Account = () => {
                             {currentPassword === 'password' ? (
                               <img className="cursor-pointer w-[13.39px] h-[9.47px]" src={closeEyeIcon} alt="" />
                             ) : (
-                              <img className="cursor-pointer w-[13.39px] h-[9.47px]"  src={eyeIcon} alt="" />
+                              <img className="cursor-pointer w-[13.39px] h-[9.47px]" src={eyeIcon} alt="" />
                             )}
                           </div>
                         </div>
@@ -520,7 +524,7 @@ const Account = () => {
                           />
                           <div onClick={togglePassword2} className="absolute top-[2.6rem] right-4">
                             {newPassword === 'password' ? (
-                              <img className="cursor-pointer w-[13.39px] h-[9.47px]" src={closeEyeIcon}  alt="" />
+                              <img className="cursor-pointer w-[13.39px] h-[9.47px]" src={closeEyeIcon} alt="" />
                             ) : (
                               <img className="cursor-pointer w-[13.39px] h-[9.47px]" src={eyeIcon} alt="" />
                             )}
