@@ -308,12 +308,16 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
     const checkOrganization: Array<string> = [];
     const checkLocation: Array<string> = [];
 
-    if (MemberFilterList[0] === Boolean(false)) {
+    // Condition to check if all the filters are not selected to disable the apply btn in filter.
+    const checkMemberFilterList = MemberFilterList.every((filter:unknown) => filter === false);
+
+    if (checkMemberFilterList) {
       setCheckedPlatform({});
       setCheckedTags({});
       setCheckedLocation({});
       setCheckedOrganization({});
     }
+
 
     if (Object.keys(checkedPlatform).length > 0) {
       Object.keys(checkedPlatform).map((platform: string) => {
@@ -408,9 +412,9 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
               <div className="flex flex-col gap-y-5 px-3 py-3 max-h-[11.25rem] overflow-y-scroll">
                 {PlatformFilterResponse &&
                   PlatformFilterResponse.map(
-                    (platform: PlatformResponse, index: number) =>
+                    (platform: PlatformResponse) =>
                       platform?.isConnected && (
-                        <div className="flex items-center" key={index}>
+                        <div className="flex items-center" key={platform.id}>
                           <div className="mr-2">
                             <input
                               type="checkbox"
@@ -462,8 +466,8 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                 </div>
                 <div className="flex flex-col gap-y-5 px-3 max-h-[12.5rem] overflow-scroll">
                   {TagFilterResponse &&
-                    TagFilterResponse.map((tags: TagResponseData, index: number) => (
-                      <div key={index} className="flex items-center mb-2">
+                    TagFilterResponse.map((tags: TagResponseData) => (
+                      <div key={tags.id} className="flex items-center mb-2">
                         <div className="mr-2">
                           <input
                             type="checkbox"
@@ -581,9 +585,9 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                 <div className="flex flex-col gap-y-5 px-3 max-h-[12.5rem] overflow-scroll bg-white">
                   {membersLocationFilterResponse &&
                     membersLocationFilterResponse.map(
-                      (location: { location: string }, index: number) =>
+                      (location: { location: string }) =>
                         location.location !== null && (
-                          <div key={index} className="flex items-center mb-2">
+                          <div key={Math.random()} className="flex items-center mb-2">
                             <div className="mr-2">
                               <input
                                 type="checkbox"
@@ -638,9 +642,9 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                 <div className="flex flex-col gap-y-5 px-3  bg-white max-h-[12.5rem] overflow-scroll">
                   {membersOrganizationFilterResponse &&
                     membersOrganizationFilterResponse.map(
-                      (organization: { organization: string }, index: number) =>
+                      (organization: { organization: string }) =>
                         organization.organization !== null && (
-                          <div key={index} className="flex items-center">
+                          <div key={Math.random()} className="flex items-center">
                             <div className="mr-2">
                               <input
                                 type="checkbox"

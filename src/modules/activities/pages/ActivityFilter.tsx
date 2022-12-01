@@ -48,13 +48,6 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
 
   const loader = useSkeletonLoading(activitiesSlice.actions.getActiveStreamData.type);
 
-  // Returns the debounced value of the search text.
-  useEffect(() => {
-    if (debouncedTagValue) {
-      getFilteredMembersTagList(1, debouncedTagValue);
-    }
-  }, [debouncedTagValue]);
-
   useEffect(() => {
     document.addEventListener('click', handleOutsideClick);
     setSaveRefObject(dropDownRef.current);
@@ -63,6 +56,17 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
       document.removeEventListener('click', handleOutsideClick);
     };
   }, []);
+
+  useEffect(() => {
+    handleFilterCount();
+  }, [checkedPlatform, checkedTags]);
+
+  // Returns the debounced value of the search text.
+  useEffect(() => {
+    if (debouncedTagValue) {
+      getFilteredMembersTagList(1, debouncedTagValue);
+    }
+  }, [debouncedTagValue]);
 
   const handleOutsideClick = (event: MouseEvent) => {
     if (dropDownRef && dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
@@ -165,7 +169,10 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
     const checkPlatform: Array<string> = [];
     const checkTags: Array<string> = [];
 
-    if (ActivityFilterList[0] === Boolean(false)) {
+    // Condition to check if all the filters are not selected to disable the apply btn in filter.
+    const checkActivityFilterList = ActivityFilterList.every((filter:unknown) => filter === false);
+
+    if (checkActivityFilterList) {
       setCheckedPlatform({});
       setCheckedTags({});
     }
@@ -212,10 +219,6 @@ const ActivityFilter: FC<ActivityStreamTypesProps> = ({ page, limit, activityFil
     }
     handleFilterDropdown();
   };
-
-  useEffect(() => {
-    handleFilterCount();
-  }, [checkedPlatform, checkedTags]);
 
   const handleFilterCount = () => {
     const getFilterCount = (filterObject: any) =>
