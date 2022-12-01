@@ -375,8 +375,13 @@ const CreateReport = () => {
       if (dropdownEvent === 'platform') {
         setIsPlatformActive(true);
       }
-      if (dropdownEvent === 'schedule') {
-        setIsReportActive(true);
+      if(dropdownEvent === 'schedule') {
+        if (e.keyCode === 13) {
+          setIsReportActive(false);
+        }
+        if (e.keyCode !== 13) {
+          setIsReportActive(true);
+        }
       }
     }
   };
