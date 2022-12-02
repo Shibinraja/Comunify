@@ -223,6 +223,7 @@ function* logout() {
 function* getSubscriptions() {
   try {
     yield put(loaderSlice.actions.startAuthLoadingAction());
+    yield put(loaderSlice.actions.startLoadingAction(authSlice.actions.getSubscriptions.type));
     const res: AxiosResponse = yield call(getSubscriptionPackagesService);
     yield put(authSlice.actions.setSubscriptions({ subscriptionData: res?.data }));
   } catch (e) {
@@ -230,6 +231,7 @@ function* getSubscriptions() {
     showErrorToast(error?.response?.data?.message);
   } finally {
     yield put(loaderSlice.actions.stopAuthLoadingAction());
+    yield put(loaderSlice.actions.stopLoadingAction(authSlice.actions.getSubscriptions.type));
   }
 }
 

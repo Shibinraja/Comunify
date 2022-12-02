@@ -60,7 +60,6 @@ const deleteTags = (state: InitialState, action: PayloadAction<Omit<updateTagPro
 const assignTags = (state: InitialState, action: PayloadAction<assignTagProps>) => state;
 const unAssignTags = (state: InitialState, action: PayloadAction<unAssignTagProps>) => state;
 
-//Reducer Call
 
 //Reducer Call
 const getPlatformFilterData = (state: InitialState, action: PayloadAction<Array<PlatformResponse>>) => ({

@@ -35,6 +35,9 @@ import vanillaIcon from '../../../../assets/images/vanilla-forum.svg';
 import settingsSlice from '../../../settings/store/slice/settings.slice';
 
 import './Integration.css';
+import useSkeletonLoading from '@/hooks/useSkeletonLoading';
+import Skeleton from 'react-loading-skeleton';
+import { width_70, width_90 } from 'constants/constants';
 
 Modal.setAppElement('#root');
 
@@ -55,9 +58,12 @@ const Integration: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const dispatch = useDispatch();
+
+  const { PlatformFilterResponse } = usePlatform();
+  const PlatformIntegrationLoader = useSkeletonLoading(settingsSlice.actions.platformData.type);
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const PlatformsConnected = JSON.parse(localStorage.getItem('platformsConnected')!);
-  const { PlatformFilterResponse } = usePlatform();
+
   const navigate = useNavigate();
   const workspaceId = getLocalWorkspaceId();
   const [searchParams] = useSearchParams();
@@ -112,7 +118,6 @@ const Integration: React.FC = () => {
       case PlatformsEnumType.DISCORD:
         NavigateToDiscordConnectPage();
         break;
-
       case PlatformsEnumType.REDDIT:
         NavigateToRedditConnectPage();
         setPlatformIcons((prevState) => ({ ...prevState, reddit: icon }));
@@ -260,7 +265,6 @@ const Integration: React.FC = () => {
    duration-300 dark:bg-secondaryDark dark:border dark:border-[#9B9B9B]`;
 
   return (
-
     <div className="flex flex-col h-auto layout-height">
       <div className=" flex h-full overflow-auto ">
         <div className="w-3/5 2xl:w-1/2 auth-layout-section flex items-center justify-center 3xl:justify-end pr-0 3xl:pr-16 h-[885px]">
@@ -271,26 +275,40 @@ const Integration: React.FC = () => {
         <div className="flex justify-center w-1/2 3xl:items-center 3xl:justify-start  pl-0 3xl:pl-16">
           <div className="flex flex-col  no-scrollbar-firefox pt-[109.57px]">
             <h3 className="font-Inter text-neutralBlack font-bold not-italic text-signIn leading-2.8">Integrations </h3>{' '}
-
             <div className="flex flex-col gap-0.93 relative w-fit mt-1.8">
               <div className="grid grid-cols-3 gap-0.93">
-                {PlatformFilterResponse?.map((data: PlatformResponse) => (
-                  <div
-                    key={`${data?.id + data?.name}`}
-                    className="integration shadow-integrationCardShadow app-input-card-border border-integrationBorder w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center"
-                  >
-                    <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                      <img src={data?.platformLogoUrl} alt="" className="h-2.31 rounded-full w-[2.3125rem]" />
-                    </div>
-                    <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">{data?.name}</div>
-                    <Button
-                      type="button"
-                      text={data.isConnected ? 'Disconnect' : 'Connect'}
-                      className={data.isConnected ? disConnectedBtnClassName : connectedBtnClassName}
-                      onClick={() => handleModals(data?.name.toLocaleLowerCase().trim(), data?.platformLogoUrl)}
-                    />
-                  </div>
-                ))}
+                {!PlatformIntegrationLoader
+                  ? PlatformFilterResponse?.map((data: PlatformResponse) => (
+                      <div
+                        key={`${data?.id + data?.name}`}
+                        className="integration shadow-integrationCardShadow app-input-card-border border-integrationBorder w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center"
+                      >
+                        <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
+                          <img src={data?.platformLogoUrl} alt="" className="h-2.31 rounded-full w-[2.3125rem]" />
+                        </div>
+                        <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">{data?.name}</div>
+                        <Button
+                          type="button"
+                          text={data.isConnected ? 'Disconnect' : 'Connect'}
+                          className={data.isConnected ? disConnectedBtnClassName : connectedBtnClassName}
+                          onClick={() => handleModals(data?.name.toLocaleLowerCase().trim(), data?.platformLogoUrl)}
+                        />
+                      </div>
+                    ))
+                  : Array.from({ length: 5 }, (_, i) => i + 1).map((type: number) => (
+                      <div
+                        key={type}
+                        className="integration shadow-integrationCardShadow app-input-card-border border-integrationBorder w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center"
+                      >
+                        <div className="flex items-center justify-center">
+                          <Skeleton circle width={'4rem'} height={'4rem'} className="h-2.31 rounded-full w-[2.3125rem]" />
+                        </div>
+                        <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">
+                          <Skeleton width={width_70} />
+                        </div>
+                        <Skeleton width={width_90} />
+                      </div>
+                    ))}
               </div>
               <div className="flex justify-end">
                 <div className="flex items-center pb-5" onClick={() => navigate(`/${workspaceId}/dashboard`)}>
@@ -386,12 +404,13 @@ const Integration: React.FC = () => {
                             type="submit"
                             disabled={isLoading ? true : !values.vanillaAccessToken || !values.vanillaBaseUrl ? true : false}
                             className={`text-white font-Poppins text-error font-medium leading-5 btn-save-modal
-                 cursor-pointer rounded shadow-contactBtn w-5.25  ${isLoading
-                                ? 'opacity-50 cursor-not-allowed '
-                                : !values.vanillaAccessToken || !values.vanillaBaseUrl
-                                  ? 'opacity-50 cursor-not-allowed '
-                                  : ''
-                              } border-none h-2.81`}
+                 cursor-pointer rounded shadow-contactBtn w-5.25  ${
+                   isLoading
+                     ? 'opacity-50 cursor-not-allowed '
+                     : !values.vanillaAccessToken || !values.vanillaBaseUrl
+                     ? 'opacity-50 cursor-not-allowed '
+                     : ''
+                 } border-none h-2.81`}
                           />
                         </div>
                       </Form>
