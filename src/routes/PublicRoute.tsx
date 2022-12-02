@@ -1,5 +1,5 @@
 import React, { Reducer, useEffect, useReducer } from 'react';
-import { Navigate } from 'react-router';
+import { Navigate, NavigateFunction, useNavigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import cookie from 'react-cookies';
 import { DecodeToken } from 'modules/authentication/interface/auth.interface';
@@ -42,6 +42,7 @@ const InitialRouteState = {
 const PublicRoute: React.FC<Props> = ({ children }) => {
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const dispatch: AppDispatch = useAppDispatch();
+  const navigate: NavigateFunction = useNavigate();
   const tokenData: string = getLocalRefreshToken();
   const access_token = tokenData || cookie.load('x-auth-cookie');
   const decodedToken: DecodeToken = access_token && decodeToken(access_token);
@@ -75,6 +76,7 @@ const PublicRoute: React.FC<Props> = ({ children }) => {
         dispatch(authSlice.actions.setIsAuthenticated(true));
         return false;
       }
+      //Defunct as of now
       // if (!decodedToken?.isSubscribed && decodedToken?.isEmailVerified) {
       //   dispatchReducer({ type: 'SET_SUBSCRIPTION_ROUTE', payload: '/subscription' });
       //   dispatch(authSlice.actions.setIsAuthenticated(true));
@@ -83,12 +85,14 @@ const PublicRoute: React.FC<Props> = ({ children }) => {
       if (decodedToken?.isSubscribed && decodedToken?.isWorkSpaceCreated) {
         setRefreshToken();
         if (decodedToken?.isExpired) {
-          dispatchReducer({ type: 'SET_SUBSCRIPTION_EXPIRED', payload: `/subscription/expired` });
+          navigate(`/subscription/expired`);
+          // dispatchReducer({ type: 'SET_SUBSCRIPTION_EXPIRED', payload: '/subscription/expired' });
           showWarningToast('Your subscription has expired! Please purchase a plan to continue using comunify');
           return false;
         }
         if (!decodedToken?.isPaymentSuccess) {
-          dispatchReducer({ type: 'SET_PAYMENT_SUCCESS', payload: `/subscription/expired/activate-subscription?paymentStatus=paymentFailed` });
+          navigate(`/subscription/expired/activate-subscription?paymentStatus=paymentFailed`);
+          // dispatchReducer({ type: 'SET_PAYMENT_SUCCESS', payload: `/subscription/expired/activate-subscription?paymentStatus=paymentFailed` });
           return false;
         }
         dispatchReducer({ type: 'SET_DASHBOARD_ROUTE', payload: `/${workspaceId}/dashboard` });

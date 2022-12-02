@@ -681,7 +681,7 @@ const Members: React.FC = () => {
               </div>
             )}
           </div>
-          <div className="ml-1.30 w-[155px]">{MemberFilter}</div>
+          <div className="ml-1.30 w-[155px]"tabIndex={0}>{MemberFilter}</div>
           <div className="ml-0.652 w-[112px]">
             <div
               aria-disabled={fetchLoader}
