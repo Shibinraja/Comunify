@@ -25,7 +25,7 @@ export interface ActivityCard {
   description: string;
   sourceUrl: string | null;
   activityTime: Date;
-  profilePictureUrl: string | null;
+  profilePictureUrl: string;
   platforms: {
     name: string;
     id: string;
