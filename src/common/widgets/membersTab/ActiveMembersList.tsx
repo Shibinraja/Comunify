@@ -58,7 +58,6 @@ const ActiveMembersList: React.FC<Props> = ({ hidden, membersWidgetData, isLoadi
                 </div>
               </div>
             </Fragment>
-
           ))
         )}
       </div>

@@ -138,7 +138,6 @@ const DiscordIntegrationDetails: React.FC = () => {
                 </div>
               )}
             </div>
-
           </div>
         </div>
 

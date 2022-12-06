@@ -15,7 +15,7 @@ const Input = ({
   helperText,
   ...rest
 }: // ...rest
-  Props) => (
+Props) => (
   <div className="flex flex-col relative">
     <input
       id={id}

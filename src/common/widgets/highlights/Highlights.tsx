@@ -34,7 +34,7 @@ const Highlights: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
   const getActivityWidgetData = async () => {
     setIsLoading(true);
     const newFilter = { ...filters };
-    newFilter['type'] = defaultTab ? defaultTab : selectedTab as string;
+    newFilter['type'] = defaultTab ? defaultTab : (selectedTab as string);
     newFilter['limit'] = 5;
     const data: ActivitiesWidgetData[] = await activitiesWidgetDataService(workspaceId || workspaceIdToken, newFilter);
     setActivitiesWidgetResponse(data);
@@ -47,7 +47,7 @@ const Highlights: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
 
   return (
     <div className={`${!isManageMode ? 'h-full' : 'cursor-grabbing my-6 '}  `}>
-      <div className='mb-6'>
+      <div className="mb-6">
         <h3 className="font-Poppins font-semibold text-infoData text-infoBlack leading-2.18 dark:text-white">Highlights</h3>
       </div>
       <div
