@@ -231,7 +231,10 @@ const UsersFilter: FC<UserMemberTypesProps> = ({ page, limit, searchText, filter
     const checkSubscription: Array<string> = [];
     const checkDomain: Array<string> = [];
 
-    if (UserFilterList[0] === Boolean(false)) {
+    // Condition to check if all the filters are not selected to disable the apply btn in filter.
+    const checkUsersFilterList = UserFilterList.every((filter:unknown) => filter === false);
+
+    if (checkUsersFilterList) {
       setCheckedPlatform({});
       setCheckedSubscription({});
       setCheckedDomain({});

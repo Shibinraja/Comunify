@@ -833,7 +833,7 @@ const Activity: React.FC = () => {
                   <div className="mt-8 flex items-center">
                     <div className="bg-cover">
                       <img
-                        src={ActivityCard?.profilePictureUrl === null ? profileImage : ActivityCard?.profilePictureUrl}
+                        src={ActivityCard?.profilePictureUrl ? ActivityCard?.profilePictureUrl  : profileImage}
                         alt=""
                         className="rounded-full w-4.43 h-4.43 bg-cover bg-center border-4 border-white"
                       />

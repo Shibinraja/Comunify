@@ -88,7 +88,7 @@ const Report: React.FC = () => {
 
   const ReportFilterList = Object.values(checkedPlatform).concat(Object.values(checkedStatus));
 
-  const getReportsList = async (props: { search: string; page: number; limit: number }, reset: boolean) => {
+  const getReportsList = async(props: { search: string; page: number; limit: number }, reset: boolean) => {
     setLoading(true);
     let reportData;
     if (!reset) {
@@ -127,7 +127,7 @@ const Report: React.FC = () => {
     });
   };
 
-  const generateInstantReport = async (id: string) => {
+  const generateInstantReport = async(id: string) => {
     setLoading(true);
     const data = await generateInstantReportsService({
       workspaceId: workspaceId!,
@@ -302,7 +302,7 @@ const Report: React.FC = () => {
     }
   };
 
-  const submitFilterChange = async (): Promise<void> => {
+  const submitFilterChange = async(): Promise<void> => {
     handleFilterDropdown();
     const checkPlatform: Array<string> = [];
     const checkStatusId: Array<string> = [];
@@ -791,7 +791,7 @@ const Report: React.FC = () => {
                         type="button"
                         text="Apply"
                         className={`border-none btn-save-modal rounded-0.31 h-2.063 w-1/2 ml-1 cursor-pointer text-card font-Manrope font-semibold leading-1.31 text-white ${loading ? 'cursor-not-allowed' : ''
-                          }`}
+                        }`}
                       />
                     </div>
                   </div>

@@ -97,9 +97,9 @@ const SignUp: React.FC = () => {
   };
 
   const handleTabChange = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (e.keyCode === 9) {
+    if(e.keyCode === 9) {
       setDropDownActive(false);
-    } else {
+    }else{
       setDropDownActive(true);
     }
   };
