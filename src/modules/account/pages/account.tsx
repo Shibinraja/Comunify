@@ -617,6 +617,7 @@ const profileUpdateSchema = Yup.object().shape({
     .max(50, 'Full Name should not exceed above 50 characters')
     .matches(alphanumeric_regex, 'Full Name is not valid'),
   userName: Yup.string()
+    .required('Username is required')
     .min(5, 'Username should be more than 5 character long')
     .max(25, 'Username should not exceed 25 characters')
     .matches(whiteSpace_regex, 'White spaces are not allowed')
