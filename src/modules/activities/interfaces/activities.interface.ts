@@ -57,7 +57,7 @@ export interface GetActiveStreamListQueryParams extends workspaceId {
     };
     'activity.lte'?: string;
     'activity.gte'?: string;
-      activityId?:string
+    activityId?: string;
   };
 }
 
