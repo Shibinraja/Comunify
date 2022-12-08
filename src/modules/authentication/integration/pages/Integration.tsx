@@ -10,12 +10,22 @@ import { Form, Formik } from 'formik';
 
 import Input from 'common/input';
 import Button from 'common/button';
-import { NavigateToConnectPage, NavigateToDiscordConnectPage, NavigateToRedditConnectPage } from '../../../settings/services/settings.services';
+import {
+  NavigateToConnectPage,
+  NavigateToDiscordConnectPage,
+  NavigateToGithubConnectPage,
+  NavigateToRedditConnectPage
+} from '../../../settings/services/settings.services';
 
 import { PlatformsEnumType } from 'modules/settings/pages/integration/IntegrationDrawerTypes';
 import { IntegrationModalDrawer } from 'modules/settings/pages/integration/IntegrationModalDrawer';
 
-import { DiscordConnectResponse, PlatformConnectResponse, RedditConnectResponseData } from '../../../../interface/interface';
+import {
+  DiscordConnectResponse,
+  GithubConnectResponseData,
+  PlatformConnectResponse,
+  RedditConnectResponseData
+} from '../../../../interface/interface';
 import { ConnectBody, ModalState, PlatformIcons, PlatformResponse, VanillaForumsConnectData } from '../../../settings/interface/settings.interface';
 
 import { request } from '../../../../lib/request';
@@ -31,6 +41,7 @@ import nextIcon from '../../../../assets/images/next.svg';
 import redditLogoIcon from '../../../../assets/images/reddit_logo.png';
 import slackIcon from '../../../../assets/images/slack.svg';
 import vanillaIcon from '../../../../assets/images/vanilla-forum.svg';
+import githubIcon from '../../../../assets/images/github_logo.png';
 
 import settingsSlice from '../../../settings/store/slice/settings.slice';
 
@@ -47,13 +58,14 @@ const vanillaInitialValues: Omit<VanillaForumsConnectData, 'workspaceId'> = {
 };
 
 const Integration: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanilla: false, discord: false, reddit: false });
+  const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanilla: false, discord: false, reddit: false, github: false });
   // eslint-disable-next-line no-unused-vars
   const [platformIcons, setPlatformIcons] = useState<PlatformIcons>({
     slack: undefined,
     vanillaForums: undefined,
     discord: undefined,
-    reddit: undefined
+    reddit: undefined,
+    github: undefined
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -78,6 +90,17 @@ const Integration: React.FC = () => {
         const codeParams: null | string = searchParams.get('code');
         if (codeParams !== '') {
           connectToDiscord(codeParams);
+        }
+      }
+    }
+
+    if (window.location.href.includes('code') && window.location.href.includes('platform')) {
+      if (searchParams.get('platform') === 'github') {
+        if (searchParams.get('code')) {
+          const codeParams: null | string = searchParams.get('code');
+          if (codeParams !== '') {
+            connectToGithub(codeParams);
+          }
         }
       }
     }
@@ -121,6 +144,10 @@ const Integration: React.FC = () => {
       case PlatformsEnumType.REDDIT:
         NavigateToRedditConnectPage();
         setPlatformIcons((prevState) => ({ ...prevState, reddit: icon }));
+        break;
+      case PlatformsEnumType.GITHUB:
+        NavigateToGithubConnectPage();
+        setPlatformIcons((prevState) => ({ ...prevState, github: icon }));
         break;
       default:
         break;
@@ -241,6 +268,31 @@ const Integration: React.FC = () => {
     }
   };
 
+  // eslint-disable-next-line space-before-function-paren
+  const connectToGithub = async (codeParams: string | null) => {
+    try {
+      setIsModalOpen((prevState) => ({ ...prevState, github: true }));
+      const body: ConnectBody = {
+        code: codeParams,
+        workspaceId
+      };
+      const response: IntegrationResponse<GithubConnectResponseData> = await request.post(`${API_ENDPOINT}/v1/github/connect`, body);
+      if (response?.data?.data) {
+        setIsModalOpen((prevState) => ({ ...prevState, github: false }));
+        navigate(`/${workspaceId}/settings/github-integration`, {
+          state: { githubConnectResponse: response?.data?.data }
+        });
+        showSuccessToast('Authenticated successfully');
+      } else {
+        showErrorToast('Integration failed');
+        setIsModalOpen((prevState) => ({ ...prevState, github: false }));
+      }
+    } catch {
+      showErrorToast('Integration failed');
+      setIsModalOpen((prevState) => ({ ...prevState, github: false }));
+    }
+  };
+
   const handleModalClose = () => {
     if (isModalOpen.slack) {
       setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
@@ -250,6 +302,9 @@ const Integration: React.FC = () => {
     }
     if (isModalOpen.reddit) {
       setIsModalOpen((prevState) => ({ ...prevState, reddit: false }));
+    }
+    if (isModalOpen.github) {
+      setIsModalOpen((prevState) => ({ ...prevState, github: false }));
     }
   };
 
@@ -423,9 +478,19 @@ const Integration: React.FC = () => {
         </div>
       </div>
       <IntegrationModalDrawer
-        isOpen={isModalOpen.slack || isModalOpen.reddit || isModalOpen.discord}
+        isOpen={isModalOpen.slack || isModalOpen.reddit || isModalOpen.discord || isModalOpen.github}
         isClose={handleModalClose}
-        iconSrc={isModalOpen.slack ? slackIcon : isModalOpen.reddit ? redditLogoIcon : isModalOpen.discord ? discordIcon : ''}
+        iconSrc={
+          isModalOpen.slack
+            ? slackIcon
+            : isModalOpen.reddit
+            ? redditLogoIcon
+            : isModalOpen?.github
+            ? githubIcon
+            : isModalOpen.discord
+            ? discordIcon
+            : ''
+        }
         contextText={isModalOpen.slack ? 'Slack' : isModalOpen.reddit ? 'Reddit' : isModalOpen.discord ? 'Discord' : ''}
       />
     </div>

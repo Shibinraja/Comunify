@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 /* eslint-disable no-constant-condition */
 import Button from 'common/button';
 import { TabPanel } from 'common/tabs/TabPanel';
@@ -215,20 +216,6 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab, subscriptionPlanDe
                               )}{' '}
                             |
                           </span>
-                          <span>
-                            {subscriptionPlanDetails
-                              ?.filter(
-                                (data: SubscriptionPackages) =>
-                                  data?.name.toLocaleLowerCase().trim() === subscriptionDetails?.subscriptionPackage?.name.toLocaleLowerCase().trim()
-                              )
-                              .map((data: SubscriptionPackages) =>
-                                data?.features?.map(
-                                  (data: SubscriptionPackageFeatures) =>
-                                    `| ${data?.value === '1' ? 'Single' : data?.value} ${data?.comunifyFeature?.name} `
-                                )
-                              )}{' '}
-                            |
-                          </span>
                         </Fragment>
                       ) : (
                         <Skeleton width={width_90} />
@@ -347,31 +334,31 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab, subscriptionPlanDe
                   </div>
                   {getSubscriptionsLoader
                     ? Array.from({ length: 4 }, (_, i) => i + 1).map((type: number) => (
-                      <Fragment key={type}>
-                        <div className="flex items-center gap-x-1 mt-[8px] pb-1">
-                          <div className="w-[12px] h-[12px] rounded-full flex justify-center items-center">
-                            <Skeleton circle width={'15px'} height={'15px'} />
-                          </div>
-                          <div className="font-Poppins text-error text-listGray dark:text-greyDark leading-1.31 font-normal">
-                            <Skeleton width={width_90} />
-                          </div>
-                        </div>
-                      </Fragment>
-                    ))
-                    : subscriptionPlanDetails
-                      ?.filter((data: SubscriptionPackages) => data?.name.toLocaleLowerCase().trim() === 'comunify plus')
-                      .map((data: SubscriptionPackages) =>
-                        data?.features?.map((data: SubscriptionPackageFeatures, index: number) => (
-                          <div key={index} className="flex items-center gap-x-1 mt-[8px] pb-1">
-                            <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
-                              <img src={TickWhiteIcon} alt="" />
+                        <Fragment key={type}>
+                          <div className="flex items-center gap-x-1 mt-[8px] pb-1">
+                            <div className="w-[12px] h-[12px] rounded-full flex justify-center items-center">
+                              <Skeleton circle width={'15px'} height={'15px'} />
                             </div>
                             <div className="font-Poppins text-error text-listGray dark:text-greyDark leading-1.31 font-normal">
-                              {`${data?.value === '1' ? 'Single' : data?.value} ${data?.comunifyFeature?.name}`}
+                              <Skeleton width={width_90} />
                             </div>
                           </div>
-                        ))
-                      )}
+                        </Fragment>
+                      ))
+                    : subscriptionPlanDetails
+                        ?.filter((data: SubscriptionPackages) => data?.name.toLocaleLowerCase().trim() === 'comunify plus')
+                        .map((data: SubscriptionPackages) =>
+                          data?.features?.map((data: SubscriptionPackageFeatures, index: number) => (
+                            <div key={index} className="flex items-center gap-x-1 mt-[8px] pb-1">
+                              <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
+                                <img src={TickWhiteIcon} alt="" />
+                              </div>
+                              <div className="font-Poppins text-error text-listGray dark:text-greyDark leading-1.31 font-normal">
+                                {`${data?.value === '1' ? 'Single' : data?.value} ${data?.comunifyFeature?.name}`}
+                              </div>
+                            </div>
+                          ))
+                        )}
                   {/* {} */}
                 </div>
               </div>

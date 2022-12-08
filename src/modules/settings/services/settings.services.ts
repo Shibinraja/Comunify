@@ -1,6 +1,6 @@
 /* eslint-disable space-before-function-paren */
 /* eslint-disable @typescript-eslint/ban-types */
-import { DISCORD_CONNECT_ENDPOINT, API_ENDPOINT, SLACK_CONNECT_ENDPOINT, REDDIT_CONNECT_ENDPOINT } from '@/lib/config';
+import { DISCORD_CONNECT_ENDPOINT, API_ENDPOINT, SLACK_CONNECT_ENDPOINT, REDDIT_CONNECT_ENDPOINT, GITHUB_CONNECT_ENDPOINT } from '@/lib/config';
 import { AxiosError } from 'axios';
 import { showErrorToast } from '../../../common/toast/toastFunctions';
 import { GeneratorResponse } from '../../../lib/api';
@@ -35,6 +35,10 @@ export const NavigateToDiscordConnectPage = () => {
 
 export const NavigateToRedditConnectPage = () => {
   window.location.href = REDDIT_CONNECT_ENDPOINT;
+};
+
+export const NavigateToGithubConnectPage = () => {
+  window.location.href = GITHUB_CONNECT_ENDPOINT;
 };
 
 export function* PlatformsDataService(workspaceId: string): GeneratorResponse<Array<PlatformResponse>> {

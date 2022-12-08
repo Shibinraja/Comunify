@@ -14,11 +14,21 @@ import Button from 'common/button';
 import Input from '../../../../common/input';
 import { TabPanel } from 'common/tabs/TabPanel';
 import { ModalDrawer } from 'common/modals/ModalDrawer';
-import { NavigateToConnectPage, NavigateToDiscordConnectPage, NavigateToRedditConnectPage } from 'modules/settings/services/settings.services';
+import {
+  NavigateToConnectPage,
+  NavigateToDiscordConnectPage,
+  NavigateToGithubConnectPage,
+  NavigateToRedditConnectPage
+} from 'modules/settings/services/settings.services';
 
 import { PlatformsEnumType } from './IntegrationDrawerTypes';
 
-import { DiscordConnectResponse, PlatformConnectResponse, RedditConnectResponseData } from '../../../../interface/interface';
+import {
+  DiscordConnectResponse,
+  GithubConnectResponseData,
+  PlatformConnectResponse,
+  RedditConnectResponseData
+} from '../../../../interface/interface';
 import {
   ConnectBody,
   ConnectedPlatforms,
@@ -43,6 +53,7 @@ import githubLogoIcon from '../../../../assets/images/github_logo.png';
 import redditLogoIcon from '../../../../assets/images/reddit_logo.png';
 import slackIcon from '../../../../assets/images/slack.svg';
 import vanillaIcon from '../../../../assets/images/vanilla-forum.svg';
+import discourseIcon from '../../../../assets/images/discourse.png';
 
 import settingsSlice from '../../store/slice/settings.slice';
 
@@ -66,8 +77,8 @@ const vanillaInitialValues: Omit<VanillaForumsConnectData, 'workspaceId'> = {
 };
 
 const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidden, selectedTab }) => {
-  const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanilla: false, discord: false, reddit: false });
-  const [showAlert, setShowAlert] = useState<ModalState>({ slack: false, vanilla: false, discord: false, reddit: false });
+  const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanilla: false, discord: false, reddit: false, github: false });
+  const [showAlert, setShowAlert] = useState<ModalState>({ slack: false, vanilla: false, discord: false, reddit: false, github: false });
   const [isWarningModalOpen, setIsWarningModalOpen] = useState<boolean>(false);
   const [confirmPlatformToDisconnect, setConfirmPlatformToDisconnect] = useState<ConfirmPlatformToDisconnect>({
     platform: '',
@@ -79,7 +90,8 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
     slack: undefined,
     vanillaForums: undefined,
     discord: undefined,
-    reddit: undefined
+    reddit: undefined,
+    github: undefined
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isButtonConnect] = useState<boolean>(true);
@@ -123,6 +135,24 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
         const codeParams: null | string = searchParams.get('code');
         if (codeParams !== '') {
           getData(codeParams);
+        }
+      }
+    }
+    if (!window.location.href.includes('state') && window.location.href.includes('code')) {
+      if (searchParams.get('code')) {
+        const codeParams: null | string = searchParams.get('code');
+        if (codeParams !== '') {
+          connectToGithub(codeParams);
+        }
+      }
+    }
+    if (window.location.href.includes('code') && window.location.href.includes('platform')) {
+      if (searchParams.get('platform') === 'github') {
+        if (searchParams.get('code')) {
+          const codeParams: null | string = searchParams.get('code');
+          if (codeParams !== '') {
+            connectToGithub(codeParams);
+          }
         }
       }
     }
@@ -194,6 +224,21 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
             setShowAlert((prevState) => ({ ...prevState, reddit: true }));
           } else {
             NavigateToRedditConnectPage();
+            setIsLoading(false);
+          }
+        } else {
+          showWarningToast(`${name} is already connected to your workspace`);
+          setIsLoading(false);
+        }
+        break;
+      case PlatformsEnumType.GITHUB:
+        setIsLoading(true);
+        if (!checkForConnectedPlatform(name)) {
+          setPlatformIcons((prevState) => ({ ...prevState, reddit: icon }));
+          if (isIntegrated && !isConnected) {
+            setShowAlert((prevState) => ({ ...prevState, github: true }));
+          } else {
+            NavigateToGithubConnectPage();
             setIsLoading(false);
           }
         } else {
@@ -361,8 +406,32 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
   };
 
   // eslint-disable-next-line space-before-function-paren
+  const connectToGithub = async (codeParams: string | null) => {
+    try {
+      setIsModalOpen((prevState) => ({ ...prevState, github: true }));
+      const body: ConnectBody = {
+        code: codeParams,
+        workspaceId
+      };
+      const response: IntegrationResponse<GithubConnectResponseData> = await request.post(`${API_ENDPOINT}/v1/github/connect`, body);
+      if (response?.data?.data) {
+        setIsModalOpen((prevState) => ({ ...prevState, github: false }));
+        navigate(`/${workspaceId}/settings/github-integration`, {
+          state: { githubConnectResponse: response?.data?.data }
+        });
+        showSuccessToast('Authenticated successfully');
+      } else {
+        showErrorToast('Integration failed');
+        setIsModalOpen((prevState) => ({ ...prevState, github: false }));
+      }
+    } catch {
+      showErrorToast('Integration failed');
+      setIsModalOpen((prevState) => ({ ...prevState, github: false }));
+    }
+  };
+
+  // eslint-disable-next-line space-before-function-paren
   const handlePlatformReconnectForSlack = async (platform: string) => {
-    // setIsModalOpen((prevState) => ({ ...prevState, slack: true }));
     setReconnectLoading(true);
     const body = {
       workspaceId
@@ -413,7 +482,6 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
   // eslint-disable-next-line space-before-function-paren
   const handlePlatformReconnectForDiscord = async (platform: string) => {
     setReconnectLoading(true);
-    // setIsModalOpen((prevState) => ({ ...prevState, discord: true }));
     const body = {
       workspaceId
     };
@@ -464,6 +532,32 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
     }
   };
 
+  // eslint-disable-next-line space-before-function-paren
+  const handlePlatformReconnectForGithub = async (platform: string) => {
+    setReconnectLoading(true);
+    const body = {
+      workspaceId
+    };
+    try {
+      showInfoToast(`${platform} reconnect is in progress...`);
+      const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
+      if (response?.data?.message) {
+        setShowAlert((prevState) => ({ ...prevState, github: false }));
+        dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+        showSuccessToast(`${platform} was successfully connected`);
+        setReconnectLoading(false);
+      } else {
+        showErrorToast('Failed to connect to the platform');
+        setShowAlert((prevState) => ({ ...prevState, github: false }));
+        setReconnectLoading(false);
+      }
+    } catch {
+      showErrorToast('Failed to connect to the platform');
+      setShowAlert((prevState) => ({ ...prevState, github: false }));
+      setReconnectLoading(false);
+    }
+  };
+
   const handleOnSubmit = () => {
     //     const platformEntries= Object.entries(showAlert);
     //     const platformName = platformEntries.find(((platform) => {
@@ -483,6 +577,9 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
     if (showAlert.reddit) {
       handlePlatformReconnectForReddit(PlatformsEnumType.REDDIT);
     }
+    if (showAlert.github) {
+      handlePlatformReconnectForGithub(PlatformsEnumType.GITHUB);
+    }
   };
 
   const handleModalClose = () => {
@@ -500,6 +597,9 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
     }
     if (showAlert.vanilla) {
       setShowAlert((prevState) => ({ ...prevState, vanilla: false }));
+    }
+    if (isModalOpen.github) {
+      setIsModalOpen((prevState) => ({ ...prevState, github: false }));
     }
   };
 
@@ -566,9 +666,9 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
 
             <div className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5">
               <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                <img src={githubLogoIcon} alt="" className="h-2.31" />
+                <img src={discourseIcon} alt="" className="h-2.31" />
               </div>
-              <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">Github</div>
+              <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">Discourse</div>
               <Button
                 disabled={isLoading ? true : false}
                 type="button"
@@ -725,10 +825,22 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
         </div>
       </div>
       <IntegrationModalDrawer
-        isOpen={isModalOpen.slack || isModalOpen.reddit || isModalOpen.discord}
+        isOpen={isModalOpen.slack || isModalOpen.reddit || isModalOpen.discord || isModalOpen.github}
         isClose={handleModalClose}
-        iconSrc={isModalOpen.slack ? slackIcon : isModalOpen.reddit ? redditLogoIcon : isModalOpen.discord ? discordIcon : ''}
-        contextText={isModalOpen.slack ? 'Slack' : isModalOpen.reddit ? 'Reddit' : isModalOpen.discord ? 'Discord' : ''}
+        iconSrc={
+          isModalOpen.slack
+            ? slackIcon
+            : isModalOpen.reddit
+            ? redditLogoIcon
+            : isModalOpen.discord
+            ? discordIcon
+            : isModalOpen.github
+            ? githubLogoIcon
+            : ''
+        }
+        contextText={
+          isModalOpen.slack ? 'Slack' : isModalOpen.reddit ? 'Reddit' : isModalOpen.discord ? 'Discord' : isModalOpen.github ? 'Github' : ''
+        }
       />
       <ModalDrawer
         isOpen={Object.values(showAlert).includes(true) ? true : false}
@@ -738,8 +850,8 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
         iconSrc={
           showAlert.slack ? slackIcon : showAlert.reddit ? redditLogoIcon : showAlert.discord ? discordIcon : showAlert.vanilla ? vanillaIcon : ''
         }
-        contextText={`Are you sure you want to reconnect the ${
-          showAlert.slack ? 'slack' : showAlert.discord ? 'discord' : showAlert.reddit ? 'reddit' : ''
+        contextText={`Are you sure you want to reconnect ${
+          showAlert.slack ? 'slack' : showAlert.discord ? 'discord' : showAlert.reddit ? 'reddit' : showAlert.github ? 'github' : ''
         }  to your workspace?`}
       />
     </TabPanel>
