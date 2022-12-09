@@ -6,6 +6,7 @@ export interface PlatformIcons {
   vanillaForums: string | undefined;
   discord: string | undefined;
   reddit: string | undefined;
+  github: string | undefined;
 }
 
 export interface PlatformsStatus {
@@ -96,6 +97,7 @@ export interface ModalState {
   vanilla: boolean;
   discord: boolean;
   reddit: boolean;
+  github: boolean;
 }
 
 // Response Body

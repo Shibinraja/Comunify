@@ -32,3 +32,5 @@ export const count_3 = 3;
 export const count_5 = 5;
 
 export const width_90 = 90;
+
+export const width_70 = 70;

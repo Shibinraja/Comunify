@@ -10,5 +10,6 @@ export enum PlatformsEnumType {
   SLACK = 'slack',
   VANILLA = 'vanilla',
   DISCORD = 'discord',
-  REDDIT = 'reddit'
+  REDDIT = 'reddit',
+  GITHUB = 'github'
 }
