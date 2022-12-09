@@ -24,6 +24,7 @@ import { getUsersListService } from '../services/users.services';
 import exportImage from '../../../assets/images/export.svg';
 import noMemberIcon from '../../../assets/images/no-member.svg';
 import searchIcon from '../../../assets/images/search.svg';
+import '../../members/pages/Members.css';
 
 Modal.setAppElement('#root');
 
@@ -261,8 +262,8 @@ const Users: React.FC = () => {
                             </div>
                           )
                         ) : (
-                          <div className="flex w-[150px]">
-                            <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31">{member[column] as ReactNode}</div>
+                          <div className="flex w-[200px]">
+                            <div className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 truncate">{member[column] as ReactNode}</div>
                           </div>
                         )}
                       </td>
