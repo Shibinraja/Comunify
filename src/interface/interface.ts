@@ -22,7 +22,7 @@ export interface Props {
   handleSubmit?: any;
   username?: string;
   className?: string;
-  maxLength?:number
+  maxLength?: number;
   onBlur?: (e: React.FocusEvent<any, Element> | undefined) => void;
   onChange?: (e: React.ChangeEvent<any>) => void;
 }
@@ -95,6 +95,19 @@ export interface RedditConnectResponseData extends PlatformConnectResponse {
   guildId: null;
   communities: RedditCommunities[];
 }
+
+export interface GithubRepositories {
+  repoName: string;
+  repoId: string;
+}
+
+export interface GithubConnectResponseData extends PlatformConnectResponse {
+  platformAuthSettingsId: string;
+  guildId: string;
+  refreshToken: string;
+  filteredRepository: GithubRepositories[];
+}
+
 export type PaginationResponse<T> = {
   data: T[];
   totalPages: number;

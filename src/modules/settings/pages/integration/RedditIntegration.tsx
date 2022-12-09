@@ -36,14 +36,16 @@ const RedditIntegration: React.FC = () => {
   useEffect(() => {
     if (communitiesDataArray?.length) {
       setCommunitiesDetails(communitiesDataArray);
-    }else{
+    } else {
       showWarningToast('No Communities to Select');
     }
   }, [connectResponse]);
 
   const selectCommunity = (communityName: string) => {
     setCommunity(communityName);
-    const selectedCommunityData: RedditCommunities | undefined = communitiesDetails?.find((data: RedditCommunities) => data?.communityName === communityName);
+    const selectedCommunityData: RedditCommunities | undefined = communitiesDetails?.find(
+      (data: RedditCommunities) => data?.communityName === communityName
+    );
     if (selectedCommunityData) {
       setSelectedCommunityDetails(selectedCommunityData);
     }
@@ -97,10 +99,7 @@ const RedditIntegration: React.FC = () => {
           </div>
           <div className="flex justify-between py-5 border-top-card">
             <div className="font-Poppins font-semibold text-base text-manageTitle leading-6">Community</div>
-            <div className="font-Poppins font-semibold text-base text-slimGray leading-6 capitalize">
-              {' '}
-              {community ? community : 'Not Selected'}
-            </div>
+            <div className="font-Poppins font-semibold text-base text-slimGray leading-6 capitalize"> {community ? community : 'Not Selected'}</div>
           </div>
           {/* <div className="flex justify-between py-5 border-top-card">
             <div className="font-Poppins font-semibold text-base text-manageTitle leading-6">Last Activity Retrieved</div>
@@ -139,13 +138,13 @@ const RedditIntegration: React.FC = () => {
           </div>
         </div>
 
-        <div className="pt-8 font-Poppins font-semibold text-action text-infoBlack left-8">Actions</div>
+        {/* <div className="pt-8 font-Poppins font-semibold text-action text-infoBlack left-8">Actions</div>
         <div className="pt-[0.4375rem] font-Poppins font-semibold text-search left-5 max-w-[904px]">
           Remove{' '}
           <span className="font-normal">
             the reddit integration from this comunify workspace. See the docs on how to uninstall the reddit integration from a particular channel.
           </span>
-        </div>
+        </div> */}
         <div className="flex justify-end pt-4">
           <Button
             text="Complete Setup"
