@@ -90,11 +90,10 @@ const SignIn: React.FC = () => {
                       id="userName"
                       name="userName"
                       // eslint-disable-next-line max-len
-                      className={`h-4.5 pr-10 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${
-                        touched.userName && errors.userName
+                      className={`h-4.5 pr-10 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${touched.userName && errors.userName
                           ? 'border-lightRed h-4.5 pr-10 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
                           : ''
-                      }`}
+                        }`}
                       onBlur={handleBlur}
                       onChange={handleChange}
                       value={values.userName}
@@ -102,7 +101,7 @@ const SignIn: React.FC = () => {
                       helperText={touched.userName && errors.userName}
                     />
                   </div>
-                  <div className={`password relative  ${touched.userName && errors.userName ? 'mt-8' : 'mt-1.13'}`}>
+                  <div className={`password relative  ${touched.userName && errors.userName ? 'mt-1.13' : 'mt-1.13'}`}>
                     <Input
                       type={passwordType}
                       label="Password"
@@ -110,11 +109,10 @@ const SignIn: React.FC = () => {
                       name="password"
                       placeholder="*********"
                       // eslint-disable-next-line max-len
-                      className={`h-4.5 rounded-lg bg-white p-2.5 pr-10 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${
-                        touched.password && errors.password
+                      className={`h-4.5 rounded-lg bg-white p-2.5 pr-10 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border ${touched.password && errors.password
                           ? 'border-lightRed h-4.5 rounded-lg bg-white p-2.5 pr-10 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter font-Inter box-border'
                           : ''
-                      }`}
+                        }`}
                       onBlur={handleBlur}
                       onChange={handleChange}
                       value={values.password}

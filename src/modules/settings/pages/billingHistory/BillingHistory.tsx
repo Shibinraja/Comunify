@@ -8,6 +8,7 @@ import { format } from 'date-fns';
 import { showSuccessToast } from 'common/toast/toastFunctions';
 import { useNavigate } from 'react-router';
 import { getLocalWorkspaceId } from '@/lib/helper';
+import noActivityIcon from '../../../../assets/images/no-reports.svg';
 
 type Props = {
   hidden: boolean;
@@ -150,7 +151,12 @@ const BillingHistory: React.FC<Props> = ({ hidden, selectedTab, loadingToastCond
             </div>
           </div>
         ) : (
-          <h3 className="font-Poppins font-normal text-base text-infoBlack mt-6 text-center">No billing history available</h3>
+          <div className="flex flex-col items-center justify-center w-full fixActivityTableHead">
+            <div>
+              <img src={noActivityIcon} alt="" />
+            </div>
+            <div className="pt-5 font-Poppins font-medium text-greyDark text-[28px] leading-10">No billing history available</div>
+          </div>
         )}
         <div className="px-6 py-6 flex items-center justify-center gap-0.66 w-full rounded-b-lg bg-white bottom-0">
           <Pagination currentPage={page} totalPages={billingHistoryList.totalPages} limit={limit} onPageChange={(page) => setPage(Number(page))} />
