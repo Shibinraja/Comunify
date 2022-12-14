@@ -93,7 +93,7 @@ const MembersProfile: React.FC = () => {
 
   const TagNameValidation = Yup.string()
     .trim('WhiteSpaces are not allowed')
-    .min(2, 'Tag Name must be atleast 2 characters')
+    .min(2, 'Tag Name must be at least 2 characters')
     .max(15, 'Tag Name should not exceed above 15 characters')
     .required('Tag Name is a required field')
     .nullable(true);
@@ -117,7 +117,7 @@ const MembersProfile: React.FC = () => {
       dispatch(membersSlice.actions.getMembersActivityGraphData({ workspaceId: workspaceId as string, memberId: memberId as string }));
       dispatch(membersSlice.actions.getMemberProfileCardData({ workspaceId: workspaceId as string, memberId: memberId as string }));
       dispatch(membersSlice.actions.setMemberProfileCardData([]));
-      loadActivityData(true);
+      // loadActivityData(true);
     }
   }, [memberId]);
 
