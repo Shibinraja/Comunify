@@ -960,14 +960,14 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
                         <label htmlFor="accessToken" className="font-Poppins font-normal text-infoBlack text-sm leading-5">
                           API Key*
                         </label>
-                        {/* <h1 className="font-Inter font-normal text-error leading-7 text-vanillaDescription">
-                          You can learn how to create an access Token
+                        <h1 className="font-Inter font-normal text-error leading-7 text-vanillaDescription">
+                          You can learn how to generate an API Key
                           <span className="text-tag cursor-pointer hover:underline pl-1">
-                            <a href="https://success.vanillaforums.com/kb/articles/41" target={'_blank'} rel="noreferrer">
+                            <a href="https://meta.discourse.org/t/create-and-configure-an-api-key/230124" target={'_blank'} rel="noreferrer">
                               here.
                             </a>{' '}
                           </span>
-                        </h1> */}
+                        </h1>
                         <Input
                           type="text"
                           placeholder="Enter API Key"
