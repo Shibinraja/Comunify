@@ -76,6 +76,12 @@ export interface DiscordChannel {
   nsfw: boolean;
 }
 
+export interface DiscourseConnectResponse extends PlatformConnectResponse {
+  platformAuthSettingsId: string | null;
+  refreshToken: string | null;
+  guildId: string | null;
+}
+
 export interface DiscordConnectResponse extends PlatformConnectResponse {
   platformAuthSettingsId: string;
   guildName: string;

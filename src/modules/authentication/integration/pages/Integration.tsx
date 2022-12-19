@@ -22,11 +22,19 @@ import { IntegrationModalDrawer } from 'modules/settings/pages/integration/Integ
 
 import {
   DiscordConnectResponse,
+  DiscourseConnectResponse,
   GithubConnectResponseData,
   PlatformConnectResponse,
   RedditConnectResponseData
 } from '../../../../interface/interface';
-import { ConnectBody, ModalState, PlatformIcons, PlatformResponse, VanillaForumsConnectData } from '../../../settings/interface/settings.interface';
+import {
+  ConnectBody,
+  DiscourseInitialValues,
+  ModalState,
+  PlatformIcons,
+  PlatformResponse,
+  VanillaForumsConnectData
+} from '../../../settings/interface/settings.interface';
 
 import { request } from '../../../../lib/request';
 import { API_ENDPOINT } from '../../../../lib/config';
@@ -42,6 +50,7 @@ import redditLogoIcon from '../../../../assets/images/reddit_logo.png';
 import slackIcon from '../../../../assets/images/slack.svg';
 import vanillaIcon from '../../../../assets/images/vanilla-forum.svg';
 import githubIcon from '../../../../assets/images/github_logo.png';
+import discourseIcon from '../../../../assets/images/discourse.png';
 
 import settingsSlice from '../../../settings/store/slice/settings.slice';
 
@@ -57,15 +66,29 @@ const vanillaInitialValues: Omit<VanillaForumsConnectData, 'workspaceId'> = {
   vanillaAccessToken: ''
 };
 
+const discourseInitialValues: DiscourseInitialValues = {
+  discourseBaseUrl: '',
+  discourseAPIKey: '',
+  discourseUserName: ''
+};
+
 const Integration: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanilla: false, discord: false, reddit: false, github: false });
+  const [isModalOpen, setIsModalOpen] = useState<ModalState>({
+    slack: false,
+    vanilla: false,
+    discord: false,
+    reddit: false,
+    github: false,
+    discourse: false
+  });
   // eslint-disable-next-line no-unused-vars
   const [platformIcons, setPlatformIcons] = useState<PlatformIcons>({
     slack: undefined,
     vanillaForums: undefined,
     discord: undefined,
     reddit: undefined,
-    github: undefined
+    github: undefined,
+    discourse: undefined
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -149,6 +172,10 @@ const Integration: React.FC = () => {
         NavigateToGithubConnectPage();
         setPlatformIcons((prevState) => ({ ...prevState, github: icon }));
         break;
+      case PlatformsEnumType.DISCOURSE:
+        setPlatformIcons((prevState) => ({ ...prevState, discourse: icon }));
+        setIsModalOpen((prevState) => ({ ...prevState, discourse: true }));
+        break;
       default:
         break;
     }
@@ -213,6 +240,49 @@ const Integration: React.FC = () => {
         }
       }
     } catch (error) {
+      showErrorToast('Integration Failed');
+      setIsLoading(false);
+    }
+  };
+
+  // eslint-disable-next-line space-before-function-paren
+  const sendDiscourseData = async (values: DiscourseInitialValues) => {
+    setIsLoading(true);
+    try {
+      const body: { domain: string; userName: string; apiKey: string; workspaceId: string } = {
+        domain: values.discourseBaseUrl,
+        userName: values.discourseUserName,
+        apiKey: values.discourseAPIKey,
+        workspaceId
+      };
+      const connectResponse: IntegrationResponse<DiscourseConnectResponse> = await request.post(`${API_ENDPOINT}/v1/discourse/connect`, body);
+      if (connectResponse?.data?.message?.toLocaleLowerCase().trim() == 'already connected') {
+        showWarningToast('Discourse is already connected to your workspace');
+        setIsLoading(false);
+      }
+
+      if (connectResponse?.data?.data?.id) {
+        showSuccessToast('Integration in progress...');
+        try {
+          const completeSetupResponse: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/discourse/complete-setup`, {
+            workspaceId,
+            workspacePlatformAuthSettingsId: connectResponse?.data?.data?.id
+          });
+          if (completeSetupResponse?.data?.message) {
+            dispatch(settingsSlice.actions.platformData({ workspaceId }));
+            showSuccessToast('Successfully integrated');
+            setIsLoading(false);
+            setIsModalOpen((prevState) => ({ ...prevState, discourse: false }));
+            navigate(`/${workspaceId}/settings`);
+          }
+        } catch (error) {
+          setIsModalOpen((prevState) => ({ ...prevState, discourse: false }));
+          showErrorToast('Integration Failed');
+          setIsLoading(false);
+        }
+      }
+    } catch (error) {
+      setIsModalOpen((prevState) => ({ ...prevState, discourse: false }));
       showErrorToast('Integration Failed');
       setIsLoading(false);
     }
@@ -474,6 +544,126 @@ const Integration: React.FC = () => {
                 </div>
               </div>
             </Modal>
+            <Modal
+              isOpen={isModalOpen.discourse}
+              shouldCloseOnOverlayClick={false}
+              onRequestClose={() => setIsModalOpen((previousState: ModalState) => ({ ...previousState, discourse: false }))}
+              className="w-24.31 pb-12 mx-auto rounded-lg border-integration-modal bg-white shadow-modal outline-none"
+              style={{
+                overlay: {
+                  display: 'flex',
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  bottom: 0,
+                  right: 0,
+                  alignItems: 'center'
+                }
+              }}
+            >
+              <div className="vanilla">
+                <h3 className="flex items-center justify-center pt-9 font-Inter text-xl font-semibold leading-6">
+                  <img src={discourseIcon} alt="" className="px-2.5 w-14" />
+                  integrate <span className="font-normal px-2">Discourse</span>
+                </h3>
+                <div className="flex flex-col px-[1.875rem] pt-9">
+                  <Formik initialValues={discourseInitialValues} onSubmit={sendDiscourseData} validationSchema={discourseDataSchema}>
+                    {({ errors, handleBlur, handleChange, touched, values }): JSX.Element => (
+                      <Form>
+                        <div className="form-group">
+                          <label htmlFor="siteUrl" className="font-Poppins font-normal text-infoBlack text-sm leading-5">
+                            Site URL*
+                          </label>
+                          <h1 className="font-Inter font-normal text-error leading-7 text-vanillaDescription">
+                            Enter the full URL to your Discourse site in this format: https://{`yourdomain`}.com
+                          </h1>
+                          <Input
+                            type="text"
+                            placeholder="Enter URL"
+                            label="Site URL"
+                            id="siteUrlId"
+                            name="discourseBaseUrl"
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            value={values?.discourseBaseUrl}
+                            errors={Boolean(touched.discourseBaseUrl && errors.discourseBaseUrl)}
+                            helperText={touched.discourseBaseUrl && errors.discourseBaseUrl}
+                            className="h-2.81 pr-3.12 rounded-md border-app-result-card-border mt-[0.4375rem] bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-thinGray placeholder:text-sm placeholder:leading-6 placeholder:font-Poppins font-Poppins box-border"
+                          />
+                        </div>
+                        <div className="form-group pt-4">
+                          <label htmlFor="siteUrl" className="font-Poppins font-normal text-infoBlack text-sm leading-5">
+                            Username*
+                          </label>
+                          <Input
+                            type="text"
+                            placeholder="Enter Username"
+                            label="Username"
+                            id="usernameId"
+                            name="discourseUserName"
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            value={values?.discourseUserName}
+                            errors={Boolean(touched.discourseUserName && errors.discourseUserName)}
+                            helperText={touched.discourseUserName && errors.discourseUserName}
+                            className="h-2.81 pr-3.12 rounded-md border-app-result-card-border mt-[0.4375rem] bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-thinGray placeholder:text-sm placeholder:leading-6 placeholder:font-Poppins font-Poppins box-border"
+                          />
+                        </div>
+                        <div className="form-group pt-1.12">
+                          <label htmlFor="accessToken" className="font-Poppins font-normal text-infoBlack text-sm leading-5">
+                            API Key*
+                          </label>
+                          <h1 className="font-Inter font-normal text-error leading-7 text-vanillaDescription">
+                            You can learn how to create an access Token
+                            <span className="text-tag cursor-pointer hover:underline pl-1">
+                              <a href="https://success.vanillaforums.com/kb/articles/41" target={'_blank'} rel="noreferrer">
+                                here.
+                              </a>{' '}
+                            </span>
+                          </h1>
+                          <Input
+                            type="text"
+                            placeholder="Enter API Key"
+                            label="API Key"
+                            id="apiKeyId"
+                            name="discourseAPIKey"
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            value={values?.discourseAPIKey}
+                            errors={Boolean(touched.discourseAPIKey && errors.discourseAPIKey)}
+                            helperText={touched.discourseAPIKey && errors.discourseAPIKey}
+                            className="h-2.81 pr-3.12 rounded-md border-app-result-card-border mt-[0.4375rem] bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-thinGray placeholder:text-sm placeholder:leading-6 placeholder:font-Poppins font-Poppins box-border"
+                          />
+                        </div>
+                        <div className="flex justify-end pt-[1.875rem]">
+                          <Button
+                            text="Cancel"
+                            type="submit"
+                            className="cancel mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  h-2.81 w-5.25  rounded border-none"
+                            onClick={() => setIsModalOpen((previousState: ModalState) => ({ ...previousState, discourse: false }))}
+                          />
+                          <Button
+                            text="Save"
+                            type="submit"
+                            disabled={
+                              isLoading ? true : !values.discourseBaseUrl || !values.discourseUserName || !values.discourseAPIKey ? true : false
+                            }
+                            className={`text-white font-Poppins text-error font-medium leading-5 btn-save-modal
+                 cursor-pointer rounded shadow-contactBtn w-5.25  ${
+                   isLoading
+                     ? 'opacity-50 cursor-not-allowed '
+                     : !values.discourseBaseUrl || !values.discourseUserName || !values.discourseAPIKey
+                     ? 'opacity-50 cursor-not-allowed '
+                     : ''
+                 } border-none h-2.81`}
+                          />
+                        </div>
+                      </Form>
+                    )}
+                  </Formik>
+                </div>
+              </div>
+            </Modal>
           </div>
         </div>
       </div>
@@ -502,4 +692,10 @@ export default Integration;
 const vanillaDataSchema = Yup.object().shape({
   vanillaBaseUrl: Yup.string().required('Site URL is required').trim(),
   vanillaAccessToken: Yup.string().required('Access Token is required').trim()
+});
+
+const discourseDataSchema = Yup.object().shape({
+  discourseBaseUrl: Yup.string().required('Site URL is required').trim(),
+  discourseUserName: Yup.string().required('Username is required').trim(),
+  discourseAPIKey: Yup.string().required('API Key is required').trim()
 });
