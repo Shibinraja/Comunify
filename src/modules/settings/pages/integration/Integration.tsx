@@ -47,7 +47,7 @@ import { request } from '../../../../lib/request';
 import usePlatform from '../../../../hooks/usePlatform';
 import { capitalizeFirstLetter, getLocalWorkspaceId } from '../../../../lib/helper';
 import { IntegrationModalDrawer } from './IntegrationModalDrawer';
-import { IntegrationResponse, NetworkResponse } from '../../../../lib/api';
+import { AxiosError, IntegrationResponse, NetworkResponse } from '../../../../lib/api';
 import { showErrorToast, showInfoToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
 
 import discordIcon from '../../../../assets/images/discord.svg';
@@ -365,10 +365,6 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
         workspaceId
       };
       const connectResponse: IntegrationResponse<PlatformConnectResponse> = await request.post(`${API_ENDPOINT}/v1/vanilla/connect`, body);
-      if (connectResponse?.data?.message?.toLocaleLowerCase().trim() == 'already connected') {
-        showWarningToast('Vanilla Forums is already connected to your workspace');
-        setIsLoading(false);
-      }
       if (connectResponse?.data?.data?.id) {
         showInfoToast('Integration in progress...');
         try {
@@ -378,18 +374,58 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
           });
           if (completeSetupResponse?.data?.message) {
             dispatch(settingsSlice.actions.platformData({ workspaceId }));
-            dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
             showSuccessToast('Successfully integrated');
+            dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
             setIsLoading(false);
             setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: false }));
           }
-        } catch (error) {
-          showErrorToast('Integration Failed');
+        } catch (e) {
+          const error = e as AxiosError<unknown>;
+          showErrorToast(error?.response?.data?.message);
           setIsLoading(false);
         }
       }
-    } catch (error) {
-      showErrorToast('Integration Failed');
+    } catch (e) {
+      const error = e as AxiosError<unknown>;
+      showErrorToast(error?.response?.data?.message);
+      setIsLoading(false);
+    }
+  };
+
+  // eslint-disable-next-line space-before-function-paren
+  const sendDiscourseData = async (values: DiscourseInitialValues) => {
+    const body: { domain: string; userName: string; apiKey: string; workspaceId: string } = {
+      domain: values.discourseBaseUrl,
+      userName: values.discourseUserName,
+      apiKey: values.discourseAPIKey,
+      workspaceId
+    };
+    setIsLoading(true);
+    try {
+      const connectResponse: IntegrationResponse<DiscourseConnectResponse> = await request.post(`${API_ENDPOINT}/v1/discourse/connect`, body);
+      if (connectResponse?.data?.data?.id) {
+        showInfoToast('Integration in progress...');
+        try {
+          const completeSetupResponse: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/discourse/complete-setup`, {
+            workspaceId,
+            workspacePlatformAuthSettingsId: connectResponse?.data?.data?.id
+          });
+          if (completeSetupResponse?.data?.message) {
+            dispatch(settingsSlice.actions.platformData({ workspaceId }));
+            showSuccessToast('Successfully integrated');
+            setIsLoading(false);
+            setIsModalOpen((prevState) => ({ ...prevState, discourse: false }));
+            dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+          }
+        } catch (e) {
+          const error = e as AxiosError<unknown>;
+          showErrorToast(error?.response?.data?.message);
+          setIsLoading(false);
+        }
+      }
+    } catch (e) {
+      const error = e as AxiosError<unknown>;
+      showErrorToast(error?.response?.data?.message);
       setIsLoading(false);
     }
   };
