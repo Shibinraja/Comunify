@@ -40,8 +40,8 @@ import { request } from '../../../../lib/request';
 import { API_ENDPOINT } from '../../../../lib/config';
 import usePlatform from '../../../../hooks/usePlatform';
 import { getLocalWorkspaceId, setRefreshToken } from '@/lib/helper';
-import { IntegrationResponse, NetworkResponse } from '../../../../lib/api';
-import { showErrorToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
+import { AxiosError, IntegrationResponse, NetworkResponse } from '../../../../lib/api';
+import { showErrorToast, showInfoToast, showSuccessToast } from '../../../../common/toast/toastFunctions';
 
 import bgIntegrationImage from '../../../../assets/images/bg-sign.svg';
 import discordIcon from '../../../../assets/images/discord.svg';
@@ -216,10 +216,6 @@ const Integration: React.FC = () => {
         workspaceId
       };
       const connectResponse: IntegrationResponse<PlatformConnectResponse> = await request.post(`${API_ENDPOINT}/v1/vanilla/connect`, body);
-      if (connectResponse?.data?.message?.toLocaleLowerCase().trim() == 'already connected') {
-        showWarningToast('Vanilla Forums is already connected to your workspace');
-        setIsLoading(false);
-      }
       if (connectResponse?.data?.data?.id) {
         showSuccessToast('Integration in progress...');
         try {
@@ -234,13 +230,15 @@ const Integration: React.FC = () => {
             setIsModalOpen((prevState) => ({ ...prevState, vanilla: false }));
             navigate(`/${workspaceId}/settings`);
           }
-        } catch (error) {
-          showErrorToast('Integration Failed');
+        } catch (e) {
+          const error = e as AxiosError<unknown>;
+          showErrorToast(error?.response?.data?.message);
           setIsLoading(false);
         }
       }
-    } catch (error) {
-      showErrorToast('Integration Failed');
+    } catch (e) {
+      const error = e as AxiosError<unknown>;
+      showErrorToast(error?.response?.data?.message);
       setIsLoading(false);
     }
   };
@@ -248,21 +246,16 @@ const Integration: React.FC = () => {
   // eslint-disable-next-line space-before-function-paren
   const sendDiscourseData = async (values: DiscourseInitialValues) => {
     setIsLoading(true);
+    const body: { domain: string; userName: string; apiKey: string; workspaceId: string } = {
+      domain: values.discourseBaseUrl,
+      userName: values.discourseUserName,
+      apiKey: values.discourseAPIKey,
+      workspaceId
+    };
     try {
-      const body: { domain: string; userName: string; apiKey: string; workspaceId: string } = {
-        domain: values.discourseBaseUrl,
-        userName: values.discourseUserName,
-        apiKey: values.discourseAPIKey,
-        workspaceId
-      };
       const connectResponse: IntegrationResponse<DiscourseConnectResponse> = await request.post(`${API_ENDPOINT}/v1/discourse/connect`, body);
-      if (connectResponse?.data?.message?.toLocaleLowerCase().trim() == 'already connected') {
-        showWarningToast('Discourse is already connected to your workspace');
-        setIsLoading(false);
-      }
-
       if (connectResponse?.data?.data?.id) {
-        showSuccessToast('Integration in progress...');
+        showInfoToast('Integration in progress...');
         try {
           const completeSetupResponse: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/discourse/complete-setup`, {
             workspaceId,
@@ -275,15 +268,15 @@ const Integration: React.FC = () => {
             setIsModalOpen((prevState) => ({ ...prevState, discourse: false }));
             navigate(`/${workspaceId}/settings`);
           }
-        } catch (error) {
-          setIsModalOpen((prevState) => ({ ...prevState, discourse: false }));
-          showErrorToast('Integration Failed');
+        } catch (e) {
+          const error = e as AxiosError<unknown>;
+          showErrorToast(error?.response?.data?.message);
           setIsLoading(false);
         }
       }
-    } catch (error) {
-      setIsModalOpen((prevState) => ({ ...prevState, discourse: false }));
-      showErrorToast('Integration Failed');
+    } catch (e) {
+      const error = e as AxiosError<unknown>;
+      showErrorToast(error?.response?.data?.message);
       setIsLoading(false);
     }
   };
