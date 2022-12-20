@@ -2,7 +2,7 @@ import { useAppDispatch } from '@/hooks/useRedux';
 import Button from 'common/button/Button';
 import Input from 'common/input/Input';
 import authSlice from 'modules/authentication/store/slices/auth.slice';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as Yup from 'yup';
 import bgWorkSpaceImage from '../../../../assets/images/bg-sign.svg';
 import { setRefreshToken } from '../../../../lib/helper';
@@ -11,19 +11,23 @@ import './CreateWorkSpace.css';
 import cookie from 'react-cookies';
 import { DecodeToken } from '../../interface/auth.interface';
 import { decodeToken } from '../../../../lib/decodeToken';
-import { useNavigate } from 'react-router';
+import { NavigateFunction, useNavigate } from 'react-router';
 
 const CreateWorkSpace: React.FC = () => {
   const dispatch: AppDispatch = useAppDispatch();
+  const navigate: NavigateFunction = useNavigate();
 
   const accessToken = localStorage.getItem('accessToken') || cookie.load('x-auth-cookie');
   const decodedToken: DecodeToken = accessToken && decodeToken(accessToken);
   const workspaceId = localStorage.getItem('workspaceId') !== null && localStorage.getItem('workspaceId');
-  const navigate = useNavigate();
 
-  const [workspaceName, setWorkspaceName] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string | unknown>('');
-  const workspaceNameValidation = Yup.string().min(4, 'Workspace Name must be atleast 4 characters');
+
+  const workspaceNameRef: React.MutableRefObject<string> = useRef('');
+
+  const workspaceNameValidation = Yup.string()
+    .min(4, 'Workspace Name must be at least 4 characters')
+    .max(15, 'Workspace Name cannot exceed 15 characters');
 
   useEffect(() => {
     setRefreshToken();
@@ -33,10 +37,9 @@ const CreateWorkSpace: React.FC = () => {
   }, []);
 
   const handleWorkspaceName = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const workspace_name = e.target.value;
-    setWorkspaceName(workspace_name);
+    workspaceNameRef.current = e.target.value;
     try {
-      workspaceNameValidation.validateSync(workspace_name);
+      workspaceNameValidation.validateSync(workspaceNameRef.current);
       setErrorMessage('');
     } catch ({ message }) {
       setErrorMessage(message);
@@ -48,7 +51,7 @@ const CreateWorkSpace: React.FC = () => {
     if (errorMessage) {
       return;
     }
-    dispatch(authSlice.actions.createWorkspace({ workspaceName }));
+    dispatch(authSlice.actions.createWorkspace({ workspaceName: workspaceNameRef.current }));
   };
 
   return (
@@ -65,7 +68,7 @@ const CreateWorkSpace: React.FC = () => {
               <form
                 className="flex flex-col pb-10 mt-1.8 w-25.9 "
                 autoComplete="off"
-                onSubmit={(e) => {
+                onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
                   handleSubmit(e);
                 }}
               >
@@ -76,7 +79,7 @@ const CreateWorkSpace: React.FC = () => {
                     label="Workspace"
                     id="workspaceName"
                     name="workspaceName"
-                    value={workspaceName}
+                    ref={workspaceNameRef}
                     errors={Boolean(errorMessage)}
                     helperText={errorMessage}
                     className="h-4.5 rounded-lg bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-secondaryGray placeholder:text-base placeholder:leading-6 placeholder:font-Inter shadow-trialButtonShadow font-Inter box-border"
