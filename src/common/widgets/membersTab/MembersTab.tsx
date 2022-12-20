@@ -56,8 +56,9 @@ const MembersTab: FC<WidgetComponentProps> = (props: WidgetComponentProps) => {
       </div>
       <div
         className={`w-full h-full box-border
-        ${isManageMode ? 'widget-border relative' : 'border-borderPrimary'
-          } bg-white dark:bg-secondaryDark dark:text-white rounded-0.6 mt-1.868 border  
+        ${
+          isManageMode ? 'widget-border relative' : 'border-borderPrimary'
+        } bg-white dark:bg-secondaryDark dark:text-white rounded-0.6 mt-1.868 border  
          dark:border-borderDark shadow-profileCard  h-[85%]`}
       >
         <div className="w-full mt-6 flex flex-col ">
