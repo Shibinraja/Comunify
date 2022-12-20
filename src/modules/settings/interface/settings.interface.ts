@@ -7,6 +7,7 @@ export interface PlatformIcons {
   discord: string | undefined;
   reddit: string | undefined;
   github: string | undefined;
+  discourse: string | undefined;
 }
 
 export interface PlatformsStatus {
@@ -25,8 +26,12 @@ export interface VanillaForumsConnectData {
   workspaceId: string;
 }
 
+export interface DiscourseInitialValues {
+  discourseBaseUrl: string;
+  discourseUserName: string;
+  discourseAPIKey: string;
+}
 // Input Body
-
 export interface workspaceId {
   workspaceId: string;
 }
@@ -98,6 +103,7 @@ export interface ModalState {
   discord: boolean;
   reddit: boolean;
   github: boolean;
+  discourse: boolean;
 }
 
 // Response Body

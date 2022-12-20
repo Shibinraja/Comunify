@@ -113,3 +113,8 @@ export const getTimeSince = (compareDate: string) => {
     return `${time} ${time > 1 ? 'years' : 'year'} ago`;
   }
 };
+
+export const capitalizeFirstLetter = (text: string) => {
+  const character = text.charAt(0).toLocaleUpperCase() + text.slice(1);
+  return character;
+};
