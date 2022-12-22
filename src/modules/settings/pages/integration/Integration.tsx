@@ -120,7 +120,6 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isButtonConnect] = useState<boolean>(true);
   const [reconnectLoading, setReconnectLoading] = useState<boolean>(false);
-  //   const [platformStatus, setPlatformStatus] = useState<PlatformsStatus>({ platform: undefined, status: undefined });
   const [integrationDisconnect, setIntegrationDisconnect] = useState<boolean>(false);
 
   const navigate = useNavigate();
