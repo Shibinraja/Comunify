@@ -120,7 +120,6 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isButtonConnect] = useState<boolean>(true);
   const [reconnectLoading, setReconnectLoading] = useState<boolean>(false);
-  //   const [platformStatus, setPlatformStatus] = useState<PlatformsStatus>({ platform: undefined, status: undefined });
   const [integrationDisconnect, setIntegrationDisconnect] = useState<boolean>(false);
 
   const navigate = useNavigate();
@@ -426,49 +425,6 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
     } catch (e) {
       const error = e as AxiosError<unknown>;
       showErrorToast(error?.response?.data?.message);
-      setIsLoading(false);
-    }
-  };
-
-  // eslint-disable-next-line space-before-function-paren
-  const sendDiscourseData = async (values: DiscourseInitialValues) => {
-    setIsLoading(true);
-    try {
-      const body: { domain: string; userName: string; apiKey: string; workspaceId: string } = {
-        domain: values.discourseBaseUrl,
-        userName: values.discourseUserName,
-        apiKey: values.discourseAPIKey,
-        workspaceId
-      };
-      const connectResponse: IntegrationResponse<DiscourseConnectResponse> = await request.post(`${API_ENDPOINT}/v1/discourse/connect`, body);
-      if (connectResponse?.data?.message?.toLocaleLowerCase().trim() == 'already connected') {
-        showWarningToast('Discourse is already connected to your workspace');
-        setIsLoading(false);
-      }
-
-      if (connectResponse?.data?.data?.id) {
-        showSuccessToast('Integration in progress...');
-        try {
-          const completeSetupResponse: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/discourse/complete-setup`, {
-            workspaceId,
-            workspacePlatformAuthSettingsId: connectResponse?.data?.data?.id
-          });
-          if (completeSetupResponse?.data?.message) {
-            dispatch(settingsSlice.actions.platformData({ workspaceId }));
-            showSuccessToast('Successfully integrated');
-            setIsLoading(false);
-            setIsModalOpen((prevState) => ({ ...prevState, discourse: false }));
-            dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
-          }
-        } catch (error) {
-          setIsModalOpen((prevState) => ({ ...prevState, discourse: false }));
-          showErrorToast('Integration Failed');
-          setIsLoading(false);
-        }
-      }
-    } catch (error) {
-      setIsModalOpen((prevState) => ({ ...prevState, discourse: false }));
-      showErrorToast('Integration Failed');
       setIsLoading(false);
     }
   };
