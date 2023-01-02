@@ -5,6 +5,7 @@ interface ImportMetaEnv {
   readonly VITE_SLACK_CONNECT: string;
   readonly VITE_DISCORD_CONNECT: string;
   readonly VITE_GITHUB_CONNECT: string;
+  readonly VITE_TWITTER_CONNECT: string;
   readonly VITE_STRIPE_PUBLISHABLE_KEY: string;
   readonly VITE_APP_ENV: string;
   readonly VITE_OS_HOSTNAME: string;

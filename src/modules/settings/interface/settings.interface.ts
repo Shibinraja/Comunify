@@ -8,6 +8,7 @@ export interface PlatformIcons {
   reddit: string | undefined;
   github: string | undefined;
   discourse: string | undefined;
+  twitter: string | undefined;
 }
 
 export interface PlatformsStatus {
@@ -104,6 +105,7 @@ export interface ModalState {
   reddit: boolean;
   github: boolean;
   discourse: boolean;
+  twitter: boolean;
 }
 
 // Response Body

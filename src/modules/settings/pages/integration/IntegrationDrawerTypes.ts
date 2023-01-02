@@ -12,5 +12,6 @@ export enum PlatformsEnumType {
   DISCORD = 'discord',
   REDDIT = 'reddit',
   GITHUB = 'github',
-  DISCOURSE = 'discourse'
+  DISCOURSE = 'discourse',
+  TWITTER = 'twitter'
 }
