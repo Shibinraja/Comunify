@@ -34,6 +34,9 @@ export const REDDIT_CONNECT_ENDPOINT = import.meta.env.VITE_REDDIT_CONNECT;
 // Github connect
 export const GITHUB_CONNECT_ENDPOINT = import.meta.env.VITE_GITHUB_CONNECT;
 
+// Twitter connect
+export const TWITTER_CONNECT_ENDPOINT = import.meta.env.VITE_TWITTER_CONNECT;
+
 // Application Env's
 export const VITE_APP_ENV = import.meta.env.VITE_APP_ENV;
 export const VITE_OS_HOSTNAME = import.meta.env.VITE_OS_HOSTNAME;

@@ -14,7 +14,8 @@ import {
   NavigateToConnectPage,
   NavigateToDiscordConnectPage,
   NavigateToGithubConnectPage,
-  NavigateToRedditConnectPage
+  NavigateToRedditConnectPage,
+  NavigateToTwitterConnectPage
 } from '../../../settings/services/settings.services';
 
 import { PlatformsEnumType } from 'modules/settings/pages/integration/IntegrationDrawerTypes';
@@ -51,6 +52,7 @@ import slackIcon from '../../../../assets/images/slack.svg';
 import vanillaIcon from '../../../../assets/images/vanilla-forum.svg';
 import githubIcon from '../../../../assets/images/github_logo.png';
 import discourseIcon from '../../../../assets/images/discourse.png';
+import twitterIcon from '../../../../assets/images/twitter.png';
 
 import settingsSlice from '../../../settings/store/slice/settings.slice';
 
@@ -79,7 +81,8 @@ const Integration: React.FC = () => {
     discord: false,
     reddit: false,
     github: false,
-    discourse: false
+    discourse: false,
+    twitter: false
   });
   // eslint-disable-next-line no-unused-vars
   const [platformIcons, setPlatformIcons] = useState<PlatformIcons>({
@@ -88,7 +91,8 @@ const Integration: React.FC = () => {
     discord: undefined,
     reddit: undefined,
     github: undefined,
-    discourse: undefined
+    discourse: undefined,
+    twitter: undefined
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -128,7 +132,18 @@ const Integration: React.FC = () => {
       }
     }
 
-    if (window.location.href.includes('state') && window.location.href.includes('code')) {
+    if (window.location.href.includes('code') && window.location.href.includes('platform') && window.location.href.includes('platform')) {
+      if (searchParams.get('platform') === 'twitter') {
+        if (searchParams.get('code')) {
+          const codeParams: null | string = searchParams.get('code');
+          if (codeParams !== '') {
+            connectToTwitter(codeParams);
+          }
+        }
+      }
+    }
+
+    if (window.location.href.includes('state') && window.location.href.includes('code') && !window.location.href.includes('platform')) {
       if (searchParams.get('code') && searchParams.get('state')) {
         const codeParams: null | string = searchParams.get('code');
         if (codeParams !== '') {
@@ -175,6 +190,10 @@ const Integration: React.FC = () => {
       case PlatformsEnumType.DISCOURSE:
         setPlatformIcons((prevState) => ({ ...prevState, discourse: icon }));
         setIsModalOpen((prevState) => ({ ...prevState, discourse: true }));
+        break;
+      case PlatformsEnumType.TWITTER:
+        NavigateToTwitterConnectPage();
+        setIsModalOpen((prevState) => ({ ...prevState, twitter: true }));
         break;
       default:
         break;
@@ -356,6 +375,44 @@ const Integration: React.FC = () => {
     }
   };
 
+  // eslint-disable-next-line space-before-function-paren
+  const connectToTwitter = async (codeParams: string | null) => {
+    try {
+      setIsModalOpen((prevState) => ({ ...prevState, twitter: true }));
+      const body: ConnectBody = {
+        code: codeParams,
+        workspaceId
+      };
+      const response: IntegrationResponse<GithubConnectResponseData> = await request.post(`${API_ENDPOINT}/v1/twitter/connect`, body);
+      if (response?.data?.data) {
+        showSuccessToast('Authenticated successfully');
+        try {
+          const completeSetupResponse: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/twitter/complete-setup`, {
+            workspaceId,
+            workspacePlatformAuthSettingsId: response?.data?.data?.id
+          });
+          if (completeSetupResponse?.data?.message) {
+            dispatch(settingsSlice.actions.platformData({ workspaceId }));
+            showSuccessToast('Successfully integrated');
+            setIsLoading(false);
+            setIsModalOpen((prevState) => ({ ...prevState, twitter: false }));
+            navigate(`/${workspaceId}/settings`);
+          }
+        } catch (e) {
+          const error = e as AxiosError<unknown>;
+          showErrorToast(error?.response?.data?.message);
+          setIsLoading(false);
+        }
+      } else {
+        showErrorToast('Integration failed');
+        setIsModalOpen((prevState) => ({ ...prevState, twitter: false }));
+      }
+    } catch {
+      showErrorToast('Integration failed');
+      setIsModalOpen((prevState) => ({ ...prevState, twitter: false }));
+    }
+  };
+
   const handleModalClose = () => {
     if (isModalOpen.slack) {
       setIsModalOpen((prevState) => ({ ...prevState, slack: false }));
@@ -368,6 +425,9 @@ const Integration: React.FC = () => {
     }
     if (isModalOpen.github) {
       setIsModalOpen((prevState) => ({ ...prevState, github: false }));
+    }
+    if (isModalOpen.twitter) {
+      setIsModalOpen((prevState) => ({ ...prevState, twitter: false }));
     }
   };
 
@@ -661,7 +721,7 @@ const Integration: React.FC = () => {
         </div>
       </div>
       <IntegrationModalDrawer
-        isOpen={isModalOpen.slack || isModalOpen.reddit || isModalOpen.discord || isModalOpen.github}
+        isOpen={isModalOpen.slack || isModalOpen.reddit || isModalOpen.discord || isModalOpen.github || isModalOpen.twitter}
         isClose={handleModalClose}
         iconSrc={
           isModalOpen.slack
@@ -670,11 +730,15 @@ const Integration: React.FC = () => {
             ? redditLogoIcon
             : isModalOpen?.github
             ? githubIcon
+            : isModalOpen?.twitter
+            ? twitterIcon
             : isModalOpen.discord
             ? discordIcon
             : ''
         }
-        contextText={isModalOpen.slack ? 'Slack' : isModalOpen.reddit ? 'Reddit' : isModalOpen.discord ? 'Discord' : ''}
+        contextText={
+          isModalOpen.slack ? 'Slack' : isModalOpen.reddit ? 'Reddit' : isModalOpen.discord ? 'Discord' : isModalOpen.twitter ? 'Twitter' : ''
+        }
       />
     </div>
   );
