@@ -605,8 +605,8 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
       workspaceId
     };
     setReconnectLoading(true);
-    showInfoToast(`${capitalizeFirstLetter(platform)} reconnect is in progress...`);
     try {
+      showInfoToast(`${capitalizeFirstLetter(platform)} reconnect is in progress...`);
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
@@ -628,8 +628,8 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
     const body = {
       workspaceId
     };
-    showInfoToast(`${capitalizeFirstLetter(platform)} reconnect is in progress...`);
     try {
+      showInfoToast(`${capitalizeFirstLetter(platform)} reconnect is in progress...`);
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
         setShowAlert((prevState) => ({ ...prevState, discord: false }));
@@ -654,9 +654,8 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
     const body = {
       workspaceId
     };
-    showInfoToast(`${capitalizeFirstLetter(platform)} reconnect is in progress...`);
     try {
-      showInfoToast(`${platform} reconnect is in progress...`);
+      showInfoToast(`${capitalizeFirstLetter(platform)} reconnect is in progress...`);
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
         setShowAlert((prevState) => ({ ...prevState, reddit: false }));
@@ -681,9 +680,8 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
     const body = {
       workspaceId
     };
-    showInfoToast(`${capitalizeFirstLetter(platform)} reconnect is in progress...`);
     try {
-      showInfoToast(`${platform} reconnect is in progress...`);
+      showInfoToast(`${capitalizeFirstLetter(platform)} reconnect is in progress...`);
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
         setShowAlert((prevState) => ({ ...prevState, github: false }));
@@ -708,8 +706,8 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
       workspaceId
     };
     setReconnectLoading(true);
-    showInfoToast(`${capitalizeFirstLetter(platform)} reconnect is in progress...`);
     try {
+      showInfoToast(`${capitalizeFirstLetter(platform)} reconnect is in progress...`);
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
@@ -734,8 +732,8 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
     const body = {
       workspaceId
     };
-    showInfoToast(`${capitalizeFirstLetter(platform)} reconnect is in progress...`);
     try {
+      showInfoToast(`${capitalizeFirstLetter(platform)} reconnect is in progress...`);
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
         setShowAlert((prevState) => ({ ...prevState, twitter: false }));
