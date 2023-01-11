@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import useSkeletonLoading from '@/hooks/useSkeletonLoading';
 import { API_ENDPOINT } from '@/lib/config';
 import fetchExportList from '@/lib/fetchExport';
-import { convertEndDate, convertStartDate } from '@/lib/helper';
+import { convertEndDate, convertStartDate, generateDateAndTime } from '@/lib/helper';
 import { ColumnNameProps } from 'common/draggableCard/draggableCardTypes';
 import Pagination from 'common/pagination/pagination';
 import { width_90 } from 'constants/constants';
@@ -491,7 +491,8 @@ const Members: React.FC = () => {
                                 {member?.lastActivity ? format(parseISO(member?.lastActivity as string), 'dd MMM yyyy') : '--'}
                               </div>
                               <div className="font-medium font-Poppins text-card leading-1.31 text-tableDuration">
-                                {(member?.lastActivity as ReactNode) && format(parseISO(member?.lastActivity as string), 'HH:MM')}
+                                {/* {(member?.lastActivity as ReactNode) && format(parseISO(member?.lastActivity as string), 'HH:MM')} */}
+                                {generateDateAndTime(`${member?.lastActivity}`, 'HH:MM')}
                               </div>
                             </div>
                           )
@@ -681,7 +682,9 @@ const Members: React.FC = () => {
               </div>
             )}
           </div>
-          <div className="ml-1.30 w-[155px]"tabIndex={0}>{MemberFilter}</div>
+          <div className="ml-1.30 w-[155px]" tabIndex={0}>
+            {MemberFilter}
+          </div>
           <div className="ml-0.652 w-[112px]">
             <div
               aria-disabled={fetchLoader}
