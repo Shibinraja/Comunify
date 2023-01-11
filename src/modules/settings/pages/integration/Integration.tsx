@@ -14,14 +14,27 @@ import Button from 'common/button';
 import Input from '../../../../common/input';
 import { TabPanel } from 'common/tabs/TabPanel';
 import { ModalDrawer } from 'common/modals/ModalDrawer';
-import { NavigateToConnectPage, NavigateToDiscordConnectPage, NavigateToRedditConnectPage } from 'modules/settings/services/settings.services';
+import {
+  NavigateToConnectPage,
+  NavigateToDiscordConnectPage,
+  NavigateToGithubConnectPage,
+  NavigateToRedditConnectPage,
+  NavigateToTwitterConnectPage
+} from 'modules/settings/services/settings.services';
 
 import { PlatformsEnumType } from './IntegrationDrawerTypes';
 
-import { DiscordConnectResponse, PlatformConnectResponse, RedditConnectResponseData } from '../../../../interface/interface';
+import {
+  DiscordConnectResponse,
+  DiscourseConnectResponse,
+  GithubConnectResponseData,
+  PlatformConnectResponse,
+  RedditConnectResponseData
+} from '../../../../interface/interface';
 import {
   ConnectBody,
   ConnectedPlatforms,
+  DiscourseInitialValues,
   ModalState,
   PlatformIcons,
   PlatformResponse,
@@ -33,9 +46,9 @@ import { API_ENDPOINT } from '@/lib/config';
 import { AppDispatch } from '../../../../store';
 import { request } from '../../../../lib/request';
 import usePlatform from '../../../../hooks/usePlatform';
-import { getLocalWorkspaceId } from '../../../../lib/helper';
+import { capitalizeFirstLetter, getLocalWorkspaceId } from '../../../../lib/helper';
 import { IntegrationModalDrawer } from './IntegrationModalDrawer';
-import { IntegrationResponse, NetworkResponse } from '../../../../lib/api';
+import { AxiosError, IntegrationResponse, NetworkResponse } from '../../../../lib/api';
 import { showErrorToast, showInfoToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
 
 import discordIcon from '../../../../assets/images/discord.svg';
@@ -43,6 +56,9 @@ import githubLogoIcon from '../../../../assets/images/github_logo.png';
 import redditLogoIcon from '../../../../assets/images/reddit_logo.png';
 import slackIcon from '../../../../assets/images/slack.svg';
 import vanillaIcon from '../../../../assets/images/vanilla-forum.svg';
+import discourseIcon from '../../../../assets/images/discourse.png';
+import twitterIcon from '../../../../assets/images/twitter.png';
+import salesForce from '../../../../assets/images/salesforce.png';
 
 import settingsSlice from '../../store/slice/settings.slice';
 
@@ -65,9 +81,31 @@ const vanillaInitialValues: Omit<VanillaForumsConnectData, 'workspaceId'> = {
   vanillaAccessToken: ''
 };
 
+const discourseInitialValues: DiscourseInitialValues = {
+  discourseBaseUrl: '',
+  discourseAPIKey: '',
+  discourseUserName: ''
+};
+
 const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidden, selectedTab }) => {
-  const [isModalOpen, setIsModalOpen] = useState<ModalState>({ slack: false, vanilla: false, discord: false, reddit: false });
-  const [showAlert, setShowAlert] = useState<ModalState>({ slack: false, vanilla: false, discord: false, reddit: false });
+  const [isModalOpen, setIsModalOpen] = useState<ModalState>({
+    slack: false,
+    vanilla: false,
+    discord: false,
+    reddit: false,
+    github: false,
+    discourse: false,
+    twitter: false
+  });
+  const [showAlert, setShowAlert] = useState<ModalState>({
+    slack: false,
+    vanilla: false,
+    discord: false,
+    reddit: false,
+    github: false,
+    discourse: false,
+    twitter: false
+  });
   const [isWarningModalOpen, setIsWarningModalOpen] = useState<boolean>(false);
   const [confirmPlatformToDisconnect, setConfirmPlatformToDisconnect] = useState<ConfirmPlatformToDisconnect>({
     platform: '',
@@ -79,12 +117,14 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
     slack: undefined,
     vanillaForums: undefined,
     discord: undefined,
-    reddit: undefined
+    reddit: undefined,
+    github: undefined,
+    discourse: undefined,
+    twitter: undefined
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isButtonConnect] = useState<boolean>(true);
   const [reconnectLoading, setReconnectLoading] = useState<boolean>(false);
-  //   const [platformStatus, setPlatformStatus] = useState<PlatformsStatus>({ platform: undefined, status: undefined });
   const [integrationDisconnect, setIntegrationDisconnect] = useState<boolean>(false);
 
   const navigate = useNavigate();
@@ -110,7 +150,7 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
         }
       }
     }
-    if (window.location.href.includes('state') && window.location.href.includes('code')) {
+    if (window.location.href.includes('state') && window.location.href.includes('code') && !window.location.href.includes('platform')) {
       if (searchParams.get('code')) {
         const codeParams: null | string = searchParams.get('code');
         if (codeParams !== '') {
@@ -118,11 +158,41 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
         }
       }
     }
+
+    if (window.location.href.includes('state') && window.location.href.includes('code') && window.location.href.includes('platform')) {
+      if (searchParams.get('platform') === 'twitter') {
+        if (searchParams.get('code')) {
+          const codeParams: null | string = searchParams.get('code');
+          if (codeParams !== '') {
+            connectToTwitter(codeParams);
+          }
+        }
+      }
+    }
+
     if (window.location.href.includes('state') && !window.location.href.includes('code')) {
       if (searchParams.get('code')) {
         const codeParams: null | string = searchParams.get('code');
         if (codeParams !== '') {
           getData(codeParams);
+        }
+      }
+    }
+    if (!window.location.href.includes('state') && window.location.href.includes('code')) {
+      if (searchParams.get('code')) {
+        const codeParams: null | string = searchParams.get('code');
+        if (codeParams !== '') {
+          connectToGithub(codeParams);
+        }
+      }
+    }
+    if (window.location.href.includes('code') && window.location.href.includes('platform')) {
+      if (searchParams.get('platform') === 'github') {
+        if (searchParams.get('code')) {
+          const codeParams: null | string = searchParams.get('code');
+          if (codeParams !== '') {
+            connectToGithub(codeParams);
+          }
         }
       }
     }
@@ -152,7 +222,7 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
             setIsLoading(false);
           }
         } else {
-          showWarningToast(`${name} is already connected to your workspace`);
+          showWarningToast(`${capitalizeFirstLetter(name)} is already connected to your workspace`);
           setIsLoading(false);
         }
         break;
@@ -167,7 +237,7 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
             setIsLoading(false);
           }
         } else {
-          showWarningToast(`${name} Forums is already connected to your workspace`);
+          showWarningToast(`${capitalizeFirstLetter(name)} Forums is already connected to your workspace`);
           setIsLoading(false);
         }
         break;
@@ -182,7 +252,7 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
             setIsLoading(false);
           }
         } else {
-          showWarningToast(`${name} is already connected to your workspace`);
+          showWarningToast(`${capitalizeFirstLetter(name)} is already connected to your workspace`);
           setIsLoading(false);
         }
         break;
@@ -197,7 +267,52 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
             setIsLoading(false);
           }
         } else {
-          showWarningToast(`${name} is already connected to your workspace`);
+          showWarningToast(`${capitalizeFirstLetter(name)} is already connected to your workspace`);
+          setIsLoading(false);
+        }
+        break;
+      case PlatformsEnumType.GITHUB:
+        setIsLoading(true);
+        if (!checkForConnectedPlatform(name)) {
+          setPlatformIcons((prevState) => ({ ...prevState, github: icon }));
+          if (isIntegrated && !isConnected) {
+            setShowAlert((prevState) => ({ ...prevState, github: true }));
+          } else {
+            NavigateToGithubConnectPage();
+            setIsLoading(false);
+          }
+        } else {
+          showWarningToast(`${capitalizeFirstLetter(name)} is already connected to your workspace`);
+          setIsLoading(false);
+        }
+        break;
+      case PlatformsEnumType.DISCOURSE:
+        setIsLoading(true);
+        if (!checkForConnectedPlatform(name)) {
+          setPlatformIcons((prevState) => ({ ...prevState, discourse: icon }));
+          if (isIntegrated && !isConnected) {
+            setShowAlert((prevState: ModalState) => ({ ...prevState, discourse: true }));
+          } else {
+            setIsModalOpen((prevState: ModalState) => ({ ...prevState, discourse: true }));
+            setIsLoading(false);
+          }
+        } else {
+          showWarningToast(`${capitalizeFirstLetter(name)} is already connected to your workspace`);
+          setIsLoading(false);
+        }
+        break;
+      case PlatformsEnumType.TWITTER:
+        setIsLoading(true);
+        if (!checkForConnectedPlatform(name)) {
+          setPlatformIcons((prevState) => ({ ...prevState, twitter: icon }));
+          if (isIntegrated && !isConnected) {
+            setShowAlert((prevState) => ({ ...prevState, twitter: true }));
+          } else {
+            NavigateToTwitterConnectPage();
+            setIsLoading(false);
+          }
+        } else {
+          showWarningToast(`${capitalizeFirstLetter(name)} is already connected to your workspace`);
           setIsLoading(false);
         }
         break;
@@ -281,10 +396,6 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
         workspaceId
       };
       const connectResponse: IntegrationResponse<PlatformConnectResponse> = await request.post(`${API_ENDPOINT}/v1/vanilla/connect`, body);
-      if (connectResponse?.data?.message?.toLocaleLowerCase().trim() == 'already connected') {
-        showWarningToast('Vanilla Forums is already connected to your workspace');
-        setIsLoading(false);
-      }
       if (connectResponse?.data?.data?.id) {
         showInfoToast('Integration in progress...');
         try {
@@ -294,18 +405,58 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
           });
           if (completeSetupResponse?.data?.message) {
             dispatch(settingsSlice.actions.platformData({ workspaceId }));
-            dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
             showSuccessToast('Successfully integrated');
+            dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
             setIsLoading(false);
             setIsModalOpen((prevState) => ({ ...prevState, vanillaForums: false }));
           }
-        } catch (error) {
-          showErrorToast('Integration Failed');
+        } catch (e) {
+          const error = e as AxiosError<unknown>;
+          showErrorToast(error?.response?.data?.message);
           setIsLoading(false);
         }
       }
-    } catch (error) {
-      showErrorToast('Integration Failed');
+    } catch (e) {
+      const error = e as AxiosError<unknown>;
+      showErrorToast(error?.response?.data?.message);
+      setIsLoading(false);
+    }
+  };
+
+  // eslint-disable-next-line space-before-function-paren
+  const sendDiscourseData = async (values: DiscourseInitialValues) => {
+    const body: { domain: string; userName: string; apiKey: string; workspaceId: string } = {
+      domain: values.discourseBaseUrl,
+      userName: values.discourseUserName,
+      apiKey: values.discourseAPIKey,
+      workspaceId
+    };
+    setIsLoading(true);
+    try {
+      const connectResponse: IntegrationResponse<DiscourseConnectResponse> = await request.post(`${API_ENDPOINT}/v1/discourse/connect`, body);
+      if (connectResponse?.data?.data?.id) {
+        showInfoToast('Integration in progress...');
+        try {
+          const completeSetupResponse: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/discourse/complete-setup`, {
+            workspaceId,
+            workspacePlatformAuthSettingsId: connectResponse?.data?.data?.id
+          });
+          if (completeSetupResponse?.data?.message) {
+            dispatch(settingsSlice.actions.platformData({ workspaceId }));
+            showSuccessToast('Successfully integrated');
+            setIsLoading(false);
+            setIsModalOpen((prevState) => ({ ...prevState, discourse: false }));
+            dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+          }
+        } catch (e) {
+          const error = e as AxiosError<unknown>;
+          showErrorToast(error?.response?.data?.message);
+          setIsLoading(false);
+        }
+      }
+    } catch (e) {
+      const error = e as AxiosError<unknown>;
+      showErrorToast(error?.response?.data?.message);
       setIsLoading(false);
     }
   };
@@ -361,19 +512,80 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
   };
 
   // eslint-disable-next-line space-before-function-paren
+  const connectToGithub = async (codeParams: string | null) => {
+    try {
+      setIsModalOpen((prevState) => ({ ...prevState, github: true }));
+      const body: ConnectBody = {
+        code: codeParams,
+        workspaceId
+      };
+      const response: IntegrationResponse<GithubConnectResponseData> = await request.post(`${API_ENDPOINT}/v1/github/connect`, body);
+      if (response?.data?.data) {
+        setIsModalOpen((prevState) => ({ ...prevState, github: false }));
+        navigate(`/${workspaceId}/settings/github-integration`, {
+          state: { githubConnectResponse: response?.data?.data }
+        });
+        showSuccessToast('Authenticated successfully');
+      } else {
+        showErrorToast('Integration failed');
+        setIsModalOpen((prevState) => ({ ...prevState, github: false }));
+      }
+    } catch {
+      showErrorToast('Integration failed');
+      setIsModalOpen((prevState) => ({ ...prevState, github: false }));
+    }
+  };
+
+  // eslint-disable-next-line space-before-function-paren
+  const connectToTwitter = async (codeParams: string | null) => {
+    try {
+      setIsModalOpen((prevState) => ({ ...prevState, twitter: true }));
+      const body: ConnectBody = {
+        code: codeParams,
+        workspaceId
+      };
+      const response: IntegrationResponse<GithubConnectResponseData> = await request.post(`${API_ENDPOINT}/v1/twitter/connect`, body);
+      if (response?.data?.data) {
+        showSuccessToast('Authenticated successfully');
+        try {
+          const completeSetupResponse: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/twitter/complete-setup`, {
+            workspaceId,
+            workspacePlatformAuthSettingsId: response?.data?.data?.id
+          });
+          if (completeSetupResponse?.data?.message) {
+            dispatch(settingsSlice.actions.platformData({ workspaceId }));
+            showSuccessToast('Successfully integrated');
+            setIsLoading(false);
+            setIsModalOpen((prevState) => ({ ...prevState, twitter: false }));
+          }
+        } catch (e) {
+          const error = e as AxiosError<unknown>;
+          showErrorToast(error?.response?.data?.message);
+          setIsLoading(false);
+        }
+      } else {
+        showErrorToast('Integration failed');
+        setIsModalOpen((prevState) => ({ ...prevState, twitter: false }));
+      }
+    } catch {
+      showErrorToast('Integration failed');
+      setIsModalOpen((prevState) => ({ ...prevState, twitter: false }));
+    }
+  };
+
+  // eslint-disable-next-line space-before-function-paren
   const handlePlatformReconnectForSlack = async (platform: string) => {
-    // setIsModalOpen((prevState) => ({ ...prevState, slack: true }));
     setReconnectLoading(true);
     const body = {
       workspaceId
     };
     try {
-      showInfoToast(`${platform} reconnect is in progress...`);
+      showInfoToast(`${capitalizeFirstLetter(platform)} reconnect is in progress...`);
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
         setShowAlert((prevState) => ({ ...prevState, slack: false }));
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
-        showSuccessToast(`${platform} was successfully connected`);
+        showSuccessToast(`${capitalizeFirstLetter(platform)} was successfully connected`);
         setReconnectLoading(false);
       } else {
         showErrorToast('Failed to connect to the platform');
@@ -393,12 +605,12 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
       workspaceId
     };
     setReconnectLoading(true);
-    showInfoToast(`${platform} reconnect is in progress...`);
     try {
+      showInfoToast(`${capitalizeFirstLetter(platform)} reconnect is in progress...`);
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
-        showSuccessToast(`${platform} Forums was successfully connected`);
+        showSuccessToast(`${capitalizeFirstLetter(platform)} Forums was successfully connected`);
         setReconnectLoading(false);
       } else {
         showErrorToast('Failed to connect to the platform');
@@ -413,17 +625,16 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
   // eslint-disable-next-line space-before-function-paren
   const handlePlatformReconnectForDiscord = async (platform: string) => {
     setReconnectLoading(true);
-    // setIsModalOpen((prevState) => ({ ...prevState, discord: true }));
     const body = {
       workspaceId
     };
     try {
-      showInfoToast(`${platform} reconnect is in progress...`);
+      showInfoToast(`${capitalizeFirstLetter(platform)} reconnect is in progress...`);
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
         setShowAlert((prevState) => ({ ...prevState, discord: false }));
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
-        showSuccessToast(`${platform} was successfully connected`);
+        showSuccessToast(`${capitalizeFirstLetter(platform)} was successfully connected`);
         setReconnectLoading(false);
       } else {
         showErrorToast('Failed to connect to the platform');
@@ -440,17 +651,16 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
   // eslint-disable-next-line space-before-function-paren
   const handlePlatformReconnectForReddit = async (platform: string) => {
     setReconnectLoading(true);
-    // setIsModalOpen((prevState) => ({ ...prevState, reddit: true }));
     const body = {
       workspaceId
     };
     try {
-      showInfoToast(`${platform} reconnect is in progress...`);
+      showInfoToast(`${capitalizeFirstLetter(platform)} reconnect is in progress...`);
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
         setShowAlert((prevState) => ({ ...prevState, reddit: false }));
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
-        showSuccessToast(`${platform} was successfully connected`);
+        showSuccessToast(`${capitalizeFirstLetter(platform)} was successfully connected`);
         setReconnectLoading(false);
       } else {
         showErrorToast('Failed to connect to the platform');
@@ -460,6 +670,84 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
     } catch {
       showErrorToast('Failed to connect to the platform');
       setShowAlert((prevState) => ({ ...prevState, reddit: false }));
+      setReconnectLoading(false);
+    }
+  };
+
+  // eslint-disable-next-line space-before-function-paren
+  const handlePlatformReconnectForGithub = async (platform: string) => {
+    setReconnectLoading(true);
+    const body = {
+      workspaceId
+    };
+    try {
+      showInfoToast(`${capitalizeFirstLetter(platform)} reconnect is in progress...`);
+      const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
+      if (response?.data?.message) {
+        setShowAlert((prevState) => ({ ...prevState, github: false }));
+        dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+        showSuccessToast(`${capitalizeFirstLetter(platform)} was successfully connected`);
+        setReconnectLoading(false);
+      } else {
+        showErrorToast('Failed to connect to the platform');
+        setShowAlert((prevState) => ({ ...prevState, github: false }));
+        setReconnectLoading(false);
+      }
+    } catch {
+      showErrorToast('Failed to connect to the platform');
+      setShowAlert((prevState) => ({ ...prevState, github: false }));
+      setReconnectLoading(false);
+    }
+  };
+
+  // eslint-disable-next-line space-before-function-paren
+  const handlePlatformReconnectForDiscourse = async (platform: string) => {
+    const body = {
+      workspaceId
+    };
+    setReconnectLoading(true);
+    try {
+      showInfoToast(`${capitalizeFirstLetter(platform)} reconnect is in progress...`);
+      const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
+      if (response?.data?.message) {
+        dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+        showSuccessToast(`${capitalizeFirstLetter(platform)} was successfully connected`);
+        setReconnectLoading(false);
+        setShowAlert((prevState) => ({ ...prevState, discourse: false }));
+      } else {
+        showErrorToast('Failed to connect to the platform');
+        setReconnectLoading(false);
+        setShowAlert((prevState) => ({ ...prevState, discourse: false }));
+      }
+    } catch {
+      showErrorToast('Failed to connect to the platform');
+      setReconnectLoading(false);
+      setShowAlert((prevState) => ({ ...prevState, discourse: false }));
+    }
+  };
+
+  // eslint-disable-next-line space-before-function-paren
+  const handlePlatformReconnectForTwitter = async (platform: string) => {
+    setReconnectLoading(true);
+    const body = {
+      workspaceId
+    };
+    try {
+      showInfoToast(`${capitalizeFirstLetter(platform)} reconnect is in progress...`);
+      const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
+      if (response?.data?.message) {
+        setShowAlert((prevState) => ({ ...prevState, twitter: false }));
+        dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+        showSuccessToast(`${capitalizeFirstLetter(platform)} was successfully connected`);
+        setReconnectLoading(false);
+      } else {
+        showErrorToast('Failed to connect to the platform');
+        setShowAlert((prevState) => ({ ...prevState, twitter: false }));
+        setReconnectLoading(false);
+      }
+    } catch {
+      showErrorToast('Failed to connect to the platform');
+      setShowAlert((prevState) => ({ ...prevState, twitter: false }));
       setReconnectLoading(false);
     }
   };
@@ -483,6 +771,15 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
     if (showAlert.reddit) {
       handlePlatformReconnectForReddit(PlatformsEnumType.REDDIT);
     }
+    if (showAlert.github) {
+      handlePlatformReconnectForGithub(PlatformsEnumType.GITHUB);
+    }
+    if (showAlert.discourse) {
+      handlePlatformReconnectForDiscourse(PlatformsEnumType.DISCOURSE);
+    }
+    if (showAlert.twitter) {
+      handlePlatformReconnectForTwitter(PlatformsEnumType.TWITTER);
+    }
   };
 
   const handleModalClose = () => {
@@ -500,6 +797,15 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
     }
     if (showAlert.vanilla) {
       setShowAlert((prevState) => ({ ...prevState, vanilla: false }));
+    }
+    if (isModalOpen.github) {
+      setIsModalOpen((prevState) => ({ ...prevState, github: false }));
+    }
+    if (showAlert.discourse) {
+      setShowAlert((prevState) => ({ ...prevState, discourse: false }));
+    }
+    if (showAlert.twitter) {
+      setShowAlert((prevState) => ({ ...prevState, twitter: false }));
     }
   };
 
@@ -566,9 +872,9 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
 
             <div className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5">
               <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                <img src={githubLogoIcon} alt="" className="h-2.31" />
+                <img src={salesForce} alt="" className="h-2.31" />
               </div>
-              <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">Github</div>
+              <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">Salesforce</div>
               <Button
                 disabled={isLoading ? true : false}
                 type="button"
@@ -679,6 +985,127 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
             </div>
           </Modal>
           <Modal
+            isOpen={isModalOpen.discourse}
+            shouldCloseOnOverlayClick={false}
+            onRequestClose={() => setIsModalOpen((previousState: ModalState) => ({ ...previousState, discourse: false }))}
+            className="w-24.31 pb-12 mx-auto rounded-lg border-integration-modal bg-white shadow-modal outline-none"
+            style={{
+              overlay: {
+                display: 'flex',
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0,
+                alignItems: 'center'
+              }
+            }}
+          >
+            <div className="vanilla">
+              <h3 className="flex items-center justify-center pt-9 font-Inter text-xl font-semibold leading-6">
+                <img src={discourseIcon} alt="" className="px-2.5 w-14" />
+                integrate <span className="font-normal px-2">Discourse</span>
+              </h3>
+              <div className="flex flex-col px-[1.875rem] pt-9">
+                <Formik initialValues={discourseInitialValues} onSubmit={sendDiscourseData} validationSchema={discourseDataSchema}>
+                  {({ errors, handleBlur, handleChange, touched, values }): JSX.Element => (
+                    <Form>
+                      <div className="form-group">
+                        <label htmlFor="siteUrl" className="font-Poppins font-normal text-infoBlack text-sm leading-5">
+                          Site URL*
+                        </label>
+                        <h1 className="font-Inter font-normal text-error leading-7 text-vanillaDescription">
+                          Enter the full URL to your Discourse site in this format: https://{`yourdomain`}.com
+                        </h1>
+                        <Input
+                          type="text"
+                          placeholder="Enter URL"
+                          label="Site URL"
+                          id="siteUrlId"
+                          name="discourseBaseUrl"
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          value={values?.discourseBaseUrl}
+                          errors={Boolean(touched.discourseBaseUrl && errors.discourseBaseUrl)}
+                          helperText={touched.discourseBaseUrl && errors.discourseBaseUrl}
+                          className="h-2.81 pr-3.12 rounded-md border-app-result-card-border mt-[0.4375rem] bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-thinGray placeholder:text-sm placeholder:leading-6 placeholder:font-Poppins font-Poppins box-border"
+                        />
+                      </div>
+                      <div className="form-group pt-4">
+                        <label htmlFor="siteUrl" className="font-Poppins font-normal text-infoBlack text-sm leading-5">
+                          Username*
+                        </label>
+                        <Input
+                          type="text"
+                          placeholder="Enter Username"
+                          label="Username"
+                          id="usernameId"
+                          name="discourseUserName"
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          value={values?.discourseUserName}
+                          errors={Boolean(touched.discourseUserName && errors.discourseUserName)}
+                          helperText={touched.discourseUserName && errors.discourseUserName}
+                          className="h-2.81 pr-3.12 rounded-md border-app-result-card-border mt-[0.4375rem] bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-thinGray placeholder:text-sm placeholder:leading-6 placeholder:font-Poppins font-Poppins box-border"
+                        />
+                      </div>
+                      <div className="form-group pt-1.12">
+                        <label htmlFor="accessToken" className="font-Poppins font-normal text-infoBlack text-sm leading-5">
+                          API Key*
+                        </label>
+                        <h1 className="font-Inter font-normal text-error leading-7 text-vanillaDescription">
+                          You can learn how to generate an API Key
+                          <span className="text-tag cursor-pointer hover:underline pl-1">
+                            <a href="https://meta.discourse.org/t/create-and-configure-an-api-key/230124" target={'_blank'} rel="noreferrer">
+                              here.
+                            </a>{' '}
+                          </span>
+                        </h1>
+                        <Input
+                          type="text"
+                          placeholder="Enter API Key"
+                          label="API Key"
+                          id="apiKeyId"
+                          name="discourseAPIKey"
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          value={values?.discourseAPIKey}
+                          errors={Boolean(touched.discourseAPIKey && errors.discourseAPIKey)}
+                          helperText={touched.discourseAPIKey && errors.discourseAPIKey}
+                          className="h-2.81 pr-3.12 rounded-md border-app-result-card-border mt-[0.4375rem] bg-white p-2.5 focus:outline-none placeholder:font-normal placeholder:text-thinGray placeholder:text-sm placeholder:leading-6 placeholder:font-Poppins font-Poppins box-border"
+                        />
+                      </div>
+                      <div className="flex justify-end pt-[1.875rem]">
+                        <Button
+                          text="Cancel"
+                          type="submit"
+                          className="cancel mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  h-2.81 w-5.25  rounded border-none"
+                          onClick={() => setIsModalOpen((previousState: ModalState) => ({ ...previousState, discourse: false }))}
+                        />
+                        <Button
+                          text="Save"
+                          type="submit"
+                          disabled={
+                            isLoading ? true : !values.discourseBaseUrl || !values.discourseUserName || !values.discourseAPIKey ? true : false
+                          }
+                          className={`text-white font-Poppins text-error font-medium leading-5 btn-save-modal
+                 cursor-pointer rounded shadow-contactBtn w-5.25  ${
+                   isLoading
+                     ? 'opacity-50 cursor-not-allowed '
+                     : !values.discourseBaseUrl || !values.discourseUserName || !values.discourseAPIKey
+                     ? 'opacity-50 cursor-not-allowed '
+                     : ''
+                 } border-none h-2.81`}
+                        />
+                      </div>
+                    </Form>
+                  )}
+                </Formik>
+              </div>
+            </div>
+          </Modal>
+
+          <Modal
             isOpen={isWarningModalOpen}
             shouldCloseOnOverlayClick={false}
             onRequestClose={() => setIsWarningModalOpen(false)}
@@ -725,10 +1152,36 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
         </div>
       </div>
       <IntegrationModalDrawer
-        isOpen={isModalOpen.slack || isModalOpen.reddit || isModalOpen.discord}
+        isOpen={isModalOpen.slack || isModalOpen.reddit || isModalOpen.discord || isModalOpen.github || isModalOpen.twitter}
         isClose={handleModalClose}
-        iconSrc={isModalOpen.slack ? slackIcon : isModalOpen.reddit ? redditLogoIcon : isModalOpen.discord ? discordIcon : ''}
-        contextText={isModalOpen.slack ? 'Slack' : isModalOpen.reddit ? 'Reddit' : isModalOpen.discord ? 'Discord' : ''}
+        iconSrc={
+          isModalOpen.slack
+            ? slackIcon
+            : isModalOpen.reddit
+            ? redditLogoIcon
+            : isModalOpen.discord
+            ? discordIcon
+            : isModalOpen.github
+            ? githubLogoIcon
+            : isModalOpen.discourse
+            ? discourseIcon
+            : isModalOpen.twitter
+            ? twitterIcon
+            : ''
+        }
+        contextText={
+          isModalOpen.slack
+            ? 'Slack'
+            : isModalOpen.reddit
+            ? 'Reddit'
+            : isModalOpen.discord
+            ? 'Discord'
+            : isModalOpen.github
+            ? 'Github'
+            : isModalOpen.twitter
+            ? 'Twitter'
+            : ''
+        }
       />
       <ModalDrawer
         isOpen={Object.values(showAlert).includes(true) ? true : false}
@@ -736,10 +1189,34 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
         loader={reconnectLoading}
         onSubmit={handleOnSubmit}
         iconSrc={
-          showAlert.slack ? slackIcon : showAlert.reddit ? redditLogoIcon : showAlert.discord ? discordIcon : showAlert.vanilla ? vanillaIcon : ''
+          showAlert.slack
+            ? slackIcon
+            : showAlert.reddit
+            ? redditLogoIcon
+            : showAlert.discord
+            ? discordIcon
+            : showAlert.vanilla
+            ? vanillaIcon
+            : showAlert.discourse
+            ? discourseIcon
+            : showAlert.twitter
+            ? twitterIcon
+            : ''
         }
-        contextText={`Are you sure you want to reconnect the ${
-          showAlert.slack ? 'slack' : showAlert.discord ? 'discord' : showAlert.reddit ? 'reddit' : ''
+        contextText={`Are you sure you want to reconnect ${
+          showAlert.slack
+            ? 'Slack'
+            : showAlert.discord
+            ? 'Discord'
+            : showAlert.reddit
+            ? 'Reddit'
+            : showAlert.github
+            ? 'Github'
+            : showAlert.discourse
+            ? 'Discourse'
+            : showAlert.twitter
+            ? 'Twitter'
+            : ''
         }  to your workspace?`}
       />
     </TabPanel>
@@ -751,4 +1228,10 @@ export default Integration;
 const vanillaDataSchema = Yup.object().shape({
   vanillaBaseUrl: Yup.string().required('Site URL is required').trim(),
   vanillaAccessToken: Yup.string().required('Access Token is required').trim()
+});
+
+const discourseDataSchema = Yup.object().shape({
+  discourseBaseUrl: Yup.string().required('Site URL is required').trim(),
+  discourseUserName: Yup.string().required('Username is required').trim(),
+  discourseAPIKey: Yup.string().required('API Key is required').trim()
 });

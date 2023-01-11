@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 
 import { SubscriptionPackages } from 'modules/authentication/interface/auth.interface';
+import { MutableRefObject } from 'react';
 
 export interface RoutesArray {
   index?: boolean;
@@ -18,8 +19,9 @@ export interface Props {
   placeholder?: string;
   value?: string | string[];
   id: string;
+  ref?: MutableRefObject<any>;
   helperText?: any;
-  handleSubmit?: any;
+  handleSubmit?: () => void;
   username?: string;
   className?: string;
   maxLength?: number;
@@ -76,6 +78,12 @@ export interface DiscordChannel {
   nsfw: boolean;
 }
 
+export interface DiscourseConnectResponse extends PlatformConnectResponse {
+  platformAuthSettingsId: string | null;
+  refreshToken: string | null;
+  guildId: string | null;
+}
+
 export interface DiscordConnectResponse extends PlatformConnectResponse {
   platformAuthSettingsId: string;
   guildName: string;
@@ -95,6 +103,19 @@ export interface RedditConnectResponseData extends PlatformConnectResponse {
   guildId: null;
   communities: RedditCommunities[];
 }
+
+export interface GithubRepositories {
+  repoName: string;
+  repoId: string;
+}
+
+export interface GithubConnectResponseData extends PlatformConnectResponse {
+  platformAuthSettingsId: string;
+  guildId: string;
+  refreshToken: string;
+  filteredRepository: GithubRepositories[];
+}
+
 export type PaginationResponse<T> = {
   data: T[];
   totalPages: number;

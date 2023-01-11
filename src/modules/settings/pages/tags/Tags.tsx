@@ -204,7 +204,7 @@ const Tags: React.FC<Props> = ({ hidden }) => {
                     <input
                       type="text"
                       className="input-search  h-[45px] w-[373px] box-border focus:outline-none px-3 rounded-0.6 shadow-profileCard text-xs  font-Poppins placeholder:font-normal placeholder:text-card placeholder:leading-1.31 placeholder:text-searchGray"
-                      placeholder="Search By Name or Email"
+                      placeholder="Search By Tag Name"
                       onChange={handleSearchTextChange}
                     />
                   </div>

@@ -1,21 +1,6 @@
 import { Props } from '../../interface/interface';
 
-const Input = ({
-  id,
-  disabled = false,
-  placeholder,
-  name,
-  type,
-  value,
-  // handleSubmit,
-  className,
-  errors,
-  onBlur,
-  onChange,
-  helperText,
-  ...rest
-}: // ...rest
-Props) => (
+const Input = ({ id, disabled = false, placeholder, name, type, value, className, errors, onBlur, onChange, helperText, ...rest }: Props) => (
   <div className="flex flex-col relative">
     <input
       id={id}

@@ -1,7 +1,9 @@
+/* eslint-disable indent */
+/* eslint-disable no-constant-condition */
 import Button from 'common/button';
 import { TabPanel } from 'common/tabs/TabPanel';
 import ToggleButton from 'common/ToggleButton/ToggleButton';
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 
 import { buildStyles, CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import ProgressProvider from './ProgressProvider';
@@ -34,9 +36,12 @@ import {
   setPlanAutoRenewalService
 } from '../../services/settings.services';
 
-import { alphabets_only_regex_with_single_space, email_regex, whiteSpace_single_regex } from '../../../../constants/constants';
+import { alphabets_only_regex_with_single_space, email_regex, whiteSpace_single_regex, width_70, width_90 } from '../../../../constants/constants';
 import { stripePublishableKey } from '@/lib/config';
 import { SubscriptionPackages } from 'modules/authentication/interface/auth.interface';
+import Skeleton from 'react-loading-skeleton';
+import useSkeletonLoading from '@/hooks/useSkeletonLoading';
+import authSlice from 'modules/authentication/store/slices/auth.slice';
 
 const CheckoutForm = React.lazy(() => import('../subscription/CheckoutForm'));
 
@@ -51,17 +56,28 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab, subscriptionPlanDe
   const [subscriptionDetails, setSubscriptionDetails] = useState<SubscriptionDetails | undefined>();
   const [addedCardDetails, setAddedCardDetails] = useState<AddedCardDetails[]>([]);
   const [toggle, setToggle] = useState<boolean>(true);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isBillingDetailsModal, setIsBillingDetailsModal] = useState<{ billingDetails: boolean; cardDetails: boolean }>({
     billingDetails: false,
     cardDetails: false
   });
   const [billingDetails, setBillingDetails] = useState<BillingDetails>({ billingName: '', billingEmail: '' });
   const [clientSecret, setClientSecret] = useState<string>('');
+  const [subscriptionTabLoader, setSubscriptionTabLoader] = useState<{ planAutoRenewalLoader: boolean; getSubscriptionPlanLoader: boolean }>({
+    planAutoRenewalLoader: false,
+    getSubscriptionPlanLoader: false
+  });
   const stripePromise = loadStripe(stripePublishableKey);
   const comunifyPlusPlanDetails = subscriptionPlanDetails?.filter(
     (data: SubscriptionPackages) => data?.name?.toLocaleLowerCase().trim() === 'comunify plus'
   )[0];
+
+  const getSubscriptionsLoader = useSkeletonLoading(authSlice.actions.getSubscriptions.type);
+
+  useEffect(() => {
+    getCardDetails();
+    getCurrentSubscriptionPlanDetails();
+    getSecretKeyForStripe();
+  }, []);
 
   useEffect(() => {
     if (selectedTab === 'subscription') {
@@ -69,17 +85,11 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab, subscriptionPlanDe
     }
   }, [selectedTab]);
 
-  useEffect(() => {
-    getSecretKeyForStripe();
-  }, []);
-
-  useEffect(() => {
-    getCardDetails();
-  }, []);
-
   // eslint-disable-next-line space-before-function-paren
   const getCurrentSubscriptionPlanDetails = async () => {
+    setSubscriptionTabLoader((prev) => ({ ...prev, getSubscriptionPlanLoader: true }));
     const response: SubscriptionDetails = await getChoseSubscriptionPlanDetailsService();
+    setSubscriptionTabLoader((prev) => ({ ...prev, getSubscriptionPlanLoader: false }));
     if (response?.stripeSubscriptionId) {
       setSubscriptionDetails(response);
       setToggle(response?.autoRenewal);
@@ -96,7 +106,7 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab, subscriptionPlanDe
 
   // eslint-disable-next-line space-before-function-paren
   const setPlanAutoRenewal = async () => {
-    setIsLoading(true);
+    setSubscriptionTabLoader((prev) => ({ ...prev, planAutoRenewalLoader: true }));
     const updateSubscriptionBody: UpdateSubscriptionBody = {
       autoRenewal: toggle ? false : true,
       subscriptionId: subscriptionDetails?.stripeSubscriptionId ?? '',
@@ -110,7 +120,7 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab, subscriptionPlanDe
       } else if (response?.autoRenewSubscription === true) {
         showSuccessToast('Plan auto renewal activated');
       }
-      setIsLoading(false);
+      setSubscriptionTabLoader((prev) => ({ ...prev, planAutoRenewalLoader: false }));
     } else {
       showErrorToast('Failed to alter your current plan auto renewal setting');
       setToggle((prev) => !prev);
@@ -146,14 +156,6 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab, subscriptionPlanDe
     setIsBillingDetailsModal({ billingDetails: false, cardDetails: true });
   };
 
-  useEffect(() => {
-    getCurrentSubscriptionPlanDetails();
-  }, []);
-
-  useEffect(() => {
-    getSecretKeyForStripe();
-  }, []);
-
   const handleCheckoutFormModal = () => {
     setIsBillingDetailsModal((prev) => ({ ...prev, cardDetails: false }));
   };
@@ -175,35 +177,49 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab, subscriptionPlanDe
         <div className="flex border bg-paymentSubscription dark:bg-thirdDark w-full h-8.37 shadow-paymentSubscriptionCard box-border rounded-0.9 justify-between items-center px-[27px] mt-1.8">
           <div className="flex">
             <div className="flex flex-col">
-              <div className="font-semibold font-Poppins leading-1.56 text-infoBlack dark:text-white text-base">Selected Plan</div>
+              <div className="font-semibold font-Poppins leading-1.56 text-infoBlack dark:text-white text-base">
+                {!subscriptionTabLoader.getSubscriptionPlanLoader ? 'Selected Plan' : <Skeleton width={width_90} />}
+              </div>
               <div className="mt-0.313 ">
-                <Button
-                  type="button"
-                  text={subscriptionDetails?.subscriptionPackage?.name ?? 'No active plan'}
-                  className="px-2 h-[26px] bg-trialButton border-none text-white text-error font-Poppins font-medium leading-1.31 cursor-auto uppercase"
-                />
+                {!subscriptionTabLoader.getSubscriptionPlanLoader ? (
+                  <Button
+                    type="button"
+                    text={subscriptionDetails?.subscriptionPackage?.name ?? 'No active plan'}
+                    className="px-2 h-[26px] bg-trialButton border-none text-white text-error font-Poppins font-medium leading-1.31 cursor-auto uppercase"
+                  />
+                ) : (
+                  <Skeleton width={width_90} />
+                )}
               </div>
             </div>
             {subscriptionDetails !== null && (
               <div className="flex flex-col pl-[98px] dark:text-createdAtGrey">
-                <div className="font-semibold font-Poppins leading-1.56 text-infoBlack dark:text-white text-base">Features</div>
+                <div className="font-semibold font-Poppins leading-1.56 text-infoBlack dark:text-white text-base">
+                  {!subscriptionTabLoader.getSubscriptionPlanLoader ? 'Features' : <Skeleton width={width_90} />}
+                </div>
                 <div className="flex gap-4 font-Poppins   ">
                   <div className="flex items-center gap-x-1 pt-1">
                     <div className="text-listGray text-error font-normal leading-1.31 flex">
-                      <span>
-                        {subscriptionPlanDetails
-                          ?.filter(
-                            (data: SubscriptionPackages) =>
-                              data?.name.toLocaleLowerCase().trim() === subscriptionDetails?.subscriptionPackage?.name.toLocaleLowerCase().trim()
-                          )
-                          .map((data: SubscriptionPackages) =>
-                            data?.features?.map(
-                              (data: SubscriptionPackageFeatures) =>
-                                `| ${data?.value === '1' ? 'Single' : data?.value} ${data?.comunifyFeature?.name} `
-                            )
-                          )}{' '}
-                        |
-                      </span>
+                      {!subscriptionTabLoader.getSubscriptionPlanLoader ? (
+                        <Fragment>
+                          <span>
+                            {subscriptionPlanDetails
+                              ?.filter(
+                                (data: SubscriptionPackages) =>
+                                  data?.name.toLocaleLowerCase().trim() === subscriptionDetails?.subscriptionPackage?.name.toLocaleLowerCase().trim()
+                              )
+                              .map((data: SubscriptionPackages) =>
+                                data?.features?.map(
+                                  (data: SubscriptionPackageFeatures) =>
+                                    `| ${data?.value === '1' ? 'Single' : data?.value} ${data?.comunifyFeature?.name} `
+                                )
+                              )}{' '}
+                            |
+                          </span>
+                        </Fragment>
+                      ) : (
+                        <Skeleton width={width_90} />
+                      )}
                     </div>
                   </div>
                 </div>
@@ -212,32 +228,44 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab, subscriptionPlanDe
           </div>
 
           <div className="flex flex-col justify-end">
-            <div className="relative w-[63.36px] h-[63.36px]">
-              <svg className="absolute">
-                <defs>
-                  <linearGradient id={'hello'} gradientTransform={gradientTransform}>
-                    <stop offset="16.29%" stopColor={'#ED9333'} />
-                    <stop offset="85.56%" stopColor={'#F9CB37'} />
-                  </linearGradient>
-                </defs>
-              </svg>
-              <ProgressProvider valueStart={0} valueEnd={calculateDaysToSubscriptionExpiry()}>
-                {(value: number) => (
-                  <CircularProgressbarWithChildren
-                    value={value}
-                    strokeWidth={10}
-                    styles={buildStyles({
-                      pathColor: `url(#${'hello'})`
-                    })}
-                  >
-                    <span className="font-medium font-Poppins text-[22.01px] text-[#151515]">{calculateDaysToSubscriptionExpiry()}</span>
-                  </CircularProgressbarWithChildren>
-                )}
-              </ProgressProvider>
-            </div>
+            {!subscriptionTabLoader.getSubscriptionPlanLoader ? (
+              <div className="relative w-[63.36px] h-[63.36px]">
+                <svg className="absolute">
+                  <defs>
+                    <linearGradient id={'hello'} gradientTransform={gradientTransform}>
+                      <stop offset="16.29%" stopColor={'#ED9333'} />
+                      <stop offset="85.56%" stopColor={'#F9CB37'} />
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <ProgressProvider valueStart={0} valueEnd={calculateDaysToSubscriptionExpiry()}>
+                  {(value: number) => (
+                    <CircularProgressbarWithChildren
+                      value={value}
+                      strokeWidth={10}
+                      styles={buildStyles({
+                        pathColor: `url(#${'hello'})`
+                      })}
+                    >
+                      <span className="font-medium font-Poppins text-[22.01px] text-[#151515]">{calculateDaysToSubscriptionExpiry()}</span>
+                    </CircularProgressbarWithChildren>
+                  )}
+                </ProgressProvider>
+              </div>
+            ) : (
+              <Skeleton circle width={'63.6px'} height={'63.6px'} />
+            )}
             <div className="pt-2">
               <div className="font-Poppins font-semibold text-[13px] leading-0.93 text-[#151515] pb-1 dark:text-greyDark">
-                {calculateDaysToSubscriptionExpiry() > 1 ? 'Days Left' : 'Day Left'}
+                {!subscriptionTabLoader.getSubscriptionPlanLoader ? (
+                  calculateDaysToSubscriptionExpiry() > 1 ? (
+                    'Days Left'
+                  ) : (
+                    'Day Left'
+                  )
+                ) : (
+                  <Skeleton width={width_70} />
+                )}
               </div>
             </div>
           </div>
@@ -255,7 +283,7 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab, subscriptionPlanDe
                 </div>
                 <div className="flex gap-4 items-center">
                   <div className="text-renewalLightGray text-trial font-medium leading-1.31 font-Poppins dark:text-white">NO</div>
-                  <ToggleButton value={toggle} onChange={() => setPlanAutoRenewal()} isLoading={isLoading} />
+                  <ToggleButton value={toggle} onChange={() => setPlanAutoRenewal()} isLoading={subscriptionTabLoader.planAutoRenewalLoader} />
                   <div className="text-trial font-medium leading-1.31 font-Poppins dark:text-white">YES</div>
                 </div>
               </div>
@@ -270,7 +298,9 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab, subscriptionPlanDe
             </div>
           ) : (
             <div className="upgrade mt-1.8 ">
-              <h3 className="font-Poppins font-semibold text-infoBlack leading-2.18 text-infoData dark:text-white">Upgrade</h3>
+              <h3 className="font-Poppins font-semibold text-infoBlack leading-2.18 text-infoData dark:text-white">
+                {getSubscriptionsLoader ? <Skeleton width={width_90} /> : 'Upgrade'}
+              </h3>
               <div className="flex mt-1.8">
                 <div
                   onClick={() => setIsBillingDetailsModal((prev) => ({ ...prev, billingDetails: true }))}
@@ -282,32 +312,54 @@ const Subscription: React.FC<Props> = ({ hidden, selectedTab, subscriptionPlanDe
                   </div>
 
                   <h5 className="flex items-center justify-center">
-                    <span className="price font-Poppins font-semibold leading-2.8 text-renewalPrice ">{comunifyPlusPlanDetails?.amount}</span>
-                    <span className="text-renewalPlan font-medium font-Poppins leading-1.43">/month</span>
+                    {getSubscriptionsLoader ? (
+                      <Skeleton width={width_90} />
+                    ) : (
+                      <Fragment>
+                        <span className="price font-Poppins font-semibold leading-2.8 text-renewalPrice ">{comunifyPlusPlanDetails?.amount}</span>
+                        <span className="text-renewalPlan font-medium font-Poppins leading-1.43">/month</span>
+                      </Fragment>
+                    )}
                   </h5>
                   <div className="font-semibold font-Poppins leading-1.56 text-infoBlack text-base dark:text-white">
-                    {comunifyPlusPlanDetails?.name}
+                    {getSubscriptionsLoader ? <Skeleton width={width_90} /> : comunifyPlusPlanDetails?.name}
                   </div>
                   <p className="text-center text-card font-Poppins font-normal w-[200px] text-renewalGray mt-5 dark:text-greyDark">
-                    {comunifyPlusPlanDetails?.name} Plan
+                    {getSubscriptionsLoader ? <Skeleton width={width_90} /> : `${comunifyPlusPlanDetails?.name} Plan`}
                   </p>
                 </div>
                 <div className="flex flex-col ml-5 bg-paymentSubscription h-[229px] dark:bg-thirdDark w-13.31 h-14.31 box-border pb-10 shadow-paymentSubscriptionCard pt-[49px] pl-5 border-gradient-rounded">
-                  <div className="font-semibold font-Poppins leading-1.56 text-infoBlack text-base dark:text-white">Features</div>
-                  {subscriptionPlanDetails
-                    ?.filter((data: SubscriptionPackages) => data?.name.toLocaleLowerCase().trim() === 'comunify plus')
-                    .map((data: SubscriptionPackages) =>
-                      data?.features?.map((data: SubscriptionPackageFeatures, index: number) => (
-                        <div key={index} className="flex items-center gap-x-1 mt-[8px] pb-1">
-                          <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
-                            <img src={TickWhiteIcon} alt="" />
+                  <div className="font-semibold font-Poppins leading-1.56 text-infoBlack text-base dark:text-white">
+                    {getSubscriptionsLoader ? <Skeleton width={width_90} /> : 'Features'}
+                  </div>
+                  {getSubscriptionsLoader
+                    ? Array.from({ length: 4 }, (_, i) => i + 1).map((type: number) => (
+                        <Fragment key={type}>
+                          <div className="flex items-center gap-x-1 mt-[8px] pb-1">
+                            <div className="w-[12px] h-[12px] rounded-full flex justify-center items-center">
+                              <Skeleton circle width={'15px'} height={'15px'} />
+                            </div>
+                            <div className="font-Poppins text-error text-listGray dark:text-greyDark leading-1.31 font-normal">
+                              <Skeleton width={width_90} />
+                            </div>
                           </div>
-                          <div className="font-Poppins text-error text-listGray dark:text-greyDark leading-1.31 font-normal">
-                            {`${data?.value === '1' ? 'Single' : data?.value} ${data?.comunifyFeature?.name}`}
-                          </div>
-                        </div>
+                        </Fragment>
                       ))
-                    )}
+                    : subscriptionPlanDetails
+                        ?.filter((data: SubscriptionPackages) => data?.name.toLocaleLowerCase().trim() === 'comunify plus')
+                        .map((data: SubscriptionPackages) =>
+                          data?.features?.map((data: SubscriptionPackageFeatures, index: number) => (
+                            <div key={index} className="flex items-center gap-x-1 mt-[8px] pb-1">
+                              <div className="w-[12px] h-[12px] rounded-full tick-box flex justify-center items-center">
+                                <img src={TickWhiteIcon} alt="" />
+                              </div>
+                              <div className="font-Poppins text-error text-listGray dark:text-greyDark leading-1.31 font-normal">
+                                {`${data?.value === '1' ? 'Single' : data?.value} ${data?.comunifyFeature?.name}`}
+                              </div>
+                            </div>
+                          ))
+                        )}
+                  {/* {} */}
                 </div>
               </div>
             </div>
