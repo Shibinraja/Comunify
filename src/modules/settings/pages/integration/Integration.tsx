@@ -869,35 +869,33 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
                 />
               </div>
             ))}
-
-            {window.location.href.includes('stage') ||
-              (window.location.href.includes('app') ? (
-                <div className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5">
-                  <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                    <img src={discourseIcon} alt="" className="h-2.31" />
-                  </div>
-                  <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">Discourse</div>
-                  <Button
-                    disabled={isLoading ? true : false}
-                    type="button"
-                    text="Coming soon"
-                    className="bg-black shadow-contactCard font-Poppins cursor-none text-white font-medium leading-5 text-error mt-0.81 rounded-full h-6 w-6.56"
-                  />
+            {window.location.href.includes('stage') || window.location.href.includes('app') ? (
+              <div className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5">
+                <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
+                  <img src={discourseIcon} alt="" className="h-2.31" />
                 </div>
-              ) : (
-                <div className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5">
-                  <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                    <img src={salesForce} alt="" className="h-2.31" />
-                  </div>
-                  <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">Salesforce</div>
-                  <Button
-                    disabled={isLoading ? true : false}
-                    type="button"
-                    text="Coming soon"
-                    className="bg-black shadow-contactCard font-Poppins cursor-none text-white font-medium leading-5 text-error mt-0.81 rounded-full h-6 w-6.56"
-                  />
+                <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">Discourse</div>
+                <Button
+                  disabled={isLoading ? true : false}
+                  type="button"
+                  text="Coming soon"
+                  className="bg-black shadow-contactCard font-Poppins cursor-none text-white font-medium leading-5 text-error mt-0.81 rounded-full h-6 w-6.56"
+                />
+              </div>
+            ) : (
+              <div className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5">
+                <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
+                  <img src={salesForce} alt="" className="h-2.31" />
                 </div>
-              ))}
+                <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">Salesforce</div>
+                <Button
+                  disabled={isLoading ? true : false}
+                  type="button"
+                  text="Coming soon"
+                  className="bg-black shadow-contactCard font-Poppins cursor-none text-white font-medium leading-5 text-error mt-0.81 rounded-full h-6 w-6.56"
+                />
+              </div>
+            )}
           </div>
 
           <Modal
