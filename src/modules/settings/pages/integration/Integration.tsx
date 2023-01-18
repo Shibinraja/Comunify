@@ -142,6 +142,10 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
   }, [selectedTab]);
 
   useEffect(() => {
+    dispatch(settingsSlice.actions.platformData({ workspaceId }));
+  }, []);
+
+  useEffect(() => {
     if (window.location.href.includes('guild_id') && window.location.href.includes('permissions')) {
       if (searchParams.get('code')) {
         const codeParams: null | string = searchParams.get('code');
@@ -585,6 +589,7 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
       if (response?.data?.message) {
         setShowAlert((prevState) => ({ ...prevState, slack: false }));
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+        dispatch(settingsSlice.actions.platformData({ workspaceId }));
         showSuccessToast(`${capitalizeFirstLetter(platform)} was successfully connected`);
         setReconnectLoading(false);
       } else {
@@ -610,6 +615,7 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+        dispatch(settingsSlice.actions.platformData({ workspaceId }));
         showSuccessToast(`${capitalizeFirstLetter(platform)} Forums was successfully connected`);
         setReconnectLoading(false);
       } else {
@@ -634,6 +640,7 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
       if (response?.data?.message) {
         setShowAlert((prevState) => ({ ...prevState, discord: false }));
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+        dispatch(settingsSlice.actions.platformData({ workspaceId }));
         showSuccessToast(`${capitalizeFirstLetter(platform)} was successfully connected`);
         setReconnectLoading(false);
       } else {
@@ -660,6 +667,7 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
       if (response?.data?.message) {
         setShowAlert((prevState) => ({ ...prevState, reddit: false }));
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+        dispatch(settingsSlice.actions.platformData({ workspaceId }));
         showSuccessToast(`${capitalizeFirstLetter(platform)} was successfully connected`);
         setReconnectLoading(false);
       } else {
@@ -686,6 +694,7 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
       if (response?.data?.message) {
         setShowAlert((prevState) => ({ ...prevState, github: false }));
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+        dispatch(settingsSlice.actions.platformData({ workspaceId }));
         showSuccessToast(`${capitalizeFirstLetter(platform)} was successfully connected`);
         setReconnectLoading(false);
       } else {
@@ -711,6 +720,7 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+        dispatch(settingsSlice.actions.platformData({ workspaceId }));
         showSuccessToast(`${capitalizeFirstLetter(platform)} was successfully connected`);
         setReconnectLoading(false);
         setShowAlert((prevState) => ({ ...prevState, discourse: false }));
@@ -738,6 +748,7 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
       if (response?.data?.message) {
         setShowAlert((prevState) => ({ ...prevState, twitter: false }));
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+        dispatch(settingsSlice.actions.platformData({ workspaceId }));
         showSuccessToast(`${capitalizeFirstLetter(platform)} was successfully connected`);
         setReconnectLoading(false);
       } else {
