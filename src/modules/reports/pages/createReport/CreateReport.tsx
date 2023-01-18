@@ -1,9 +1,11 @@
+/* eslint-disable space-before-function-paren */
+/* eslint-disable indent */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import usePlatform from '@/hooks/usePlatform';
 import { convertEndDate, convertStartDate } from '@/lib/helper';
 import Button from 'common/button';
 import Input from 'common/input';
-import { alphanumeric_regex, email_regex } from 'constants/constants';
+import { alphanumeric_regex } from 'constants/constants';
 import { startOfDay, startOfMonth, startOfWeek, subDays, subMonths, subYears } from 'date-fns';
 import { Form, Formik } from 'formik';
 import {
@@ -15,9 +17,8 @@ import {
   ScheduleReportsEnum
 } from 'modules/reports/interfaces/reports.interface';
 import { ConnectedPlatforms } from 'modules/settings/interface/settings.interface';
-import {
-  ChangeEvent, Fragment, ReactNode, useEffect, useRef, useState, KeyboardEvent
-} from 'react';
+// eslint-disable-next-line object-curly-newline
+import { ChangeEvent, Fragment, ReactNode, useEffect, useRef, useState, KeyboardEvent } from 'react';
 import DatePicker, { ReactDatePicker } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate, useParams } from 'react-router';
@@ -308,13 +309,13 @@ const CreateReport = () => {
     (newValues['startDate'] as string | undefined) = customDate.startDate
       ? convertStartDate(customDate.startDate)
       : customDate.singleDate
-        ? convertStartDate(customDate.singleDate)
-        : convertEndDate(new Date());
+      ? convertStartDate(customDate.singleDate)
+      : convertEndDate(new Date());
     (newValues['endDate'] as string | undefined) = customDate.endDate
       ? convertEndDate(customDate.endDate)
       : customDateLink[CustomReportDateType.Day]
-        ? customDate.singleDate && convertEndDate(customDate.singleDate)
-        : convertEndDate(new Date());
+      ? customDate.singleDate && convertEndDate(customDate.singleDate)
+      : convertEndDate(new Date());
     newValues['platformId'] = checkPlatformId;
 
     if (selectedReport === 'NoSchedule') {
@@ -433,18 +434,13 @@ const CreateReport = () => {
               return Yup.string().notRequired();
             }),
             emails: Yup.array()
-              .transform(function(value, originalValue) {
+              .transform(function (value, originalValue) {
                 if (this.isType(value) && value !== null) {
                   return value;
                 }
                 return originalValue ? originalValue.split(/[\s,]+/) : [];
               })
-              .of(
-                Yup.string()
-                  .email(({ value }) => `${value} is not a valid email`)
-                  .matches(email_regex, 'Must be a valid email')
-                  .max(255)
-              ),
+              .of(Yup.string().email(({ value }) => `${value} is not a valid email`)),
             platform: Yup.array().min(1, 'Platform is required'),
             startDate: Yup.lazy((value) => {
               if (Object.keys(checkedRadioId).includes('Yes') && !value) {

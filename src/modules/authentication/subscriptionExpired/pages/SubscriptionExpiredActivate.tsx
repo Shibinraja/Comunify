@@ -30,7 +30,7 @@ import {
 import { SubscriptionPackages } from '../../interface/auth.interface';
 import { chooseSubscription } from '../../services/auth.service';
 
-import { alphabets_only_regex_with_single_space, email_regex, whiteSpace_single_regex } from 'constants/constants';
+import { alphabets_only_regex_with_single_space, whiteSpace_single_regex } from 'constants/constants';
 import { stripePublishableKey } from '@/lib/config';
 import deleteIcon from '../../../../assets/images/delete.svg';
 import MasterCardIcon from '../../../../assets/images/masterCard.svg';
@@ -611,11 +611,7 @@ const billingDetailsScheme = Yup.object().shape({
     .matches(whiteSpace_single_regex, 'White spaces are not allowed')
     .required('Billing Name is a required field')
     .nullable(true),
-  billingEmail: Yup.string()
-    .email('Must be a valid email')
-    .matches(email_regex, 'Must be a valid email')
-    .max(100)
-    .required('Billing Email is required')
+  billingEmail: Yup.string().email('Must be a valid email').required('Billing Email is required')
 });
 
 export default SubscriptionExpiredActivate;

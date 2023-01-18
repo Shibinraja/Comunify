@@ -36,7 +36,7 @@ import {
   setPlanAutoRenewalService
 } from '../../services/settings.services';
 
-import { alphabets_only_regex_with_single_space, email_regex, whiteSpace_single_regex, width_70, width_90 } from '../../../../constants/constants';
+import { alphabets_only_regex_with_single_space, whiteSpace_single_regex, width_70, width_90 } from '../../../../constants/constants';
 import { stripePublishableKey } from '@/lib/config';
 import { SubscriptionPackages } from 'modules/authentication/interface/auth.interface';
 import Skeleton from 'react-loading-skeleton';
@@ -501,11 +501,7 @@ const billingDetailsScheme = Yup.object().shape({
     .matches(whiteSpace_single_regex, 'White spaces are not allowed')
     .required('Billing Name is a required field')
     .nullable(true),
-  billingEmail: Yup.string()
-    .email('Must be a valid email')
-    .matches(email_regex, 'Must be a valid email')
-    .max(100)
-    .required('Billing Email is required')
+  billingEmail: Yup.string().email('Must be a valid email').required('Billing Email is required').nullable(true)
 });
 
 export default Subscription;

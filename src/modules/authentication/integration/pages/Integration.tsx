@@ -42,7 +42,7 @@ import { API_ENDPOINT } from '../../../../lib/config';
 import usePlatform from '../../../../hooks/usePlatform';
 import { getLocalWorkspaceId, setRefreshToken } from '@/lib/helper';
 import { AxiosError, IntegrationResponse, NetworkResponse } from '../../../../lib/api';
-import { showErrorToast, showInfoToast, showSuccessToast } from '../../../../common/toast/toastFunctions';
+import { showErrorToast, showSuccessToast } from '../../../../common/toast/toastFunctions';
 
 import bgIntegrationImage from '../../../../assets/images/bg-sign.svg';
 import discordIcon from '../../../../assets/images/discord.svg';
@@ -236,7 +236,6 @@ const Integration: React.FC = () => {
       };
       const connectResponse: IntegrationResponse<PlatformConnectResponse> = await request.post(`${API_ENDPOINT}/v1/vanilla/connect`, body);
       if (connectResponse?.data?.data?.id) {
-        showSuccessToast('Integration in progress...');
         try {
           const completeSetupResponse: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/vanilla/complete-setup`, {
             workspaceId,
@@ -274,7 +273,6 @@ const Integration: React.FC = () => {
     try {
       const connectResponse: IntegrationResponse<DiscourseConnectResponse> = await request.post(`${API_ENDPOINT}/v1/discourse/connect`, body);
       if (connectResponse?.data?.data?.id) {
-        showInfoToast('Integration in progress...');
         try {
           const completeSetupResponse: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/discourse/complete-setup`, {
             workspaceId,

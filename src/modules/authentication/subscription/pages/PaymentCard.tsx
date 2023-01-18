@@ -10,7 +10,7 @@ import { SubscriptionProps } from 'interface/interface';
 import { BillingDetails } from '../../../settings/interface/settings.interface';
 
 import bgSubscriptionImage from '../../../../assets/images/bg-sign.svg';
-import { alphabets_only_regex_with_single_space, email_regex, whiteSpace_single_regex } from '../../../../constants/constants';
+import { alphabets_only_regex_with_single_space, whiteSpace_single_regex } from '../../../../constants/constants';
 
 const CheckoutForm = React.lazy(() => import('../../../settings/pages/subscription/CheckoutForm'));
 
@@ -120,9 +120,5 @@ const billingDetailsScheme = Yup.object().shape({
     .matches(whiteSpace_single_regex, 'White spaces are not allowed')
     .required('Billing Name is a required field')
     .nullable(true),
-  billingEmail: Yup.string()
-    .email('Must be a valid email')
-    .matches(email_regex, 'Must be a valid email')
-    .max(100)
-    .required('Billing Email is required')
+  billingEmail: Yup.string().email('Must be a valid email').required('Billing Email is required')
 });
