@@ -18,7 +18,16 @@ import { getPlatformsData, getUsersListService } from '../services/users.service
 
 const domainOptions = ['Marketing', 'Sales', 'Customer Support', 'Customer Success', 'Others'];
 
-const UsersFilter: FC<UserMemberTypesProps> = ({ page, limit, searchText, filteredDate, memberFilterExport, setMembersList, setPage, setFetchLoader: fetchUsersLoader }) => {
+const UsersFilter: FC<UserMemberTypesProps> = ({
+  page,
+  limit,
+  searchText,
+  filteredDate,
+  memberFilterExport,
+  setMembersList,
+  setPage,
+  setFetchLoader: fetchUsersLoader
+}) => {
   const [isFilterDropdownActive, setIsFilterDropdownActive] = useState<boolean>(false);
   const [isPlatformActive, setPlatformActive] = useState<boolean>(true);
   const [isSubscriptionActive, setSubscriptionActive] = useState<boolean>(false);
@@ -53,7 +62,7 @@ const UsersFilter: FC<UserMemberTypesProps> = ({ page, limit, searchText, filter
 
   // Function to dispatch the search text and to hit api of member list.
   // eslint-disable-next-line space-before-function-paren
-  const getFilteredMembersList = async (args:GetUsersListQueryParams) => {
+  const getFilteredMembersList = async (args: GetUsersListQueryParams) => {
     setFetchLoader(true);
     fetchUsersLoader((prev) => ({ ...prev, getLoader: true }));
     const data = await getUsersListService(args);
@@ -68,7 +77,8 @@ const UsersFilter: FC<UserMemberTypesProps> = ({ page, limit, searchText, filter
     });
   };
 
-  const getPlatformsList = async(props: Partial<SearchSuggestionArgsType>) => {
+  // eslint-disable-next-line space-before-function-paren
+  const getPlatformsList = async (props: Partial<SearchSuggestionArgsType>) => {
     setLoading(true);
     const data = await getPlatformsData({
       cursor: props.cursor ? props.cursor : props.suggestionListCursor ? (props.prop ? '' : props.suggestionListCursor) : '',
@@ -181,7 +191,8 @@ const UsersFilter: FC<UserMemberTypesProps> = ({ page, limit, searchText, filter
   };
 
   // function for scroll event
-  const handleScroll = async(event: React.UIEvent<HTMLElement>) => {
+  // eslint-disable-next-line no-unused-vars, space-before-function-paren
+  const handleScroll = async (event: React.UIEvent<HTMLElement>) => {
     event.preventDefault();
     const { clientHeight, scrollHeight, scrollTop } = event.currentTarget;
     if (scrollHeight - scrollTop <= clientHeight + 2 && !loading) {
@@ -223,8 +234,6 @@ const UsersFilter: FC<UserMemberTypesProps> = ({ page, limit, searchText, filter
     return false;
   }, [startDate, endDate, UserFilterList, expiryStart, expiryEnd]);
 
-  // console.log('err', disableApplyBtn, startDate, endDate, expiryStart, expiryEnd,  UserFilterList)
-
   // eslint-disable-next-line space-before-function-paren
   const submitFilterChange = async (): Promise<void> => {
     const checkPlatform: Array<string> = [];
@@ -232,7 +241,7 @@ const UsersFilter: FC<UserMemberTypesProps> = ({ page, limit, searchText, filter
     const checkDomain: Array<string> = [];
 
     // Condition to check if all the filters are not selected to disable the apply btn in filter.
-    const checkUsersFilterList = UserFilterList.every((filter:unknown) => filter === false);
+    const checkUsersFilterList = UserFilterList.every((filter: unknown) => filter === false);
 
     if (checkUsersFilterList) {
       setCheckedPlatform({});
@@ -322,32 +331,27 @@ const UsersFilter: FC<UserMemberTypesProps> = ({ page, limit, searchText, filter
               </div>
             </div>
             {isPlatformActive && (
-              <div
-                id="scrollableDiv"
-                onScroll={handleScroll}
-                className="flex flex-col gap-y-5 p-3 max-h-[11.25rem] overflow-scroll">
-                {
-                  PlatformFilterResponse.result.map(
-                    (platform: platformData, index: number) =>
-                      <div className="flex items-center" key={index}>
-                        <div className="mr-2">
-                          <input
-                            type="checkbox"
-                            className="checkbox"
-                            id={platform.id as string}
-                            name={platform.name as string}
-                            checked={(checkedPlatform[platform.id] as boolean) || false}
-                            onChange={handlePlatformsCheckBox}
-                          />
-                        </div>
-                        <label
-                          className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer"
-                          htmlFor={platform.id as string}
-                        >
-                          {platform?.name}
-                        </label>
-                      </div>
-                  )}
+              <div id="scrollableDiv" className="flex flex-col gap-y-5 p-3 max-h-[11.25rem] overflow-scroll">
+                {PlatformFilterResponse.result.map((platform: platformData, index: number) => (
+                  <div className="flex items-center" key={index}>
+                    <div className="mr-2">
+                      <input
+                        type="checkbox"
+                        className="checkbox"
+                        id={platform.id as string}
+                        name={platform.name as string}
+                        checked={(checkedPlatform[platform.id] as boolean) || false}
+                        onChange={handlePlatformsCheckBox}
+                      />
+                    </div>
+                    <label
+                      className="font-Poppins font-normal text-searchBlack leading-1.31 text-trial cursor-pointer"
+                      htmlFor={platform.id as string}
+                    >
+                      {platform?.name}
+                    </label>
+                  </div>
+                ))}
               </div>
             )}
 
@@ -523,7 +527,6 @@ const UsersFilter: FC<UserMemberTypesProps> = ({ page, limit, searchText, filter
               </>
             )}
 
-
             <div
               className="flex justify-between items-center drop w-full box-border bg-signUpDomain h-3.06  px-3 mx-auto  cursor-pointer"
               onClick={() => {
@@ -579,7 +582,8 @@ const UsersFilter: FC<UserMemberTypesProps> = ({ page, limit, searchText, filter
                   setExpiryEnd(undefined);
                   // setFilterCount(0);
                   getFilteredMembersList({
-                    page, limit
+                    page,
+                    limit
                   });
                 }}
               />
