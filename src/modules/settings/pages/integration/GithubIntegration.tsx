@@ -61,7 +61,6 @@ const GithubIntegration: React.FC = () => {
         repositoryName: repository,
         repositoryId: selectedRepositoryDetails ? (selectedRepositoryDetails?.repoId as string) : ''
       };
-      showSuccessToast('Integration in progress...');
       const response: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/github/complete-setup`, body);
       if (response?.data?.message) {
         showSuccessToast('Successfully integrated');
