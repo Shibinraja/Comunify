@@ -13,7 +13,7 @@ import closeEyeIcon from '../../../../assets/images/closeEyeIcon.svg';
 import eyeIcon from '../../../../assets/images/eye.svg';
 import dropdownIcon from '../../../../assets/images/signup-domain-downArrow.svg';
 import socialLogo from '../../../../assets/images/Social.svg';
-import { companyName_regex, email_regex, password_regex, userName_regex, whiteSpace_regex } from '../../../../constants/constants';
+import { companyName_regex, password_regex, userName_regex, whiteSpace_regex } from '../../../../constants/constants';
 import { AppDispatch } from '../../../../store/index';
 import authSlice from '../../store/slices/auth.slice';
 import './SignUp.css';
@@ -322,7 +322,7 @@ const signUpSchema = Yup.object().shape({
     .required('Password is required')
     .min(8, 'Password must be at least 8 characters')
     .matches(password_regex, 'Password must have one uppercase, one lowercase, a digit and special characters'),
-  email: Yup.string().email('Must be a valid email').matches(email_regex, 'Must be a valid email').max(255).required('Email is required'),
+  email: Yup.string().email('Must be a valid email').required('Email is required'),
   domainSector: Yup.string().required('Domain is required'),
   companyName: Yup.string()
     .min(2, 'Company Name must be at least 2 characters')

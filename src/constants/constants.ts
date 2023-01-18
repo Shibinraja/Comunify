@@ -17,9 +17,8 @@ export const alphabet_regex = /^[a-z!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/g;
 
 export const alphabets_only_regex_with_single_space = /^[a-zA-Z ]*$/;
 
-// eslint-disable-next-line no-useless-escape
-
-export const email_regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+export const email_regex =
+  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 // Window_Object
 

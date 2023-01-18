@@ -49,7 +49,7 @@ import usePlatform from '../../../../hooks/usePlatform';
 import { capitalizeFirstLetter, getLocalWorkspaceId } from '../../../../lib/helper';
 import { IntegrationModalDrawer } from './IntegrationModalDrawer';
 import { AxiosError, IntegrationResponse, NetworkResponse } from '../../../../lib/api';
-import { showErrorToast, showInfoToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
+import { showErrorToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
 
 import discordIcon from '../../../../assets/images/discord.svg';
 import githubLogoIcon from '../../../../assets/images/github_logo.png';
@@ -140,6 +140,10 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
       dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
     }
   }, [selectedTab]);
+
+  useEffect(() => {
+    dispatch(settingsSlice.actions.platformData({ workspaceId }));
+  }, []);
 
   useEffect(() => {
     if (window.location.href.includes('guild_id') && window.location.href.includes('permissions')) {
@@ -397,7 +401,6 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
       };
       const connectResponse: IntegrationResponse<PlatformConnectResponse> = await request.post(`${API_ENDPOINT}/v1/vanilla/connect`, body);
       if (connectResponse?.data?.data?.id) {
-        showInfoToast('Integration in progress...');
         try {
           const completeSetupResponse: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/vanilla/complete-setup`, {
             workspaceId,
@@ -435,7 +438,6 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
     try {
       const connectResponse: IntegrationResponse<DiscourseConnectResponse> = await request.post(`${API_ENDPOINT}/v1/discourse/connect`, body);
       if (connectResponse?.data?.data?.id) {
-        showInfoToast('Integration in progress...');
         try {
           const completeSetupResponse: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/discourse/complete-setup`, {
             workspaceId,
@@ -580,11 +582,11 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
       workspaceId
     };
     try {
-      showInfoToast(`${capitalizeFirstLetter(platform)} reconnect is in progress...`);
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
         setShowAlert((prevState) => ({ ...prevState, slack: false }));
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+        dispatch(settingsSlice.actions.platformData({ workspaceId }));
         showSuccessToast(`${capitalizeFirstLetter(platform)} was successfully connected`);
         setReconnectLoading(false);
       } else {
@@ -606,10 +608,10 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
     };
     setReconnectLoading(true);
     try {
-      showInfoToast(`${capitalizeFirstLetter(platform)} reconnect is in progress...`);
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+        dispatch(settingsSlice.actions.platformData({ workspaceId }));
         showSuccessToast(`${capitalizeFirstLetter(platform)} Forums was successfully connected`);
         setReconnectLoading(false);
       } else {
@@ -629,11 +631,11 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
       workspaceId
     };
     try {
-      showInfoToast(`${capitalizeFirstLetter(platform)} reconnect is in progress...`);
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
         setShowAlert((prevState) => ({ ...prevState, discord: false }));
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+        dispatch(settingsSlice.actions.platformData({ workspaceId }));
         showSuccessToast(`${capitalizeFirstLetter(platform)} was successfully connected`);
         setReconnectLoading(false);
       } else {
@@ -655,11 +657,11 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
       workspaceId
     };
     try {
-      showInfoToast(`${capitalizeFirstLetter(platform)} reconnect is in progress...`);
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
         setShowAlert((prevState) => ({ ...prevState, reddit: false }));
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+        dispatch(settingsSlice.actions.platformData({ workspaceId }));
         showSuccessToast(`${capitalizeFirstLetter(platform)} was successfully connected`);
         setReconnectLoading(false);
       } else {
@@ -681,11 +683,11 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
       workspaceId
     };
     try {
-      showInfoToast(`${capitalizeFirstLetter(platform)} reconnect is in progress...`);
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
         setShowAlert((prevState) => ({ ...prevState, github: false }));
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+        dispatch(settingsSlice.actions.platformData({ workspaceId }));
         showSuccessToast(`${capitalizeFirstLetter(platform)} was successfully connected`);
         setReconnectLoading(false);
       } else {
@@ -707,10 +709,10 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
     };
     setReconnectLoading(true);
     try {
-      showInfoToast(`${capitalizeFirstLetter(platform)} reconnect is in progress...`);
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+        dispatch(settingsSlice.actions.platformData({ workspaceId }));
         showSuccessToast(`${capitalizeFirstLetter(platform)} was successfully connected`);
         setReconnectLoading(false);
         setShowAlert((prevState) => ({ ...prevState, discourse: false }));
@@ -733,11 +735,11 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
       workspaceId
     };
     try {
-      showInfoToast(`${capitalizeFirstLetter(platform)} reconnect is in progress...`);
       const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
       if (response?.data?.message) {
         setShowAlert((prevState) => ({ ...prevState, twitter: false }));
         dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+        dispatch(settingsSlice.actions.platformData({ workspaceId }));
         showSuccessToast(`${capitalizeFirstLetter(platform)} was successfully connected`);
         setReconnectLoading(false);
       } else {

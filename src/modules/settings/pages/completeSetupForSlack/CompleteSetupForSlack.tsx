@@ -39,7 +39,6 @@ const CompleteSetup: React.FC = () => {
         workspaceId,
         workspacePlatformAuthSettingsId: location?.state?.workspacePlatformAuthSettingsId || localStorage.getItem('workspacePlatformAuthSettingsId')
       };
-      showSuccessToast('Integration in progress...');
       const response: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/slack/complete-setup`, body);
       if (response?.data?.message) {
         dispatch(settingsSlice.actions.platformData({ workspaceId }));

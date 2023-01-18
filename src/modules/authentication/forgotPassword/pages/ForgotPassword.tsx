@@ -10,7 +10,6 @@ import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { EmailFormValues } from 'modules/authentication/interface/auth.interface';
 import authSlice from 'modules/authentication/store/slices/auth.slice';
-import { email_regex } from 'constants/constants';
 
 const ForgotPassword: React.FC = () => {
   const dispatch: AppDispatch = useAppDispatch();
@@ -97,7 +96,7 @@ const ForgotPassword: React.FC = () => {
 };
 
 const forgotPasswordSchema = Yup.object().shape({
-  email: Yup.string().email('Must be a valid email').matches(email_regex, 'Must be a valid email').max(255).required('Email is required')
+  email: Yup.string().email('Must be a valid email').required('Email is required')
 });
 
 export default ForgotPassword;

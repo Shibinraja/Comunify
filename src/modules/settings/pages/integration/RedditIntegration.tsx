@@ -61,7 +61,6 @@ const RedditIntegration: React.FC = () => {
         channelName: community,
         channelId: selectedCommunityDetails ? selectedCommunityDetails?.communityId : ''
       };
-      showSuccessToast('Integration in progress...');
       const response: NetworkResponse<string> = await request.post(`${API_ENDPOINT}/v1/reddit/complete-setup`, body);
       if (response?.data?.message) {
         showSuccessToast('Successfully integrated');
