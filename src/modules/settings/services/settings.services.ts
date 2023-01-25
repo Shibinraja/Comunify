@@ -6,7 +6,8 @@ import {
   SLACK_CONNECT_ENDPOINT,
   REDDIT_CONNECT_ENDPOINT,
   GITHUB_CONNECT_ENDPOINT,
-  TWITTER_CONNECT_ENDPOINT
+  TWITTER_CONNECT_ENDPOINT,
+  SALESFORCE_CONNECT_ENDPOINT
 } from '@/lib/config';
 import { AxiosError } from 'axios';
 import { showErrorToast } from '../../../common/toast/toastFunctions';
@@ -50,6 +51,10 @@ export const NavigateToGithubConnectPage = () => {
 
 export const NavigateToTwitterConnectPage = () => {
   window.location.href = TWITTER_CONNECT_ENDPOINT;
+};
+
+export const NavigateToSalesForceConnectPage = () => {
+  window.location.href = SALESFORCE_CONNECT_ENDPOINT;
 };
 
 export function* PlatformsDataService(workspaceId: string): GeneratorResponse<Array<PlatformResponse>> {

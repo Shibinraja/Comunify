@@ -106,6 +106,7 @@ export interface ModalState {
   github: boolean;
   discourse: boolean;
   twitter: boolean;
+  salesForce: boolean;
 }
 
 // Response Body
