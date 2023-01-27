@@ -85,7 +85,7 @@ const Integration: React.FC = () => {
     github: false,
     discourse: false,
     twitter: false,
-    salesForce: false
+    salesforce: false
   });
   // eslint-disable-next-line no-unused-vars
   const [platformIcons, setPlatformIcons] = useState<PlatformIcons>({
@@ -95,7 +95,8 @@ const Integration: React.FC = () => {
     reddit: undefined,
     github: undefined,
     discourse: undefined,
-    twitter: undefined
+    twitter: undefined,
+    salesforce: undefined
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -429,25 +430,25 @@ const Integration: React.FC = () => {
   // eslint-disable-next-line space-before-function-paren
   const connectToSalesForce = async (codeParams: string | null) => {
     try {
-      setIsModalOpen((prevState) => ({ ...prevState, salesForce: true }));
+      setIsModalOpen((prevState) => ({ ...prevState, salesforce: true }));
       const body: ConnectBody = {
         code: codeParams,
         workspaceId
       };
       const response: IntegrationResponse<DiscordConnectResponse> = await request.post(`${API_ENDPOINT}/v1/salesforce/connect`, body);
       if (response?.data?.data) {
-        setIsModalOpen((prevState) => ({ ...prevState, salesForce: false }));
+        setIsModalOpen((prevState) => ({ ...prevState, salesforce: false }));
         navigate(`/${workspaceId}/settings/salesforce-integration`, {
           state: { salesforceConnectResponse: response?.data?.data }
         });
         showSuccessToast('Authenticated successfully');
       } else {
         showErrorToast('Integration failed');
-        setIsModalOpen((prevState) => ({ ...prevState, salesForce: false }));
+        setIsModalOpen((prevState) => ({ ...prevState, salesforce: false }));
       }
     } catch {
       showErrorToast('Integration failed');
-      setIsModalOpen((prevState) => ({ ...prevState, salesForce: false }));
+      setIsModalOpen((prevState) => ({ ...prevState, salesforce: false }));
     }
   };
 
@@ -467,7 +468,7 @@ const Integration: React.FC = () => {
     if (isModalOpen.twitter) {
       setIsModalOpen((prevState) => ({ ...prevState, twitter: false }));
     }
-    if (isModalOpen.salesForce) {
+    if (isModalOpen.salesforce) {
       setIsModalOpen((prevState) => ({ ...prevState, salesForce: false }));
     }
   };
@@ -762,7 +763,7 @@ const Integration: React.FC = () => {
         </div>
       </div>
       <IntegrationModalDrawer
-        isOpen={isModalOpen.slack || isModalOpen.reddit || isModalOpen.discord || isModalOpen.github || isModalOpen.twitter || isModalOpen.salesForce}
+        isOpen={isModalOpen.slack || isModalOpen.reddit || isModalOpen.discord || isModalOpen.github || isModalOpen.twitter || isModalOpen.salesforce}
         isClose={handleModalClose}
         iconSrc={
           isModalOpen.slack
@@ -775,7 +776,7 @@ const Integration: React.FC = () => {
             ? twitterIcon
             : isModalOpen.discord
             ? discordIcon
-            : isModalOpen.salesForce
+            : isModalOpen.salesforce
             ? salesForceIcon
             : ''
         }
@@ -788,7 +789,7 @@ const Integration: React.FC = () => {
             ? 'Discord'
             : isModalOpen.twitter
             ? 'Twitter'
-            : isModalOpen.salesForce
+            : isModalOpen.salesforce
             ? 'Salesforce'
             : ''
         }

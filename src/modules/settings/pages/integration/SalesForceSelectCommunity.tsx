@@ -2,13 +2,13 @@ import Button from 'common/button';
 import { SalesforceCommunities, SalesforceConnectResponse } from 'interface/interface';
 import { useEffect, useState } from 'react';
 import { NavigateFunction, useLocation, useNavigate } from 'react-router';
-import salesForce from '../../../../../assets/images/salesforce.png';
-import dropdownIcon from '../../../../../assets/images/filter-dropdown.svg';
-import { showErrorToast, showSuccessToast, showWarningToast } from '../../../../../common/toast/toastFunctions';
-import { NetworkResponse } from '../../../../../lib/api';
-import { API_ENDPOINT } from '../../../../../lib/config';
-import { getLocalWorkspaceId } from '../../../../../lib/helper';
-import { request } from '../../../../../lib/request';
+import salesForce from '../../../../assets/images/salesforce.png';
+import dropdownIcon from '../../../../assets/images/filter-dropdown.svg';
+import { showErrorToast, showSuccessToast, showWarningToast } from '../../../../common/toast/toastFunctions';
+import { NetworkResponse } from '../../../../lib/api';
+import { API_ENDPOINT } from '../../../../lib/config';
+import { getLocalWorkspaceId } from '../../../../lib/helper';
+import { request } from '../../../../lib/request';
 
 const SalesForceSelectCommunity: React.FC = () => {
   const [isCommunityActive, setIsCommunityActive] = useState<boolean>(false);

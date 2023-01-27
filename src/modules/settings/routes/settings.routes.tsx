@@ -9,7 +9,7 @@ const Settings = Loadable(lazy(() => import('../pages/Settings')));
 const CompleteSetupForSlack = Loadable(lazy(() => import('../pages/completeSetupForSlack/CompleteSetupForSlack')));
 const RedditIntegration = Loadable(lazy(() => import('../pages/integration/RedditIntegration')));
 const SubscriptionExpiredAddCard = Loadable(lazy(() => import('../../authentication/subscriptionExpired/pages/SubscriptionExpiredActivate')));
-const SalesForceSelectCommunity = Loadable(lazy(() => import('../../settings/pages/platforms/salesForce/SalesForceSelectCommunity')));
+const SalesForceSelectCommunity = Loadable(lazy(() => import('../pages/integration/SalesForceSelectCommunity')));
 
 const settingRoutes: RoutesArray = {
   path: 'settings',

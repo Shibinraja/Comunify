@@ -9,6 +9,7 @@ export interface PlatformIcons {
   github: string | undefined;
   discourse: string | undefined;
   twitter: string | undefined;
+  salesforce: string | undefined;
 }
 
 export interface PlatformsStatus {
@@ -106,7 +107,7 @@ export interface ModalState {
   github: boolean;
   discourse: boolean;
   twitter: boolean;
-  salesForce: boolean;
+  salesforce: boolean;
 }
 
 // Response Body

@@ -19,6 +19,7 @@ import {
   NavigateToDiscordConnectPage,
   NavigateToGithubConnectPage,
   NavigateToRedditConnectPage,
+  NavigateToSalesForceConnectPage,
   NavigateToTwitterConnectPage
 } from 'modules/settings/services/settings.services';
 
@@ -58,7 +59,7 @@ import slackIcon from '../../../../assets/images/slack.svg';
 import vanillaIcon from '../../../../assets/images/vanilla-forum.svg';
 import discourseIcon from '../../../../assets/images/discourse.png';
 import twitterIcon from '../../../../assets/images/twitter.png';
-import salesForce from '../../../../assets/images/salesforce.png';
+import salesForceIcon from '../../../../assets/images/salesforce.png';
 
 import settingsSlice from '../../store/slice/settings.slice';
 
@@ -95,7 +96,8 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
     reddit: false,
     github: false,
     discourse: false,
-    twitter: false
+    twitter: false,
+    salesforce: false
   });
   const [showAlert, setShowAlert] = useState<ModalState>({
     slack: false,
@@ -104,7 +106,8 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
     reddit: false,
     github: false,
     discourse: false,
-    twitter: false
+    twitter: false,
+    salesforce: false
   });
   const [isWarningModalOpen, setIsWarningModalOpen] = useState<boolean>(false);
   const [confirmPlatformToDisconnect, setConfirmPlatformToDisconnect] = useState<ConfirmPlatformToDisconnect>({
@@ -120,7 +123,8 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
     reddit: undefined,
     github: undefined,
     discourse: undefined,
-    twitter: undefined
+    twitter: undefined,
+    salesforce: undefined
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isButtonConnect] = useState<boolean>(true);
@@ -163,12 +167,20 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
       }
     }
 
-    if (window.location.href.includes('state') && window.location.href.includes('code') && window.location.href.includes('platform')) {
+    if (window.location.href.includes('code') && window.location.href.includes('platform')) {
       if (searchParams.get('platform') === 'twitter') {
         if (searchParams.get('code')) {
           const codeParams: null | string = searchParams.get('code');
           if (codeParams !== '') {
             connectToTwitter(codeParams);
+          }
+        }
+      }
+      if (searchParams.get('platform') === 'salesforce') {
+        if (searchParams.get('code')) {
+          const codeParams: null | string = searchParams.get('code');
+          if (codeParams !== '') {
+            connectToSalesForce(codeParams);
           }
         }
       }
@@ -313,6 +325,21 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
             setShowAlert((prevState) => ({ ...prevState, twitter: true }));
           } else {
             NavigateToTwitterConnectPage();
+            setIsLoading(false);
+          }
+        } else {
+          showWarningToast(`${capitalizeFirstLetter(name)} is already connected to your workspace`);
+          setIsLoading(false);
+        }
+        break;
+      case PlatformsEnumType.SALESFORCE:
+        setIsLoading(true);
+        if (!checkForConnectedPlatform(name)) {
+          setPlatformIcons((prevState) => ({ ...prevState, salesforce: icon }));
+          if (isIntegrated && !isConnected) {
+            setShowAlert((prevState) => ({ ...prevState, salesforce: true }));
+          } else {
+            NavigateToSalesForceConnectPage();
             setIsLoading(false);
           }
         } else {
@@ -576,6 +603,31 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
   };
 
   // eslint-disable-next-line space-before-function-paren
+  const connectToSalesForce = async (codeParams: string | null) => {
+    try {
+      setIsModalOpen((prevState) => ({ ...prevState, salesforce: true }));
+      const body: ConnectBody = {
+        code: codeParams,
+        workspaceId
+      };
+      const response: IntegrationResponse<DiscordConnectResponse> = await request.post(`${API_ENDPOINT}/v1/salesforce/connect`, body);
+      if (response?.data?.data) {
+        setIsModalOpen((prevState) => ({ ...prevState, salesforce: false }));
+        navigate(`/${workspaceId}/settings/salesforce-integration`, {
+          state: { salesforceConnectResponse: response?.data?.data }
+        });
+        showSuccessToast('Authenticated successfully');
+      } else {
+        showErrorToast('Integration failed');
+        setIsModalOpen((prevState) => ({ ...prevState, salesforce: false }));
+      }
+    } catch {
+      showErrorToast('Integration failed');
+      setIsModalOpen((prevState) => ({ ...prevState, salesforce: false }));
+    }
+  };
+
+  // eslint-disable-next-line space-before-function-paren
   const handlePlatformReconnectForSlack = async (platform: string) => {
     setReconnectLoading(true);
     const body = {
@@ -754,6 +806,33 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
     }
   };
 
+  // eslint-disable-next-line space-before-function-paren
+  const handlePlatformReconnectForSalesforce = async (platform: string) => {
+    setReconnectLoading(true);
+    const body = {
+      workspaceId
+    };
+    try {
+      setShowAlert((prevState) => ({ ...prevState, salesforce: true }));
+      const response: IntegrationResponse<string> = await request.post(`${API_ENDPOINT}/v1/${platform.toLocaleLowerCase().trim()}/connect`, body);
+      if (response?.data?.message) {
+        setShowAlert((prevState) => ({ ...prevState, salesforce: false }));
+        dispatch(settingsSlice.actions.connectedPlatforms({ workspaceId }));
+        dispatch(settingsSlice.actions.platformData({ workspaceId }));
+        showSuccessToast(`${capitalizeFirstLetter(platform)} was successfully connected`);
+        setReconnectLoading(false);
+      } else {
+        showErrorToast('Failed to connect to the platform');
+        setShowAlert((prevState) => ({ ...prevState, salesforce: false }));
+        setReconnectLoading(false);
+      }
+    } catch {
+      showErrorToast('Failed to connect to the platform');
+      setShowAlert((prevState) => ({ ...prevState, salesforce: false }));
+      setReconnectLoading(false);
+    }
+  };
+
   const handleOnSubmit = () => {
     //     const platformEntries= Object.entries(showAlert);
     //     const platformName = platformEntries.find(((platform) => {
@@ -782,6 +861,9 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
     if (showAlert.twitter) {
       handlePlatformReconnectForTwitter(PlatformsEnumType.TWITTER);
     }
+    if (showAlert.salesforce) {
+      handlePlatformReconnectForSalesforce(PlatformsEnumType.SALESFORCE);
+    }
   };
 
   const handleModalClose = () => {
@@ -808,6 +890,10 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
     }
     if (showAlert.twitter) {
       setShowAlert((prevState) => ({ ...prevState, twitter: false }));
+    }
+    if (isModalOpen.salesforce || showAlert.salesforce) {
+      setIsModalOpen((prevState) => ({ ...prevState, salesforce: false }));
+      setShowAlert((prevState) => ({ ...prevState, salesforce: false }));
     }
   };
 
@@ -887,7 +973,7 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
             ) : (
               <div className="app-input-card-border shadow-integrationCardShadow w-8.5 h-11.68 rounded-0.6 box-border bg-white flex flex-col items-center justify-center mr-5">
                 <div className="flex items-center justify-center h-16 w-16 bg-center bg-cover bg-subIntegrationGray">
-                  <img src={salesForce} alt="" className="h-2.31" />
+                  <img src={salesForceIcon} alt="" className="h-2.31" />
                 </div>
                 <div className="text-integrationGray leading-1.31 text-trial font-Poppins font-semibold mt-2">Salesforce</div>
                 <Button
@@ -1168,7 +1254,7 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
         </div>
       </div>
       <IntegrationModalDrawer
-        isOpen={isModalOpen.slack || isModalOpen.reddit || isModalOpen.discord || isModalOpen.github || isModalOpen.twitter}
+        isOpen={isModalOpen.slack || isModalOpen.reddit || isModalOpen.discord || isModalOpen.github || isModalOpen.twitter || isModalOpen.salesforce}
         isClose={handleModalClose}
         iconSrc={
           isModalOpen.slack
@@ -1181,6 +1267,8 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
             ? githubLogoIcon
             : isModalOpen.discourse
             ? discourseIcon
+            : isModalOpen.salesforce
+            ? salesForceIcon
             : isModalOpen.twitter
             ? twitterIcon
             : ''
@@ -1196,6 +1284,8 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
             ? 'Github'
             : isModalOpen.twitter
             ? 'Twitter'
+            : isModalOpen.salesforce
+            ? 'Salesforce'
             : ''
         }
       />
@@ -1217,6 +1307,8 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
             ? discourseIcon
             : showAlert.twitter
             ? twitterIcon
+            : showAlert.salesforce
+            ? salesForceIcon
             : ''
         }
         contextText={`Are you sure you want to reconnect ${
@@ -1232,6 +1324,8 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
             ? 'Discourse'
             : showAlert.twitter
             ? 'Twitter'
+            : showAlert.salesforce
+            ? 'Salesforce'
             : ''
         }  to your workspace?`}
       />
