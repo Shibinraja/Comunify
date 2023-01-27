@@ -37,6 +37,9 @@ export const GITHUB_CONNECT_ENDPOINT = import.meta.env.VITE_GITHUB_CONNECT;
 // Twitter connect
 export const TWITTER_CONNECT_ENDPOINT = import.meta.env.VITE_TWITTER_CONNECT;
 
+// Salesforce connect
+export const SALESFORCE_CONNECT_ENDPOINT = import.meta.env.VITE_SALESFORCE_CONNECT;
+
 // Application Env's
 export const VITE_APP_ENV = import.meta.env.VITE_APP_ENV;
 export const VITE_OS_HOSTNAME = import.meta.env.VITE_OS_HOSTNAME;

@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 
 import { SubscriptionPackages } from 'modules/authentication/interface/auth.interface';
+import { type } from 'os';
 import { MutableRefObject } from 'react';
 
 export interface RoutesArray {
@@ -96,12 +97,25 @@ export type RedditCommunities = {
   communityName: string;
   communityId: string;
 };
+export type SalesforceCommunities = {
+  communityName: string;
+  communityId: string;
+  communityUrl: string;
+};
 
-export interface RedditConnectResponseData extends PlatformConnectResponse {
+export interface SampleConnectResponseData<T> extends PlatformConnectResponse {
   workspacePlatformAuthSettingsId: string;
   refreshToken: string;
   guildId: null;
+  communities: T[];
+}
+
+export interface RedditConnectResponseData extends SampleConnectResponseData<RedditCommunities> {
   communities: RedditCommunities[];
+}
+
+export interface SalesforceConnectResponse extends SampleConnectResponseData<SalesforceCommunities> {
+  communities: SalesforceCommunities[];
 }
 
 export interface GithubRepositories {
