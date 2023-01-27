@@ -182,6 +182,7 @@ const Integration: React.FC = () => {
   const handleModals = (name: string, icon: string) => {
     switch (name) {
       case PlatformsEnumType.SLACK:
+        setIsModalOpen((prevState) => ({ ...prevState, slack: true }));
         NavigateToConnectPage();
         setPlatformIcons((prevState) => ({ ...prevState, slack: icon }));
         break;
@@ -190,13 +191,16 @@ const Integration: React.FC = () => {
         setIsModalOpen((prevState) => ({ ...prevState, vanilla: true }));
         break;
       case PlatformsEnumType.DISCORD:
+        setIsModalOpen((prevState) => ({ ...prevState, discord: true }));
         NavigateToDiscordConnectPage();
         break;
       case PlatformsEnumType.REDDIT:
+        setIsModalOpen((prevState) => ({ ...prevState, reddit: true }));
         NavigateToRedditConnectPage();
         setPlatformIcons((prevState) => ({ ...prevState, reddit: icon }));
         break;
       case PlatformsEnumType.GITHUB:
+        setIsModalOpen((prevState) => ({ ...prevState, github: true }));
         NavigateToGithubConnectPage();
         setPlatformIcons((prevState) => ({ ...prevState, github: icon }));
         break;
@@ -205,10 +209,11 @@ const Integration: React.FC = () => {
         setIsModalOpen((prevState) => ({ ...prevState, discourse: true }));
         break;
       case PlatformsEnumType.TWITTER:
-        NavigateToTwitterConnectPage();
         setIsModalOpen((prevState) => ({ ...prevState, twitter: true }));
+        NavigateToTwitterConnectPage();
         break;
       case PlatformsEnumType.SALESFORCE:
+        setIsModalOpen((prevState) => ({ ...prevState, salesforce: true }));
         NavigateToSalesForceConnectPage();
         break;
       default:

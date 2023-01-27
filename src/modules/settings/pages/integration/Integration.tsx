@@ -234,6 +234,7 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
           if (isIntegrated && !isConnected) {
             setShowAlert((prevState) => ({ ...prevState, slack: true }));
           } else {
+            setIsModalOpen((prevState) => ({ ...prevState, slack: true }));
             NavigateToConnectPage();
             setIsLoading(false);
           }
@@ -264,6 +265,7 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
           if (isIntegrated && !isConnected) {
             setShowAlert((prevState) => ({ ...prevState, discord: true }));
           } else {
+            setIsModalOpen((prevState) => ({ ...prevState, discord: true }));
             NavigateToDiscordConnectPage();
             setIsLoading(false);
           }
@@ -279,6 +281,7 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
           if (isIntegrated && !isConnected) {
             setShowAlert((prevState) => ({ ...prevState, reddit: true }));
           } else {
+            setIsModalOpen((prevState) => ({ ...prevState, reddit: true }));
             NavigateToRedditConnectPage();
             setIsLoading(false);
           }
@@ -294,6 +297,7 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
           if (isIntegrated && !isConnected) {
             setShowAlert((prevState) => ({ ...prevState, github: true }));
           } else {
+            setIsModalOpen((prevState) => ({ ...prevState, github: true }));
             NavigateToGithubConnectPage();
             setIsLoading(false);
           }
@@ -324,6 +328,7 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
           if (isIntegrated && !isConnected) {
             setShowAlert((prevState) => ({ ...prevState, twitter: true }));
           } else {
+            setIsModalOpen((prevState) => ({ ...prevState, twitter: true }));
             NavigateToTwitterConnectPage();
             setIsLoading(false);
           }
@@ -339,6 +344,7 @@ const Integration: React.FC<{ hidden: boolean; selectedTab: string }> = ({ hidde
           if (isIntegrated && !isConnected) {
             setShowAlert((prevState) => ({ ...prevState, salesforce: true }));
           } else {
+            setIsModalOpen((prevState) => ({ ...prevState, salesforce: true }));
             NavigateToSalesForceConnectPage();
             setIsLoading(false);
           }
