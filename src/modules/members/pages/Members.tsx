@@ -393,7 +393,7 @@ const Members: React.FC = () => {
                     (columnName: ColumnNameProps) =>
                       columnName.isDisplayed && (
                         <Fragment key={columnName.id}>
-                          <th className="px-3 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray ">
+                          <th className="px-3 py-3 text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray ">
                             {columnName.name}
                           </th>
                         </Fragment>
@@ -417,7 +417,7 @@ const Members: React.FC = () => {
                           memberColumnsLoader ? (
                             <Skeleton width={width_90} />
                           ) : (
-                            <div className="flex flex-col w-[150px]">
+                            <div className="flex flex-col w-[180px] relative">
                               <div
                                 className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer capitalize truncate"
                                 onClick={() => {
@@ -441,7 +441,7 @@ const Members: React.FC = () => {
                               </div>
                               {isNamePopupActive.isActive && String(memberIndex) === isNamePopupActive.id && (
                                 <div
-                                  className="border rounded-md w-[210px] px-2 py-1"
+                                  className="border rounded-md px-2 py-1 absolute top-10 bg-white"
                                   onMouseEnter={() => setIsNamePopupActive((prev) => ({ ...prev, isActive: true }))}
                                   onMouseLeave={() => setIsNamePopupActive((prev) => ({ ...prev, isActive: false }))}
                                 >
