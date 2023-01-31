@@ -387,7 +387,7 @@ const Members: React.FC = () => {
         <div className="py-2">
           <div className="inline-block min-w-full w-full align-middle rounded-0.6 border-table  overflow-x-auto overflow-y-auto sticky top-0 fixTableHead max-h-34 min-h-[31.25rem] mb-16">
             <table className="min-w-full relative w-full rounded-t-0.6 ">
-              <thead className="h-3.25  top-0 w-full  sticky ">
+              <thead className="h-3.25  top-0 w-full sticky z-10">
                 <tr className="min-w-full w-full">
                   {columns.map(
                     (columnName: ColumnNameProps) =>
