@@ -73,14 +73,19 @@ const Members: React.FC = () => {
   });
   const [fetchLoader, setFetchLoader] = useState<boolean>(false);
   const [saveRefObject, setSaveRefObject] = useState<HTMLDivElement | null>(null);
+  const [isNamePopupActive, setIsNamePopupActive] = useState<{ isActive: boolean; memberName: string; id: string }>({
+    isActive: false,
+    memberName: '',
+    id: ''
+  });
+
   const memberColumnsLoader = useSkeletonLoading(membersSlice.actions.membersList.type);
 
   const datePickerRefStart = useRef<ReactDatePicker>(null);
   const datePickerRefEnd = useRef<ReactDatePicker>(null);
+  const dropDownRef = useRef<HTMLDivElement | null>(null);
 
   const debouncedValue = useDebounce(searchText, 300);
-
-  const dropDownRef = useRef<HTMLDivElement | null>(null);
 
   const handleFilterDropdown = (): void => {
     setIsFilterDropdownActive((prev) => !prev);
@@ -363,6 +368,8 @@ const Members: React.FC = () => {
     [debouncedValue, filteredDate]
   );
 
+  const handleMemberNameLength = (name: string): { name: string } => ({ name });
+
   const renderMembersTable = () => {
     if (!memberColumnsLoader && !(customizedColumn?.[0]?.name as { name: string; id: string })?.name) {
       return (
@@ -402,7 +409,7 @@ const Members: React.FC = () => {
                       <UsersLoader />
                     </Fragment>
                   ))}
-                {customizedColumn.map((member: Record<string, unknown>) => (
+                {customizedColumn.map((member: Record<string, unknown>, memberIndex: number) => (
                   <tr className="border-b " key={(member?.name as { name: string; id: string })?.id as Key}>
                     {Object.keys(member).map((column: keyof typeof member, index) => (
                       <td className="px-3 h-[60px] " key={index}>
@@ -410,13 +417,39 @@ const Members: React.FC = () => {
                           memberColumnsLoader ? (
                             <Skeleton width={width_90} />
                           ) : (
-                            <div className="flex w-[150px]">
+                            <div className="flex flex-col w-[150px]">
                               <div
-                                className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer capitalize"
-                                onClick={() => navigateToProfile((member?.name as { name: string; id: string })?.id as string)}
+                                className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer capitalize truncate"
+                                onClick={() => {
+                                  navigateToProfile((member?.name as { name: string; id: string })?.id as string);
+                                }}
+                                onMouseEnter={() => {
+                                  if (handleMemberNameLength((member?.name as { name: string; id: string })?.name as string)?.name?.length > 20) {
+                                    setIsNamePopupActive((prev) => ({
+                                      ...prev,
+                                      memberName: handleMemberNameLength((member?.name as { name: string; id: string })?.name as string)?.name
+                                    }));
+                                    setIsNamePopupActive((prev) => ({ ...prev, id: String(memberIndex) }));
+                                    setIsNamePopupActive((prev) => ({ ...prev, isActive: true }));
+                                  }
+                                }}
+                                onMouseLeave={() => {
+                                  setIsNamePopupActive((prev) => ({ ...prev, isActive: false }));
+                                }}
                               >
-                                {(member?.name as { name: string; id: string })?.name as string}
+                                {handleMemberNameLength((member?.name as { name: string; id: string })?.name as string).name}
                               </div>
+                              {isNamePopupActive.isActive && String(memberIndex) === isNamePopupActive.id && (
+                                <div
+                                  className="border rounded-md w-[210px] px-2 py-1"
+                                  onMouseEnter={() => setIsNamePopupActive((prev) => ({ ...prev, isActive: true }))}
+                                  onMouseLeave={() => setIsNamePopupActive((prev) => ({ ...prev, isActive: false }))}
+                                >
+                                  <h6 className="font-Poppins font-light text-trial text-infoBlack cursor-pointer capitalize">
+                                    {isNamePopupActive.memberName}
+                                  </h6>
+                                </div>
+                              )}
                             </div>
                           )
                         ) : column === 'platforms' ? (
