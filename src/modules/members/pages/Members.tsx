@@ -73,14 +73,19 @@ const Members: React.FC = () => {
   });
   const [fetchLoader, setFetchLoader] = useState<boolean>(false);
   const [saveRefObject, setSaveRefObject] = useState<HTMLDivElement | null>(null);
+  const [isNamePopupActive, setIsNamePopupActive] = useState<{ isActive: boolean; memberName: string; id: string }>({
+    isActive: false,
+    memberName: '',
+    id: ''
+  });
+
   const memberColumnsLoader = useSkeletonLoading(membersSlice.actions.membersList.type);
 
   const datePickerRefStart = useRef<ReactDatePicker>(null);
   const datePickerRefEnd = useRef<ReactDatePicker>(null);
+  const dropDownRef = useRef<HTMLDivElement | null>(null);
 
   const debouncedValue = useDebounce(searchText, 300);
-
-  const dropDownRef = useRef<HTMLDivElement | null>(null);
 
   const handleFilterDropdown = (): void => {
     setIsFilterDropdownActive((prev) => !prev);
@@ -363,6 +368,8 @@ const Members: React.FC = () => {
     [debouncedValue, filteredDate]
   );
 
+  const handleMemberNameLength = (name: string): { name: string } => ({ name });
+
   const renderMembersTable = () => {
     if (!memberColumnsLoader && !(customizedColumn?.[0]?.name as { name: string; id: string })?.name) {
       return (
@@ -380,13 +387,13 @@ const Members: React.FC = () => {
         <div className="py-2">
           <div className="inline-block min-w-full w-full align-middle rounded-0.6 border-table  overflow-x-auto overflow-y-auto sticky top-0 fixTableHead max-h-34 min-h-[31.25rem] mb-16">
             <table className="min-w-full relative w-full rounded-t-0.6 ">
-              <thead className="h-3.25  top-0 w-full  sticky ">
+              <thead className="h-3.25  top-0 w-full sticky z-10">
                 <tr className="min-w-full w-full">
                   {columns.map(
                     (columnName: ColumnNameProps) =>
                       columnName.isDisplayed && (
                         <Fragment key={columnName.id}>
-                          <th className="px-3 py-3  text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray ">
+                          <th className="px-3 py-3 text-left font-Poppins font-medium text-card leading-1.12 text-black  bg-tableHeaderGray ">
                             {columnName.name}
                           </th>
                         </Fragment>
@@ -402,7 +409,7 @@ const Members: React.FC = () => {
                       <UsersLoader />
                     </Fragment>
                   ))}
-                {customizedColumn.map((member: Record<string, unknown>) => (
+                {customizedColumn.map((member: Record<string, unknown>, memberIndex: number) => (
                   <tr className="border-b " key={(member?.name as { name: string; id: string })?.id as Key}>
                     {Object.keys(member).map((column: keyof typeof member, index) => (
                       <td className="px-3 h-[60px] " key={index}>
@@ -410,13 +417,39 @@ const Members: React.FC = () => {
                           memberColumnsLoader ? (
                             <Skeleton width={width_90} />
                           ) : (
-                            <div className="flex w-[150px]">
+                            <div className="flex flex-col w-[180px] relative">
                               <div
-                                className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer capitalize"
-                                onClick={() => navigateToProfile((member?.name as { name: string; id: string })?.id as string)}
+                                className="py-3 font-Poppins font-medium text-trial text-infoBlack leading-1.31 cursor-pointer capitalize truncate"
+                                onClick={() => {
+                                  navigateToProfile((member?.name as { name: string; id: string })?.id as string);
+                                }}
+                                onMouseEnter={() => {
+                                  if (handleMemberNameLength((member?.name as { name: string; id: string })?.name as string)?.name?.length > 20) {
+                                    setIsNamePopupActive((prev) => ({
+                                      ...prev,
+                                      memberName: handleMemberNameLength((member?.name as { name: string; id: string })?.name as string)?.name
+                                    }));
+                                    setIsNamePopupActive((prev) => ({ ...prev, id: String(memberIndex) }));
+                                    setIsNamePopupActive((prev) => ({ ...prev, isActive: true }));
+                                  }
+                                }}
+                                onMouseLeave={() => {
+                                  setIsNamePopupActive((prev) => ({ ...prev, isActive: false }));
+                                }}
                               >
-                                {(member?.name as { name: string; id: string })?.name as string}
+                                {handleMemberNameLength((member?.name as { name: string; id: string })?.name as string).name}
                               </div>
+                              {isNamePopupActive.isActive && String(memberIndex) === isNamePopupActive.id && (
+                                <div
+                                  className="border rounded-md px-2 py-1 absolute top-10 bg-white"
+                                  onMouseEnter={() => setIsNamePopupActive((prev) => ({ ...prev, isActive: true }))}
+                                  onMouseLeave={() => setIsNamePopupActive((prev) => ({ ...prev, isActive: false }))}
+                                >
+                                  <h6 className="font-Poppins font-light text-trial text-infoBlack cursor-pointer capitalize">
+                                    {isNamePopupActive.memberName}
+                                  </h6>
+                                </div>
+                              )}
                             </div>
                           )
                         ) : column === 'platforms' ? (
