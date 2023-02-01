@@ -424,7 +424,7 @@ const Members: React.FC = () => {
                                   navigateToProfile((member?.name as { name: string; id: string })?.id as string);
                                 }}
                                 onMouseEnter={() => {
-                                  if (handleMemberNameLength((member?.name as { name: string; id: string })?.name as string)?.name?.length > 20) {
+                                  if (handleMemberNameLength((member?.name as { name: string; id: string })?.name as string)?.name?.length >= 24) {
                                     setIsNamePopupActive((prev) => ({
                                       ...prev,
                                       memberName: handleMemberNameLength((member?.name as { name: string; id: string })?.name as string)?.name
