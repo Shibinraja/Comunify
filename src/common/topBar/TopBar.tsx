@@ -157,7 +157,7 @@ const TopBar: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if(userProfilePictureUrl) {
+    if (userProfilePictureUrl) {
       setProfileImage(userProfilePictureUrl);
     }
   }, [userProfilePictureUrl]);
@@ -391,16 +391,19 @@ const TopBar: React.FC = () => {
           </div> */}
           {!decodedToken?.isAdmin && (
             <div className="pl-1.68 relative cursor-pointer" ref={notificationRef}>
-              <div className="notification-icon" onClick={handleNotificationActive}>
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M14 16H18.5858C19.3668 16 20 15.3668 20 14.5858C20 14.2107 19.851 13.851 19.5858 13.5858L18.5858 12.5858C18.2107 12.2107 18 11.702 18 11.1716L18 7.97067C18 3.56859 14.4314 0 10.0293 0C5.61789 0 2.04543 3.58319 2.05867 7.9946L2.06814 11.1476C2.06977 11.6922 1.84928 12.2139 1.45759 12.5922L0.428635 13.586C0.154705 13.8506 2.07459e-06 14.2151 0 14.5959C0 15.3714 0.628628 16 1.40408 16H6C6 18.2091 7.79086 20 10 20C12.2091 20 14 18.2091 14 16ZM17.5251 13.6464L18.3787 14.5H1.64147L2.49967 13.6711C3.18513 13.009 3.57099 12.0961 3.56813 11.1431L3.55867 7.9901C3.54792 4.40887 6.44807 1.5 10.0293 1.5C13.603 1.5 16.5 4.39702 16.5 7.97067L16.5 11.1716C16.5 12.0998 16.8687 12.9901 17.5251 13.6464ZM12.5 16H7.5C7.5 17.3807 8.61929 18.5 10 18.5C11.3807 18.5 12.5 17.3807 12.5 16Z"
-                    fill="none"
-                  />
-                </svg>
+              <div className="p-2" onClick={handleNotificationActive}>
+                <div className="notification-icon">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M14 16H18.5858C19.3668 16 20 15.3668 20 14.5858C20 14.2107 19.851 13.851 19.5858 13.5858L18.5858 12.5858C18.2107 12.2107 18 11.702 18 11.1716L18 7.97067C18 3.56859 14.4314 0 10.0293 0C5.61789 0 2.04543 3.58319 2.05867 7.9946L2.06814 11.1476C2.06977 11.6922 1.84928 12.2139 1.45759 12.5922L0.428635 13.586C0.154705 13.8506 2.07459e-06 14.2151 0 14.5959C0 15.3714 0.628628 16 1.40408 16H6C6 18.2091 7.79086 20 10 20C12.2091 20 14 18.2091 14 16ZM17.5251 13.6464L18.3787 14.5H1.64147L2.49967 13.6711C3.18513 13.009 3.57099 12.0961 3.56813 11.1431L3.55867 7.9901C3.54792 4.40887 6.44807 1.5 10.0293 1.5C13.603 1.5 16.5 4.39702 16.5 7.97067L16.5 11.1716C16.5 12.0998 16.8687 12.9901 17.5251 13.6464ZM12.5 16H7.5C7.5 17.3807 8.61929 18.5 10 18.5C11.3807 18.5 12.5 17.3807 12.5 16Z"
+                      fill="none"
+                    />
+                  </svg>
+                </div>
               </div>
+
               <div className="absolute top-0 right-0 overflow-hidden">{unReadStatus === 'true' ? <img src={ellipseIcon} alt="" /> : null}</div>
               {isNotificationActive && (
                 <div className="absolute border-box w-[363px] rounded-[10px] border border-[#DBD8FC] bg-white cursor-pointer top-10 -right-[20px]  z-10 px-[14px] py-[18px] notification notification-box">
