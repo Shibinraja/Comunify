@@ -1,6 +1,7 @@
+/* eslint-disable space-before-function-paren */
 import Button from 'common/button';
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router';
+import { NavigateFunction, useLocation, useNavigate } from 'react-router';
 import discordIcon from '../../../../assets/images/discord.svg';
 import dropdownIcon from '../../../../assets/images/filter-dropdown.svg';
 import { showErrorToast, showSuccessToast } from '../../../../common/toast/toastFunctions';
@@ -16,9 +17,9 @@ const DiscordIntegrationDetails: React.FC = () => {
   const [channelDetails, setChannelDetails] = useState<ChannelDetails[]>([]);
   const [selectedChannelDetails, setSelectedChannelDetails] = useState<ChannelDetails>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const navigate = useNavigate();
+  const navigate: NavigateFunction = useNavigate();
   const location: Location | any = useLocation();
-  const workspaceId = getLocalWorkspaceId();
+  const workspaceId: string = getLocalWorkspaceId();
 
   interface ChannelDetails {
     channelName: string;
@@ -32,6 +33,7 @@ const DiscordIntegrationDetails: React.FC = () => {
   }
 
   const connectResponse: DiscordConnectResponse = location?.state?.discordConnectResponse;
+
   const channelDataArray: ChannelDetails[] = connectResponse?.channels?.map((data: DiscordChannel) => ({
     channelName: data?.name,
     channelId: data?.id
@@ -51,7 +53,12 @@ const DiscordIntegrationDetails: React.FC = () => {
     }
   };
 
-  //   eslint-disable-next-line space-before-function-paren
+  const navigateToSettingsPage = (): void => {
+    navigate({ pathname: '' });
+    navigate(`/${workspaceId}/settings`);
+  };
+
+  // eslint-disable-next-line space-before-function-paren
   const discordCompleteSetup = async () => {
     setIsLoading(true);
     try {
@@ -121,7 +128,7 @@ const DiscordIntegrationDetails: React.FC = () => {
               </div>
               {isChannelActive && (
                 <div className="flex flex-col app-result-card-border box-border w-[320px] right-0 top-[3.15rem] rounded-0.3 shadow-ChannelInput cursor-pointer absolute  bg-white min-h-[50px] max-h-60 overflow-auto">
-                  {channelDetails.map((options: ChannelDetails) => (
+                  {channelDetails?.map((options: ChannelDetails) => (
                     <ul
                       className="cursor-pointer hover:bg-signUpDomain  transition ease-in duration-100 "
                       onClick={() => {
@@ -148,6 +155,12 @@ const DiscordIntegrationDetails: React.FC = () => {
           </span>
         </div> */}
         <div className="flex justify-end pt-4">
+          <Button
+            text="Cancel"
+            type="submit"
+            className="mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  w-5.25 h-2.81  rounded border-none"
+            onClick={() => navigateToSettingsPage()}
+          />
           <Button
             text="Complete Setup"
             type="submit"

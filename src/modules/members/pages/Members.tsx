@@ -424,7 +424,7 @@ const Members: React.FC = () => {
                                   navigateToProfile((member?.name as { name: string; id: string })?.id as string);
                                 }}
                                 onMouseEnter={() => {
-                                  if (handleMemberNameLength((member?.name as { name: string; id: string })?.name as string)?.name?.length > 20) {
+                                  if (handleMemberNameLength((member?.name as { name: string; id: string })?.name as string)?.name?.length >= 24) {
                                     setIsNamePopupActive((prev) => ({
                                       ...prev,
                                       memberName: handleMemberNameLength((member?.name as { name: string; id: string })?.name as string)?.name
@@ -456,7 +456,7 @@ const Members: React.FC = () => {
                           memberColumnsLoader ? (
                             <Skeleton width={width_90} />
                           ) : (
-                            <div className="flex gap-x-2 w-[150px]">
+                            <div className="flex gap-x-2 w-[180px]">
                               {(member?.platforms as Array<{ id: string; name: string; platformLogoUrl: string }>)?.map(
                                 (platforms: { name: string; id: string; platformLogoUrl: string }, index: number) => (
                                   <div className="font-Poppins font-medium text-trial text-infoBlack leading-1.31  rounded-full" key={index}>

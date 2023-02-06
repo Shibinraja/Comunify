@@ -79,6 +79,11 @@ const SalesForceSelectCommunity: React.FC = () => {
     }
   };
 
+  const navigateToSettingsPage = (): void => {
+    navigate({ pathname: '' });
+    navigate(`/${workspaceId}/settings`);
+  };
+
   return (
     <div className="pt-20">
       <div className="flex flex-col w-full">
@@ -113,7 +118,7 @@ const SalesForceSelectCommunity: React.FC = () => {
             </div>
             {isCommunityActive && (
               <div className="flex flex-col app-result-card-border box-border w-20.5 rounded-0.3 shadow-reportInput z-10 cursor-pointer bg-white min-h-[50px] max-h-60 overflow-auto">
-                {communitiesDetails.map((options: SalesforceCommunities) => (
+                {communitiesDetails?.map((options: SalesforceCommunities) => (
                   <ul
                     className="cursor-pointer hover:bg-signUpDomain  transition ease-in duration-100 "
                     onClick={() => {
@@ -132,6 +137,12 @@ const SalesForceSelectCommunity: React.FC = () => {
         </div>
 
         <div className="flex justify-end pt-4">
+          <Button
+            text="Cancel"
+            type="submit"
+            className="mr-2.5 text-thinGray font-Poppins text-error font-medium leading-5 cursor-pointer box-border border-cancel  w-5.25 h-2.81  rounded border-none"
+            onClick={() => navigateToSettingsPage()}
+          />
           <Button
             text="Complete Setup"
             type="submit"
