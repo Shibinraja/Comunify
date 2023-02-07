@@ -394,7 +394,7 @@ const MembersProfile: React.FC = () => {
   const allDate = activityData?.result
     ?.filter(
       (data: { activityTime: moment.MomentInput }) =>
-        moment(data?.activityTime).isBefore(moment.utc().subtract(1, 'days')) || moment(data?.activityTime).isAfter(moment.utc().add(1, 'days'))
+        moment(data?.activityTime).isBefore(moment.utc().subtract(2, 'days')) || moment(data?.activityTime).isAfter(moment.utc().add(1, 'days'))
     )
     .sort(
       (a: { activityTime: string | number | Date }, b: { activityTime: string | number | Date }) =>
@@ -641,12 +641,13 @@ const MembersProfile: React.FC = () => {
                     ))}
                   </>
                 )}
+
                 {yesterdayDate.length > 0 && (
                   <>
-                    <h3 className="font-medium pl-7 text-m font-Poppins  text-xs pb-2">Yesterday</h3>
+                    <h3 className="font-medium pl-7 text-m font-Poppins text-xs pb-2">Yesterday</h3>
                     {yesterdayDate.map((item: ActivityResult) => (
                       <>
-                        <li key={item.memberId} className=" first-mt-0 my-4 active-list relative">
+                        <li key={item.memberId} className="my-4 active-list relative">
                           <div className="w-full flex justify-start items-center">
                             <div className="ml-2.024 bottom-line ">
                               <img src={yellowDottedIcon} />
@@ -668,6 +669,7 @@ const MembersProfile: React.FC = () => {
                     ))}
                   </>
                 )}
+
                 {dateMapObj && (
                   <>
                     {Object.entries(dateMapObj).map((item: any) => (
