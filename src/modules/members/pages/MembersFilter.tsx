@@ -89,7 +89,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
   useEffect(() => {
     document.addEventListener('click', handleOutsideClick);
     setSaveRefObject(dropDownRef.current);
-    dispatch(settingsSlice.actions.platformData({ workspaceId }));
+    // dispatch(settingsSlice.actions.platformData({ workspaceId }));
     return () => {
       document.removeEventListener('click', handleOutsideClick);
     };
@@ -309,7 +309,7 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
     const checkLocation: Array<string> = [];
 
     // Condition to check if all the filters are not selected to disable the apply btn in filter.
-    const checkMemberFilterList = MemberFilterList.every((filter:unknown) => filter === false);
+    const checkMemberFilterList = MemberFilterList.every((filter: unknown) => filter === false);
 
     if (checkMemberFilterList) {
       setCheckedPlatform({});
@@ -317,8 +317,6 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
       setCheckedLocation({});
       setCheckedOrganization({});
     }
-
-
     if (Object.keys(checkedPlatform).length > 0) {
       Object.keys(checkedPlatform).map((platform: string) => {
         if (checkedPlatform[platform] === true) {
@@ -384,8 +382,13 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
   };
 
   return (
-    <div className="box-border cursor-pointer rounded-0.6 shadow-contactCard app-input-card-border relative" ref={dropDownRef}>
-      <div className="flex h-3.06  items-center justify-between px-5 " onClick={handleFilterDropdown}>
+    <div className="box-border cursor-pointer rounded-0.6 shadow-contactCard app-input-card-border relative " ref={dropDownRef}>
+      <div
+        className="flex h-3.06  items-center justify-between px-5 "
+        onClick={() => {
+          handleFilterDropdown();
+        }}
+      >
         <div className="box-border flex rounded-0.6 shadow-contactCard font-Poppins font-semibold text-card text-memberDay leading-1.12">
           Filters
           <p className="ml-1 bg-signUpDomain px-2 w-content rounded-lg text-memberDay">{`${filterCount}`}</p>
@@ -585,9 +588,9 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                 <div className="flex flex-col gap-y-5 px-3 max-h-[12.5rem] overflow-scroll bg-white">
                   {membersLocationFilterResponse &&
                     membersLocationFilterResponse.map(
-                      (location: { location: string }) =>
+                      (location: { location: string }, index: number) =>
                         location.location !== null && (
-                          <div key={Math.random()} className="flex items-center mb-2">
+                          <div key={index} className="flex items-center mb-2">
                             <div className="mr-2">
                               <input
                                 type="checkbox"
@@ -642,9 +645,9 @@ const MembersFilter: FC<MemberTypesProps> = ({ page, limit, memberFilterExport, 
                 <div className="flex flex-col gap-y-5 px-3  bg-white max-h-[12.5rem] overflow-scroll">
                   {membersOrganizationFilterResponse &&
                     membersOrganizationFilterResponse.map(
-                      (organization: { organization: string }) =>
+                      (organization: { organization: string }, index: number) =>
                         organization.organization !== null && (
-                          <div key={Math.random()} className="flex items-center">
+                          <div key={index} className="flex items-center">
                             <div className="mr-2">
                               <input
                                 type="checkbox"

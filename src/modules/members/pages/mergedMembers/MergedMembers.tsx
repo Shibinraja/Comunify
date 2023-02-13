@@ -87,9 +87,9 @@ const MergedMembers: React.FC = () => {
 
   // Make an Object based on the result data received form members platform
   useEffect(() => {
-    if (primaryMemberId?.length < 1) {
+    if (memberProfileCardDataResult?.length >= 1) {
       const memberProfileData = [...memberProfileCardData];
-      const platform = memberProfileData[0].platforms;
+      const platform = memberProfileData[0]?.platforms;
       memberProfileData[0].platform = { platformLogoUrl: platform[0].platformLogoUrl };
       setPrimaryMemberId(memberProfileData);
       setCheckedRadioId({ [memberProfileData[0]?.id]: true });
